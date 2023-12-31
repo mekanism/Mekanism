@@ -69,18 +69,13 @@ public class TransporterStack {
         return stack;
     }
 
-    public void write(LogisticalTransporterBase transporter, FriendlyByteBuf buf) {
+    public void write(FriendlyByteBuf buf, BlockPos pos) {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
         buf.writeEnum(pathType);
-        if (pathToTarget.indexOf(transporter.getBlockPos()) > 0) {
-            buf.writeBoolean(true);
-            buf.writeBlockPos(getNext(transporter));
-        } else {
-            buf.writeBoolean(false);
-        }
-        buf.writeBlockPos(getPrev(transporter));
+        buf.writeNullable(getNext(pos), FriendlyByteBuf::writeBlockPos);
+        buf.writeBlockPos(getPrev(pos));
         buf.writeItem(itemStack);
     }
 
@@ -89,9 +84,10 @@ public class TransporterStack {
         progress = dataStream.readVarInt();
         originalLocation = dataStream.readBlockPos();
         pathType = dataStream.readEnum(Path.class);
-        if (dataStream.readBoolean()) {
-            clientNext = dataStream.readBlockPos();
-        }
+        //TODO - 1.20.4: SP: The clientNext and clientPrev have issues in single player as they won't get set
+        // though in all our use cases we are forcing a read/write to prevent mutation or leaking from one side to another
+        // so at least for now it doesn't fully matter
+        clientNext = dataStream.readNullable(FriendlyByteBuf::readBlockPos);
         clientPrev = dataStream.readBlockPos();
         itemStack = dataStream.readItem();
     }
@@ -101,8 +97,9 @@ public class TransporterStack {
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
         NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, pathType);
-        if (pathToTarget.indexOf(transporter.getBlockPos()) > 0) {
-            updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(getNext(transporter)));
+        BlockPos next = getNext(transporter);
+        if (next != null) {
+            updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
         }
         updateTag.put(NBTConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
         itemStack.save(updateTag);
@@ -229,25 +226,27 @@ public class TransporterStack {
     }
 
     public BlockPos getNext(LogisticalTransporterBase transporter) {
-        if (!transporter.isRemote()) {
-            int index = pathToTarget.indexOf(transporter.getBlockPos()) - 1;
-            if (index < 0) {
-                return null;
-            }
-            return pathToTarget.get(index);
+        return transporter.isRemote() ? clientNext : getNext(transporter.getBlockPos());
+    }
+
+    private BlockPos getNext(BlockPos pos) {
+        int index = pathToTarget.indexOf(pos) - 1;
+        if (index < 0) {
+            return null;
         }
-        return clientNext;
+        return pathToTarget.get(index);
     }
 
     public BlockPos getPrev(LogisticalTransporterBase transporter) {
-        if (!transporter.isRemote()) {
-            int index = pathToTarget.indexOf(transporter.getBlockPos()) + 1;
-            if (index < pathToTarget.size()) {
-                return pathToTarget.get(index);
-            }
-            return originalLocation;
+        return transporter.isRemote() ? clientPrev : getPrev(transporter.getBlockPos());
+    }
+
+    private BlockPos getPrev(BlockPos pos) {
+        int index = pathToTarget.indexOf(pos) + 1;
+        if (index < pathToTarget.size()) {
+            return pathToTarget.get(index);
         }
-        return clientPrev;
+        return originalLocation;
     }
 
     public Direction getSide(LogisticalTransporterBase transporter) {

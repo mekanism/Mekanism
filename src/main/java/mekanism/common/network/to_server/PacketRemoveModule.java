@@ -2,42 +2,43 @@ package mekanism.common.network.to_server;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
+import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketRemoveModule implements IMekanismPacket {
+public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final BlockPos pos;
-    private final ModuleData<?> moduleType;
+    public static final ResourceLocation ID = Mekanism.rl("remove_module");
 
-    public PacketRemoveModule(BlockPos pos, ModuleData<?> type) {
-        this.pos = pos;
-        moduleType = type;
+    public PacketRemoveModule(FriendlyByteBuf buffer) {
+        this(buffer.readBlockPos(), buffer.readById(MekanismAPI.MODULE_REGISTRY));
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
             TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level(), pos);
             if (tile != null) {
                 tile.removeModule(player, moduleType);
             }
-        }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
-    }
-
-    public static PacketRemoveModule decode(FriendlyByteBuf buffer) {
-        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readById(MekanismAPI.MODULE_REGISTRY));
     }
 }

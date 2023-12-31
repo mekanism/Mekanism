@@ -1,51 +1,40 @@
 package mekanism.common.network.to_server;
 
+import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntitySecurityDesk;
-import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketAddTrusted implements IMekanismPacket {
+public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPacket<PlayPayloadContext> {
 
-    //Constant to make it more clear what is going on and make it easier to change in case Mojang ever ups the max name length
-    public static final int MAX_NAME_LENGTH = 16;
+    public static final ResourceLocation ID = Mekanism.rl("add_trusted");
 
-    private final BlockPos tilePosition;
-    private final String name;
-
-    public PacketAddTrusted(BlockPos tilePosition, String name) {
-        this.tilePosition = tilePosition;
-        this.name = name;
+    public PacketAddTrusted(FriendlyByteBuf buffer) {
+        this(buffer.readBlockPos(), buffer.readUtf(PacketUtils.USERNAME_LENGTH));
     }
 
-    public static boolean validateNameLength(int length) {
-        return length >= 3 && length <= MAX_NAME_LENGTH;
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
+    public void handle(PlayPayloadContext context) {
         if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME)) {
-            Player player = context.getSender();
-            if (player != null) {
-                TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level(), tilePosition);
-                if (tile != null) {
-                    tile.addTrusted(name);
-                }
-            }
+            PacketUtils.blockEntity(context, pos, TileEntitySecurityDesk.class).ifPresent(tile -> tile.addTrusted(name));
         }
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(tilePosition);
-        buffer.writeUtf(name, MAX_NAME_LENGTH);
-    }
-
-    public static PacketAddTrusted decode(FriendlyByteBuf buffer) {
-        return new PacketAddTrusted(buffer.readBlockPos(), buffer.readUtf(MAX_NAME_LENGTH));
+    public void write(@NotNull FriendlyByteBuf buffer) {
+        buffer.writeBlockPos(pos);
+        buffer.writeUtf(name, PacketUtils.USERNAME_LENGTH);
     }
 }

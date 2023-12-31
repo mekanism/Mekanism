@@ -6,9 +6,9 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketGuiSetEnergy;
@@ -77,7 +77,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler().sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
+                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(parseFloatingLong(minField))));
             } catch (NumberFormatException ignored) {
             }
@@ -88,7 +88,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler().sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
+                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(parseFloatingLong(maxField))));
             } catch (NumberFormatException ignored) {
             }
@@ -99,7 +99,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setTime() {
         if (!timerField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
             } catch (NumberFormatException ignored) {
             }
             timerField.setText("");

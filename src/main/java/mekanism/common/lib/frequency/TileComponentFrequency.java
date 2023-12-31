@@ -252,11 +252,12 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public void trackForMainContainer(MekanismContainer container) {
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
             FrequencyData data = entry.getValue();
             if (data.needsContainerSync) {
-                container.track(SyncableFrequency.create(() -> data.selectedFrequency, data::setFrequency));
+                container.track(SyncableFrequency.create((FrequencyType<Frequency>) entry.getKey(), () -> data.selectedFrequency, data::setFrequency));
             }
             if (data.needsListCache) {
                 track(container, entry.getKey());
@@ -267,14 +268,14 @@ public class TileComponentFrequency implements ITileComponent {
     private <FREQ extends Frequency> void track(MekanismContainer container, FrequencyType<FREQ> type) {
         //Simplify out the is remote check. Note: It is important the client and server trackers are in the same order
         if (container.isRemote()) {
-            container.track(SyncableFrequencyList.create(() -> getPublicCache(type), value -> publicCache.put(type, value)));
-            container.track(SyncableFrequencyList.create(() -> getPrivateCache(type), value -> privateCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> getPublicCache(type), value -> publicCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), value -> privateCache.put(type, value)));
         } else {
-            container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPublicManager().getFrequencies(), value -> publicCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicManager().getFrequencies(), value -> publicCache.put(type, value)));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
             // the private frequencies of the player who opened the container rather than the private
             // frequencies of the owner of the tile
-            container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(),
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(),
                   value -> privateCache.put(type, value)));
         }
     }

@@ -17,6 +17,7 @@ import mekanism.client.gui.element.graph.GuiDoubleGraph;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
@@ -25,7 +26,6 @@ import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
 import mekanism.generators.client.jei.GeneratorsJEIRecipeType;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
@@ -80,7 +80,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
         activateButton = addRenderableWidget(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
-              () -> MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
+              () -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
               () -> EnumColor.DARK_GREEN) {
             @Override
             public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -101,7 +101,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             }
         });
         scramButton = addRenderableWidget(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
-              () -> MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
+              () -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
               () -> EnumColor.DARK_RED));
         addRenderableWidget(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {

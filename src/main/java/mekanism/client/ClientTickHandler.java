@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.UUID;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
@@ -31,6 +30,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -43,6 +43,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -68,7 +69,7 @@ import net.neoforged.neoforge.event.TickEvent.Phase;
 public class ClientTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
-    public static final Random rand = new Random();
+    public static final RandomSource rand = RandomSource.create();
     public static final Map<Player, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
     private static final ScrollIncrementer scrollIncrementer = new ScrollIncrementer(true);
 
@@ -131,7 +132,7 @@ public class ClientTickHandler {
     public static void portableTeleport(Player player, InteractionHand hand, FrequencyIdentity identity) {
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
-            Mekanism.packetHandler().sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
+            PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
             portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
         }
@@ -191,7 +192,7 @@ public class ClientTickHandler {
                 }
                 TeleportData data = entry.getValue();
                 if (minecraft.level.getGameTime() == data.teleportTime) {
-                    Mekanism.packetHandler().sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
+                    PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
                     iter.remove();
                 }
             }
@@ -277,7 +278,7 @@ public class ClientTickHandler {
                 int shift = scrollIncrementer.scroll(delta);
                 if (shift != 0) {
                     MekanismStatusOverlay.INSTANCE.setTimer();
-                    Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, shift));
+                    PacketUtils.sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, shift));
                 }
                 event.setCanceled(true);
             }

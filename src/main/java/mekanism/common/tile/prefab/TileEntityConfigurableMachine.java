@@ -20,33 +20,34 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public TileComponentConfig getConfig() {
+    public final TileComponentConfig getConfig() {
         return configComponent;
     }
 
     @Override
-    public TileComponentEjector getEjector() {
+    public final TileComponentEjector getEjector() {
         return ejectorComponent;
     }
 
     @Override
     public CompoundTag getConfigurationData(Player player) {
         CompoundTag data = super.getConfigurationData(player);
-        getConfig().write(data);
-        getEjector().write(data);
+        configComponent.write(data);
+        ejectorComponent.write(data);
         return data;
     }
 
     @Override
     public void setConfigurationData(Player player, CompoundTag data) {
         super.setConfigurationData(player, data);
-        getConfig().read(data);
-        getEjector().read(data);
+        configComponent.read(data);
+        ejectorComponent.read(data);
     }
 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        //TODO - 1.20.4: When can this be null?? I don't believe it ever is and we don't check it in other spots
         if (ejectorComponent != null) {
             ejectorComponent.tickServer();
         }

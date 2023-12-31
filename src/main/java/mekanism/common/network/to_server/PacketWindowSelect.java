@@ -1,33 +1,37 @@
 package mekanism.common.network.to_server;
 
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PacketWindowSelect implements IMekanismPacket {
+public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) implements IMekanismPacket<PlayPayloadContext> {
 
-    @Nullable
-    private final SelectedWindowData selectedWindow;
+    public static final ResourceLocation ID = Mekanism.rl("window_select");
 
-    public PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) {
-        this.selectedWindow = selectedWindow;
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
-        if (player != null && player.containerMenu instanceof MekanismContainer container) {
-            container.setSelectedWindow(player.getUUID(), selectedWindow);
-        }
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
+            if (player.containerMenu instanceof MekanismContainer container) {
+                container.setSelectedWindow(player.getUUID(), selectedWindow);
+            }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         //We skip using a boolean to write if it is null or not and just write our byte before our enum so that we can
         // use -1 as a marker for invalid
         if (selectedWindow == null) {

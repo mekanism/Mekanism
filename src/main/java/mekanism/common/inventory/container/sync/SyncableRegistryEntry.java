@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.common.network.to_client.container.property.RegistryEntryPropertyData;
+import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.Registry;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +47,14 @@ public class SyncableRegistryEntry<V> implements ISyncableData {
     }
 
     @Override
-    public RegistryEntryPropertyData<?> getPropertyData(short property, DirtyType dirtyType) {
-        return new RegistryEntryPropertyData<>(property, registry, get());
+    public IntPropertyData getPropertyData(short property, DirtyType dirtyType) {
+        V value = get();
+        //The below code is from FriendlyByteBuf#writeId so that we can hold onto the backingId in cases where we are in single player
+        // we don't run into any weirdness about having different data that we reconstructed from the payload
+        int id = registry.getId(value);
+        if (id == -1) {
+            throw new IllegalArgumentException("Can't find id for '" + value + "' in map " + registry);
+        }
+        return new IntPropertyData(property, id);
     }
 }

@@ -3,41 +3,49 @@ package mekanism.common.network.to_server;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
-import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketOpenGui implements IMekanismPacket {
+public class PacketOpenGui implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("open_gui");
 
     private final GuiType type;
+
+    public PacketOpenGui(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(GuiType.class));
+    }
 
     public PacketOpenGui(GuiType type) {
         this.type = type;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
-        if (player != null && type.shouldOpenForPlayer.test(player)) {
-            NetworkHooks.openScreen(player, type.containerSupplier.get());
-        }
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void handle(PlayPayloadContext context) {
+        context.player()
+              .filter(type.shouldOpenForPlayer)
+              .ifPresent(player -> player.openMenu(type.containerSupplier.get()));
+    }
+
+    @Override
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
-    }
-
-    public static PacketOpenGui decode(FriendlyByteBuf buffer) {
-        return new PacketOpenGui(buffer.readEnum(GuiType.class));
     }
 
     public enum GuiType {

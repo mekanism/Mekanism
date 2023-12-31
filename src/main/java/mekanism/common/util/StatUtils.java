@@ -1,13 +1,13 @@
 package mekanism.common.util;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 public class StatUtils {
 
     private StatUtils() {
     }
 
-    private static final Random rand = new Random();
+    private static final RandomSource rand = RandomSource.create();
     private static final double STIRLING_COEFF = 1 / Math.sqrt(2 * Math.PI);
 
     //TODO: Re-evaluate the need for this

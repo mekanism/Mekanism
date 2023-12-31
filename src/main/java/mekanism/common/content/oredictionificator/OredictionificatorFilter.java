@@ -135,7 +135,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         super.write(buffer);
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
-        BasePacketHandler.writeOptional(buffer, filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
+        buffer.writeNullable(filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
         buffer.writeResourceKey(selectedOutput.unwrapKey().orElseThrow());
         buffer.writeBoolean(isValid);
     }
@@ -143,7 +143,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     @Override
     public void read(FriendlyByteBuf buffer) {
         super.read(buffer);
-        setFilter(BasePacketHandler.readOptional(buffer, FriendlyByteBuf::readResourceLocation));
+        setFilter(buffer.readNullable(FriendlyByteBuf::readResourceLocation));
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
     }

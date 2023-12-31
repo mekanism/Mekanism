@@ -11,7 +11,6 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Contract;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class FrequencyType<FREQ extends Frequency> {
 
     private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
+    private static int maxNameLength = 0;
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),
@@ -55,6 +55,7 @@ public class FrequencyType<FREQ extends Frequency> {
           Supplier<FREQ> baseCreationFunction, FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
         FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, baseCreationFunction, managerType, identitySerializer);
         registryMap.put(name, type);
+        maxNameLength = Math.max(maxNameLength, name.length());
         return type;
     }
 
@@ -119,11 +120,11 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(name);
+        buf.writeUtf(name, maxNameLength);
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(FriendlyByteBuf buf) {
-        return (FrequencyType<FREQ>) registryMap.get(BasePacketHandler.readString(buf));
+        return (FrequencyType<FREQ>) registryMap.get(buf.readUtf(maxNameLength));
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {

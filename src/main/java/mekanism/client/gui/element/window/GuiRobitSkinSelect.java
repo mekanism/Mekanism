@@ -5,14 +5,14 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiRobitSkinSelectScroll;
 import mekanism.client.gui.robit.GuiRobitMain;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
-import mekanism.common.network.to_server.PacketRobit;
+import mekanism.common.network.to_server.robit.PacketRobitSkin;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceKey;
 
@@ -29,18 +29,18 @@ public class GuiRobitSkinSelect extends GuiWindow {
         addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + 165, 60, 20, MekanismLang.BUTTON_CONFIRM, () -> {
             ResourceKey<RobitSkin> selectedSkin = selection.getSelectedSkin();
             if (selectedSkin != robit.getSkin()) {
-                Mekanism.packetHandler().sendToServer(new PacketRobit(robit, selectedSkin));
+                PacketUtils.sendToServer(new PacketRobitSkin(robit, selectedSkin));
             }
             close();
         }));
         gui.getMenu().startTracking(MekanismContainer.SKIN_SELECT_WINDOW, gui.getMenu());
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
     }
 
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_STOP_TRACKING, robit, MekanismContainer.SKIN_SELECT_WINDOW));
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_STOP_TRACKING, robit, MekanismContainer.SKIN_SELECT_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.SKIN_SELECT_WINDOW);
     }
 

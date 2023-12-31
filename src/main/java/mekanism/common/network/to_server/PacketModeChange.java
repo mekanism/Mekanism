@@ -1,19 +1,23 @@
 package mekanism.common.network.to_server;
 
+import mekanism.common.Mekanism;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketModeChange implements IMekanismPacket {
+public record PacketModeChange(EquipmentSlot slot, int shift, boolean displayChangeMessage) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final boolean displayChangeMessage;
-    private final EquipmentSlot slot;
-    private final int shift;
+    public static final ResourceLocation ID = Mekanism.rl("mode");
+
+    public PacketModeChange(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(EquipmentSlot.class), buffer.readVarInt(), buffer.readBoolean());
+    }
 
     public PacketModeChange(EquipmentSlot slot, boolean holdingShift) {
         this(slot, holdingShift ? -1 : 1, true);
@@ -23,16 +27,15 @@ public class PacketModeChange implements IMekanismPacket {
         this(slot, shift, false);
     }
 
-    private PacketModeChange(EquipmentSlot slot, int shift, boolean displayChangeMessage) {
-        this.slot = slot;
-        this.shift = shift;
-        this.displayChangeMessage = displayChangeMessage;
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
             ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
                 DisplayChange displayChange;
@@ -43,17 +46,13 @@ public class PacketModeChange implements IMekanismPacket {
                 }
                 modeItem.changeMode(player, stack, shift, displayChange);
             }
-        }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(slot);
         buffer.writeVarInt(shift);
         buffer.writeBoolean(displayChangeMessage);
-    }
-
-    public static PacketModeChange decode(FriendlyByteBuf buffer) {
-        return new PacketModeChange(buffer.readEnum(EquipmentSlot.class), buffer.readVarInt(), buffer.readBoolean());
     }
 }

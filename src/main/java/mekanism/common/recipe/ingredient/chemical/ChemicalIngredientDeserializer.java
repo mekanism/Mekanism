@@ -25,7 +25,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngr
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.network.BasePacketHandler;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiInfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
@@ -50,12 +50,12 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
           MekanismAPI.SLURRY_REGISTRY_NAME, SlurryStack::readFromPacket, IngredientCreatorAccess.slurry(), MultiSlurryStackIngredient::new, SlurryStackIngredient[]::new);
 
     private final ResourceKey<? extends Registry<CHEMICAL>> registry;
-    private final Function<FriendlyByteBuf, STACK> fromPacket;
+    private final FriendlyByteBuf.Reader<STACK> fromPacket;
     private final IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator;
     private final IntFunction<INGREDIENT[]> arrayCreator;
     private final Function<INGREDIENT[], INGREDIENT> multiCreator;
 
-    private ChemicalIngredientDeserializer(ResourceKey<? extends Registry<CHEMICAL>> registry, Function<FriendlyByteBuf, STACK> fromPacket,
+    private ChemicalIngredientDeserializer(ResourceKey<? extends Registry<CHEMICAL>> registry, FriendlyByteBuf.Reader<STACK> fromPacket,
           IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator, Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
         this.fromPacket = fromPacket;
         this.registry = registry;
@@ -78,7 +78,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return switch (buffer.readEnum(IngredientType.class)) {
             case SINGLE -> ingredientCreator.from(fromPacket.apply(buffer));
             case TAGGED -> ingredientCreator.from(TagKey.create(registry, buffer.readResourceLocation()), buffer.readVarLong());
-            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, arrayCreator, this::read));
+            case MULTI -> createMulti(buffer.readArray(arrayCreator, this::read));
         };
     }
 

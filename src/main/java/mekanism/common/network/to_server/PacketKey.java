@@ -3,38 +3,41 @@ package mekanism.common.network.to_server;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketKey implements IMekanismPacket {
+public record PacketKey(int key, boolean add) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final int key;
-    private final boolean add;
+    public static final ResourceLocation ID = Mekanism.rl("key");
 
-    public PacketKey(int key, boolean add) {
-        this.key = key;
-        this.add = add;
+    public PacketKey(FriendlyByteBuf buffer) {
+        this(buffer.readVarInt(), buffer.readBoolean());
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
-            if (add) {
-                Mekanism.keyMap.add(player.getUUID(), key);
-            } else {
-                Mekanism.keyMap.remove(player.getUUID(), key);
-            }
-        }
+    public void handle(PlayPayloadContext context) {
+        context.player()
+              .map(Entity::getUUID)
+              .ifPresent(player -> {
+                  if (add) {
+                      Mekanism.keyMap.add(player, key);
+                  } else {
+                      Mekanism.keyMap.remove(player, key);
+                  }
+              });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeVarInt(key);
         buffer.writeBoolean(add);
-    }
-
-    public static PacketKey decode(FriendlyByteBuf buffer) {
-        return new PacketKey(buffer.readVarInt(), buffer.readBoolean());
     }
 }

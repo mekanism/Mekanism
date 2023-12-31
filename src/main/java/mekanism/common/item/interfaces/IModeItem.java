@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
-import mekanism.common.network.to_client.PacketShowModeChange;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +55,7 @@ public interface IModeItem {
 
     static void displayModeChange(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            Mekanism.packetHandler().sendTo(PacketShowModeChange.INSTANCE, serverPlayer);
+            Mekanism.packetHandler().showModeChange(serverPlayer);
         } else {
             MekanismStatusOverlay.INSTANCE.setTimer();
         }

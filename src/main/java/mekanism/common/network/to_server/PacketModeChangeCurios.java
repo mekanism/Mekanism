@@ -4,19 +4,20 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IModeItem.DisplayChange;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketModeChangeCurios implements IMekanismPacket {
+public record PacketModeChangeCurios(String slotType, int slot, int shift, boolean displayChangeMessage) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final boolean displayChangeMessage;
-    private final String slotType;
-    private final int slot;
-    private final int shift;
+    public static final ResourceLocation ID = Mekanism.rl("mode_curios");
+
+    public PacketModeChangeCurios(FriendlyByteBuf buffer) {
+        this(buffer.readUtf(), buffer.readVarInt(), buffer.readVarInt(), buffer.readBoolean());
+    }
 
     public PacketModeChangeCurios(String slotType, int slot, boolean holdingShift) {
         this(slotType, slot, holdingShift ? -1 : 1, true);
@@ -26,33 +27,29 @@ public class PacketModeChangeCurios implements IMekanismPacket {
         this(slotType, slot, shift, false);
     }
 
-    private PacketModeChangeCurios(String slotType, int slot, int shift, boolean displayChangeMessage) {
-        this.slot = slot;
-        this.shift = shift;
-        this.slotType = slotType;
-        this.displayChangeMessage = displayChangeMessage;
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null && Mekanism.hooks.CuriosLoaded) {
-            ItemStack stack = CuriosIntegration.getCurioStack(player, slotType, slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
-                modeItem.changeMode(player, stack, shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE);
-            }
+    public void handle(PlayPayloadContext context) {
+        if (Mekanism.hooks.CuriosLoaded) {
+            context.player().ifPresent(player -> {
+                ItemStack stack = CuriosIntegration.getCurioStack(player, slotType, slot);
+                if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
+                    modeItem.changeMode(player, stack, shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE);
+                }
+            });
         }
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeUtf(slotType);
         buffer.writeVarInt(slot);
         buffer.writeVarInt(shift);
         buffer.writeBoolean(displayChangeMessage);
-    }
-
-    public static PacketModeChangeCurios decode(FriendlyByteBuf buffer) {
-        return new PacketModeChangeCurios(BasePacketHandler.readString(buffer), buffer.readVarInt(), buffer.readVarInt(), buffer.readBoolean());
     }
 }

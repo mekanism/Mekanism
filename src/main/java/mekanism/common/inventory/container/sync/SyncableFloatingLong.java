@@ -63,6 +63,9 @@ public class SyncableFloatingLong implements ISyncableData {
             //If only the size changed, don't bother re-syncing the type
             return new ShortPropertyData(property, get().getDecimal());
         }
-        return new FloatingLongPropertyData(property, get());
+        //Note: While this copy operation isn't strictly necessary, it allows for simplifying the logic and ensuring we don't have the actual FL object
+        // leak from one side to another when in single player. Given copying is rather cheap, and we only need to do this on change/when the data is dirty
+        // we can easily get away with it
+        return new FloatingLongPropertyData(property, get().copyAsConst());
     }
 }

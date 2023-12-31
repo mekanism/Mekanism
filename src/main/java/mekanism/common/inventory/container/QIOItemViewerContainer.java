@@ -33,8 +33,10 @@ import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import mekanism.common.network.to_server.PacketGuiItemDataRequest;
-import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.qio.PacketQIOItemViewerSlotPlace;
+import mekanism.common.network.to_server.qio.PacketQIOItemViewerSlotShiftTake;
+import mekanism.common.network.to_server.qio.PacketQIOItemViewerSlotTake;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -172,7 +174,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     protected void openInventory(@NotNull Inventory inv) {
         super.openInventory(inv);
         if (isRemote()) {
-            Mekanism.packetHandler().sendToServer(PacketGuiItemDataRequest.qioItemViewer());
+            Mekanism.packetHandler().requestQIOData();
         }
     }
 
@@ -491,7 +493,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (hasShiftDown) {
             IScrollableSlot slot = slotProvider.get();
             if (slot != null) {
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.itemUUID()));
+                PacketUtils.sendToServer(new PacketQIOItemViewerSlotShiftTake(slot.itemUUID()));
             }
         } else if (button == 0 || button == 1) {
             if (heldItem.isEmpty()) {
@@ -501,12 +503,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     long baseExtract = button == 0 ? slot.count() : slot.count() / 2;
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
                     int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.item().getMaxStackSize());
-                    Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.itemUUID(), toTake));
+                    PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), toTake));
                 }
             } else {
                 //Left click -> all held, right click -> single item
                 int toAdd = button == 0 ? heldItem.getCount() : 1;
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(toAdd));
+                PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
             }
         }
     }

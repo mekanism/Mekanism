@@ -3,8 +3,8 @@ package mekanism.client.gui.element.gauge;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
-import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
@@ -60,7 +60,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
                 } else { //GLFW.GLFW_MOUSE_BUTTON_RIGHT
                     action = DropperAction.DRAIN_DROPPER;
                 }
-                Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
+                PacketUtils.sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
             }
         }
     }

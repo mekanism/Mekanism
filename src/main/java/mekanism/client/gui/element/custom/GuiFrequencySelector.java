@@ -18,7 +18,6 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiConfirmationDialog;
 import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.FrequencyItemContainer;
 import mekanism.common.lib.frequency.Frequency;
@@ -27,9 +26,10 @@ import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.frequency.IFrequencyHandler;
-import mekanism.common.network.to_server.PacketGuiSetFrequency;
-import mekanism.common.network.to_server.PacketGuiSetFrequency.FrequencyUpdate;
-import mekanism.common.network.to_server.PacketGuiSetFrequencyColor;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.frequency.PacketSetFrequencyColor;
+import mekanism.common.network.to_server.frequency.PacketSetItemFrequency;
+import mekanism.common.network.to_server.frequency.PacketSetTileFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
@@ -140,7 +140,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             List<String> text = new ArrayList<>(frequencies.size());
             for (Frequency freq : frequencies) {
                 if (publicFreq) {
-                    text.add(freq.getName() + " (" + freq.getClientOwner() + ")");
+                    text.add(freq.getName() + " (" + freq.getOwnerName() + ")");
                 } else {
                     text.add(freq.getName());
                 }
@@ -199,7 +199,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             //Color the name the same as the subheading text color should be
             MutableComponent name = TextComponentUtil.color(TextComponentUtil.getString(frequency.getName()), subheadingTextColor());
             drawTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(name), 27, yStart + 67, titleTextColor(), getGuiWidth() - 36);
-            drawString(guiGraphics, OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getClientOwner(), false).getTextComponent(),
+            drawString(guiGraphics, OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getOwnerName(), false).getTextComponent(),
                   27, yStart + 77, titleTextColor());
             drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurity()), 27, yStart + 87, titleTextColor());
         }
@@ -230,7 +230,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         default void sendColorUpdate(boolean next) {
             FREQ freq = getFrequency();
             if (freq != null) {
-                Mekanism.packetHandler().sendToServer(PacketGuiSetFrequencyColor.create(freq, next));
+                PacketUtils.sendToServer(new PacketSetFrequencyColor<>(freq, next));
             }
         }
     }
@@ -241,12 +241,16 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
 
         @Override
         default void sendSetFrequency(FrequencyIdentity identity) {
-            Mekanism.packetHandler().sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, getFrequencyType(), identity, getTileEntity().getBlockPos()));
+            sendSetFrequency(identity, true);
         }
 
         @Override
         default void sendRemoveFrequency(FrequencyIdentity identity) {
-            Mekanism.packetHandler().sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, getFrequencyType(), identity, getTileEntity().getBlockPos()));
+            sendSetFrequency(identity, false);
+        }
+
+        private void sendSetFrequency(FrequencyIdentity identity, boolean set) {
+            PacketUtils.sendToServer(new PacketSetTileFrequency<>(set, getFrequencyType(), identity, getTileEntity().getBlockPos()));
         }
 
         @Override
@@ -271,12 +275,16 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
 
         @Override
         default void sendSetFrequency(FrequencyIdentity identity) {
-            Mekanism.packetHandler().sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_ITEM, getFrequencyType(), identity, getFrequencyContainer().getHand()));
+            sendSetFrequency(identity, true);
         }
 
         @Override
         default void sendRemoveFrequency(FrequencyIdentity identity) {
-            Mekanism.packetHandler().sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, getFrequencyType(), identity, getFrequencyContainer().getHand()));
+            sendSetFrequency(identity, false);
+        }
+
+        private void sendSetFrequency(FrequencyIdentity identity, boolean set) {
+            PacketUtils.sendToServer(new PacketSetItemFrequency<>(set, getFrequencyType(), identity, getFrequencyContainer().getHand()));
         }
 
         @Override

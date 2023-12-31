@@ -14,12 +14,12 @@ import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSounds;
@@ -56,7 +56,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 IModule<?> module = moduleScreen.getCurrentModule();
                 if (module != null && selected != -1) {//Shouldn't be null but validate just in case
                     int slotIndex = menu.slots.get(selected).getSlotIndex();
-                    Mekanism.packetHandler().sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), dataIndex, configItem.getData()));
+                    PacketUtils.sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), dataIndex, configItem.getData()));
                 }
             }
         };

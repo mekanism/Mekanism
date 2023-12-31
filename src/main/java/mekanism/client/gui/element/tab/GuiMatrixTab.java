@@ -5,10 +5,10 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.network.to_server.PacketGuiButtonPress;
-import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
+import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -44,7 +44,7 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
         @Override
         public void onClick(TileEntityInductionCasing tile) {
-            Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(button, tile));
+            PacketUtils.sendToServer(new PacketTileButtonPress(button, tile));
         }
 
         @Override

@@ -77,6 +77,9 @@ public class SyncableFluidStack implements ISyncableData {
             //If only the size changed, don't bother re-syncing the type
             return new IntPropertyData(property, get().getAmount());
         }
-        return new FluidStackPropertyData(property, get());
+        //Note: While this copy operation isn't strictly necessary, it allows for simplifying the logic and ensuring we don't have the actual stack object
+        // leak from one side to another when in single player. Given copying is rather cheap, and we only need to do this on change/when the data is dirty
+        // we can easily get away with it
+        return new FluidStackPropertyData(property, get().copy());
     }
 }

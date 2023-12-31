@@ -9,8 +9,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiTankBar.TankInfoProvider;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
@@ -91,7 +91,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                     } else { //GLFW.GLFW_MOUSE_BUTTON_RIGHT
                         action = DropperAction.DRAIN_DROPPER;
                     }
-                    Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
+                    PacketUtils.sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
                 }
             }
         }

@@ -16,16 +16,16 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.security.SecurityData;
+import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     public GuiSecurityTab(IGuiWrapper gui, Entity entity, int y) {
-        this(gui,  new SecurityInfoProvider<>(IEntitySecurityUtils.INSTANCE, () -> entity), y);
+        this(gui, new SecurityInfoProvider<>(IEntitySecurityUtils.INSTANCE, () -> entity), y);
     }
 
     public GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y) {
@@ -106,15 +106,15 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
         ISecurityObject security = dataSource.securityObject();
         if (security != null && security.ownerMatches(minecraft.player)) {
             if (currentHand != null) {
-                Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
+                PacketUtils.sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
             } else {
                 Object provider = dataSource.objectSupplier.get();
                 if (provider instanceof BlockEntity tile) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
-                                                                                                                      : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
+                    PacketUtils.sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
+                                                                                                         : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                 } else if (provider instanceof Entity entity) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
-                                                                                                                      : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+                    PacketUtils.sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                         : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                 }
             }
         }

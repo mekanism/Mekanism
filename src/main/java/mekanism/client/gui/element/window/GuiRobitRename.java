@@ -3,11 +3,11 @@ package mekanism.client.gui.element.window;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import mekanism.common.network.to_server.PacketRobit;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.robit.PacketRobitName;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiRobitRename extends GuiWindow {
@@ -29,7 +29,7 @@ public class GuiRobitRename extends GuiWindow {
     private void changeName() {
         String name = nameChangeField.getText().trim();
         if (!name.isEmpty()) {
-            Mekanism.packetHandler().sendToServer(new PacketRobit(robit, name));
+            PacketUtils.sendToServer(new PacketRobitName(robit, name));
             close();
         }
     }

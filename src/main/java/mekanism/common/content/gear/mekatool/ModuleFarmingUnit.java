@@ -14,9 +14,9 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
@@ -242,7 +242,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 if (particle != -1) {
                     world.levelEvent(null, particle, newPos, 0);
                 }
-                Mekanism.packetHandler().sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
+                PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(pos, newPos),
                       toolAOEData.getLightningPos(pos), toolAOEData.getLightningPos(newPos), 10), world, pos);
             }
         }

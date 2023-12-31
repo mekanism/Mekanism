@@ -4,6 +4,7 @@ import mekanism.api.functions.TriConsumer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
@@ -12,18 +13,22 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapte
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for informing the server that an action happened in a GUI
  */
-public class PacketGeneratorsGuiInteract implements IMekanismPacket {
+public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final GeneratorsGuiInteraction interaction;
-    private final BlockPos tilePosition;
-    private final double extra;
+    public static final ResourceLocation ID = MekanismGenerators.rl("gui_interact");
+
+    public PacketGeneratorsGuiInteract(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
+    }
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile) {
         this(interaction, tile.getBlockPos());
@@ -37,32 +42,27 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
         this(interaction, tilePosition, 0);
     }
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) {
-        this.interaction = interaction;
-        this.tilePosition = tilePosition;
-        this.extra = extra;
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
             if (tile != null) {
                 interaction.consume(tile, player, extra);
             }
-        }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         buffer.writeDouble(extra);
-    }
-
-    public static PacketGeneratorsGuiInteract decode(FriendlyByteBuf buffer) {
-        return new PacketGeneratorsGuiInteract(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
     }
 
     public enum GeneratorsGuiInteraction {

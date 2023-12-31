@@ -2,48 +2,52 @@ package mekanism.common.network.to_server;
 
 import java.util.function.BiConsumer;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketGuiSetEnergy implements IMekanismPacket {
+public class PacketGuiSetEnergy implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("set_energy");
 
     private final GuiEnergyValue interaction;
-    private final BlockPos tilePosition;
+    private final BlockPos pos;
     private final FloatingLong value;
 
-    public PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos tilePosition, FloatingLong value) {
+    public PacketGuiSetEnergy(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
+    }
+
+    public PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, FloatingLong value) {
         this.interaction = interaction;
-        this.tilePosition = tilePosition;
+        this.pos = pos;
         this.value = value;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
-            if (tile != null) {
-                interaction.consume(tile, value);
-            }
-        }
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void handle(PlayPayloadContext context) {
+        PacketUtils.blockEntity(context, pos, TileEntityMekanism.class).ifPresent(tile -> interaction.consume(tile, value));
+    }
+
+    @Override
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(interaction);
-        buffer.writeBlockPos(tilePosition);
+        buffer.writeBlockPos(pos);
         value.writeToBuffer(buffer);
-    }
-
-    public static PacketGuiSetEnergy decode(FriendlyByteBuf buffer) {
-        return new PacketGuiSetEnergy(buffer.readEnum(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
     }
 
     public enum GuiEnergyValue {

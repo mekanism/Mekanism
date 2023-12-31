@@ -8,10 +8,10 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.network.chat.Component;
@@ -86,7 +86,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
             if (!level.isClientSide) {
                 ownerObject.setOwnerUUID(player.getUUID());
-                Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID()));
+                PacketUtils.sendToAll(new PacketSyncSecurity(player.getUUID()));
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
             }
             return true;

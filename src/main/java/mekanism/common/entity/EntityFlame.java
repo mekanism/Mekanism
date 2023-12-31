@@ -14,8 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
@@ -47,14 +45,13 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
-import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EntityFlame extends Projectile implements IEntityAdditionalSpawnData {
+public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
     public static final int LIFESPAN = 80;
     private static final int DAMAGE = 10;
@@ -288,12 +285,6 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.MODE, mode);
-    }
-
-    @NotNull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

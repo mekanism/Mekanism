@@ -1,8 +1,6 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -12,7 +10,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LevelEvent;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
@@ -63,12 +60,6 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
     @Override
     protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
         return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
-    }
-
-    @NotNull
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

@@ -11,6 +11,7 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketModeChangeCurios;
 import mekanism.common.network.to_server.PacketOpenGui;
@@ -32,10 +33,10 @@ public class MekanismKeyHandler {
               Player player = Minecraft.getInstance().player;
               if (player != null) {
                   if (IModeItem.isModeItem(player, EquipmentSlot.MAINHAND, false)) {
-                      Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, player.isShiftKeyDown()));
+                      PacketUtils.sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, player.isShiftKeyDown()));
                   } else if (!IModeItem.isModeItem(player, EquipmentSlot.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlot.OFFHAND, false)) {
                       //Otherwise, try their offhand
-                      Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.OFFHAND, player.isShiftKeyDown()));
+                      PacketUtils.sendToServer(new PacketModeChange(EquipmentSlot.OFFHAND, player.isShiftKeyDown()));
                   }
               }
           }).build();
@@ -54,7 +55,7 @@ public class MekanismKeyHandler {
           .onKeyDown((kb, isRepeat) -> {
               Player player = Minecraft.getInstance().player;
               if (player != null && ModuleTweakerContainer.hasTweakableItem(player)) {
-                  Mekanism.packetHandler().sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
+                  PacketUtils.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
               }
           }).build();
     public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(GLFW.GLFW_KEY_LEFT_CONTROL)
@@ -75,7 +76,7 @@ public class MekanismKeyHandler {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             if (IModeItem.isModeItem(player, slot)) {
-                Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
+                PacketUtils.sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (Mekanism.hooks.CuriosLoaded) {
                 CuriosIntegration.findFirstCurioAsResult(player, stack -> {
@@ -85,7 +86,7 @@ public class MekanismKeyHandler {
                     return false;
                 }).ifPresent(result -> {
                     SlotContext slotContext = result.slotContext();
-                    Mekanism.packetHandler().sendToServer(new PacketModeChangeCurios(slotContext.identifier(), slotContext.index(), player.isShiftKeyDown()));
+                    PacketUtils.sendToServer(new PacketModeChangeCurios(slotContext.identifier(), slotContext.index(), player.isShiftKeyDown()));
                     SoundHandler.playSound(MekanismSounds.HYDRAULIC);
                 });
             }

@@ -59,7 +59,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        tagName = BasePacketHandler.readString(dataStream);
+        tagName = dataStream.readUtf();
     }
 
     @Override

@@ -18,7 +18,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends MekanismDeferredHolder<MenuType<?>, MenuType<CONTAINER>> {
@@ -71,7 +70,7 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
         MenuProvider provider = getProvider(stack.getHoverName(), hand, stack);
         if (provider != null) {
             //Validate the provider isn't null, it shouldn't be but just in case
-            NetworkHooks.openScreen(player, provider, buf -> {
+            player.openMenu(provider, buf -> {
                 buf.writeEnum(hand);
                 buf.writeItem(stack);
             });

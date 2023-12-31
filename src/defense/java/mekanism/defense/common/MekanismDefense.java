@@ -5,7 +5,6 @@ import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.defense.common.config.MekanismDefenseConfig;
-import mekanism.defense.common.network.DefensePacketHandler;
 import mekanism.defense.common.registries.DefenseBlocks;
 import mekanism.defense.common.registries.DefenseContainerTypes;
 import mekanism.defense.common.registries.DefenseCreativeTabs;
@@ -32,10 +31,6 @@ public class MekanismDefense implements IModModule {
      * MekanismDefense version number
      */
     public final Version versionNumber;
-    /**
-     * Mekanism Defense Packet Pipeline
-     */
-    private final DefensePacketHandler packetHandler;
 
     public MekanismDefense(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
@@ -52,11 +47,6 @@ public class MekanismDefense implements IModModule {
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
-        packetHandler = new DefensePacketHandler();
-    }
-
-    public static DefensePacketHandler packetHandler() {
-        return instance.packetHandler;
     }
 
     public static ResourceLocation rl(String path) {
@@ -64,11 +54,6 @@ public class MekanismDefense implements IModModule {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        //this will throw unless there are @SubscribeEvent here
-        //NeoForge.EVENT_BUS.register(this);
-
-        packetHandler.initialize();
-
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism: Defense' module.");
     }

@@ -1,52 +1,43 @@
 package mekanism.common.network.to_client.container;
 
-import java.util.ArrayList;
 import java.util.List;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.property.PropertyData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketUpdateContainer implements IMekanismPacket {
+/**
+ * @param windowId Note: gets transferred over the network as an unsigned byte
+ */
+public record PacketUpdateContainer(short windowId, List<PropertyData> data) implements IMekanismPacket<PlayPayloadContext> {
 
-    //Note: windowId gets transferred over the network as an unsigned byte
-    private final short windowId;
-    private final List<PropertyData> data;
+    public static final ResourceLocation ID = Mekanism.rl("update_container");
 
-    public PacketUpdateContainer(short windowId, List<PropertyData> data) {
-        this.windowId = windowId;
-        this.data = data;
+    public PacketUpdateContainer(FriendlyByteBuf buffer) {
+        this(buffer.readUnsignedByte(), buffer.readList(PropertyData::fromBuffer));
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        //Ensure that the container is one of ours and that the window id is the same as we expect it to be
-        if (player != null && player.containerMenu instanceof MekanismContainer container && container.containerId == windowId) {
-            //If so then handle the packet
-            data.forEach(data -> data.handleWindowProperty(container));
-        }
+    public void handle(PlayPayloadContext context) {
+        PacketUtils.container(context, MekanismContainer.class)//Ensure that the container is one of ours,
+              .filter(container -> container.containerId == windowId)// the window id is the same as we expect it to be
+              .ifPresent(container -> data.forEach(data -> data.handleWindowProperty(container)));// and if so handle the packet
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeByte(windowId);
-        buffer.writeCollection(data, (buf, data) -> data.writeToPacket(buf));
-    }
-
-    public static PacketUpdateContainer decode(FriendlyByteBuf buffer) {
-        short windowId = buffer.readUnsignedByte();
-        int size = buffer.readVarInt();
-        List<PropertyData> data = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            PropertyData propertyData = PropertyData.fromBuffer(buffer);
-            if (propertyData != null) {
-                data.add(propertyData);
-            }
-        }
-        return new PacketUpdateContainer(windowId, data);
+        buffer.writeObjectCollection(data, PropertyData::writeToPacket);
     }
 }

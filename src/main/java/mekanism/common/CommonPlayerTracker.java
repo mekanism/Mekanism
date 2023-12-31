@@ -6,10 +6,10 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.network.to_client.PacketPlayerData;
-import mekanism.common.network.to_client.PacketRadiationData;
-import mekanism.common.network.to_client.PacketResetPlayerClient;
-import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.player_data.PacketPlayerData;
+import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
+import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags.Items;
 import net.minecraft.ChatFormatting;
@@ -43,10 +43,8 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         if (!player.level().isClientSide) {
-            ServerPlayer serverPlayer = (ServerPlayer) player;
-            Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            //serverPlayer.sendSystemMessage(ALPHA_WARNING);
-            MekanismCriteriaTriggers.LOGGED_IN.value().trigger(serverPlayer);
+            //player.sendSystemMessage(ALPHA_WARNING);
+            MekanismCriteriaTriggers.LOGGED_IN.value().trigger((ServerPlayer) player);
         }
     }
 
@@ -62,23 +60,23 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(player), player);
+        PacketUtils.sendTo(new PacketPlayerRadiationData(player), player);
         RadiationManager.get().updateClientRadiation(player);
     }
 
     @SubscribeEvent
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player player && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            Mekanism.packetHandler().sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
+            PacketUtils.sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
         }
     }
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(player), player);
+        PacketUtils.sendTo(new PacketPlayerRadiationData(player), player);
         RadiationManager.get().updateClientRadiation(player);
-        Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
+        PacketUtils.sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }
 
     /**

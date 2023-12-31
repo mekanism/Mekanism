@@ -48,7 +48,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        tagName = BasePacketHandler.readString(dataStream);
+        tagName = dataStream.readUtf();
     }
 
     @Override

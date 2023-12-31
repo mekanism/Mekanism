@@ -3,8 +3,10 @@ package mekanism.common.inventory.container.sync;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.network.to_client.container.property.FrequencyPropertyData;
-import mekanism.common.network.to_client.container.property.PropertyData;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
+import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,15 +14,17 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
 
-    public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
-        return new SyncableFrequency<>(getter, setter);
+    public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
+        return new SyncableFrequency<>(type, getter, setter);
     }
 
+    private final FrequencyType<FREQUENCY> type;
     private final Supplier<FREQUENCY> getter;
     private final Consumer<FREQUENCY> setter;
     private int lastKnownHashCode;
 
-    private SyncableFrequency(Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
+    private SyncableFrequency(FrequencyType<FREQUENCY> type, Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
+        this.type = type;
         this.getter = getter;
         this.setter = setter;
     }
@@ -30,8 +34,8 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
         return getter.get();
     }
 
-    public void set(@Nullable FREQUENCY value) {
-        setter.accept(value);
+    public void set(byte[] rawData) {
+        setter.accept(PacketUtils.read(rawData, buffer -> buffer.readNullable(type::create)));
     }
 
     @Override
@@ -46,7 +50,10 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
     }
 
     @Override
-    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
-        return new FrequencyPropertyData<>(property, get());
+    public ByteArrayPropertyData getPropertyData(short property, DirtyType dirtyType) {
+        //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
+        // whenever we send this as a packet rather than potentially allowing the frequency to leak from one side to the other in single player
+        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeNullable(get(), (buf, val) -> val.write(buf)));
+        return new ByteArrayPropertyData(property, rawData);
     }
 }

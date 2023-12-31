@@ -87,7 +87,7 @@ public class MekanismGenerators implements IModModule {
         GeneratorsModules.MODULES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
-        packetHandler = new GeneratorsPacketHandler();
+        packetHandler = new GeneratorsPacketHandler(modEventBus, MODID, versionNumber);
     }
 
     public static GeneratorsPacketHandler packetHandler() {
@@ -109,8 +109,6 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
         });
-
-        packetHandler.initialize();
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism: Generators' module.");

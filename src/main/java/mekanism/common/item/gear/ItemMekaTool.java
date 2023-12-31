@@ -45,6 +45,7 @@ import mekanism.common.item.ItemEnergized;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.lib.radial.data.NestingRadialData;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
@@ -398,7 +399,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                             player.teleportTo(targetX, targetY, targetZ);
                         }
                         player.resetFallDistance();
-                        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
+                        PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
                         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         return InteractionResultHolder.success(stack);
                     }

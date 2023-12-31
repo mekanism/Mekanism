@@ -17,7 +17,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -95,7 +94,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         return switch (buffer.readEnum(IngredientType.class)) {
             case SINGLE -> from(FluidStack.readFromPacket(buffer));
             case TAGGED -> from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
-            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
+            case MULTI -> createMulti(buffer.readArray(FluidStackIngredient[]::new, this::read));
         };
     }
 
@@ -385,7 +384,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
-            BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
+            buffer.writeArray(ingredients, (buf, ingredient) -> ingredient.write(buf));
         }
 
         @Override

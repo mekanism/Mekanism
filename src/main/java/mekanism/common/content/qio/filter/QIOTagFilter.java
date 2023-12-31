@@ -40,7 +40,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        tagName = BasePacketHandler.readString(dataStream);
+        tagName = dataStream.readUtf();
     }
 
     @Override

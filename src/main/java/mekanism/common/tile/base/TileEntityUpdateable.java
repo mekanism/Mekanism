@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.interfaces.ITileWrapper;
@@ -155,7 +156,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
             //Note: We use our own update packet/channel to avoid chunk trashing and minecraft attempting to rerender
             // the entire chunk when most often we are just updating a TileEntityRenderer, so the chunk itself
             // does not need to and should not be redrawn
-            Mekanism.packetHandler().sendToAllTracking(new PacketUpdateTile(this), tracking);
+            PacketUtils.sendToAllTracking(new PacketUpdateTile(this), tracking);
         }
     }
 

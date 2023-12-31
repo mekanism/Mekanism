@@ -14,11 +14,11 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiUpgradeScrollList;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -47,7 +47,7 @@ public class GuiUpgradeWindow extends GuiWindow {
         removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12,
               MekanismLang.UPGRADE_UNINSTALL, () -> {
             if (scrollList.hasSelection()) {
-                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
+                PacketUtils.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
                       this.tile, scrollList.getSelection().ordinal()));
             }
         }, getOnHover(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP)));
@@ -56,13 +56,13 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));
         updateEnabledButtons();
         container.startTracking(MekanismContainer.UPGRADE_WINDOW, tile.getComponent());
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
     }
 
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.UPGRADE_WINDOW));
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.UPGRADE_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.UPGRADE_WINDOW);
     }
 

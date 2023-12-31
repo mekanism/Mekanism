@@ -8,9 +8,9 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiSetEnergy;
 import mekanism.common.network.to_server.PacketGuiSetEnergy.GuiEnergyValue;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
@@ -66,7 +66,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler().sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
+                PacketUtils.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
             } catch (NumberFormatException ignored) {
             }

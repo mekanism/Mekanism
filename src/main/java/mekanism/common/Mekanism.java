@@ -66,7 +66,10 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
-import mekanism.common.network.to_client.PacketTransmitterUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
+import mekanism.common.network.to_client.transmitter.PacketChemicalNetworkContents;
+import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -227,7 +230,7 @@ public class Mekanism {
         modEventBus.addListener(this::registerRegistries);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
-        packetHandler = new PacketHandler();
+        packetHandler = new PacketHandler(modEventBus, MODID, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);
     }
@@ -363,9 +366,6 @@ public class Mekanism {
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();
 
-        //Packet registrations
-        packetHandler.initialize();
-
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());
         logger.info("Mod loaded.");
@@ -392,15 +392,15 @@ public class Mekanism {
     }
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network), event.network);
+        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network));
     }
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.transferType), event.network);
+        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(event.network.getUUID(), event.transferType));
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
-        packetHandler.sendToReceivers(new PacketTransmitterUpdate(event.network, event.fluidType), event.network);
+        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(event.network.getUUID(), event.fluidType));
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {

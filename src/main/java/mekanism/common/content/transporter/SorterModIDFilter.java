@@ -48,7 +48,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        modID = BasePacketHandler.readString(dataStream);
+        modID = dataStream.readUtf();
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
@@ -23,10 +22,12 @@ import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 
@@ -36,7 +37,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
     private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
-    private static final Random rand = new Random();
+    private static final RandomSource rand = RandomSource.create();
 
     static {
         CORE.setColor(Color.rgbai(255, 255, 255, 240));
@@ -72,7 +73,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
 
         if (!minecraft.isPaused() && !multiblock.lastReceivedEnergy.isZero()) {
             if (rand.nextDouble() < getBoundedScale(energyScale, 0.01F, 0.4F)) {
-                CuboidSide side = CuboidSide.SIDES[rand.nextInt(6)];
+                CuboidSide side = Util.getRandom(CuboidSide.SIDES, rand);
                 Plane plane = Plane.getInnerCuboidPlane(multiblock.getBounds(), side);
                 Vec3 endPos = plane.getRandomPoint(rand).subtract(tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ());
                 BoltEffect bolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, renderCenter, endPos, 15)

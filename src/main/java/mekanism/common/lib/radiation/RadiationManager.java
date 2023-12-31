@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -31,12 +30,13 @@ import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.network.to_client.PacketRadiationData;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
+import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
@@ -102,7 +102,7 @@ public class RadiationManager implements IRadiationManager {
 
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
-    private static final Random RAND = new Random();
+    private static final RandomSource RAND = RandomSource.create();
 
     public static final double BASELINE = 0.000_000_100; // 100 nSv/h
     public static final double MIN_MAGNITUDE = 0.000_010; // 10 uSv/h
@@ -336,7 +336,7 @@ public class RadiationManager implements IRadiationManager {
         PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, levelAndMaxMagnitude.level());
         if (relevantData != null) {
             playerEnvironmentalExposureMap.put(player.getUUID(), relevantData);
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(levelAndMaxMagnitude), player);
+            PacketUtils.sendTo(new PacketEnvironmentalRadiationData(levelAndMaxMagnitude), player);
         }
     }
 
@@ -408,7 +408,7 @@ public class RadiationManager implements IRadiationManager {
                 PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
                 if (relevantData != null) {
                     playerExposureMap.put(player.getUUID(), relevantData);
-                    Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiation), player);
+                    PacketUtils.sendTo(new PacketPlayerRadiationData(radiation), player);
                 }
             }
         }

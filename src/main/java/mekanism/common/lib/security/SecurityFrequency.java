@@ -7,7 +7,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.network.BasePacketHandler;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -78,7 +78,7 @@ public class SecurityFrequency extends Frequency {
         super.write(buffer);
         buffer.writeBoolean(override);
         buffer.writeEnum(securityMode);
-        buffer.writeCollection(trustedCache, FriendlyByteBuf::writeUtf);
+        buffer.writeCollection(trustedCache, (buf, name) -> buf.writeUtf(name, PacketUtils.LAST_USERNAME_LENGTH));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SecurityFrequency extends Frequency {
         super.read(dataStream);
         override = dataStream.readBoolean();
         securityMode = dataStream.readEnum(SecurityMode.class);
-        trustedCache = dataStream.readList(BasePacketHandler::readString);
+        trustedCache = dataStream.readList(buf -> buf.readUtf(PacketUtils.LAST_USERNAME_LENGTH));
     }
 
     @Override

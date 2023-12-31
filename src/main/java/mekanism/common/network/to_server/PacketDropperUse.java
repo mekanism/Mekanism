@@ -14,6 +14,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
 import mekanism.common.block.attribute.Attribute;
@@ -25,6 +26,7 @@ import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.ChemicalUtil;
@@ -32,19 +34,27 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketDropperUse implements IMekanismPacket {
+public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("use_dropper");
 
     private final BlockPos pos;
     private final DropperAction action;
     private final TankType tankType;
     private final int tankId;
+
+    public PacketDropperUse(FriendlyByteBuf buffer) {
+        this(buffer.readBlockPos(), buffer.readEnum(DropperAction.class), buffer.readEnum(TankType.class), buffer.readVarInt());
+    }
 
     public PacketDropperUse(BlockPos pos, DropperAction action, TankType tankType, int tankId) {
         this.pos = pos;
@@ -53,34 +63,41 @@ public class PacketDropperUse implements IMekanismPacket {
         this.tankId = tankId;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
-        if (player == null || tankId < 0) {
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    @Override
+    public void handle(PlayPayloadContext context) {
+        if (tankId < 0) {
             return;
         }
-        ItemStack stack = player.containerMenu.getCarried();
-        if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
-            if (tile != null) {
-                if (tile instanceof TileEntityMultiblock<?> multiblock) {
-                    MultiblockData structure = multiblock.getMultiblock();
-                    if (structure.isFormed()) {
-                        handleTankType(structure, player, stack, new Coord4D(structure.getBounds().getCenter(), player.level()));
-                    }
-                } else {
-                    if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
-                        //If the dropper is being used to dump the tank and the player is not in creative
-                        // check if the block the tank is in is a tiered block and if it is, and it is creative
-                        // don't allow clearing the tank
-                        if (Attribute.getBaseTier(tile.getBlockType()) == BaseTier.CREATIVE) {
-                            return;
+        PacketUtils.asServerPlayer(context).ifPresent(player -> {
+            ItemStack stack = player.containerMenu.getCarried();
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
+                if (tile != null) {
+                    if (tile instanceof TileEntityMultiblock<?> multiblock) {
+                        MultiblockData structure = multiblock.getMultiblock();
+                        if (structure.isFormed()) {
+                            handleTankType(structure, player, stack, new Coord4D(structure.getBounds().getCenter(), player.level()));
                         }
+                    } else {
+                        if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
+                            //If the dropper is being used to dump the tank and the player is not in creative
+                            // check if the block the tank is in is a tiered block and if it is, and it is creative
+                            // don't allow clearing the tank
+                            if (Attribute.getBaseTier(tile.getBlockType()) == BaseTier.CREATIVE) {
+                                return;
+                            }
+                        }
+                        handleTankType(tile, player, stack, tile.getTileCoord());
                     }
-                    handleTankType(tile, player, stack, tile.getTileCoord());
                 }
             }
-        }
+        });
     }
 
     private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
@@ -205,15 +222,11 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeEnum(action);
         buffer.writeEnum(tankType);
         buffer.writeVarInt(tankId);
-    }
-
-    public static PacketDropperUse decode(FriendlyByteBuf buffer) {
-        return new PacketDropperUse(buffer.readBlockPos(), buffer.readEnum(DropperAction.class), buffer.readEnum(TankType.class), buffer.readVarInt());
     }
 
     public enum DropperAction {

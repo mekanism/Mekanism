@@ -29,6 +29,7 @@ import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 import mekanism.common.inventory.container.sync.SyncableBlockPos;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.inventory.container.sync.SyncableByteArray;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloat;
@@ -46,7 +47,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.list.SyncableList;
-import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
@@ -442,7 +443,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     public void setSelectedWindow(@Nullable SelectedWindowData selectedWindow) {
         if (!Objects.equals(this.selectedWindow, selectedWindow)) {
             this.selectedWindow = selectedWindow;
-            Mekanism.packetHandler().sendToServer(new PacketWindowSelect(this.selectedWindow));
+            PacketUtils.sendToServer(new PacketWindowSelect(this.selectedWindow));
         }
     }
 
@@ -634,10 +635,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <FREQUENCY extends Frequency> void handleWindowProperty(short property, @Nullable FREQUENCY value) {
+    public void handleWindowProperty(short property, byte[] value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableFrequency) {
-            ((SyncableFrequency<FREQUENCY>) data).set(value);
+        if (data instanceof SyncableByteArray syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableFrequency<?> syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableList<?> syncable) {
+            syncable.set(value);
         }
     }
 
@@ -645,13 +650,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableFloatingLong syncable) {
             syncable.set(value);
-        }
-    }
-
-    public <TYPE> void handleWindowProperty(short property, @NotNull List<TYPE> value) {
-        ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableList) {
-            ((SyncableList<TYPE>) data).set(value);
         }
     }
 
@@ -672,7 +670,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
                 }
             }
             if (!dirtyData.isEmpty()) {
-                Mekanism.packetHandler().sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
+                PacketUtils.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
             }
         }
     }
@@ -696,7 +694,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
                 dirtyData.add(data.getPropertyData(propertyIndex.apply(i), DirtyType.DIRTY));
             }
             if (!dirtyData.isEmpty()) {
-                Mekanism.packetHandler().sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
+                PacketUtils.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
             }
         }
     }

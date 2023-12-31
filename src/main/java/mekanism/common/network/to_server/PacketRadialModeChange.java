@@ -12,25 +12,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketRadialModeChange implements IMekanismPacket {
+public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final List<ResourceLocation> path;
-    private final EquipmentSlot slot;
-    private final int networkRepresentation;
+    public static final ResourceLocation ID = Mekanism.rl("radial_mode");
 
-    public PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) {
-        this.slot = slot;
-        this.path = path;
-        this.networkRepresentation = networkRepresentation;
+    public PacketRadialModeChange(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(EquipmentSlot.class), buffer.readList(FriendlyByteBuf::readResourceLocation), buffer.readVarInt());
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")//not null, validated by hasNestedData
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
             ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
                 RadialData<?> radialData = radialModeItem.getRadialData(stack);
@@ -46,7 +48,7 @@ public class PacketRadialModeChange implements IMekanismPacket {
                     setMode(player, stack, radialModeItem, radialData);
                 }
             }
-        }
+        });
     }
 
     private <MODE extends IRadialMode> void setMode(Player player, ItemStack stack, IGenericRadialModeItem item, RadialData<MODE> radialData) {
@@ -57,16 +59,9 @@ public class PacketRadialModeChange implements IMekanismPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(slot);
         buffer.writeCollection(this.path, FriendlyByteBuf::writeResourceLocation);
         buffer.writeVarInt(networkRepresentation);
-    }
-
-    public static PacketRadialModeChange decode(FriendlyByteBuf buffer) {
-        EquipmentSlot slot = buffer.readEnum(EquipmentSlot.class);
-        List<ResourceLocation> path = buffer.readList(FriendlyByteBuf::readResourceLocation);
-        int networkRepresentation = buffer.readVarInt();
-        return new PacketRadialModeChange(slot, path, networkRepresentation);
     }
 }

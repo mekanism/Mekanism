@@ -36,7 +36,6 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;

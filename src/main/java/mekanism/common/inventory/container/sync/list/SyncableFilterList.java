@@ -3,9 +3,9 @@ package mekanism.common.inventory.container.sync.list;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.network.to_client.container.property.list.FilterListPropertyData;
-import mekanism.common.network.to_client.container.property.list.ListPropertyData;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,7 +22,13 @@ public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableList<
     }
 
     @Override
-    public ListPropertyData<FILTER> getPropertyData(short property, DirtyType dirtyType) {
-        return new FilterListPropertyData<>(property, get());
+    @SuppressWarnings("unchecked")
+    protected List<FILTER> deserializeList(FriendlyByteBuf buffer) {
+        return buffer.readList(buf -> (FILTER) BaseFilter.readFromPacket(buf));
+    }
+
+    @Override
+    protected void serializeListElement(FriendlyByteBuf buffer, FILTER filter) {
+        filter.write(buffer);
     }
 }

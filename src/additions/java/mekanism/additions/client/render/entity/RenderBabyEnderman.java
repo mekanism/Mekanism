@@ -1,7 +1,6 @@
 package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Random;
 import mekanism.additions.client.model.ModelBabyEnderman;
 import mekanism.additions.client.render.entity.layer.BabyEndermanEyesLayer;
 import mekanism.additions.client.render.entity.layer.BabyEndermanHeldBlockLayer;
@@ -11,6 +10,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBabyEnderman> {
 
     private static final ResourceLocation ENDERMAN_TEXTURES = new ResourceLocation("textures/entity/enderman/enderman.png");
-    private final Random rnd = new Random();
+    private final RandomSource random = RandomSource.create();
 
     public RenderBabyEnderman(EntityRendererProvider.Context context) {
         super(context, new ModelBabyEnderman(context.bakeLayer(ModelLayers.ENDERMAN)), 0.5F);
@@ -41,7 +41,7 @@ public class RenderBabyEnderman extends MobRenderer<EntityBabyEnderman, ModelBab
     @Override
     public Vec3 getRenderOffset(EntityBabyEnderman enderman, float partialTicks) {
         if (enderman.isCreepy()) {
-            return new Vec3(this.rnd.nextGaussian() * 0.02, 0, this.rnd.nextGaussian() * 0.02);
+            return new Vec3(this.random.nextGaussian() * 0.02, 0, this.random.nextGaussian() * 0.02);
         }
         return super.getRenderOffset(enderman, partialTicks);
     }

@@ -6,9 +6,9 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.generators.client.gui.element.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
@@ -38,7 +38,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
                 if (type == null) {
                     return;
                 }
-                MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()));
+                PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.LOGIC_TYPE, tile, type.ordinal()));
             }));
         }
     }

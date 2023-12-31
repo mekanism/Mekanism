@@ -15,7 +15,6 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -28,7 +27,8 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
-import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -304,7 +304,7 @@ public abstract class BlockMekanism extends Block {
                 tile.setOwnerUUID(placer.getUUID());
                 if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
-                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(placer.getUUID()));
+                    PacketUtils.sendToAll(new PacketSyncSecurity(placer.getUUID()));
                 }
             }
         }

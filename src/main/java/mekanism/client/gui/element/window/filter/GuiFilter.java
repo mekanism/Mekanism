@@ -16,13 +16,13 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.inventory.container.SelectedWindowData;
-import mekanism.common.network.to_server.PacketEditFilter;
-import mekanism.common.network.to_server.PacketNewFilter;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.filter.PacketEditFilter;
+import mekanism.common.network.to_server.filter.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.GuiGraphics;
@@ -114,7 +114,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
-                Mekanism.packetHandler().sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, null));
+                PacketUtils.sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, null));
             }
             close();
         }));
@@ -194,9 +194,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected void saveFilter() {
         if (isNew) {
-            Mekanism.packetHandler().sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
+            PacketUtils.sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            Mekanism.packetHandler().sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, filter));
+            PacketUtils.sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, filter));
         }
         close();
     }

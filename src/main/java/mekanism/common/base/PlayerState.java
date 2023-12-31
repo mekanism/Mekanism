@@ -16,7 +16,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.network.to_client.PacketResetPlayerClient;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import mekanism.common.registries.MekanismGameEvents;
@@ -74,7 +75,7 @@ public class PlayerState {
         }
         RadiationManager.get().resetPlayer(uuid);
         if (!isRemote) {
-            Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(uuid));
+            PacketUtils.sendToAll(new PacketResetPlayerClient(uuid));
         }
     }
 
@@ -118,7 +119,7 @@ public class PlayerState {
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler().sendToServer(new PacketGearStateUpdate(GearType.JETPACK, uuid, isActive));
+                PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.JETPACK, uuid, isActive));
             }
 
             // Start a sound playing if the person is now flying
@@ -155,7 +156,7 @@ public class PlayerState {
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler().sendToServer(new PacketGearStateUpdate(GearType.SCUBA_MASK, uuid, isActive));
+                PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.SCUBA_MASK, uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a scuba mask
@@ -233,7 +234,7 @@ public class PlayerState {
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
-                Mekanism.packetHandler().sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
+                PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
             }
 
             // Start a sound playing if the person is now using a gravitational modulator
@@ -357,7 +358,7 @@ public class PlayerState {
             if (changed) {
                 // If the player is the "local" player, we need to tell the server the state has changed
                 if (isLocal) {
-                    Mekanism.packetHandler().sendToServer(new PacketGearStateUpdate(GearType.FLAMETHROWER, uuid, isActive));
+                    PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.FLAMETHROWER, uuid, isActive));
                 }
 
                 // Start a sound playing if the person is now using a flamethrower

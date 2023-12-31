@@ -7,9 +7,9 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketRemoveModule;
 import mekanism.common.tile.TileEntityModificationStation;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,7 +37,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         removeButton = addRenderableWidget(new TranslationButton(this, 34, 96, 108, 17, MekanismLang.BUTTON_REMOVE,
-              () -> Mekanism.packetHandler().sendToServer(new PacketRemoveModule(tile.getBlockPos(), selectedModule.getData()))));
+              () -> PacketUtils.sendToServer(new PacketRemoveModule(tile.getBlockPos(), selectedModule.getData()))));
         removeButton.active = selectedModule != null;
 
         addRenderableWidget(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));

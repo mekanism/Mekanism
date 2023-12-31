@@ -5,10 +5,9 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.Mekanism;
-import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.network.to_server.PacketConfigurationUpdate;
-import mekanism.common.network.to_server.PacketConfigurationUpdate.ConfigurationPacket;
+import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.MekClickType;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.Minecraft;
@@ -30,12 +29,12 @@ public class SideDataButton extends BasicColorButton {
     private final ItemStack otherBlockItem;
 
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
-          TileEntityMekanism tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, @Nullable IHoverable onHover) {
+          TileEntityMekanism tile, SideDataPacketCreator packetCreator, @Nullable IHoverable onHover) {
         super(gui, x, y, 22, () -> {
                   DataType dataType = dataTypeSupplier.get();
                   return dataType == null ? null : colorSupplier.get();
-              }, () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(packetType, tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0, slotPos, transmissionType.get())),
-              () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(packetType, tile.getBlockPos(), 1, slotPos, transmissionType.get())), onHover);
+              }, () -> PacketUtils.sendToServer(packetCreator.create(tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()), slotPos)),
+              () -> PacketUtils.sendToServer(packetCreator.create(tile.getBlockPos(), MekClickType.RIGHT, slotPos)), onHover);
         this.dataTypeSupplier = dataTypeSupplier;
         Level tileWorld = tile.getLevel();
         if (tileWorld != null) {
@@ -63,5 +62,11 @@ public class SideDataButton extends BasicColorButton {
         if (!otherBlockItem.isEmpty()) {
             GuiUtils.renderItem(guiGraphics, otherBlockItem, this.getRelativeX()+3, this.getRelativeY()+3, 1, getFont(), null, true);
         }
+    }
+
+    @FunctionalInterface
+    public interface SideDataPacketCreator {
+
+        IMekanismPacket<?> create(BlockPos pos, MekClickType clickType, RelativeSide inputSide);
     }
 }

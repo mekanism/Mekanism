@@ -16,7 +16,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -73,7 +72,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
         return switch (buffer.readEnum(IngredientType.class)) {
             case SINGLE -> from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
-            case MULTI -> createMulti(BasePacketHandler.readArray(buffer, ItemStackIngredient[]::new, this::read));
+            case MULTI -> createMulti(buffer.readArray(ItemStackIngredient[]::new, this::read));
         };
     }
 
@@ -274,7 +273,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
-            BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
+            buffer.writeArray(ingredients, (buf, ingredient) -> ingredient.write(buf));
         }
 
         @Override

@@ -5,13 +5,17 @@ import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.Mekanism;
 import mekanism.common.content.filter.SortableFilterManager;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
@@ -27,21 +31,24 @@ import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
-import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for informing the server that an action happened in a GUI
  */
-public class PacketGuiInteract implements IMekanismPacket {
+public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("gui_interact");
 
     private final Type interactionType;
 
@@ -98,10 +105,15 @@ public class PacketGuiInteract implements IMekanismPacket {
         this.extraItem = stack;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    @Override
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
             if (interactionType == Type.ENTITY) {
                 Entity entity = player.level().getEntity(entityID);
                 if (entity != null) {
@@ -117,11 +129,11 @@ public class PacketGuiInteract implements IMekanismPacket {
                     }
                 }
             }
-        }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(interactionType);
         switch (interactionType) {
             case ENTITY -> {
@@ -386,6 +398,13 @@ public class PacketGuiInteract implements IMekanismPacket {
             }
         }),
 
+        STRICT_INPUT((tile, player, extra) -> {
+            if (tile instanceof ISideConfiguration sideConfiguration) {
+                TileComponentEjector ejector = sideConfiguration.getEjector();
+                ejector.setStrictInput(!ejector.hasStrictInput());
+            }
+        }),
+
         ROUND_ROBIN_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter sorter) {
                 sorter.toggleRoundRobin();
@@ -457,6 +476,22 @@ public class PacketGuiInteract implements IMekanismPacket {
         CONTAINER_TRACK_SKIN_SELECT((entity, player, extra) -> {
             if (player.containerMenu instanceof MainRobitContainer container) {
                 container.startTrackingServer(extra, container);
+            }
+        }),
+
+        GO_HOME((entity, player, extra) -> {
+            if (entity instanceof EntityRobit robit && IEntitySecurityUtils.INSTANCE.canAccess(player, robit)) {
+                robit.goHome();
+            }
+        }),
+        FOLLOW((entity, player, extra) -> {
+            if (entity instanceof EntityRobit robit && IEntitySecurityUtils.INSTANCE.canAccess(player, robit)) {
+                robit.setFollowing(!robit.getFollowing());
+            }
+        }),
+        PICKUP_DROPS((entity, player, extra) -> {
+            if (entity instanceof EntityRobit robit && IEntitySecurityUtils.INSTANCE.canAccess(player, robit)) {
+                robit.setDropPickup(!robit.getDropPickup());
             }
         }),
         ;

@@ -1,8 +1,8 @@
 package mekanism.common.lib.math;
 
-import java.util.Random;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.math.voxel.VoxelCuboid.CuboidSide;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 // can add to this as we see necessary
@@ -21,7 +21,7 @@ public record Plane(Vec3 minPos, Vec3 maxPos) {
         };
     }
 
-    public Vec3 getRandomPoint(Random rand) {
+    public Vec3 getRandomPoint(RandomSource rand) {
         return new Vec3(minPos.x + rand.nextDouble() * (maxPos.x - minPos.x),
               minPos.y + rand.nextDouble() * (maxPos.y - minPos.y),
               minPos.z + rand.nextDouble() * (maxPos.z - minPos.z));

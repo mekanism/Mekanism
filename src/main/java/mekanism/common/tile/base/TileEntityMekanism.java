@@ -125,7 +125,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -137,7 +136,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -525,7 +523,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.PASS;
             }
 
-            NetworkHooks.openScreen((ServerPlayer) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
+            player.openMenu(Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;

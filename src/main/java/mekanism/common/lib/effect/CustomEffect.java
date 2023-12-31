@@ -1,8 +1,8 @@
 package mekanism.common.lib.effect;
 
-import java.util.Random;
 import mekanism.common.lib.Color;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 public class CustomEffect {
@@ -10,7 +10,7 @@ public class CustomEffect {
     private final int GRID_SIZE;
     private final ResourceLocation texture;
 
-    protected final Random rand = new Random();
+    protected final RandomSource rand = RandomSource.create();
 
     private Vec3 pos = new Vec3(0, 0, 0);
     private Color color = Color.rgbai(255, 255, 255, 255);

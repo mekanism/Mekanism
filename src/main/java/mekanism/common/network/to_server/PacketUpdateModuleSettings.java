@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server;
 
-import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
@@ -10,19 +9,22 @@ import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.gear.config.ModuleIntegerData;
 import mekanism.api.math.MathUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 //TODO: Eventually it would be nice to make this more generic in terms of how it can sync module data so that we can support custom types
 // though given the module tweaker screen doesn't currently have a way to support custom types it isn't that big a deal to make this support it yet either
-public class PacketUpdateModuleSettings implements IMekanismPacket {
+public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("update_module");
 
     public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, int dataIndex, ModuleConfigData<?> configData) {
         if (configData instanceof ModuleEnumData<?> enumData) {
@@ -50,20 +52,23 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         this.value = value;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null && dataIndex >= 0 && value != null) {
-            ItemStack stack = player.getInventory().getItem(slotId);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem) {
-                Module<?> module = ModuleHelper.get().load(stack, moduleType);
-                if (module != null) {
-                    List<ModuleConfigItem<?>> configItems = module.getConfigItems();
-                    if (dataIndex < configItems.size()) {
-                        setValue(configItems.get(dataIndex));
-                    }
-                }
-            }
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    @Override
+    public void handle(PlayPayloadContext context) {
+        if (dataIndex >= 0 && value != null) {
+            context.player()
+                  .map(player -> player.getInventory().getItem(slotId))
+                  .filter(stack -> !stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem)
+                  .map(stack -> ModuleHelper.get().load(stack, moduleType))
+                  .map(Module::getConfigItems)
+                  .filter(configItems -> dataIndex < configItems.size())
+                  .map(configItems -> configItems.get(dataIndex))
+                  .ifPresent(this::setValue);
         }
     }
 
@@ -78,46 +83,37 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
+        buffer.writeEnum(dataType);
         buffer.writeVarInt(slotId);
         buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
         buffer.writeVarInt(dataIndex);
-        buffer.writeEnum(dataType);
-        switch (dataType) {
-            case BOOLEAN -> buffer.writeBoolean((boolean) value);
-            //Don't convert to var int for colors as we often will use the full range
-            case COLOR -> buffer.writeInt((int) value);
-            case INTEGER, ENUM -> buffer.writeVarInt((int) value);
-        }
+        dataType.writer.accept(buffer, value);
     }
 
     public static PacketUpdateModuleSettings decode(FriendlyByteBuf buffer) {
-        int slotId = buffer.readVarInt();
-        ModuleData<?> moduleType = buffer.readById(MekanismAPI.MODULE_REGISTRY);
-        int dataIndex = buffer.readVarInt();
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
-        Object data = switch (dataType) {
-            case BOOLEAN -> buffer.readBoolean();
-            case COLOR -> buffer.readInt();
-            case INTEGER, ENUM -> buffer.readVarInt();
-        };
-        return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, dataType, data);
+        return new PacketUpdateModuleSettings(buffer.readVarInt(), buffer.readById(MekanismAPI.MODULE_REGISTRY), buffer.readVarInt(), dataType, dataType.reader.apply(buffer));
     }
 
     private enum ModuleDataType {
-        BOOLEAN(data -> data instanceof ModuleBooleanData),
-        //Must be above integer so it uses the color type
-        COLOR(data -> data instanceof ModuleColorData),
-        INTEGER(data -> data instanceof ModuleIntegerData),
-        ENUM(data -> data instanceof ModuleEnumData);
+        BOOLEAN(data -> data instanceof ModuleBooleanData, (buf, obj) -> buf.writeBoolean((boolean) obj), FriendlyByteBuf::readBoolean),
+        //Must be above integer, so it uses the color type as ModuleColorData extends ModuleIntegerData
+        COLOR(data -> data instanceof ModuleColorData, (buf, obj) -> buf.writeInt((int) obj), FriendlyByteBuf::readInt),
+        INTEGER(data -> data instanceof ModuleIntegerData, (buf, obj) -> buf.writeVarInt((int) obj), FriendlyByteBuf::readVarInt),
+        ENUM(data -> data instanceof ModuleEnumData, (buf, obj) -> buf.writeVarInt((int) obj), FriendlyByteBuf::readVarInt);
 
         //DO NOT MODIFY
         private static final ModuleDataType[] VALUES = values();
 
         private final Predicate<ModuleConfigData<?>> configDataPredicate;
+        private final FriendlyByteBuf.Writer<Object> writer;
+        private final FriendlyByteBuf.Reader<Object> reader;
 
-        ModuleDataType(Predicate<ModuleConfigData<?>> configDataPredicate) {
+        ModuleDataType(Predicate<ModuleConfigData<?>> configDataPredicate, FriendlyByteBuf.Writer<Object> writer, FriendlyByteBuf.Reader<Object> reader) {
             this.configDataPredicate = configDataPredicate;
+            this.writer = writer;
+            this.reader = reader;
         }
 
         public boolean typeMatches(ModuleConfigData<?> data) {

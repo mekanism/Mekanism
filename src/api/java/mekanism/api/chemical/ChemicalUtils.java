@@ -104,7 +104,7 @@ public class ChemicalUtils {
      *
      * @return Chemical Stack.
      */
-    private static <STACK extends ChemicalStack<?>> STACK readStack(FriendlyByteBuf buffer, Function<FriendlyByteBuf, STACK> reader, STACK empty) {
+    private static <STACK extends ChemicalStack<?>> STACK readStack(FriendlyByteBuf buffer, FriendlyByteBuf.Reader<STACK> reader, STACK empty) {
         return buffer.readBoolean() ? reader.apply(buffer) : empty;
     }
 

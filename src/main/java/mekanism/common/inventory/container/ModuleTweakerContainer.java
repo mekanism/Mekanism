@@ -6,7 +6,6 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,10 +17,6 @@ public class ModuleTweakerContainer extends MekanismContainer {
     public ModuleTweakerContainer(int id, Inventory inv) {
         super(MekanismContainerTypes.MODULE_TWEAKER, id, inv);
         addSlotsAndOpen();
-    }
-
-    public ModuleTweakerContainer(int id, Inventory inv, FriendlyByteBuf buf) {
-        this(id, inv);
     }
 
     @Override

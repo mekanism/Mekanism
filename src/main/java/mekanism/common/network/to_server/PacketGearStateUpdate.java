@@ -3,16 +3,24 @@ package mekanism.common.network.to_server;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.to_client.PacketPlayerData;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketGearStateUpdate implements IMekanismPacket {
+public class PacketGearStateUpdate implements IMekanismPacket<PlayPayloadContext> {
+
+    public static final ResourceLocation ID = Mekanism.rl("update_gear");
 
     private final GearType gearType;
     private final boolean state;
     private final UUID uuid;
+
+    public PacketGearStateUpdate(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(GearType.class), buffer.readUUID(), buffer.readBoolean());
+    }
 
     //Client to server AND sort of server to client, as the server then reroutes it as PacketPlayerData to clients
     public PacketGearStateUpdate(GearType gearType, UUID uuid, boolean state) {
@@ -21,35 +29,31 @@ public class PacketGearStateUpdate implements IMekanismPacket {
         this.state = state;
     }
 
+    @NotNull
     @Override
-    public void handle(NetworkEvent.Context context) {
-        if (gearType == GearType.FLAMETHROWER) {
-            Mekanism.playerState.setFlamethrowerState(uuid, state, false);
-        } else if (gearType == GearType.JETPACK) {
-            Mekanism.playerState.setJetpackState(uuid, state, false);
-        } else if (gearType == GearType.SCUBA_MASK) {
-            Mekanism.playerState.setScubaMaskState(uuid, state, false);
-        } else if (gearType == GearType.GRAVITATIONAL_MODULATOR) {
-            Mekanism.playerState.setGravitationalModulationState(uuid, state, false);
-        }
-        //If we got this packet on the server, inform all clients tracking the changed player
-        Player player = context.getSender();
-        if (player != null) {
-            //Note: We just resend all the data for the updated player as the packet size is about the same
-            // and this allows us to separate the packet into a server to client and client to server packet
-            Mekanism.packetHandler().sendToAllTracking(new PacketPlayerData(uuid), player);
-        }
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void handle(PlayPayloadContext context) {
+        switch (gearType) {
+            case FLAMETHROWER -> Mekanism.playerState.setFlamethrowerState(uuid, state, false);
+            case JETPACK -> Mekanism.playerState.setJetpackState(uuid, state, false);
+            case SCUBA_MASK -> Mekanism.playerState.setScubaMaskState(uuid, state, false);
+            case GRAVITATIONAL_MODULATOR -> Mekanism.playerState.setGravitationalModulationState(uuid, state, false);
+        }
+        //Inform all clients tracking the changed player
+        //Note: We just resend all the data for the updated player as the packet size is about the same
+        // and this allows us to separate the packet into a server to client and client to server packet
+        context.player().ifPresent(player -> PacketUtils.sendToAllTracking(new PacketPlayerData(uuid), player));
+    }
+
+    @Override
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(gearType);
         buffer.writeUUID(uuid);
         buffer.writeBoolean(state);
-    }
-
-    public static PacketGearStateUpdate decode(FriendlyByteBuf buffer) {
-        return new PacketGearStateUpdate(buffer.readEnum(GearType.class), buffer.readUUID(), buffer.readBoolean());
     }
 
     public enum GearType {

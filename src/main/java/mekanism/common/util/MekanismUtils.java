@@ -463,7 +463,7 @@ public final class MekanismUtils {
                   frequency.setValid(false);
                   tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
                   if (frequency.getOwner() != null) {
-                      String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
+                      String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getOwnerName());
                       if (owner != null) {
                           tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                       }

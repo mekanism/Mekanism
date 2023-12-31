@@ -1,11 +1,13 @@
 package mekanism.common.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public interface IMekanismPacket {
+public interface IMekanismPacket<CONTEXT extends IPayloadContext> extends CustomPacketPayload {
 
-    void handle(NetworkEvent.Context context);
+    void handle(CONTEXT context);
 
-    void encode(FriendlyByteBuf buffer);
+    default void handleMainThread(CONTEXT context) {
+        context.workHandler().execute(() -> handle(context));
+    }
 }

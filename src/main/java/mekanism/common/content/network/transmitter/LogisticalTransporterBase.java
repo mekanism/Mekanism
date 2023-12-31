@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.transporter.TransporterManager;
@@ -23,7 +22,9 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
-import mekanism.common.network.to_client.PacketTransporterUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
+import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -242,7 +243,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
+                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(getBlockPos(), deletes, needsSync), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     deletes.forEach((IntConsumer) (this::deleteStack));
 
@@ -427,7 +428,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);
-                Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, stackId, stack), getTransmitterTile());
+                PacketUtils.sendToAllTracking(new PacketTransporterSync(getBlockPos(), stackId, stack), getTransmitterTile());
                 getTransmitterTile().markForSave();
             }
         }

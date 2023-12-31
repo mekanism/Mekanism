@@ -7,12 +7,12 @@ import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import mekanism.common.network.to_server.PacketQIOClearCraftingWindow;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.qio.PacketQIOClearCraftingWindow;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -38,7 +38,7 @@ public class GuiCraftingWindow extends GuiWindow {
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 92, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
-              () -> Mekanism.packetHandler().sendToServer(new PacketQIOClearCraftingWindow(index, Screen.hasShiftDown())), getOnHover(MekanismLang.CRAFTING_WINDOW_CLEAR)));
+              () -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, Screen.hasShiftDown())), getOnHover(MekanismLang.CRAFTING_WINDOW_CLEAR)));
     }
 
     public void updateContainer(QIOItemViewerContainer container) {

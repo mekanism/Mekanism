@@ -10,7 +10,6 @@ import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
@@ -21,7 +20,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.lib.math.Pos3D;
-import mekanism.common.network.to_client.PacketLaserHitBlock;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -315,7 +315,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             diggingProgress = FloatingLong.ZERO;
                         } else {
                             //Note: If this has a significant network performance, we could instead convert this to a start/stop packet
-                            Mekanism.packetHandler().sendToAllTracking(new PacketLaserHitBlock(result), this);
+                            PacketUtils.sendToAllTracking(new PacketHitBlockEffect(result), this);
                         }
                     }
                 }

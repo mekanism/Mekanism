@@ -1,7 +1,6 @@
 package mekanism.api.recipes;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -9,6 +8,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
-    protected static final Random RANDOM = new Random();
+    protected static final RandomSource RANDOM = RandomSource.create();
     private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
 
     @Override

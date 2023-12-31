@@ -373,17 +373,6 @@ public class WorldUtils {
     }
 
     /**
-     * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile entity.
-     *
-     * @param tile TileEntity to save
-     */
-    public static void saveChunk(BlockEntity tile) {
-        if (tile != null && !tile.isRemoved() && tile.getLevel() != null) {
-            markChunkDirty(tile.getLevel(), tile.getBlockPos());
-        }
-    }
-
-    /**
      * Marks a chunk as dirty if it is currently loaded
      */
     public static void markChunkDirty(Level world, BlockPos pos) {

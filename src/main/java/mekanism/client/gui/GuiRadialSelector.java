@@ -18,10 +18,10 @@ import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.lib.ScrollIncrementer;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -301,7 +301,7 @@ public class GuiRadialSelector extends Screen {
                 if (networkRepresentation != -1) {
                     //TODO: If we ever add a radial type where the network representation may be negative,
                     // re-evaluate how we do this type validation
-                    Mekanism.packetHandler().sendToServer(new PacketRadialModeChange(slot, path, networkRepresentation));
+                    PacketUtils.sendToServer(new PacketRadialModeChange(slot, path, networkRepresentation));
                 }
             }
         } else if (overBackButton) {

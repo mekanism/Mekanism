@@ -13,10 +13,10 @@ import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgres
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.jei.MekanismJEIRecipeType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
@@ -71,7 +71,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(MekanismJEIRecipeType.DECONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        addRenderableWidget(new ToggleButton(this, 4, 4, () -> tile.mode, () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
+        addRenderableWidget(new ToggleButton(this, 4, 4, () -> tile.mode, () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
               getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 

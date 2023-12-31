@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.ObjLongConsumer;
@@ -37,12 +36,15 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
+import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -51,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
 
-    private static final Random rand = new Random();
+    private static final RandomSource rand = RandomSource.create();
 
     private final Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
     private final Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
@@ -372,7 +374,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         for (QIOItemTypeData data : itemDataMap.values()) {
             map.put(new UUIDAwareHashedItem(data.itemType, QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(data.itemType)), data.count);
         }
-        Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
+        PacketUtils.sendTo(new PacketBatchItemViewerSync(totalCountCapacity, totalTypeCapacity, map), player);
     }
 
     public void closeItemViewer(ServerPlayer player) {
@@ -440,7 +442,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (!updatedItems.isEmpty() || needsUpdate) {
             //Only calculate the packet and the update map if there are actually players viewing this frequency,
             // otherwise we can just skip looking up UUIDs and counts
-            Lazy<PacketQIOItemViewerGuiSync> lazyPacket = Lazy.of(() -> {
+            Lazy<PacketUpdateItemViewer> lazyPacket = Lazy.of(() -> {
                 Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
                 updatedItems.forEach(uuid -> {
                     HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
@@ -449,12 +451,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                         map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
                     }
                 });
-                return PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity);
+                return new PacketUpdateItemViewer(totalCountCapacity, totalTypeCapacity, map);
             });
             for (Iterator<ServerPlayer> viewingIterator = playersViewingItems.iterator(); viewingIterator.hasNext(); ) {
                 ServerPlayer player = viewingIterator.next();
                 if (player.containerMenu instanceof QIOItemViewerContainer) {
-                    Mekanism.packetHandler().sendTo(lazyPacket.get(), player);
+                    PacketUtils.sendTo(lazyPacket.get(), player);
                 } else {
                     //flush players that somehow didn't send a container close packet
                     viewingIterator.remove();
@@ -515,7 +517,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
         keys.forEach(key -> removeDrive(key, false));
         driveMap.clear();
-        playersViewingItems.forEach(player -> Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.kill(), player));
+        playersViewingItems.forEach(player -> Mekanism.packetHandler().killItemViewer(player));
     }
 
     @Override
@@ -544,6 +546,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         super.read(buf);
         totalCount = buf.readVarLong();
         totalCountCapacity = buf.readVarLong();
+        //TODO - 1.20.4: SP: This isn't set in single player so I think we need to fall back to querying against the itemDataMap
+        // though now that we force handle the serialization/deserialization maybe this isn't actually necessary to adjust
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
         this.color = buf.readEnum(EnumColor.class);

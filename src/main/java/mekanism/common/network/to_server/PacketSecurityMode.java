@@ -1,44 +1,45 @@
 package mekanism.common.network.to_server;
 
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.common.network.IMekanismPacket;
+import mekanism.api.security.ISecurityObject;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketSecurityMode implements IMekanismPacket {
+public record PacketSecurityMode(InteractionHand currentHand, boolean increment) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final InteractionHand currentHand;
-    private final boolean increment;
+    public static final ResourceLocation ID = Mekanism.rl("security_mode");
 
-    public PacketSecurityMode(InteractionHand hand, boolean increment) {
-        this.currentHand = hand;
-        this.increment = increment;
+    public PacketSecurityMode(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(InteractionHand.class), buffer.readBoolean());
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        Player player = context.getSender();
-        if (player != null) {
-            ItemStack stack = player.getItemInHand(currentHand);
+    public void handle(PlayPayloadContext context) {
+        context.player().ifPresent(player -> {
+            ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(player.getItemInHand(currentHand));
             if (increment) {
-                SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack));
+                SecurityUtils.get().incrementSecurityMode(player, securityObject);
             } else {
-                SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack));
+                SecurityUtils.get().decrementSecurityMode(player, securityObject);
             }
-        }
+        });
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(currentHand);
         buffer.writeBoolean(increment);
-    }
-
-    public static PacketSecurityMode decode(FriendlyByteBuf buffer) {
-        return new PacketSecurityMode(buffer.readEnum(InteractionHand.class), buffer.readBoolean());
     }
 }

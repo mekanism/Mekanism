@@ -31,6 +31,7 @@ import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +44,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Used for the server side transfer handling by the {@link mekanism.common.network.to_server.PacketQIOFillCraftingWindow}
+ * Used for the server side transfer handling by the {@link PacketQIOFillCraftingWindow}
  */
 public class QIOServerCraftingTransferHandler {
 

@@ -5,12 +5,13 @@ import java.util.UUID;
 import mekanism.api.IFrequency;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.network.BasePacketHandler;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Frequency implements IFrequency {
@@ -21,7 +22,7 @@ public abstract class Frequency implements IFrequency {
 
     @Nullable
     private UUID ownerUUID;
-    private String clientOwner;
+    private String ownerName;
 
     private boolean valid = true;
     private boolean publicFreq;
@@ -34,7 +35,7 @@ public abstract class Frequency implements IFrequency {
     public Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID uuid) {
         this(frequencyType);
         this.name = name;
-        ownerUUID = uuid;
+        setOwnerUUID(uuid);
     }
 
     public Frequency(FrequencyType<?> frequencyType) {
@@ -121,8 +122,9 @@ public abstract class Frequency implements IFrequency {
         return Objects.equals(ownerUUID, toCheck);
     }
 
-    public String getClientOwner() {
-        return clientOwner;
+    @NotNull
+    public String getOwnerName() {
+        return ownerName;
     }
 
     public void writeComponentData(CompoundTag nbtTags) {
@@ -139,22 +141,27 @@ public abstract class Frequency implements IFrequency {
 
     protected void read(CompoundTag nbtTags) {
         name = nbtTags.getString(NBTConstants.NAME);
-        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
     }
 
+    private void setOwnerUUID(@Nullable UUID uuid) {
+        ownerUUID = uuid;
+        //Look up the username of the owner so that we can sync it (and more importantly have it set in single player when network connections don't serialize and deserialize)
+        ownerName = MekanismUtils.getLastKnownUsername(ownerUUID);
+    }
+
     public void write(FriendlyByteBuf buffer) {
-        getType().write(buffer);
         buffer.writeUtf(name);
-        BasePacketHandler.writeOptional(buffer, ownerUUID, FriendlyByteBuf::writeUUID);
-        buffer.writeUtf(MekanismUtils.getLastKnownUsername(ownerUUID));
+        buffer.writeNullable(ownerUUID, FriendlyByteBuf::writeUUID);
+        buffer.writeUtf(ownerName, PacketUtils.LAST_USERNAME_LENGTH);
         buffer.writeBoolean(publicFreq);
     }
 
     protected void read(FriendlyByteBuf dataStream) {
-        name = BasePacketHandler.readString(dataStream);
-        ownerUUID = BasePacketHandler.readOptional(dataStream, FriendlyByteBuf::readUUID);
-        clientOwner = BasePacketHandler.readString(dataStream);
+        name = dataStream.readUtf();
+        ownerUUID = dataStream.readNullable(FriendlyByteBuf::readUUID);
+        ownerName = dataStream.readUtf(PacketUtils.LAST_USERNAME_LENGTH);
         publicFreq = dataStream.readBoolean();
     }
 

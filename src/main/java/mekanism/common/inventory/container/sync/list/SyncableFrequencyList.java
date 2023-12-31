@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.network.to_client.container.property.list.FrequencyListPropertyData;
-import mekanism.common.network.to_client.container.property.list.ListPropertyData;
+import mekanism.common.lib.frequency.FrequencyType;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,13 +14,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SyncableFrequencyList<FREQUENCY extends Frequency> extends SyncableList<FREQUENCY> {
 
-    public static <FREQUENCY extends Frequency> SyncableFrequencyList<FREQUENCY> create(Supplier<? extends @NotNull Collection<FREQUENCY>> getter,
+    public static <FREQUENCY extends Frequency> SyncableFrequencyList<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<? extends @NotNull Collection<FREQUENCY>> getter,
           Consumer<@NotNull List<FREQUENCY>> setter) {
-        return new SyncableFrequencyList<>(getter, setter);
+        return new SyncableFrequencyList<>(type, getter, setter);
     }
 
-    private SyncableFrequencyList(Supplier<? extends @NotNull Collection<FREQUENCY>> getter, Consumer<@NotNull List<FREQUENCY>> setter) {
+    private final FrequencyType<FREQUENCY> type;
+
+    private SyncableFrequencyList(FrequencyType<FREQUENCY> type, Supplier<? extends @NotNull Collection<FREQUENCY>> getter, Consumer<@NotNull List<FREQUENCY>> setter) {
         super(getter, setter);
+        this.type = type;
     }
 
     @Override
@@ -36,7 +39,12 @@ public class SyncableFrequencyList<FREQUENCY extends Frequency> extends Syncable
     }
 
     @Override
-    public ListPropertyData<FREQUENCY> getPropertyData(short property, DirtyType dirtyType) {
-        return new FrequencyListPropertyData<>(property, get());
+    protected List<FREQUENCY> deserializeList(FriendlyByteBuf buffer) {
+        return buffer.readList(type::create);
+    }
+
+    @Override
+    protected void serializeListElement(FriendlyByteBuf buffer, FREQUENCY frequency) {
+        frequency.write(buffer);
     }
 }

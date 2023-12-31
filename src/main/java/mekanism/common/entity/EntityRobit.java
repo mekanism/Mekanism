@@ -121,7 +121,6 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.network.NetworkHooks;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -422,7 +421,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             if (provider != null) {
                 gameEvent(GameEvent.ENTITY_INTERACT, player);
                 //Validate the provider isn't null, it shouldn't be but just in case
-                NetworkHooks.openScreen((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
+                player.openMenu(provider, buf -> buf.writeVarInt(getId()));
             }
         }
         return InteractionResult.sidedSuccess(level().isClientSide);

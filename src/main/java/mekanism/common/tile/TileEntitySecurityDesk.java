@@ -4,14 +4,14 @@ import java.util.UUID;
 import mekanism.api.IContentsListener;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
@@ -61,7 +61,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             frequency.setOverridden(!frequency.isOverridden());
             markForSave();
             // send the security update to other players; this change will be visible on machine security tabs
-            Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency));
+            PacketUtils.sendToAll(new PacketSyncSecurity(frequency));
             validateAccess();
         }
     }
@@ -110,7 +110,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 frequency.setSecurityMode(mode);
                 markForSave();
                 // send the security update to other players; this change will be visible on machine security tabs
-                Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency));
+                PacketUtils.sendToAll(new PacketSyncSecurity(frequency));
                 if (ISecurityUtils.INSTANCE.moreRestrictive(old, mode)) {
                     validateAccess();
                 }

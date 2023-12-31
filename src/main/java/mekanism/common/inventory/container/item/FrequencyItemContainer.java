@@ -45,13 +45,13 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         super.addContainerTrackers();
         if (isRemote()) {
             //Client side sync handling
-            track(SyncableFrequency.create(this::getFrequency, value -> selectedFrequency = value));
-            track(SyncableFrequencyList.create(this::getPublicCache, value -> publicCache = value));
-            track(SyncableFrequencyList.create(this::getPrivateCache, value -> privateCache = value));
+            track(SyncableFrequency.create(getFrequencyType(), this::getFrequency, value -> selectedFrequency = value));
+            track(SyncableFrequencyList.create(getFrequencyType(), this::getPublicCache, value -> publicCache = value));
+            track(SyncableFrequencyList.create(getFrequencyType(), this::getPrivateCache, value -> privateCache = value));
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
-            track(SyncableFrequency.create(() -> {
+            track(SyncableFrequency.create(getFrequencyType(), () -> {
                 IFrequencyItem frequencyItem = (IFrequencyItem) stack.getItem();
                 //Note: We "cache" the last selected frequency server side to simplify a bit of lookups for the PortableTeleporter container trackers
                 if (frequencyItem.hasFrequency(stack)) {
@@ -65,8 +65,8 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
                 }
                 return selectedFrequency;
             }, value -> selectedFrequency = value));
-            track(SyncableFrequencyList.create(() -> getFrequencyType().getManager(null).getFrequencies(), value -> publicCache = value));
-            track(SyncableFrequencyList.create(() -> getFrequencyType().getManager(getPlayerUUID()).getFrequencies(), value -> privateCache = value));
+            track(SyncableFrequencyList.create(getFrequencyType(), () -> getFrequencyType().getManager(null).getFrequencies(), value -> publicCache = value));
+            track(SyncableFrequencyList.create(getFrequencyType(), () -> getFrequencyType().getManager(getPlayerUUID()).getFrequencies(), value -> privateCache = value));
         }
     }
 }

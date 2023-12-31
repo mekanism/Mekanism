@@ -170,14 +170,14 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Reads a mutable {@link FloatingLong} from a buffer
+     * Reads an immutable {@link FloatingLong} from a buffer
      *
      * @param buffer The {@link FriendlyByteBuf} to read from
      *
-     * @return A mutable {@link FloatingLong}
+     * @return An immutable {@link FloatingLong}
      */
     public static FloatingLong readFromBuffer(FriendlyByteBuf buffer) {
-        return create(buffer.readVarLong(), buffer.readShort());
+        return createConst(buffer.readVarLong(), buffer.readShort());
     }
 
     private final boolean isConstant;

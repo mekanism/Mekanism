@@ -40,7 +40,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        modID = BasePacketHandler.readString(dataStream);
+        modID = dataStream.readUtf();
     }
 
     @Override

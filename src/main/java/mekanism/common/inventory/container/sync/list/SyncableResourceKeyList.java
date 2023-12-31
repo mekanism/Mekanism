@@ -3,9 +3,8 @@ package mekanism.common.inventory.container.sync.list;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.common.network.to_client.container.property.list.ListPropertyData;
-import mekanism.common.network.to_client.container.property.list.ResourceKeyListPropertyData;
 import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,12 @@ public class SyncableResourceKeyList<V> extends SyncableList<ResourceKey<V>> {
     }
 
     @Override
-    public ListPropertyData<ResourceKey<V>> getPropertyData(short property, DirtyType dirtyType) {
-        return new ResourceKeyListPropertyData<>(property, registry, get());
+    protected List<ResourceKey<V>> deserializeList(FriendlyByteBuf buffer) {
+        return buffer.readList(buf -> buf.readResourceKey(registry));
+    }
+
+    @Override
+    protected void serializeListElement(FriendlyByteBuf buffer, ResourceKey<V> value) {
+        buffer.writeResourceKey(value);
     }
 }

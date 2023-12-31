@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import mekanism.common.lib.Color;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 public class BoltEffect {
 
-    private final Random random = new Random();
+    private final RandomSource random = RandomSource.create();
 
     private final BoltRenderInfo renderInfo;
 
@@ -162,7 +162,7 @@ public class BoltEffect {
         return quads;
     }
 
-    private static Vec3 findRandomOrthogonalVector(Vec3 vec, Random rand) {
+    private static Vec3 findRandomOrthogonalVector(Vec3 vec, RandomSource rand) {
         Vec3 newVec = new Vec3(-0.5 + rand.nextDouble(), -0.5 + rand.nextDouble(), -0.5 + rand.nextDouble());
         return vec.cross(newVec).normalize();
     }
@@ -236,11 +236,11 @@ public class BoltEffect {
     public interface RandomFunction {
 
         /** Uniform probability distribution. */
-        RandomFunction UNIFORM = Random::nextFloat;
+        RandomFunction UNIFORM = RandomSource::nextFloat;
         /** Gaussian probability distribution. */
         RandomFunction GAUSSIAN = rand -> (float) rand.nextGaussian();
 
-        float getRandom(Random rand);
+        float getRandom(RandomSource rand);
     }
 
     /**
@@ -288,7 +288,7 @@ public class BoltEffect {
         /** Will re-spawn a bolt each time one expires. */
         SpawnFunction CONSECUTIVE = new SpawnFunction() {
             @Override
-            public SpawnDelayBounds getSpawnDelayBounds(Random rand) {
+            public SpawnDelayBounds getSpawnDelayBounds(RandomSource rand) {
                 return new SpawnDelayBounds(0F, 0F);
             }
 
@@ -310,9 +310,9 @@ public class BoltEffect {
             return rand -> new SpawnDelayBounds(delay - noise, delay + noise);
         }
 
-        SpawnDelayBounds getSpawnDelayBounds(Random rand);
+        SpawnDelayBounds getSpawnDelayBounds(RandomSource rand);
 
-        default float getSpawnDelay(Random rand) {
+        default float getSpawnDelay(RandomSource rand) {
             SpawnDelayBounds bounds = getSpawnDelayBounds(rand);
             return Mth.lerp(rand.nextFloat(), bounds.start(), bounds.end());
         }

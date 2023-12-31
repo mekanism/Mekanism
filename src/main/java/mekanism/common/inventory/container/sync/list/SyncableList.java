@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.inventory.container.sync.ISyncableData;
-import mekanism.common.network.to_client.container.property.list.ListPropertyData;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
+import net.minecraft.network.FriendlyByteBuf;
+import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -38,12 +41,21 @@ public abstract class SyncableList<TYPE> implements ISyncableData {
         return getRaw().hashCode();
     }
 
-    public void set(@NotNull List<TYPE> value) {
-        setter.accept(value);
+    public void set(byte[] rawData) {
+        setter.accept(PacketUtils.read(rawData, this::deserializeList));
     }
 
+    protected abstract List<TYPE> deserializeList(FriendlyByteBuf buffer);
+
+    protected abstract void serializeListElement(FriendlyByteBuf buffer, TYPE element);
+
     @Override
-    public abstract ListPropertyData<TYPE> getPropertyData(short property, DirtyType dirtyType);
+    public ByteArrayPropertyData getPropertyData(short property, DirtyType dirtyType) {
+        //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
+        // whenever we send this as a packet rather than potentially allowing the list to leak from one side to the other in single player
+        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeCollection(getRaw(), this::serializeListElement));
+        return new ByteArrayPropertyData(property, rawData);
+    }
 
     @Override
     public DirtyType isDirty() {

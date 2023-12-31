@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -11,37 +12,45 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketPortableTeleporterTeleport implements IMekanismPacket {
+public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket<PlayPayloadContext> {
 
-    private final FrequencyIdentity identity;
-    private final InteractionHand currentHand;
+    public static final ResourceLocation ID = Mekanism.rl("portable_teleport");
 
-    public PacketPortableTeleporterTeleport(InteractionHand hand, FrequencyIdentity identity) {
-        currentHand = hand;
-        this.identity = identity;
+    public PacketPortableTeleporterTeleport(FriendlyByteBuf buffer) {
+        this(buffer.readEnum(InteractionHand.class), FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer));
+    }
+
+    @NotNull
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
-        ServerPlayer player = context.getSender();
-        if (player == null) {
+    public void handle(PlayPayloadContext context) {
+        Optional<ServerPlayer> sender = PacketUtils.asServerPlayer(context);
+        if (sender.isEmpty()) {
             return;
         }
+        ServerPlayer player = sender.get();
         ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
             //Note: We make use of the player's own UUID, given they shouldn't be allowed to teleport to a private frequency of another player
@@ -68,7 +77,7 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
                         teleporter.teleDelay = 5;
                         player.connection.aboveGroundTickCount = 0;
                         player.closeContainer();
-                        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.getPos());
+                        PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.getPos());
                         if (player.isPassenger()) {
                             player.stopRiding();
                         }
@@ -93,12 +102,8 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buffer) {
+    public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeEnum(currentHand);
         FrequencyType.TELEPORTER.getIdentitySerializer().write(buffer, identity);
-    }
-
-    public static PacketPortableTeleporterTeleport decode(FriendlyByteBuf buffer) {
-        return new PacketPortableTeleporterTeleport(buffer.readEnum(InteractionHand.class), FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer));
     }
 }

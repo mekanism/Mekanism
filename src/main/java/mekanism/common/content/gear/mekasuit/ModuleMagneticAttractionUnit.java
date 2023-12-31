@@ -13,9 +13,9 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import net.minecraft.network.chat.Component;
@@ -72,7 +72,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         Vec3 motionNeeded = new Vec3(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
         Vec3 motionDiff = motionNeeded.subtract(player.getDeltaMovement());
         item.setDeltaMovement(motionDiff.scale(0.2));
-        Mekanism.packetHandler().sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
+        PacketUtils.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
               player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)), player);
     }
 

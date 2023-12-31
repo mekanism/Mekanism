@@ -11,6 +11,7 @@ import mekanism.common.base.IModModule;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.client.KeyMapping;
@@ -38,7 +39,7 @@ public class MekanismClient {
             UUID playerUUID = Minecraft.getInstance().player.getUUID();
             boolean down = Minecraft.getInstance().screen == null && pressed;
             if (down != Mekanism.keyMap.has(playerUUID, type)) {
-                Mekanism.packetHandler().sendToServer(new PacketKey(type, down));
+                PacketUtils.sendToServer(new PacketKey(type, down));
                 Mekanism.keyMap.update(playerUUID, type, down);
             }
         }
