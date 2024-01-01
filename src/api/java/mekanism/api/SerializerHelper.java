@@ -79,8 +79,7 @@ public class SerializerHelper {
     }));
 
     /**
-     * Codec to get any kind of chemical stack, based on a "chemicalType" field.
-     * See also {@link ChemicalType}
+     * Codec to get any kind of chemical stack, based on a "chemicalType" field. See also {@link ChemicalType}
      */
     public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
         case GAS -> ChemicalUtils.GAS_STACK_CODEC;

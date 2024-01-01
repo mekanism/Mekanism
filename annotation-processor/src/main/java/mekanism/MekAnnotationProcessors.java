@@ -3,6 +3,7 @@ package mekanism;
 import com.squareup.javapoet.ClassName;
 
 public class MekAnnotationProcessors {
+
     public static final String MODULE_OPTION = "mekanismModule";
 
     //Packages

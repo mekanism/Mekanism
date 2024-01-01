@@ -71,7 +71,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     );
     private static final int MAX_FLUID = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                     "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IExtendedFluidTank fluidTank;
 
     private final IOutputHandler<@NotNull FluidStack> outputHandler;

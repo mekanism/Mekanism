@@ -1,6 +1,5 @@
 package mekanism.common.util.test;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;

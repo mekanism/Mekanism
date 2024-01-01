@@ -18,16 +18,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * A base class for the annotation generator to extend.
- * It's constructor will call {@link #register(String, MethodRestriction, String[], boolean, Class, ComputerFunctionCaller, String[], Class[])}
- * to set up the possible methods.
- * These will then be tested and, if not restricted, "bound" to the holder in {@link #bindTo(Object, BoundMethodHolder)}
- * Methods with the same name must have different parameter counts.
+ * A base class for the annotation generator to extend. It's constructor will call
+ * {@link #register(String, MethodRestriction, String[], boolean, Class, ComputerFunctionCaller, String[], Class[])} to set up the possible methods. These will then be
+ * tested and, if not restricted, "bound" to the holder in {@link #bindTo(Object, BoundMethodHolder)} Methods with the same name must have different parameter counts.
  *
  * @param <T> the "subject" that this Factory's methods operate on.
  */
 @ParametersAreNotNullByDefault
-public class ComputerMethodFactory<T>{
+public class ComputerMethodFactory<T> {
+
     protected static String[] NO_STRINGS = new String[0];
     protected static Class<?>[] NO_CLASSES = new Class[0];
     private static final Comparator<MethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames().length);
@@ -41,7 +40,7 @@ public class ComputerMethodFactory<T>{
             method.setAccessible(true);
             return lookup.unreflect(method);
         } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Couldn't get method handle for "+methodName, roe);
+            throw new RuntimeException("Couldn't get method handle for " + methodName, roe);
         }
     }
 
@@ -52,7 +51,7 @@ public class ComputerMethodFactory<T>{
             field.setAccessible(true);
             return lookup.unreflectGetter(field);
         } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Couldn't get getter MethodHandle for "+fieldName, roe);
+            throw new RuntimeException("Couldn't get getter MethodHandle for " + fieldName, roe);
         }
     }
 
@@ -68,7 +67,7 @@ public class ComputerMethodFactory<T>{
 
     protected void register(MethodData<T> methodData) {
         if (!methodsKnown.add(new ObjectIntImmutablePair<>(methodData.name(), methodData.argumentNames().length))) {
-            throw new RuntimeException("Duplicate method name "+methodData.name()+"_"+methodData.argumentNames().length);
+            throw new RuntimeException("Duplicate method name " + methodData.name() + "_" + methodData.argumentNames().length);
         }
         this.methods.add(methodData);
     }
@@ -94,7 +93,9 @@ public class ComputerMethodFactory<T>{
          *
          * @param t the subject
          * @param u the computer helper for the current integration
+         *
          * @return the (converted) function result
+         *
          * @throws ComputerException if arguments are invalid or other failure happens during processing
          */
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;

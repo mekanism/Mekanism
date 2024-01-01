@@ -59,7 +59,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     );
     private static final long MAX_GAS = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IGasTank gasTank;
 
     private final IOutputHandler<@NotNull GasStack> outputHandler;

@@ -17,8 +17,8 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.util.EnumUtils;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class TierConfig extends BaseMekanismConfig {
 

@@ -64,9 +64,11 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     );
     public static final int MAX_GAS = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"}, docPlaceholder = "input tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
+                                                                                        "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public IGasTank inputTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public IGasTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

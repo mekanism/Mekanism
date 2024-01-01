@@ -79,7 +79,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public VariableCapacityFluidTank fluidCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded",
+                                                                                        "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
 
     @ContainerSync
@@ -87,7 +88,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                                                                                         "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant")
     public IGasTank heatedCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded",
+                                                                                        "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
     public IGasTank wasteTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "reactor")

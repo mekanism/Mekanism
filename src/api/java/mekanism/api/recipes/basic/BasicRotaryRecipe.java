@@ -29,9 +29,8 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      * @param fluidInput Fluid input.
      * @param gasOutput  Gas output.
      *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
-     * combination with {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
-     * directions.
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination
+     * with {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both directions.
      */
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, GasStack gasOutput) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
@@ -53,8 +52,8 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      * @param gasInput    Gas input.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination with
-     * {@link #BasicRotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination
+     * with {@link #BasicRotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
      */
     public BasicRotaryRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
@@ -79,8 +78,7 @@ public class BasicRotaryRecipe extends RotaryRecipe {
      * @param fluidOutput Fluid output.
      *
      * @apiNote It is recommended to use this constructor over using {@link #BasicRotaryRecipe(FluidStackIngredient, GasStack)} and
-     * {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
-     * directions.
+     * {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both directions.
      */
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");

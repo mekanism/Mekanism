@@ -1,8 +1,5 @@
 package mekanism.common.item.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -35,7 +32,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     }
 
     public static LootItemFunction.Builder builder() {
-        return ()->INSTANCE;
+        return () -> INSTANCE;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
             if (EffectiveSide.get().isClient()) {
                 destInv = new ClientSidePersonalStorageInventory();
             } else {
-                destInv = PersonalStorageManager.getInventoryFor(itemStack).orElseThrow(()->new IllegalStateException("Inventory not available?!"));
+                destInv = PersonalStorageManager.getInventoryFor(itemStack).orElseThrow(() -> new IllegalStateException("Inventory not available?!"));
             }
             for (int i = 0; i < tileSlots.size(); i++) {
                 IInventorySlot tileSlot = tileSlots.get(i);

@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class OC2ComputerHelper extends BaseComputerHelper {
+
     private final RPCInvocation invocation;
 
     public OC2ComputerHelper(RPCInvocation invocation) {
@@ -19,7 +20,7 @@ public class OC2ComputerHelper extends BaseComputerHelper {
     private JsonElement getParam(int param) throws ComputerException {
         JsonArray parameters = invocation.getParameters();
         if (parameters.size() <= param) {
-            throw new ComputerException("Missing argument in position "+param);
+            throw new ComputerException("Missing argument in position " + param);
         }
         return parameters.get(param);
     }

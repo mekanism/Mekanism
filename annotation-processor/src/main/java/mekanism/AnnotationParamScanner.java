@@ -1,10 +1,10 @@
 package mekanism;
 
-import javax.lang.model.element.Element;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.Element;
 
 public record AnnotationParamScanner(String targetFile, Set<Class<? extends Annotation>> supportedAnnotations, List<Element> originatingElements) {
 

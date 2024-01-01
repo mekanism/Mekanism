@@ -65,7 +65,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         // Eventually we may want to try cropping it but for now this works better
         //Note: We explicitly set the push reaction to protect against mods like Quark that allow blocks with TEs to be moved
         super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(BlockResourceInfo.STEEL.getMapColor())
-              .strength(3.5F, 4.8F) .requiresCorrectToolForDrops().dynamicShape().noOcclusion()
+              .strength(3.5F, 4.8F).requiresCorrectToolForDrops().dynamicShape().noOcclusion()
               .isViewBlocking(BlockStateHelper.NEVER_PREDICATE).pushReaction(PushReaction.BLOCK)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }

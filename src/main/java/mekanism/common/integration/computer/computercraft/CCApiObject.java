@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
  * Registers a CC Api handler. Static classes only for now.
  */
 public class CCApiObject extends CCMethodCaller implements IDynamicLuaObject, ILuaAPI {
+
     static ILuaAPIFactory create(Class<?> source, String... apiNames) {
         return new Factory(source, apiNames);
     }

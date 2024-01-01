@@ -44,9 +44,9 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Bas
                   ChemicalUtils.GAS_STACK_CODEC.optionalFieldOf(JsonConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
             ).apply(instance, factory::create));
 
-            codec = ExtraCodecs.validate(baseCodec, result->{
+            codec = ExtraCodecs.validate(baseCodec, result -> {
                 if (result.getOutputItem().isEmpty() && result.getOutputGas().isEmpty()) {
-                    return DataResult.error(()->"No output specified, must have at least and Item or Gas output");
+                    return DataResult.error(() -> "No output specified, must have at least and Item or Gas output");
                 }
                 return DataResult.success(result);
             });

@@ -507,6 +507,7 @@ public class MekanismTileEntityTypes {
               .withSimple(Capabilities.CONFIGURABLE)
               .build();
     }
+
     //Induction Cells
     //Note: We never externally expose the energy capability for induction cells
     public static final TileEntityTypeRegistryObject<TileEntityInductionCell> BASIC_INDUCTION_CELL = TILE_ENTITY_TYPES.builder(MekanismBlocks.BASIC_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.BASIC_INDUCTION_CELL, pos, state))

@@ -32,7 +32,7 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
             FloatingLong value = tryGetValue(object);
             return value != null && value.greaterThan(FloatingLong.ZERO) && value.smallerOrEqual(max);
         };
-    };
+    }
 
     @Nullable
     private static FloatingLong tryGetValue(Object object) {

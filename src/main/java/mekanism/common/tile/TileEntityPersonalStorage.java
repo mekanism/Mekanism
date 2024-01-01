@@ -9,7 +9,6 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;

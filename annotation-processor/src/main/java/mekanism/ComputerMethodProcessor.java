@@ -1,8 +1,12 @@
 package mekanism;
 
 import com.squareup.javapoet.JavaFile;
-import mekanism.builder.ComputerHandlerBuilder;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -11,28 +15,22 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import mekanism.builder.ComputerHandlerBuilder;
 
 /**
- * Annotation processor to generate ComputerMethodFactory subclasses for computer methods.
- * Must only produce files directly related to the annotated elements, and not based on other elements.
- * This is due to being marked as an Isolating processor in Gradle.
+ * Annotation processor to generate ComputerMethodFactory subclasses for computer methods. Must only produce files directly related to the annotated elements, and not
+ * based on other elements. This is due to being marked as an Isolating processor in Gradle.
  * <p>
- * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper,
- * a manually triggered full rebuild should catch it.
+ * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper, a manually triggered full rebuild should catch it.
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({
-        MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
-        MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,
-        MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD
+      MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
+      MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,
+      MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD
 })
 public class ComputerMethodProcessor extends AbstractProcessor {
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);

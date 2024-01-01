@@ -73,7 +73,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     private static final long MAX_SLURRY = 10_000;
     private static final int MAX_FLUID = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
+                                                                                     "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
     public BasicFluidTank fluidTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded",
                                                                                         "getSlurryInputFilledPercentage"}, docPlaceholder = "input slurry tank")

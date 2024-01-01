@@ -677,9 +677,8 @@ public final class MekanismUtils {
     }
 
     /**
-     * Calculates the redstone level based on the percentage of amount stored. Like
-     * {@link ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without limiting slots to the max stack size of the item to allow
-     * for better support for bins
+     * Calculates the redstone level based on the percentage of amount stored. Like {@link ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without
+     * limiting slots to the max stack size of the item to allow for better support for bins
      *
      * @return A redstone level based on the percentage of the amount stored.
      */

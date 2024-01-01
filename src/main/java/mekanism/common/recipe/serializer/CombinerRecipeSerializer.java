@@ -27,7 +27,7 @@ public class CombinerRecipeSerializer implements RecipeSerializer<BasicCombinerR
     @Override
     public Codec<BasicCombinerRecipe> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.MAIN_INPUT).forGetter(CombinerRecipe::getMainInput),
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.EXTRA_INPUT).forGetter(CombinerRecipe::getExtraInput),
                   SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicCombinerRecipe::getOutputRaw)

@@ -46,6 +46,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
             throw new RuntimeException(e);
         }
     }
+
     @SuppressWarnings("unchecked")
     private static Holder<Item> getBOPItem(String fieldName) {
         try {

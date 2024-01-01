@@ -108,7 +108,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @ComputerMethod(threadSafe = true)
-    void setMinMax(int min, int max) throws ComputerException{
+    void setMinMax(int min, int max) throws ComputerException {
         if (min < 0 || max < 0 || min > max || max > 64) {
             throw new ComputerException("Invalid or min/max: 0 <= min <= max <= 64");
         }

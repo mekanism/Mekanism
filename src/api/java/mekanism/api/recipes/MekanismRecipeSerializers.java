@@ -31,6 +31,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class MekanismRecipeSerializers {
+
     public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicCrushingRecipe>> CRUSHING;
     public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicEnrichingRecipe>> ENRICHING;
     public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BasicSmeltingRecipe>> SMELTING;

@@ -3,9 +3,7 @@ package mekanism.common.recipe.serializer;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
-import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 

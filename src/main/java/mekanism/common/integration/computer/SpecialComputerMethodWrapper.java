@@ -71,6 +71,7 @@ public class SpecialComputerMethodWrapper {
     }
 
     public static class ComputerIInventorySlotWrapper extends SpecialComputerMethodWrapper {
+
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static ItemStack getStack(IInventorySlot slot) {
             return slot.getStack();
@@ -78,6 +79,7 @@ public class SpecialComputerMethodWrapper {
     }
 
     public static class ComputerHeatCapacitorWrapper extends SpecialComputerMethodWrapper {
+
         @WrappingComputerMethodHelp("Get the temperature of the %s in Kelvin.")
         public static double getTemperature(IHeatCapacitor capacitor) {
             return capacitor.getTemperature();

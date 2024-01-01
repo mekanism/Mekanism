@@ -2,7 +2,6 @@ package mekanism.common.recipe.condition;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.maven.artifact.versioning.ComparableVersion;

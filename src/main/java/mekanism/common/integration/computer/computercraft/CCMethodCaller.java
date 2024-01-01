@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class CCMethodCaller extends BoundMethodHolder {
+
     public String[] getMethodNames() {
         return methodNames.get();
     }
@@ -26,17 +27,17 @@ public class CCMethodCaller extends BoundMethodHolder {
         Collection<BoundMethodData<?>> methodDataCollection = this.methods.get(methodNames[methodIdx]);
         int argCount = arguments.count();
         BoundMethodData<?> methodToCall = methodDataCollection.stream().filter(md -> md.argumentNames().length == argCount)
-                .findAny()
-                .orElseThrow(() -> new LuaException(String.format(Locale.ROOT,
-                        "Found %d arguments, expected %s",
-                        argCount,
-                        methodDataCollection.stream().map(it -> String.valueOf(it.argumentNames().length)).collect(Collectors.joining(" or "))
-                )));
+              .findAny()
+              .orElseThrow(() -> new LuaException(String.format(Locale.ROOT,
+                    "Found %d arguments, expected %s",
+                    argCount,
+                    methodDataCollection.stream().map(it -> String.valueOf(it.argumentNames().length)).collect(Collectors.joining(" or "))
+              )));
         if (methodToCall.threadSafe()) {
             return callHandler(arguments, methodToCall);
         }
         IArguments escaped = arguments.escapes();
-        return context.executeMainThreadTask(()->callHandler(escaped, methodToCall).getResult());
+        return context.executeMainThreadTask(() -> callHandler(escaped, methodToCall).getResult());
     }
 
     @NotNull
@@ -48,7 +49,7 @@ public class CCMethodCaller extends BoundMethodHolder {
             if (ex.getCause() instanceof LuaException luaException) {
                 throw luaException;
             }
-            throw (LuaException)new LuaException(ex.getMessage()).initCause(ex);
+            throw (LuaException) new LuaException(ex.getMessage()).initCause(ex);
         }
         return result instanceof MethodResult mr ? mr : MethodResult.of(result);
     }

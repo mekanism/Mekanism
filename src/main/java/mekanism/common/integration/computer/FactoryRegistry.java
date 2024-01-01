@@ -20,12 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 /**
- * Central place for Factories to be registered and bound.
- * Registries should be registered as an IComputerMethodRegistry service.
- * {@link #bindTo} is used to gather methods for a subject or class (static methods only, or it would explode at runtime)
- * Factories are constructed lazily to reduce initialisation time.
+ * Central place for Factories to be registered and bound. Registries should be registered as an IComputerMethodRegistry service. {@link #bindTo} is used to gather
+ * methods for a subject or class (static methods only, or it would explode at runtime) Factories are constructed lazily to reduce initialisation time.
  */
 public class FactoryRegistry {
+
     /** subject to Factory registration map */
     private static final Map<Class<?>, Lazy<? extends ComputerMethodFactory<?>>> factories = new HashMap<>();
     /** interface to factory registration map, must be iterated */
@@ -48,9 +47,10 @@ public class FactoryRegistry {
 
     /**
      * Adds a Factory to the registry
-     * @param subject Class of the subject
+     *
+     * @param subject         Class of the subject
      * @param factorySupplier constructor of the factory
-     * @param parents Classes of the supertypes which will be checked for handlers (calculated at compile time)
+     * @param parents         Classes of the supertypes which will be checked for handlers (calculated at compile time)
      */
     public static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
         factories.put(subject, Lazy.of(factorySupplier));
@@ -66,7 +66,7 @@ public class FactoryRegistry {
     /**
      * Gathers methods for a subject into holder.
      *
-     * @param holder the holder to add methods to
+     * @param holder  the holder to add methods to
      * @param subject the subject to bind to
      */
     public static void bindTo(BoundMethodHolder holder, @NotNull Object subject) {
@@ -74,11 +74,10 @@ public class FactoryRegistry {
     }
 
     /**
-     * Gathers methods for a subject class into a holder
-     * Super classes are bound first, followed by the exact subject class
+     * Gathers methods for a subject class into a holder Super classes are bound first, followed by the exact subject class
      *
-     * @param holder the holder to add methods to
-     * @param subject the nullable subject
+     * @param holder       the holder to add methods to
+     * @param subject      the nullable subject
      * @param subjectClass the actual class that subject will be (or would be if null)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -97,23 +96,29 @@ public class FactoryRegistry {
 
     public static Map<Class<?>, List<MethodHelpData>> getHelpData() {
         return Stream.of(
-              factories.entrySet().stream(),
-              interfaceFactories.entrySet().stream()
-        )
-              .flatMap(s->
-                    s.map(entry-> Pair.of(
+                    factories.entrySet().stream(),
+                    interfaceFactories.entrySet().stream()
+              )
+              .flatMap(s ->
+                    s.map(entry -> Pair.of(
                           entry.getKey(),
                           entry.getValue().get().getHelpData())
                     )
               )
               //nb, this MUST be a TreeMap for the Datagen to use
-              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a,b)->{a.addAll(b); return a;}, ()->new TreeMap<>(Comparator.comparing(Class::getName))));
+              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a, b) -> {
+                  a.addAll(b);
+                  return a;
+              }, () -> new TreeMap<>(Comparator.comparing(Class::getName))));
     }
 
     /**
      * Caches and builds a list of factories applicable to the target class
+     *
      * @param target the subject class
+     *
      * @return a list of applicable handlers
+     *
      * @implNote can't use computeIfAbsent, as that will cause a ConcurrentModificationException
      */
     private static synchronized List<? extends ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
@@ -127,10 +132,10 @@ public class FactoryRegistry {
     }
 
     /**
-     * Gets Factories for target and its superclasses.
-     * Recursive! via {@link #getHandlersForHierarchy(Class)} to store parents which we don't know
+     * Gets Factories for target and its superclasses. Recursive! via {@link #getHandlersForHierarchy(Class)} to store parents which we don't know
      *
      * @param target class to find handlers for
+     *
      * @return list of handlers (perhaps empty)
      */
     private static List<? extends ComputerMethodFactory<?>> buildHandlersForHierarchy(Class<?> target) {

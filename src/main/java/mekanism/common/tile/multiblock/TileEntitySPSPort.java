@@ -96,13 +96,13 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(methodDescription = "true -> output, false -> input.")//TODO change this to enum?
-    boolean getMode() {
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")
+    boolean getMode() {// TODO change this to enum?
         return getActive();
     }
 
-    @ComputerMethod(methodDescription = "true -> output, false -> input.")//TODO change this to enum?
-    void setMode(boolean output) {
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")
+    void setMode(boolean output) {// TODO change this to enum?
         setActive(output);
     }
     //End methods IComputerTile

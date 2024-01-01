@@ -32,9 +32,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return ops.createNumeric(value);
         }
     };
-    public static final Codec<FloatingLong> NONZERO_CODEC = ExtraCodecs.validate(CODEC, f->{
+    public static final Codec<FloatingLong> NONZERO_CODEC = ExtraCodecs.validate(CODEC, f -> {
         if (f.isZero()) {
-            return DataResult.error(()->"Value must be greater than zero");
+            return DataResult.error(() -> "Value must be greater than zero");
         }
         return DataResult.success(f);
     });
@@ -1164,7 +1164,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             try {
                 long longValue = decimal.longValueExact();
                 return isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0);
-            } catch (ArithmeticException ignored){}
+            } catch (ArithmeticException ignored) {
+            }
         }
         return parseFloatingLong(number.toString(), isConstant);
     }

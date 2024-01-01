@@ -20,7 +20,7 @@ public class CCComputerHelper extends BaseComputerHelper {
 
     private final IArguments arguments;
 
-    public CCComputerHelper(IArguments arguments){
+    public CCComputerHelper(IArguments arguments) {
         this.arguments = arguments;
     }
 

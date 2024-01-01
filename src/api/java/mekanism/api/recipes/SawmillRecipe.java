@@ -114,8 +114,8 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         ItemStack getMaxSecondaryOutput();
 
         /**
-         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns an
-         * empty stack.
+         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
+         * an empty stack.
          *
          * @implNote return a new copy or ItemStack.EMPTY
          */

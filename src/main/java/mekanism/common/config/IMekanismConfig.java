@@ -1,8 +1,8 @@
 package mekanism.common.config;
 
 import mekanism.common.config.value.CachedValue;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public interface IMekanismConfig {
 

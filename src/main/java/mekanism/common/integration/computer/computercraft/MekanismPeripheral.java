@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 
 public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
+
     /**
      * Only call this if the given tile actually has computer support as it won't be double-checked.
      */

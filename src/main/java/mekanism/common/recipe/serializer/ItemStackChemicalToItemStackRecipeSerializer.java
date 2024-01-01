@@ -35,7 +35,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
                   getDeserializer().codec().fieldOf(JsonConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
                   SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(IBasicItemStackOutput::getOutputRaw)

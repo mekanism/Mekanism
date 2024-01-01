@@ -27,7 +27,7 @@ public class GasToGasRecipeSerializer<RECIPE extends BasicGasToGasRecipe> implem
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.INPUT).forGetter(GasToGasRecipe::getInput),
                   ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicGasToGasRecipe::getOutputRaw)
             ).apply(instance, factory::create));

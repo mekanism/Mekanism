@@ -68,6 +68,7 @@ import org.yaml.snakeyaml.nodes.Node;
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
 public class ComputerHelpProvider implements DataProvider {
+
     private static final String[] METHOD_CSV_HEADERS = {"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
     private static final String[] ENUM_CSV_HEADERS = {"Type Name", "Values"};
     private final PackOutput.PathProvider pathProvider;
@@ -107,10 +108,10 @@ public class ComputerHelpProvider implements DataProvider {
 
     @NotNull
     private CompletableFuture<?> makeJekyllData(CachedOutput output, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enumValues) {
-        return CompletableFuture.runAsync(()->{
+        return CompletableFuture.runAsync(() -> {
             JekyllData jekyllData = new JekyllData(Mekanism.instance.versionNumber, methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
             Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(false, Mekanism.logger::error), Comparator.naturalOrder());
-            MekanismDataGenerator.save(output, os-> {
+            MekanismDataGenerator.save(output, os -> {
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(os))) {
                     writer.write("---\n");
                     YamlHelper.dump(writer, frontMatterNode, YAML_OPTIONS);
@@ -134,7 +135,7 @@ public class ComputerHelpProvider implements DataProvider {
                     output.writeRow(
                           friendlyClassName,
                           method.methodName(),
-                          method.params() != null ? method.params().stream().map(param -> param.name()+": "+param.type()).collect(Collectors.joining(", ")) : "",
+                          method.params() != null ? method.params().stream().map(param -> param.name() + ": " + param.type()).collect(Collectors.joining(", ")) : "",
                           csvReturnsValue(method.returns()),
                           method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
                           method.requiresPublicSecurity(),
@@ -148,7 +149,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
         //gather the enums into a sorted map
-        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput ->{
+        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput -> {
             for (Entry<Class<?>, List<String>> entry : enumValues.entrySet()) {
                 Class<?> clazz = entry.getKey();
                 List<String> values = entry.getValue();
@@ -160,7 +161,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private static Map<Class<?>, List<String>> getEnumValues(Map<Class<?>, List<MethodHelpData>> helpData) {
         Map<Class<?>, List<String>> enumToValues = new TreeMap<>(Comparator.comparing(Class::getSimpleName));
-        helpData.forEach((unused, methods)->{
+        helpData.forEach((unused, methods) -> {
             for (MethodHelpData method : methods) {
                 if (method.returns().javaType().isEnum()) {
                     Class<?> jType = method.returns().javaType();
@@ -220,7 +221,7 @@ public class ComputerHelpProvider implements DataProvider {
     }
 
     private static String getFriendlyName(Class<?> clazz) {
-        return FRIENDLY_NAME_CACHE.computeIfAbsent(clazz, clz->{
+        return FRIENDLY_NAME_CACHE.computeIfAbsent(clazz, clz -> {
             if (FRIENDLY_NAMES.containsKey(clz)) {
                 return FRIENDLY_NAMES.get(clz);
             }
@@ -238,7 +239,7 @@ public class ComputerHelpProvider implements DataProvider {
                 if ("Config".equals(simpleName)) {
                     simpleName = "Side Configuration";
                 }
-                return "Machine with "+simpleName+" Component";
+                return "Machine with " + simpleName + " Component";
             }
 
             return splitClassName(simpleName);
@@ -249,7 +250,7 @@ public class ComputerHelpProvider implements DataProvider {
         return CLASS_NAME_SPLITTER.splitAsStream(simpleName).collect(Collectors.joining(" "));
     }
 
-    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = ExtraCodecs.stringResolverCodec(ComputerHelpProvider::getFriendlyName, p->null);
+    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = ExtraCodecs.stringResolverCodec(ComputerHelpProvider::getFriendlyName, p -> null);
     private static final Codec<Map<Class<?>, List<MethodHelpData>>> METHODS_DATA_CODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
     private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MekCodecs.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
 
@@ -290,7 +291,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     private static final Pattern CLASS_NAME_SPLITTER = Pattern.compile("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
 
-    private static final DumperOptions YAML_OPTIONS = Util.make(new DumperOptions(), dop->{
+    private static final DumperOptions YAML_OPTIONS = Util.make(new DumperOptions(), dop -> {
         dop.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         dop.setLineBreak(DumperOptions.LineBreak.UNIX);
     });

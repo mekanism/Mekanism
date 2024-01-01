@@ -5,7 +5,6 @@ import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;

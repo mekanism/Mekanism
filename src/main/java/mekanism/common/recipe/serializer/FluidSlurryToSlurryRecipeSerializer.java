@@ -28,7 +28,7 @@ public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<Bas
     @Override
     public Codec<BasicFluidSlurryToSlurryRecipe> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(FluidSlurryToSlurryRecipe::getFluidInput),
                   IngredientCreatorAccess.slurry().codec().fieldOf(JsonConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
                   ChemicalUtils.SLURRY_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicFluidSlurryToSlurryRecipe::getOutputRaw)

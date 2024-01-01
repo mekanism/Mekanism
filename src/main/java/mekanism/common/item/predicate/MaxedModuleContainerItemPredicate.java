@@ -16,6 +16,7 @@ import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate
 import org.jetbrains.annotations.NotNull;
 
 public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContainerItem> implements ICustomItemPredicate {
+
     private final Set<ModuleData<?>> supportedModules;
     private final ITEM item;
 

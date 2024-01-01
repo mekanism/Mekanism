@@ -43,8 +43,7 @@ public interface IModuleHelper {
      * @return A new item that should be registered during item registration.
      *
      * @apiNote This method specifically uses {@link IModuleDataProvider} rather than {@link java.util.function.Supplier<ModuleData>} to make it harder to accidentally
-     * have a {@code null} reference when using {@link DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need
-     * references of each other.
+     * have a {@code null} reference when using {@link DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need references of each other.
      */
     Item createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties);
 

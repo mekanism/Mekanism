@@ -240,7 +240,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     IChemicalTank<?, ?> getOutputTank() {
         Current current = outputTank.getCurrent();
         return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

@@ -29,7 +29,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction, boolean requiresPublicSecurity) {
+public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction,
+                             boolean requiresPublicSecurity) {
+
     public MethodHelpData {
         if (params != null && params.isEmpty()) {
             params = null;
@@ -59,16 +61,16 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     @NotNull
     public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || clazz.isEnum()) {
-            return "String ("+clazz.getSimpleName()+")";
+            return "String (" + clazz.getSimpleName() + ")";
         }
         if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
-            return "Table ("+clazz.getSimpleName()+")";
+            return "Table (" + clazz.getSimpleName() + ")";
         }
         if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class || Number.class.isAssignableFrom(clazz)) {
             if (ClassUtils.isPrimitiveWrapper(clazz)) {
                 clazz = Objects.requireNonNull(ClassUtils.wrapperToPrimitive(clazz), clazz::getName);
             }
-            return "Number ("+clazz.getSimpleName()+")";
+            return "Number (" + clazz.getSimpleName() + ")";
         }
         if (Collection.class.isAssignableFrom(clazz)) {
             String humanType = "List";
@@ -114,8 +116,9 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
           ).apply(instance, MethodHelpData::new)
     );
 
-    public record Param(String name, String type, Class<?> javaType, @Nullable List<String> values){
-        public Param(String name, String type, Class<?> javaType){
+    public record Param(String name, String type, Class<?> javaType, @Nullable List<String> values) {
+
+        public Param(String name, String type, Class<?> javaType) {
             this(name, type, javaType, null);
         }
 
@@ -134,13 +137,14 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         }
     }
 
-    public record Returns(String type, Class<?> javaType, Class<?>[] javaExtra, @Nullable List<String> values){
+    public record Returns(String type, Class<?> javaType, Class<?>[] javaExtra, @Nullable List<String> values) {
+
         public Returns(String type, Class<?> javaType, Class<?>[] javaExtra) {
             this(type, javaType, javaExtra, null);
         }
 
         public static final Returns NOTHING = new Returns("Nothing", void.class, NO_CLASSES, null);
-        public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
+        public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
               MekCodecs.CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
               MekCodecs.optionalClassArrayCodec("javaExtra").forGetter(Returns::javaExtra)/*,

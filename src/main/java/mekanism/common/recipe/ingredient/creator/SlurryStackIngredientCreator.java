@@ -24,7 +24,7 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static final SlurryStackIngredientCreator INSTANCE = new SlurryStackIngredientCreator();
 
     private SlurryStackIngredientCreator() {
-        super(SingleSlurryStackIngredient.CODEC, TaggedSlurryStackIngredient.CODEC, codec-> MultiSlurryStackIngredient.makeCodec(codec, MultiSlurryStackIngredient::new),
+        super(SingleSlurryStackIngredient.CODEC, TaggedSlurryStackIngredient.CODEC, codec -> MultiSlurryStackIngredient.makeCodec(codec, MultiSlurryStackIngredient::new),
               SingleSlurryStackIngredient.class, TaggedSlurryStackIngredient.class, MultiSlurryStackIngredient.class, SlurryStackIngredient.class);
     }
 

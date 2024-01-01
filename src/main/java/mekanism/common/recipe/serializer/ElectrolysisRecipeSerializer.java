@@ -31,7 +31,7 @@ public class ElectrolysisRecipeSerializer implements RecipeSerializer<BasicElect
     @Override
     public Codec<BasicElectrolysisRecipe> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
                   FLOAT_LONG_AT_LEAST_ONE.optionalFieldOf(JsonConstants.ENERGY_MULTIPLIER, FloatingLong.ONE).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
                   ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.LEFT_GAS_OUTPUT).forGetter(BasicElectrolysisRecipe::getLeftGasOutput),

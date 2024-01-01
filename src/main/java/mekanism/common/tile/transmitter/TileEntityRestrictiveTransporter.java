@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.RestrictiveTransporter;
-import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

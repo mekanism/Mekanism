@@ -16,7 +16,6 @@ import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
-import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.integration.computer.ComputerHelpProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
@@ -100,8 +99,8 @@ public class MekanismDataGenerator {
     }
 
     /**
-     * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes a consumer of the output stream instead of serializes json using GSON.
-     * Use it to write arbitrary files.
+     * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes a consumer of the output stream instead of serializes json using
+     * GSON. Use it to write arbitrary files.
      */
     @SuppressWarnings({"UnstableApiUsage", "deprecation"})
     public static CompletableFuture<?> save(CachedOutput cache, IOConsumer<OutputStream> osConsumer, Path path) {
@@ -118,6 +117,7 @@ public class MekanismDataGenerator {
 
     @FunctionalInterface
     public interface IOConsumer<T> {
+
         void accept(T value) throws IOException;
     }
 }

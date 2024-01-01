@@ -15,6 +15,7 @@ import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockLaserTrigger extends SimpleCriterionTrigger<BlockLaserTrigger.TriggerInstance> {
+
     @NotNull
     @Override
     public Codec<TriggerInstance> codec() {

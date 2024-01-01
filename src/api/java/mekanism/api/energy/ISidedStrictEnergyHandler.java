@@ -143,9 +143,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * <p>
      * Inserts energy into a given container and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from
-     * {@link IFluidHandler#fill(FluidStack,
-     * IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param container Container to insert to.
      * @param amount    Energy to insert. This must not be modified by the container.
@@ -192,9 +190,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * Inserts energy into this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}. The {@link FloatingLong} <em>should not</em>
      * be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from
-     * {@link IFluidHandler#fill(FluidStack,
-     * IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param amount Energy to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

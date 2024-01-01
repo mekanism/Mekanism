@@ -61,10 +61,12 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
 
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"}, docPlaceholder = "input tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded",
+                                                                                     "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public BasicFluidTank inputTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                     "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     public BasicFluidTank outputTank;
     @ContainerSync
     public VariableHeatCapacitor heatCapacitor;

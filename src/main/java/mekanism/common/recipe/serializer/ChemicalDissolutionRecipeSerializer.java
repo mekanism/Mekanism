@@ -33,10 +33,10 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Bas
     @Override
     public Codec<BasicChemicalDissolutionRecipe> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getGasInput),
-                  SerializerHelper.BOXED_CHEMICALSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutputRaw().getChemicalStack())
+                  SerializerHelper.BOXED_CHEMICALSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r -> r.getOutputRaw().getChemicalStack())
             ).apply(instance, factory::create));
         }
         return codec;

@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import mekanism.common.Mekanism;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class GameTestEventListeners {

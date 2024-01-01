@@ -174,7 +174,9 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
 
     /**
      * Gets the registry that this chemical will be registered to. (For use in helpers that look up the registry name and interact with tags).
+     *
      * @return Registry this chemical will be registered to.
+     *
      * @since 10.5.0
      */
     protected abstract Registry<CHEMICAL> getRegistry();

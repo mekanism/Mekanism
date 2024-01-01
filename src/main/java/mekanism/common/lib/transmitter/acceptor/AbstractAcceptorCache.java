@@ -69,7 +69,6 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     }
 
     /**
-     *
      * @apiNote Only call this from the server side
      * @implNote Grabs the acceptors from cache
      */

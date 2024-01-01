@@ -24,7 +24,7 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     public static final InfusionStackIngredientCreator INSTANCE = new InfusionStackIngredientCreator();
 
     private InfusionStackIngredientCreator() {
-        super(SingleInfusionStackIngredient.CODEC, TaggedInfusionStackIngredient.CODEC, codec->MultiInfusionStackIngredient.makeCodec(codec, MultiInfusionStackIngredient::new),
+        super(SingleInfusionStackIngredient.CODEC, TaggedInfusionStackIngredient.CODEC, codec -> MultiInfusionStackIngredient.makeCodec(codec, MultiInfusionStackIngredient::new),
               SingleInfusionStackIngredient.class, TaggedInfusionStackIngredient.class, MultiInfusionStackIngredient.class, InfusionStackIngredient.class);
     }
 

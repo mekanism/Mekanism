@@ -8,7 +8,6 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.loot.PersonalStorageContentsLootFunction;
-import mekanism.common.lib.inventory.personalstorage.PersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
 import mekanism.common.util.WorldUtils;

@@ -35,9 +35,9 @@ public class HUDRenderer {
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND,
                                                             EquipmentSlot.OFFHAND};
     private static final ResourceLocation[] ARMOR_ICONS = {MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_helmet.png"),
-                                                         MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png"),
-                                                         MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png"),
-                                                         MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png")};
+                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png"),
+                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png"),
+                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png")};
     private static final ResourceLocation TOOL_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekatool.png");
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");

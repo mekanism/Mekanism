@@ -36,8 +36,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static final FluidStackIngredientCreator INSTANCE = new FluidStackIngredientCreator();
 
     private static final Codec<FluidStackIngredient> SINGLE_CODEC = Codec.either(SingleFluidStackIngredient.CODEC, TaggedFluidStackIngredient.CODEC).xmap(
-          either->either.map(Function.identity(), Function.identity()),
-          input->{
+          either -> either.map(Function.identity(), Function.identity()),
+          input -> {
               if (input instanceof SingleFluidStackIngredient stack) {
                   return Either.left(stack);
               }
@@ -46,14 +46,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     );
 
     private static final Codec<FluidStackIngredient> CODEC = Codec.either(SINGLE_CODEC, MultiFluidStackIngredient.CODEC).xmap(
-          either->either.map(Function.identity(), multi->{
+          either -> either.map(Function.identity(), multi -> {
               //unbox if we only got one
               if (multi.ingredients.length == 1) {
                   return multi.ingredients[0];
               }
               return multi;
           }),
-          input->{
+          input -> {
               if (input instanceof MultiFluidStackIngredient multi) {
                   return Either.right(multi);
               }
@@ -212,7 +212,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
+        static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance -> instance.group(
               TagKey.codec(Registries.FLUID).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
               ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
         ).apply(instance, TaggedFluidStackIngredient::new)));
@@ -311,7 +311,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
 
         static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(
-              lst->new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])),
+              lst -> new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])),
               MultiFluidStackIngredient::getIngredients
         );
 

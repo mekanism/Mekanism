@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 @ParametersAreNotNullByDefault
 //TODO - 1.20.2: reimplement RPCDevice if OC updates to NF
 public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder /*implements RPCDevice*/ {
+
     public static <TILE extends BlockEntity & IComputerTile> MekanismDevice<TILE> create(TILE tile) {
         MekanismDevice<TILE> device = new MekanismDevice<>(tile);
         //add helper apis first
@@ -74,7 +75,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
     }
 
     private List<RPCMethodGroup> buildMethodGroups() {
-        return this.methods.keySet().stream().map(key->{
+        return this.methods.keySet().stream().map(key -> {
             List<BoundMethodData<?>> overloads = this.methods.get(key);
             if (overloads.size() == 1) {
                 return new Method(key, overloads.get(0));
@@ -88,6 +89,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
     }
 
     private static class MethodGroup implements RPCMethodGroup {
+
         private final String name;
         private final Set<RPCMethod> children;
 
@@ -108,11 +110,12 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
 
         @Override
         public Optional<RPCMethod> findOverload(RPCInvocation invocation) {
-            return this.children.stream().filter(m->m.getParameters().length == invocation.getParameters().size()).findFirst();
+            return this.children.stream().filter(m -> m.getParameters().length == invocation.getParameters().size()).findFirst();
         }
     }
 
     private static class Method implements RPCMethod {
+
         private final String name;
         private final BoundMethodData<?> methodData;
         private final Class<?> returnType;
@@ -170,6 +173,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
     }
 
     private static class Param implements RPCParameter {
+
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private final Optional<String> name;
         private final Class<?> returnType;

@@ -2,8 +2,8 @@ package mekanism.generators.common.network;
 
 import mekanism.common.lib.Version;
 import mekanism.common.network.BasePacketHandler;
-import mekanism.generators.common.network.to_server.PacketGeneratorsTileButtonPress;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
+import mekanism.generators.common.network.to_server.PacketGeneratorsTileButtonPress;
 import net.neoforged.bus.api.IEventBus;
 
 public class GeneratorsPacketHandler extends BasePacketHandler {

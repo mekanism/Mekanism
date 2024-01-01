@@ -44,7 +44,6 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     *
      * @since 10.5.0
      */
     default INGREDIENT fromHolder(Holder<TYPE> instance, int amount) {
@@ -80,18 +79,22 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      */
     @Deprecated(forRemoval = true)
     default INGREDIENT deserialize(@Nullable JsonElement json) {
-        return codec().parse(JsonOps.INSTANCE, json).getOrThrow(false, e->{});
+        return codec().parse(JsonOps.INSTANCE, json).getOrThrow(false, e -> {
+        });
     }
 
     /**
      * Helper to serialize into a Json object
      *
      * @param ingredient the ingredient to serialize
+     *
      * @return the serialized ingredient
+     *
      * @throws RuntimeException if encoding failed
      */
     default JsonElement serialize(INGREDIENT ingredient) {
-        return codec().encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, unused->{});
+        return codec().encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, unused -> {
+        });
     }
 
     /**

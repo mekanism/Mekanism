@@ -56,19 +56,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Provides methods to get parameters from a computer integration and return converted values back.
- * NB: new conversions should have an entry added to {@link #convertType(Class)}
+ * Provides methods to get parameters from a computer integration and return converted values back. NB: new conversions should have an entry added to
+ * {@link #convertType(Class)}
  *
- * getX methods may throw an exception if the param index does not exist or param is the wrong type.
- * convert methods should not wrap results, as they will be used to convert lists/maps
+ * getX methods may throw an exception if the param index does not exist or param is the wrong type. convert methods should not wrap results, as they will be used to
+ * convert lists/maps
  */
 public abstract class BaseComputerHelper {
+
     public static final Lazy<Map<Class<?>, TableType>> BUILTIN_TABLES = Lazy.of(BaseComputerHelper::getBuiltInTables);
 
     @NotNull
     private <T> T requireNonNull(int param, @Nullable T value) throws ComputerException {
         if (value == null) {
-            throw new ComputerException("Invalid parameter at index "+ param);
+            throw new ComputerException("Invalid parameter at index " + param);
         }
         return value;
     }
@@ -76,9 +77,11 @@ public abstract class BaseComputerHelper {
     /**
      * Get an enum by string value
      *
-     * @param param param index
+     * @param param     param index
      * @param enumClazz Enum class
+     *
      * @return the enum value
+     *
      * @throws ComputerException if the param index does not exist, enum value doesn't exist or param is the wrong type.
      */
     @NotNull
@@ -104,8 +107,11 @@ public abstract class BaseComputerHelper {
 
     /**
      * Get a Floating Long from a positive double value (finite if supported by computer platform)
+     *
      * @param param parameter index
+     *
      * @return constant Floating Long or FloatingLong.ZERO
+     *
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     public FloatingLong getFloatingLong(int param) throws ComputerException {
@@ -120,14 +126,16 @@ public abstract class BaseComputerHelper {
     public abstract String getString(int param) throws ComputerException;
 
     @NotNull
-    public abstract Map<?,?> getMap(int param) throws ComputerException;
+    public abstract Map<?, ?> getMap(int param) throws ComputerException;
 
     /**
      * Convert a Map to an IFilter instance of the expected type
      *
-     * @param param param index
+     * @param param        param index
      * @param expectedType expected filter class (usually parent)
+     *
      * @return the constructed filter, or null if conversion was invalid
+     *
      * @throws ComputerException if the param index does not exist or param is the wrong type. (from getMap)
      */
     @Nullable
@@ -137,7 +145,9 @@ public abstract class BaseComputerHelper {
 
     /**
      * @param param param index
+     *
      * @return ResourceLocation parsed from String or null
+     *
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     @NotNull
@@ -147,8 +157,11 @@ public abstract class BaseComputerHelper {
 
     /**
      * Get an Item instance from the registry by Resource Location (string)
+     *
      * @param param param index
+     *
      * @return Item instance or {@link Items#AIR} if item not found
+     *
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     public Item getItem(int param) throws ComputerException {
@@ -165,7 +178,7 @@ public abstract class BaseComputerHelper {
     }
 
     public ItemStack getItemStack(int param) throws ComputerException {
-        Map<?,?> map = getMap(param);
+        Map<?, ?> map = getMap(param);
         try {
             Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get("name")));
             int count = SpecialConverters.getIntFromRaw(map.get("count"));
@@ -176,7 +189,7 @@ public abstract class BaseComputerHelper {
             }
             return stack;
         } catch (ClassCastException ex) {
-            throw new ComputerException("Invalid ItemStack at index "+param);
+            throw new ComputerException("Invalid ItemStack at index " + param);
         } catch (CommandSyntaxException e) {
             throw new ComputerException("Invalid NBT data");
         }
@@ -184,6 +197,7 @@ public abstract class BaseComputerHelper {
 
     /**
      * Signals that the method did not return a result (i.e. is void)
+     *
      * @return Computer platform dependent.
      */
     public Object voidResult() {
@@ -220,7 +234,9 @@ public abstract class BaseComputerHelper {
     }
 
     public <T> Object convert(@Nullable Collection<T> list, @NotNull Function<T, Object> converter) {
-        if (list == null) return Collections.emptyList();
+        if (list == null) {
+            return Collections.emptyList();
+        }
         List<Object> converted = new ArrayList<>(list.size());
         for (T el : list) {
             converted.add(converter.apply(el));
@@ -229,7 +245,7 @@ public abstract class BaseComputerHelper {
     }
 
     public Object convert(@Nullable ResourceLocation rl) {
-        return rl != null? rl.toString() : null;
+        return rl != null ? rl.toString() : null;
     }
 
     public Object convert(@Nullable UUID uuid) {
@@ -419,7 +435,7 @@ public abstract class BaseComputerHelper {
         Map<String, Object> helpData = new HashMap<>();
         helpData.put("name", methodHelpData.methodName());
         if (methodHelpData.params() != null) {
-            helpData.put("params", methodHelpData.params().stream().map(p->{
+            helpData.put("params", methodHelpData.params().stream().map(p -> {
                 Map<String, Object> arg = new HashMap<>();
                 arg.put("name", p.name());
                 arg.put("type", p.type());
@@ -444,10 +460,10 @@ public abstract class BaseComputerHelper {
     }
 
     /**
-     * Convert a type to the converted version (what is exposed to the computer).
-     * Used on OpenComputers2
+     * Convert a type to the converted version (what is exposed to the computer). Used on OpenComputers2
      *
      * @param clazz the unconverted type
+     *
      * @return the converted type, or clazz if no conversion needed
      */
     public static Class<?> convertType(Class<?> clazz) {

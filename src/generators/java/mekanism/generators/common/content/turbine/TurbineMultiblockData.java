@@ -47,7 +47,8 @@ public class TurbineMultiblockData extends MultiblockData {
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
+                                                                                        "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;

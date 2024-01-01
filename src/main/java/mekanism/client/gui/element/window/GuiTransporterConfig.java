@@ -46,10 +46,10 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
               () -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
               () -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.RIGHT))));
-        addSideDataButton(RelativeSide.BOTTOM, 41, 64+16);
+        addSideDataButton(RelativeSide.BOTTOM, 41, 64 + 16);
         addSideDataButton(RelativeSide.TOP, 41, 34);
         addSideDataButton(RelativeSide.FRONT, 41, 57);
-        addSideDataButton(RelativeSide.BACK, 18, 64+16);
+        addSideDataButton(RelativeSide.BACK, 18, 64 + 16);
         addSideDataButton(RelativeSide.LEFT, 18, 57);
         addSideDataButton(RelativeSide.RIGHT, 64, 57);
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW, this.tile.getEjector());
@@ -81,7 +81,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
                     displayTooltips(guiGraphics, mouseX, mouseY,
                           TextComponentUtil.translate(side.getTranslationKey()),
                           colorComponent
-                         );
+                    );
                 }
             }
         };

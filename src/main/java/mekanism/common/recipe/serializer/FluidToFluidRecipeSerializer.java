@@ -27,7 +27,7 @@ public class FluidToFluidRecipeSerializer<RECIPE extends BasicFluidToFluidRecipe
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.INPUT).forGetter(FluidToFluidRecipe::getInput),
                   SerializerHelper.FLUIDSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicFluidToFluidRecipe::getOutputRaw)
             ).apply(instance, factory::create));

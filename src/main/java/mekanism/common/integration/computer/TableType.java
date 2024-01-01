@@ -26,7 +26,8 @@ public record TableType(String description, String humanName, Map<String, FieldT
         return new Builder(clazz, description);
     }
 
-    public record FieldType(String description, Class<?> javaType, String type, Class<?>[] javaExtra){
+    public record FieldType(String description, Class<?> javaType, String type, Class<?>[] javaExtra) {
+
         public static final Codec<FieldType> CODEC = RecordCodecBuilder.create(instance ->
               instance.group(
                     Codec.STRING.fieldOf("description").forGetter(FieldType::description),

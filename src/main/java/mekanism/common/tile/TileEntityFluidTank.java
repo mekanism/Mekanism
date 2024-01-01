@@ -51,7 +51,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ISustainedData {
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
+                                                                                     "getFilledPercentage"}, docPlaceholder = "tank")
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;

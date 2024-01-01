@@ -240,7 +240,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
           KnownTagManager<CHEMICAL> tagManager, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
-        if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL,STACK> singleChemicalStackIngredient) {
+        if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
             //Note: Handled via implicit casts
             return convertParam(singleChemicalStackIngredient.getChemicalInstance());
         } else if (ingredient instanceof TaggedChemicalStackIngredient) {

@@ -35,15 +35,18 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
         return this.input.test(fluidStack);
     }
 
-    @Override public FluidStackIngredient getInput() {
+    @Override
+    public FluidStackIngredient getInput() {
         return input;
     }
 
-    @Override public List<FluidStack> getOutputDefinition() {
+    @Override
+    public List<FluidStack> getOutputDefinition() {
         return Collections.singletonList(output);
     }
 
-    @Override@Contract(value = "_ ->new", pure = true)
+    @Override
+    @Contract(value = "_ ->new", pure = true)
     public FluidStack getOutput(FluidStack input) {
         return output.copy();
     }

@@ -56,10 +56,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                                                                                         "getCooledCoolantFilledPercentage"}, docPlaceholder = "cooled coolant tank")
     public IGasTank cooledCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded",
+                                                                                     "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public VariableCapacityFluidTank waterTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
+                                                                                        "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "boiler")

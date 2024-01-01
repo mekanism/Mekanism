@@ -3,8 +3,20 @@ package mekanism;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.openzen.zencode.java.ZenCodeType;
-
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -22,20 +34,7 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import org.openzen.zencode.java.ZenCodeType;
 
 public class ParamNameMapper extends AbstractProcessor {
 
@@ -65,7 +64,7 @@ public class ParamNameMapper extends AbstractProcessor {
         Types typeUtils = processingEnv.getTypeUtils();
         Elements elementUtils = processingEnv.getElementUtils();
         Set<Class<? extends Annotation>> supportedAnnotations = getSupportedAnnotations();
-        Map<AnnotationParamScanner, Map</*class name*/String,Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>> annotatedData = new IdentityHashMap<>();
+        Map<AnnotationParamScanner, Map</*class name*/String, Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>> annotatedData = new IdentityHashMap<>();
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWithAny(supportedAnnotations)) {
             if (annotatedElement.getKind() == ElementKind.METHOD) {
                 ExecutableElement executableElement = (ExecutableElement) annotatedElement;
@@ -89,7 +88,7 @@ public class ParamNameMapper extends AbstractProcessor {
                                 Map<String, List<String>> signatures = annotatedData
                                       .computeIfAbsent(scanner, unused -> new TreeMap<>())
                                       .computeIfAbsent(className, unused -> new TreeMap<>())
-                                      .computeIfAbsent(methodName, unused-> new TreeMap<>());
+                                      .computeIfAbsent(methodName, unused -> new TreeMap<>());
                                 signatures.put(methodSignature, paramNames);
                                 //We can skip checking other annotations this scanner may support as we have
                                 // already added the signature to this scanner

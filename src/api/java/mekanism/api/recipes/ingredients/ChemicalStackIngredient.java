@@ -34,6 +34,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
      */
     interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
+
         @NotNull
         @Override
         default JsonElement serialize() {
@@ -47,6 +48,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
      */
     interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
+
         @NotNull
         @Override
         default JsonElement serialize() {
@@ -60,6 +62,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
      */
     interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
+
         @NotNull
         @Override
         default JsonElement serialize() {
@@ -73,6 +76,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
      */
     interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
+
         @NotNull
         @Override
         default JsonElement serialize() {

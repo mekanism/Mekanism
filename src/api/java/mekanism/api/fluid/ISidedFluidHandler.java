@@ -132,8 +132,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * <p>
      * Inserts a {@link FluidStack} into a given tank and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from
-     * {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link FluidStack} to insert. This must not be modified by the tank.
@@ -180,8 +179,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * Inserts a {@link FluidStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IExtendedFluidHandler}. The {@link FluidStack}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from
-     * {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param stack  {@link FluidStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

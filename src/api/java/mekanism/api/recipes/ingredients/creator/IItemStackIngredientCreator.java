@@ -48,7 +48,6 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @implNote This wraps via {@link #from(ItemStack)} so if there is any durability or default NBT it will be included in the ingredient. If this is not desired,
      * manually create an ingredient and call {@link #from(Ingredient)}.
-     *
      * @since 10.5.0
      */
     default ItemStackIngredient fromHolder(Holder<Item> item) {

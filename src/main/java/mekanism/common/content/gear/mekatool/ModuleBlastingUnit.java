@@ -41,7 +41,7 @@ public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
         for (int type = 1; type <= types; type++) {
             int accessibleValues = type + 1;
             map.put(type, Lazy.of(() -> new NestedRadialMode(IRadialDataHelper.INSTANCE.dataForTruncated(RADIAL_ID, accessibleValues, BlastRadius.LOW),
-                    MekanismLang.RADIAL_BLASTING_POWER, BlastRadius.LOW.icon(), EnumColor.DARK_BLUE)));
+                  MekanismLang.RADIAL_BLASTING_POWER, BlastRadius.LOW.icon(), EnumColor.DARK_BLUE)));
         }
         return map;
     });

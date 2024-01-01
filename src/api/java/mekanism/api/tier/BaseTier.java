@@ -70,7 +70,6 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
      * {@inheritDoc}
      *
      * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
-     *
      * @since 10.4.0
      */
     @Override

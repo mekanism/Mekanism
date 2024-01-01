@@ -2,19 +2,19 @@ package mekanism.visitors;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
-
+import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
-import java.util.List;
 
 /**
  * Converts an annotation value to a format suitable for a CodeBlock's $L formatter
  */
 public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisitor14<Object, TypeMirror> {
+
     AnnotationValueToLiteralVisitor() {
     }
 

@@ -18,8 +18,8 @@ import mekanism.tools.common.material.impl.vanilla.IronPaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.NetheritePaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.StonePaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.WoodPaxelMaterialDefaults;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ToolsConfig extends BaseMekanismConfig {
 

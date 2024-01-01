@@ -57,7 +57,7 @@ public class SpecialConverters {
             try {
                 stack.setTag(NbtUtils.snbtToStructure(rawNBT));
             } catch (CommandSyntaxException ex) {
-                throw new ComputerException("Invalid SNBT: "+ex.getMessage());
+                throw new ComputerException("Invalid SNBT: " + ex.getMessage());
             }
         }
         return stack;

@@ -46,7 +46,7 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     }
 
     @Override
-    default boolean canPlaceLiquid(Player player,  @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+    default boolean canPlaceLiquid(Player player, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return !state.getValue(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canPlaceLiquid(player, world, pos, state, fluid);
     }
 

@@ -90,7 +90,10 @@ public class WTHITLookingAtHelper implements LookingAtHelper, IData {
         UNKNOWN,
         ENERGY,
         FLUID,
-        GAS, INFUSION, PIGMENT, SLURRY,
+        GAS,
+        INFUSION,
+        PIGMENT,
+        SLURRY,
         COMPONENT;
 
         public static LookingAtTypes getType(Object element) {

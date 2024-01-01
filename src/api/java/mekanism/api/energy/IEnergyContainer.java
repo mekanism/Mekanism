@@ -44,9 +44,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * <p>
      * Inserts energy into this {@link IEnergyContainer} and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from
-     * {@link IFluidHandler#fill(FluidStack,
-     * IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param amount         Energy to insert. This must not be modified by the container.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

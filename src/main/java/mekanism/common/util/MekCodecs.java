@@ -10,7 +10,7 @@ import net.minecraft.util.ExtraCodecs;
 public class MekCodecs {
 
     public static final Codec<MethodRestriction> METHOD_RESTRICTION_CODEC = ExtraCodecs.stringResolverCodec(MethodRestriction::name, MethodRestriction::valueOf);
-    public static final Codec<Class<?>> CLASS_TO_STRING_CODEC = ExtraCodecs.stringResolverCodec(Class::getName, s->{
+    public static final Codec<Class<?>> CLASS_TO_STRING_CODEC = ExtraCodecs.stringResolverCodec(Class::getName, s -> {
         try {
             return Class.forName(s);
         } catch (ClassNotFoundException e) {

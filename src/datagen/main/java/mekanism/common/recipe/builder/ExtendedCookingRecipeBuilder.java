@@ -81,7 +81,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     @Override
-    protected Recipe<?> asRecipe(){
+    protected Recipe<?> asRecipe() {
         return factory.create(
               Objects.requireNonNullElse(this.group, ""),
               bookCategory,

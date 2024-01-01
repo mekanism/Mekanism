@@ -31,8 +31,8 @@ public class PigmentBuilder extends ChemicalBuilder<Pigment, PigmentBuilder> {
      *
      * @apiNote The texture will be automatically stitched to the block texture atlas.
      * <br>
-     * It is recommended to override {@link Pigment#getColorRepresentation()} if this builder method is not used in combination with {@link #tint(int)} due to the
-     * texture not needing tinting.
+     * It is recommended to override {@link Pigment#getColorRepresentation()} if this builder method is not used in combination with {@link #tint(int)} due to the texture
+     * not needing tinting.
      */
     public static PigmentBuilder builder(ResourceLocation texture) {
         return new PigmentBuilder(Objects.requireNonNull(texture));

@@ -43,7 +43,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         this.duration = duration;
     }
 
-    @Override public int getDuration() {
+    @Override
+    public int getDuration() {
         return duration;
     }
 

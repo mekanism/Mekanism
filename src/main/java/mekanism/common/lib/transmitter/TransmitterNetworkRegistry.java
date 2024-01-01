@@ -28,11 +28,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.level.ChunkTicketLevelUpdatedEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class TransmitterNetworkRegistry {

@@ -49,8 +49,8 @@ public class Attributes {
     }
 
     /**
-     * If a block has an inventory.
-     * Optionally allows for custom loot table providing. DelayedLootItemBuilder generic is due to the builder being in the Datagen source set.
+     * If a block has an inventory. Optionally allows for custom loot table providing. DelayedLootItemBuilder generic is due to the builder being in the Datagen source
+     * set.
      */
     public static class AttributeInventory<DelayedLootItemBuilder extends ConditionUserBuilder<DelayedLootItemBuilder> & FunctionUserBuilder<DelayedLootItemBuilder>> implements Attribute {
 
@@ -59,7 +59,9 @@ public class Attributes {
 
         /**
          * Create an Inventory attribute with custom loot function handling
-         * @param customLootBuilder consumes the Builders and returns `hasContents` for use in {@link mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)}
+         *
+         * @param customLootBuilder consumes the Builders and returns `hasContents` for use in
+         *                          {@link mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)}
          */
         @SuppressWarnings("JavadocReference")
         public AttributeInventory(@Nullable BiFunction<DelayedLootItemBuilder, CopyNbtFunction.Builder, @NotNull Boolean> customLootBuilder) {

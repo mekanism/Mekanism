@@ -59,7 +59,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IPigmentTank pigmentTank;
 
     private final IOutputHandler<@NotNull PigmentStack> outputHandler;

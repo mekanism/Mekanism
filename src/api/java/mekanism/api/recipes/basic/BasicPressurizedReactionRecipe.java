@@ -57,23 +57,28 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         this.outputGas = outputGas.copy();
     }
 
-    @Override public ItemStackIngredient getInputSolid() {
+    @Override
+    public ItemStackIngredient getInputSolid() {
         return inputSolid;
     }
 
-    @Override public FluidStackIngredient getInputFluid() {
+    @Override
+    public FluidStackIngredient getInputFluid() {
         return inputFluid;
     }
 
-    @Override public GasStackIngredient getInputGas() {
+    @Override
+    public GasStackIngredient getInputGas() {
         return inputGas;
     }
 
-    @Override public FloatingLong getEnergyRequired() {
+    @Override
+    public FloatingLong getEnergyRequired() {
         return energyRequired;
     }
 
-    @Override public int getDuration() {
+    @Override
+    public int getDuration() {
         return duration;
     }
 
@@ -82,11 +87,13 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
     }
 
-    @Override public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
+    @Override
+    public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
         return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputGas));
     }
 
-    @Override@Contract(value = "_, _, _ -> new", pure = true)
+    @Override
+    @Contract(value = "_, _, _ -> new", pure = true)
     public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
         return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
     }

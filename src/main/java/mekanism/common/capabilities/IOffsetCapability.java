@@ -44,15 +44,16 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @param side       The Side to check from: CAN BE NULL. Null is defined to represent 'internal' or 'self'
      * @param offset     An offset position to figure out what block is actually the one that is being checked.
      *
-     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)} should
-     * return {@code null}.
+     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)}
+     * should return {@code null}.
      */
     default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
         return false;
     }
 
     /**
-     * Copy of {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for convenience
+     * Copy of {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for
+     * convenience
      * <p>
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>
@@ -68,5 +69,6 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      *
      * @return The requested capability.
      */
-    @Nullable <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset);
+    @Nullable
+    <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset);
 }

@@ -103,11 +103,13 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
 
     /**
      * Are all the Slots empty?
-     * @implNote named isInventoryEmpty to avoid clashing with any other isEmpty() method
-     * @since 10.4.0
      *
      * @param side the side to query
+     *
      * @return true if completely empty on this side
+     *
+     * @implNote named isInventoryEmpty to avoid clashing with any other isEmpty() method
+     * @since 10.4.0
      */
     default boolean isInventoryEmpty(@Nullable Direction side) {
         for (IInventorySlot slot : getInventorySlots(side)) {
@@ -120,9 +122,10 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
 
     /**
      * Sided inventory helper for isEmpty
-     * @since 10.4.0
      *
      * @return true if completely empty on the default side
+     *
+     * @since 10.4.0
      */
     default boolean isInventoryEmpty() {
         return isInventoryEmpty(getInventorySideFor());

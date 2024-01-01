@@ -26,7 +26,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends BasicItemStackT
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(BasicItemStackToItemStackRecipe::getInput),
                   SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicItemStackToItemStackRecipe::getOutputRaw)
             ).apply(instance, factory::create));

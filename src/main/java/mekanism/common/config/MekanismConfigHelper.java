@@ -3,8 +3,8 @@ package mekanism.common.config;
 import java.nio.file.Path;
 import mekanism.common.Mekanism;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.config.ConfigTracker;
+import net.neoforged.fml.loading.FMLPaths;
 
 public class MekanismConfigHelper {
 

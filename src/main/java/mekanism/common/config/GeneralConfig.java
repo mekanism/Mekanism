@@ -17,9 +17,9 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.fml.config.ModConfig.Type;
 
 public class GeneralConfig extends BaseMekanismConfig {
 

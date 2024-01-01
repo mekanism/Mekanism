@@ -73,7 +73,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded",
                                                                                         "getRightInputFilledPercentage"}, docPlaceholder = "right pigment tank")
     public IPigmentTank rightInputTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output pigment tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output pigment tank")
     public IPigmentTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

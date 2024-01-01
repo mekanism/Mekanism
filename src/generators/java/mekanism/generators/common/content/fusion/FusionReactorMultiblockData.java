@@ -80,10 +80,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded",
+                                                                                     "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public IExtendedFluidTank waterTank;
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
+                                                                                        "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
 
     private double biomeAmbientTemp;
@@ -107,7 +109,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
                                                                                         "getTritiumFilledPercentage"}, docPlaceholder = "tritium tank")
     public IGasTank tritiumTank;
     @ContainerSync(tags = FUEL_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded",
+                                                                                        "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;

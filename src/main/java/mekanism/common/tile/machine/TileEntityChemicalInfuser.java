@@ -72,7 +72,8 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded",
                                                                                         "getRightInputFilledPercentage"}, docPlaceholder = "right input tank")
     public IGasTank rightTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output (center) tank")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output (center) tank")
     public IGasTank centerTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

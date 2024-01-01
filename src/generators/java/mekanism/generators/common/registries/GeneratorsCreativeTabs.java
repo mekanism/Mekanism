@@ -30,9 +30,9 @@ public class GeneratorsCreativeTabs {
 
     private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {
         ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
-         if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-             CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
-                   GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
+        if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
+                  GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
             for (IBlockProvider block : GeneratorsBlocks.BLOCKS.getAllBlocks()) {
                 if (Attribute.has(block.getBlock(), AttributeComparator.class)) {
@@ -42,7 +42,7 @@ public class GeneratorsCreativeTabs {
         } else if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             CreativeTabDeferredRegister.addToDisplay(GeneratorsFluids.FLUIDS, event);
         } else if (tabKey == CreativeModeTabs.INGREDIENTS) {
-             CreativeTabDeferredRegister.addToDisplay(event, GeneratorsItems.HOHLRAUM, GeneratorsItems.SOLAR_PANEL);
-         }
+            CreativeTabDeferredRegister.addToDisplay(event, GeneratorsItems.HOHLRAUM, GeneratorsItems.SOLAR_PANEL);
+        }
     }
 }

@@ -32,7 +32,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
                   stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
             ).apply(instance, factory::create));

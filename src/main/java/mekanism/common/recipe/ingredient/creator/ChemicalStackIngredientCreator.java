@@ -1,6 +1,5 @@
 package mekanism.common.recipe.ingredient.creator;
 
-import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import java.util.function.Function;
@@ -14,7 +13,6 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -23,7 +21,7 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
     private final Codec<INGREDIENT> myCodec;
 
     protected <ING_STACKED extends SingleChemicalStackIngredient<CHEMICAL, STACK>,
-          ING_TAGGED extends TaggedChemicalStackIngredient<CHEMICAL,STACK>,
+          ING_TAGGED extends TaggedChemicalStackIngredient<CHEMICAL, STACK>,
           MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>>
     ChemicalStackIngredientCreator(Codec<ING_STACKED> stackCodec, Codec<ING_TAGGED> taggedCodec, Function<Codec<INGREDIENT>, Codec<MULTI>> multiCodecSupplier,
           Class<ING_STACKED> stackedClass, Class<ING_TAGGED> taggedClass, Class<MULTI> multiClass, Class<INGREDIENT> ingredientClass) {

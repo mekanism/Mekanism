@@ -17,10 +17,11 @@ import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 class PersonalStorageData extends MekanismSavedData {
+
     private final Map<UUID, PersonalStorageItemInventory> inventoriesById = new HashMap<>();
 
     PersonalStorageItemInventory getOrAddInventory(UUID id) {
-        return inventoriesById.computeIfAbsent(id, unused->createInventory());
+        return inventoriesById.computeIfAbsent(id, unused -> createInventory());
     }
 
     PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {

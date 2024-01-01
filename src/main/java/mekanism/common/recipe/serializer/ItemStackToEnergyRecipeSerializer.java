@@ -26,9 +26,9 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToEnergyRecipe::getInput),
-                  FloatingLong.NONZERO_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutput(ItemStack.EMPTY))
+                  FloatingLong.NONZERO_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r -> r.getOutput(ItemStack.EMPTY))
             ).apply(instance, factory::create));
         }
         return codec;

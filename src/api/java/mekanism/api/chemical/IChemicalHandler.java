@@ -75,9 +75,7 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * <p>
      * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from
-     * {@link IFluidHandler#fill(FluidStack,
-     * IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link STACK} to insert. This must not be modified by the tank.
@@ -108,9 +106,7 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link STACK}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from
-     * {@link IFluidHandler#fill(FluidStack,
-     * IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param stack  {@link STACK} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

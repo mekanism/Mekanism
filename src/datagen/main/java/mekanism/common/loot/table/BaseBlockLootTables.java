@@ -323,9 +323,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
     public static class TrackingNbtBuilder extends CopyNbtFunction.Builder {
+
         private boolean hasData = false;
 
-        public TrackingNbtBuilder(NbtProvider pNbtSource){
+        public TrackingNbtBuilder(NbtProvider pNbtSource) {
             super(pNbtSource);
         }
 
@@ -342,6 +343,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @NothingNullByDefault
     public static class DelayedLootItemBuilder implements ConditionUserBuilder<DelayedLootItemBuilder>, FunctionUserBuilder<DelayedLootItemBuilder> {
+
         private final List<LootItemFunction.Builder> functions = new ArrayList<>();
         private final List<LootItemCondition.Builder> conditions = new ArrayList<>();
 

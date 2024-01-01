@@ -43,7 +43,6 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     *
      * @since 10.5.0
      */
     default INGREDIENT fromHolder(Holder<CHEMICAL> instance, long amount) {
