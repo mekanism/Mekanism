@@ -127,7 +127,6 @@ public class ClientRegistrationUtil {
     }
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
-    @SuppressWarnings("Convert2Lambda")
     public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiElectricMachine<TILE, C>>() {
             @NotNull
@@ -139,7 +138,6 @@ public class ClientRegistrationUtil {
     }
 
     //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
-    @SuppressWarnings("Convert2Lambda")
     public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(ContainerTypeRegistryObject<C> type) {
         registerScreen(type, new ScreenConstructor<C, GuiAdvancedElectricMachine<TILE, C>>() {
             @NotNull

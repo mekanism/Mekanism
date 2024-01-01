@@ -58,7 +58,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderFloatingItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
+    protected final void renderFloatingItem(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
             //Note: We ignore if the virtual slot is not actually available as we still want to transition back to the spot
             // it was in visually

@@ -65,7 +65,8 @@ public class MekanismWTHITPlugin implements IWailaPlugin {
             @Nullable
             @Override
             public BlockState getOverride(IBlockAccessor accessor, IPluginConfig config) {
-                if (accessor.getHitResult() instanceof BlockHitResult result && result.getType() != Type.MISS) {
+                BlockHitResult result = accessor.getBlockHitResult();
+                if (result.getType() != Type.MISS) {
                     Level level = accessor.getWorld();
                     BlockPos mainPos = BlockBounding.getMainBlockPos(level, result.getBlockPos());
                     if (mainPos != null) {

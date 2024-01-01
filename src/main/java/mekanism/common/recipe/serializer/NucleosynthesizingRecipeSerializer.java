@@ -39,6 +39,7 @@ public class NucleosynthesizingRecipeSerializer implements RecipeSerializer<Basi
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicNucleosynthesizingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

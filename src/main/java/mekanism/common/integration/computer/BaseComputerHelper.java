@@ -245,11 +245,11 @@ public abstract class BaseComputerHelper {
     }
 
     public Object convert(@Nullable ResourceLocation rl) {
-        return rl != null ? rl.toString() : null;
+        return rl == null ? null : rl.toString();
     }
 
     public Object convert(@Nullable UUID uuid) {
-        return uuid != null ? uuid.toString() : null;
+        return uuid == null ? null : uuid.toString();
     }
 
     public Object convert(@Nullable ChemicalStack<?> stack) {
@@ -337,7 +337,7 @@ public abstract class BaseComputerHelper {
     }
 
     public Object convert(@Nullable Enum<?> res) {
-        return res != null ? res.name() : null;
+        return res == null ? null : res.name();
     }
 
     protected Map<String, Object> convertFilterCommon(IFilter<?> result) {

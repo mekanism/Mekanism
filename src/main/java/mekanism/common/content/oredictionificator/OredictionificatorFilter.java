@@ -9,7 +9,6 @@ import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Holder;

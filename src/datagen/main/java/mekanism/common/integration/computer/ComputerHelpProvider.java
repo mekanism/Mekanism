@@ -135,11 +135,11 @@ public class ComputerHelpProvider implements DataProvider {
                     output.writeRow(
                           friendlyClassName,
                           method.methodName(),
-                          method.params() != null ? method.params().stream().map(param -> param.name() + ": " + param.type()).collect(Collectors.joining(", ")) : "",
+                          method.params() == null ? "" : method.params().stream().map(param -> param.name() + ": " + param.type()).collect(Collectors.joining(", ")),
                           csvReturnsValue(method.returns()),
-                          method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
+                          method.restriction() == MethodRestriction.NONE ? "" : method.restriction().name(),
                           method.requiresPublicSecurity(),
-                          method.description() != null ? method.description() : ""
+                          method.description() == null ? "" : method.description()
                     );
                 }
             }

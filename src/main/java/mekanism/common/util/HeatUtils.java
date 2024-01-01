@@ -36,7 +36,7 @@ public class HeatUtils {
         }
 
         double tmpCalc;
-        double red, green, blue, alpha;
+        double red, blue;
         double effectiveTemp = absTemp;
 
         if (effectiveTemp < 10) {
@@ -61,7 +61,7 @@ public class HeatUtils {
             tmpCalc = effectiveTemp - 60;
             tmpCalc = 288.1221695283 * Math.pow(tmpCalc, -0.0755148492);
         }
-        green = tmpCalc / 255D;
+        double green = tmpCalc / 255D;
 
         if (effectiveTemp >= 66) {
             blue = 1;
@@ -74,7 +74,7 @@ public class HeatUtils {
             blue = tmpCalc / 255D;
         }
 
-        alpha = temperature / 1_000;
+        double alpha = temperature / 1_000;
 
         //clamp to 0 <= n >= 1
         red = Mth.clamp(red, 0, 1);

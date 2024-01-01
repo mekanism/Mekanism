@@ -215,7 +215,8 @@ public class QIOCraftingTransferHelper {
                         return sources;
                     }
                     //Otherwise, reduce how much we still need by how much we found
-                    toUse -= stored;
+                    //Note: We know stored is less than toUse so fits in an int
+                    toUse -= (int) stored;
                 }
             }
             //Something went wrong, fail. We tried to use more than we have

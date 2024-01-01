@@ -37,6 +37,7 @@ public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<Bas
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicFluidSlurryToSlurryRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

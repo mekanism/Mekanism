@@ -74,6 +74,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         return this.codec.get();
     }
 
+    @NotNull
     @Override
     public BasicRotaryRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

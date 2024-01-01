@@ -73,7 +73,7 @@ public class ComputerMethodFactory<T> {
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
-        WeakReference<T> weakSubject = subject != null ? new WeakReference<>(subject) : null;
+        WeakReference<T> weakSubject = subject == null ? null : new WeakReference<>(subject);
         for (MethodData<T> methodData : this.methods) {
             if (methodData.supports(subject)) {
                 holder.register(methodData, weakSubject, false);

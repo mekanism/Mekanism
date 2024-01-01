@@ -41,6 +41,7 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicChemicalCrystallizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

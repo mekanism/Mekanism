@@ -27,7 +27,6 @@ public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBa
      * @apiNote The order of the inputs does not matter.
      */
     public BasicPigmentMixingRecipe(PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, PigmentStack output) {
-        super();
         this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
         this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

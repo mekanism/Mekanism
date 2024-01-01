@@ -22,7 +22,7 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean isRemote) {
         super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, stack);
         //We have to initialize this before actually adding the slots
-        itemInventory = !isRemote ? PersonalStorageManager.getInventoryFor(stack).orElseThrow(() -> new IllegalStateException("Inventory not available")) : new ClientSidePersonalStorageInventory();
+        itemInventory = isRemote ? new ClientSidePersonalStorageInventory() : PersonalStorageManager.getInventoryFor(stack).orElseThrow(() -> new IllegalStateException("Inventory not available"));
         super.addSlotsAndOpen();
     }
 

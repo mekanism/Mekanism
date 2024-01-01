@@ -1,11 +1,11 @@
 package mekanism.common.integration.computer.opencomputers2;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import li.cil.oc2.api.bus.device.rpc.RPCDevice;
 import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import li.cil.oc2.api.bus.device.rpc.RPCMethod;
 import li.cil.oc2.api.bus.device.rpc.RPCMethodGroup;
@@ -20,7 +20,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
-import java.lang.ref.WeakReference;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
@@ -69,7 +68,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         int result = methodGroups.hashCode();
         result = 31 * result + name.hashCode();
         TILE tile = attachedTile.get();
-        result = 31 * result + (tile != null ? tile.hashCode() : 0);
+        result = 31 * result + (tile == null ? 0 : tile.hashCode());
         result = 31 & result + methods.hashCode();
         return result;
     }

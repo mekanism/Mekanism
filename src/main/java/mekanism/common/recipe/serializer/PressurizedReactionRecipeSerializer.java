@@ -54,6 +54,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Bas
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicPressurizedReactionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

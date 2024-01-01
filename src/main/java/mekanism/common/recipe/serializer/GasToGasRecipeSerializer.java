@@ -35,6 +35,7 @@ public class GasToGasRecipeSerializer<RECIPE extends BasicGasToGasRecipe> implem
         return codec;
     }
 
+    @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

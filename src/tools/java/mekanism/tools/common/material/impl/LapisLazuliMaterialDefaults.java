@@ -72,10 +72,9 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
-            case BOOTS -> 1;
+            case BOOTS, HELMET -> 1;
             case LEGGINGS -> 3;
             case CHESTPLATE -> 4;
-            case HELMET -> 1;
         };
     }
 

@@ -77,7 +77,7 @@ public class Attributes {
         }
 
         public boolean applyLoot(DelayedLootItemBuilder builder, CopyNbtFunction.Builder nbtBuilder) {
-            return this.customLootBuilder != null ? this.customLootBuilder.apply(builder, nbtBuilder) : false;
+            return this.customLootBuilder != null && this.customLootBuilder.apply(builder, nbtBuilder);
         }
     }
 

@@ -167,7 +167,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         fusionWaterHeatingRatio = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation.")
               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
         fusionFuelCapacity = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that the fusion reactor can store.")
-              .defineInRange("fuelCapacity", (long) FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
+              .defineInRange("fuelCapacity", FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
         fusionEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Amount of energy (J) the fusion reactor can store.",
               "energyCapacity", FloatingLong.createConst(1_000_000_000), CachedFloatingLongValue.POSITIVE);
         int baseMaxWater = 1_000 * FluidType.BUCKET_VOLUME;

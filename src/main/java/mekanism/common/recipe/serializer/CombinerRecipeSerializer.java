@@ -36,6 +36,7 @@ public class CombinerRecipeSerializer implements RecipeSerializer<BasicCombinerR
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicCombinerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

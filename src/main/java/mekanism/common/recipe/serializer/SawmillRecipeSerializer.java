@@ -51,6 +51,7 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicSawmillRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

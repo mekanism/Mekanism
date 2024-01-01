@@ -41,6 +41,7 @@ public class ElectrolysisRecipeSerializer implements RecipeSerializer<BasicElect
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicElectrolysisRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

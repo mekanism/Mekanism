@@ -45,6 +45,7 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
         return codec;
     }
 
+    @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

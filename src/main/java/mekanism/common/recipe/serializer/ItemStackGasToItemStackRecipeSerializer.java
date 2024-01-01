@@ -2,10 +2,8 @@ package mekanism.common.recipe.serializer;
 
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 
 public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends BasicItemStackGasToItemStackRecipe> extends

@@ -1,6 +1,5 @@
 package mekanism.common.content.gear.mekasuit;
 
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;

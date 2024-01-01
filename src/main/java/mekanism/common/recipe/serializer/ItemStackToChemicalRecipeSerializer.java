@@ -40,6 +40,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         return codec;
     }
 
+    @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

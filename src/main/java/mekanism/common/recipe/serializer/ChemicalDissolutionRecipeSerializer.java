@@ -42,6 +42,7 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Bas
         return codec;
     }
 
+    @NotNull
     @Override
     public BasicChemicalDissolutionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

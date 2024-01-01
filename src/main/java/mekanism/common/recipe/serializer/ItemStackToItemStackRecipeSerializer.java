@@ -34,6 +34,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends BasicItemStackT
         return codec;
     }
 
+    @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {

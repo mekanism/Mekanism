@@ -106,7 +106,7 @@ public abstract class BoundMethodHolder {
         public int hashCode() {
             int result = method.hashCode();
             T subject = unwrappedSubject();
-            result = 31 * result + (subject != null ? subject.hashCode() : 0);
+            result = 31 * result + (subject == null ? 0 : subject.hashCode());
             return result;
         }
     }

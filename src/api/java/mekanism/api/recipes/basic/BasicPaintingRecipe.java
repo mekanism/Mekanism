@@ -28,7 +28,6 @@ public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemSta
      * @param output       Output.
      */
     public BasicPaintingRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-        super();
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.pigmentInput = Objects.requireNonNull(pigmentInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

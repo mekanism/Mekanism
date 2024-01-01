@@ -72,10 +72,9 @@ public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
     @Override
     public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
-            case BOOTS -> 3;
+            case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
             case CHESTPLATE -> 8;
-            case HELMET -> 3;
         };
     }
 

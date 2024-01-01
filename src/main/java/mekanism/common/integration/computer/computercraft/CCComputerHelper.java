@@ -3,18 +3,11 @@ package mekanism.common.integration.computer.computercraft;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
+import java.util.Map;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.content.oredictionificator.OredictionificatorFilter;
-import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class CCComputerHelper extends BaseComputerHelper {
 
