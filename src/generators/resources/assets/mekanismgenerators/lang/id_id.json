@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Volume Tangki: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventilasi: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Input Uap: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Membuang Uap",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Air TIDAK akan di daur ulang",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Membuang kelebihan Uap",
   "wind_generator.mekanismgenerators.no_wind": "Tidak ada angin",
   "wind_generator.mekanismgenerators.sky_blocked": "Langit Terhalangi"
 }
