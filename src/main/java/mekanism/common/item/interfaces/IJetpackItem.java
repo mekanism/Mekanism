@@ -121,19 +121,19 @@ public interface IJetpackItem {
         Vec3 motion = player.getDeltaMovement();
         if ((mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) && player.isFallFlying()) {
             Vec3 forward = player.getLookAngle();
-            Vec3 delta = forward.multiply(forward.scale(thrust))
-                  .add(forward.scale(1.5).subtract(motion).scale(0.5));
+            Vec3 drag = forward.scale(1.5).subtract(motion).scale(0.5);
+            Vec3 delta = forward.scale(thrust).add(drag);
             player.setDeltaMovement(motion.add(delta));
             return false;
         } else if (mode == JetpackMode.NORMAL) {
-            player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 0.5D), motion.z());
+            player.setDeltaMovement(motion.x(), motion.y() + thrust * Math.min(1, Math.exp(-motion.y())), motion.z());
         } else if (mode == JetpackMode.VECTOR) {
             Vec3 forward = player.getLookAngle();
             float theta = player.getYRot() * ((float) Math.PI / 180F);
             Vec3 left = new Vec3(Mth.cos(theta), 0, Mth.sin(theta));
             Vec3 up = forward.cross(left);
-            Vec3 velocity = motion.add(up.scale(thrust));
-            player.setDeltaMovement(new Vec3(velocity.x, Math.min(0.5D, velocity.y), velocity.z));
+            Vec3 thrustVec = up.scale(thrust);
+            player.setDeltaMovement(motion.add(new Vec3(thrustVec.x, thrustVec.y * Math.min(1, Math.exp(-motion.y())), thrustVec.z)));
         } else if (mode == JetpackMode.HOVER) {
             boolean ascending = ascendingSupplier.getAsBoolean();
             boolean descending = player.isDescending();

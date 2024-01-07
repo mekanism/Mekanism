@@ -826,6 +826,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_EFFICIENCY("module", "efficiency"),
     MODULE_BREATHING_HELD("module", "breathing.held"),
     MODULE_JETPACK_MODE("module", "jetpack_mode"),
+    MODULE_JETPACK_MULT("module", "jetpack_mult"),
     MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),
     MODULE_MAGNETIC_ATTRACTION("module", "magnetic_attraction"),
     MODULE_MODE_CHANGE("module", "mode_change"),

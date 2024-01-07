@@ -366,7 +366,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public double getJetpackThrust(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null && module.isEnabled()) {
-            return 0.15D * module.getInstalledCount();
+            return 0.1D * module.getCustomInstance().getThrustMultiplier();
         }
         return 0D;
     }

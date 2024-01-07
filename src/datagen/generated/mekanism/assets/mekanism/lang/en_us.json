@@ -1316,6 +1316,7 @@
   "module.mekanism.inhalation_purification_unit": "Inhalation Purification Unit",
   "module.mekanism.installed": "Installed: %1$s",
   "module.mekanism.jetpack_mode": "Jetpack Mode",
+  "module.mekanism.jetpack_mult": "Thrust Multiplier",
   "module.mekanism.jetpack_unit": "Jetpack Unit",
   "module.mekanism.jump_boost": "Jump Boost",
   "module.mekanism.laser_dissipation_unit": "Laser Dissipation Unit",
