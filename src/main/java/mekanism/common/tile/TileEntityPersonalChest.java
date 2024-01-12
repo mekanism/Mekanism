@@ -9,6 +9,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,7 +48,7 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
 
     @Override
     public boolean triggerEvent(int id, int type) {
-        if (id == 1) {
+        if (id == ChestBlock.EVENT_SET_OPEN_COUNT) {
             this.chestLidController.shouldBeOpen(type > 0);
             return true;
         }

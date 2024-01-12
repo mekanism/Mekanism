@@ -83,7 +83,7 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> i
 
         @Override
         public String toString() {
-            return "WrappingMapCodec[" + codec + "]";
+            return "mekanism:WrappingMapCodec[" + codec + "]";
         }
     }
 }

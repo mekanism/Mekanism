@@ -22,11 +22,13 @@ public class SoundEventDeferredRegister extends DeferredRegister<SoundEvent> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(String name, Function<ResourceLocation, ? extends SOUND> func) {
         return (SoundEventRegistryObject<SOUND>) super.register(name, func);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(String name, Supplier<? extends SOUND> sup) {
         return (SoundEventRegistryObject<SOUND>) super.register(name, sup);
     }

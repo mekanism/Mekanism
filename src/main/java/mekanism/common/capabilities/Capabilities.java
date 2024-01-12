@@ -46,7 +46,7 @@ public class Capabilities {
     private Capabilities() {
     }
 
-    public static ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
+    public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
 
     private record FluidCapability(BlockCapability<IFluidHandler, @Nullable Direction> block,
                                    ItemCapability<IFluidHandlerItem, Void> item,
