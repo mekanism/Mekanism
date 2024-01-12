@@ -19,11 +19,11 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.ChemicalUtils;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +55,7 @@ public class SerializerHelper {
     public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).forGetter(ItemStack::getItem),
           ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.COUNT, 1).forGetter(ItemStack::getCount),
-          TagParser.AS_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
+          CraftingHelper.TAG_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, ItemStack::new));
 
     /**
@@ -70,7 +70,7 @@ public class SerializerHelper {
     public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluid),
           ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
-          TagParser.AS_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
+          CraftingHelper.TAG_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, (fluid, amount, tag) -> {
         //Note: We don't use the constructor that accepts a tag to avoid having to copy it
         FluidStack stack = new FluidStack(fluid, amount);
