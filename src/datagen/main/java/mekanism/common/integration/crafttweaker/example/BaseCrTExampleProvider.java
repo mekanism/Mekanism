@@ -276,13 +276,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         examples.clear();
         addExamples();
         PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
-        List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
-            String examplePath = entry.getKey();
-            Path path = pathProvider.file(new ResourceLocation(modid, examplePath), "zs");
-            futures.add(save(cache, entry.getValue().build(), path));
-        }
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+        return CompletableFuture.allOf(examples.entrySet().stream().map(entry -> {
+            Path path = pathProvider.file(new ResourceLocation(modid, entry.getKey()), "zs");
+            return save(cache, entry.getValue().build(), path);
+        }).toArray(CompletableFuture[]::new));
     }
 
     @NotNull
