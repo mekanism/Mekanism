@@ -12,6 +12,7 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class BasicRotaryRecipe extends RotaryRecipe {
@@ -175,10 +176,30 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     /**
      * For Serializer use. DO NOT MODIFY RETURN VALUE.
      *
+     * @return the uncopied basic input, {@code null} if the recipe doesn't support gas to fluid recipes.
+     */
+    @Nullable
+    public GasStackIngredient getGasInputRaw() {
+        return gasInput;
+    }
+
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
      * @return the uncopied basic output
      */
     public GasStack getGasOutputRaw() {
         return this.gasOutput;
+    }
+
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic input, {@code null} if the recipe doesn't support fluid to gas recipes.
+     */
+    @Nullable
+    public FluidStackIngredient getFluidInputRaw() {
+        return fluidInput;
     }
 
     /**
