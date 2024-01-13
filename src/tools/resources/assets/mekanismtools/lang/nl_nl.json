@@ -1,4 +1,10 @@
 {
+  "advancements.mekanismtools.alternate_armor.description": "Maak een stuk harnas van Mekanism Tools",
+  "advancements.mekanismtools.alternate_armor.title": "Meer harnas soorten!",
+  "advancements.mekanismtools.alternate_tools.description": "Maak een gereedschap of wapen (behalve Paxels) van Mekanism Tools",
+  "advancements.mekanismtools.alternate_tools.title": "Meer gereedschap soorten!",
+  "advancements.mekanismtools.better_than_netherite.description": "Bescherm jezelf met een stuk geraffineerd Obsidiaan harnas",
+  "advancements.mekanismtools.better_than_netherite.title": "Beter dan Netheriet",
   "constants.mekanismtools.mod_name": "Mekanism: Gereedschap",
   "constants.mekanismtools.pack_description": "Hulpmiddelen gebruikt voor het Mekanism: Gereedschap",
   "item.mekanismtools.bronze_axe": "Bronzen Bijl",
