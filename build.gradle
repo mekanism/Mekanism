@@ -387,6 +387,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
@@ -408,26 +409,26 @@ dependencies {
     compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
     //TODO - 1.20.2: reinstate when neo?
-    //runtimeOnly ("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
-    //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+    //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
     //TODO - 1.20.2: reinstate when neo?
-    //runtimeOnly ("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
     //    transitive = false
     //}
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     //TODO - 1.20.3: Reinstate
-    //runtimeOnly ("curse.maven:jade-324717:${jade_id}")
+    //runtimeOnly("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
+    implementation("com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}")
     //TODO - 1.20.2: move back to implementation
-    compileOnly("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minor_minecraft_version}:${crafttweaker_version}")
     compileOnly("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
@@ -444,11 +445,10 @@ dependencies {
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 1.20.2: move back to Implementation
-    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
-    datagenMainCompileOnly("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    //datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
-    //datagenMainRuntimeOnly ("curse.maven:terrablender-940057:${terrablender_id}")
+    datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
@@ -460,7 +460,7 @@ dependencies {
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     datagenNonMod "com.thiakil:yaml-ops:${yamlops_version}"
 }

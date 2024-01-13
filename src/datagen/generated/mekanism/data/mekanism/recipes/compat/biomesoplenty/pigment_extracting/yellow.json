@@ -1,11 +1,11 @@
 {
-  "type": "mekanism:pigment_extracting",
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomesoplenty"
     }
   ],
+  "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
       "item": "biomesoplenty:goldenrod"

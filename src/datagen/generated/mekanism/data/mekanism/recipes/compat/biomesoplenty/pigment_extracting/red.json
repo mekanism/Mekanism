@@ -1,15 +1,20 @@
 {
-  "type": "mekanism:pigment_extracting",
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomesoplenty"
     }
   ],
+  "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:rose"
-    }
+    "ingredient": [
+      {
+        "item": "biomesoplenty:rose"
+      },
+      {
+        "item": "biomesoplenty:waterlily"
+      }
+    ]
   },
   "output": {
     "amount": 768,

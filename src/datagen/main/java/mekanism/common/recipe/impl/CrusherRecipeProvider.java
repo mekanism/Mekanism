@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -15,10 +14,8 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.common.Tags;
 
 class CrusherRecipeProvider implements ISubRecipeProvider {
@@ -26,7 +23,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "crushing/";
-        addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
+        RecipeProviderUtil.addCrusherBioFuelRecipes(consumer, basePath + "biofuel/", mod -> mod.equals("minecraft") || mod.startsWith(Mekanism.MODID), null);
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
         addCrusherDeepslateRecipes(consumer, basePath + "deepslate/");
@@ -413,17 +410,6 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   new ItemStack(result)
             ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
-        }
-    }
-
-    private void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath) {
-        //Generate baseline recipes from Composter recipe set
-        for (Object2FloatMap.Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
-            ItemLike input = chance.getKey();
-            ItemStackToItemStackRecipeBuilder.crushing(
-                  IngredientCreatorAccess.item().from(input),
-                  MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
-            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(input.asItem())));
         }
     }
 }

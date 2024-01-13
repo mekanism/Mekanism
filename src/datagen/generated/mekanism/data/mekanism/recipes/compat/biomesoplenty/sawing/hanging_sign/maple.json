@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:maple_hanging_sign"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "biomesoplenty:maple_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

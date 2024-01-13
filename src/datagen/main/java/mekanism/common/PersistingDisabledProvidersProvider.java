@@ -33,11 +33,11 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/scripts/",//CraftTweaker script files
+          //"/scripts/",//CraftTweaker script files
           "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final List<String> FAKE_PROVIDERS = List.of(
-          "CraftTweaker Examples: mekanism",
+          //"CraftTweaker Examples: mekanism",
           "Custom EMC Conversions: mekanism"
     );
 

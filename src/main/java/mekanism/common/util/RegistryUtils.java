@@ -30,15 +30,15 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
-        return getName(BuiltInRegistries.MENU, element);
+        return BuiltInRegistries.MENU.getKey(element);
     }
 
     public static ResourceLocation getName(ParticleType<?> element) {
-        return getName(BuiltInRegistries.PARTICLE_TYPE, element);
+        return BuiltInRegistries.PARTICLE_TYPE.getKey(element);
     }
 
     public static ResourceLocation getName(Item element) {
-        return getName(BuiltInRegistries.ITEM, element);
+        return BuiltInRegistries.ITEM.getKey(element);
     }
 
     public static String getPath(Item element) {
@@ -46,7 +46,7 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(Block element) {
-        return getName(BuiltInRegistries.BLOCK, element);
+        return BuiltInRegistries.BLOCK.getKey(element);
     }
 
     public static String getNamespace(Block element) {
@@ -58,19 +58,15 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(Fluid element) {
-        return getName(BuiltInRegistries.FLUID, element);
+        return BuiltInRegistries.FLUID.getKey(element);
     }
 
     public static ResourceLocation getName(BlockEntityType<?> element) {
-        return getName(BuiltInRegistries.BLOCK_ENTITY_TYPE, element);
+        return BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(element);
     }
 
     public static ResourceLocation getName(EntityType<?> element) {
-        return getName(BuiltInRegistries.ENTITY_TYPE, element);
-    }
-
-    private static <T> ResourceLocation getName(Registry<T> registry, T element) {
-        return registry.getKey(element);
+        return BuiltInRegistries.ENTITY_TYPE.getKey(element);
     }
 
     @Nullable

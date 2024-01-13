@@ -1,15 +1,20 @@
 {
-  "type": "mekanism:enriching",
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomesoplenty"
     }
   ],
+  "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:rose"
-    }
+    "ingredient": [
+      {
+        "item": "biomesoplenty:rose"
+      },
+      {
+        "item": "biomesoplenty:waterlily"
+      }
+    ]
   },
   "output": {
     "count": 2,

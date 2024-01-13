@@ -1,9 +1,7 @@
 package mekanism.common.recipe.compat;
 
-import static mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider.getBOPBlock;
-
+import biomesoplenty.api.block.BOPBlocks;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.block.Block;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
@@ -18,20 +16,19 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
     @Override
     protected void registerRecipes(RecipeOutput consumer, String basePath) {
-        addWoodType(consumer, basePath, getBOPBlock("DEAD_PLANKS"), getBOPBlock("DEAD_LOG"), getBOPBlock("DEAD_FENCE"), BiomesOPlentyWoodTypes.DEAD);
-        addWoodType(consumer, basePath, getBOPBlock("FIR_PLANKS"), getBOPBlock("FIR_LOG"), getBOPBlock("FIR_FENCE"), BiomesOPlentyWoodTypes.FIR);
-        addWoodType(consumer, basePath, getBOPBlock("HELLBARK_PLANKS"), getBOPBlock("HELLBARK_LOG"), getBOPBlock("HELLBARK_FENCE"), BiomesOPlentyWoodTypes.HELLBARK);
-        addWoodType(consumer, basePath, getBOPBlock("JACARANDA_PLANKS"), getBOPBlock("JACARANDA_LOG"), getBOPBlock("JACARANDA_FENCE"), BiomesOPlentyWoodTypes.JACARANDA);
-        addWoodType(consumer, basePath, getBOPBlock("MAGIC_PLANKS"), getBOPBlock("MAGIC_LOG"), getBOPBlock("MAGIC_FENCE"), BiomesOPlentyWoodTypes.MAGIC);
-        addWoodType(consumer, basePath, getBOPBlock("MAHOGANY_PLANKS"), getBOPBlock("MAHOGANY_LOG"), getBOPBlock("MAHOGANY_FENCE"), BiomesOPlentyWoodTypes.MAHOGANY);
-        addWoodType(consumer, basePath, getBOPBlock("PALM_PLANKS"), getBOPBlock("PALM_LOG"), getBOPBlock("PALM_FENCE"), BiomesOPlentyWoodTypes.PALM);
-        addWoodType(consumer, basePath, getBOPBlock("REDWOOD_PLANKS"), getBOPBlock("REDWOOD_LOG"), getBOPBlock("REDWOOD_FENCE"), BiomesOPlentyWoodTypes.REDWOOD);
-        addWoodType(consumer, basePath, getBOPBlock("UMBRAN_PLANKS"), getBOPBlock("UMBRAN_LOG"), getBOPBlock("UMBRAN_FENCE"), BiomesOPlentyWoodTypes.UMBRAN);
-        addWoodType(consumer, basePath, getBOPBlock("WILLOW_PLANKS"), getBOPBlock("WILLOW_LOG"), getBOPBlock("WILLOW_FENCE"), BiomesOPlentyWoodTypes.WILLOW);
+        addWoodType(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPBlocks.DEAD_LOG, BOPBlocks.DEAD_FENCE, BiomesOPlentyWoodTypes.DEAD);
+        addWoodType(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPBlocks.FIR_LOG, BOPBlocks.FIR_FENCE, BiomesOPlentyWoodTypes.FIR);
+        addWoodType(consumer, basePath, BOPBlocks.HELLBARK_PLANKS, BOPBlocks.HELLBARK_LOG, BOPBlocks.HELLBARK_FENCE, BiomesOPlentyWoodTypes.HELLBARK);
+        addWoodType(consumer, basePath, BOPBlocks.JACARANDA_PLANKS, BOPBlocks.JACARANDA_LOG, BOPBlocks.JACARANDA_FENCE, BiomesOPlentyWoodTypes.JACARANDA);
+        addWoodType(consumer, basePath, BOPBlocks.MAGIC_PLANKS, BOPBlocks.MAGIC_LOG, BOPBlocks.MAGIC_FENCE, BiomesOPlentyWoodTypes.MAGIC);
+        addWoodType(consumer, basePath, BOPBlocks.MAHOGANY_PLANKS, BOPBlocks.MAHOGANY_LOG, BOPBlocks.MAHOGANY_FENCE, BiomesOPlentyWoodTypes.MAHOGANY);
+        addWoodType(consumer, basePath, BOPBlocks.PALM_PLANKS, BOPBlocks.PALM_LOG, BOPBlocks.PALM_FENCE, BiomesOPlentyWoodTypes.PALM);
+        addWoodType(consumer, basePath, BOPBlocks.REDWOOD_PLANKS, BOPBlocks.REDWOOD_LOG, BOPBlocks.REDWOOD_FENCE, BiomesOPlentyWoodTypes.REDWOOD);
+        addWoodType(consumer, basePath, BOPBlocks.UMBRAN_PLANKS, BOPBlocks.UMBRAN_LOG, BOPBlocks.UMBRAN_FENCE, BiomesOPlentyWoodTypes.UMBRAN);
+        addWoodType(consumer, basePath, BOPBlocks.WILLOW_PLANKS, BOPBlocks.WILLOW_LOG, BOPBlocks.WILLOW_FENCE, BiomesOPlentyWoodTypes.WILLOW);
     }
 
-    private void addWoodType(RecipeOutput consumer, String basePath, Holder<Block> planks, Holder<Block> log, Holder<Block> fences,
-          IWoodType woodType) {
-        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks.value(), log.value(), fences.value(), woodType);
+    private void addWoodType(RecipeOutput consumer, String basePath, Block planks, Block log, Block fences, IWoodType woodType) {
+        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType);
     }
 }

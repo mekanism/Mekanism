@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe.handler;
 
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
@@ -15,6 +16,7 @@ import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -69,6 +71,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -174,7 +177,6 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
-        //TODO - 1.20.2: Test this works fine and see if maybe we can remove some parts of this as no longer necessary
         if (serialized.isJsonObject()) {
             JsonObject serializedIngredient = serialized.getAsJsonObject();
             if (vanillaIngredient.getClass() == Ingredient.class) {
@@ -187,17 +189,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                     KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
                     return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
+            } else if (vanillaIngredient instanceof NBTIngredient) {
+                //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
+                return new IIngredientList(Arrays.stream(vanillaIngredient.getItems())
+                      .map(stack -> IItemStack.of(stack.copyWithCount(amount)))
+                      .toArray(IIngredient[]::new))
+                      .getCommandString();
             }
-            //TODO - 1.20.4: Re-evaluate this and if it even makes sense to have this attempted cleanup now or is it better to just fall back to whatever CrT does
-            /*else if (vanillaIngredient instanceof NBTIngredient nbtIngredient && nbtIngredient.isStrict()) {
-                Optional<NBTIngredient> deserialized = NBTIngredient.CODEC.parse(JsonOps.INSTANCE, serializedIngredient).result();
-                if (deserialized.isPresent()) {
-                    //Note: We don't have to copy the stack as we just deserialized it
-                    ItemStack stack = deserialized.get().getStack();
-                    stack.setCount(amount);
-                    return ItemStackUtil.getCommandString(stack);
-                }
-            }*/
         }
         return null;
     }

@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:pine_door"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "biomesoplenty:pine_planks"
+  }
+}

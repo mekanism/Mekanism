@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:origin_leaves"
+    }
+  },
+  "output": {
+    "count": 2,
+    "item": "mekanism:bio_fuel"
+  }
+}
