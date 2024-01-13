@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Maak een Gasbrandende Generator om Ethylene te verbranden",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Verbrand het gas",
+  "advancements.mekanismgenerators.heat_generator.description": "Maak een warmtegenerator om energie te maken",
+  "advancements.mekanismgenerators.heat_generator.title": "Jouw eerste generator",
+  "advancements.mekanismgenerators.solar_generator.description": "Hernieuwbare energie overdag",
+  "advancements.mekanismgenerators.solar_generator.title": "Kracht van de zon",
+  "advancements.mekanismgenerators.wind_generator.description": "Hopelijk is er wat wind in de buurt",
+  "advancements.mekanismgenerators.wind_generator.title": "Draai baby draai",
   "block.mekanismgenerators.advanced_solar_generator": "Geavanceerde Zonne-Generator",
   "block.mekanismgenerators.deuterium": "Vloeibaar Deuterium",
   "block.mekanismgenerators.electromagnetic_coil": "Elektromagnetische spoel",
