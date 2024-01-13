@@ -56,35 +56,35 @@ public class MekanismAPI {
     }
 
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link Gas gases}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Gas gases}.
      *
      * @apiNote When registering {@link Gas gases} using {@link DeferredRegister <Gas>}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Gas>> GAS_REGISTRY_NAME = registryKey(Gas.class, "gas");
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link InfuseType infuse types}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link InfuseType infuse types}.
      *
      * @apiNote When registering {@link InfuseType infuse types} using {@link DeferredRegister <InfuseType>}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<InfuseType>> INFUSE_TYPE_REGISTRY_NAME = registryKey(InfuseType.class, "infuse_type");
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link Pigment pigments}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Pigment pigments}.
      *
      * @apiNote When registering {@link Pigment pigments} using {@link DeferredRegister <Pigment>}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Pigment>> PIGMENT_REGISTRY_NAME = registryKey(Pigment.class, "pigment");
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link Slurry sluries}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link Slurry sluries}.
      *
      * @apiNote When registering {@link Slurry sluries} using {@link DeferredRegister <Slurry>}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Slurry>> SLURRY_REGISTRY_NAME = registryKey(Slurry.class, "slurry");
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link ModuleData modules}.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link ModuleData modules}.
      *
      * @apiNote When registering {@link ModuleData modules} using {@link DeferredRegister <ModuleData>}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
@@ -98,7 +98,7 @@ public class MekanismAPI {
      */
     public static final ResourceKey<Registry<RobitSkin>> ROBIT_SKIN_REGISTRY_NAME = registryKey(RobitSkin.class, "robit_skin");
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link RobitSkin robit skin} serializers.
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link RobitSkin robit skin} serializers.
      *
      * @apiNote When registering {@link RobitSkin robit skin} serializers using {@link DeferredRegister DeferredRegister< Codec<? extends RobitSkin>>}, use this field to
      * get access to the {@link ResourceKey}.
@@ -107,7 +107,7 @@ public class MekanismAPI {
     public static final ResourceKey<Registry<Codec<? extends RobitSkin>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
 
     /**
-     * Gets the Forge Registry for {@link Gas}.
+     * Gets the Registry for {@link Gas}.
      *
      * @see #GAS_REGISTRY_NAME
      * @since 10.5.0
@@ -117,7 +117,7 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
-     * Gets the Forge Registry for {@link InfuseType}.
+     * Gets the Registry for {@link InfuseType}.
      *
      * @see #INFUSE_TYPE_REGISTRY_NAME
      * @since 10.5.0
@@ -127,7 +127,7 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
-     * Gets the Forge Registry for {@link Pigment}.
+     * Gets the Registry for {@link Pigment}.
      *
      * @see #PIGMENT_REGISTRY_NAME
      * @since 10.5.0
@@ -137,7 +137,7 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
-     * Gets the Forge Registry for {@link Slurry}.
+     * Gets the Registry for {@link Slurry}.
      *
      * @see #SLURRY_REGISTRY_NAME
      * @since 10.5.0
@@ -147,7 +147,7 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
-     * Gets the Forge Registry for {@link ModuleData}.
+     * Gets the Registry for {@link ModuleData}.
      *
      * @see #MODULE_REGISTRY_NAME
      * @since 10.5.0
@@ -156,7 +156,7 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
-     * Gets the Forge Registry for {@link RobitSkin} serializers.
+     * Gets the Registry for {@link RobitSkin} serializers.
      *
      * @see #ROBIT_SKIN_SERIALIZER_REGISTRY_NAME
      * @since 10.5.0
