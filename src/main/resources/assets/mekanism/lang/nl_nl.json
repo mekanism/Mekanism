@@ -1081,6 +1081,8 @@
   "module.mekanism.gravitational_modulating_unit": "Zwaartekracht Aanpassings Toevoeging",
   "module.mekanism.gyroscopic_stabilization_unit": "Gyroscopisce Stabilisatie Toevoeging",
   "module.mekanism.hydraulic_propulsion_unit": "Hydraulische aandrijving",
+  "module.mekanism.jetpack_unit": "Jetpack eenheid",
+  "module.mekanism.jump_boost": "Spring boost",
   "module.mekanism.mode_change": "%1$s aangepast naar: %2$s",
   "module.mekanism.module_tweaker": "Module Aanpasser",
   "module.mekanism.range": "Bereik",
