@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Об'єм резервуару: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Вентиляційні отвори: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Введення пари: %1$s мВ/т",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Скидання пару",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Вода НЕ буде перероблятися",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Скидання надлишку пари",
   "wind_generator.mekanismgenerators.no_wind": "Немає вітру",
   "wind_generator.mekanismgenerators.sky_blocked": "Небо заблоковане"
 }
