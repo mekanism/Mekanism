@@ -1,4 +1,4 @@
-// Recipes	2024-01-12T17:34:08.7995493	Recipes
+// Recipes	2024-01-19T17:18:45.6803446	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 71ad17cca903c259e417bddb3ff01a2c0a38ccec data/mekanism/recipes/bin/advanced.json
@@ -147,6 +147,10 @@ f44cbf135657a0596256706e7005e1b7946af86e data/mekanism/recipes/compat/biomesople
 f92ece0d2c38e800e12488423620e75692fd13cb data/mekanism/recipes/compat/biomesoplenty/biofuel/dead_sapling.json
 2e804e48aeafabd55832fe5516330b63fceb674c data/mekanism/recipes/compat/biomesoplenty/biofuel/desert_grass.json
 af9b1c80ca5e6ea795abd3ed2287ecf0efd7c5b5 data/mekanism/recipes/compat/biomesoplenty/biofuel/dune_grass.json
+879ba0db4847114816b219c1ce614514e732a6a8 data/mekanism/recipes/compat/biomesoplenty/biofuel/empyreal_leaves.json
+b08e41dcca236e2e87a6e1585406e62af0983fbf data/mekanism/recipes/compat/biomesoplenty/biofuel/empyreal_sapling.json
+eecef6878ead2c8fe70c2f3d5b1d6d6f082f8ada data/mekanism/recipes/compat/biomesoplenty/biofuel/endbloom.json
+5b70cd6403592f52e4cae78e55c524d773eef925 data/mekanism/recipes/compat/biomesoplenty/biofuel/enderphyte.json
 dcdc1f8be1b1ed7005823c10e3ef84640f598a1c data/mekanism/recipes/compat/biomesoplenty/biofuel/fir_leaves.json
 80c3a98d87ef73df6f6f61efa98644b16aa85d9e data/mekanism/recipes/compat/biomesoplenty/biofuel/fir_sapling.json
 ea4aa244a91f63495ef306ccf4f8140290758433 data/mekanism/recipes/compat/biomesoplenty/biofuel/flowering_oak_leaves.json
@@ -167,6 +171,8 @@ b4322ff2a73b77f938994f7d8c239415ec3e36c1 data/mekanism/recipes/compat/biomesople
 4bb4e72dd6704b4b156355fece5d8411fd8d2275 data/mekanism/recipes/compat/biomesoplenty/biofuel/jacaranda_leaves.json
 936c6ce3568218432c352edb4dd0c4c71954ea65 data/mekanism/recipes/compat/biomesoplenty/biofuel/jacaranda_sapling.json
 8604d01c3d0fbec371f5707edec87a9a494645a4 data/mekanism/recipes/compat/biomesoplenty/biofuel/lavender.json
+81d10d428e61357cc80221bc5f37be60295f4ce3 data/mekanism/recipes/compat/biomesoplenty/biofuel/lumaloop.json
+194f1c05a5a31b4749d8784e7895e80a01137cec data/mekanism/recipes/compat/biomesoplenty/biofuel/lumaloop_plant.json
 c836190dc3035d7e39dfb1139c6814677fd66c8a data/mekanism/recipes/compat/biomesoplenty/biofuel/magic_leaves.json
 3ce71ffbff00724fd598ddad5c48b65ac667cf6a data/mekanism/recipes/compat/biomesoplenty/biofuel/magic_sapling.json
 5e9e2412ab29491d4baf0e1cc61dd29fed810b07 data/mekanism/recipes/compat/biomesoplenty/biofuel/mahogany_leaves.json

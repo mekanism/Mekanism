@@ -29,7 +29,7 @@ public class CatalystRegistryHelper {
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, MekanismJEIRecipeType<?> category,
           RecipeType<?>... additionalCategories) {
         RecipeType<?>[] categories = new RecipeType<?>[additionalCategories.length + 1];
-        categories[0] = MekanismJEI.recipeType(category);
+        categories[0] = MekanismJEI.genericRecipeType(category);
         System.arraycopy(additionalCategories, 0, categories, 1, additionalCategories.length);
         registerRecipeItem(registry, mekanismItem, categories);
     }
@@ -46,7 +46,7 @@ public class CatalystRegistryHelper {
     }
 
     public static void register(IRecipeCatalystRegistration registry, MekanismJEIRecipeType<?> category, IItemProvider... catalysts) {
-        RecipeType<?> recipeType = MekanismJEI.recipeType(category);
+        RecipeType<?> recipeType = MekanismJEI.genericRecipeType(category);
         for (IItemProvider catalyst : catalysts) {
             registry.addRecipeCatalyst(catalyst.getItemStack(), recipeType);
         }

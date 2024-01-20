@@ -17,7 +17,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -30,9 +30,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<ChemicalDissolutionRecipe> {
+public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<ChemicalDissolutionRecipe> {
 
     private final GuiGauge<?> inputGauge;
     private final GuiGauge<?> outputGauge;
@@ -53,7 +54,8 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ChemicalDissolutionRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalDissolutionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ChemicalDissolutionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
         List<@NotNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))

@@ -11,7 +11,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -21,9 +21,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackGasToItemStackRecipe> {
+public class ItemStackGasToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackGasToItemStackRecipe> {
 
     private final GuiBar<?> gasInput;
     private final GuiSlot input;
@@ -42,7 +43,8 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ItemStackGasToItemStackRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackGasToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ItemStackGasToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<ItemStack> gasItemProviders = new ArrayList<>();
         List<GasStack> scaledGases = new ArrayList<>();

@@ -11,7 +11,6 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -44,29 +43,19 @@ public class ElectrolysisRecipeSerializer implements RecipeSerializer<BasicElect
     @NotNull
     @Override
     public BasicElectrolysisRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            FluidStackIngredient input = IngredientCreatorAccess.fluid().read(buffer);
-            FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
-            GasStack leftGasOutput = GasStack.readFromPacket(buffer);
-            GasStack rightGasOutput = GasStack.readFromPacket(buffer);
-            return this.factory.create(input, energyMultiplier, leftGasOutput, rightGasOutput);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading electrolysis recipe from packet.", e);
-            throw e;
-        }
+        FluidStackIngredient input = IngredientCreatorAccess.fluid().read(buffer);
+        FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
+        GasStack leftGasOutput = GasStack.readFromPacket(buffer);
+        GasStack rightGasOutput = GasStack.readFromPacket(buffer);
+        return this.factory.create(input, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicElectrolysisRecipe recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            recipe.getEnergyMultiplier().writeToBuffer(buffer);
-            recipe.getLeftGasOutput().writeToPacket(buffer);
-            recipe.getRightGasOutput().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing electrolysis recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        recipe.getEnergyMultiplier().writeToBuffer(buffer);
+        recipe.getLeftGasOutput().writeToPacket(buffer);
+        recipe.getRightGasOutput().writeToPacket(buffer);
     }
 
     @FunctionalInterface

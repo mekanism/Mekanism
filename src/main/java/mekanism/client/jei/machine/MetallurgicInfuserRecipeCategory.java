@@ -10,7 +10,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -20,9 +20,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
+public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<MetallurgicInfuserRecipe> {
 
     private final GuiSlot input;
     private final GuiSlot extra;
@@ -41,7 +42,8 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<MetallurgicInfuserRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        MetallurgicInfuserRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NotNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_INFUSION, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);

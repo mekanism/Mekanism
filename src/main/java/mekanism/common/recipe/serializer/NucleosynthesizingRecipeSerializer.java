@@ -9,7 +9,6 @@ import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
@@ -42,29 +41,19 @@ public class NucleosynthesizingRecipeSerializer implements RecipeSerializer<Basi
     @NotNull
     @Override
     public BasicNucleosynthesizingRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
-            GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
-            ItemStack outputItem = buffer.readItem();
-            int duration = buffer.readVarInt();
-            return this.factory.create(inputSolid, inputGas, outputItem, duration);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading nucleosynthesizing recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
+        GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
+        ItemStack outputItem = buffer.readItem();
+        int duration = buffer.readVarInt();
+        return this.factory.create(inputSolid, inputGas, outputItem, duration);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicNucleosynthesizingRecipe recipe) {
-        try {
-            recipe.getItemInput().write(buffer);
-            recipe.getChemicalInput().write(buffer);
-            buffer.writeItem(recipe.getOutputRaw());
-            buffer.writeVarInt(recipe.getDuration());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing nucleosynthesizing recipe to packet.", e);
-            throw e;
-        }
+        recipe.getItemInput().write(buffer);
+        recipe.getChemicalInput().write(buffer);
+        buffer.writeItem(recipe.getOutputRaw());
+        buffer.writeVarInt(recipe.getDuration());
     }
 
     @FunctionalInterface

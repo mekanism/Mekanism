@@ -43,6 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
@@ -312,7 +313,7 @@ public class CommonPlayerTickHandler {
                     if (boostModule != null && boostModule.isEnabled() && boostModule.getCustomInstance().canFunction(boostModule, player)) {
                         boost = (float) Math.sqrt(boost);
                     }
-                    player.setDeltaMovement(player.getDeltaMovement().add(0, boost, 0));
+                    player.addDeltaMovement(new Vec3(0, boost, 0));
                     module.useEnergy(player, energyContainer, usage, true);
                 }
             }

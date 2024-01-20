@@ -60,6 +60,7 @@ public final class MekanismHooks {
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         CuriosLoaded = modList.isLoaded(CURIOS_MODID);
         JsonThingsLoaded = modList.isLoaded(JSON_THINGS_MOD_ID);
+        ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         if (CuriosLoaded) {
             CuriosIntegration.addListeners(bus);
         }
@@ -94,7 +95,6 @@ public final class MekanismHooks {
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
         OC2Loaded = modList.isLoaded(OC2_MOD_ID);
-        ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         if (computerCompatEnabled()) {
@@ -116,9 +116,6 @@ public final class MekanismHooks {
             //Note: While it is only strings, so it is safe to call and IMC validates the mods are loaded
             // we add this check here, so we can skip iterating the list of things we want to blacklist when it is not present
             sendDarkModeEverywhereIMC();
-        }
-        if (ProjectELoaded) {
-            NSSHelper.init();
         }
         if (TOPLoaded) {
             InterModComms.sendTo(TOP_MOD_ID, "getTheOneProbe", TOPProvider::new);

@@ -5,10 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.common.Mekanism;
-import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -48,27 +47,17 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            INGREDIENT leftInput = getDeserializer().read(buffer);
-            INGREDIENT rightInput = getDeserializer().read(buffer);
-            STACK output = fromBuffer(buffer);
-            return this.factory.create(leftInput, rightInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading chemical chemical to chemical recipe from packet.", e);
-            throw e;
-        }
+        INGREDIENT leftInput = getDeserializer().read(buffer);
+        INGREDIENT rightInput = getDeserializer().read(buffer);
+        STACK output = fromBuffer(buffer);
+        return this.factory.create(leftInput, rightInput, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getLeftInput().write(buffer);
-            recipe.getRightInput().write(buffer);
-            recipe.getOutputRaw().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing chemical chemical to chemical recipe to packet.", e);
-            throw e;
-        }
+        recipe.getLeftInput().write(buffer);
+        recipe.getRightInput().write(buffer);
+        recipe.getOutputRaw().writeToPacket(buffer);
     }
 
     @FunctionalInterface

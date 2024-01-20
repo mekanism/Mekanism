@@ -21,7 +21,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -29,6 +28,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -69,11 +69,19 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private ITickTimer timer;
 
     protected BaseRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, IItemProvider provider, int xOffset, int yOffset, int width, int height) {
+        this(helper, MekanismJEI.recipeType(recipeType), provider, xOffset, yOffset, width, height);
+    }
+
+    protected BaseRecipeCategory(IGuiHelper helper, RecipeType<RECIPE> recipeType, IItemProvider provider, int xOffset, int yOffset, int width, int height) {
         this(helper, recipeType, provider.getTextComponent(), createIcon(helper, provider), xOffset, yOffset, width, height);
     }
 
     protected BaseRecipeCategory(IGuiHelper helper, MekanismJEIRecipeType<RECIPE> recipeType, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
-        this.recipeType = MekanismJEI.recipeType(recipeType);
+        this(helper, MekanismJEI.recipeType(recipeType), component, icon, xOffset, yOffset, width, height);
+    }
+
+    protected BaseRecipeCategory(IGuiHelper helper, RecipeType<RECIPE> recipeType, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
+        this.recipeType = recipeType;
         this.component = component;
         this.guiHelper = helper;
         this.icon = icon;
@@ -232,7 +240,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         //If we have no max (no fluids or just an empty fluid) we want to ensure the fluid renderer doesn't throw errors,
         // so we just return a capacity for the render of a bucket
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
-        return init(builder, /* TODO - 1.20.2: remove erasing cast when JEI ported/updated*/(IIngredientType) ForgeTypes.FLUID_STACK, role, gauge, stacks)
+        return init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
     }
 

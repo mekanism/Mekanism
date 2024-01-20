@@ -86,6 +86,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -497,7 +498,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (absorbRatio == null) {
                     //If we haven't looked up yet if we can absorb the damage type and if we can't
                     // stop checking if the armor is able to
-                    if (!source.is(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
+                    if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the config

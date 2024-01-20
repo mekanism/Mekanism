@@ -503,6 +503,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addDamageTypes() {
+        addToTag(Tags.DamageTypes.IS_ENVIRONMENT, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
         getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);

@@ -9,7 +9,6 @@ import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.basic.BasicGasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -38,25 +37,15 @@ public class GasToGasRecipeSerializer<RECIPE extends BasicGasToGasRecipe> implem
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
-            GasStack output = GasStack.readFromPacket(buffer);
-            return this.factory.create(inputIngredient, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading gas to gas recipe from packet.", e);
-            throw e;
-        }
+        GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
+        GasStack output = GasStack.readFromPacket(buffer);
+        return this.factory.create(inputIngredient, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            recipe.getOutputRaw().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing gas to gas recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        recipe.getOutputRaw().writeToPacket(buffer);
     }
 
     @FunctionalInterface

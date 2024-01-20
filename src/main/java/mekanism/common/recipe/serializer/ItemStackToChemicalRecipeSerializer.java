@@ -5,11 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
-import mekanism.api.recipes.basic.IBasicChemicalOutput;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -43,25 +42,15 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
-            STACK output = stackFromBuffer(buffer);
-            return this.factory.create(inputIngredient, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack to chemical recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
+        STACK output = stackFromBuffer(buffer);
+        return this.factory.create(inputIngredient, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            recipe.getOutputRaw().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack to chemical recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        recipe.getOutputRaw().writeToPacket(buffer);
     }
 
     @FunctionalInterface

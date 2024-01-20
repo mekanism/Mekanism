@@ -1,4 +1,4 @@
-// 1.20.4	2023-12-08T20:08:13.9757247	Tags: mekanism
+// 1.20.4	2024-01-19T17:18:45.674345	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -34,6 +34,7 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/blocks/storage_blocks/s
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/forge/tags/blocks/storage_blocks/uranium.json
 69b9b29ba2cb5d30f82adc05ee8405568c6065ee data/forge/tags/block_entity_type/immovable.json
 69b9b29ba2cb5d30f82adc05ee8405568c6065ee data/forge/tags/block_entity_type/relocation_not_supported.json
+87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/forge/tags/damage_type/is_environment.json
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/forge/tags/fluids/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/forge/tags/fluids/chlorine.json
 f8df38beb1c963a31c812b4be0d083f39613ae41 data/forge/tags/fluids/ethene.json

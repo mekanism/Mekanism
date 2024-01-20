@@ -11,7 +11,6 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
@@ -54,29 +53,19 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
     @NotNull
     @Override
     public BasicSawmillRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
-            ItemStack mainOutput = buffer.readItem();
-            ItemStack secondaryOutput = buffer.readItem();
-            double secondaryChance = buffer.readDouble();
-            return this.factory.create(inputIngredient, mainOutput, secondaryOutput, secondaryChance);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading sawmill recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
+        ItemStack mainOutput = buffer.readItem();
+        ItemStack secondaryOutput = buffer.readItem();
+        double secondaryChance = buffer.readDouble();
+        return this.factory.create(inputIngredient, mainOutput, secondaryOutput, secondaryChance);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicSawmillRecipe recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            buffer.writeItem(recipe.getMainOutputRaw().orElse(ItemStack.EMPTY));
-            buffer.writeItem(recipe.getSecondaryOutputRaw().orElse(ItemStack.EMPTY));
-            buffer.writeDouble(recipe.getSecondaryChance());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing sawmill recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        buffer.writeItem(recipe.getMainOutputRaw().orElse(ItemStack.EMPTY));
+        buffer.writeItem(recipe.getSecondaryOutputRaw().orElse(ItemStack.EMPTY));
+        buffer.writeDouble(recipe.getSecondaryChance());
     }
 
     @FunctionalInterface

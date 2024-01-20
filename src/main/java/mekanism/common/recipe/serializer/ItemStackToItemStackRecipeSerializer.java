@@ -7,7 +7,6 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -37,25 +36,15 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends BasicItemStackT
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
-            ItemStack output = buffer.readItem();
-            return this.factory.create(inputIngredient, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack to itemstack recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
+        ItemStack output = buffer.readItem();
+        return this.factory.create(inputIngredient, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            buffer.writeItem(recipe.getOutputRaw());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack to itemstack recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        buffer.writeItem(recipe.getOutputRaw());
     }
 
     @FunctionalInterface

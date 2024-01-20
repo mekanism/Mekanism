@@ -14,7 +14,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
@@ -57,35 +56,25 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Bas
     @NotNull
     @Override
     public BasicPressurizedReactionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
-            FluidStackIngredient inputFluid = IngredientCreatorAccess.fluid().read(buffer);
-            GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
-            FloatingLong energyRequired = FloatingLong.readFromBuffer(buffer);
-            int duration = buffer.readVarInt();
-            ItemStack outputItem = buffer.readItem();
-            GasStack outputGas = GasStack.readFromPacket(buffer);
-            return this.factory.create(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading pressurized reaction recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
+        FluidStackIngredient inputFluid = IngredientCreatorAccess.fluid().read(buffer);
+        GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
+        FloatingLong energyRequired = FloatingLong.readFromBuffer(buffer);
+        int duration = buffer.readVarInt();
+        ItemStack outputItem = buffer.readItem();
+        GasStack outputGas = GasStack.readFromPacket(buffer);
+        return this.factory.create(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicPressurizedReactionRecipe recipe) {
-        try {
-            recipe.getInputSolid().write(buffer);
-            recipe.getInputFluid().write(buffer);
-            recipe.getInputGas().write(buffer);
-            recipe.getEnergyRequired().writeToBuffer(buffer);
-            buffer.writeVarInt(recipe.getDuration());
-            buffer.writeItem(recipe.getOutputItem());
-            recipe.getOutputGas().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing pressurized reaction recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInputSolid().write(buffer);
+        recipe.getInputFluid().write(buffer);
+        recipe.getInputGas().write(buffer);
+        recipe.getEnergyRequired().writeToBuffer(buffer);
+        buffer.writeVarInt(recipe.getDuration());
+        buffer.writeItem(recipe.getOutputItem());
+        recipe.getOutputGas().writeToPacket(buffer);
     }
 
     @FunctionalInterface

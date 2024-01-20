@@ -20,7 +20,6 @@ import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -30,10 +29,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -43,6 +40,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.model.DynamicFluidContainerModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -122,30 +120,23 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
-        MenuScreens.register(type.get(), factory);
+    public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(RegisterMenuScreensEvent event,
+          ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
+        event.register(type.get(), factory);
     }
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
-    public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(ContainerTypeRegistryObject<C> type) {
-        registerScreen(type, new ScreenConstructor<C, GuiElectricMachine<TILE, C>>() {
-            @NotNull
-            @Override
-            public GuiElectricMachine<TILE, C> create(@NotNull C container, @NotNull Inventory inv, @NotNull Component title) {
-                return new GuiElectricMachine<>(container, inv, title);
-            }
-        });
+    @SuppressWarnings("RedundantTypeArguments")
+    public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(RegisterMenuScreensEvent event,
+          ContainerTypeRegistryObject<C> type) {
+        ClientRegistrationUtil.<C, GuiElectricMachine<TILE, C>>registerScreen(event, type, GuiElectricMachine::new);
     }
 
     //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
-    public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(ContainerTypeRegistryObject<C> type) {
-        registerScreen(type, new ScreenConstructor<C, GuiAdvancedElectricMachine<TILE, C>>() {
-            @NotNull
-            @Override
-            public GuiAdvancedElectricMachine<TILE, C> create(@NotNull C container, @NotNull Inventory inv, @NotNull Component title) {
-                return new GuiAdvancedElectricMachine<>(container, inv, title);
-            }
-        });
+    @SuppressWarnings("RedundantTypeArguments")
+    public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(RegisterMenuScreensEvent event,
+          ContainerTypeRegistryObject<C> type) {
+        ClientRegistrationUtil.<C, GuiAdvancedElectricMachine<TILE, C>>registerScreen(event, type, GuiAdvancedElectricMachine::new);
     }
 
     public static void registerKeyBindings(RegisterKeyMappingsEvent event, KeyMapping... keys) {

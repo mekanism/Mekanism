@@ -16,6 +16,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,8 +116,9 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     }
 
     @Override
-    protected void initCache(List<ChemicalCrystallizerRecipe> recipes) {
-        for (ChemicalCrystallizerRecipe recipe : recipes) {
+    protected void initCache(List<RecipeHolder<ChemicalCrystallizerRecipe>> recipes) {
+        for (RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder : recipes) {
+            ChemicalCrystallizerRecipe recipe = recipeHolder.value();
             ChemicalStackIngredient<?, ?> ingredient = recipe.getInput();
             ChemicalType type = ChemicalType.getTypeFor(ingredient);
             if (mapInputs(recipe, type, ingredient)) {

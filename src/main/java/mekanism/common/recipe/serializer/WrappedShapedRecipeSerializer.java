@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec.MapCodecCodec;
 import java.util.function.Function;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,21 +31,11 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> i
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer));
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading wrapped shaped recipe from packet.", e);
-            throw e;
-        }
+        return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer));
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.getInternal());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing wrapped shaped recipe to packet.", e);
-            throw e;
-        }
+        RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.getInternal());
     }
 }

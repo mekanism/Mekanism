@@ -6,12 +6,11 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
-import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -47,27 +46,17 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
-            INGREDIENT chemicalInput = getDeserializer().read(buffer);
-            ItemStack output = buffer.readItem();
-            return this.factory.create(itemInput, chemicalInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack chemical to itemstack recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
+        INGREDIENT chemicalInput = getDeserializer().read(buffer);
+        ItemStack output = buffer.readItem();
+        return this.factory.create(itemInput, chemicalInput, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getItemInput().write(buffer);
-            recipe.getChemicalInput().write(buffer);
-            buffer.writeItem(recipe.getOutputRaw());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack chemical to itemstack recipe to packet.", e);
-            throw e;
-        }
+        recipe.getItemInput().write(buffer);
+        recipe.getChemicalInput().write(buffer);
+        buffer.writeItem(recipe.getOutputRaw());
     }
 
     @FunctionalInterface

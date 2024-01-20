@@ -21,7 +21,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.machine.GuiChemicalCrystallizer;
 import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -43,10 +43,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<ChemicalCrystallizerRecipe> {
+public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<ChemicalCrystallizerRecipe> {
 
     private static final String CHEMICAL_INPUT = "chemicalInput";
     private static final String DISPLAYED_ITEM = "displayedItem";
@@ -67,23 +68,24 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     @Override
-    public void draw(ChemicalCrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
-        oreInfo.currentRecipe = recipe;
+        oreInfo.currentRecipe = recipeHolder.value();
         oreInfo.ingredient = (ChemicalStack<?>) recipeSlotsView.findSlotByName(CHEMICAL_INPUT)
               .flatMap(IRecipeSlotView::getDisplayedIngredient)
               .map(ITypedIngredient::getIngredient)
               .filter(ingredient -> ingredient instanceof ChemicalStack)
               .orElse(null);
         oreInfo.itemIngredient = getDisplayedStack(recipeSlotsView, DISPLAYED_ITEM, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
-        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+        super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         oreInfo.currentRecipe = null;
         oreInfo.ingredient = null;
         oreInfo.itemIngredient = ItemStack.EMPTY;
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient ingredient) {

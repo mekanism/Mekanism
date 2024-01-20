@@ -139,7 +139,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         }
     }
 
-    private List<RECIPE> cachedRecipes = Collections.emptyList();
+    private List<RecipeHolder<RECIPE>> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
     private final INPUT_CACHE inputCache;
 
@@ -175,7 +175,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
 
     @NotNull
     @Override
-    public List<RECIPE> getRecipes(@Nullable Level world) {
+    public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
@@ -218,7 +218,6 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
             // the other portion of the recipe is incomplete
             cachedRecipes = recipes.stream()
                   .filter(recipe -> !recipe.value().isIncomplete())
-                  .map(RecipeHolder::value)//TODO - 1.20.2: are the ids used?
                   .toList();
         }
         return cachedRecipes;

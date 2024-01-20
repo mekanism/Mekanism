@@ -21,6 +21,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class RecipeRegistryHelper {
 
@@ -30,7 +31,8 @@ public class RecipeRegistryHelper {
     public static void registerCondensentrator(IRecipeRegistration registry) {
         List<RotaryRecipe> condensentratorRecipes = new ArrayList<>();
         List<RotaryRecipe> decondensentratorRecipes = new ArrayList<>();
-        for (RotaryRecipe recipe : MekanismRecipeType.ROTARY.getRecipes(getWorld())) {
+        for (RecipeHolder<RotaryRecipe> recipeHolder : MekanismRecipeType.ROTARY.getRecipes(getWorld())) {
+            RotaryRecipe recipe = recipeHolder.value();
             if (recipe.hasGasToFluid()) {
                 condensentratorRecipes.add(recipe);
             }
@@ -44,7 +46,7 @@ public class RecipeRegistryHelper {
 
     public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType,
           IMekanismRecipeTypeProvider<RECIPE, ?> type) {
-        register(registry, recipeType, type.getRecipes(getWorld()));
+        registry.addRecipes(MekanismJEI.holderRecipeType(recipeType), type.getRecipes(getWorld()));
     }
 
     public static <RECIPE> void register(IRecipeRegistration registry, MekanismJEIRecipeType<RECIPE> recipeType, List<RECIPE> recipes) {

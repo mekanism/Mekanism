@@ -1,9 +1,8 @@
 {
   "values": [
     "#minecraft:is_fall",
+    "#forge:is_magic",
     "minecraft:drown",
-    "minecraft:fly_into_wall",
-    "minecraft:magic",
-    "minecraft:indirect_magic"
+    "minecraft:fly_into_wall"
   ]
 }

@@ -7,16 +7,17 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipe> {
+public class ItemStackToItemStackRecipeCategory extends HolderRecipeCategory<ItemStackToItemStackRecipe> {
 
     private final GuiSlot input;
     private final GuiSlot output;
@@ -32,7 +33,8 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ItemStackToItemStackRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ItemStackToItemStackRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

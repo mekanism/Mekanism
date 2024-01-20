@@ -63,12 +63,11 @@ public class AdditionsTagProvider extends BaseTagProvider {
 
     private void addDamageTypes() {
         getDamageTypeBuilder(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE).add(
-              DamageTypeTags.IS_FALL
+              DamageTypeTags.IS_FALL,
+              Tags.DamageTypes.IS_MAGIC
         ).add(
               DamageTypes.DROWN,
-              DamageTypes.FLY_INTO_WALL,
-              DamageTypes.MAGIC,
-              DamageTypes.INDIRECT_MAGIC
+              DamageTypes.FLY_INTO_WALL
         );
     }
 

@@ -15,7 +15,6 @@ import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -45,34 +44,24 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Bas
     @NotNull
     @Override
     public BasicChemicalDissolutionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
-            GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
-            ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-            ChemicalStack<?> output = switch (chemicalType) {
-                case GAS -> GasStack.readFromPacket(buffer);
-                case INFUSION -> InfusionStack.readFromPacket(buffer);
-                case PIGMENT -> PigmentStack.readFromPacket(buffer);
-                case SLURRY -> SlurryStack.readFromPacket(buffer);
-            };
-            return this.factory.create(itemInput, gasInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack gas to gas recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
+        GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
+        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
+        ChemicalStack<?> output = switch (chemicalType) {
+            case GAS -> GasStack.readFromPacket(buffer);
+            case INFUSION -> InfusionStack.readFromPacket(buffer);
+            case PIGMENT -> PigmentStack.readFromPacket(buffer);
+            case SLURRY -> SlurryStack.readFromPacket(buffer);
+        };
+        return this.factory.create(itemInput, gasInput, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicChemicalDissolutionRecipe recipe) {
-        try {
-            recipe.getItemInput().write(buffer);
-            recipe.getGasInput().write(buffer);
-            buffer.writeEnum(recipe.getOutputRaw().getChemicalType());
-            recipe.getOutputRaw().getChemicalStack().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack gas to gas recipe to packet.", e);
-            throw e;
-        }
+        recipe.getItemInput().write(buffer);
+        recipe.getGasInput().write(buffer);
+        buffer.writeEnum(recipe.getOutputRaw().getChemicalType());
+        recipe.getOutputRaw().getChemicalStack().writeToPacket(buffer);
     }
 
     @FunctionalInterface

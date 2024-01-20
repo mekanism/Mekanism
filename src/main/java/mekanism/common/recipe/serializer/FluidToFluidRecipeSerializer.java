@@ -8,7 +8,6 @@ import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -38,25 +37,15 @@ public class FluidToFluidRecipeSerializer<RECIPE extends BasicFluidToFluidRecipe
     @NotNull
     @Override
     public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
-            FluidStack output = FluidStack.readFromPacket(buffer);
-            return this.factory.create(inputIngredient, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading fluid to fluid recipe from packet.", e);
-            throw e;
-        }
+        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
+        FluidStack output = FluidStack.readFromPacket(buffer);
+        return this.factory.create(inputIngredient, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
-        try {
-            recipe.getInput().write(buffer);
-            recipe.getOutputRaw().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing fluid to fluid recipe to packet.", e);
-            throw e;
-        }
+        recipe.getInput().write(buffer);
+        recipe.getOutputRaw().writeToPacket(buffer);
     }
 
     @FunctionalInterface

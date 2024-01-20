@@ -406,10 +406,9 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-forge-api:${jei_version}")
-    //TODO - 1.20.2: reinstate when neo?
-    //runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")

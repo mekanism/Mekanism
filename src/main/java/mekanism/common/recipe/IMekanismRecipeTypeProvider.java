@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,11 +29,11 @@ public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPU
     }
 
     @NotNull
-    default List<RECIPE> getRecipes(@Nullable Level world) {
+    default List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         return getRecipeType().getRecipes(world);
     }
 
-    default Stream<RECIPE> stream(@Nullable Level world) {
+    default Stream<RecipeHolder<RECIPE>> stream(@Nullable Level world) {
         return getRecipes(world).stream();
     }
 
@@ -41,13 +42,13 @@ public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPU
      */
     @Nullable
     default RECIPE findFirst(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
-        return stream(world).filter(matchCriteria).findFirst().orElse(null);
+        return stream(world).map(RecipeHolder::value).filter(matchCriteria).findFirst().orElse(null);
     }
 
     /**
      * Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in {@link #getInputCache()}.
      */
     default boolean contains(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
-        return stream(world).anyMatch(matchCriteria);
+        return stream(world).anyMatch(holder -> matchCriteria.test(holder.value()));
     }
 }

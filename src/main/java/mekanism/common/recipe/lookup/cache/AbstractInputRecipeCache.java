@@ -9,6 +9,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +46,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
      *
      * @param recipes Recipes to build the cache for.
      */
-    protected abstract void initCache(List<RECIPE> recipes);
+    protected abstract void initCache(List<RecipeHolder<RECIPE>> recipes);
 
     /**
      * Helper to filter a potentially null collection of recipes by a given predicate.

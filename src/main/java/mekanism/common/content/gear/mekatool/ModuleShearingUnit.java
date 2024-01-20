@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -138,7 +139,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 for (ItemStack drop : drops) {
                     ItemEntity ent = entity.spawnAtLocation(drop, 1.0F);
                     if (ent != null) {
-                        ent.setDeltaMovement(ent.getDeltaMovement().add((world.random.nextFloat() - world.random.nextFloat()) * 0.1F,
+                        ent.addDeltaMovement(new Vec3((world.random.nextFloat() - world.random.nextFloat()) * 0.1F,
                               world.random.nextFloat() * 0.05F, (world.random.nextFloat() - world.random.nextFloat()) * 0.1F));
                     }
                 }

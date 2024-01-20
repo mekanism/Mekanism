@@ -45,6 +45,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -170,7 +171,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             //See if there are any chemical to item mappings
             IMekanismRecipeTypeProvider<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> recipeType = getConversionRecipeType();
             if (recipeType != null) {
-                for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipeType.getRecipes(world)) {
+                for (RecipeHolder<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> recipeHolder : recipeType.getRecipes(world)) {
+                    ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe = recipeHolder.value();
                     if (recipe.getOutputDefinition().stream().anyMatch(output -> output.isTypeEqual(type))) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                     }

@@ -10,6 +10,7 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
 import mekanism.common.recipe.lookup.cache.type.FluidInputCache;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -103,8 +104,9 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
     }
 
     @Override
-    protected void initCache(List<RotaryRecipe> recipes) {
-        for (RotaryRecipe recipe : recipes) {
+    protected void initCache(List<RecipeHolder<RotaryRecipe>> recipes) {
+        for (RecipeHolder<RotaryRecipe> recipeHolder : recipes) {
+            RotaryRecipe recipe = recipeHolder.value();
             if (recipe.hasFluidToGas() && fluidInputCache.mapInputs(recipe, recipe.getFluidInput())) {
                 complexFluidInputRecipes.add(recipe);
             }

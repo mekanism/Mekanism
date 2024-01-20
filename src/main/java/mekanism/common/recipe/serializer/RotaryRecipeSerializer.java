@@ -12,7 +12,6 @@ import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.FriendlyByteBuf;
@@ -83,52 +82,42 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
     @NotNull
     @Override
     public BasicRotaryRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            FluidStackIngredient fluidInputIngredient = null;
-            GasStackIngredient gasInputIngredient = null;
-            GasStack gasOutput = null;
-            FluidStack fluidOutput = null;
-            boolean hasFluidToGas = buffer.readBoolean();
-            if (hasFluidToGas) {
-                fluidInputIngredient = IngredientCreatorAccess.fluid().read(buffer);
-                gasOutput = GasStack.readFromPacket(buffer);
-            }
-            boolean hasGasToFluid = buffer.readBoolean();
-            if (hasGasToFluid) {
-                gasInputIngredient = IngredientCreatorAccess.gas().read(buffer);
-                fluidOutput = FluidStack.readFromPacket(buffer);
-            }
-            if (hasFluidToGas && hasGasToFluid) {
-                return this.factory.create(fluidInputIngredient, gasInputIngredient, gasOutput, fluidOutput);
-            } else if (hasFluidToGas) {
-                return this.factory.create(fluidInputIngredient, gasOutput);
-            } else if (hasGasToFluid) {
-                return this.factory.create(gasInputIngredient, fluidOutput);
-            }
-            //Should never happen, but if we somehow get here log it and error
-            throw new IllegalStateException("A recipe got sent with no conversion in either direction.");
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading rotary recipe from packet.", e);
-            throw e;
+        FluidStackIngredient fluidInputIngredient = null;
+        GasStackIngredient gasInputIngredient = null;
+        GasStack gasOutput = null;
+        FluidStack fluidOutput = null;
+        boolean hasFluidToGas = buffer.readBoolean();
+        if (hasFluidToGas) {
+            fluidInputIngredient = IngredientCreatorAccess.fluid().read(buffer);
+            gasOutput = GasStack.readFromPacket(buffer);
         }
+        boolean hasGasToFluid = buffer.readBoolean();
+        if (hasGasToFluid) {
+            gasInputIngredient = IngredientCreatorAccess.gas().read(buffer);
+            fluidOutput = FluidStack.readFromPacket(buffer);
+        }
+        if (hasFluidToGas && hasGasToFluid) {
+            return this.factory.create(fluidInputIngredient, gasInputIngredient, gasOutput, fluidOutput);
+        } else if (hasFluidToGas) {
+            return this.factory.create(fluidInputIngredient, gasOutput);
+        } else if (hasGasToFluid) {
+            return this.factory.create(gasInputIngredient, fluidOutput);
+        }
+        //Should never happen, but if we somehow get here log it and error
+        throw new IllegalStateException("A recipe got sent with no conversion in either direction.");
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicRotaryRecipe recipe) {
-        try {
-            buffer.writeBoolean(recipe.hasFluidToGas());
-            if (recipe.hasFluidToGas()) {
-                recipe.getFluidInput().write(buffer);
-                recipe.getGasOutputRaw().writeToPacket(buffer);
-            }
-            buffer.writeBoolean(recipe.hasGasToFluid());
-            if (recipe.hasGasToFluid()) {
-                recipe.getGasInput().write(buffer);
-                recipe.getFluidOutputRaw().writeToPacket(buffer);
-            }
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing rotary recipe to packet.", e);
-            throw e;
+        buffer.writeBoolean(recipe.hasFluidToGas());
+        if (recipe.hasFluidToGas()) {
+            recipe.getFluidInput().write(buffer);
+            recipe.getGasOutputRaw().writeToPacket(buffer);
+        }
+        buffer.writeBoolean(recipe.hasGasToFluid());
+        if (recipe.hasGasToFluid()) {
+            recipe.getGasInput().write(buffer);
+            recipe.getFluidOutputRaw().writeToPacket(buffer);
         }
     }
 

@@ -7,7 +7,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
@@ -18,9 +18,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
+public class SawmillRecipeCategory extends HolderRecipeCategory<SawmillRecipe> {
 
     private final GuiSlot input;
     private final GuiSlot output;
@@ -36,16 +37,17 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, SawmillRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<SawmillRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        SawmillRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
         initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
     }
 
     @Override
-    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
-        double secondaryChance = recipe.getSecondaryChance();
+    public void draw(RecipeHolder<SawmillRecipe> recipeHolder, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        super.draw(recipeHolder, recipeSlotView, guiGraphics, mouseX, mouseY);
+        double secondaryChance = recipeHolder.value().getSecondaryChance();
         if (secondaryChance > 0) {
             guiGraphics.drawString(getFont(), TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb(), false);
         }

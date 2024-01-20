@@ -12,7 +12,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -22,9 +22,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
+public class ElectrolysisRecipeCategory extends HolderRecipeCategory<ElectrolysisRecipe> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> leftOutput;
@@ -44,7 +45,8 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, ElectrolysisRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        ElectrolysisRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         List<GasStack> leftDefinition = new ArrayList<>();
         List<GasStack> rightDefinition = new ArrayList<>();

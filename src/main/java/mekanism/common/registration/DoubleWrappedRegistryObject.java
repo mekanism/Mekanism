@@ -1,6 +1,7 @@
 package mekanism.common.registration;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
@@ -23,7 +24,12 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
     }
 
     @Override
+    public ResourceLocation getId() {
+        return primaryRO.getId();
+    }
+
+    @Override
     public String getName() {
-        return primaryRO.getId().getPath();
+        return INamedEntry.super.getName();
     }
 }

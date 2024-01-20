@@ -13,7 +13,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -26,9 +26,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
+public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<PressurizedReactionRecipe> {
 
     private static final String OUTPUT_GAS = "outputGas";
 
@@ -53,8 +54,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    protected void renderElements(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
-        super.renderElements(recipe, recipeSlotsView, guiGraphics, x, y);
+    protected void renderElements(RecipeHolder<PressurizedReactionRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
+        super.renderElements(recipeHolder, recipeSlotsView, guiGraphics, x, y);
         if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
             //If we don't have an output gas at all for this recipe, draw the bar overlay manually
             outputGas.drawBarOverlay(guiGraphics);
@@ -62,7 +63,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        PressurizedReactionRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
         initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());

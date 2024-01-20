@@ -11,6 +11,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -189,8 +190,9 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
     }
 
     @Override
-    protected void initCache(List<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
+    protected void initCache(List<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
+            RECIPE recipe = recipeHolder.value();
             boolean complexA = cacheA.mapInputs(recipe, inputAExtractor.apply(recipe));
             boolean complexB = cacheB.mapInputs(recipe, inputBExtractor.apply(recipe));
             if (complexA) {

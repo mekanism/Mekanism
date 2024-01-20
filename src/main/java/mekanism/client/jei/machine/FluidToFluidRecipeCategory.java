@@ -10,7 +10,7 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
@@ -21,9 +21,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
+public class FluidToFluidRecipeCategory extends HolderRecipeCategory<FluidToFluidRecipe> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
@@ -47,7 +48,8 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidToFluidRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        FluidToFluidRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

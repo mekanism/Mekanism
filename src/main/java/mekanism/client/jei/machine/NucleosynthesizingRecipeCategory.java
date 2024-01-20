@@ -15,7 +15,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
@@ -31,9 +31,10 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<NucleosynthesizingRecipe> {
+public class NucleosynthesizingRecipeCategory extends HolderRecipeCategory<NucleosynthesizingRecipe> {
 
     private final GuiDynamicHorizontalRateBar rateBar;
     private final GuiSlot input;
@@ -65,15 +66,16 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public List<Component> getTooltipStrings(NucleosynthesizingRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (rateBar.isMouseOver(mouseX, mouseY)) {
-            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()));
+            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipeHolder.value().getDuration()));
         }
         return Collections.emptyList();
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<NucleosynthesizingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        NucleosynthesizingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NotNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);

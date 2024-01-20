@@ -11,7 +11,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
@@ -20,10 +20,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ?>> extends BaseRecipeCategory<RECIPE> {
+      RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ?>> extends HolderRecipeCategory<RECIPE> {
 
     protected static final String LEFT_INPUT = "leftInput";
     protected static final String RIGHT_INPUT = "rightInput";
@@ -55,7 +56,8 @@ public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends 
     protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RECIPE recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        RECIPE recipe = recipeHolder.value();
         builder.setShapeless();
         initChemical(builder, ingredientType, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations())
               .setSlotName(LEFT_INPUT);

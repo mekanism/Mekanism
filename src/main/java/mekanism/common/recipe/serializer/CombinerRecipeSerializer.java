@@ -8,7 +8,6 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -39,27 +38,17 @@ public class CombinerRecipeSerializer implements RecipeSerializer<BasicCombinerR
     @NotNull
     @Override
     public BasicCombinerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
-            ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
-            ItemStack output = buffer.readItem();
-            return this.factory.create(mainInput, extraInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading combiner recipe from packet.", e);
-            throw e;
-        }
+        ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
+        ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
+        ItemStack output = buffer.readItem();
+        return this.factory.create(mainInput, extraInput, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicCombinerRecipe recipe) {
-        try {
-            recipe.getMainInput().write(buffer);
-            recipe.getExtraInput().write(buffer);
-            buffer.writeItem(recipe.getOutputRaw());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing combiner recipe to packet.", e);
-            throw e;
-        }
+        recipe.getMainInput().write(buffer);
+        recipe.getExtraInput().write(buffer);
+        buffer.writeItem(recipe.getOutputRaw());
     }
 
     @FunctionalInterface

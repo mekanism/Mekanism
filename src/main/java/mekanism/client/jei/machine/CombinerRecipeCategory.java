@@ -6,7 +6,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
@@ -14,9 +14,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
+public class CombinerRecipeCategory extends HolderRecipeCategory<CombinerRecipe> {
 
     private final GuiSlot input;
     private final GuiSlot extra;
@@ -34,7 +35,8 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, CombinerRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<CombinerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        CombinerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());

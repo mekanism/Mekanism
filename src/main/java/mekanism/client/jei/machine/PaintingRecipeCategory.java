@@ -10,7 +10,7 @@ import mekanism.client.gui.element.gauge.GuiPigmentGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
@@ -23,9 +23,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
+public class PaintingRecipeCategory extends HolderRecipeCategory<PaintingRecipe> {
 
     private static final String PIGMENT_INPUT = "pigmentInput";
 
@@ -45,15 +46,16 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     }
 
     @Override
-    public void draw(PaintingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<PaintingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         colorDetails.ingredient = getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
-        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+        super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, PaintingRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PaintingRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        PaintingRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_PIGMENT, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
               .setSlotName(PIGMENT_INPUT);

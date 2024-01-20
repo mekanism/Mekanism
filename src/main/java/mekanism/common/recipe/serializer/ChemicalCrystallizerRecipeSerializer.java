@@ -10,7 +10,6 @@ import mekanism.api.codec.DependentMapCodec;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -44,27 +43,17 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
     @NotNull
     @Override
     public BasicChemicalCrystallizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-            ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
-            ItemStack output = buffer.readItem();
-            return this.factory.create(inputIngredient, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading boxed chemical to itemstack recipe from packet.", e);
-            throw e;
-        }
+        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
+        ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
+        ItemStack output = buffer.readItem();
+        return this.factory.create(inputIngredient, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicChemicalCrystallizerRecipe recipe) {
-        try {
-            buffer.writeEnum(recipe.getChemicalType());
-            recipe.getInput().write(buffer);
-            buffer.writeItem(recipe.getOutputRaw());
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing boxed chemical to itemstack recipe to packet.", e);
-            throw e;
-        }
+        buffer.writeEnum(recipe.getChemicalType());
+        recipe.getInput().write(buffer);
+        buffer.writeItem(recipe.getOutputRaw());
     }
 
     @FunctionalInterface

@@ -6,5 +6,5 @@ import mekanism.generators.common.MekanismGenerators;
 
 public class GeneratorsJEIRecipeType {
 
-    public static final MekanismJEIRecipeType<FissionJEIRecipe> FISSION = new MekanismJEIRecipeType<>(MekanismGenerators.rl("fission"), FissionJEIRecipe.class);
+    public static final MekanismJEIRecipeType<FissionJEIRecipe> FISSION = new MekanismJEIRecipeType<>(MekanismGenerators.rl("fission"), FissionJEIRecipe.class, false);
 }

@@ -7,7 +7,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.gauge.GuiSlurryGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -17,9 +17,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidSlurryToSlurryRecipe> {
+public class FluidSlurryToSlurryRecipeCategory extends HolderRecipeCategory<FluidSlurryToSlurryRecipe> {
 
     private final GuiGauge<?> fluidInput;
     private final GuiGauge<?> slurryInput;
@@ -36,7 +37,8 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, FluidSlurryToSlurryRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidSlurryToSlurryRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        FluidSlurryToSlurryRecipe recipe = recipeHolder.value();
         initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.INPUT, slurryInput, recipe.getChemicalInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_SLURRY, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());

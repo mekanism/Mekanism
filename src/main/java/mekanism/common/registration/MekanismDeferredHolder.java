@@ -19,6 +19,6 @@ public class MekanismDeferredHolder<R, T extends R> extends DeferredHolder<R, T>
 
     @Override
     public String getName() {
-        return getId().getPath();
+        return INamedEntry.super.getName();
     }
 }

@@ -10,7 +10,6 @@ import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -40,27 +39,17 @@ public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<Bas
     @NotNull
     @Override
     public BasicFluidSlurryToSlurryRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
-        try {
-            FluidStackIngredient fluidInput = IngredientCreatorAccess.fluid().read(buffer);
-            SlurryStackIngredient slurryInput = IngredientCreatorAccess.slurry().read(buffer);
-            SlurryStack output = SlurryStack.readFromPacket(buffer);
-            return this.factory.create(fluidInput, slurryInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading fluid slurry to slurry recipe from packet.", e);
-            throw e;
-        }
+        FluidStackIngredient fluidInput = IngredientCreatorAccess.fluid().read(buffer);
+        SlurryStackIngredient slurryInput = IngredientCreatorAccess.slurry().read(buffer);
+        SlurryStack output = SlurryStack.readFromPacket(buffer);
+        return this.factory.create(fluidInput, slurryInput, output);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicFluidSlurryToSlurryRecipe recipe) {
-        try {
-            recipe.getFluidInput().write(buffer);
-            recipe.getChemicalInput().write(buffer);
-            recipe.getOutputRaw().writeToPacket(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing fluid slurry to slurry recipe to packet.", e);
-            throw e;
-        }
+        recipe.getFluidInput().write(buffer);
+        recipe.getChemicalInput().write(buffer);
+        recipe.getOutputRaw().writeToPacket(buffer);
     }
 
     @FunctionalInterface

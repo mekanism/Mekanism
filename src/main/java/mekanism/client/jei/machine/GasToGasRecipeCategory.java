@@ -7,7 +7,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.HolderRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -16,9 +16,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
+public class GasToGasRecipeCategory extends HolderRecipeCategory<GasToGasRecipe> {
 
     private final GuiGauge<?> input;
     private final GuiGauge<?> output;
@@ -33,7 +34,8 @@ public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, GasToGasRecipe recipe, @NotNull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<GasToGasRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
+        GasToGasRecipe recipe = recipeHolder.value();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }

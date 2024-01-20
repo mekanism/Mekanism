@@ -10,6 +10,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,8 +125,9 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
     }
 
     @Override
-    protected void initCache(List<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
+    protected void initCache(List<RecipeHolder<RECIPE>> recipes) {
+        for (RecipeHolder<RECIPE> recipeHolder : recipes) {
+            RECIPE recipe = recipeHolder.value();
             boolean complexA = cache.mapInputs(recipe, inputAExtractor.apply(recipe));
             boolean complexB = cache.mapInputs(recipe, inputBExtractor.apply(recipe));
             if (complexA || complexB) {

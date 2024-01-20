@@ -68,12 +68,12 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -86,6 +86,8 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -107,13 +109,33 @@ public class MekanismJEI implements IModPlugin {
 
     private static final Map<MekanismJEIRecipeType<?>, RecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
 
+    public static RecipeType<?> genericRecipeType(MekanismJEIRecipeType<?> recipeType) {
+        return recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> {
+            if (r.requiresHolder()) {
+                return new RecipeType<>(r.uid(), RecipeHolder.class);
+            }
+            return new RecipeType<>(r.uid(), r.recipeClass());
+        });
+    }
+
     @SuppressWarnings("unchecked")
     public static <TYPE> RecipeType<TYPE> recipeType(MekanismJEIRecipeType<TYPE> recipeType) {
-        return (RecipeType<TYPE>) recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> new RecipeType<>(r.uid(), r.recipeClass()));
+        if (recipeType.requiresHolder()) {
+            throw new IllegalStateException("Basic recipe type requested for a recipe that uses holders");
+        }
+        return (RecipeType<TYPE>) genericRecipeType(recipeType);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <TYPE extends Recipe<?>> RecipeType<RecipeHolder<TYPE>> holderRecipeType(MekanismJEIRecipeType<TYPE> recipeType) {
+        if (!recipeType.requiresHolder()) {
+            throw new IllegalStateException("Holder recipe type requested for a recipe that doesn't use holders");
+        }
+        return (RecipeType<RecipeHolder<TYPE>>) genericRecipeType(recipeType);
     }
 
     public static RecipeType<?>[] recipeType(MekanismJEIRecipeType<?>... recipeTypes) {
-        return Arrays.stream(recipeTypes).map(MekanismJEI::recipeType).toArray(RecipeType[]::new);
+        return Arrays.stream(recipeTypes).map(MekanismJEI::genericRecipeType).toArray(RecipeType[]::new);
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
@@ -329,8 +351,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismJEIRecipeType.INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
         //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
-        //TODO - 1.20.2: remove uncheck cast: JEI update
-        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), (IIngredientType) ForgeTypes.FLUID_STACK,
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), NeoForgeTypes.FLUID_STACK,
               MekanismLang.JEI_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
         registry.addIngredientInfo(MekanismAPI.MODULE_REGISTRY.stream().map(data -> data.getItemProvider().getItemStack()).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
