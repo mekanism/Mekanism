@@ -35,6 +35,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -167,7 +169,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             } else if (mode == FlamethrowerMode.INFERNO) {
                 Entity owner = getOwner();
                 BlockPos sidePos = hitPos.relative(hitSide);
-                if (CampfireBlock.canLight(hitState)) {
+                if (CampfireBlock.canLight(hitState) || CandleBlock.canLight(hitState) || CandleCakeBlock.canLight(hitState)) {
                     tryPlace(owner, hitPos, hitSide, hitState.setValue(BlockStateProperties.LIT, true));
                 } else if (BaseFireBlock.canBePlacedAt(level(), sidePos, hitSide)) {
                     tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level(), sidePos));
