@@ -3,8 +3,8 @@ package mekanism.client;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table.Cell;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.gear.IModule;
@@ -173,20 +173,18 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.resources.PlayerSkin.Model;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -215,7 +213,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.client.model.SeparateTransformsModel;
 import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -590,63 +588,52 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
-        //Add our own custom armor layer to the various player renderers
-        for (Model skin : event.getSkins()) {
-            if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
-                addCustomLayers(EntityType.PLAYER, renderer, event.getContext().getModelManager());
+        //Add our own custom armor and elytra layer to the various player renderers
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            //Note: We expect this to always be an instanceof PlayerRenderer, but we just bother checking if it is a LivingEntityRenderer
+            if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?> renderer) {
+                addCustomLayers(EntityType.PLAYER, renderer, event.getContext());
             }
         }
-        //Add our own custom armor layer to everything that has an armor layer
-        //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
-        for (Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
-            EntityRenderer<?> renderer = entry.getValue();
-            if (renderer instanceof LivingEntityRenderer) {
-                EntityType<?> entityType = entry.getKey();
-                //noinspection unchecked,rawtypes
-                addCustomLayersBasic(entityType, event.getRenderer((EntityType) entityType), event.getContext().getModelManager());
+        //Add our own custom armor and elytra layer to everything that has an armor layer
+        //Note: This includes any modded mobs that have vanilla's HumanoidArmorLayer or ElytraLayer added to them
+        for (EntityType<?> entityType : event.getEntityTypes()) {
+            if (event.getRenderer(entityType) instanceof LivingEntityRenderer<?, ?> renderer) {
+                addCustomLayers(entityType, renderer, event.getContext());
             }
         }
     }
 
-    private static <T extends LivingEntity, M extends HumanoidModel<T>> void addCustomLayersBasic(EntityType<?> type, @Nullable EntityRenderer<T> renderer,
-          ModelManager modelManager) {
-        if (renderer instanceof LivingEntityRenderer) {
-            addCustomLayers(type, (LivingEntityRenderer<T, M>) renderer, modelManager);
-        }
-    }
-
-    private static <T extends LivingEntity, M extends HumanoidModel<T>> void addCustomLayers(EntityType<?> type, @Nullable LivingEntityRenderer<T, M> renderer,
-          ModelManager modelManager) {
-        if (renderer == null) {
-            return;
-        }
-        HumanoidArmorLayer<T, M, ?> bipedArmorLayer = null;
-        boolean hasElytra = false;
-        for (RenderLayer<T, M> layerRenderer : renderer.layers) {
+    private static <LIVING extends LivingEntity, MODEL extends EntityModel<LIVING>> void addCustomLayers(@NotNull EntityType<?> type,
+          @NotNull LivingEntityRenderer<LIVING, MODEL> renderer, @NotNull EntityRendererProvider.Context context) {
+        int layerTypes = 2;
+        Map<String, RenderLayer<LIVING, MODEL>> layersToAdd = new HashMap<>(layerTypes);
+        for (RenderLayer<LIVING, MODEL> layerRenderer : renderer.layers) {
             //Validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
             if (layerRenderer != null) {
                 //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor or elytra layer
                 Class<?> layerClass = layerRenderer.getClass();
                 if (layerClass == HumanoidArmorLayer.class) {
-                    bipedArmorLayer = (HumanoidArmorLayer<T, M, ?>) layerRenderer;
-                    if (hasElytra) {
+                    //Note: We know that the MODEL is actually an instance of HumanoidModel, or there wouldn't be a
+                    //noinspection unchecked,rawtypes
+                    layersToAdd.put("Armor", new MekanismArmorLayer(renderer, (HumanoidArmorLayer<LIVING, ?, ?>) layerRenderer, context.getModelManager()));
+                    if (layersToAdd.size() == layerTypes) {
                         break;
                     }
                 } else if (layerClass == ElytraLayer.class) {
-                    hasElytra = true;
-                    if (bipedArmorLayer != null) {
+                    layersToAdd.put("Elytra", new MekanismElytraLayer<>(renderer, context.getModelSet()));
+                    if (layersToAdd.size() == layerTypes) {
                         break;
                     }
                 }
             }
         }
-        if (bipedArmorLayer != null) {
-            renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel, modelManager));
-            Mekanism.logger.debug("Added Mekanism Armor Layer to entity of type: {}", RegistryUtils.getName(type));
-        }
-        if (hasElytra) {
-            renderer.addLayer(new MekanismElytraLayer<>(renderer, Minecraft.getInstance().getEntityModels()));
-            Mekanism.logger.debug("Added Mekanism Elytra Layer to entity of type: {}", RegistryUtils.getName(type));
+        if (!layersToAdd.isEmpty()) {
+            ResourceLocation entityName = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+            for (Map.Entry<String, RenderLayer<LIVING, MODEL>> entry : layersToAdd.entrySet()) {
+                renderer.addLayer(entry.getValue());
+                Mekanism.logger.debug("Added Mekanism {} Layer to entity of type: {}", entry.getKey(), entityName);
+            }
         }
     }
 

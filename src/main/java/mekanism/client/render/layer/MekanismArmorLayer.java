@@ -20,8 +20,8 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 @ParametersAreNotNullByDefault
 public class MekanismArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends HumanoidArmorLayer<T, M, A> {
 
-    public MekanismArmorLayer(RenderLayerParent<T, M> entityRenderer, A modelLeggings, A modelArmor, ModelManager manager) {
-        super(entityRenderer, modelLeggings, modelArmor, manager);
+    public MekanismArmorLayer(RenderLayerParent<T, M> entityRenderer, HumanoidArmorLayer<T, M, A> vanillaLayer, ModelManager manager) {
+        super(entityRenderer, vanillaLayer.innerModel, vanillaLayer.outerModel, manager);
     }
 
     @Override
