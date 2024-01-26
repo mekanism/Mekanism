@@ -20,6 +20,6 @@ public class MekanismBlockLootTables extends BaseBlockLootTables {
         add(block -> createOreDrop(block, MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, PrimaryResource.LEAD)), MekanismBlocks.ORES.get(OreType.LEAD));
         add(block -> createOreDrop(block, MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, PrimaryResource.URANIUM)), MekanismBlocks.ORES.get(OreType.URANIUM));
         //Register the remaining blocks as dropping themselves with any contents they may have stored
-        dropSelfWithContents(MekanismBlocks.BLOCKS.getAllBlocks());
+        dropSelfWithContents(MekanismBlocks.BLOCKS.getPrimaryEntries());
     }
 }

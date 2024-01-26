@@ -12,8 +12,6 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
-import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
@@ -23,12 +21,11 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -162,8 +159,8 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerBucketColorHandler(RegisterColorHandlersEvent.Item event, FluidDeferredRegister register) {
-        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
-            event.register(BUCKET_ITEM_COLOR, fluidRO.getBucket());
+        for (Holder<Item> bucket : register.getBucketEntries()) {
+            event.register(BUCKET_ITEM_COLOR, bucket.value());
         }
     }
 
@@ -177,12 +174,5 @@ public class ClientRegistrationUtil {
 
     public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, IItemProvider... items) {
         registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
-    }
-
-    public static void setRenderLayer(RenderType type, FluidRegistryObject<?, ?, ?, ?, ?>... fluidROs) {
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidROs) {
-            ItemBlockRenderTypes.setRenderLayer(fluidRO.getStillFluid(), type);
-            ItemBlockRenderTypes.setRenderLayer(fluidRO.getFlowingFluid(), type);
-        }
     }
 }

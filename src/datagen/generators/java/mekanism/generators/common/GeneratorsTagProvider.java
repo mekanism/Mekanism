@@ -1,18 +1,15 @@
 package mekanism.generators.common;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import mekanism.api.providers.IBlockProvider;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
-import mekanism.common.tag.IntrinsicMekanismTagBuilder;
-import mekanism.common.tag.MekanismTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -28,8 +25,8 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected List<IBlockProvider> getAllBlocks() {
-        return GeneratorsBlocks.BLOCKS.getAllBlocks();
+    protected Collection<? extends Holder<Block>> getAllBlocks() {
+        return GeneratorsBlocks.BLOCKS.getPrimaryEntries();
     }
 
     @Override
@@ -79,16 +76,11 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addFluids() {
+        addToGenericFluidTags(GeneratorsFluids.FLUIDS);
         addToTag(GeneratorTags.Fluids.BIOETHANOL, GeneratorsFluids.BIOETHANOL);
         addToTag(GeneratorTags.Fluids.DEUTERIUM, GeneratorsFluids.DEUTERIUM);
         addToTag(GeneratorTags.Fluids.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL);
         addToTag(GeneratorTags.Fluids.TRITIUM, GeneratorsFluids.TRITIUM);
-        IntrinsicMekanismTagBuilder<Block> replaceableBuilder = getBlockBuilder(BlockTags.REPLACEABLE);
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : GeneratorsFluids.FLUIDS.getAllFluids()) {
-            //Prevent all our fluids from being duped by create
-            addToTag(MekanismTagProvider.CREATE_NO_INFINITE_FLUID, fluid);
-            replaceableBuilder.add(fluid.getBlock());
-        }
     }
 
     private void addGases() {

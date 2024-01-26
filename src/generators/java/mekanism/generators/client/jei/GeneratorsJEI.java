@@ -27,8 +27,8 @@ public class GeneratorsJEI implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(@NotNull ISubtypeRegistration registry) {
-        MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getAllItems());
-        MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getAllBlocks());
+        MekanismJEI.registerItemSubtypes(registry, GeneratorsItems.ITEMS.getEntries());
+        MekanismJEI.registerItemSubtypes(registry, GeneratorsBlocks.BLOCKS.getSecondaryEntries());
     }
 
     @Override

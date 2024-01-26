@@ -1,17 +1,18 @@
 package mekanism.client.state;
 
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -49,10 +50,12 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         return getVariantBuilder(blockProvider.getBlock());
     }
 
-    protected void registerFluidBlockStates(List<FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?>> fluidROs) {
-        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : fluidROs) {
-            simpleBlock(fluidRO.getBlock(), models().getBuilder(RegistryUtils.getPath(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
-                  fluidRO.getFluidType().stillTexture));
+    protected void registerFluidBlockStates(FluidDeferredRegister register) {
+        for (Holder<Block> blockEntry : register.getBlockEntries()) {
+            //Note: We expect this to always be the case
+            if (blockEntry.value() instanceof LiquidBlock block && block.getFluid().getFluidType() instanceof MekanismFluidType fluidType) {
+                simpleBlock(block, models().getBuilder(RegistryUtils.getPath(block)).texture(DataGenJsonConstants.PARTICLE, fluidType.stillTexture));
+            }
         }
     }
 

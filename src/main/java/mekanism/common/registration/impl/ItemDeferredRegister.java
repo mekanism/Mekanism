@@ -1,15 +1,11 @@
 package mekanism.common.registration.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -29,8 +25,6 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
-    private final List<IItemProvider> allItems = new ArrayList<>();
-
     public ItemDeferredRegister(String modid) {
         super(Registries.ITEM, modid, ItemRegistryObject::new);
     }
@@ -42,11 +36,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        for (IItemProvider itemProvider : allItems) {
-            if (itemProvider.asItem() instanceof ICapabilityAware capabilityAware) {
-                capabilityAware.attachCapabilities(event);
-            }
-        }
+        Capabilities.registerCapabilityAwareCapabilities(event, getEntries());
     }
 
     public ItemRegistryObject<Item> register(String name) {
@@ -87,17 +77,11 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
     @Override
     @SuppressWarnings("unchecked")
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
-        ItemRegistryObject<ITEM> registeredItem = (ItemRegistryObject<ITEM>) super.register(name, sup);
-        allItems.add(registeredItem);
-        return registeredItem;
+        return (ItemRegistryObject<ITEM>) super.register(name, sup);
     }
 
     public ItemRegistryObject<DeferredSpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider,
           int primaryColor, int secondaryColor) {
         return registerItem(entityTypeProvider.getName() + "_spawn_egg", props -> new DeferredSpawnEggItem(entityTypeProvider, primaryColor, secondaryColor, props));
-    }
-
-    public List<IItemProvider> getAllItems() {
-        return Collections.unmodifiableList(allItems);
     }
 }

@@ -1,18 +1,19 @@
 package mekanism.client.model;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.FluidDeferredRegister;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators.TrimModelData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
@@ -35,43 +36,47 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
 
-    protected ResourceLocation itemTexture(IItemProvider itemProvider) {
-        return modLoc("item/" + itemProvider.getName());
+    protected ResourceLocation itemTexture(ItemLike itemLike) {
+        return modLoc("item/" + RegistryUtils.getPath(itemLike.asItem()));
     }
 
-    protected void registerGenerated(IItemProvider... itemProviders) {
-        for (IItemProvider itemProvider : itemProviders) {
-            generated(itemProvider);
+    protected void registerGenerated(ItemLike... itemProviders) {
+        for (ItemLike itemLike : itemProviders) {
+            generated(itemLike);
         }
     }
 
     protected void registerModules(ItemDeferredRegister register) {
-        for (IItemProvider itemProvider : register.getAllItems()) {
-            Item item = itemProvider.asItem();
-            if (item instanceof ItemModule) {
-                generated(itemProvider);
+        for (Holder<Item> itemProvider : register.getEntries()) {
+            if (itemProvider.value() instanceof ItemModule module) {
+                generated(module);
             }
         }
     }
 
     protected void registerBuckets(FluidDeferredRegister register) {
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRegistryObject : register.getAllFluids()) {
-            registerBucket(fluidRegistryObject);
+        for (Holder<Item> holder : register.getBucketEntries()) {
+            //Note: We expect this to always be the case
+            if (holder.value() instanceof BucketItem bucket) {
+                withExistingParent(RegistryUtils.getPath(bucket), new ResourceLocation("neoforge", "item/bucket"))
+                      .customLoader(DynamicFluidContainerModelBuilder::begin)
+                      .fluid(bucket.getFluid());
+            }
         }
     }
 
-    protected ItemModelBuilder generated(IItemProvider itemProvider) {
-        return generated(itemProvider, itemTexture(itemProvider));
+    protected ItemModelBuilder generated(ItemLike itemLike) {
+        return generated(itemLike, itemTexture(itemLike));
     }
 
-    protected ItemModelBuilder generated(IItemProvider itemProvider, ResourceLocation texture) {
-        return withExistingParent(itemProvider.getName(), "item/generated").texture("layer0", texture);
+    protected ItemModelBuilder generated(ItemLike itemLike, ResourceLocation texture) {
+        return withExistingParent(RegistryUtils.getPath(itemLike.asItem()), "item/generated").texture("layer0", texture);
     }
 
-    protected ItemModelBuilder resource(IItemProvider itemProvider, String type) {
+    protected ItemModelBuilder resource(ItemLike itemLike, String type) {
         //TODO: Try to come up with a better solution to this. Currently we have an empty texture for layer zero so that we can set
         // the tint only on layer one so that we only end up having the tint show for this fallback texture
-        ItemModelBuilder modelBuilder = generated(itemProvider, modLoc("item/empty")).texture("layer1", modLoc("item/" + type));
+        ItemModelBuilder modelBuilder = generated(itemLike, modLoc("item/empty")).texture("layer1", modLoc("item/" + type));
         ResourceLocation overlay = modLoc("item/" + type + "_overlay");
         if (textureExists(overlay)) {
             //If we have an overlay type for that resource type then add that as another layer
@@ -80,39 +85,31 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return modelBuilder;
     }
 
-    protected void registerHandheld(IItemProvider... itemProviders) {
-        for (IItemProvider itemProvider : itemProviders) {
-            handheld(itemProvider);
+    protected void registerHandheld(ItemLike... itemProviders) {
+        for (ItemLike itemLike : itemProviders) {
+            handheld(itemLike);
         }
     }
 
-    protected ItemModelBuilder handheld(IItemProvider itemProvider) {
-        return handheld(itemProvider, itemTexture(itemProvider));
+    protected ItemModelBuilder handheld(ItemLike itemLike) {
+        return handheld(itemLike, itemTexture(itemLike));
     }
 
-    protected ItemModelBuilder handheld(IItemProvider itemProvider, ResourceLocation texture) {
-        return withExistingParent(itemProvider.getName(), "item/handheld").texture("layer0", texture);
+    protected ItemModelBuilder handheld(ItemLike itemLike, ResourceLocation texture) {
+        return withExistingParent(RegistryUtils.getPath(itemLike.asItem()), "item/handheld").texture("layer0", texture);
     }
 
-    protected ItemModelBuilder armorWithTrim(IItemProvider itemProvider, ResourceLocation texture) {
-        ItemModelBuilder builder = generated(itemProvider, texture);
-        ArmorItem.Type type = ((ArmorItem) itemProvider.asItem()).getType();
+    protected ItemModelBuilder armorWithTrim(ArmorItem armorItem, ResourceLocation texture) {
+        ItemModelBuilder builder = generated(armorItem, texture);
         for (TrimModelData trimModelData : ItemModelGenerators.GENERATED_TRIM_MODELS) {
             String trimId = trimModelData.name();
             ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
                   .texture("layer0", texture)
-                  .texture("layer1", new ResourceLocation("trims/items/" + type.getName() + "_trim_" + trimId));
+                  .texture("layer1", new ResourceLocation("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
             builder.override()
                   .predicate(ItemModelGenerators.TRIM_TYPE_PREDICATE_ID, trimModelData.itemModelIndex())
                   .model(override);
         }
         return builder;
-    }
-
-    //Note: This isn't the best way to do this in terms of model file validation, but it works
-    protected void registerBucket(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO) {
-        withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("neoforge", "item/bucket"))
-              .customLoader(DynamicFluidContainerModelBuilder::begin)
-              .fluid(fluidRO.getStillFluid());
     }
 }

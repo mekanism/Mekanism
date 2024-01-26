@@ -1,5 +1,6 @@
 package mekanism.common.tag;
 
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceKey;
@@ -41,6 +42,10 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
 
     @SafeVarargs
     public final <T> BUILDER add(Function<T, ResourceLocation> locationGetter, T... elements) {
+        return apply(builder::addElement, locationGetter, elements);
+    }
+
+    public <T> BUILDER add(Function<T, ResourceLocation> locationGetter, Collection<T> elements) {
         return apply(builder::addElement, locationGetter, elements);
     }
 
@@ -100,6 +105,13 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
 
     @SafeVarargs
     protected final <T> BUILDER apply(Consumer<ResourceLocation> consumer, Function<T, ResourceLocation> locationGetter, T... elements) {
+        for (T element : elements) {
+            consumer.accept(locationGetter.apply(element));
+        }
+        return self();
+    }
+
+    protected <T> BUILDER apply(Consumer<ResourceLocation> consumer, Function<T, ResourceLocation> locationGetter, Collection<T> elements) {
         for (T element : elements) {
             consumer.accept(locationGetter.apply(element));
         }

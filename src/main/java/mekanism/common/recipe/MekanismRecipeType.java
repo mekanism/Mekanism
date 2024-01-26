@@ -56,6 +56,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -134,8 +135,11 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
     }
 
     public static void clearCache() {
-        for (IMekanismRecipeTypeProvider<?, ?> recipeTypeProvider : RECIPE_TYPES.getAllRecipeTypes()) {
-            recipeTypeProvider.getRecipeType().clearCaches();
+        for (Holder<RecipeType<?>> entry : RECIPE_TYPES.getEntries()) {
+            //Note: We expect all entries to be a MekanismRecipeType, but we validate it just to be sure
+            if (entry.value() instanceof MekanismRecipeType<?, ?> recipeType) {
+                recipeType.clearCaches();
+            }
         }
     }
 

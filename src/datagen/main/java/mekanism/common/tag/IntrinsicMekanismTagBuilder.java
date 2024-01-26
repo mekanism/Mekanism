@@ -1,5 +1,6 @@
 package mekanism.common.tag;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +15,10 @@ public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, 
     public IntrinsicMekanismTagBuilder(Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagBuilder builder, String modID) {
         super(builder, modID);
         this.keyExtractor = keyExtractor;
+    }
+
+    public IntrinsicMekanismTagBuilder<TYPE> add(Collection<? extends Supplier<? extends TYPE>> elements) {
+        return addTyped(Supplier::get, elements);
     }
 
     @SafeVarargs
@@ -32,6 +37,10 @@ public class IntrinsicMekanismTagBuilder<TYPE> extends MekanismTagBuilder<TYPE, 
 
     @SafeVarargs
     public final <T> IntrinsicMekanismTagBuilder<TYPE> addTyped(Function<T, TYPE> converter, T... elements) {
+        return add(converter.andThen(this::getKey), elements);
+    }
+
+    public <T> IntrinsicMekanismTagBuilder<TYPE> addTyped(Function<T, TYPE> converter, Collection<T> elements) {
         return add(converter.andThen(this::getKey), elements);
     }
 

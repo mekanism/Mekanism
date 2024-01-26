@@ -8,6 +8,6 @@ public class DefenseBlockLootTables extends BaseBlockLootTables {
     @Override
     protected void generate() {
         //Register all remaining blocks as just dropping themselves
-        dropSelf(DefenseBlocks.BLOCKS.getAllBlocks());
+        dropSelf(DefenseBlocks.BLOCKS.getPrimaryEntries());
     }
 }

@@ -1,12 +1,12 @@
 package mekanism.tools.common.registries;
 
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.item.ItemMekanismArmor;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -30,14 +30,14 @@ public class ToolsCreativeTabs {
     private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {
         ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
         if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            for (IItemProvider item : ToolsItems.ITEMS.getAllItems()) {
-                if (item.asItem() instanceof DiggerItem) {
+            for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
+                if (holder.value() instanceof DiggerItem item) {
                     CreativeTabDeferredRegister.addToDisplay(event, item);
                 }
             }
         } else if (tabKey == CreativeModeTabs.COMBAT) {
-            for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
-                Item item = itemProvider.asItem();
+            for (Holder<Item> itemProvider : ToolsItems.ITEMS.getEntries()) {
+                Item item = itemProvider.value();
                 if (item instanceof ItemMekanismArmor || item instanceof SwordItem || item instanceof ShieldItem) {
                     CreativeTabDeferredRegister.addToDisplay(event, item);
                 }

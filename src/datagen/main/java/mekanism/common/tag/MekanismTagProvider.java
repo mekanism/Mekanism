@@ -1,16 +1,14 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -32,45 +30,38 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public static final TagKey<EntityType<?>> PVI_COMPAT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
-    public static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(new ResourceLocation("create", "no_infinite_draining"));
-
     public MekanismTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, Mekanism.MODID, existingFileHelper);
     }
 
     @Override
-    protected List<IBlockProvider> getAllBlocks() {
-        return MekanismBlocks.BLOCKS.getAllBlocks();
+    protected Collection<? extends Holder<Block>> getAllBlocks() {
+        return MekanismBlocks.BLOCKS.getPrimaryEntries();
     }
 
     @Override
@@ -515,6 +506,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addFluids() {
+        addToGenericFluidTags(MekanismFluids.FLUIDS);
         addToTag(MekanismTags.Fluids.BRINE, MekanismFluids.BRINE);
         addToTag(MekanismTags.Fluids.CHLORINE, MekanismFluids.CHLORINE);
         addToTag(MekanismTags.Fluids.ETHENE, MekanismFluids.ETHENE);
@@ -533,12 +525,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE);
         addToTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE);
         addToTag(Tags.Fluids.GASEOUS, MekanismFluids.STEAM);
-        IntrinsicMekanismTagBuilder<Block> replaceableBuilder = getBlockBuilder(BlockTags.REPLACEABLE);
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
-            //Prevent all our fluids from being duped by create
-            addToTag(CREATE_NO_INFINITE_FLUID, fluid);
-            replaceableBuilder.add(fluid.getBlock());
-        }
     }
 
     private void addGameEvents() {

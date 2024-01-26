@@ -2,12 +2,12 @@ package mekanism.tools.common;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.IntrinsicMekanismTagBuilder;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismPickaxe;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -281,8 +281,8 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void createTag(IntrinsicMekanismTagBuilder<Item> tag, Predicate<Item> matcher) {
-        for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
-            Item item = itemProvider.asItem();
+        for (Holder<Item> itemProvider : ToolsItems.ITEMS.getEntries()) {
+            Item item = itemProvider.value();
             if (matcher.test(item)) {
                 tag.add(item);
             }

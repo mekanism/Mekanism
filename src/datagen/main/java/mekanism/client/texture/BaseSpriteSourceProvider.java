@@ -8,15 +8,16 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
@@ -53,9 +54,11 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
     }
 
     protected void addFluids(SourceList atlas, FluidDeferredRegister register) {
-        for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
-            MekanismFluidType fluidType = fluidRO.getFluidType();
-            addFiles(atlas, fluidType.stillTexture, fluidType.flowingTexture, fluidType.overlayTexture);
+        for (Holder<FluidType> holder : register.getFluidTypeEntries()) {
+            //Note: This should always be the case
+            if (holder.value() instanceof MekanismFluidType fluidType) {
+                addFiles(atlas, fluidType.stillTexture, fluidType.flowingTexture, fluidType.overlayTexture);
+            }
         }
     }
 

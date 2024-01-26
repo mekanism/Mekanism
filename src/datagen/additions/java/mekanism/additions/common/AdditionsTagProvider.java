@@ -1,6 +1,6 @@
 package mekanism.additions.common;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -9,7 +9,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
-import mekanism.common.tag.MekanismTagProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -32,8 +32,8 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected List<IBlockProvider> getAllBlocks() {
-        return AdditionsBlocks.BLOCKS.getAllBlocks();
+    protected Collection<? extends Holder<Block>> getAllBlocks() {
+        return AdditionsBlocks.BLOCKS.getPrimaryEntries();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.value());
         getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.value());
         addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);
-        addEntitiesToTag(MekanismTagProvider.PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
+        addEntitiesToTag(PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
     }
 

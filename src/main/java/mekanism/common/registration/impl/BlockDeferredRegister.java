@@ -1,14 +1,10 @@
 package mekanism.common.registration.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.DoubleDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -21,10 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
-    private final List<IBlockProvider> allBlocks = new ArrayList<>();
-
     public BlockDeferredRegister(String modid) {
-        super(modid, Registries.BLOCK, Registries.ITEM);
+        super(modid, Registries.BLOCK, new ItemDeferredRegister(modid));
     }
 
     @Override
@@ -34,11 +28,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        for (IBlockProvider blockProvider : allBlocks) {
-            if (blockProvider.asItem() instanceof ICapabilityAware capabilityAware) {
-                capabilityAware.attachCapabilities(event);
-            }
-        }
+        Capabilities.registerCapabilityAwareCapabilities(event, getSecondaryEntries());
     }
 
     public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
@@ -56,12 +46,6 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,
           Function<BLOCK, ITEM> itemCreator) {
-        BlockRegistryObject<BLOCK, ITEM> registeredBlock = register(name, blockSupplier, itemCreator, BlockRegistryObject::new);
-        allBlocks.add(registeredBlock);
-        return registeredBlock;
-    }
-
-    public List<IBlockProvider> getAllBlocks() {
-        return Collections.unmodifiableList(allBlocks);
+        return register(name, blockSupplier, itemCreator, BlockRegistryObject::new);
     }
 }

@@ -22,7 +22,7 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
         add(this::createSlabItemTable, AdditionsBlocks.PLASTIC_GLOW_SLABS.values());
         add(this::createSlabItemTable, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS.values());
         //Register all remaining blocks as just dropping themselves
-        dropSelf(AdditionsBlocks.BLOCKS.getAllBlocks());
+        dropSelf(AdditionsBlocks.BLOCKS.getPrimaryEntries());
     }
 
     private void registerObsidianTNT() {

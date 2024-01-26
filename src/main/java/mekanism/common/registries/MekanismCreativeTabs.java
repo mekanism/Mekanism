@@ -3,7 +3,6 @@ package mekanism.common.registries;
 import java.util.function.BooleanSupplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -24,6 +23,7 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -95,8 +95,8 @@ public class MekanismCreativeTabs {
                 CreativeTabDeferredRegister.addToDisplay(event, oreType.stone(), oreType.deepslate());
             }
         } else if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            for (IBlockProvider blockProvider : MekanismBlocks.BLOCKS.getAllBlocks()) {
-                Block block = blockProvider.getBlock();
+            for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
+                Block block = blockProvider.value();
                 if (block instanceof BlockBase<?> base && base.getType() instanceof Machine || block instanceof BlockTransmitter) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
                 }
@@ -107,8 +107,8 @@ public class MekanismCreativeTabs {
                   MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.INDUSTRIAL_ALARM);
-            for (IBlockProvider blockProvider : MekanismBlocks.BLOCKS.getAllBlocks()) {
-                Block block = blockProvider.getBlock();
+            for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
+                Block block = blockProvider.value();
                 if (Attribute.has(block, AttributeComparator.class) || block instanceof BlockSmallTransmitter || block instanceof BlockMechanicalPipe) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
                 }

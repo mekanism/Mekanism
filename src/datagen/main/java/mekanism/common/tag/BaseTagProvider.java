@@ -3,6 +3,7 @@ package mekanism.common.tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
+import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
@@ -35,6 +37,9 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
@@ -52,6 +57,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseTagProvider implements DataProvider {
+
+    protected static final TagKey<EntityType<?>> PVI_COMPAT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
+    private static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(new ResourceLocation("create", "no_infinite_draining"));
 
     private final Map<ResourceKey<? extends Registry<?>>, Map<TagKey<?>, TagBuilder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final Set<Block> knownHarvestRequirements = new ReferenceOpenHashSet<>();
@@ -75,7 +83,7 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected abstract void registerTags(HolderLookup.Provider registries);
 
-    protected List<IBlockProvider> getAllBlocks() {
+    protected Collection<? extends Holder<Block>> getAllBlocks() {
         return Collections.emptyList();
     }
 
@@ -91,8 +99,8 @@ public abstract class BaseTagProvider implements DataProvider {
             registerTags(registries);
             return registries;
         }).thenCompose(registries -> {
-            for (IBlockProvider blockProvider : getAllBlocks()) {
-                Block block = blockProvider.getBlock();
+            for (Holder<Block> blockProvider : getAllBlocks()) {
+                Block block = blockProvider.value();
                 if (block.defaultBlockState().requiresCorrectToolForDrops() && !knownHarvestRequirements.contains(block)) {
                     throw new IllegalStateException("Missing harvest tool type for block '" + RegistryUtils.getName(block) + "' that requires the correct tool for drops.");
                 }
@@ -232,6 +240,12 @@ public abstract class BaseTagProvider implements DataProvider {
             itemTagBuilder.add(blockProvider.asItem());
             blockTagBuilder.add(blockProvider.getBlock());
         }
+    }
+
+    protected void addToGenericFluidTags(FluidDeferredRegister register) {
+        getBlockBuilder(BlockTags.REPLACEABLE).add(register.getBlockEntries());
+        //Prevent all our fluids from being duped by create
+        getFluidBuilder(CREATE_NO_INFINITE_FLUID).add(register.getFluidEntries());
     }
 
     @SafeVarargs

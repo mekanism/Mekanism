@@ -1,6 +1,7 @@
 package mekanism.client.jei;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.jei.ChemicalStackHelper.GasStackHelper;
@@ -83,11 +83,13 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -222,22 +224,22 @@ public class MekanismJEI implements IModPlugin {
         return Mekanism.rl("jei_plugin");
     }
 
-    public static void registerItemSubtypes(ISubtypeRegistration registry, List<? extends IItemProvider> itemProviders) {
-        for (IItemProvider itemProvider : itemProviders) {
+    public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<? extends ItemLike>> itemProviders) {
+        for (Holder<? extends ItemLike> itemProvider : itemProviders) {
             //Handle items
-            ItemStack stack = itemProvider.getItemStack();
+            ItemStack stack = new ItemStack(itemProvider.value());
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
                 Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
                 Capabilities.SLURRY.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
-                registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
+                registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, stack.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
     }
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registry) {
-        registerItemSubtypes(registry, MekanismItems.ITEMS.getAllItems());
-        registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getAllBlocks());
+        registerItemSubtypes(registry, MekanismItems.ITEMS.getEntries());
+        registerItemSubtypes(registry, MekanismBlocks.BLOCKS.getSecondaryEntries());
     }
 
     @Override

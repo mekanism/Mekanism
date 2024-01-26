@@ -132,7 +132,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               ).save(consumer);
         advancement(MekanismAdvancements.FACTORY)
               .display(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING), AdvancementType.GOAL, true)
-              .orCriteria("factory", getItems(MekanismBlocks.BLOCKS.getAllBlocks(), item -> item instanceof ItemBlockFactory))
+              .orCriteria("factory", getItems(MekanismBlocks.BLOCKS.getSecondaryEntries(), item -> item instanceof ItemBlockFactory))
               .save(consumer);
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
               .display(MekanismItems.CONFIGURATION_CARD, AdvancementType.TASK, false)

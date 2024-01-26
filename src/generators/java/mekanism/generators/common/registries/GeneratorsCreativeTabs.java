@@ -1,6 +1,5 @@
 package mekanism.generators.common.registries;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -8,9 +7,11 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class GeneratorsCreativeTabs {
@@ -34,8 +35,9 @@ public class GeneratorsCreativeTabs {
             CreativeTabDeferredRegister.addToDisplay(event, GeneratorsBlocks.HEAT_GENERATOR, GeneratorsBlocks.SOLAR_GENERATOR, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
                   GeneratorsBlocks.WIND_GENERATOR, GeneratorsBlocks.BIO_GENERATOR, GeneratorsBlocks.GAS_BURNING_GENERATOR);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
-            for (IBlockProvider block : GeneratorsBlocks.BLOCKS.getAllBlocks()) {
-                if (Attribute.has(block.getBlock(), AttributeComparator.class)) {
+            for (Holder<Block> blockProvider : GeneratorsBlocks.BLOCKS.getPrimaryEntries()) {
+                Block block = blockProvider.value();
+                if (Attribute.has(block, AttributeComparator.class)) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
                 }
             }

@@ -27,7 +27,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
 
     @Override
     protected void registerStatesAndModels() {
-        registerFluidBlockStates(MekanismFluids.FLUIDS.getAllFluids());
+        registerFluidBlockStates(MekanismFluids.FLUIDS);
 
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();

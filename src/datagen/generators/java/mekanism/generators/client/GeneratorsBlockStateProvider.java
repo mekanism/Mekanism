@@ -14,6 +14,6 @@ public class GeneratorsBlockStateProvider extends BaseBlockStateProvider<Generat
 
     @Override
     protected void registerStatesAndModels() {
-        registerFluidBlockStates(GeneratorsFluids.FLUIDS.getAllFluids());
+        registerFluidBlockStates(GeneratorsFluids.FLUIDS);
     }
 }

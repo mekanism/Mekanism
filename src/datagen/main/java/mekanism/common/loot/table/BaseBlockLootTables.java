@@ -32,6 +32,7 @@ import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -118,9 +119,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     }
 
     //IBlockProvider versions of BlockLootTable methods, modified to support varargs
-    protected void dropSelf(List<IBlockProvider> blockProviders) {
-        for (IBlockProvider blockProvider : blockProviders) {
-            Block block = blockProvider.getBlock();
+    protected void dropSelf(Collection<? extends Holder<Block>> blockProviders) {
+        for (Holder<Block> blockProvider : blockProviders) {
+            Block block = blockProvider.value();
             if (!skipBlock(block)) {
                 dropSelf(block);
             }
@@ -146,11 +147,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
     }
 
-    protected void dropSelfWithContents(List<IBlockProvider> blockProviders) {
+    protected void dropSelfWithContents(Collection<? extends Holder<Block>> blockProviders) {
         //TODO: See if there is other stuff we want to be transferring which we currently do not
         // For example, when writing this we added dump mode for chemical tanks to getting transferred to the item
-        for (IBlockProvider blockProvider : blockProviders) {
-            Block block = blockProvider.getBlock();
+        for (Holder<Block> blockProvider : blockProviders) {
+            Block block = blockProvider.value();
             if (skipBlock(block)) {
                 continue;
             }

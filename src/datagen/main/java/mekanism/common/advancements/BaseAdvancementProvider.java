@@ -3,18 +3,19 @@ package mekanism.common.advancements;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import mekanism.api.providers.IItemProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -85,8 +86,9 @@ public abstract class BaseAdvancementProvider implements DataProvider {
               .toArray(ItemPredicate[]::new));
     }
 
-    protected static ItemLike[] getItems(List<? extends IItemProvider> items, Predicate<Item> matcher) {
+    protected static ItemLike[] getItems(Collection<? extends Holder<? extends ItemLike>> items, Predicate<Item> matcher) {
         return items.stream()
+              .map(Holder::value)
               .filter(itemProvider -> matcher.test(itemProvider.asItem()))
               .toArray(ItemLike[]::new);
     }

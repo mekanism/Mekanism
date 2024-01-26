@@ -2,53 +2,51 @@ package mekanism.common.registration.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
-import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
       implements IFluidProvider {
 
-    final MekanismDeferredHolder<FluidType, TYPE> fluidTypeRO;
-    final MekanismDeferredHolder<Fluid, STILL> stillRO;
-    final MekanismDeferredHolder<Fluid, FLOWING> flowingRO;
-    final MekanismDeferredHolder<Block, BLOCK> blockRO;
-    final MekanismDeferredHolder<Item, BUCKET> bucketRO;
+    private final DeferredHolder<FluidType, TYPE> fluidType;
+    private final DeferredHolder<Fluid, STILL> still;
+    private final DeferredHolder<Fluid, FLOWING> flowing;
+    private final DeferredHolder<Item, BUCKET> bucket;
+    private final DeferredHolder<Block, BLOCK> block;
 
-    FluidRegistryObject(ResourceLocation key) {
-        this.fluidTypeRO = new MekanismDeferredHolder<>(NeoForgeRegistries.Keys.FLUID_TYPES, key);
-        this.stillRO = new MekanismDeferredHolder<>(Registries.FLUID, key);
-        this.flowingRO = new MekanismDeferredHolder<>(Registries.FLUID, key.withPrefix("flowing_"));
-        this.blockRO = new MekanismDeferredHolder<>(Registries.BLOCK, key);
-        this.bucketRO = new MekanismDeferredHolder<>(Registries.ITEM, key.withSuffix("_bucket"));
+    FluidRegistryObject(DeferredHolder<FluidType, TYPE> fluidType, DeferredHolder<Fluid, STILL> still, DeferredHolder<Fluid, FLOWING> flowing,
+          DeferredHolder<Item, BUCKET> bucket, DeferredHolder<Block, BLOCK> block) {
+        this.fluidType = fluidType;
+        this.still = still;
+        this.flowing = flowing;
+        this.bucket = bucket;
+        this.block = block;
     }
 
     public TYPE getFluidType() {
-        return fluidTypeRO.get();
+        return fluidType.get();
     }
 
     public STILL getStillFluid() {
-        return stillRO.get();
+        return still.get();
     }
 
     public FLOWING getFlowingFluid() {
-        return flowingRO.get();
+        return flowing.get();
     }
 
     public BLOCK getBlock() {
-        return blockRO.get();
+        return block.get();
     }
 
     public BUCKET getBucket() {
-        return bucketRO.get();
+        return bucket.get();
     }
 
     @Override

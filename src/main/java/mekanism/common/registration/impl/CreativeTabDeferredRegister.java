@@ -2,16 +2,18 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.jetbrains.annotations.NotNull;
@@ -74,23 +76,24 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     public static void addToDisplay(ItemDeferredRegister register, CreativeModeTab.Output output) {
-        for (IItemProvider itemProvider : register.getAllItems()) {
-            addToDisplay(output, itemProvider);
+        for (Holder<Item> itemProvider : register.getEntries()) {
+            addToDisplay(output, itemProvider.value());
         }
     }
 
     public static void addToDisplay(BlockDeferredRegister register, CreativeModeTab.Output output) {
-        for (IBlockProvider itemProvider : register.getAllBlocks()) {
+        for (Holder<Block> blockProvider : register.getPrimaryEntries()) {
+            Block block = blockProvider.value();
             //Don't add bounding blocks to the creative tab
-            if (!(itemProvider.getBlock() instanceof BlockBounding)) {
-                addToDisplay(output, itemProvider);
+            if (!(block instanceof BlockBounding)) {
+                addToDisplay(output, block);
             }
         }
     }
 
     public static void addToDisplay(FluidDeferredRegister register, CreativeModeTab.Output output) {
-        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
-            addToDisplay(output, fluidRO.getBucket());
+        for (Holder<Item> bucket : register.getBucketEntries()) {
+            addToDisplay(output, bucket.value());
         }
     }
 
