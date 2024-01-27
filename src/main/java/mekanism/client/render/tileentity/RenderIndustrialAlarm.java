@@ -64,7 +64,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
             @Override
             public Vec3 getCenterPos(float partialTick) {
                 //Centered position, does not need to be cached as it is only called once
-                return Vec3.atCenterOf(tile.getBlockPos());
+                return tile.getBlockPos().getCenter();
             }
 
             @Override

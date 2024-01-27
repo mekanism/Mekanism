@@ -35,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -150,7 +151,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         // handle water heat transfer
         if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
             double heatAvailable = getHeatAvailable();
-            lastMaxBoil = (int) Math.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
+            lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
 
             int amountToBoil = Math.min(lastMaxBoil, waterTank.getFluidAmount());
             amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(steamTank.getNeeded()));

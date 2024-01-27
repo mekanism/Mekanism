@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.scroll;
 
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -106,7 +105,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
 
     public boolean adjustScroll(double delta) {
         if (delta != 0 && needsScrollBars()) {
-            int elements = MathUtils.clampToInt(Math.ceil(getElements() / (double) getScrollElementScaler()));
+            int elements = Mth.ceil(getElements() / (double) getScrollElementScaler());
             if (elements > 0) {
                 //TODO - 1.19: Should this make use of ScrollIncrementer
                 if (delta > 0) {

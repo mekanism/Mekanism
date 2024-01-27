@@ -34,6 +34,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -126,7 +127,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @Override
     public float getVolume() {
-        return (float) Math.sqrt(soundScale);
+        return Mth.sqrt(soundScale);
     }
 
     public MachineEnergyContainer<TileEntityResistiveHeater> getEnergyContainer() {

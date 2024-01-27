@@ -61,7 +61,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
                 left = 0;
             } else {
                 int max = parent.getScreenWidth() - 1;
-                int end = xPos + (int) Math.ceil(left + textWidth * TEXT_SCALE);
+                int end = xPos + Mth.ceil(left + textWidth * TEXT_SCALE);
                 if (end > max) {
                     left -= end - max;
                 }

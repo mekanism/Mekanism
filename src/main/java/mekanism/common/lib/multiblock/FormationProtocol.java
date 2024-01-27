@@ -106,7 +106,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 //Replace the caches for all the old ids with a singular merged cache with our desired id
                 manager.replaceCaches(result.idsFound().keySet(), idToUse, cache);
                 if (!rejectContents.rejectedItems.isEmpty()) {
-                    Vec3 dropPosition = Vec3.atCenterOf(pointerPos);
+                    Vec3 dropPosition = pointerPos.getCenter();
                     //Try to see which player was nearest to multiblocks that have rejected items
                     Player nearestPlayer = world.getNearestPlayer(dropPosition.x, dropPosition.y, dropPosition.z, 25, true);
                     if (nearestPlayer != null) {

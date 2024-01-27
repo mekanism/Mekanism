@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -29,7 +28,7 @@ public class RenderResizableCuboid {
      * just use one backing "temporary" array.
      */
     private static final int[] combinedARGB = new int[EnumUtils.DIRECTIONS.length];
-    private static final Vector3f NORMAL = Util.make(new Vector3f(1, 1, 1), Vector3f::normalize);
+    private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
     private static final int X_AXIS_MASK = 1 << Axis.X.ordinal();
     private static final int Y_AXIS_MASK = 1 << Axis.Y.ordinal();
     private static final int Z_AXIS_MASK = 1 << Axis.Z.ordinal();

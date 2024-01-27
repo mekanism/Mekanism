@@ -344,7 +344,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
         @Override
         public Vec3 getLightningPos(BlockPos pos) {
-            return Vec3.atCenterOf(pos).add(offset);
+            return pos.getCenter().add(offset);
         }
     }
 }

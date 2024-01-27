@@ -417,7 +417,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k + caseAirConductivity) /
                       (MekanismGeneratorsConfig.generators.energyPerFusionFuel.get().doubleValue() * burnRatio * (plasmaCaseConductivity + k + caseAirConductivity) -
                        plasmaCaseConductivity * (k + caseAirConductivity));
-        return (int) (2 * Math.ceil(aMin / 2D));
+        return 2 * Mth.ceil(aMin / 2D);
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")

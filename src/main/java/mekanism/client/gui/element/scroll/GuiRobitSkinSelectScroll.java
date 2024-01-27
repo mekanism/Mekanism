@@ -55,7 +55,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         this.selectedSkin = this.robit.getSkin();
         this.unlockedSkins = unlockedSkins;
         scrollBar = addChild(new GuiScrollBar(gui, relativeX + INNER_DIMENSIONS, relativeY, INNER_DIMENSIONS,
-              () -> getUnlockedSkins() == null ? 0 : (int) Math.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
+              () -> getUnlockedSkins() == null ? 0 : Mth.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
     }
 
     private List<ResourceKey<RobitSkin>> getUnlockedSkins() {

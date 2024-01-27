@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
 
 public class Meltdown {
@@ -154,7 +153,7 @@ public class Meltdown {
                 if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel level) {
                     BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(toExplode) : null;
                     LootParams.Builder lootContextBuilder = new LootParams.Builder(level)
-                          .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(toExplode))
+                          .withParameter(LootContextParams.ORIGIN, toExplode.getCenter())
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                           .withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity)
                           .withOptionalParameter(LootContextParams.THIS_ENTITY, null);

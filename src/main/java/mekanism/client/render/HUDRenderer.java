@@ -23,6 +23,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -84,7 +85,7 @@ public class HUDRenderer {
     }
 
     private static float absSqrt(float val) {
-        float ret = (float) Math.sqrt(Math.abs(val));
+        float ret = Mth.sqrt(Math.abs(val));
         return val < 0 ? -ret : ret;
     }
 

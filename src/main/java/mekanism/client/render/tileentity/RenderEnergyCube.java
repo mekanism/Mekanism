@@ -31,7 +31,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
     @Override
     protected void render(TileEntityEnergyCube tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         float energyScale = tile.getEnergyScale();
-        Vec3 renderPos = Vec3.atCenterOf(tile.getBlockPos());
+        Vec3 renderPos = tile.getBlockPos().getCenter();
         BaseTier baseTier = tile.getTier().getBaseTier();
         RenderTickHandler.addTransparentRenderer(ModelEnergyCore.BATCHED_RENDER_TYPE, new LazyRender() {
             @Override

@@ -15,6 +15,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.neoforged.fml.config.ModConfig.Type;
@@ -121,9 +122,9 @@ public class AdditionsConfig extends BaseMekanismConfig {
         }
 
         public MobSpawnSettings.SpawnerData getSpawner(MobSpawnSettings.SpawnerData parentEntry) {
-            int weight = (int) Math.ceil(parentEntry.getWeight().asInt() * weightPercentage.get());
-            int minSize = (int) Math.ceil(parentEntry.minCount * minSizePercentage.get());
-            int maxSize = (int) Math.ceil(parentEntry.maxCount * maxSizePercentage.get());
+            int weight = Mth.ceil(parentEntry.getWeight().asInt() * weightPercentage.get());
+            int minSize = Mth.ceil(parentEntry.minCount * minSizePercentage.get());
+            int maxSize = Mth.ceil(parentEntry.maxCount * maxSizePercentage.get());
             return new MobSpawnSettings.SpawnerData(entityType.value(), weight, minSize, Math.max(minSize, maxSize));
         }
 

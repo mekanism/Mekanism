@@ -44,6 +44,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -238,7 +239,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                   // amount
                   if (active) {
                       if (tempMultiplier > 0 && tempMultiplier < 1) {
-                          lastGain = 1F / (int) Math.ceil(1 / tempMultiplier);
+                          lastGain = 1F / Mth.ceil(1 / tempMultiplier);
                       } else {
                           lastGain = tempMultiplier;
                       }
@@ -246,7 +247,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
                       lastGain = 0;
                   }
               })
-              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
+              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? Mth.ceil(1 / tempMultiplier) : 1)
               .setBaselineMaxOperations(() -> tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
     }
 

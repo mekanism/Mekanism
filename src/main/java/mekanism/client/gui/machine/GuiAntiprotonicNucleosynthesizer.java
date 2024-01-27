@@ -28,6 +28,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
 
     private final BoltRenderer bolt = new BoltRenderer();
     private final Supplier<BoltEffect> boltSupplier = () -> new BoltEffect(boltRenderInfo, from, to, 15)
-          .count((int) Math.min(Math.ceil(tile.getProcessRate() / 8F), 20))
+          .count(Math.min(Mth.ceil(tile.getProcessRate() / 8F), 20))
           .size(1)
           .lifespan(1)
           .spawn(SpawnFunction.CONSECUTIVE)

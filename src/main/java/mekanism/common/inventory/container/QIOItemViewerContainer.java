@@ -60,7 +60,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     public static int getSlotsYMax() {
-        int maxY = (int) Math.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
+        int maxY = Mth.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
         return Mth.clamp(maxY, SLOTS_Y_MIN, SLOTS_Y_MAX);
     }
 

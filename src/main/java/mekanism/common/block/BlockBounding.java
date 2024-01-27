@@ -38,7 +38,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -159,7 +158,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                 //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
                 if (world instanceof ServerLevel serverLevel) {
                     LootParams.Builder lootContextBuilder = new LootParams.Builder(serverLevel)
-                          .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
+                          .withParameter(LootContextParams.ORIGIN, mainPos.getCenter())
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                           .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(serverLevel, mainPos) : null)
                           .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getDirectSourceEntity());

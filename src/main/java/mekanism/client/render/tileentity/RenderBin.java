@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
@@ -149,8 +150,8 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         }
 
         matrix.scale(scale, -scale, scale);
-        int realHeight = (int) Math.floor(displayHeight / scale);
-        int realWidth = (int) Math.floor(displayWidth / scale);
+        int realHeight = Mth.floor(displayHeight / scale);
+        int realWidth = Mth.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
         font.drawInBatch(text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,

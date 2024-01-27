@@ -33,7 +33,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
         BlockPos pos = context.origin();
         WorldGenLevel world = context.level();
         ResizableOreFeatureConfig config = context.config();
-        float angle = random.nextFloat() * (float) Math.PI;
+        float angle = random.nextFloat() * Mth.PI;
         float adjustedSize = config.size().getAsInt() / 8.0F;
         int i = Mth.ceil((adjustedSize + 1.0F) / 2.0F);
         double sin = Math.sin(angle) * adjustedSize;
@@ -72,7 +72,7 @@ public class ResizableOreFeature extends Feature<ResizableOreFeatureConfig> {
             adouble[k4 + 1] = Mth.lerp(f, yMin, yMax);
             adouble[k4 + 2] = Mth.lerp(f, zMin, zMax);
             double d3 = random.nextDouble() * size / 16D;
-            adouble[k4 + 3] = ((double) (Mth.sin((float) Math.PI * f) + 1) * d3 + 1) / 2D;
+            adouble[k4 + 3] = ((double) (Mth.sin(Mth.PI * f) + 1) * d3 + 1) / 2D;
         }
         for (int i = 0; i < size - 1; ++i) {
             int i4 = i * 4;

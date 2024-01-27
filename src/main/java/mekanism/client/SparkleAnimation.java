@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -32,13 +33,13 @@ public class SparkleAnimation {
         Vec3 origin = new Vec3(xSize / 2D, ySize / 2D, zSize / 2D);
         Vec3 displacement = origin;
         sparkleSide(world, random, origin, displacement, xSize, ySize, 0, 0);
-        sparkleSide(world, random, origin, displacement, xSize, ySize, (float) Math.PI, 0);
+        sparkleSide(world, random, origin, displacement, xSize, ySize, Mth.PI, 0);
         displacement = new Vec3(origin.z, origin.y, origin.x);
-        sparkleSide(world, random, origin, displacement, zSize, ySize, (float) Math.PI / 2, 0);
-        sparkleSide(world, random, origin, displacement, zSize, ySize, (float) (3 * Math.PI) / 2, 0);
+        sparkleSide(world, random, origin, displacement, zSize, ySize, Mth.HALF_PI, 0);
+        sparkleSide(world, random, origin, displacement, zSize, ySize, 3 * Mth.HALF_PI, 0);
         displacement = new Vec3(origin.x, origin.z, origin.y);
-        sparkleSide(world, random, origin, displacement, xSize, zSize, 0, (float) Math.PI / 2);
-        sparkleSide(world, random, origin, displacement, xSize, zSize, 0, (float) (3 * Math.PI) / 2);
+        sparkleSide(world, random, origin, displacement, xSize, zSize, 0, Mth.HALF_PI);
+        sparkleSide(world, random, origin, displacement, xSize, zSize, 0, 3 * Mth.HALF_PI);
     }
 
     private void sparkleSide(Level world, Random random, Vec3 origin, Vec3 displacement, int width, int height, float rotationYaw, float rotationPitch) {

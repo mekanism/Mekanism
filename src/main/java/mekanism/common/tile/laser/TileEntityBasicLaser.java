@@ -117,7 +117,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 setEmittingRedstone(true);
                 //Sort the entities in order of which one is closest to the laser
                 Pos3D finalFrom = from;
-                hitEntities.sort(Comparator.comparing(entity -> entity.distanceToSqr(finalFrom)));
+                hitEntities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(finalFrom)));
                 FloatingLong energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
                 for (Entity entity : hitEntities) {
                     if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {

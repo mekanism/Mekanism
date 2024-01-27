@@ -636,7 +636,7 @@ public class WorldUtils {
      */
     public static float getSunBrightness(Level world, float partialTicks) {
         float f = world.getTimeOfDay(partialTicks);
-        float f1 = 1.0F - (Mth.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
+        float f1 = 1.0F - (Mth.cos(f * Mth.TWO_PI) * 2.0F + 0.2F);
         f1 = Mth.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));

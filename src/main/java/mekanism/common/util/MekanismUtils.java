@@ -110,7 +110,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class MekanismUtils {
 
-    public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
+    public static final float ONE_OVER_ROOT_TWO = 1 / Mth.SQRT_OF_TWO;
     private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();

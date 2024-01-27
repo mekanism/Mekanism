@@ -3,6 +3,7 @@ package mekanism.common.util.text;
 import java.text.NumberFormat;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 public final class TextUtils {
 
@@ -19,7 +20,7 @@ public final class TextUtils {
     }
 
     public static Component getHoursMinutes(int seconds) {
-        int minutes = (int) Math.ceil(seconds / 60.0);
+        int minutes = Mth.ceil(seconds / 60.0);
         int hours = minutes / 60;
         return hours > 0 ? MekanismLang.GENERIC_HOURS_MINUTES.translate(hours, minutes % 60) : MekanismLang.GENERIC_MINUTES.translate(minutes);
     }

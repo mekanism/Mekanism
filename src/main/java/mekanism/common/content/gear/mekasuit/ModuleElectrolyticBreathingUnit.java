@@ -20,6 +20,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -80,7 +81,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
                 }
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
-            long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
+            long used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
             module.useEnergy(player, usage.multiply(used));
             player.setAirSupply(player.getAirSupply() + oxygenUsed);
         }

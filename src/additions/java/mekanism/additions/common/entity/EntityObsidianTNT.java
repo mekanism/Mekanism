@@ -4,6 +4,7 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -29,7 +30,7 @@ public class EntityObsidianTNT extends PrimedTnt {
         }
         //From TNTEntity constructor
         tnt.setPos(x, y, z);
-        double d0 = world.random.nextDouble() * (double) ((float) Math.PI * 2F);
+        double d0 = world.random.nextDouble() * Mth.TWO_PI;
         tnt.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
         tnt.xo = x;
         tnt.yo = y;

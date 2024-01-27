@@ -21,7 +21,6 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -47,7 +46,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
           .withUseAmbientOcclusion(false)
           .build(Mekanism.rl("transmitter_contents"));
     private static final Map<ContentsModelData, List<BakedQuad>> contentModelCache = new Object2ObjectOpenHashMap<>();
-    private static final Vector3f NORMAL = Util.make(new Vector3f(1, 1, 1), Vector3f::normalize);
+    private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
 
     public static void onStitch() {
         contentModelCache.clear();

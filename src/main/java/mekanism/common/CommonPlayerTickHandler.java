@@ -316,7 +316,7 @@ public class CommonPlayerTickHandler {
                     // if we're sprinting with the boost module, limit the height
                     IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
                     if (boostModule != null && boostModule.isEnabled() && boostModule.getCustomInstance().canFunction(boostModule, player)) {
-                        boost = (float) Math.sqrt(boost);
+                        boost = Mth.sqrt(boost);
                     }
                     player.addDeltaMovement(new Vec3(0, boost, 0));
                     module.useEnergy(player, energyContainer, usage, true);
