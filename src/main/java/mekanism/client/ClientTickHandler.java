@@ -113,7 +113,11 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        if (player.getCooldowns().isOnCooldown(helmet.getItem())) {
+            return false;
+        }
+        IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(helmet, MekanismModules.VISION_ENHANCEMENT_UNIT);
         return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
     }
 

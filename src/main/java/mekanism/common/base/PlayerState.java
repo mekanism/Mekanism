@@ -34,7 +34,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class PlayerState {
@@ -291,7 +290,7 @@ public class PlayerState {
                         if (module.canUseEnergy(player, boostUsage, false)) {
                             float boost = module.getCustomInstance().getBoost();
                             if (boost > 0) {
-                                player.moveRelative(boost, new Vec3(0, 0, 1));
+                                player.moveRelative(boost, ModuleGravitationalModulatingUnit.BOOST_VEC);
                                 usage = boostUsage;
                                 gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
                             }

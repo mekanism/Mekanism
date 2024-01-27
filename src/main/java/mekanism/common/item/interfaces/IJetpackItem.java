@@ -78,7 +78,12 @@ public interface IJetpackItem {
      */
     @NotNull
     static ItemStack getActiveJetpack(LivingEntity entity) {
-        return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
+        return getJetpack(entity, stack -> {
+            if (stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack)) {
+                return !(entity instanceof Player player) || !player.getCooldowns().isOnCooldown(stack.getItem());
+            }
+            return false;
+        });
     }
 
     /**

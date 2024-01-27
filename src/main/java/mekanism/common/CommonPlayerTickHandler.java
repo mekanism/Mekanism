@@ -36,6 +36,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,6 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
@@ -51,7 +53,6 @@ import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
-import net.neoforged.bus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
@@ -169,7 +170,11 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationReady(Player player) {
         if (MekanismUtils.isPlayingMode(player)) {
-            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+            ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+            if (player.getCooldowns().isOnCooldown(chestplate.getItem())) {
+                return false;
+            }
+            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(chestplate, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
             return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
         }
         return false;

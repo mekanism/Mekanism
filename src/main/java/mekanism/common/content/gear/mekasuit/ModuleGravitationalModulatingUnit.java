@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
+    public static final Vec3 BOOST_VEC = new Vec3(0, 0, 1);
 
     // we share with locomotive boosting unit
     private IModuleConfigItem<SprintBoost> speedBoost;
@@ -59,7 +60,7 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
             module.canUseEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get().multiply(4), false)) {
             float boost = getBoost();
             if (boost > 0) {
-                player.moveRelative(boost, new Vec3(0, 0, 1));
+                player.moveRelative(boost, BOOST_VEC);
             }
         }
     }
