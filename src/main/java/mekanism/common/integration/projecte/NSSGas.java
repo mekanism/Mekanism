@@ -1,9 +1,15 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IGasProvider;
+import moze_intel.projecte.api.codec.NSSCodecHolder;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +17,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Gas}s.
  */
-public final class NSSGas/* TODO - 1.20.2: ProjectE extends AbstractNSSTag<Gas>*/ {
+public final class NSSGas extends AbstractNSSTag<Gas> {
+
+    private static final boolean ALLOW_DEFAULT = false;
+
+    /**
+     * Codec for encoding NSSGases to and from strings.
+     */
+    public static final Codec<NSSGas> LEGACY_CODEC = createLegacyCodec(MekanismAPI.GAS_REGISTRY, ALLOW_DEFAULT, "GAS|", NSSGas::new);
+
+    public static final MapCodec<NSSGas> EXPLICIT_MAP_CODEC = createExplicitCodec(MekanismAPI.GAS_REGISTRY, ALLOW_DEFAULT, NSSGas::new);
+    public static final Codec<NSSGas> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
+
+    public static final NSSCodecHolder<NSSGas> CODECS = new NSSCodecHolder<>("GAS", LEGACY_CODEC, EXPLICIT_CODEC);
 
     private NSSGas(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        //TODO - 1.20.2: ProjectE super(resourceLocation, isTag);
+        super(resourceLocation, isTag);
     }
 
     /**
@@ -70,32 +88,19 @@ public final class NSSGas/* TODO - 1.20.2: ProjectE extends AbstractNSSTag<Gas>*
         return createTag(tag.location());
     }
 
-    //TODO - 1.20.2: ProjectE update
-    /*@Override
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSGas;
-    }
-
     @NotNull
     @Override
-    public String getJsonPrefix() {
-        return "GAS|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Gas";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<Gas>, HolderSet.Named<Gas>>> getTag() {
-        return getTag(MekanismAPI.GAS_REGISTRY);
+    protected Registry<Gas> getRegistry() {
+        return MekanismAPI.GAS_REGISTRY;
     }
 
     @Override
-    protected Function<Gas, NormalizedSimpleStack> createNew() {
-        return NSSGas::createGas;
-    }*/
+    protected NSSGas createNew(Gas gas) {
+        return createGas(gas);
+    }
+
+    @Override
+    public NSSCodecHolder<NSSGas> codecs() {
+        return CODECS;
+    }
 }

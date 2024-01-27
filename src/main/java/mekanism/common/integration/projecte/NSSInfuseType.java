@@ -1,9 +1,16 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
+import moze_intel.projecte.api.codec.NSSCodecHolder;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +18,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link InfuseType}s.
  */
-public final class NSSInfuseType /*TODO - 1.20.2: ProjectE extends AbstractNSSTag<InfuseType>*/ {
+public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
+
+    private static final boolean ALLOW_DEFAULT = false;
+
+    /**
+     * Codec for encoding NSSInfuseTypes to and from strings.
+     */
+    public static final Codec<NSSInfuseType> LEGACY_CODEC = createLegacyCodec(MekanismAPI.INFUSE_TYPE_REGISTRY, ALLOW_DEFAULT, "INFUSE_TYPE|", NSSInfuseType::new);
+
+    public static final MapCodec<NSSInfuseType> EXPLICIT_MAP_CODEC = createExplicitCodec(MekanismAPI.INFUSE_TYPE_REGISTRY, ALLOW_DEFAULT, NSSInfuseType::new);
+    public static final Codec<NSSInfuseType> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
+
+    public static final NSSCodecHolder<NSSInfuseType> CODECS = new NSSCodecHolder<>("INFUSE_TYPE", LEGACY_CODEC, EXPLICIT_CODEC);
 
     private NSSInfuseType(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        //super(resourceLocation, isTag);
+        super(resourceLocation, isTag);
     }
 
     /**
@@ -70,31 +89,19 @@ public final class NSSInfuseType /*TODO - 1.20.2: ProjectE extends AbstractNSSTa
         return createTag(tag.location());
     }
 
-    /*@Override//TODO - 1.20.2: ProjectE Update
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSInfuseType;
-    }
-
     @NotNull
     @Override
-    public String getJsonPrefix() {
-        return "INFUSE_TYPE|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Infuse Type";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<InfuseType>, HolderSet.Named<InfuseType>>> getTag() {
-        return getTag(MekanismAPI.INFUSE_TYPE_REGISTRY);
+    protected Registry<InfuseType> getRegistry() {
+        return MekanismAPI.INFUSE_TYPE_REGISTRY;
     }
 
     @Override
-    protected Function<InfuseType, NormalizedSimpleStack> createNew() {
-        return NSSInfuseType::createInfuseType;
-    }*/
+    protected NSSInfuseType createNew(InfuseType infuseType) {
+        return createInfuseType(infuseType);
+    }
+
+    @Override
+    public NSSCodecHolder<NSSInfuseType> codecs() {
+        return CODECS;
+    }
 }

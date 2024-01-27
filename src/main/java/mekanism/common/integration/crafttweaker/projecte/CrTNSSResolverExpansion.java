@@ -42,8 +42,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromGas(Gas gas) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSGas.createGas(validateNotEmptyAndGet(gas, "gas"));
+        return NSSGas.createGas(validateNotEmptyAndGet(gas, "gas"));
     }
 
     /**
@@ -55,8 +54,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromGas(ICrTGasStack stack) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSGas.createGas(validateNotEmptyAndGet(stack, "gas"));
+        return NSSGas.createGas(validateNotEmptyAndGet(stack, "gas"));
     }
 
     /**
@@ -68,8 +66,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromGasTag(KnownTag<Gas> tag) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSGas.createTag(CrTUtils.validateTagAndGet(tag));
+        return NSSGas.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -81,8 +78,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromInfuseType(InfuseType infuseType) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(infuseType, "infuse type"));
+        return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(infuseType, "infuse type"));
     }
 
     /**
@@ -94,8 +90,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromInfuseType(ICrTInfusionStack stack) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(stack, "infusion"));
+        return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(stack, "infusion"));
     }
 
     /**
@@ -107,8 +102,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromInfuseTypeTag(KnownTag<InfuseType> tag) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag));
+        return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -120,8 +114,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromPigment(Pigment pigment) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSPigment.createPigment(validateNotEmptyAndGet(pigment, "pigment"));
+        return NSSPigment.createPigment(validateNotEmptyAndGet(pigment, "pigment"));
     }
 
     /**
@@ -133,8 +126,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromPigment(ICrTPigmentStack stack) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSPigment.createPigment(validateNotEmptyAndGet(stack, "pigment"));
+        return NSSPigment.createPigment(validateNotEmptyAndGet(stack, "pigment"));
     }
 
     /**
@@ -146,8 +138,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromPigmentTag(KnownTag<Pigment> tag) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag));
+        return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     /**
@@ -159,8 +150,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromSlurry(Slurry slurry) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSSlurry.createSlurry(validateNotEmptyAndGet(slurry, "slurry"));
+        return NSSSlurry.createSlurry(validateNotEmptyAndGet(slurry, "slurry"));
     }
 
     /**
@@ -172,8 +162,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromSlurry(ICrTSlurryStack stack) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSSlurry.createSlurry(validateNotEmptyAndGet(stack, "slurry"));
+        return NSSSlurry.createSlurry(validateNotEmptyAndGet(stack, "slurry"));
     }
 
     /**
@@ -185,8 +174,7 @@ public class CrTNSSResolverExpansion {
      */
     @ZenCodeType.StaticExpansionMethod
     public static NormalizedSimpleStack fromSlurryTag(KnownTag<Slurry> tag) {
-        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
-        //return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag));
+        return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag));
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL validateNotEmptyAndGet(CHEMICAL chemical, String type) {

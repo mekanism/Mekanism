@@ -5,17 +5,16 @@ import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 
 @RecipeTypeMapper
-public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
+public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToGasRecipe> {
+
+    public ItemStackToGasRecipeMapper() {
+        super(ItemStackToGasRecipe.class, MekanismRecipeType.GAS_CONVERSION, MekanismRecipeType.OXIDIZING);
+    }
 
     @Override
     public String getName() {
@@ -28,16 +27,7 @@ public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.GAS_CONVERSION.get() || recipeType == MekanismRecipeType.OXIDIZING.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ItemStackToGasRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToGasRecipe recipe) {
         boolean handled = false;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             GasStack output = recipe.getOutput(representation);

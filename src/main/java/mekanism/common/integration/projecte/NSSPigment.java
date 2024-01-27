@@ -1,9 +1,16 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IPigmentProvider;
+import moze_intel.projecte.api.codec.NSSCodecHolder;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +18,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Pigment}s.
  */
-public final class NSSPigment/*TODO - 1.20.2: extends AbstractNSSTag<Pigment>*/ {
+public final class NSSPigment extends AbstractNSSTag<Pigment> {
+
+    private static final boolean ALLOW_DEFAULT = false;
+
+    /**
+     * Codec for encoding NSSPigments to and from strings.
+     */
+    public static final Codec<NSSPigment> LEGACY_CODEC = createLegacyCodec(MekanismAPI.PIGMENT_REGISTRY, ALLOW_DEFAULT, "PIGMENT|", NSSPigment::new);
+
+    public static final MapCodec<NSSPigment> EXPLICIT_MAP_CODEC = createExplicitCodec(MekanismAPI.PIGMENT_REGISTRY, ALLOW_DEFAULT, NSSPigment::new);
+    public static final Codec<NSSPigment> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
+
+    public static final NSSCodecHolder<NSSPigment> CODECS = new NSSCodecHolder<>("PIGMENT", LEGACY_CODEC, EXPLICIT_CODEC);
 
     private NSSPigment(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        //super(resourceLocation, isTag);
+        super(resourceLocation, isTag);
     }
 
     /**
@@ -70,31 +89,19 @@ public final class NSSPigment/*TODO - 1.20.2: extends AbstractNSSTag<Pigment>*/ 
         return createTag(tag.location());
     }
 
-    /*@Override//TODO - 1.20.2: ProjectE Update
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSPigment;
-    }
-
     @NotNull
     @Override
-    public String getJsonPrefix() {
-        return "PIGMENT|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Pigment";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<Pigment>, HolderSet.Named<Pigment>>> getTag() {
-        return getTag(MekanismAPI.PIGMENT_REGISTRY);
+    protected Registry<Pigment> getRegistry() {
+        return MekanismAPI.PIGMENT_REGISTRY;
     }
 
     @Override
-    protected Function<Pigment, NormalizedSimpleStack> createNew() {
-        return NSSPigment::createPigment;
-    }*/
+    protected NSSPigment createNew(Pigment pigment) {
+        return createPigment(pigment);
+    }
+
+    @Override
+    public NSSCodecHolder<NSSPigment> codecs() {
+        return CODECS;
+    }
 }

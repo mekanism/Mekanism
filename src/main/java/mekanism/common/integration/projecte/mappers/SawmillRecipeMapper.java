@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
+import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -13,12 +14,16 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.apache.commons.lang3.math.Fraction;
 
 @RecipeTypeMapper
-public class SawmillRecipeMapper implements IRecipeTypeMapper {
+public class SawmillRecipeMapper extends TypedMekanismRecipeMapper<SawmillRecipe> {
+
+    public SawmillRecipeMapper() {
+        super(SawmillRecipe.class, MekanismRecipeType.SAWING);
+    }
 
     @Override
     public String getName() {
@@ -36,16 +41,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.SAWING.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof SawmillRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, SawmillRecipe recipe) {
         ItemStackIngredient input = recipe.getInput();
         int primaryMultiplier = 1;
         int secondaryMultiplier = 1;

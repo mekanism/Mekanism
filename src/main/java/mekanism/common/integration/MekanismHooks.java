@@ -8,7 +8,7 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
-import mekanism.common.integration.projecte.NSSHelper;
+import mekanism.common.integration.projecte.MekanismNormalizedSimpleStacks;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -77,6 +77,9 @@ public final class MekanismHooks {
         }
         if (JsonThingsLoaded) {
             JsonThingsIntegration.hook(bus);
+        }
+        if (ProjectELoaded) {
+            MekanismNormalizedSimpleStacks.NSS_SERIALIZERS.register(bus);
         }
     }
 

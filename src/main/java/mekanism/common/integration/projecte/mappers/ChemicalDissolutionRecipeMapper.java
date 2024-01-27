@@ -9,18 +9,17 @@ import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
-public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
+public class ChemicalDissolutionRecipeMapper extends TypedMekanismRecipeMapper<ChemicalDissolutionRecipe> {
+
+    public ChemicalDissolutionRecipeMapper() {
+        super(ChemicalDissolutionRecipe.class, MekanismRecipeType.DISSOLUTION);
+    }
 
     @Override
     public String getName() {
@@ -33,16 +32,7 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.DISSOLUTION.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ChemicalDissolutionRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ChemicalDissolutionRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NotNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
@@ -54,7 +44,7 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(itemRepresentation);
-                    //TODO - 1.20.2: ProjectE ingredientHelper.put(nssGas, gasAmount);
+                    ingredientHelper.put(nssGas, gasAmount);
                     if (ingredientHelper.addAsConversion(output.getChemicalStack())) {
                         handled = true;
                     }

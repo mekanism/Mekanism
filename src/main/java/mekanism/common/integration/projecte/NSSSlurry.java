@@ -1,9 +1,16 @@
 package mekanism.common.integration.projecte;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
+import moze_intel.projecte.api.codec.NSSCodecHolder;
+import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -11,10 +18,22 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Slurry}.
  */
-public final class NSSSlurry/*TODO - 1.20.2: extends AbstractNSSTag<Slurry>*/ {
+public final class NSSSlurry extends AbstractNSSTag<Slurry> {
+
+    private static final boolean ALLOW_DEFAULT = false;
+
+    /**
+     * Codec for encoding NSSSlurries to and from strings.
+     */
+    public static final Codec<NSSSlurry> LEGACY_CODEC = createLegacyCodec(MekanismAPI.SLURRY_REGISTRY, ALLOW_DEFAULT, "SLURRY|", NSSSlurry::new);
+
+    public static final MapCodec<NSSSlurry> EXPLICIT_MAP_CODEC = createExplicitCodec(MekanismAPI.SLURRY_REGISTRY, ALLOW_DEFAULT, NSSSlurry::new);
+    public static final Codec<NSSSlurry> EXPLICIT_CODEC = EXPLICIT_MAP_CODEC.codec();
+
+    public static final NSSCodecHolder<NSSSlurry> CODECS = new NSSCodecHolder<>("SLURRY", LEGACY_CODEC, EXPLICIT_CODEC);
 
     private NSSSlurry(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        //super(resourceLocation, isTag);
+        super(resourceLocation, isTag);
     }
 
     /**
@@ -70,31 +89,19 @@ public final class NSSSlurry/*TODO - 1.20.2: extends AbstractNSSTag<Slurry>*/ {
         return createTag(tag.location());
     }
 
-    /*@Override//TODO - 1.20.2: ProjectE update
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSSlurry;
-    }
-
     @NotNull
     @Override
-    public String getJsonPrefix() {
-        return "SLURRY|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Slurry";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<Slurry>, HolderSet.Named<Slurry>>> getTag() {
-        return getTag(MekanismAPI.SLURRY_REGISTRY);
+    protected Registry<Slurry> getRegistry() {
+        return MekanismAPI.SLURRY_REGISTRY;
     }
 
     @Override
-    protected Function<Slurry, NormalizedSimpleStack> createNew() {
-        return NSSSlurry::createSlurry;
-    }*/
+    protected NSSSlurry createNew(Slurry slurry) {
+        return createSlurry(slurry);
+    }
+
+    @Override
+    public NSSCodecHolder<NSSSlurry> codecs() {
+        return CODECS;
+    }
 }

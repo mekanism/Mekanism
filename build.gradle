@@ -40,7 +40,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "curios_version": curios_version_range,
-                         "jei_version"   : jei_version_range]
+                         "jei_version"   : jei_version_range, "jsonthings_version"   : jsonthings_version_range, "projecte_version"   : projecte_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -388,7 +388,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
-    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
 
@@ -433,7 +433,8 @@ dependencies {
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
+    //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
+    compileOnly("moze_intel:ProjectE-api:1.0.1")
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")

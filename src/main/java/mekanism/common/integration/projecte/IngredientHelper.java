@@ -56,38 +56,12 @@ public class IngredientHelper {
         }
     }
 
-    public void put(ChemicalStack<?> chemicalStack) {
-        if (chemicalStack instanceof GasStack stack) {
-            put(stack);
-        } else if (chemicalStack instanceof InfusionStack stack) {
-            put(stack);
-        } else if (chemicalStack instanceof PigmentStack stack) {
-            put(stack);
-        } else if (chemicalStack instanceof SlurryStack stack) {
-            put(stack);
-        }
-    }
-
-    public void put(GasStack stack) {
-        throw new IllegalStateException("TODO");//todo ProjectE
-        //put(NSSGas.createGas(stack), stack.getAmount());
-    }
-
-    public void put(InfusionStack stack) {
-        //put(NSSInfuseType.createInfuseType(stack), stack.getAmount());
-    }
-
-    public void put(PigmentStack stack) {
-        //put(NSSPigment.createPigment(stack), stack.getAmount());
-    }
-
-    public void put(SlurryStack stack) {
-        //put(NSSSlurry.createSlurry(stack), stack.getAmount());
+    public void put(ChemicalStack<?> stack) {
+        put(convertToNSS(stack), stack.getAmount());
     }
 
     public void put(FluidStack stack) {
-        //TODO ProjectE
-        //put(NSSFluid.createFluid(stack.getFluid()), stack.getAmount());
+        put(NSSFluid.createFluid(stack.getFluid()), stack.getAmount());
     }
 
     public void put(ItemStack stack) {
@@ -109,44 +83,28 @@ public class IngredientHelper {
         return addAsConversion(output, (int) outputAmount);
     }
 
-    public boolean addAsConversion(ChemicalStack<?> chemicalStack) {
-        if (chemicalStack instanceof GasStack stack) {
-            return addAsConversion(stack);
-        } else if (chemicalStack instanceof InfusionStack stack) {
-            return addAsConversion(stack);
-        } else if (chemicalStack instanceof PigmentStack stack) {
-            return addAsConversion(stack);
-        } else if (chemicalStack instanceof SlurryStack stack) {
-            return addAsConversion(stack);
-        }
-        return false;
-    }
-
-    public boolean addAsConversion(GasStack stack) {
-        throw new IllegalStateException("TODO");//TODO ProjectE
-        //return addAsConversion(NSSGas.createGas(stack), stack.getAmount());
-    }
-
-    public boolean addAsConversion(InfusionStack stack) {
-        throw new IllegalStateException("TODO");//TODO ProjectE
-        //return addAsConversion(NSSInfuseType.createInfuseType(stack), stack.getAmount());
-    }
-
-    public boolean addAsConversion(PigmentStack stack) {
-        throw new IllegalStateException("TODO");//TODO ProjectE
-        //return addAsConversion(NSSPigment.createPigment(stack), stack.getAmount());
-    }
-
-    public boolean addAsConversion(SlurryStack stack) {
-        throw new IllegalStateException("TODO");//TODO ProjectE
-        //return addAsConversion(NSSSlurry.createSlurry(stack), stack.getAmount());
+    public boolean addAsConversion(ChemicalStack<?> stack) {
+        return addAsConversion(convertToNSS(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(FluidStack stack) {
-        return addAsConversion(NSSFluid.createFluid(stack.getFluid(), stack.getTag()), stack.getAmount());
+        return addAsConversion(NSSFluid.createFluid(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(ItemStack stack) {
         return addAsConversion(NSSItem.createItem(stack), stack.getCount());
+    }
+
+    private NormalizedSimpleStack convertToNSS(ChemicalStack<?> chemicalStack) {
+        if (chemicalStack instanceof GasStack stack) {
+            return NSSGas.createGas(stack);
+        } else if (chemicalStack instanceof InfusionStack stack) {
+            return NSSInfuseType.createInfuseType(stack);
+        } else if (chemicalStack instanceof PigmentStack stack) {
+            return NSSPigment.createPigment(stack);
+        } else if (chemicalStack instanceof SlurryStack stack) {
+            return NSSSlurry.createSlurry(stack);
+        }
+        throw new IllegalStateException("Unknown Chemical Type");
     }
 }

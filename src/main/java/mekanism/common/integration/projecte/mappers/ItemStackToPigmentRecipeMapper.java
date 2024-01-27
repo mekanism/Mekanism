@@ -5,17 +5,16 @@ import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 
 @RecipeTypeMapper
-public class ItemStackToPigmentRecipeMapper implements IRecipeTypeMapper {
+public class ItemStackToPigmentRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToPigmentRecipe> {
+
+    public ItemStackToPigmentRecipeMapper() {
+        super(ItemStackToPigmentRecipe.class, MekanismRecipeType.PIGMENT_EXTRACTING);
+    }
 
     @Override
     public String getName() {
@@ -28,16 +27,7 @@ public class ItemStackToPigmentRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.PIGMENT_EXTRACTING.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ItemStackToPigmentRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToPigmentRecipe recipe) {
         boolean handled = false;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             PigmentStack output = recipe.getOutput(representation);

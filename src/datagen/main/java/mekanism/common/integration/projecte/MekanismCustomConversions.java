@@ -1,5 +1,4 @@
-//TODO - 1.20.2: Re-enable after ProjectE updates
-/*package mekanism.common.integration.projecte;
+package mekanism.common.integration.projecte;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
@@ -17,7 +16,7 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     }
 
     @Override
-    protected void addCustomConversions(HolderLookup.Provider registries) {
+    protected void addCustomConversions(@NotNull HolderLookup.Provider registries) {
         createConversionBuilder(Mekanism.rl("defaults"))
               .comment("Default values for Mekanism items.")
               .before(MekanismItems.SALT, 8)
@@ -32,4 +31,4 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;
     }
-}*/
+}

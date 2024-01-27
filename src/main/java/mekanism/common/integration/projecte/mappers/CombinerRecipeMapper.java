@@ -5,19 +5,18 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
-public class CombinerRecipeMapper implements IRecipeTypeMapper {
+public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerRecipe> {
+
+    public CombinerRecipeMapper() {
+        super(CombinerRecipe.class, MekanismRecipeType.COMBINING);
+    }
 
     @Override
     public String getName() {
@@ -30,16 +29,7 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.COMBINING.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof CombinerRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, CombinerRecipe recipe) {
         boolean handled = false;
         List<@NotNull ItemStack> mainRepresentations = recipe.getMainInput().getRepresentations();
         List<@NotNull ItemStack> extraRepresentations = recipe.getExtraInput().getRepresentations();

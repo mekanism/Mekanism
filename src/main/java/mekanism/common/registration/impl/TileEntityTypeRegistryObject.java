@@ -26,21 +26,23 @@ public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends Mekani
         super(key);
     }
 
+    @Nullable
+    public BlockEntityTicker<BE> getTicker(boolean isClient) {
+        return isClient ? clientTicker : serverTicker;
+    }
+
     @Internal
     void tickers(@Nullable BlockEntityTicker<BE> clientTicker, @Nullable BlockEntityTicker<BE> serverTicker) {
         this.clientTicker = clientTicker;
         this.serverTicker = serverTicker;
     }
 
+    @Internal
     void capabilities(@Nullable List<CapabilityData<BE, ?, ?>> capabilityProviders) {
         this.capabilityProviders = capabilityProviders;
     }
 
-    @Nullable
-    public BlockEntityTicker<BE> getTicker(boolean isClient) {
-        return isClient ? clientTicker : serverTicker;
-    }
-
+    @Internal
     void registerCapabilityProviders(RegisterCapabilitiesEvent event) {
         if (capabilityProviders != null) {
             for (CapabilityData<BE, ?, ?> capabilityProvider : capabilityProviders) {

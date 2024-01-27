@@ -5,17 +5,16 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @RecipeTypeMapper
-public class RotaryRecipeMapper implements IRecipeTypeMapper {
+public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> {
+
+    public RotaryRecipeMapper() {
+        super(RotaryRecipe.class, MekanismRecipeType.ROTARY);
+    }
 
     @Override
     public String getName() {
@@ -28,16 +27,7 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.ROTARY.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof RotaryRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, RotaryRecipe recipe) {
         boolean handled = false;
         if (recipe.hasFluidToGas()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {

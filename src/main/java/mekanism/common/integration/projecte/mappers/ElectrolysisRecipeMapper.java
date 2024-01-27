@@ -4,19 +4,21 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.common.integration.projecte.IngredientHelper;
+import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
-import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;
-import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
+import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @RecipeTypeMapper
-public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
+public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<ElectrolysisRecipe> {
+
+    public ElectrolysisRecipeMapper() {
+        super(ElectrolysisRecipe.class, MekanismRecipeType.SEPARATING);
+    }
 
     @Override
     public String getName() {
@@ -29,16 +31,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(RecipeType<?> recipeType) {
-        return recipeType == MekanismRecipeType.SEPARATING.get();
-    }
-
-    @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ElectrolysisRecipe recipe)) {
-            //Double check that we have a type of recipe we know how to handle
-            return false;
-        }
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipe recipe) {
         boolean handled = false;
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
@@ -46,8 +39,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
             GasStack leftOutput = output.left();
             GasStack rightOutput = output.right();
             if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
-                //TODO - 1.20.2: ProjectE
-                /*NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
+                NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
                 NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
                 NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
                 //Add trying to calculate left output (using it as if we needed negative of right output)
@@ -63,7 +55,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
                 ingredientHelper.put(nssLeftOutput, -leftOutput.getAmount());
                 if (ingredientHelper.addAsConversion(nssRightOutput, rightOutput.getAmount())) {
                     handled = true;
-                }*/
+                }
             }
         }
         return handled;
