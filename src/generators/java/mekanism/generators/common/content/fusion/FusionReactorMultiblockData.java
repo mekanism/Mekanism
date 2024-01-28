@@ -43,6 +43,7 @@ import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -250,7 +251,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void kill(Level world) {
-        if (world.getRandom().nextInt() % 20 != 0) {
+        if (world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND != 0) {
             return;
         }
         List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);

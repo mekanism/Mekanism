@@ -271,7 +271,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         response.useAll();
                     }
                 }
-                delayTicks = 10;
+                delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
             }
         } else if (delayTicks > 0) {
             delayTicks--;

@@ -48,6 +48,7 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
+import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,7 +74,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
@@ -111,7 +111,10 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = 1 / Mth.SQRT_OF_TWO;
-    private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
+    //TODO - 1.20.4: Re-evaluate uses of this and the shared constants constant as some potentially should be switched to use the level's tickrate
+    // and in fact the first pass was spent just trying to convert use cases to referencing constants rather than also figuring out if they should
+    // be transitioned over to the level's tickrate
+    public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package mekanism.client.sound;
 import java.lang.ref.WeakReference;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -29,7 +30,7 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     private int consecutiveTicks;
 
     public PlayerSound(@NotNull Player player, @NotNull SoundEventRegistryObject<?> sound) {
-        this(player, sound.get(), 60);
+        this(player, sound.get(), 3 * SharedConstants.TICKS_PER_SECOND);
         //Set it to repeat the subtitle every 3 seconds the sound is constantly playing
     }
 

@@ -16,6 +16,7 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
+import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -139,7 +140,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         easyMinerFilters = CachedBooleanValue.wrap(this, builder.comment("Enable this to allow dragging items from JEI into the target slot of Digital Miner filters.")
               .define("easyMinerFilters", false));
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
-              .defineInRange("blockDeactivationDelay", 60, 0, 1_200));
+              .defineInRange("blockDeactivationDelay", 3 * SharedConstants.TICKS_PER_SECOND, 0, SharedConstants.TICKS_PER_MINUTE));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
               .defineListAllowEmpty(Collections.singletonList("cardboardModBlacklist"), ArrayList::new, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
@@ -224,7 +225,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
               .defineInRange("radioactiveWasteBarrelMaxGas", 512_000, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, builder.comment("Number of ticks required for radioactive gas stored in a Radioactive Waste Barrel to decay radioactiveWasteBarrelDecayAmount mB.")
-              .defineInRange("radioactiveWasteBarrelProcessTicks", 20, 1, Integer.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
         radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, builder.comment("Number of mB of gas that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay all together. (Gases in the mekanism:waste_barrel_decay_blacklist tag will not decay).")
               .defineInRange("radioactiveWasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
         builder.pop();

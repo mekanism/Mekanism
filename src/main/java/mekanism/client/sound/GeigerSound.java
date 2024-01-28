@@ -3,27 +3,22 @@ package mekanism.client.sound;
 import java.util.Objects;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class GeigerSound extends PlayerSound {
 
     public static GeigerSound create(@NotNull Player player, RadiationScale scale) {
-        if (scale == RadiationScale.NONE) {
-            throw new IllegalArgumentException("Can't create a GeigerSound with a RadiationScale of NONE.");
-        }
-        int subtitleFrequency;
-        if (scale == RadiationScale.MEDIUM) {
-            subtitleFrequency = 50;
-        } else if (scale == RadiationScale.ELEVATED) {
-            subtitleFrequency = 40;
-        } else if (scale == RadiationScale.HIGH) {
-            subtitleFrequency = 30;
-        } else if (scale == RadiationScale.EXTREME) {
-            subtitleFrequency = 20;//Every second
-        } else {//LOW
-            subtitleFrequency = 60;
-        }
+        int subtitleFrequency = switch (scale) {
+            case LOW -> 3 * SharedConstants.TICKS_PER_SECOND;
+            case MEDIUM -> 2 * SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
+            case ELEVATED -> 2 * SharedConstants.TICKS_PER_SECOND;
+            case HIGH -> SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
+            case EXTREME -> SharedConstants.TICKS_PER_SECOND;
+            case NONE -> throw new IllegalArgumentException("Can't create a GeigerSound with a RadiationScale of NONE.");
+        };
         return new GeigerSound(player, scale, subtitleFrequency);
     }
 

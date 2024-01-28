@@ -43,6 +43,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -417,7 +418,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private void radiateEntities(Level world) {
         IRadiationManager radiationManager = IRadiationManager.INSTANCE;
-        if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
+        if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<LivingEntity> entitiesToRadiate = getLevel().getEntitiesOfClass(LivingEntity.class, hotZone);
             if (!entitiesToRadiate.isEmpty()) {
                 double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s

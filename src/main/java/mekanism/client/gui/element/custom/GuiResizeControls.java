@@ -11,6 +11,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,7 @@ public class GuiResizeControls extends GuiSideHolder {
         super.onClick(mouseX, mouseY, button);
         if (!expandButton.active && mouseX >= expandButton.getX() && mouseX < expandButton.getX() + expandButton.getWidth() &&
             mouseY >= expandButton.getY() && mouseY < expandButton.getY() + expandButton.getHeight()) {
-            tooltipTicks = 100;
+            tooltipTicks = 5 * SharedConstants.TICKS_PER_SECOND;
         }
     }
 

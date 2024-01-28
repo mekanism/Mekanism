@@ -41,6 +41,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -229,7 +230,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
 
-        tickDelay = 10;
+        tickDelay = MekanismUtils.TICKS_PER_HALF_SECOND;
     }
 
     private IItemHandler getHandler(Direction side) {

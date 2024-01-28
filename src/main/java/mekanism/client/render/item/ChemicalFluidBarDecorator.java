@@ -8,6 +8,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -82,7 +83,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return -1;
         } else if (tanks > 1 && Minecraft.getInstance().level != null) {
             //Cycle through multiple tanks every second, to save some space if multiple tanks are present
-            return (int) (Minecraft.getInstance().level.getGameTime() / 20) % tanks;
+            return (int) (Minecraft.getInstance().level.getGameTime() / SharedConstants.TICKS_PER_SECOND) % tanks;
         }
         return 0;
     }

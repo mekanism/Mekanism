@@ -120,7 +120,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     }
                 }
             }
-            delayTicks = 10;
+            delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
         }
     }
 

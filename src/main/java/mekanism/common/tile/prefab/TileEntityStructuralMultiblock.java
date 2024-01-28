@@ -14,6 +14,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -89,7 +90,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (ticker % 10 == 0) {
+        if (ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             String activeMultiblock = null;
             if (!structures.isEmpty()) {
                 Iterator<Map.Entry<MultiblockManager<?>, Structure>> iterator = structures.entrySet().iterator();

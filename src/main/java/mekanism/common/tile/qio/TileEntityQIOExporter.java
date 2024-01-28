@@ -38,7 +38,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
-    private static final int MAX_DELAY = 10;
+    private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
     private int delay = 0;
     private boolean exportWithoutFilter;
 

@@ -173,6 +173,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -265,7 +266,7 @@ public class ClientRegistration {
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
-                  (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F : 0);
+                  (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / (float) SharedConstants.TICKS_PER_SECOND : 0);
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pulling"),
                   (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
 

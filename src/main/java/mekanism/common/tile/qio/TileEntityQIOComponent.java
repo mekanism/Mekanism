@@ -14,6 +14,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedData;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -47,7 +48,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (prev != lastColor) {
             sendUpdatePacket();
         }
-        if (level.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             setActive(frequency != null);
         }
     }

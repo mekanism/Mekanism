@@ -41,6 +41,7 @@ import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -469,7 +470,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // the random factor helps us avoid bogging down the CPU by saving all QIO frequencies at once
         // this isn't a fully necessary operation, but it'll help avoid all item data getting lost if the server
         // is forcibly shut down.
-        if (isDirty && rand.nextInt(100) == 0) {
+        if (isDirty && rand.nextInt(5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             //Note: We don't have this affect our super dirty value as this is for if the drives are dirty,
             // not for if the frequency is dirty
             saveAll();

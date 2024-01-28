@@ -39,6 +39,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -64,7 +65,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     /**
      * How many ticks it takes to run an operation.
      */
-    public static final int BASE_TICKS_REQUIRED = 20;
+    public static final int BASE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
     private final Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;

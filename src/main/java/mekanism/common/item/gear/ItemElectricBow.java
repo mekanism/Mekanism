@@ -20,6 +20,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -99,7 +100,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                         arrowEntity.setKnockback(punch);
                     }
                     if (stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
-                        arrowEntity.setSecondsOnFire(100);
+                        arrowEntity.setSecondsOnFire(5 * SharedConstants.TICKS_PER_SECOND);
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
                     if (energyContainer != null) {

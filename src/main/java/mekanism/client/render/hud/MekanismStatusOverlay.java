@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.Color;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,6 +17,7 @@ import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 public class MekanismStatusOverlay implements IGuiOverlay {
 
     public static final MekanismStatusOverlay INSTANCE = new MekanismStatusOverlay();
+    private static final int BASE_TIMER = 5 * SharedConstants.TICKS_PER_SECOND;
 
     private int modeSwitchTimer = 0;
     private long lastTick;
@@ -24,7 +26,7 @@ public class MekanismStatusOverlay implements IGuiOverlay {
     }
 
     public void setTimer() {
-        modeSwitchTimer = 100;
+        modeSwitchTimer = BASE_TIMER;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class MekanismStatusOverlay implements IGuiOverlay {
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
                 if (scrollTextComponent != null) {
-                    Color color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F);
+                    Color color = Color.rgbad(1, 1, 1, modeSwitchTimer / (float) BASE_TIMER);
                     Font font = gui.getFont();
                     int componentWidth = font.width(scrollTextComponent);
                     int targetShift = Math.max(59, Math.max(gui.leftHeight, gui.rightHeight));

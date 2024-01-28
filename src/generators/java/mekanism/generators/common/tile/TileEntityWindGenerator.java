@@ -18,6 +18,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -60,7 +61,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (isBlacklistDimension) {
             return;
         }
-        if (ticker % 20 == 0) {
+        if (ticker % SharedConstants.TICKS_PER_SECOND == 0) {
             // Recalculate the current multiplier once a second
             currentMultiplier = getMultiplier();
             setActive(MekanismUtils.canFunction(this) && !currentMultiplier.isZero());

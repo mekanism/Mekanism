@@ -10,6 +10,7 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedRL2FloatMapConfigValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
@@ -264,7 +265,7 @@ public class GearConfig extends BaseMekanismConfig {
         portableTeleporterChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Portable Teleporter can accept per tick.",
               "chargeRate", FloatingLong.createConst(5_000));
         portableTeleporterDelay = CachedIntValue.wrap(this, builder.comment("Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.")
-              .defineInRange("delay", 0, 0, 6_000));//Max is 5 minutes
+              .defineInRange("delay", 0, 0, 5 * SharedConstants.TICKS_PER_MINUTE));
         builder.pop();
 
         builder.comment("Scuba Tank Settings").push(SCUBA_TANK_CATEGORY);

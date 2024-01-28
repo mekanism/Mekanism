@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -29,7 +30,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         matrix.pushPose();
         matrix.translate(0, 0.5, 0);
         if (tnt.getFuse() - partialTick + 1.0F < 10.0F) {
-            float f = 1.0F - (tnt.getFuse() - partialTick + 1.0F) / 10.0F;
+            float f = 1.0F - (tnt.getFuse() - partialTick + 1.0F) / MekanismUtils.TICKS_PER_HALF_SECOND;
             f = Mth.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;

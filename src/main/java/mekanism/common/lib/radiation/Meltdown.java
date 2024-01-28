@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -75,7 +76,7 @@ public class Meltdown {
     public boolean update(ServerLevel world) {
         ticksExisted++;
 
-        if (world.random.nextInt() % 10 == 0 && world.random.nextDouble() < magnitude * chance) {
+        if (world.random.nextInt() % MekanismUtils.TICKS_PER_HALF_SECOND == 0 && world.random.nextDouble() < magnitude * chance) {
             int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
             int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
             int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());

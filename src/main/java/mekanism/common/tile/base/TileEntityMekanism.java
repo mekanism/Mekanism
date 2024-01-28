@@ -115,6 +115,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -1248,7 +1249,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
-            playSoundCooldown = 20;
+            playSoundCooldown = SharedConstants.TICKS_PER_SECOND;
         } else if (activeSound != null) {
             SoundHandler.stopTileSound(getSoundPos());
             activeSound = null;

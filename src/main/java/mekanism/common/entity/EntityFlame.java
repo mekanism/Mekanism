@@ -9,6 +9,7 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -55,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
-    public static final int LIFESPAN = 80;
+    public static final int LIFESPAN = 4 * SharedConstants.TICKS_PER_SECOND;
     private static final int DAMAGE = 10;
 
     private FlamethrowerMode mode = FlamethrowerMode.COMBAT;
@@ -143,7 +144,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         }
         if (!entity.fireImmune()) {
             if (entity instanceof ItemEntity item && mode == FlamethrowerMode.HEAT) {
-                if (entity.tickCount > 100 && !smeltItem(item)) {
+                if (entity.tickCount > 5 * SharedConstants.TICKS_PER_SECOND && !smeltItem(item)) {
                     burn(entity);
                 }
             } else {

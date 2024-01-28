@@ -24,6 +24,7 @@ import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +77,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                if (ticker % 40 == 0) {//Every two seconds allow for a new vibration to be sent
+                if (ticker % (2 * SharedConstants.TICKS_PER_SECOND) == 0) {//Every two seconds allow for a new vibration to be sent
                     level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION.get(), worldPosition);
                 }
             } else {

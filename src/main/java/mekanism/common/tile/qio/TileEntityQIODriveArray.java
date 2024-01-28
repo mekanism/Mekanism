@@ -17,6 +17,7 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +59,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (level.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             QIOFrequency frequency = getQIOFrequency();
             for (int i = 0; i < DRIVE_SLOTS; i++) {
                 QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);

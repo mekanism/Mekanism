@@ -36,6 +36,7 @@ import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -178,7 +179,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (valve == 0) {
                 needsPacket = true;
             }
-            valve = 20;
+            valve = SharedConstants.TICKS_PER_SECOND;
             valveFluid = new FluidStack(stack, 1);
         }
         return remainder;

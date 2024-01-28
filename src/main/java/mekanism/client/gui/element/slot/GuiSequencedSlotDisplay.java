@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.NonNullSupplier;
@@ -44,7 +45,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
             }
             stackIndex = Math.min(size - 1, stackIndex);
             renderStack = iterStacks.get(stackIndex);
-            stackSwitchTicker = 20;
+            stackSwitchTicker = SharedConstants.TICKS_PER_SECOND;
         }
     }
 

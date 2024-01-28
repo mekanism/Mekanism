@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.test.GameTestUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -25,7 +26,7 @@ public class TransmitterNetworkTest {
 
     private static final String BASE_PATH = "transmitter/";
     //Note: We make all the tests in this class have a base setup time of 5 ticks to make sure everything has had a chance to load properly
-    private static final int SETUP_TICKS = 5;
+    private static final int SETUP_TICKS = SharedConstants.TICKS_PER_SECOND / 4;
 
     @GameTest(template = BASE_PATH + "straight_3c_cable", setupTicks = SETUP_TICKS, batch = "1")
     public static void reload_intermediary(GameTestHelper helper) {

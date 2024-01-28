@@ -24,6 +24,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     /**
      * How long it takes this machine to install an upgrade.
      */
-    private static final int UPGRADE_TICKS_REQUIRED = 20;
+    private static final int UPGRADE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
     /**
      * How many upgrade ticks have progressed.
      */

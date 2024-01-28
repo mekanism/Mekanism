@@ -24,6 +24,7 @@ import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -165,7 +166,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private void kill(Level world) {
-        if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
+        if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
                 entity.hurt(entity.damageSources().magic(), lastReceivedEnergy.floatValue() / 1_000F);

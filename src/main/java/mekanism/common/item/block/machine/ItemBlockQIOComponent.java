@@ -13,6 +13,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,7 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (!level.isClientSide && level.getGameTime() % 100 == 0) {
+        if (!level.isClientSide && level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             EnumColor frequencyColor = getFrequency(stack) instanceof QIOFrequency frequency ? frequency.getColor() : null;
             EnumColor color = getColor(stack);
             if (color != frequencyColor) {

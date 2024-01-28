@@ -32,6 +32,7 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -184,14 +185,14 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     protected IProgressInfoHandler getSimpleProgressTimer() {
         if (timer == null) {
-            timer = guiHelper.createTickTimer(20, 20, false);
+            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, 20, false);
         }
         return () -> timer.getValue() / 20D;
     }
 
     protected IBarInfoHandler getBarProgressTimer() {
         if (timer == null) {
-            timer = guiHelper.createTickTimer(20, 20, false);
+            timer = guiHelper.createTickTimer(SharedConstants.TICKS_PER_SECOND, 20, false);
         }
         return new IBarInfoHandler() {
             @Override

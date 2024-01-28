@@ -57,6 +57,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -362,8 +363,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         // or that we are the correct slot
         if (!entity.level().isClientSide) {
             int nextFlightTicks = flightTicks + 1;
-            if (nextFlightTicks % 10 == 0) {
-                if (nextFlightTicks % 20 == 0) {
+            if (nextFlightTicks % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
+                if (nextFlightTicks % SharedConstants.TICKS_PER_SECOND == 0) {
                     IModule<ModuleElytraUnit> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
                     if (module != null && module.isEnabled()) {
                         module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());

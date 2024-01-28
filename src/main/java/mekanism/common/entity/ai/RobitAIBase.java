@@ -2,6 +2,7 @@ package mekanism.common.entity.ai;
 
 import java.util.EnumSet;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -58,7 +59,7 @@ public abstract class RobitAIBase extends Goal {
     protected void updateTask(Entity target) {
         theRobit.getLookControl().setLookAt(target, 6, theRobit.getMaxHeadXRot() / 10F);
         if (--timeToRecalcPath <= 0) {
-            timeToRecalcPath = 10;
+            timeToRecalcPath = MekanismUtils.TICKS_PER_HALF_SECOND;
             if (!theRobit.isPassenger()) {
                 if (theRobit.distanceToSqr(target) >= 144.0) {
                     BlockPos targetPos = target.blockPosition();

@@ -31,13 +31,14 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
-    public static final int RECIPE_CHECK_FREQUENCY = 100;//Every five seconds
+    public static final int RECIPE_CHECK_FREQUENCY = 5 * SharedConstants.TICKS_PER_SECOND;
 
     protected final BooleanSupplier recheckAllRecipeErrors;
     private final List<RecipeError> errorTypes;

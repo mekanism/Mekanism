@@ -55,6 +55,7 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -74,7 +75,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
     private static final Predicate<@NotNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
-    private static final int BASE_TICKS_REQUIRED = 40;
+    private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
 
     private final CraftingContainer dummyInv = MekanismUtils.getDummyCraftingInv();
 

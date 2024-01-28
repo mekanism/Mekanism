@@ -12,6 +12,7 @@ import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler.FluidTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.FluidUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -88,7 +89,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                 return tankIndices.getInt(0);
             }
             //Cycle through multiple tanks every second, to save some space if multiple tanks are present
-            return tankIndices.getInt((int) (Minecraft.getInstance().level.getGameTime() / 20) % tankIndices.size());
+            return tankIndices.getInt((int) (Minecraft.getInstance().level.getGameTime() / SharedConstants.TICKS_PER_SECOND) % tankIndices.size());
         }
         for (int i = 0; i < tanks && i < tankSpecs.size(); i++) {
             if (tankSpecs.get(i).supportsStack(stack)) {

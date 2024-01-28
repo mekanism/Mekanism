@@ -42,6 +42,7 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -390,7 +391,7 @@ public class RadiationManager implements IRadiationManager {
         IRadiationEntity radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
-        if (entity.level().getRandom().nextInt(20) == 0) {
+        if (entity.level().getRandom().nextInt(SharedConstants.TICKS_PER_SECOND) == 0) {
             double magnitude = getRadiationLevel(entity);
             if (magnitude > BASELINE && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
                 // apply radiation to the player
@@ -440,7 +441,7 @@ public class RadiationManager implements IRadiationManager {
             return;
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
-        if (RAND.nextInt(20) == 0) {
+        if (RAND.nextInt(SharedConstants.TICKS_PER_SECOND) == 0) {
             Collection<RadiationSource> sources = radiationTable.values();
             if (!sources.isEmpty()) {
                 // remove if source gets too low

@@ -75,6 +75,7 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -139,7 +140,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return SynchedEntityData.defineId(EntityRobit.class, dataSerializer);
     }
 
-    private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
+    private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, SharedConstants.TICKS_PER_SECOND);
     private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.value());
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
     private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.value());
@@ -309,7 +310,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 return;
             }
 
-            if (tickCount % 20 == 0) {
+            if (tickCount % SharedConstants.TICKS_PER_SECOND == 0) {
                 Level serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension);
                 BlockPos homePos = homeLocation.getPos();
                 if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {

@@ -97,7 +97,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                     int sendingAmount = response.getSendingAmount();
                     MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);
                 }
-                delayTicks = 10;
+                delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
             }
         } else {
             delayTicks--;

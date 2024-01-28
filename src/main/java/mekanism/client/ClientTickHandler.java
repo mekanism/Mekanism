@@ -37,6 +37,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandModel;
 import net.minecraft.client.model.EntityModel;
@@ -165,7 +166,7 @@ public class ClientTickHandler {
         }
 
         if (minecraft.level != null && minecraft.player != null && !minecraft.isPaused()) {
-            if (!initHoliday || MekanismClient.ticksPassed % 1_200 == 0) {
+            if (!initHoliday || MekanismClient.ticksPassed % SharedConstants.TICKS_PER_MINUTE == 0) {
                 HolidayManager.notify(Minecraft.getInstance().player);
                 initHoliday = true;
             }
@@ -226,11 +227,11 @@ public class ClientTickHandler {
             if (isVisionEnhancementOn(minecraft.player)) {
                 visionEnhancement = true;
                 // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
-                minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, false, false, false));
+                minecraft.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 11 * SharedConstants.TICKS_PER_SECOND, 0, false, false, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
                 MobEffectInstance effect = minecraft.player.getEffect(MobEffects.NIGHT_VISION);
-                if (effect != null && effect.getDuration() <= 220) {
+                if (effect != null && effect.getDuration() <= 11 * SharedConstants.TICKS_PER_SECOND) {
                     //Only remove it if it is our effect and not one that has a longer remaining duration
                     minecraft.player.removeEffect(MobEffects.NIGHT_VISION);
                 }

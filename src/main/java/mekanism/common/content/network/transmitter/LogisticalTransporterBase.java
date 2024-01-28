@@ -28,6 +28,7 @@ import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -138,7 +139,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             } else {
                                 //If the insert succeeded, remove the inserted count and try again for another 10 ticks
                                 response.useAll();
-                                delay = 10;
+                                delay = MekanismUtils.TICKS_PER_HALF_SECOND;
                             }
                         }
                     }

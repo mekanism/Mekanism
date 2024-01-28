@@ -22,6 +22,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -73,7 +74,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         if (skins != null) {
             Lighting.setupForFlatItems();
             //Every ten ticks consider the skin to change
-            int index = ticks / 10;
+            int index = ticks / MekanismUtils.TICKS_PER_HALF_SECOND;
             float oldRot = rotation;
             rotation = Mth.wrapDegrees(rotation - 0.5F);
             float rot = Mth.rotLerp(partialTicks, oldRot, rotation);

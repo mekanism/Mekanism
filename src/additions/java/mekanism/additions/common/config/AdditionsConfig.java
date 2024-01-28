@@ -13,6 +13,7 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
@@ -36,7 +37,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         builder.comment("Mekanism Additions Config. This config is synced between server and client.").push("additions");
 
         obsidianTNTDelay = CachedIntValue.wrap(this, builder.comment("Fuse time for Obsidian TNT.")
-              .defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE));
+              .defineInRange("obsidianTNTDelay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
         obsidianTNTBlastRadius = CachedFloatValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
               .defineInRange("obsidianTNTBlastRadius", 12, 0.1, 1_000));
 

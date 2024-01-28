@@ -25,8 +25,10 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -65,7 +67,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private UUID cachedID = null;
 
     // start at 100 to make sure we run the animation
-    private long unformedTicks = 100;
+    private long unformedTicks = 5 * SharedConstants.TICKS_PER_SECOND;
 
     public TileEntityMultiblock(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -107,12 +109,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.onUpdateServer();
         boolean needsPacket = false;
         if (ticker >= 3) {
-            structure.tick(this, ticker % 10 == 0);
+            structure.tick(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
         }
         T multiblock = getMultiblock();
         if (isMaster() && multiblock.isFormed() && multiblock.recheckStructure) {
             multiblock.recheckStructure = false;
-            getStructure().doImmediateUpdate(this, ticker % 10 == 0);
+            getStructure().doImmediateUpdate(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
             multiblock = getMultiblock();
         }
         if (multiblock.isFormed()) {

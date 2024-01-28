@@ -29,6 +29,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
-    private static final int BASE_TICKS_REQUIRED = 40;
+    private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
 
     public int ticksRequired = BASE_TICKS_REQUIRED;
     public int operatingTicks;

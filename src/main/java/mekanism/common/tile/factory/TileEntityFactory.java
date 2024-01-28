@@ -96,7 +96,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * How many ticks it takes, with upgrades, to run an operation
      */
-    private int ticksRequired = 200;
+    private int ticksRequired = BASE_TICKS_REQUIRED;
     private boolean sorting;
     private boolean sortingNeeded = true;
     private FloatingLong lastUsage = FloatingLong.ZERO;

@@ -41,6 +41,7 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -57,7 +58,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static final int SLOTS_X_MIN = 8, SLOTS_X_MAX = 16, SLOTS_Y_MIN = 2, SLOTS_Y_MAX = 48;
     public static final int SLOTS_START_Y = 43;
-    private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
+    private static final int DOUBLE_CLICK_TRANSFER_DURATION = SharedConstants.TICKS_PER_SECOND;
 
     public static int getSlotsYMax() {
         int maxY = Mth.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
