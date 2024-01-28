@@ -176,7 +176,11 @@ public abstract class BaseComputerHelper {
             Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get("name")));
             int count = SpecialConverters.getIntFromRaw(map.get("count"));
             String nbt = (String) map.get("nbt");
-            return new ItemStack(item, count, nbt != null ? NbtUtils.snbtToStructure(nbt) : null);
+            ItemStack stack = new ItemStack(item, count);
+            if (nbt != null) {
+                stack.setTag(NbtUtils.snbtToStructure(nbt));
+            }
+            return stack;
         } catch (ClassCastException ex) {
             throw new ComputerException("Invalid ItemStack at index "+param);
         } catch (CommandSyntaxException e) {

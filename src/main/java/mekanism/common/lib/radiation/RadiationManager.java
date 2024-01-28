@@ -54,6 +54,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -361,13 +362,14 @@ public class RadiationManager implements IRadiationManager {
             return;
         }
         // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
-        if (clientRadiationScale != RadiationScale.NONE && player.level().getRandom().nextInt(2) == 0) {
-            int count = player.level().getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
+        RandomSource randomSource = player.level().getRandom();
+        if (clientRadiationScale != RadiationScale.NONE && MekanismConfig.client.radiationParticleCount.get() != 0 && randomSource.nextInt(2) == 0) {
+            int count = randomSource.nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
             int radius = MekanismConfig.client.radiationParticleRadius.get();
             for (int i = 0; i < count; i++) {
-                double x = player.getX() + player.level().getRandom().nextDouble() * radius * 2 - radius;
-                double y = player.getY() + player.level().getRandom().nextDouble() * radius * 2 - radius;
-                double z = player.getZ() + player.level().getRandom().nextDouble() * radius * 2 - radius;
+                double x = player.getX() + randomSource.nextDouble() * radius * 2 - radius;
+                double y = player.getY() + randomSource.nextDouble() * radius * 2 - radius;
+                double z = player.getZ() + randomSource.nextDouble() * radius * 2 - radius;
                 player.level().addParticle(MekanismParticleTypes.RADIATION.get(), x, y, z, 0, 0, 0);
             }
         }

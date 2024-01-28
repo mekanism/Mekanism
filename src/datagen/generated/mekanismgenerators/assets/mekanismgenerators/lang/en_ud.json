@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "%s :ǝɯnꞁoΛ ʞuɐ⟘",
   "turbine.mekanismgenerators.stats.vents": "%2$s %1$s :sʇuǝΛ",
   "turbine.mekanismgenerators.steam_input": "ʇ/ᗺɯ %s :ʇnduI ɯɐǝʇS",
+  "turbine.mekanismgenerators.tooltip.steamdump": "ɯɐǝʇS ᵷuᴉdɯnᗡ",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "pǝꞁɔʎɔǝɹ ǝq ⟘ON ꞁꞁᴉʍ ɹǝʇɐM",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "ɯɐǝʇS ssǝɔxǝ ᵷuᴉdɯnᗡ",
   "wind_generator.mekanismgenerators.no_wind": "puᴉʍ oN",
   "wind_generator.mekanismgenerators.sky_blocked": "pǝʞɔoꞁq ʎʞS"
 }

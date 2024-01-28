@@ -462,8 +462,7 @@ dependencies {
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    //TODO - 1.20: Re-enable after projecte is updated
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
     datagenNonMod "com.thiakil:yaml-ops:${yamlops_version}"
 }
@@ -765,6 +764,8 @@ tasks.register('outputChangelog') {
     }
 }
 
+def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload;
+
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
     tasks.register("curseforge", TaskPublishCurseForge, { task ->
@@ -776,7 +777,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         def changelog = changeLogResolver.call()
 
         //Main Mekanism Project
-        task.upload(268560, jar) { main ->
+        mainCfUpload = task.upload(268560, jar) { main ->
             setGenericCurseArtifactData(main, changelog)
             //Include the API jar as a secondary file to the main file
             withAdditionalFile(apiJar)
@@ -799,10 +800,17 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         }
 
         //Secondary modules/projects
-        uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
+        additionsCfUpload = uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
         //uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
-        uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
-        uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+        generatorsCfUpload = uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
+        toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+
+        doLast {
+            println("https://www.curseforge.com/minecraft/mc-mods/mekanism/files/${mainCfUpload.curseFileId}")
+            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/${additionsCfUpload.curseFileId}")
+            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/${generatorsCfUpload.curseFileId}")
+            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/${toolsCfUpload.curseFileId}")
+        }
     })
 }
 
@@ -814,8 +822,8 @@ void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
     artifact.addModLoader("Forge")
 }
 
-void uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
-    task.upload(projectId, sourceSetJar) { artifact ->
+UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
+    return task.upload(projectId, sourceSetJar) { artifact ->
         setGenericCurseArtifactData(artifact, changelog)
         addRequirement('mekanism')
     }
@@ -869,6 +877,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
                 new ModDependency("6AQIaxuO", "optional"),//WTHIT
         ])
     }
+
 }
 
 def createSecondaryModrinthUpload(String output, String targetProjectId, TaskProvider<Jar> sourceSetJar) {

@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Tank Volume: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Vents: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Steam Input: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Dumping Steam",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Water will NOT be recycled",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Dumping excess Steam",
   "wind_generator.mekanismgenerators.no_wind": "No wind",
   "wind_generator.mekanismgenerators.sky_blocked": "Sky blocked"
 }

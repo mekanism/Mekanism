@@ -13,6 +13,7 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,7 +37,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, RegistryAccess registryAccess, INSSFakeGroupManager groupManager) {
         if (!(iRecipe instanceof ElectrolysisRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;

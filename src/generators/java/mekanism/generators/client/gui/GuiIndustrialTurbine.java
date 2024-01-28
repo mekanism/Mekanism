@@ -2,7 +2,9 @@ package mekanism.generators.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -14,6 +16,7 @@ import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
@@ -107,7 +110,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return List.of(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }));
-        addRenderableWidget(new GuiGasMode(this, 159, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
+        addRenderableWidget(new GuiGasMode(this, 159, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0, this::dumpModeTooltip));
     }
 
     @Override
@@ -115,5 +118,13 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         renderTitleText(guiGraphics);
         drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
+    }
+
+    private void dumpModeTooltip(GuiElement element, GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        GasMode dumpMode = tile.getMultiblock().dumpMode;
+        if (dumpMode != GasMode.IDLE) {
+            GeneratorsLang firstLine = dumpMode == GasMode.DUMPING_EXCESS ? GeneratorsLang.TURBINE_DUMPING_EXCESS_STEAM : GeneratorsLang.TURBINE_DUMPING_STEAM;
+            displayTooltips(guiGraphics, mouseX, mouseY, firstLine.translate(), GeneratorsLang.TURBINE_DUMPING_STEAM_WARNING.translateColored(EnumColor.RED));
+        }
     }
 }
