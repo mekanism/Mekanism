@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
@@ -34,8 +35,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -150,27 +149,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        BlockPos mainPos = getMainBlockPos(world, pos);
-        if (mainPos != null) {
-            BlockState mainState = world.getBlockState(mainPos);
-            if (!mainState.isAir()) {
-                //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
-                if (world instanceof ServerLevel serverLevel) {
-                    LootParams.Builder lootContextBuilder = new LootParams.Builder(serverLevel)
-                          .withParameter(LootContextParams.ORIGIN, mainPos.getCenter())
-                          .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-                          .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(serverLevel, mainPos) : null)
-                          .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getDirectSourceEntity());
-                    if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
-                        lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
-                    }
-                    mainState.getDrops(lootContextBuilder).forEach(stack -> Block.popResource(serverLevel, mainPos, stack));
-                }
-                mainState.onBlockExploded(world, mainPos, explosion);
-            }
+    @Deprecated
+    public void onExplosionHit(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Explosion explosion,
+          @NotNull BiConsumer<ItemStack, BlockPos> dropConsumer) {
+        BlockPos mainPos = getMainBlockPos(level, pos);
+        if (mainPos == null) {
+            super.onExplosionHit(state, level, pos, explosion, dropConsumer);
+        } else {
+            //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
+            level.getBlockState(mainPos).onExplosionHit(level, mainPos, explosion, dropConsumer);
         }
-        super.onBlockExploded(state, world, pos, explosion);
     }
 
     @Override

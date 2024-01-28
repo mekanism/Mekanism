@@ -11,19 +11,18 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
 
 public class Meltdown {
@@ -73,7 +72,7 @@ public class Meltdown {
         tag.putInt(NBTConstants.AGE, ticksExisted);
     }
 
-    public boolean update(Level world) {
+    public boolean update(ServerLevel world) {
         ticksExisted++;
 
         if (world.random.nextInt() % 10 == 0 && world.random.nextDouble() < magnitude * chance) {
@@ -95,7 +94,7 @@ public class Meltdown {
     /**
      * Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
      */
-    private void createExplosion(Level world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
+    private void createExplosion(ServerLevel world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
         Explosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
         //Calculate which block positions should get broken based on the logic that would happen in Explosion#explode
         ObjectArrayList<BlockPos> toBlow = new ObjectArrayList<>();
@@ -139,52 +138,45 @@ public class Meltdown {
         //Try to make the explosion actually happen
         if (!EventHooks.onExplosionStart(world, explosion)) {
             explosion.explode();
-            explosion.finalizeExplosion(true);
+            explosion.finalizeExplosion(false);
         }
+        //Note: Regardless of if the event got canceled vanilla syncs it to the client so that sounds and the like can play
+        syncExplosionToClient(world, explosion);
+
         //Next go through the different locations that were inside our reactor that should have exploded and make sure
         // that if they didn't explode that we manually run the logic to make them "explode" so that the reactor stops
         //Note: Shuffle so that the drops don't end up all in one corner of an explosion
         Util.shuffle(toBlow, world.random);
         List<Pair<ItemStack, BlockPos>> drops = new ArrayList<>();
         for (BlockPos toExplode : toBlow) {
-            BlockState state = world.getBlockState(toExplode);
-            //If the block didn't already get broken when running the normal explosion
-            if (!state.isAir()) {
-                if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel level) {
-                    BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(toExplode) : null;
-                    LootParams.Builder lootContextBuilder = new LootParams.Builder(level)
-                          .withParameter(LootContextParams.ORIGIN, toExplode.getCenter())
-                          .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-                          .withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity)
-                          .withOptionalParameter(LootContextParams.THIS_ENTITY, null);
-                    if (mode == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
-                        lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
-                    }
-                    state.spawnAfterBreak(level, toExplode, ItemStack.EMPTY, false);
-                    state.getDrops(lootContextBuilder).forEach(stack -> addBlockDrops(drops, stack, toExplode));
-                }
-                state.onBlockExploded(world, toExplode, explosion);
-            }
+            world.getBlockState(toExplode)
+                  .onExplosionHit(world, toExplode, explosion, (stack, position) -> Explosion.addOrAppendStack(drops, stack, position));
         }
         for (Pair<ItemStack, BlockPos> pair : drops) {
             Block.popResource(world, pair.getSecond(), pair.getFirst());
         }
     }
 
-    //Copy of Explosion#addBlockDrops
-    private static void addBlockDrops(List<Pair<ItemStack, BlockPos>> dropPositions, ItemStack stack, BlockPos pos) {
-        for (int i = 0, size = dropPositions.size(); i < size; ++i) {
-            Pair<ItemStack, BlockPos> pair = dropPositions.get(i);
-            ItemStack itemstack = pair.getFirst();
-            if (ItemEntity.areMergable(itemstack, stack)) {
-                ItemStack itemstack1 = ItemEntity.merge(itemstack, stack, 16);
-                dropPositions.set(i, Pair.of(itemstack1, pair.getSecond()));
-                if (stack.isEmpty()) {
-                    return;
-                }
+    private static void syncExplosionToClient(ServerLevel level, Explosion explosion) {
+        //Note: We can just sync the explosion the same way vanilla does (ServerLevel#explode) after setting it off
+        // as the client doesn't need to know about the multiblock's uuid that caused the meltdown
+        if (!explosion.interactsWithBlocks()) {
+            explosion.clearToBlow();
+        }
+        Vec3 center = explosion.center();
+        for (ServerPlayer player : level.players()) {
+            if (player.distanceToSqr(center.x, center.y, center.z) < 4096.0) {
+                player.connection.send(new ClientboundExplodePacket(center.x, center.y, center.z,
+                      explosion.radius(),
+                      explosion.getToBlow(),
+                      explosion.getHitPlayers().get(player),
+                      explosion.getBlockInteraction(),
+                      explosion.getSmallExplosionParticles(),
+                      explosion.getLargeExplosionParticles(),
+                      explosion.getExplosionSound()
+                ));
             }
         }
-        dropPositions.add(Pair.of(stack, pos));
     }
 
     public static class MeltdownExplosion extends Explosion {

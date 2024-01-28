@@ -609,6 +609,10 @@ public final class MekanismUtils {
             MobEffect effect = effectInstance.getEffect();
             effect.removeAttributeModifiers(entity.getAttributes());
             effect.addAttributeModifiers(entity.getAttributes(), effectInstance.getAmplifier());
+            entity.refreshDirtyAttributes();
+        }
+        if (!entity.level().isClientSide) {
+            entity.sendEffectToPassengers(effectInstance);
         }
         if (entity instanceof ServerPlayer player) {
             player.connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance));

@@ -50,6 +50,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
@@ -414,7 +415,7 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public void tickServerWorld(Level world) {
+    public void tickServerWorld(ServerLevel world) {
         // terminate early if we're disabled
         if (!isRadiationEnabled()) {
             return;

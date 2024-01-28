@@ -34,7 +34,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
     protected void render(TileEntityFusionReactorController tile, FusionReactorMultiblockData multiblock, float partialTicks, PoseStack matrix, MultiBufferSource renderer,
           int light, int overlayLight, ProfilerFiller profiler) {
         long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
-        float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
+        float ticks = Minecraft.getInstance().levelRenderer.getTicks() + partialTicks;
         VertexConsumer buffer = renderer.getBuffer(core.RENDER_TYPE);
         matrix.pushPose();
         matrix.translate(0.5, -1.5, 0.5);
