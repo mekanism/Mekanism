@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.security.IItemSecurityUtils;
@@ -17,10 +16,10 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StorageUtils;
@@ -58,6 +57,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
@@ -69,7 +69,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
+public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentBasedModeItem<Boolean> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block);
@@ -106,21 +106,21 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
 
     @Override
     protected void addTypeDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
+        tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(stack))));
         super.addTypeDetails(stack, world, tooltip, flag);
     }
 
     @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        return context.getPlayer() == null || getBucketMode(context.getItemInHand()) ? InteractionResult.PASS : super.useOn(context);
+        return context.getPlayer() == null || getMode(context.getItemInHand()) ? InteractionResult.PASS : super.useOn(context);
     }
 
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (getBucketMode(stack)) {
+        if (getMode(stack)) {
             if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
@@ -236,12 +236,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         return null;
     }
 
-    public void setBucketMode(ItemStack itemStack, boolean bucketMode) {
-        ItemDataUtils.setBoolean(itemStack, NBTConstants.BUCKET_MODE, bucketMode);
-    }
-
-    public boolean getBucketMode(ItemStack itemStack) {
-        return ItemDataUtils.getBoolean(itemStack, NBTConstants.BUCKET_MODE);
+    @Override
+    public AttachmentType<Boolean> getModeAttachment() {
+        return MekanismAttachmentTypes.BUCKET_MODE.get();
     }
 
     @Override
@@ -254,8 +251,8 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
-            boolean newState = !getBucketMode(stack);
-            setBucketMode(stack, newState);
+            boolean newState = !getMode(stack);
+            setMode(stack, player, newState);
             displayChange.sendMessage(player, () -> MekanismLang.BUCKET_MODE.translate(OnOff.of(newState, true)));
         }
     }
@@ -263,7 +260,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     @NotNull
     @Override
     public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getBucketMode(stack), true));
+        return MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(getMode(stack), true));
     }
 
     public static class FluidTankItemDispenseBehavior extends DefaultDispenseItemBehavior {
@@ -276,7 +273,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         @NotNull
         @Override
         public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
+            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
                 // act as a bucket that is emptying its contents or one that is picking up contents
@@ -398,7 +395,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
         @Override
         public final InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
               @NotNull InteractionHand hand, @NotNull ItemStack stack) {
-            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
+            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                 //Get the fluid tank for the stack
