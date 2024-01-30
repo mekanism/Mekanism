@@ -5,6 +5,7 @@ import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
+import mekanism.additions.common.registries.AdditionsAttachmentTypes;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsCreativeTabs;
@@ -66,6 +67,7 @@ public class MekanismAdditions implements IModModule {
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
+        AdditionsAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsCreativeTabs.CREATIVE_TABS.register(modEventBus);

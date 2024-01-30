@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -36,6 +35,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.lib.radial.IRadialEnumModeItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
@@ -57,6 +57,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -196,13 +197,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public String getModeSaveKey() {
-        return NBTConstants.MODE;
-    }
-
-    @Override
-    public DisassemblerMode getModeByIndex(int ordinal) {
-        return DisassemblerMode.byIndexStatic(ordinal);
+    public AttachmentType<DisassemblerMode> getModeAttachment() {
+        return MekanismAttachmentTypes.DISASSEMBLER_MODE.get();
     }
 
     @NotNull
@@ -303,14 +299,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             this.checkEnabled = checkEnabled;
             this.color = color;
             this.icon = icon;
-        }
-
-        /**
-         * Gets a Mode from its ordinal. NOTE: if this mode is not enabled then it will reset to NORMAL
-         */
-        public static DisassemblerMode byIndexStatic(int index) {
-            DisassemblerMode mode = MathUtils.getByIndexMod(MODES, index);
-            return mode.isEnabled() ? mode : NORMAL;
         }
 
         @Override

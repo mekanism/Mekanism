@@ -3,21 +3,22 @@ package mekanism.common.registries;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.capabilities.chemical.item.ChemicalTankContentsHandler;
 import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
+import mekanism.common.content.gear.ModuleContainer;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.MekanismDeferredHolder;
-import mekanism.common.registration.MekanismDeferredRegister;
+import mekanism.common.registration.impl.AttachmentTypeDeferredRegister;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class MekanismAttachmentTypes {
 
     private MekanismAttachmentTypes() {
     }
 
-    public static final MekanismDeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = new MekanismDeferredRegister<>(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Mekanism.MODID);
+    public static final AttachmentTypeDeferredRegister ATTACHMENT_TYPES = new AttachmentTypeDeferredRegister(Mekanism.MODID);
 
     //Note: We do not specify copy on death as we want radiation to reset to baseline on death
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
@@ -40,4 +41,7 @@ public class MekanismAttachmentTypes {
           () -> AttachmentType.builder(ChemicalTankContentsHandler::createDummy).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GaugeDropperContentsHandler>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
           () -> AttachmentType.builder(GaugeDropperContentsHandler::createDummy).build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DisassemblerMode>> DISASSEMBLER_MODE = ATTACHMENT_TYPES.register("disassembler_mode", DisassemblerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ConfiguratorMode>> CONFIGURATOR_MODE = ATTACHMENT_TYPES.register("configurator_mode", ConfiguratorMode.class);
 }

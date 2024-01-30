@@ -9,7 +9,7 @@ import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.ItemBalloon;
-import mekanism.additions.common.item.ItemWalkieTalkie;
+import mekanism.additions.common.item.ItemWalkieTalkie.WalkieData;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -42,8 +42,8 @@ public class AdditionsClientRegistration {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(AdditionsItems.WALKIE_TALKIE, MekanismAdditions.rl("channel"), (stack, world, entity, seed) -> {
-            ItemWalkieTalkie item = (ItemWalkieTalkie) stack.getItem();
-            return item.getOn(stack) ? item.getChannel(stack) : 0;
+            WalkieData data = WalkieData.get(stack);
+            return data != null && data.isRunning() ? data.getChannel() : 0;
         }));
     }
 

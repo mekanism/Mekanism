@@ -6,7 +6,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -32,6 +31,7 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialEnumModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -58,6 +58,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -219,11 +220,6 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
         return getMode(stack).getTextComponent();
     }
 
-    @Override
-    public String getModeSaveKey() {
-        return NBTConstants.STATE;
-    }
-
     @NotNull
     @Override
     public RadialData<ConfiguratorMode> getRadialData(ItemStack stack) {
@@ -231,8 +227,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
     }
 
     @Override
-    public ConfiguratorMode getModeByIndex(int ordinal) {
-        return ConfiguratorMode.byIndexStatic(ordinal);
+    public AttachmentType<ConfiguratorMode> getModeAttachment() {
+        return MekanismAttachmentTypes.CONFIGURATOR_MODE.get();
     }
 
     @NothingNullByDefault
@@ -294,10 +290,6 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
         @NotNull
         @Override
         public ConfiguratorMode byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public static ConfiguratorMode byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
         }
 

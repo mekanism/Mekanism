@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.item.ItemWalkieTalkie;
+import mekanism.additions.common.item.ItemWalkieTalkie.WalkieData;
 import mekanism.common.Mekanism;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -126,17 +126,15 @@ public class VoiceConnection extends Thread {
         return player.getInventory().items.stream().anyMatch(itemStack -> canListen(channel, itemStack)) || canListen(channel, player.getOffhandItem());
     }
 
-    private boolean canListen(int channel, ItemStack itemStack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie walkieTalkie) {
-            return walkieTalkie.getOn(itemStack) && walkieTalkie.getChannel(itemStack) == channel;
-        }
-        return false;
+    private boolean canListen(int channel, ItemStack stack) {
+        WalkieData data = WalkieData.get(stack);
+        return data != null && data.isRunning() && data.getChannel() == channel;
     }
 
     public int getCurrentChannel() {
-        ItemStack itemStack = getPlayer().getInventory().getSelected();
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie walkieTalkie && walkieTalkie.getOn(itemStack)) {
-            return walkieTalkie.getChannel(itemStack);
+        WalkieData data = WalkieData.get(getPlayer().getInventory().getSelected());
+        if (data != null && data.isRunning()) {
+            return data.getChannel();
         }
         return 0;
     }

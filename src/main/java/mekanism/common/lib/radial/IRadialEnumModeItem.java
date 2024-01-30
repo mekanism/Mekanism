@@ -2,23 +2,21 @@ package mekanism.common.lib.radial;
 
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.radial.mode.IRadialMode;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.AttachmentType;
 
 public interface IRadialEnumModeItem<MODE extends Enum<MODE> & IIncrementalEnum<MODE> & IRadialMode> extends IRadialModeItem<MODE> {
 
-    String getModeSaveKey();
-
-    MODE getModeByIndex(int ordinal);
+    AttachmentType<MODE> getModeAttachment();
 
     @Override
     default MODE getMode(ItemStack stack) {
-        return getModeByIndex(ItemDataUtils.getInt(stack, getModeSaveKey()));
+        return stack.getData(getModeAttachment());
     }
 
     @Override
     default void setMode(ItemStack stack, Player player, MODE mode) {
-        ItemDataUtils.setInt(stack, getModeSaveKey(), mode.ordinal());
+        stack.setData(getModeAttachment(), mode);
     }
 }
