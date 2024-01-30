@@ -3,7 +3,6 @@ package mekanism.common.block;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -12,7 +11,6 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -310,25 +308,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
             return Shapes.empty();
         }
-        BlockState mainState;
-        try {
-            mainState = world.getBlockState(mainPos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            //Note: ChunkRenderCache is client side only, though it does not seem to have any class loading issues on the server
-            // due to this exception not being caught in that specific case
-            if (world instanceof RenderChunkRegion region) {
-                //Workaround for when the main spot of the miner is out of bounds of the ChunkRenderCache thus causing an
-                // ArrayIndexOutOfBoundException on the client as seen by:
-                // https://github.com/mekanism/Mekanism/issues/5792
-                // https://github.com/mekanism/Mekanism/issues/5844
-                world = region.level;
-                mainState = world.getBlockState(mainPos);
-            } else {
-                Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos,
-                      world.getClass().getName());
-                return Shapes.empty();
-            }
-        }
+        BlockState mainState = world.getBlockState(mainPos);
         VoxelShape shape = proxy.getShape(mainState, world, mainPos, context);
         BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
