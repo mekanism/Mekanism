@@ -74,6 +74,7 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ToolAction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
@@ -104,7 +105,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-            return hasEnergyForDigAction(stack);
+            return moduleContainer(stack)
+                  .filter(container -> hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0)))
+                  .isPresent();
         }
         return getModules(stack).stream().anyMatch(module -> module.isEnabled() && canPerformAction(module, action));
     }
@@ -113,17 +116,27 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return module.getCustomInstance().canPerformAction(module, action);
     }
 
-    public boolean hasEnergyForDigAction(ItemStack stack) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+    public static boolean hasEnergyForDigAction(IModuleContainer container, @Nullable IEnergyContainer energyContainer) {
         if (energyContainer != null) {
             //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
             // as that is the best guess we can currently give whether the corresponding dig action is supported
-            FloatingLong energyRequired = getDestroyEnergy(stack, 0, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+            FloatingLong energyRequired = getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
             FloatingLong energyAvailable = energyContainer.getEnergy();
             //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
             return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
         }
         return false;
+    }
+
+    public static FloatingLong getDestroyEnergy(IModuleContainer container, float hardness, boolean silk) {
+        return getDestroyEnergy(getDestroyEnergy(container, silk), hardness);
+    }
+
+    private static FloatingLong getDestroyEnergy(IModuleContainer container, boolean silk) {
+        FloatingLong destroyEnergy = getDestroyEnergy(silk);
+        IModule<ModuleExcavationEscalationUnit> module = container.getIfEnabled(MekanismModules.EXCAVATION_ESCALATION_UNIT);
+        float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
+        return destroyEnergy.multiply(efficiency);
     }
 
     @Override
@@ -292,7 +305,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return super.onBlockStartBreak(stack, pos, player);
     }
 
-    private FloatingLong getDestroyEnergy(boolean silk) {
+    private static FloatingLong getDestroyEnergy(boolean silk) {
         return silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
     }
 
@@ -300,7 +313,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return getDestroyEnergy(getDestroyEnergy(itemStack, silk), hardness);
     }
 
-    private FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
+    private static FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
         return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
     }
 

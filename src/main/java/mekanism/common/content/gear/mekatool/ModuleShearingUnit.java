@@ -8,13 +8,14 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -52,21 +53,21 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public boolean canPerformAction(IModule<ModuleShearingUnit> module, ToolAction action) {
         if (action == ToolActions.SHEARS_DISARM) {
-            ItemStack container = module.getContainerStack();
-            if (container.getItem() instanceof ItemMekaTool mekaTool) {
+            IModuleContainer container = module.getContainer();
+            if (container.isInstance(ItemMekaTool.class)) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
-                FloatingLong cost = mekaTool.getDestroyEnergy(container, 0, mekaTool.isModuleEnabled(container, MekanismModules.SILK_TOUCH_UNIT));
+                FloatingLong cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
                 return module.hasEnoughEnergy(cost);
             }
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
             return true;
         } else if (action == ToolActions.SHEARS_DIG) {
-            ItemStack container = module.getContainerStack();
+            IModuleContainer container = module.getContainer();
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
-            return !(container.getItem() instanceof ItemMekaTool mekaTool) || mekaTool.hasEnergyForDigAction(container);
+            return !container.isInstance(ItemMekaTool.class) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyContainer());
         }
         return ToolActions.DEFAULT_SHEARS_ACTIONS.contains(action);
     }

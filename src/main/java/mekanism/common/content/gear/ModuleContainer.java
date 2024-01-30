@@ -28,8 +28,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
 public sealed class ModuleContainer implements IModuleContainer permits InvalidModuleContainer {
@@ -152,6 +154,17 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
         } else {
             enchantments.put(enchantment, level);
         }
+    }
+
+    @Override
+    public ItemStack getPreviewStack() {
+        return container.copy();
+    }
+
+    @Nullable
+    @Override
+    public <T, C> T getCapabilityFromStack(ItemCapability<T, C> capability, @UnknownNullability C context) {
+        return container.getCapability(capability, context);
     }
 
     @Override

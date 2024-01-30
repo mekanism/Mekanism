@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
@@ -10,7 +11,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -165,6 +168,38 @@ public class StorageUtils {
         } else {
             tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, TextUtils.format(amount))));
         }
+    }
+
+    @NotNull
+    public static GasStack getContainedGas(ItemStack stack, Gas type) {
+        return getContainedGas(Capabilities.GAS.getCapability(stack), type);
+    }
+
+    @NotNull
+    public static GasStack getContainedGas(IGasHandler gasHandler, Gas type) {
+        return getContainedChemical(gasHandler, type).orElse(GasStack.EMPTY);
+    }
+
+    @NotNull
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+    Optional<STACK> getContainedChemical(HANDLER handler, CHEMICAL type) {
+        for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+            STACK chemicalInTank = handler.getChemicalInTank(tank);
+            if (chemicalInTank.isTypeEqual(type)) {
+                return Optional.of(chemicalInTank);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static FluidStack getContainedFluid(@NotNull IFluidHandlerItem fluidHandlerItem, FluidStack type) {
+        for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
+            FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
+            if (fluidInTank.isFluidEqual(type)) {
+                return fluidInTank;
+            }
+        }
+        return FluidStack.EMPTY;
     }
 
     /**

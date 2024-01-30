@@ -118,6 +118,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Container.
      *
+     * @apiNote Be careful when interacting this stack as mutating it may have side effects.
      * @since 10.5.0
      */
     ItemStack getContainerStack();

@@ -86,8 +86,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -302,32 +300,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return GasStack.EMPTY;
     }
 
-    public GasStack getContainedGas(ItemStack stack, Gas type) {
-        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
-        if (gasHandlerItem != null) {
-            for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
-                GasStack gasInTank = gasHandlerItem.getChemicalInTank(i);
-                if (gasInTank.getType() == type) {
-                    return gasInTank;
-                }
-            }
-        }
-        return GasStack.EMPTY;
-    }
-
-    public FluidStack getContainedFluid(ItemStack stack, FluidStack type) {
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
-        if (fluidHandlerItem != null) {
-            for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
-                FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
-                if (fluidInTank.isFluidEqual(type)) {
-                    return fluidInTank;
-                }
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
@@ -346,7 +318,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
                 // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
                 IModule<ModuleJetpackUnit> jetpack = moduleContainer.get().getIfEnabled(MekanismModules.JETPACK_UNIT);
-                return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER || getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
+                return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
+                       StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
             }
         }
         return false;

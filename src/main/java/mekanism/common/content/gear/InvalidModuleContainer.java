@@ -9,6 +9,9 @@ import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
 final class InvalidModuleContainer extends ModuleContainer {
@@ -22,6 +25,12 @@ final class InvalidModuleContainer extends ModuleContainer {
     @Override
     public void deserializeNBT(CompoundTag modulesTag) {
         //NO-OP
+    }
+
+    @Nullable
+    @Override
+    public <T, C> T getCapabilityFromStack(ItemCapability<T, C> capability, @UnknownNullability C context) {
+        return null;
     }
 
     @Override

@@ -10,10 +10,13 @@ import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Represents an item that can contain modules. Do not implement this interface directly, register new containers via
@@ -63,6 +66,29 @@ public interface IModuleContainer extends INBTSerializable<CompoundTag> {
      */
     @Internal
     void setEnchantmentLevel(Enchantment enchantment, int level);
+
+    /**
+     * {@return a new stack/copy representing a copy of the backing stack for use in creating previews that won't modify the backing stack}
+     */
+    ItemStack getPreviewStack();
+
+    /**
+     * Gets a capability that is on the backing stack, useful for when interacting with fluid or chemical contents.
+     *
+     * @param capability Capability to look up.
+     * @param context    Capability context.
+     */
+    @Nullable <T, C> T getCapabilityFromStack(ItemCapability<T, C> capability, @UnknownNullability C context);
+
+    /**
+     * Gets a capability that is on the backing stack, useful for when interacting with fluid or chemical contents.
+     *
+     * @param capability Capability to look up.
+     */
+    @Nullable
+    default <T> T getCapabilityFromStack(ItemCapability<T, Void> capability) {
+        return getCapabilityFromStack(capability, null);
+    }
 
     /**
      * {@return the number of installed module types}

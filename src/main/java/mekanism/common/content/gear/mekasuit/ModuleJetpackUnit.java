@@ -3,6 +3,7 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -11,8 +12,8 @@ import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.StorageUtils;
@@ -32,8 +33,8 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            ItemStack container = module.getContainerStack();
-            GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.HYDROGEN.get());
+            IGasHandler gasHandler = module.getContainer().getCapabilityFromStack(Capabilities.GAS.item());
+            GasStack stored = StorageUtils.getContainedGas(gasHandler, MekanismGases.HYDROGEN.get());
             double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitJetpackMaxStorage.getAsLong());
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(jetpackMode.get().getHUDIcon(), ratio));
         }
