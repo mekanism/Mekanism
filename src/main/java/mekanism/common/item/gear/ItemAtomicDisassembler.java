@@ -34,7 +34,7 @@ import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
-import mekanism.common.lib.radial.IRadialEnumModeItem;
+import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -65,7 +65,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialEnumModeItem<DisassemblerMode>, IAttributeRefresher {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IAttributeRefresher {
 
     //All basic dig actions except shears
     public static final Set<ToolAction> ALWAYS_SUPPORTED_ACTIONS = Set.of(ToolActions.AXE_DIG, ToolActions.HOE_DIG, ToolActions.SHOVEL_DIG, ToolActions.PICKAXE_DIG,

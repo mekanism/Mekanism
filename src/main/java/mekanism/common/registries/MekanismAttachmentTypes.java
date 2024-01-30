@@ -8,6 +8,9 @@ import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
+import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
+import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
+import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.AttachmentTypeDeferredRegister;
@@ -44,4 +47,9 @@ public class MekanismAttachmentTypes {
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DisassemblerMode>> DISASSEMBLER_MODE = ATTACHMENT_TYPES.register("disassembler_mode", DisassemblerMode.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ConfiguratorMode>> CONFIGURATOR_MODE = ATTACHMENT_TYPES.register("configurator_mode", ConfiguratorMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FlamethrowerMode>> FLAMETHROWER_MODE = ATTACHMENT_TYPES.register("flamethrower_mode", FlamethrowerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FreeRunnerMode>> FREE_RUNNER_MODE = ATTACHMENT_TYPES.register("free_runner_mode", FreeRunnerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<JetpackMode>> JETPACK_MODE = ATTACHMENT_TYPES.register("jetpack_mode", JetpackMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SCUBA_TANK_MODE = ATTACHMENT_TYPES.registerBoolean("scuba_tank_mode", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
 }

@@ -29,7 +29,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.lib.radial.IRadialEnumModeItem;
+import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
@@ -63,7 +63,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeItem<ConfiguratorMode>, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public static final Lazy<RadialData<ConfiguratorMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));

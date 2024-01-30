@@ -1,19 +1,17 @@
 package mekanism.common.entity;
 
 import java.util.Optional;
-import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismEntityTypes;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -81,7 +79,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
         flame.setOwner(player);
         ItemStack selected = player.getInventory().getSelected();
-        flame.mode = ((ItemFlamethrower) selected.getItem()).getMode(selected);
+        flame.setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, ((ItemFlamethrower) selected.getItem()).getMode(selected));
         flame.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 0.5F, 1);
         //Attempt to ray trace the area between the player and where the flame would actually start
         // if it hits a block instead just have the flame hit the block directly to avoid being able
@@ -143,7 +141,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             }
         }
         if (!entity.fireImmune()) {
-            if (entity instanceof ItemEntity item && mode == FlamethrowerMode.HEAT) {
+            if (entity instanceof ItemEntity item && getData(MekanismAttachmentTypes.FLAMETHROWER_MODE) == FlamethrowerMode.HEAT) {
                 if (entity.tickCount > 5 * SharedConstants.TICKS_PER_SECOND && !smeltItem(item)) {
                     burn(entity);
                 }
@@ -162,6 +160,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         BlockState hitState = level().getBlockState(hitPos);
         boolean hitFluid = !hitState.getFluidState().isEmpty();
         if (!level().isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+            FlamethrowerMode mode = getData(MekanismAttachmentTypes.FLAMETHROWER_MODE);
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
                 if (owner instanceof Player player) {
@@ -279,24 +278,12 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        super.readAdditionalSaveData(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        super.addAdditionalSaveData(nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.MODE, mode);
-    }
-
-    @Override
     public void writeSpawnData(FriendlyByteBuf dataStream) {
-        dataStream.writeEnum(mode);
+        dataStream.writeEnum(getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf dataStream) {
-        mode = dataStream.readEnum(FlamethrowerMode.class);
+        setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, dataStream.readEnum(FlamethrowerMode.class));
     }
 }

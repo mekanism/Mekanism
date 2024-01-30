@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,6 +74,19 @@ public interface IModeItem {
             } else if (this == OTHER) {
                 player.sendSystemMessage(MekanismUtils.logFormat(message.get()));
             }
+        }
+    }
+
+    interface IAttachmentBasedModeItem<MODE> extends IModeItem {
+
+        AttachmentType<MODE> getModeAttachment();
+
+        default MODE getMode(ItemStack stack) {
+            return stack.getData(getModeAttachment());
+        }
+
+        default void setMode(ItemStack stack, Player player, MODE mode) {
+            stack.setData(getModeAttachment(), mode);
         }
     }
 }

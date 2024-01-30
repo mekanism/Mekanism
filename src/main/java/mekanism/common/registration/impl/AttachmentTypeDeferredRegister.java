@@ -7,6 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.IntTag;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -18,6 +19,22 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
 
     public AttachmentTypeDeferredRegister(String namespace) {
         super(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, namespace);
+    }
+
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> registerBoolean(String name, boolean defaultValue) {
+        return register(name, () -> AttachmentType.builder(() -> defaultValue)
+              .serialize(new IAttachmentSerializer<ByteTag, Boolean>() {
+                  @Override
+                  public ByteTag write(Boolean attachment) {
+                      return ByteTag.valueOf(attachment);
+                  }
+
+                  @Override
+                  public Boolean read(IAttachmentHolder holder, ByteTag tag) {
+                      return tag.getAsByte() != 0;
+                  }
+              }).comparator(Objects::equals)
+              .build());
     }
 
     public <ENUM extends Enum<ENUM>> MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ENUM>> register(String name, Class<ENUM> clazz) {

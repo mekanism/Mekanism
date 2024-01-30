@@ -61,7 +61,7 @@ public class CommonPlayerTickHandler {
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
         return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank scubaTank &&
-               mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) && scubaTank.getFlowing(tank);
+               mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) && scubaTank.getMode(tank);
     }
 
     private static boolean isFlamethrowerOn(Player player, ItemStack currentItem) {
@@ -197,7 +197,7 @@ public class CommonPlayerTickHandler {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getFlowing(chestStack) && ChemicalUtil.hasGas(chestStack)) {
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getMode(chestStack) && ChemicalUtil.hasGas(chestStack)) {
                     event.setCanceled(true);
                     return;
                 }

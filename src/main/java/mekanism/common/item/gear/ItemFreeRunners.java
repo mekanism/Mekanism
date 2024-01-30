@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -16,10 +15,11 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -33,12 +33,13 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, IModeItem, ICustomCreativeTabContents {
+public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode> {
 
     private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -98,12 +99,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         });
     }
 
-    public FreeRunnerMode getMode(ItemStack itemStack) {
-        return FreeRunnerMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
-    }
-
-    public void setMode(ItemStack itemStack, FreeRunnerMode mode) {
-        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
+    @Override
+    public AttachmentType<FreeRunnerMode> getModeAttachment() {
+        return MekanismAttachmentTypes.FREE_RUNNER_MODE.get();
     }
 
     @Override
@@ -119,7 +117,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         FreeRunnerMode mode = getMode(stack);
         FreeRunnerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
-            setMode(stack, newMode);
+            setMode(stack, player, newMode);
             displayChange.sendMessage(player, () -> MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode));
         }
     }
@@ -172,10 +170,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
         @Override
         public FreeRunnerMode byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public static FreeRunnerMode byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
         }
     }

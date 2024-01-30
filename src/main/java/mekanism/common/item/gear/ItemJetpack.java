@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -17,9 +16,10 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IJetpackItem;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
+import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -29,11 +29,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IModeItem, IJetpackItem {
+public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
 
     private static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
@@ -68,7 +69,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
-        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getJetpackMode(stack).getTextComponent()));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override
@@ -77,8 +78,13 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
+    public AttachmentType<JetpackMode> getModeAttachment() {
+        return MekanismAttachmentTypes.JETPACK_MODE.get();
+    }
+
+    @Override
     public JetpackMode getJetpackMode(ItemStack stack) {
-        return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
+        return getMode(stack);
     }
 
     @Override
@@ -86,15 +92,11 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
         useGas(stack, 1);
     }
 
-    public void setMode(ItemStack stack, JetpackMode mode) {
-        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
-    }
-
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == getEquipmentSlot()) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getJetpackMode(stack)));
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
             GasStack stored = GasStack.EMPTY;
             IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
             if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
@@ -106,10 +108,10 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        JetpackMode mode = getJetpackMode(stack);
+        JetpackMode mode = getMode(stack);
         JetpackMode newMode = mode.adjust(shift);
         if (mode != newMode) {
-            setMode(stack, newMode);
+            setMode(stack, player, newMode);
             displayChange.sendMessage(player, () -> MekanismLang.JETPACK_MODE_CHANGE.translate(newMode));
         }
     }

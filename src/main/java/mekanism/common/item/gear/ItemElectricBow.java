@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
@@ -15,9 +14,9 @@ import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.SharedConstants;
@@ -39,11 +38,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider, ICustomCreativeTabContents, ICapabilityAware {
+public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, ICapabilityAware, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
         super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
@@ -52,7 +52,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
-        tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
+        tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack))));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             FloatingLong energyNeeded = FloatingLong.ZERO;
             if (!player.isCreative()) {
                 energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                energyNeeded = getFireState(stack) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                energyNeeded = getMode(stack) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                     return;
                 }
@@ -135,7 +135,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) {
             return 0;
-        } else if (enchantment == Enchantments.FLAMING_ARROWS && getFireState(stack)) {
+        } else if (enchantment == Enchantments.FLAMING_ARROWS && getMode(stack)) {
             return Math.max(1, super.getEnchantmentLevel(stack, enchantment));
         }
         return super.getEnchantmentLevel(stack, enchantment);
@@ -144,23 +144,20 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @Override
     public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        if (getFireState(stack)) {
+        if (getMode(stack)) {
             enchantments.merge(Enchantments.FLAMING_ARROWS, 1, Math::max);
         }
         return enchantments;
     }
 
-    private void setFireState(ItemStack stack, boolean state) {
-        ItemDataUtils.setBoolean(stack, NBTConstants.MODE, state);
-    }
-
-    private boolean getFireState(ItemStack stack) {
-        return ItemDataUtils.getBoolean(stack, NBTConstants.MODE);
+    @Override
+    public AttachmentType<Boolean> getModeAttachment() {
+        return MekanismAttachmentTypes.ELECTRIC_BOW_MODE.get();
     }
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
+        list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack))));
     }
 
     @Override
@@ -200,8 +197,8 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
-            boolean newState = !getFireState(stack);
-            setFireState(stack, newState);
+            boolean newState = !getMode(stack);
+            setMode(stack, player, newState);
             displayChange.sendMessage(player, () -> MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true)));
         }
     }
@@ -209,7 +206,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @NotNull
     @Override
     public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack), true));
+        return MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack), true));
     }
 
     @Override
