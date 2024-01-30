@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismHUD implements IGuiOverlay {
 
@@ -33,6 +35,16 @@ public class MekanismHUD implements IGuiOverlay {
     private MekanismHUD() {
     }
 
+    @Nullable
+    private IItemHUDProvider getHudProvider(ItemStack stack) {
+        if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+            return hudProvider;
+        }
+        return IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .<IItemHUDProvider>map(container -> (list, player, s, slotType) -> list.addAll(container.getHUDStrings(player)))
+              .orElse(null);
+    }
+
     @Override
     public void render(ExtendedGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
         Minecraft minecraft = gui.getMinecraft();
@@ -42,7 +54,8 @@ public class MekanismHUD implements IGuiOverlay {
             List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
                 ItemStack stack = player.getItemBySlot(slotType);
-                if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+                IItemHUDProvider hudProvider = getHudProvider(stack);
+                if (hudProvider != null) {
                     count += makeComponent(list -> hudProvider.addHUDStrings(list, player, stack, slotType), renderStrings);
                 }
             }
@@ -51,7 +64,8 @@ public class MekanismHUD implements IGuiOverlay {
                 if (inv != null) {
                     for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
                         ItemStack stack = inv.getStackInSlot(i);
-                        if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+                        IItemHUDProvider hudProvider = getHudProvider(stack);
+                        if (hudProvider != null) {
                             count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, player, stack), renderStrings);
                         }
                     }
@@ -117,5 +131,4 @@ public class MekanismHUD implements IGuiOverlay {
         }
         return size;
     }
-
 }

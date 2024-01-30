@@ -6,13 +6,12 @@ import net.minecraft.client.gui.GuiGraphics;
 abstract class MiniElement {
 
     protected final GuiModuleScreen parent;
-    protected final int xPos, yPos, dataIndex;
+    protected final int xPos, yPos;
 
-    protected MiniElement(GuiModuleScreen parent, int xPos, int yPos, int dataIndex) {
+    protected MiniElement(GuiModuleScreen parent, int xPos, int yPos) {
         this.parent = parent;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.dataIndex = dataIndex;
     }
 
     protected abstract void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY);
@@ -52,6 +51,6 @@ abstract class MiniElement {
     }
 
     protected <TYPE> void setData(ModuleConfigItem<TYPE> data, TYPE value) {
-        data.set(value, () -> parent.saveCallback.accept(data, dataIndex));
+        data.set(value, () -> parent.saveCallback.accept(data));
     }
 }

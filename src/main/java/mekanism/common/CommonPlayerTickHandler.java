@@ -14,10 +14,7 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
-import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
-import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -72,28 +69,27 @@ public class CommonPlayerTickHandler {
     }
 
     public static float getStepBoost(Player player) {
-        ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
-        if (!stack.isEmpty() && !player.isShiftKeyDown()) {
-            if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
-                return 0.5F;
-            }
-            IModule<ModuleHydraulicPropulsionUnit> module = IModuleHelper.INSTANCE.load(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled()) {
-                return module.getCustomInstance().getStepHeight();
-            }
+        if (player.isShiftKeyDown()) {
+            return 0;
         }
-        return 0;
+        ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
+        if (stack.isEmpty()) {
+            return 0;
+        } else if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
+            return 0.5F;
+        }
+        return IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.getIfEnabled(MekanismModules.HYDRAULIC_PROPULSION_UNIT))
+              .map(module -> module.getCustomInstance().getStepHeight())
+              .orElse(0F);
     }
 
     public static float getSwimBoost(Player player) {
-        ItemStack stack = player.getItemBySlot(EquipmentSlot.LEGS);
-        if (!stack.isEmpty()) {
-            IModule<ModuleHydrostaticRepulsorUnit> module = IModuleHelper.INSTANCE.load(stack, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module, player)) {
-                return 1F;
-            }
-        }
-        return 0;
+        boolean hasSwimBoost = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
+              .map(container -> container.getIfEnabled(MekanismModules.HYDROSTATIC_REPULSOR_UNIT))
+              .filter(module -> module.getCustomInstance().isSwimBoost(module, player))
+              .isPresent();
+        return hasSwimBoost ? 1 : 0;
     }
 
     @SubscribeEvent
@@ -170,12 +166,11 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationReady(Player player) {
         if (MekanismUtils.isPlayingMode(player)) {
-            ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-            if (player.getCooldowns().isOnCooldown(chestplate.getItem())) {
-                return false;
-            }
-            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(chestplate, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-            return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
+            return IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
+                  .filter(container -> !container.isContainerOnCooldown(player))
+                  .map(container -> container.getIfEnabled(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
+                  .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation))
+                  .isPresent();
         }
         return false;
     }
@@ -307,19 +302,22 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IModule<ModuleHydraulicPropulsionUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.FEET), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+            Optional<IModule<ModuleHydraulicPropulsionUnit>> propulsionModule = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.FEET)
+                  .map(container -> container.getIfEnabled(MekanismModules.HYDRAULIC_PROPULSION_UNIT));
+            if (propulsionModule.isPresent() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+                IModule<ModuleHydraulicPropulsionUnit> module = propulsionModule.get();
                 float boost = module.getCustomInstance().getBoost();
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
-                IEnergyContainer energyContainer = module.getEnergyContainer();
-                if (module.canUseEnergy(player, energyContainer, usage, false)) {
+                if (module.canUseEnergy(player, usage)) {
                     // if we're sprinting with the boost module, limit the height
-                    IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.LEGS), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
-                    if (boostModule != null && boostModule.isEnabled() && boostModule.getCustomInstance().canFunction(boostModule, player)) {
+                    if (IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
+                          .map(container -> container.getIfEnabled(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT))
+                          .filter(boostModule -> boostModule.getCustomInstance().canFunction(boostModule, player))
+                          .isPresent()) {
                         boost = Mth.sqrt(boost);
                     }
                     player.addDeltaMovement(new Vec3(0, boost, 0));
-                    module.useEnergy(player, energyContainer, usage, true);
+                    module.useEnergy(player, usage, true);
                 }
             }
         }
@@ -373,8 +371,9 @@ public class CommonPlayerTickHandler {
         }
 
         //Gyroscopic stabilization check
-        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-        if (!legs.isEmpty() && IModuleHelper.INSTANCE.isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
+        if (IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
+              .filter(container -> container.hasEnabled(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT))
+              .isPresent()) {
             if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) && !EnchantmentHelper.hasAquaAffinity(player)) {
                 speed *= 5.0F;
             }

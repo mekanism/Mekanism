@@ -1,5 +1,6 @@
 package mekanism.api.gear.config;
 
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 
 /**
@@ -76,5 +77,18 @@ public final class ModuleColorData extends ModuleIntegerData {
      */
     public boolean handlesAlpha() {
         return handlesAlpha;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        return super.equals(o) && handlesAlpha == ((ModuleColorData) o).handlesAlpha;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), handlesAlpha);
     }
 }

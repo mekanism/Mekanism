@@ -1,8 +1,12 @@
 package mekanism.common.content.gear;
 
+import java.util.Collection;
+import java.util.List;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
+import mekanism.api.gear.IModuleHelper;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +25,10 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             return stack;
         }
         boolean preventDrop = result == ModuleDispenseResult.FAIL_PREVENT_DROP;
-        for (Module<?> module : ModuleHelper.get().loadAll(stack)) {
+        Collection<? extends IModule<?>> modules = IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(IModuleContainer::modules)
+              .orElse(List.of());
+        for (IModule<?> module : modules) {
             if (module.isEnabled()) {
                 result = onModuleDispense(module, source);
                 if (result == ModuleDispenseResult.HANDLED) {

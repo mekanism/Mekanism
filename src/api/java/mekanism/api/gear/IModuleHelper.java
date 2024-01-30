@@ -1,6 +1,8 @@
 package mekanism.api.gear;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -50,11 +52,11 @@ public interface IModuleHelper {
     /**
      * Gets all the module types a given item support.
      *
-     * @param container Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param item Module container, for example a Meka-Tool or MekaSuit piece.
      *
      * @return Set of supported module types.
      */
-    Set<ModuleData<?>> getSupported(ItemStack container);
+    Set<ModuleData<?>> getSupported(Item item);
 
     /**
      * Helper to get the various items that support a given module type.
@@ -79,50 +81,118 @@ public interface IModuleHelper {
     /**
      * Helper method to check if an item has a module installed and the module is enabled.
      *
-     * @param container    Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param stack        Module container, for example a Meka-Tool or MekaSuit piece.
      * @param typeProvider Module type.
      *
      * @return {@code true} if the item has the module installed and enabled.
      */
-    boolean isEnabled(ItemStack container, IModuleDataProvider<?> typeProvider);
+    default boolean isEnabled(ItemStack stack, IModuleDataProvider<?> typeProvider) {
+        return getModuleContainer(stack)
+              .filter(module -> module.hasEnabled(typeProvider))
+              .isPresent();
+    }
 
     /**
      * Helper method to try and load a module from an item.
      *
-     * @param container    Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param stack        Module container, for example a Meka-Tool or MekaSuit piece.
      * @param typeProvider Module type.
      *
      * @return Module, or {@code null} if no module of the given type is installed.
      */
-    @Nullable <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider);
+    @Nullable
+    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        return getModuleContainer(stack)
+              .map(container -> container.get(typeProvider))
+              .orElse(null);
+    }
 
     /**
-     * Gets a list of all modules on an item stack.
+     * {@return module container for the stack, or empty if it is empty or not a module container}
      *
-     * @param container Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param stack Stack to check for being a module container and then to retrieve the container of.
      *
-     * @return List of modules on an item, or an empty list if the item doesn't support modules.
+     * @since 10.5.0
      */
-    List<? extends IModule<?>> loadAll(ItemStack container);
+    Optional<? extends IModuleContainer> getModuleContainer(ItemStack stack);
+
+    /**
+     * {@return module container for the item in entity's equipment slot, or empty if it is empty or not a module container}
+     *
+     * @param entity Entity that has the stack.
+     * @param slot   Slot the stack is in.
+     *
+     * @since 10.5.0
+     */
+    default Optional<? extends IModuleContainer> getModuleContainer(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
+        if (entity == null || slot == null) {
+            return Optional.empty();
+        }
+        return getModuleContainer(entity.getItemBySlot(slot));
+    }
+
+    /**
+     * Checks if the item is a module container and can store modules.
+     *
+     * @param stack Stack containing the item to check.
+     *
+     * @return {@code true} if the stack is a module container.
+     *
+     * @since 10.5.0
+     */
+    default boolean isModuleContainer(ItemStack stack) {
+        return !stack.isEmpty() && isModuleContainer(stack.getItem());
+    }
+
+    /**
+     * Checks if the item is a module container and can store modules.
+     *
+     * @param item Item to check.
+     *
+     * @return {@code true} if the item is a module container.
+     *
+     * @since 10.5.0
+     */
+    boolean isModuleContainer(Item item);
+
+    /**
+     * {@return all the installed modules on an item stack, or empty if the item doesn't support modules}
+     *
+     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
+     */
+    default Collection<? extends IModule<?>> loadAll(ItemStack stack) {
+        return getModuleContainer(stack)
+              .map(IModuleContainer::modules)
+              .orElse(List.of());
+    }
 
     /**
      * Gets a list of all modules on an item stack that have a custom module matching a given class.
      *
-     * @param container   Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param stack       Module container, for example a Meka-Tool or MekaSuit piece.
      * @param moduleClass Class representing the type of module's to load.
      *
      * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
      */
-    <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> loadAll(ItemStack container, Class<MODULE> moduleClass);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    default <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> loadAll(ItemStack stack, Class<MODULE> moduleClass) {
+        return (List) loadAll(stack).stream()
+              .filter(module -> moduleClass.isInstance(module.getCustomInstance()))
+              .toList();
+    }
 
     /**
      * Gets all the module types on an item stack.
      *
-     * @param container Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
      *
      * @return Module types on an item.
      */
-    List<ModuleData<?>> loadAllTypes(ItemStack container);
+    default Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
+        return getModuleContainer(stack)
+              .map(IModuleContainer::moduleTypes)
+              .orElse(Set.of());
+    }
 
     /**
      * Helper method to create a HUD element with a given icon, text, and color.

@@ -128,4 +128,30 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
         Objects.requireNonNull(name, "Name cannot be null.");
         tag.putInt(name, value.ordinal());
     }
+
+    @Override
+    public boolean isCompatible(ModuleConfigData<?> other) {
+        if (other == this) {
+            return true;
+        } else if (getClass() != other.getClass()) {
+            return false;
+        }
+        return value == ((ModuleEnumData<?>) other).value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ModuleEnumData<?> other = (ModuleEnumData<?>) o;
+        return enumConstants.equals(other.enumConstants) && defaultValue == other.defaultValue && value == other.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(enumConstants, defaultValue, value);
+    }
 }

@@ -51,4 +51,19 @@ public final class ModuleBooleanData implements ModuleConfigData<Boolean> {
         Objects.requireNonNull(name, "Name cannot be null.");
         tag.putBoolean(name, value);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return value == ((ModuleBooleanData) o).value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Boolean.hashCode(value);
+    }
 }

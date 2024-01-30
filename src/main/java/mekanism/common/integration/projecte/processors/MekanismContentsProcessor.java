@@ -1,13 +1,15 @@
 package mekanism.common.integration.projecte.processors;
 
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Module;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
 import mekanism.common.util.ItemDataUtils;
@@ -58,8 +60,9 @@ public class MekanismContentsProcessor implements INBTProcessor {
             }
         }
         //Stored modules
-        if (stack.getItem() instanceof IModuleContainerItem moduleContainerItem) {
-            for (Module<?> module : moduleContainerItem.getModules(stack)) {
+        Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
+        if (moduleContainer.isPresent()) {
+            for (IModule<?> module : moduleContainer.get().modules()) {
                 ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
                 currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
             }

@@ -319,6 +319,11 @@ public class Mekanism {
         //IMC messages we send to other mods
         hooks.sendIMCMessages(event);
         //IMC messages that we are sending to ourselves
+        MekanismIMC.addModuleContainer(MekanismItems.MEKA_TOOL, MekanismIMC.ADD_MEKA_TOOL_MODULES);
+        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_HELMET, MekanismIMC.ADD_MEKA_SUIT_HELMET_MODULES);
+        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_BODYARMOR, MekanismIMC.ADD_MEKA_SUIT_BODYARMOR_MODULES);
+        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_PANTS, MekanismIMC.ADD_MEKA_SUIT_PANTS_MODULES);
+        MekanismIMC.addModuleContainer(MekanismItems.MEKASUIT_BOOTS, MekanismIMC.ADD_MEKA_SUIT_BOOTS_MODULES);
         MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
         MekanismIMC.addMekaSuitModules(MekanismModules.COLOR_MODULATION_UNIT, MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
         MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.FORTUNE_UNIT, MekanismModules.BLASTING_UNIT, MekanismModules.VEIN_MINING_UNIT,

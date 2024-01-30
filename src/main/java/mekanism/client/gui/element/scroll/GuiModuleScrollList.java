@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
@@ -15,6 +14,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +37,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     private final Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
     @Nullable
+    private ModuleContainer currentContainer;
+    @Nullable
     private ModuleData<?> selected;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
@@ -48,8 +50,11 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     public void updateItemAndList(ItemStack stack) {
         currentItem = stack;
+        currentContainer = ModuleHelper.get().getModuleContainer(stack).orElse(null);
         currentList.clear();
-        currentList.addAll(IModuleHelper.INSTANCE.loadAllTypes(currentItem));
+        if (currentContainer != null) {
+            currentList.addAll(currentContainer.moduleTypes());
+        }
     }
 
     private void recheckItem() {
@@ -94,10 +99,10 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     private void onSelectedChange() {
-        if (selected == null) {
+        if (selected == null || currentContainer == null) {
             callback.accept(null);
         } else {
-            callback.accept(ModuleHelper.get().load(currentItem, selected));
+            callback.accept(currentContainer.get(selected));
         }
     }
 
@@ -116,10 +121,13 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         recheckItem();
         forEachModule((module, multipliedElement) -> {
-            IModule<?> instance = IModuleHelper.INSTANCE.load(currentItem, module);
-            if (instance != null) {
-                int color = module.isExclusive(ExclusiveFlag.ANY) ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
-                drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+            if (currentContainer != null) {
+                IModule<?> instance = currentContainer.get(module);
+                if (instance != null) {
+                    boolean enabled = instance.isEnabled();
+                    int color = module.isExclusive(ExclusiveFlag.ANY) ? (enabled ? 0x635BD4 : 0x2E2A69) : (enabled ? titleTextColor() : 0x5E1D1D);
+                    drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+                }
             }
         });
     }
@@ -129,9 +137,9 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
-                IModule<?> instance = IModuleHelper.INSTANCE.load(currentItem, module);
-                if (instance != null && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
-                    Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
+                int installed = currentContainer == null ? 0 : currentContainer.installedCount(module);
+                if (installed > 0 && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
+                    Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.getMaxStackSize());
                     displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
                 }
             });

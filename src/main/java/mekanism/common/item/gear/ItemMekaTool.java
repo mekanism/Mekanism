@@ -8,12 +8,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -23,9 +21,6 @@ import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.radial.RadialData;
-import mekanism.api.radial.mode.IRadialMode;
-import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -33,8 +28,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
-import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.IRadialModuleContainerItem;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
@@ -43,8 +37,6 @@ import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.lib.attribute.AttributeCache;
-import mekanism.common.lib.radial.IGenericRadialModeItem;
-import mekanism.common.lib.radial.data.NestingRadialData;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
@@ -54,7 +46,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -85,9 +76,8 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ToolAction;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IBlastingItem, IGenericRadialModeItem {
+public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("meka_tool");
 
@@ -141,7 +131,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
         //Try to avoid replacing this item if there are any modules currently installed
-        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND);
+        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || hasInstalledModules(stack);
     }
 
     @Override
@@ -164,7 +154,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        for (Module<?> module : getModules(context.getItemInHand())) {
+        for (IModule<?> module : getModules(context.getItemInHand())) {
             if (module.isEnabled()) {
                 InteractionResult result = onModuleUse(module, context);
                 if (result != InteractionResult.PASS) {
@@ -182,7 +172,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @NotNull
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
-        for (Module<?> module : getModules(stack)) {
+        for (IModule<?> module : getModules(stack)) {
             if (module.isEnabled()) {
                 InteractionResult result = onModuleInteract(module, player, entity, hand);
                 if (result != InteractionResult.PASS) {
@@ -211,8 +201,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
             return MekanismConfig.gear.mekaToolBaseEfficiency.get() * energyAvailable.divide(energyRequired).floatValue();
         }
-        IModule<ModuleExcavationEscalationUnit> module = getModule(stack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
-        return module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
+        IModule<ModuleExcavationEscalationUnit> module = getEnabledModule(stack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
+        return module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
     }
 
     @Override
@@ -227,8 +217,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-        IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
-        if (attackAmplificationUnit != null && attackAmplificationUnit.isEnabled()) {
+        IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getEnabledModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
+        if (attackAmplificationUnit != null) {
             //Note: We only have an energy cost if the damage is above base, so we can skip all those checks
             // if we don't have an enabled attack amplification unit
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
@@ -249,8 +239,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public Map<BlockPos, BlockState> getBlastedBlocks(Level world, Player player, ItemStack stack, BlockPos pos, BlockState state) {
         //Setup initial set for blasting
         if (!player.isShiftKeyDown()) {
-            IModule<ModuleBlastingUnit> blastingUnit = getModule(stack, MekanismModules.BLASTING_UNIT);
-            if (blastingUnit != null && blastingUnit.isEnabled()) {
+            IModule<ModuleBlastingUnit> blastingUnit = getEnabledModule(stack, MekanismModules.BLASTING_UNIT);
+            if (blastingUnit != null) {
                 int radius = blastingUnit.getCustomInstance().getBlastRadius();
                 if (radius > 0 && IBlastingItem.canBlastBlock(world, pos, state)) {
                     return IBlastingItem.findPositions(world, pos, player, radius);
@@ -261,8 +251,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     private Object2IntMap<BlockPos> getVeinedBlocks(Level world, ItemStack stack, Map<BlockPos, BlockState> blocks, Reference2BooleanMap<Block> oreTracker) {
-        IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
-        if (veinMiningUnit != null && veinMiningUnit.isEnabled()) {
+        IModule<ModuleVeinMiningUnit> veinMiningUnit = getEnabledModule(stack, MekanismModules.VEIN_MINING_UNIT);
+        if (veinMiningUnit != null) {
             ModuleVeinMiningUnit customInstance = veinMiningUnit.getCustomInstance();
             return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.isExtended() ? customInstance.getExcavationRange() : 0, oreTracker);
         }
@@ -315,8 +305,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
         FloatingLong destroyEnergy = getDestroyEnergy(silk);
-        IModule<ModuleExcavationEscalationUnit> module = getModule(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
-        float efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
+        IModule<ModuleExcavationEscalationUnit> module = getEnabledModule(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
+        float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
         return destroyEnergy.multiply(efficiency);
     }
 
@@ -325,8 +315,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
         if (slot == EquipmentSlot.MAINHAND) {
             int unitDamage = 0;
-            IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
-            if (attackAmplificationUnit != null && attackAmplificationUnit.isEnabled()) {
+            IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getEnabledModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
+            if (attackAmplificationUnit != null) {
                 unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
                 if (unitDamage > 0) {
                     FloatingLong energyCost = MekanismConfig.gear.mekaToolEnergyUsageWeapon.get().multiply(unitDamage / 4D);
@@ -366,8 +356,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
-            IModule<ModuleTeleportationUnit> module = getModule(stack, MekanismModules.TELEPORTATION_UNIT);
-            if (module != null && module.isEnabled()) {
+            IModule<ModuleTeleportationUnit> module = getEnabledModule(stack, MekanismModules.TELEPORTATION_UNIT);
+            if (module != null) {
                 BlockHitResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
                 //If we don't require a block target or are not a miss, allow teleporting
                 if (!module.getCustomInstance().requiresBlockTarget() || result.getType() != HitResult.Type.MISS) {
@@ -431,78 +421,17 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return IGenericRadialModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(Module::handlesAnyModeChange);
-    }
-
-    @Nullable
-    @Override
-    public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getModules(stack).stream().filter(Module::handlesModeChange).findFirst().map(module -> module.getModeScrollComponent(stack)).orElse(null);
-    }
-
-    @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesModeChange()) {
-                module.changeMode(player, stack, shift, displayChange);
-                return;
-            }
-        }
-    }
-
-    @Override
     protected FloatingLong getMaxEnergy(ItemStack stack) {
-        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
-        return module == null ? MekanismConfig.gear.mekaToolBaseEnergyCapacity.get() : module.getCustomInstance().getEnergyCapacity(module);
+        return ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get());
     }
 
     @Override
     protected FloatingLong getChargeRate(ItemStack stack) {
-        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
-        return module == null ? MekanismConfig.gear.mekaToolBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
-    }
-
-    @Nullable
-    @Override
-    public RadialData<?> getRadialData(ItemStack stack) {
-        List<NestedRadialMode> nestedModes = new ArrayList<>();
-        Consumer<NestedRadialMode> adder = nestedModes::add;
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesRadialModeChange()) {
-                module.addRadialModes(stack, adder);
-            }
-        }
-        if (nestedModes.isEmpty()) {
-            //No modes available, return that we don't actually currently support radials
-            return null;
-        } else if (nestedModes.size() == 1) {
-            //If we only have one mode available, just return it rather than having to select the singular mode
-            return nestedModes.get(0).nestedData();
-        }
-        return new NestingRadialData(RADIAL_ID, nestedModes);
-    }
-
-    @Nullable
-    @Override
-    public <M extends IRadialMode> M getMode(ItemStack stack, RadialData<M> radialData) {
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesRadialModeChange()) {
-                M mode = module.getMode(stack, radialData);
-                if (mode != null) {
-                    return mode;
-                }
-            }
-        }
-        return null;
+        return ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get());
     }
 
     @Override
-    public <M extends IRadialMode> void setMode(ItemStack stack, Player player, RadialData<M> radialData, M mode) {
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesRadialModeChange() && module.setMode(player, stack, radialData, mode)) {
-                return;
-            }
-        }
+    public ResourceLocation getRadialIdentifier() {
+        return RADIAL_ID;
     }
 }

@@ -3,6 +3,7 @@ package mekanism.common.base;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.functions.FloatSupplier;
@@ -281,14 +282,16 @@ public class PlayerState {
             flightInfo.wasFlyingAllowed = player.getAbilities().mayfly;
             if (player.getAbilities().flying && hasGravitationalModulator) {
                 //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
-                IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-                if (module != null) {//Should not be null but double check
+                Optional<IModule<ModuleGravitationalModulatingUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
+                      .map(container -> container.get(MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
+                if (module.isPresent()) {//Should not be null but double check
+                    IModule<ModuleGravitationalModulatingUnit> gravUnit = module.get();
                     FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
                     Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
                     if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                         FloatingLong boostUsage = usage.multiply(4);
-                        if (module.canUseEnergy(player, boostUsage, false)) {
-                            float boost = module.getCustomInstance().getBoost();
+                        if (gravUnit.canUseEnergy(player, boostUsage, false)) {
+                            float boost = gravUnit.getCustomInstance().getBoost();
                             if (boost > 0) {
                                 player.moveRelative(boost, ModuleGravitationalModulatingUnit.BOOST_VEC);
                                 usage = boostUsage;
@@ -296,7 +299,7 @@ public class PlayerState {
                             }
                         }
                     }
-                    module.useEnergy(player, usage);
+                    gravUnit.useEnergy(player, usage);
                     if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
                         player.gameEvent(gameEvent.value());
                     }

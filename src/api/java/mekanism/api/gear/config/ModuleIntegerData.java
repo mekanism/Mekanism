@@ -59,4 +59,19 @@ public sealed class ModuleIntegerData implements ModuleConfigData<Integer> permi
         Objects.requireNonNull(name, "Name cannot be null.");
         tag.putInt(name, value);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return value == ((ModuleIntegerData) o).value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(value);
+    }
 }

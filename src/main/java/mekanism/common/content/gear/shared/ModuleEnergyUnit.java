@@ -4,23 +4,27 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.registries.MekanismModules;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
 public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
 
-    public FloatingLong getEnergyCapacity(IModule<ModuleEnergyUnit> module) {
-        FloatingLong base = module.getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get()
-                                                                                         : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
-        return base.multiply(Math.pow(2, module.getInstalledCount()));
+    public static FloatingLong getEnergyCapacity(ItemStack stack, FloatingLong base) {
+        return getEnergyValue(stack, base);
     }
 
-    public FloatingLong getChargeRate(IModule<ModuleEnergyUnit> module) {
-        FloatingLong base = module.getContainer().getItem() instanceof ItemMekaSuitArmor ? MekanismConfig.gear.mekaSuitBaseChargeRate.get()
-                                                                                         : MekanismConfig.gear.mekaToolBaseChargeRate.get();
-        return base.multiply(Math.pow(2, module.getInstalledCount()));
+    public static FloatingLong getChargeRate(ItemStack stack, FloatingLong base) {
+        return getEnergyValue(stack, base);
+    }
+
+    private static FloatingLong getEnergyValue(ItemStack stack, FloatingLong base) {
+        return IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.get(MekanismModules.ENERGY_UNIT))
+              .map(module -> base.multiply(Math.pow(2, module.getInstalledCount())))
+              .orElse(base);
     }
 
     @Override

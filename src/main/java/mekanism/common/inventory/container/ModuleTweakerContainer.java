@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.content.gear.IModuleContainerItem;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.OffhandSlot;
@@ -63,7 +63,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
     }
 
     public static boolean isTweakableItem(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem;
+        return IModuleHelper.INSTANCE.getModuleContainer(stack).isPresent();
     }
 
     public static boolean hasTweakableItem(Player player) {

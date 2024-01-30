@@ -326,7 +326,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                                 MekanismItems.MEKASUIT_PANTS,
                                 MekanismItems.MEKASUIT_BOOTS,
                                 MekanismItems.MEKA_TOOL
-                          ).map(item -> new MaxedModuleContainerItemPredicate<>(item.asItem()).toVanilla())
+                          ).map(item -> new MaxedModuleContainerItemPredicate(item.asItem()).toVanilla())
                           .toArray(ItemPredicate[]::new)
               )).save(consumer);
 

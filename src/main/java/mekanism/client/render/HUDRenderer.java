@@ -3,6 +3,7 @@ package mekanism.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModuleHelper;
@@ -11,7 +12,6 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
-import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.util.EnumUtils;
@@ -122,18 +122,18 @@ public class HUDRenderer {
         pose.pushPose();
         //Render any elements that might be on modules in the meka suit while worn or on the meka tool while held
         for (EquipmentSlot type : EQUIPMENT_ORDER) {
-            ItemStack stack = player.getItemBySlot(type);
-            if (stack.getItem() instanceof IModuleContainerItem item) {
-                for (IHUDElement element : item.getHUDElements(player, stack)) {
-                    curY -= 18;
-                    if (reverseHud) {
-                        //Align the mekasuit module icons to the left of the screen
-                        renderHUDElement(font, guiGraphics, 10, curY, element, color, false);
-                    } else {
-                        //Align the mekasuit module icons to the right of the screen
-                        int elementWidth = 24 + font.width(element.getText());
-                        renderHUDElement(font, guiGraphics, startX - elementWidth, curY, element, color, true);
-                    }
+            List<IHUDElement> hudElements = IModuleHelper.INSTANCE.getModuleContainer(player, type)
+                  .map(container -> container.getHUDElements(player))
+                  .orElse(List.of());
+            for (IHUDElement element : hudElements) {
+                curY -= 18;
+                if (reverseHud) {
+                    //Align the mekasuit module icons to the left of the screen
+                    renderHUDElement(font, guiGraphics, 10, curY, element, color, false);
+                } else {
+                    //Align the mekasuit module icons to the right of the screen
+                    int elementWidth = 24 + font.width(element.getText());
+                    renderHUDElement(font, guiGraphics, startX - elementWidth, curY, element, color, true);
                 }
             }
         }

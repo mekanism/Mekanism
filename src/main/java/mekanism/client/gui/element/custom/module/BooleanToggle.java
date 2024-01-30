@@ -14,8 +14,8 @@ class BooleanToggle extends MiniElement {
 
     private final ModuleConfigItem<Boolean> data;
 
-    BooleanToggle(GuiModuleScreen parent, ModuleConfigItem<Boolean> data, int xPos, int yPos, int dataIndex) {
-        super(parent, xPos, yPos, dataIndex);
+    BooleanToggle(GuiModuleScreen parent, ModuleConfigItem<Boolean> data, int xPos, int yPos) {
+        super(parent, xPos, yPos);
         this.data = data;
     }
 

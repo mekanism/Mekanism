@@ -109,7 +109,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to get the text component to display when the mode is changed via the scroll wheel.  This will only be called if {@link ModuleData#handlesModeChange()} is
+     * Called to get the text component to display when the mode is changed via the scroll wheel. This will only be called if {@link ModuleData#handlesModeChange()} is
      * {@code true}.
      *
      * @param module Module instance.

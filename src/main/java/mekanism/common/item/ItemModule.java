@@ -48,11 +48,10 @@ public class ItemModule extends Item implements IModuleItem {
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
-            IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
-            for (Item item : moduleHelper.getSupported(getModuleData())) {
+            for (Item item : IModuleHelper.INSTANCE.getSupported(getModuleData())) {
                 tooltip.add(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
             }
-            Set<ModuleData<?>> conflicting = moduleHelper.getConflicting(getModuleData());
+            Set<ModuleData<?>> conflicting = IModuleHelper.INSTANCE.getConflicting(getModuleData());
             if (!conflicting.isEmpty()) {
                 tooltip.add(MekanismLang.MODULE_CONFLICTING.translateColored(EnumColor.RED));
                 for (ModuleData<?> module : conflicting) {

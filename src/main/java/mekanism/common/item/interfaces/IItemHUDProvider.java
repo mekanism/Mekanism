@@ -12,7 +12,9 @@ public interface IItemHUDProvider {
     void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType);
 
     default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
-        if (this instanceof ArmorItem armor) {
+        //Note: We use the passed in stack rather than this instance so that if we implement the hud provider
+        // on a non armor (such as for modules) then it can still forward the call if the module container is an armor item
+        if (stack.getItem() instanceof ArmorItem armor) {
             addHUDStrings(list, player, stack, armor.getEquipmentSlot());
         }
     }

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
@@ -38,7 +37,6 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.QuickHash;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.lib.Color;
@@ -111,13 +109,10 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static Color getColor(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            IModule<ModuleColorModulationUnit> colorModulation = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
-            if (colorModulation != null) {
-                return colorModulation.getCustomInstance().getColor();
-            }
-        }
-        return Color.WHITE;
+        return IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.get(MekanismModules.COLOR_MODULATION_UNIT))
+              .map(module -> module.getCustomInstance().getColor())
+              .orElse(Color.WHITE);
     }
 
     public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight,
@@ -541,18 +536,17 @@ public class MekaSuitArmor implements ICustomArmor {
     public QuickHash key(LivingEntity player) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
-        IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            ItemStack wornItem = player.getItemBySlot(slotType);
-            if (!wornItem.isEmpty() && wornItem.getItem() instanceof ItemMekaSuitArmor) {
-                wornParts.add(slotType);
-                for (Map.Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
-                    if (moduleHelper.isEnabled(wornItem, entry.getKey())) {
-                        ModuleModelSpec spec = entry.getValue();
-                        modules.put(spec, spec.isActive(player));
-                    }
-                }
-            }
+            IModuleHelper.INSTANCE.getModuleContainer(player, slotType)
+                  .filter(container -> container.isInstance(ItemMekaSuitArmor.class))
+                  .ifPresent(container -> {
+                      wornParts.add(slotType);
+                      moduleModelSpec.row(slotType).forEach((type, spec) -> {
+                          if (container.hasEnabled(type)) {
+                              modules.put(spec, spec.isActive(player));
+                          }
+                      });
+                  });
         }
         return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts,
               MekanismUtils.getItemInHand(player, HumanoidArm.LEFT).getItem() instanceof ItemMekaTool,

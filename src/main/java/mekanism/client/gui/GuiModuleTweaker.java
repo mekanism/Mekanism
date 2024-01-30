@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.ObjIntConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -41,7 +41,7 @@ import org.lwjgl.glfw.GLFW;
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     private final ArmorPreview armorPreview = new ArmorPreview();
-    private final ObjIntConsumer<ModuleConfigItem<?>> saveCallback;
+    private final Consumer<ModuleConfigItem<?>> saveCallback;
 
     private GuiModuleScrollList scrollList;
     private GuiModuleScreen moduleScreen;
@@ -51,12 +51,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     public GuiModuleTweaker(ModuleTweakerContainer container, Inventory inv, Component title) {
         super(container, inv, title);
-        saveCallback = (configItem, dataIndex) -> {
+        saveCallback = configItem -> {
             if (moduleScreen != null) {
                 IModule<?> module = moduleScreen.getCurrentModule();
                 if (module != null && selected != -1) {//Shouldn't be null but validate just in case
                     int slotIndex = menu.slots.get(selected).getSlotIndex();
-                    PacketUtils.sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), dataIndex, configItem.getData()));
+                    PacketUtils.sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), configItem));
                 }
             }
         };

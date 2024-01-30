@@ -2,6 +2,7 @@ package mekanism.api.gear;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.IHasTextComponent;
@@ -42,6 +43,27 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean isEnabled();
 
     /**
+     * Checks if this module is equivalent to another one.
+     *
+     * @param other Module to compare to
+     *
+     * @return {@code true} If this module can be considered equivalent and compatible with the other module.
+     *
+     * @since 10.5.0
+     */
+    boolean isCompatible(IModule<?> other);
+
+    /**
+     * {@return the config item with the given name}
+     *
+     * @param name Config to look up.
+     *
+     * @since 10.5.0
+     */
+    @Nullable
+    IModuleConfigItem<?> getConfigItem(String name);
+
+    /**
      * Gets if this module type ({@link #getData()}) can currently handle mode changes and if this module is configured to handle mode changes in the Module Tweaker.
      *
      * @return {@code true} if this module can handle mode changes.
@@ -56,6 +78,15 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @since 10.3.2
      */
     boolean handlesRadialModeChange();
+
+    /**
+     * Gets if this module type ({@link #getData()}) can currently handle mode changes, either via radial means or other.
+     *
+     * @return {@code true} if this module can handle mode changes.
+     *
+     * @since 10.5.0
+     */
+    boolean handlesAnyModeChange();
 
     /**
      * Gets if this module type ({@link #getData()}) has any data that should be added to the HUD and if this module is configured to render to the HUD in the Module

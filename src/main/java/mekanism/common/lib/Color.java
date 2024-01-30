@@ -124,6 +124,16 @@ public class Color {
         return rgbad(r * scale, g * scale, b * scale, a);
     }
 
+    public Color toTint() {
+        //Calculate actual tint from alpha in the same way we do in the shader. Ideally we would expose this somehow for resource packs
+        // like is done for the shader but oh well
+        double aDif = 1.0 - a;
+        return rgbd(r * a + aDif,
+              g * a + aDif,
+              b * a + aDif
+        );
+    }
+
     public static Color blend(Color src, Color dest) {
         return src.blendOnto(dest);
     }

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
@@ -19,7 +18,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -114,12 +112,11 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-        if (player.getCooldowns().isOnCooldown(helmet.getItem())) {
-            return false;
-        }
-        IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(helmet, MekanismModules.VISION_ENHANCEMENT_UNIT);
-        return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
+        return IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
+              .filter(container -> !container.isContainerOnCooldown(player))
+              .map(container -> container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT))
+              .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement))
+              .isPresent();
     }
 
     public static boolean isFlamethrowerOn(Player player) {
@@ -307,29 +304,29 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
-            IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
-            //Double-check the module is present before doing any calculations. This should always be true here, but better safe than sorry
-            if (module != null) {
-                //This near plane is the same as spectators have set for lava and powdered snow
-                event.setNearPlaneDistance(-8.0F);
-                if (event.getFarPlaneDistance() < 20) {
-                    float scalar;
-                    if (event.getType() == FogType.LAVA) {
-                        //Special handling for lava which is usually either at 1 or 3
-                        scalar = 24 * event.getFarPlaneDistance();
-                    } else {
-                        //Shortly before 27 this ends up being 192, but we want to get it beforehand, so we just allow numbers below 20
-                        scalar = 5 + 2.5F * (float) Math.pow(Math.E, 0.16F * event.getFarPlaneDistance());
-                    }
-                    //192 is roughly equivalent to what spectators have lava, powdered snow, and a couple other bounds for fog are,
-                    // so we want to make sure we don't go above that
-                    event.setFarPlaneDistance(Math.min(192, scalar));
-                }
-                //Scale the distance based on the number of installed modules
-                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
-                //Cancel the event to ensure our changes are applied
-                event.setCanceled(true);
-            }
+            IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
+                  .map(container -> container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT))
+                  .ifPresent(module -> {
+                      //This near plane is the same as spectators have set for lava and powdered snow
+                      event.setNearPlaneDistance(-8.0F);
+                      if (event.getFarPlaneDistance() < 20) {
+                          float scalar;
+                          if (event.getType() == FogType.LAVA) {
+                              //Special handling for lava which is usually either at 1 or 3
+                              scalar = 24 * event.getFarPlaneDistance();
+                          } else {
+                              //Shortly before 27 this ends up being 192, but we want to get it beforehand, so we just allow numbers below 20
+                              scalar = 5 + 2.5F * (float) Math.pow(Math.E, 0.16F * event.getFarPlaneDistance());
+                          }
+                          //192 is roughly equivalent to what spectators have lava, powdered snow, and a couple other bounds for fog are,
+                          // so we want to make sure we don't go above that
+                          event.setFarPlaneDistance(Math.min(192, scalar));
+                      }
+                      //Scale the distance based on the number of installed modules
+                      event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
+                      //Cancel the event to ensure our changes are applied
+                      event.setCanceled(true);
+                  });
         }
     }
 

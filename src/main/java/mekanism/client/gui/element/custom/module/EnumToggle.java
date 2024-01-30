@@ -22,8 +22,8 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     private final int optionDistance;
     boolean dragging = false;
 
-    EnumToggle(GuiModuleScreen parent, ModuleConfigItem<TYPE> data, int xPos, int yPos, int dataIndex) {
-        super(parent, xPos, yPos, dataIndex);
+    EnumToggle(GuiModuleScreen parent, ModuleConfigItem<TYPE> data, int xPos, int yPos) {
+        super(parent, xPos, yPos);
         this.data = data;
         BAR_LENGTH = this.parent.getScreenWidth() - 24;
         this.optionDistance = (BAR_LENGTH / (getData().getEnums().size() - 1));

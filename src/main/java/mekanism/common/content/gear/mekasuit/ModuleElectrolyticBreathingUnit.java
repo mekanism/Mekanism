@@ -96,7 +96,9 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
      */
     private boolean checkChestPlate(ItemStack chestPlate) {
         if (chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
-            return IModuleHelper.INSTANCE.load(chestPlate, MekanismModules.JETPACK_UNIT) != null;
+            return IModuleHelper.INSTANCE.getModuleContainer(chestPlate)
+                  .map(container -> container.get(MekanismModules.JETPACK_UNIT))
+                  .isPresent();
         }
         return true;
     }

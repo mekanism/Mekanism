@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
  * are needed either open an issue or create a PR implementing support for them.
  */
 @NothingNullByDefault
-public interface ModuleConfigData<TYPE> {
+public sealed interface ModuleConfigData<TYPE> permits ModuleBooleanData, ModuleEnumData, ModuleIntegerData {
 
     /**
      * Gets the value of this {@link ModuleConfigData}.
@@ -41,4 +41,18 @@ public interface ModuleConfigData<TYPE> {
      * @param tag  Data to store the value in.
      */
     void write(String name, CompoundTag tag);
+
+    /**
+     * Checks if this config data is equivalent to another one.
+     *
+     * @param other Config data to compare to
+     *
+     * @return {@code true} If this config data can be considered equivalent and compatible with the other config data.
+     *
+     * @implNote Only checks set values and not other potential things like valid values. For those please use {@link Object#equals(Object)}
+     * @since 10.5.0
+     */
+    default boolean isCompatible(ModuleConfigData<?> other) {
+        return equals(other);
+    }
 }

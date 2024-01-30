@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
@@ -148,13 +147,11 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -558,15 +555,11 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
             if (index == 1) {
-                IModule<ModuleColorModulationUnit> colorModulation = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
-                if (colorModulation != null) {
-                    Color color = colorModulation.getCustomInstance().getColor();
-                    //Calculate actual tint from alpha in the same way we do in the shader. Ideally we would expose this somehow for resource packs
-                    // like is done for the shader but oh well
-                    color = Color.rgbd(color.ad() * color.rd() + (1.0 - color.ad()), color.ad() * color.gd() + (1.0 - color.ad()),
-                          color.ad() * color.bd() + (1.0 - color.ad()));
-                    return color.argb();
-                }
+                return IModuleHelper.INSTANCE.getModuleContainer(stack)
+                      .map(container -> container.get(MekanismModules.COLOR_MODULATION_UNIT))
+                      .map(colorModulation -> colorModulation.getCustomInstance().getColor())
+                      .map(color -> color.toTint().argb())
+                      .orElse(-1);
             }
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);

@@ -10,8 +10,6 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.gear.config.ModuleIntegerData;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
@@ -26,28 +24,29 @@ public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadCo
 
     public static final ResourceLocation ID = Mekanism.rl("update_module");
 
-    public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, int dataIndex, ModuleConfigData<?> configData) {
+    public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, ModuleConfigItem<?> configItem) {
+        ModuleConfigData<?> configData = configItem.getData();
         if (configData instanceof ModuleEnumData<?> enumData) {
-            return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.ENUM, enumData.get().ordinal());
+            return new PacketUpdateModuleSettings(slotId, moduleType, configItem.getName(), ModuleDataType.ENUM, enumData.get().ordinal());
         }
         for (ModuleDataType type : ModuleDataType.VALUES) {
             if (type.typeMatches(configData)) {
-                return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, type, configData.get());
+                return new PacketUpdateModuleSettings(slotId, moduleType, configItem.getName(), type, configData.get());
             }
         }
-        throw new IllegalArgumentException("Unknown config data type.");
+        throw new IllegalArgumentException("Unknown config data type for config with name: " + configItem.getName());
     }
 
     private final ModuleData<?> moduleType;
     private final int slotId;
-    private final int dataIndex;
+    private final String data;
     private final ModuleDataType dataType;
     private final Object value;
 
-    private PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, int dataIndex, ModuleDataType dataType, Object value) {
+    private PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, String data, ModuleDataType dataType, Object value) {
         this.slotId = slotId;
         this.moduleType = moduleType;
-        this.dataIndex = dataIndex;
+        this.data = data;
         this.dataType = dataType;
         this.value = value;
     }
@@ -60,14 +59,12 @@ public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadCo
 
     @Override
     public void handle(PlayPayloadContext context) {
-        if (dataIndex >= 0 && value != null) {
+        if (!data.isBlank() && value != null) {
             context.player()
                   .map(player -> player.getInventory().getItem(slotId))
-                  .filter(stack -> !stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem)
-                  .map(stack -> ModuleHelper.get().load(stack, moduleType))
-                  .map(Module::getConfigItems)
-                  .filter(configItems -> dataIndex < configItems.size())
-                  .map(configItems -> configItems.get(dataIndex))
+                  .flatMap(stack -> ModuleHelper.get().getModuleContainer(stack))
+                  .map(container -> container.get(moduleType))
+                  .map(module -> module.getConfigItem(data))
                   .ifPresent(this::setValue);
         }
     }
@@ -87,13 +84,13 @@ public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadCo
         buffer.writeEnum(dataType);
         buffer.writeVarInt(slotId);
         buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
-        buffer.writeVarInt(dataIndex);
+        buffer.writeUtf(data);
         dataType.writer.accept(buffer, value);
     }
 
     public static PacketUpdateModuleSettings decode(FriendlyByteBuf buffer) {
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
-        return new PacketUpdateModuleSettings(buffer.readVarInt(), buffer.readById(MekanismAPI.MODULE_REGISTRY), buffer.readVarInt(), dataType, dataType.reader.apply(buffer));
+        return new PacketUpdateModuleSettings(buffer.readVarInt(), buffer.readById(MekanismAPI.MODULE_REGISTRY), buffer.readUtf(), dataType, dataType.reader.apply(buffer));
     }
 
     private enum ModuleDataType {

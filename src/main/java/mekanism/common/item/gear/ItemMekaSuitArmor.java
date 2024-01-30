@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.Action;
@@ -18,6 +19,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -40,12 +42,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IJetpackItem;
-import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -60,7 +62,6 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -93,7 +94,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents {
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
 
@@ -217,7 +218,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
         //Try to avoid replacing this item if there are any modules currently installed
-        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND);
+        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || hasInstalledModules(stack);
     }
 
     @Override
@@ -245,9 +246,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void onArmorTick(ItemStack stack, Level world, Player player) {
         super.onArmorTick(stack, world, player);
-        for (Module<?> module : getModules(stack)) {
-            module.tick(player);
-        }
+        ModuleHelper.get().getModuleContainer(stack).ifPresent(container -> {
+            for (Module<?> module : container.modules()) {
+                module.tick(player);
+            }
+        });
     }
 
     @Override
@@ -326,32 +329,24 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        for (Module<?> module : getModules(stack)) {
-            if (module.handlesModeChange()) {
-                module.changeMode(player, stack, shift, displayChange);
-                return;
-            }
-        }
-    }
-
-    @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
-        return slotType == getEquipmentSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
+        return slotType == getEquipmentSlot() && getModules(stack).stream().anyMatch(IModule::handlesModeChange);
     }
 
     @Override
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (getType() == ArmorItem.Type.CHESTPLATE && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
-            IModule<ModuleElytraUnit> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
-            if (module != null && module.isEnabled() && module.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
+            Optional<? extends IModuleContainer> moduleContainer = moduleContainer(stack);
+            boolean hasElytra = moduleContainer.map(container -> container.getIfEnabled(MekanismModules.ELYTRA_UNIT))
+                  .filter(module -> module.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get()))
+                  .isPresent();
+            if (hasElytra) {
                 //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
                 // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
-                IModule<ModuleJetpackUnit> jetpack = getModule(stack, MekanismModules.JETPACK_UNIT);
-                return jetpack == null || !jetpack.isEnabled() || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
-                       getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
+                IModule<ModuleJetpackUnit> jetpack = moduleContainer.get().getIfEnabled(MekanismModules.JETPACK_UNIT);
+                return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER || getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
             }
         }
         return false;
@@ -365,8 +360,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             int nextFlightTicks = flightTicks + 1;
             if (nextFlightTicks % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
                 if (nextFlightTicks % SharedConstants.TICKS_PER_SECOND == 0) {
-                    IModule<ModuleElytraUnit> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
-                    if (module != null && module.isEnabled()) {
+                    IModule<ModuleElytraUnit> module = getEnabledModule(stack, MekanismModules.ELYTRA_UNIT);
+                    if (module != null) {
                         module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
                     }
                 }
@@ -389,8 +384,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public JetpackMode getJetpackMode(ItemStack stack) {
-        IModule<ModuleJetpackUnit> module = getModule(stack, MekanismModules.JETPACK_UNIT);
-        if (module != null && module.isEnabled()) {
+        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null) {
             return module.getCustomInstance().getMode();
         }
         return JetpackMode.DISABLED;
@@ -402,13 +397,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
-        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
-        return module == null ? MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get() : module.getCustomInstance().getEnergyCapacity(module);
+        return ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get());
     }
 
     private FloatingLong getChargeRate(ItemStack stack) {
-        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
-        return module == null ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
+        return ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaSuitBaseChargeRate.get());
     }
 
     @NotNull
@@ -477,7 +470,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (energyContainer != null) {
                     FoundArmorDetails details = new FoundArmorDetails(energyContainer, armor);
                     armorDetails.add(details);
-                    for (Module<?> module : details.armor.getModules(stack)) {
+                    for (IModule<?> module : details.armor.getModules(stack)) {
                         if (module.isEnabled()) {
                             ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
                             if (damageAbsorbInfo != null) {

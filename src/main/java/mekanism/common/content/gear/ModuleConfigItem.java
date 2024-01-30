@@ -2,25 +2,25 @@ package mekanism.common.content.gear;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
-    private final Module<?> module;
+    protected final ModuleData<?> moduleType;
     private final String name;
     private final ILangEntry description;
     private final ModuleConfigData<TYPE> data;
 
-    public ModuleConfigItem(Module<?> module, String name, ILangEntry description, ModuleConfigData<TYPE> data) {
-        this.module = module;
+    public ModuleConfigItem(ModuleData<?> moduleType, String name, ILangEntry description, ModuleConfigData<TYPE> data) {
+        this.moduleType = moduleType;
         this.name = name;
         this.description = description;
         this.data = data;
@@ -50,25 +50,17 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         data.set(val);
         // perform any validity checks such as disabling conflicting modules
         checkValidity(val, callback);
-        // finally, save this specific module with the callback (to send a packet)
-        module.save(callback);
+        // finally, run the callback (to send a packet)
+        if (callback != null) {
+            callback.run();
+        }
     }
 
     protected void checkValidity(@NotNull TYPE val, @Nullable Runnable callback) {
     }
 
     public boolean matches(IModuleDataProvider<?> moduleType, String name) {
-        return module.getData() == moduleType.getModuleData() && getName().equals(name);
-    }
-
-    public void read(CompoundTag tag) {
-        if (tag.contains(name)) {
-            data.read(name, tag);
-        }
-    }
-
-    public void write(CompoundTag tag) {
-        data.write(name, tag);
+        return this.moduleType == moduleType.getModuleData() && getName().equals(name);
     }
 
     @NotNull
@@ -81,8 +73,8 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
         private final BooleanSupplier isConfigEnabled;
 
-        public DisableableModuleConfigItem(Module<?> module, String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
-            super(module, name, description, new ModuleBooleanData(def));
+        public DisableableModuleConfigItem(ModuleData<?> moduleType, String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
+            super(moduleType, name, description, new ModuleBooleanData(def));
             this.isConfigEnabled = isConfigEnabled;
         }
 
