@@ -54,7 +54,7 @@ public class SyncableFluidStack implements ISyncableData {
         FluidStack fluid = get();
         if (!fluid.isEmpty()) {
             //Double check it is not empty
-            set(new FluidStack(fluid.getFluid(), amount));
+            set(fluid.copyWithAmount(amount));
         }
     }
 

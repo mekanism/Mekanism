@@ -99,7 +99,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
                 return null;
             }
             return RateLimitFluidHandler.create(stack, MekanismConfig.gear.canteenTransferRate, MekanismConfig.gear.canteenMaxStorage,
-                  BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid());
+                  BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
         }, this);
     }
 

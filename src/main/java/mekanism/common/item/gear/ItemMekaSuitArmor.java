@@ -67,6 +67,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -74,6 +75,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -122,7 +124,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                      fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid(), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
                 laserDissipation = 0.15;
                 laserRefraction = 0.2;
@@ -242,13 +244,15 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void onArmorTick(ItemStack stack, Level world, Player player) {
-        super.onArmorTick(stack, world, player);
-        ModuleHelper.get().getModuleContainer(stack).ifPresent(container -> {
-            for (Module<?> module : container.modules()) {
-                module.tick(player);
-            }
-        });
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if (slotId >= Inventory.INVENTORY_SIZE && slotId < Inventory.INVENTORY_SIZE + 4 && entity instanceof Player player) {
+            ModuleHelper.get().getModuleContainer(stack).ifPresent(container -> {
+                for (Module<?> module : container.modules()) {
+                    module.tick(player);
+                }
+            });
+        }
     }
 
     @Override

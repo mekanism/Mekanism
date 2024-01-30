@@ -355,10 +355,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
         public static final BasicCauldronInteraction EMPTY = new BasicCauldronInteraction() {
             @Nullable
             private BlockState getState(FluidStack current) {
-                Fluid type = current.getFluid();
-                if (type == Fluids.WATER) {
+                if (current.is(Fluids.WATER)) {
                     return Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3);
-                } else if (type == Fluids.LAVA) {
+                } else if (current.is(Fluids.LAVA)) {
                     return Blocks.LAVA_CAULDRON.defaultBlockState();
                 }
                 return null;
@@ -379,7 +378,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
                         player.awardStat(Stats.FILL_CAULDRON);
                         player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
                         level.setBlockAndUpdate(pos, endState);
-                        SoundEvent emptySound = fluidStack.getFluid().getFluidType().getSound(player, level, pos, SoundActions.BUCKET_EMPTY);
+                        SoundEvent emptySound = fluidStack.getFluidType().getSound(player, level, pos, SoundActions.BUCKET_EMPTY);
                         if (emptySound != null) {
                             level.playSound(null, pos, emptySound, SoundSource.BLOCKS, 1.0F, 1.0F);
                         }
@@ -452,7 +451,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
                     player.awardStat(Stats.USE_CAULDRON);
                     player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
                     level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
-                    SoundEvent fillSound = fluidStack.getFluid().getFluidType().getSound(null, level, pos, SoundActions.BUCKET_FILL);
+                    SoundEvent fillSound = fluidStack.getFluidType().getSound(null, level, pos, SoundActions.BUCKET_FILL);
                     if (fillSound != null) {
                         level.playSound(null, pos, fillSound, SoundSource.BLOCKS, 1.0F, 1.0F);
                     }

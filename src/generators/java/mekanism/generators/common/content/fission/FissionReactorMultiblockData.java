@@ -136,7 +136,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         LongSupplier fuelCapacitySupplier = () -> fuelCapacity;
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
-              fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
+              fluid -> fluid.is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);

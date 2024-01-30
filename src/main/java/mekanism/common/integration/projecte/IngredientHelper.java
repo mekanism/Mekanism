@@ -61,7 +61,7 @@ public class IngredientHelper {
     }
 
     public void put(FluidStack stack) {
-        put(NSSFluid.createFluid(stack.getFluid()), stack.getAmount());
+        put(NSSFluid.createFluid(stack), stack.getAmount());
     }
 
     public void put(ItemStack stack) {

@@ -261,7 +261,7 @@ public class MekanismRenderer {
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
-        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getFluidType().getLightLevel(fluid));
+        return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluidType().getLightLevel(fluid));
     }
 
     public static int calculateGlowLight(int combinedLight, int glow) {

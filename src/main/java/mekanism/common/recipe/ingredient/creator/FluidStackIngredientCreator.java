@@ -236,7 +236,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).getFluid().is(getTag());
+            return Objects.requireNonNull(fluidStack).is(getTag());
         }
 
         @Override

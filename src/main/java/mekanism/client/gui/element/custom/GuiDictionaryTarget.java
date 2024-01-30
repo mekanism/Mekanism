@@ -166,7 +166,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                           .mapToObj(fluidHandler::getFluidInTank)
                           .filter(fluidInTank -> !fluidInTank.isEmpty())
-                          .flatMap(fluidInTank -> fluidInTank.getFluid().builtInRegistryHolder().tags())
+                          .flatMap(FluidStack::getTags)
                           .distinct()
                     ));
                 }
@@ -182,7 +182,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 target = null;
             } else {
                 target = fluidStack.copy();
-                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluid().builtInRegistryHolder()));
+                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
             }
         } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
             if (chemicalStack.isEmpty()) {

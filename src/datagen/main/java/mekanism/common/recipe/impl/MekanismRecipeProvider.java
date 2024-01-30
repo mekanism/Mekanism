@@ -80,8 +80,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
     private final Set<String> disabledCompats = new HashSet<>();
 
-    public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, existingFileHelper, lookupProvider);
+    public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper);
 
         //Mod Compat Recipe providers
         checkCompat("ae2", AE2RecipeProvider::new);

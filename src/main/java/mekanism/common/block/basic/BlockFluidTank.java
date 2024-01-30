@@ -37,7 +37,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (tile != null) {
             FluidStack fluid = tile.fluidTank.getFluid();
             if (!fluid.isEmpty()) {
-                ambientLight = Math.max(ambientLight, fluid.getFluid().getFluidType().getLightLevel(fluid));
+                ambientLight = Math.max(ambientLight, fluid.getFluidType().getLightLevel(fluid));
             }
         }
         return ambientLight;

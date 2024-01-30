@@ -118,7 +118,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     private boolean isValidFluid(@NotNull FluidStack stack) {
-        return stack.getFluid().getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), stack);
+        return stack.getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), stack);
     }
 
     @Override
