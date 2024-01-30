@@ -32,7 +32,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            ItemStack container = module.getContainer();
+            ItemStack container = module.getContainerStack();
             GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.HYDROGEN.get());
             double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitJetpackMaxStorage.getAsLong());
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(jetpackMode.get().getHUDIcon(), ratio));

@@ -10,7 +10,9 @@ import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -38,6 +40,29 @@ public interface IModuleContainer extends INBTSerializable<CompoundTag> {
     default Set<ModuleData<?>> moduleTypes() {
         return typedModules().keySet();
     }
+
+    /**
+     * {@return all the enchantments provided by installed modules}
+     */
+    Map<Enchantment, Integer> moduleBasedEnchantments();
+
+    /**
+     * {@return the level provided by modules for the given enchantment, or zero if the enchantment isn't provided by any modules}
+     */
+    default int getModuleEnchantmentLevel(Enchantment enchantment) {
+        return moduleBasedEnchantments().getOrDefault(enchantment, 0);
+    }
+
+    /**
+     * Adds or removes the given enchantment as being provided at the given level by a module on this container.
+     *
+     * @param enchantment Enchantment to set or remove
+     * @param level       Enchantment level. A value of zero will remove the enchantment from this container.
+     *
+     * @apiNote In general this method should <strong>NEVER</strong> be called directly and should be handled by {@link EnchantmentBasedModule}
+     */
+    @Internal
+    void setEnchantmentLevel(Enchantment enchantment, int level);
 
     /**
      * {@return the number of installed module types}

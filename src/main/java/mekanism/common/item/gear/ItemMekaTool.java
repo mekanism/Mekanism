@@ -15,11 +15,12 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -41,11 +42,9 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,7 +65,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
@@ -136,18 +134,21 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        if (stack.isEmpty()) {
-            return 0;
-        }
         //Enchantments in our data
-        ListTag enchantments = ItemDataUtils.getList(stack, NBTConstants.ENCHANTMENTS);
-        return Math.max(MekanismUtils.getEnchantmentLevel(enchantments, enchantment), super.getEnchantmentLevel(stack, enchantment));
+        int moduleLevel = IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.getModuleEnchantmentLevel(enchantment))
+              .orElse(0);
+        return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 
     @Override
     public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.deserializeEnchantments(ItemDataUtils.getList(stack, NBTConstants.ENCHANTMENTS));
-        super.getAllEnchantments(stack).forEach((enchantment, level) -> enchantments.merge(enchantment, level, Math::max));
+        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
+        IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(IModuleContainer::moduleBasedEnchantments)
+              .ifPresent(map -> map.forEach(
+                    (enchantment, level) -> enchantments.merge(enchantment, level, Math::max)
+              ));
         return enchantments;
     }
 

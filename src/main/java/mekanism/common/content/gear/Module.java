@@ -149,7 +149,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Nullable
     @Override
     public IEnergyContainer getEnergyContainer() {
-        return StorageUtils.getEnergyContainer(getContainer(), 0);
+        return StorageUtils.getEnergyContainer(getContainerStack(), 0);
     }
 
     @Override
@@ -281,8 +281,13 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public ItemStack getContainer() {
-        return container.container;
+    public ItemStack getContainerStack() {
+        return getContainer().container;
+    }
+
+    @Override
+    public ModuleContainer getContainer() {
+        return container;
     }
 
     /**

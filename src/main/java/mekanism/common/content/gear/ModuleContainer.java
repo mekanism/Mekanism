@@ -19,12 +19,16 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -41,30 +45,56 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
 
     private final Map<ModuleData<?>, Module<?>> modules;
     private final Map<ModuleData<?>, Module<?>> modulesView;
+    private final Map<Enchantment, Integer> enchantments;
+    private final Map<Enchantment, Integer> enchantmentsView;
 
     final ItemStack container;
 
     private ModuleContainer(ItemStack container) {
-        this(container, new LinkedHashMap<>());
-        //Load legacy data
+        this(container, new LinkedHashMap<>(), new LinkedHashMap<>());
         //TODO - 1.21?: Remove this way of loading legacy data
+        //Load legacy modules
         if (ItemDataUtils.hasData(this.container, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
-            deserializeNBT(ItemDataUtils.getCompound(this.container, NBTConstants.MODULES));
+            CompoundTag legacyModules = ItemDataUtils.getCompound(this.container, NBTConstants.MODULES);
+            CompoundTag extraData = new CompoundTag();
+            if (ItemDataUtils.hasData(this.container, NBTConstants.ENCHANTMENTS, Tag.TAG_LIST)) {
+                //Handle legacy enchantments from enchantment modules
+                ListTag enchantmentTag = ItemDataUtils.getList(this.container, NBTConstants.ENCHANTMENTS);
+                extraData.put(NBTConstants.ENCHANTMENTS, enchantmentTag);
+            }
+            if (!extraData.isEmpty()) {
+                legacyModules = legacyModules.copy();
+                legacyModules.put(NBTConstants.EXTRA_DATA, extraData);
+            }
+            deserializeNBT(legacyModules);
             //Remove the legacy data now that it has been parsed and loaded
             ItemDataUtils.removeData(this.container, NBTConstants.MODULES);
+            ItemDataUtils.removeData(this.container, NBTConstants.ENCHANTMENTS);
         }
     }
 
-    ModuleContainer(ItemStack container, Map<ModuleData<?>, Module<?>> modules) {
+    ModuleContainer(ItemStack container, Map<ModuleData<?>, Module<?>> modules, Map<Enchantment, Integer> enchantments) {
         this.container = container;
         this.modules = modules;
         this.modulesView = Collections.unmodifiableMap(this.modules);
+        this.enchantments =enchantments;
+        this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag modulesTag = new CompoundTag();
         modules.forEach((type, module) -> modulesTag.put(type.getRegistryName().toString(), module.save()));
+        //Add any extra data we may be tracking that isn't specifically modules to module info
+        CompoundTag extraData = new CompoundTag();
+        if (!enchantments.isEmpty()) {
+            ListTag enchantmentNbt = new ListTag();
+            enchantments.forEach((enchantment, level) -> enchantmentNbt.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level)));
+            extraData.put(NBTConstants.ENCHANTMENTS, enchantmentNbt);
+        }
+        if (!extraData.isEmpty()) {
+            modulesTag.put(NBTConstants.EXTRA_DATA, extraData);
+        }
         return modulesTag;
     }
 
@@ -75,12 +105,20 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
             //Try to get the registry name and then look it up in the module registry
             ResourceLocation registryName = ResourceLocation.tryParse(name);
             ModuleData<?> moduleType = registryName == null ? null : MekanismAPI.MODULE_REGISTRY.get(registryName);
+            //Ensure it exists as there won't be a module for the extra tag we shoehorn into the compound
             if (moduleType != null) {
                 Module<?> module = createNewModule(moduleType, modulesTag.getCompound(name));
                 if (module.getInstalledCount() > 0) {
                     //Basic validation check, this should always pass, but just in case
                     this.modules.put(moduleType, module);
                 }
+            }
+        }
+        if (modulesTag.contains(NBTConstants.EXTRA_DATA, Tag.TAG_COMPOUND)) {
+            CompoundTag extraData = modulesTag.getCompound(NBTConstants.EXTRA_DATA);
+            if (extraData.contains(NBTConstants.ENCHANTMENTS, Tag.TAG_LIST)) {
+                ListTag enchantmentNbt = extraData.getList(NBTConstants.ENCHANTMENTS, Tag.TAG_COMPOUND);
+                enchantments.putAll(EnchantmentHelper.deserializeEnchantments(enchantmentNbt));
             }
         }
     }
@@ -99,6 +137,21 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
     @Override
     public Collection<Module<?>> modules() {
         return typedModules().values();
+    }
+
+    @Override
+    public Map<Enchantment, Integer> moduleBasedEnchantments() {
+        return enchantmentsView;
+    }
+
+    @Internal
+    @Override
+    public void setEnchantmentLevel(Enchantment enchantment, int level) {
+        if (level == 0) {
+            enchantments.remove(enchantment);
+        } else {
+            enchantments.put(enchantment, level);
+        }
     }
 
     @Override
@@ -146,7 +199,7 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
 
     public void addModule(IModuleDataProvider<?> typeProvider) {
         boolean hadModule = has(typeProvider);
-        modules.computeIfAbsent(typeProvider.getModuleData(), type -> createNewModule(type, new CompoundTag())).add(hadModule);
+        modules.computeIfAbsent(typeProvider.getModuleData(), type -> createNewModule(type, new CompoundTag())).add(!hadModule);
     }
 
     @Override
@@ -181,7 +234,7 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
     public boolean isCompatible(IModuleContainer other) {
         if (other == this) {
             return true;
-        } else if (getClass() != other.getClass() || installedCount() != other.installedCount()) {
+        } else if (getClass() != other.getClass() || installedCount() != other.installedCount() || enchantments.size() != other.moduleBasedEnchantments().size()) {
             return false;
         }
         for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
@@ -190,6 +243,7 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
                 return false;
             }
         }
+        //Note: We skip checking whether the enchantments match as the values *should* be the same if all the modules and their configs line up
         return true;
     }
 }

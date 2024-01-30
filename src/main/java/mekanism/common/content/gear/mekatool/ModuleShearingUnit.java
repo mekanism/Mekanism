@@ -52,7 +52,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public boolean canPerformAction(IModule<ModuleShearingUnit> module, ToolAction action) {
         if (action == ToolActions.SHEARS_DISARM) {
-            ItemStack container = module.getContainer();
+            ItemStack container = module.getContainerStack();
             if (container.getItem() instanceof ItemMekaTool mekaTool) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
@@ -63,7 +63,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             // as it may not actually require energy
             return true;
         } else if (action == ToolActions.SHEARS_DIG) {
-            ItemStack container = module.getContainer();
+            ItemStack container = module.getContainerStack();
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
             return !(container.getItem() instanceof ItemMekaTool mekaTool) || mekaTool.hasEnergyForDigAction(container);
@@ -78,7 +78,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             FloatingLong cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
             IEnergyContainer energyContainer = module.getEnergyContainer();
             if (cost.isZero() || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(cost) &&
-                                 shearEntity(energyContainer, entity, player, module.getContainer(), entity.level(), entity.blockPosition())) {
+                                 shearEntity(energyContainer, entity, player, module.getContainerStack(), entity.level(), entity.blockPosition())) {
                 return InteractionResult.SUCCESS;
             }
         }
@@ -91,7 +91,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         ServerLevel world = source.level();
         Direction facing = source.state().getValue(DispenserBlock.FACING);
         BlockPos pos = source.pos().relative(facing);
-        if (tryShearBlock(world, pos, facing.getOpposite()) || tryShearLivingEntity(module.getEnergyContainer(), world, pos, module.getContainer())) {
+        if (tryShearBlock(world, pos, facing.getOpposite()) || tryShearLivingEntity(module.getEnergyContainer(), world, pos, module.getContainerStack())) {
             return ModuleDispenseResult.HANDLED;
         }
         return ModuleDispenseResult.FAIL_PREVENT_DROP;

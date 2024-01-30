@@ -16,7 +16,7 @@ final class InvalidModuleContainer extends ModuleContainer {
     static final InvalidModuleContainer INSTANCE = new InvalidModuleContainer();
 
     private InvalidModuleContainer() {
-        super(ItemStack.EMPTY, Map.of());
+        super(ItemStack.EMPTY, Map.of(), Map.of());
     }
 
     @Override

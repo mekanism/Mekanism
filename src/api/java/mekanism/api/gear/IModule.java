@@ -117,8 +117,19 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * Gets the item this module is installed on.
      *
      * @return Container.
+     *
+     * @since 10.5.0
      */
-    ItemStack getContainer();
+    ItemStack getContainerStack();
+
+    /**
+     * Gets the module container this module is installed on.
+     *
+     * @return Container.
+     *
+     * @since 10.5.0
+     */
+    IModuleContainer getContainer();
 
     /**
      * Helper to get the energy container of the item this module is installed on.

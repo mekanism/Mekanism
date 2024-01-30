@@ -92,6 +92,10 @@ public final class NBTConstants {
     public static final String EDIT_MODE = "editMode";
     public static final String EJECT = "eject";
     /**
+     * @since 10.5.0
+     */
+    public static final String EXTRA_DATA = "extraData";
+    /**
      * @since 10.3.6
      */
     public static final String ENABLED = "enabled";
