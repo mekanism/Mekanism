@@ -120,14 +120,14 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         addDefaultContainers(eventBus, item, defaultCreator.andThen(List::of), customValidation, requiredConfigs);
     }
 
-    public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreator, IMekanismConfig... requiredConfigs) {
-        addDefaultContainers(eventBus, item, defaultCreator, null, requiredConfigs);
+    public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
+        addDefaultContainers(eventBus, item, defaultCreators, null, requiredConfigs);
     }
 
-    public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreator,
+    public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators,
           @Nullable Predicate<ItemStack> customValidation, IMekanismConfig... requiredConfigs) {
         //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
-        knownDefaultItemContainers.put(item, defaultCreator);
+        knownDefaultItemContainers.put(item, defaultCreators);
         if (eventBus != null && capability != null) {
             eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, customValidation, requiredConfigs));
         }
@@ -148,11 +148,11 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         addDefaultContainers(event, entityType, defaultCreator.andThen(List::of), customValidation, requiredConfigs);
     }
 
-    public void addDefaultContainers(RegisterCapabilitiesEvent event, Holder<EntityType<?>> holder, Function<Entity, List<CONTAINER>> defaultCreator,
+    public void addDefaultContainers(RegisterCapabilitiesEvent event, Holder<EntityType<?>> holder, Function<Entity, List<CONTAINER>> defaultCreators,
           @Nullable Predicate<Entity> customValidation, IMekanismConfig... requiredConfigs) {
         EntityType<?> entityType = holder.value();
         //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
-        knownDefaultEntityContainers.put(entityType, defaultCreator);
+        knownDefaultEntityContainers.put(entityType, defaultCreators);
         registerEntityCapabilities(event, entityType, customValidation, requiredConfigs);
     }
 

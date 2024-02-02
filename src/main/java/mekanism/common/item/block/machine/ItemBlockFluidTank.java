@@ -12,7 +12,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
@@ -71,7 +70,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentAware, IAttachmentBasedModeItem<Boolean> {
+public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentBasedModeItem<Boolean> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block);

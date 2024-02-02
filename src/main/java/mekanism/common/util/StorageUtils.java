@@ -329,12 +329,9 @@ public class StorageUtils {
     }
 
     public static double getEnergyRatio(ItemStack stack) {
+        //TODO - 1.20.4: Move this to using attachments maybe?
         IEnergyContainer container = getEnergyContainer(stack, 0);
-        double ratio = 0.0D;
-        if (container != null) {
-            ratio = container.getEnergy().divideToLevel(container.getMaxEnergy());
-        }
-        return ratio;
+        return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {

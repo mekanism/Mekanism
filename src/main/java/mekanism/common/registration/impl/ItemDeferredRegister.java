@@ -51,6 +51,10 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
                     if (itemProvider.value().asItem() instanceof IAttachmentAware attachmentAware) {
                         attachmentAware.attachAttachments(bus);
                     }
+                    //Note: This should always be the case but validate it just to make sure
+                    if (itemProvider instanceof ItemRegistryObject<?> registryObject) {
+                        registryObject.attachDefaultContainers();
+                    }
                 }
             }
         });

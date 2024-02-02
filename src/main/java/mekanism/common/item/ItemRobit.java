@@ -137,6 +137,5 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         ItemStackSecurityObject.attachCapsToItem(event, this);
-        //TODO - 1.20.4: Expose an energy cap?
     }
 }

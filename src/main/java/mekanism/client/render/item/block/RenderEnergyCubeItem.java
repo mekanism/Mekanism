@@ -8,8 +8,6 @@ import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
-import mekanism.common.attachments.containers.AttachedEnergyContainers;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
@@ -18,6 +16,7 @@ import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -64,12 +63,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
         }
         ModelData modelData = ModelData.builder().with(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates).build();
         renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
-        double energyPercentage = 0;
-        AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachment(stack);
-        if (attachment != null) {
-            //TODO - 1.20.4: We know there is only a single energy container but we may still want to improve the handling of this
-            energyPercentage = attachment.getEnergy(0).divideToLevel(attachment.getMaxEnergy(0));
-        }
+        double energyPercentage = StorageUtils.getEnergyRatio(stack);
         if (energyPercentage > 0) {
             float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
             float scaledTicks = 4 * ticks;
