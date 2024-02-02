@@ -1,17 +1,14 @@
 package mekanism.common.util;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -37,9 +34,10 @@ import mekanism.api.providers.ISlurryProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.AttachedChemicalTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
-import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
@@ -182,7 +180,7 @@ public class ChemicalUtil {
      * @return filled chemical tank
      */
     public static ItemStack getFullChemicalTank(ChemicalTankTier tier, @NotNull Chemical<?> chemical) {
-        return getFilledVariant(getEmptyChemicalTank(tier), tier.getStorage(), chemical);
+        return getFilledVariant(getEmptyChemicalTank(tier), chemical);
     }
 
     /**
@@ -200,48 +198,46 @@ public class ChemicalUtil {
         }).getItemStack();
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, CachedLongValue capacity, IChemicalProvider<?> provider) {
-        return getFilledVariant(toFill, capacity.getOrDefault(), provider);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IChemicalProvider<?> provider) {
+    public static ItemStack getFilledVariant(ItemStack toFill, IChemicalProvider<?> provider) {
         if (provider instanceof IGasProvider gasProvider) {
-            return getFilledVariant(toFill, ChemicalTankBuilder.GAS, capacity, gasProvider, NBTConstants.GAS_TANKS);
+            return getFilledVariant(toFill, gasProvider, ContainerType.GAS);
         } else if (provider instanceof IInfuseTypeProvider infuseTypeProvider) {
-            return getFilledVariant(toFill, ChemicalTankBuilder.INFUSION, capacity, infuseTypeProvider, NBTConstants.INFUSION_TANKS);
+            return getFilledVariant(toFill, infuseTypeProvider, ContainerType.INFUSION);
         } else if (provider instanceof IPigmentProvider pigmentProvider) {
-            return getFilledVariant(toFill, ChemicalTankBuilder.PIGMENT, capacity, pigmentProvider, NBTConstants.PIGMENT_TANKS);
+            return getFilledVariant(toFill, pigmentProvider, ContainerType.PIGMENT);
         } else if (provider instanceof ISlurryProvider slurryProvider) {
-            return getFilledVariant(toFill, ChemicalTankBuilder.SLURRY, capacity, slurryProvider, NBTConstants.SLURRY_TANKS);
+            return getFilledVariant(toFill, slurryProvider, ContainerType.SLURRY);
         } else {
             throw new IllegalStateException("Unknown Chemical Type: " + provider.getChemical().getClass().getName());
         }
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
-    ItemStack getFilledVariant(ItemStack toFill, ChemicalTankBuilder<CHEMICAL, STACK, TANK> tankBuilder, long capacity, IChemicalProvider<CHEMICAL> provider, String key) {
-        TANK dummyTank = tankBuilder.createDummy(capacity);
-        //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
-        dummyTank.setStack(withAmount(provider, dummyTank.getCapacity()));
-        ItemDataUtils.writeContainers(toFill, key, Collections.singletonList(dummyTank));
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> ItemStack getFilledVariant(
+          ItemStack toFill, IChemicalProvider<CHEMICAL> provider, ContainerType<TANK, ? extends AttachedChemicalTanks<CHEMICAL, STACK, TANK>, ?> containerType) {
+        AttachedChemicalTanks<CHEMICAL, STACK, TANK> attachment = containerType.getAttachment(toFill);
+        if (attachment != null) {
+            for (TANK tank : attachment.getChemicalTanks(null)) {
+                tank.setStack(withAmount(provider, tank.getCapacity()));
+            }
+        }
         //The item is now filled return it for convenience
         return toFill;
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
+        GasStack gasStack = StorageUtils.getStoredGasFromAttachment(stack);
         if (!gasStack.isEmpty()) {
             return gasStack.getChemicalColorRepresentation();
         }
-        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
+        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromAttachment(stack);
         if (!infusionStack.isEmpty()) {
             return infusionStack.getChemicalColorRepresentation();
         }
-        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
+        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromAttachment(stack);
         if (!pigmentStack.isEmpty()) {
             return pigmentStack.getChemicalColorRepresentation();
         }
-        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
+        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromAttachment(stack);
         if (!slurryStack.isEmpty()) {
             return slurryStack.getChemicalColorRepresentation();
         }

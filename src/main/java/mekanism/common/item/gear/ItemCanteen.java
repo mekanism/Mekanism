@@ -4,10 +4,10 @@ import java.util.List;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
+import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
@@ -26,14 +26,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICapabilityAware {
+public class ItemCanteen extends Item implements ICustomCreativeTabContents, IAttachmentAware {
 
     public ItemCanteen(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).setNoRepair());
@@ -61,7 +61,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage, MekanismFluids.NUTRITIONAL_PASTE));
+        tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismFluids.NUTRITIONAL_PASTE));
     }
 
     @NotNull
@@ -93,14 +93,12 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
-                return null;
-            }
-            return RateLimitFluidHandler.create(stack, MekanismConfig.gear.canteenTransferRate, MekanismConfig.gear.canteenMaxStorage,
-                  BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
-        }, this);
+    public void attachAttachments(IEventBus eventBus) {
+        ContainerType.FLUID.addDefaultContainer(eventBus, this, stack -> RateLimitFluidTank.create(
+              MekanismConfig.gear.canteenTransferRate,
+              MekanismConfig.gear.canteenMaxStorage,
+              BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid())
+        ), MekanismConfig.gear);
     }
 
     private FluidStack getFluid(ItemStack stack) {

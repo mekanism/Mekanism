@@ -27,7 +27,7 @@
                 {
                   "op": "replace",
                   "source": "HeatCapacitors",
-                  "target": "mekData.HeatCapacitors"
+                  "target": "neoforge:attachments.mekanism:heat_capacitors"
                 },
                 {
                   "op": "replace",

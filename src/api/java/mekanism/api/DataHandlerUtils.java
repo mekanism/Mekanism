@@ -3,8 +3,6 @@ package mekanism.api;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -68,8 +66,6 @@ public class DataHandlerUtils {
         INBTSerializable<CompoundTag> obj = containers.get(0);
         if (obj instanceof IChemicalTank || obj instanceof IFluidTank) {
             return NBTConstants.TANK;
-        } else if (obj instanceof IHeatCapacitor || obj instanceof IEnergyContainer) {
-            return NBTConstants.CONTAINER;
         } else if (obj instanceof IInventorySlot) {
             return NBTConstants.SLOT;
         }

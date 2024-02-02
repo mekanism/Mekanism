@@ -37,17 +37,17 @@
                 {
                   "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
+                  "target": "neoforge:attachments.mekanism:energy_container"
                 },
                 {
                   "op": "replace",
                   "source": "FluidTanks",
-                  "target": "mekData.FluidTanks"
+                  "target": "neoforge:attachments.mekanism:fluid_tanks"
                 },
                 {
                   "op": "replace",
                   "source": "HeatCapacitors",
-                  "target": "mekData.HeatCapacitors"
+                  "target": "neoforge:attachments.mekanism:heat_capacitors"
                 },
                 {
                   "op": "replace",

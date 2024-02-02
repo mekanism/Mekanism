@@ -47,12 +47,12 @@
                 {
                   "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
+                  "target": "neoforge:attachments.mekanism:energy_container"
                 },
                 {
                   "op": "replace",
                   "source": "GasTanks",
-                  "target": "mekData.GasTanks"
+                  "target": "neoforge:attachments.mekanism:gas_tanks"
                 },
                 {
                   "op": "replace",

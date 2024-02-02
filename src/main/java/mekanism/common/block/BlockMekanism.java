@@ -1,12 +1,10 @@
 package mekanism.common.block;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
@@ -15,6 +13,8 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
+import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -29,6 +29,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -48,8 +49,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -106,23 +105,23 @@ public abstract class BlockMekanism extends Block {
     @NotNull
     @Override
     public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
-        ItemStack itemStack = new ItemStack(this);
+        ItemStack stack = new ItemStack(this);
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
-            return itemStack;
+            return stack;
         }
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
-        Item item = itemStack.getItem();
-        Lazy<CompoundTag> lazyDataMap = Lazy.of(() -> ItemDataUtils.getDataMap(itemStack));
+        Item item = stack.getItem();
+        Lazy<CompoundTag> lazyDataMap = Lazy.of(() -> ItemDataUtils.getDataMap(stack));
         if (tile.getFrequencyComponent().hasCustomFrequencies()) {
             tile.getFrequencyComponent().write(lazyDataMap.get());
         }
         if (tile.hasSecurity()) {
-            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemStack);
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
             if (ownerObject != null) {
                 ownerObject.setOwnerUUID(tile.getOwnerUUID());
-                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemStack);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
                 if (securityObject != null) {
                     securityObject.setSecurityMode(tile.getSecurityMode());
                 }
@@ -144,13 +143,17 @@ public abstract class BlockMekanism extends Block {
         }
         for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (tile.handles(type)) {
-                lazyDataMap.get().put(type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
+                //TODO - 1.20.4: Improve how this copies it??
+                AttachedContainers<?> attachment = type.getContainerType().getAttachmentIfPresent(stack);
+                if (attachment != null) {
+                    attachment.deserializeNBT(DataHandlerUtils.writeContainers(type.getContainers(tile)));
+                }
             }
         }
         if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
-            sustainedInventory.setSustainedInventory(tile.getSustainedInventory(), itemStack);
+            sustainedInventory.setSustainedInventory(tile.getSustainedInventory(), stack);
         }
-        return itemStack;
+        return stack;
     }
 
     @NotNull
@@ -166,28 +169,15 @@ public abstract class BlockMekanism extends Block {
                 if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||
                                                              chemicalTank.getTier() != ChemicalTankTier.CREATIVE)) {
                     for (ItemStack drop : drops) {
-                        ListTag gasTankList = ItemDataUtils.getList(drop, NBTConstants.GAS_TANKS);
-                        if (!gasTankList.isEmpty()) {
-                            int count = DataHandlerUtils.getMaxId(gasTankList, NBTConstants.TANK);
-                            List<IGasTank> tanks = new ArrayList<>(count);
-                            for (int i = 0; i < count; i++) {
-                                tanks.add(ChemicalTankBuilder.GAS.createDummy(Long.MAX_VALUE));
-                            }
-                            DataHandlerUtils.readContainers(tanks, gasTankList);
-                            boolean hasRadioactive = false;
-                            for (IGasTank tank : tanks) {
+                        if (drop.hasData(MekanismAttachmentTypes.GAS_TANKS)) {
+                            AttachedGasTanks attachment = drop.getData(MekanismAttachmentTypes.GAS_TANKS);
+                            for (IGasTank tank : attachment.getChemicalTanks(null)) {
                                 if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
-                                    //If the tank isn't empty and has a radioactive gas in it, clear the tank and mark we need to update the item
-                                    hasRadioactive = true;
+                                    //If the tank isn't empty and has a radioactive gas in it, clear the tank
                                     tank.setEmpty();
+                                    //TODO - 1.20.4: Re-evaluate and test this, I don't know if the items can even have radioactive things stored in them
+                                    // so it may just fail (or it may crash)
                                 }
-                            }
-                            if (hasRadioactive) {
-                                //If the item has any gas tanks stored, check if any have radioactive substances in them
-                                // and if so clear them out
-                                ListTag newGasTankList = DataHandlerUtils.writeContainers(tanks);
-                                //If the list is now empty remove it; otherwise, update the list
-                                ItemDataUtils.setListOrRemove(drop, NBTConstants.GAS_TANKS, newGasTankList);
                             }
                         }
                     }
@@ -319,7 +309,11 @@ public abstract class BlockMekanism extends Block {
         }
         for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (type.canHandle(tile)) {
-                DataHandlerUtils.readContainers(type.getContainers(tile), dataMap.getList(type.getContainerTag(), Tag.TAG_COMPOUND));
+                //TODO - 1.20.4: Improve how this copies it??
+                AttachedContainers<?> attachment = type.getContainerType().getAttachmentIfPresent(stack);
+                if (attachment != null) {
+                    DataHandlerUtils.readContainers(type.getContainers(tile), attachment.serializeNBT());
+                }
             }
         }
         if (tile instanceof ISustainedData sustainedData && stack.hasTag()) {

@@ -76,6 +76,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * How many ticks it takes to run an operation.
      */
     private static final int BASE_TICKS_REQUIRED = 19;
+    public static final int MAX_FLUID = 10_000;
+
     /**
      * This pump's tank
      */
@@ -114,7 +116,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.output(10_000, listener), RelativeSide.TOP);
+        builder.addTank(fluidTank = BasicFluidTank.output(MAX_FLUID, listener), RelativeSide.TOP);
         return builder.build();
     }
 

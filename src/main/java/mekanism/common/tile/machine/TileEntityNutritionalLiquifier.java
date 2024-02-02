@@ -69,7 +69,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int MAX_FLUID = 10_000;
+    public static final int MAX_FLUID = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")

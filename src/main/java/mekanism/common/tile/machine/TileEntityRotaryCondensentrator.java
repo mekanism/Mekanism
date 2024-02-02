@@ -81,7 +81,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
           NOT_ENOUGH_SPACE_FLUID_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int CAPACITY = 10_000;
+    public static final int CAPACITY = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded",
                                                                                         "getGasFilledPercentage"}, docPlaceholder = "gas tank")

@@ -18,8 +18,6 @@ import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
-import mekanism.common.tier.ChemicalTankTier;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -51,10 +49,9 @@ public class MekanismCreativeTabs {
         if (MekanismConfig.general.isLoaded()) {
             //Fluid Tanks
             if (MekanismConfig.general.prefilledFluidTanks.get()) {
-                int capacity = FluidTankTier.CREATIVE.getStorage();
                 for (Fluid fluid : BuiltInRegistries.FLUID) {
                     if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
-                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), capacity, () -> fluid));
+                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), () -> fluid));
                     }
                 }
             }
@@ -70,10 +67,9 @@ public class MekanismCreativeTabs {
 
     private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, Registry<CHEMICAL> registry, CreativeModeTab.Output tabOutput) {
         if (shouldAdd.getAsBoolean()) {
-            long capacity = ChemicalTankTier.CREATIVE.getStorage();
             for (CHEMICAL type : registry) {
                 if (!type.isHidden()) {
-                    tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), capacity, type));
+                    tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), type));
                 }
             }
         }

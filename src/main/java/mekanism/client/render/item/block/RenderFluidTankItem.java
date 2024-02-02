@@ -5,9 +5,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.tier.FluidTankTier;
-import mekanism.common.util.StorageUtils;
+import mekanism.common.attachments.containers.AttachedFluidTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -30,13 +29,15 @@ public class RenderFluidTankItem extends MekanismISTER {
     @Override
     public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight) {
-        FluidTankTier tier = ((ItemBlockFluidTank) stack.getItem()).getTier();
-        FluidStack fluid = StorageUtils.getStoredFluidFromNBT(stack);
-        if (!fluid.isEmpty()) {
-            float fluidScale = (float) fluid.getAmount() / tier.getStorage();
-            if (fluidScale > 0) {
-                MekanismRenderer.renderObject(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                      MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera());
+        AttachedFluidTanks attachment = ContainerType.FLUID.getAttachment(stack);
+        if (attachment != null) {
+            FluidStack fluid = attachment.getFluidInTank(0);
+            if (!fluid.isEmpty()) {
+                float fluidScale = (float) fluid.getAmount() / attachment.getTankCapacity(0);
+                if (fluidScale > 0) {
+                    MekanismRenderer.renderObject(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                          MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera());
+                }
             }
         }
         renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, ModelData.EMPTY);

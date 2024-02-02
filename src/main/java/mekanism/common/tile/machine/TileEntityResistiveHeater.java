@@ -41,6 +41,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
+    public static final double HEAT_CAPACITY = 100;
+    public static final double INVERSE_CONDUCTION_COEFFICIENT = 5;
+    public static final double INVERSE_INSULATION_COEFFICIENT = 10;
+
     private float soundScale = 1;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
@@ -68,7 +72,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 100, ambientTemperature, listener));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
         return builder.build();
     }
 

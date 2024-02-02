@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.energy.item.ItemStackEnergyHandler;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.capabilities.energy.item.EnergyCubeRateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -81,9 +81,9 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
             tabOutput.accept(withEnergyCubeSideConfig(DataType.INPUT));
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(DataType.OUTPUT), tier.getMaxEnergy()));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(DataType.OUTPUT)));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy()));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
         }
     }
 
@@ -105,7 +105,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {
-        return RateLimitEnergyHandler.create(stack, getTier());
+    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
+        return EnergyCubeRateLimitEnergyContainer.create(getTier());
     }
 }

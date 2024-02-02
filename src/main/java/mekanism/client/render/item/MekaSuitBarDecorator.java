@@ -9,7 +9,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler.FluidTankSpec;
+import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.SharedConstants;

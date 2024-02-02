@@ -66,6 +66,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks it takes to run an operation.
      */
     public static final int BASE_TICKS_REQUIRED = SharedConstants.TICKS_PER_SECOND;
+    public static final int MAX_FLUID = 10_000;
+
     private final Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private final Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;
@@ -95,7 +97,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.input(10_000, this::isValidFluid, listener), RelativeSide.TOP);
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, this::isValidFluid, listener), RelativeSide.TOP);
         return builder.build();
     }
 

@@ -9,9 +9,10 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
@@ -24,12 +25,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemGaugeDropper extends Item implements ICapabilityAware {
+public class ItemGaugeDropper extends Item implements IAttachmentAware {
 
     public ItemGaugeDropper(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
@@ -87,7 +88,8 @@ public class ItemGaugeDropper extends Item implements ICapabilityAware {
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        GaugeDropperContentsHandler.attachCapsToItem(event, this);
+    public void attachAttachments(IEventBus eventBus) {
+        ContainerType.addMergedDefaultContainer(eventBus, this, MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER);
+        ContainerType.FLUID.addDefaultContainer(eventBus, this, stack -> stack.getData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER).getFluidTank());
     }
 }

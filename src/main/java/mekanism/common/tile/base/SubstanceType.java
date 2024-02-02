@@ -2,43 +2,49 @@ package mekanism.common.tile.base;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
-import mekanism.api.NBTConstants;
+import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public enum SubstanceType {
-    ENERGY(NBTConstants.ENERGY_CONTAINERS, tile -> tile.getEnergyContainers(null)),
-    FLUID(NBTConstants.FLUID_TANKS, tile -> tile.getFluidTanks(null)),
-    GAS(NBTConstants.GAS_TANKS, tile -> tile.getGasTanks(null)),
-    INFUSION(NBTConstants.INFUSION_TANKS, tile -> tile.getInfusionTanks(null)),
-    PIGMENT(NBTConstants.PIGMENT_TANKS, tile -> tile.getPigmentTanks(null)),
-    SLURRY(NBTConstants.SLURRY_TANKS, tile -> tile.getSlurryTanks(null)),
-    HEAT(NBTConstants.HEAT_CAPACITORS, tile -> tile.getHeatCapacitors(null));
+    ENERGY(() -> ContainerType.ENERGY, tile -> tile.getEnergyContainers(null)),
+    FLUID(() -> ContainerType.FLUID, tile -> tile.getFluidTanks(null)),
+    GAS(() -> ContainerType.GAS, tile -> tile.getGasTanks(null)),
+    INFUSION(() -> ContainerType.INFUSION, tile -> tile.getInfusionTanks(null)),
+    PIGMENT(() -> ContainerType.PIGMENT, tile -> tile.getPigmentTanks(null)),
+    SLURRY(() -> ContainerType.SLURRY, tile -> tile.getSlurryTanks(null)),
+    HEAT(() -> ContainerType.HEAT, tile -> tile.getHeatCapacitors(null));
 
-    private final String containerTag;
-    private final Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundTag>>> containerSupplier;
+    private final Supplier<? extends ContainerType<?, ?, ?>> containerType;
+    private final Function<TileEntityMekanism, ? extends List<? extends INBTSerializable<CompoundTag>>> containerSupplier;
 
-    SubstanceType(String containerTag, Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundTag>>> containerSupplier) {
-        this.containerTag = containerTag;
+    //Note: The container type must be a supplier or datagen freezes early with no output related to why it has halted
+    <TANK extends INBTSerializable<CompoundTag>> SubstanceType(Supplier<ContainerType<TANK, ?, ?>> containerType, Function<TileEntityMekanism, List<TANK>> containerSupplier) {
+        this.containerType = containerType;
         this.containerSupplier = containerSupplier;
     }
 
     public void write(TileEntityMekanism tile, CompoundTag tag) {
-        tag.put(containerTag, DataHandlerUtils.writeContainers(containerSupplier.apply(tile)));
+        tag.put(getContainerTag(), DataHandlerUtils.writeContainers(containerSupplier.apply(tile)));
     }
 
     public void read(TileEntityMekanism tile, CompoundTag tag) {
-        DataHandlerUtils.readContainers(containerSupplier.apply(tile), tag.getList(containerTag, Tag.TAG_COMPOUND));
+        DataHandlerUtils.readContainers(containerSupplier.apply(tile), tag.getList(getContainerTag(), Tag.TAG_COMPOUND));
     }
 
-    public String getContainerTag() {
-        return containerTag;
+    private String getContainerTag() {
+        return getContainerType().getTag();
     }
 
     public List<? extends INBTSerializable<CompoundTag>> getContainers(TileEntityMekanism tile) {
         return containerSupplier.apply(tile);
+    }
+
+    public ContainerType<?, ?, ?> getContainerType() {
+        return containerType.get();
     }
 
     public boolean canHandle(TileEntityMekanism tile) {

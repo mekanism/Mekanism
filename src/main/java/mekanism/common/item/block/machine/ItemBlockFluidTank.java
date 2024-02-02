@@ -12,10 +12,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
+import mekanism.common.capabilities.fluid.item.FluidTankRateLimitFluidTank;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -57,8 +59,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -69,7 +71,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentBasedModeItem<Boolean> {
+public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentAware, IAttachmentBasedModeItem<Boolean> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block);
@@ -89,7 +91,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
     @Override
     protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {
@@ -242,9 +244,8 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
-        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> RateLimitFluidHandler.create(stack, getTier()), this);
+    public void attachAttachments(IEventBus eventBus) {
+        ContainerType.FLUID.addDefaultContainer(eventBus, this, stack -> FluidTankRateLimitFluidTank.create(getTier()));
     }
 
     @Override

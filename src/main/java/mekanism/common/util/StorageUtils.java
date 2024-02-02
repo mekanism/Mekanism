@@ -1,14 +1,12 @@
 package mekanism.common.util;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.Action;
-import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -28,15 +26,18 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.AttachedChemicalTanks;
+import mekanism.common.attachments.containers.AttachedEnergyContainers;
+import mekanism.common.attachments.containers.AttachedFluidTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -124,14 +125,14 @@ public class StorageUtils {
     }
 
     /**
-     * @implNote Assumes there is only one "tank"
+     * @implNote Assumes there is only one "type" per substance type
      */
     public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean isCreative) {
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
-        InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
-        PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
-        SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
+        FluidStack fluidStack = getStoredFluidFromAttachment(stack);
+        GasStack gasStack = getStoredGasFromAttachment(stack);
+        InfusionStack infusionStack = getStoredInfusionFromAttachment(stack);
+        PigmentStack pigmentStack = getStoredPigmentFromAttachment(stack);
+        SlurryStack slurryStack = getStoredSlurryFromAttachment(stack);
         if (fluidStack.isEmpty() && gasStack.isEmpty() && infusionStack.isEmpty() && pigmentStack.isEmpty() && slurryStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
             return;
@@ -203,77 +204,117 @@ public class StorageUtils {
     }
 
     /**
-     * Gets the fluid if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a fluid handler
-     * attached to our item, but it may have stored data in its tank from when it was a block
+     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
-        BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
-        ItemDataUtils.readContainers(stack, NBTConstants.FLUID_TANKS, Collections.singletonList(tank));
-        return tank.getFluid();
+    public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        FluidStack fluid = FluidStack.EMPTY;
+        if (stack.hasData(MekanismAttachmentTypes.FLUID_TANKS)) {
+            AttachedFluidTanks attachment = stack.getData(MekanismAttachmentTypes.FLUID_TANKS);
+            for (IExtendedFluidTank tank : attachment.getFluidTanks(null)) {
+                if (tank.isEmpty()) {
+                    continue;
+                }
+                if (fluid.isEmpty()) {
+                    fluid = tank.getFluid().copy();
+                } else if (tank.isFluidEqual(fluid)) {
+                    if (fluid.getAmount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
+                        fluid.grow(tank.getFluidAmount());
+                    } else {
+                        fluid.setAmount(Integer.MAX_VALUE);
+                    }
+                }
+                //Note: If we have multiple tanks that have different types stored we only return the first type
+            }
+        }
+        return fluid;
+    }
+    /**
+     * Gets the gas stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
+     */
+    @NotNull
+    public static GasStack getStoredGasFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        return getStoredChemicalFromAttachment(stack, GasStack.EMPTY, MekanismAttachmentTypes.GAS_TANKS);
     }
 
     /**
-     * Gets the gas if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a gas handler
-     * attached to our item, but it may have stored data in its tank from when it was a block
+     * Gets the infuse type stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static GasStack getStoredGasFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.GAS.createDummy(Long.MAX_VALUE), NBTConstants.GAS_TANKS);
+    public static InfusionStack getStoredInfusionFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        return getStoredChemicalFromAttachment(stack, InfusionStack.EMPTY, MekanismAttachmentTypes.INFUSION_TANKS);
     }
 
     /**
-     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have an infusion
-     * handler attached to our item, but it may have stored data in its tank from when it was a block
+     * Gets the pigment stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.INFUSION.createDummy(Long.MAX_VALUE), NBTConstants.INFUSION_TANKS);
+    public static PigmentStack getStoredPigmentFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        return getStoredChemicalFromAttachment(stack, PigmentStack.EMPTY, MekanismAttachmentTypes.PIGMENT_TANKS);
     }
 
     /**
-     * Gets the pigment if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a pigment handler
-     * attached to our item, but it may have stored data in its tank from when it was a block
+     * Gets the slurry stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.PIGMENT.createDummy(Long.MAX_VALUE), NBTConstants.PIGMENT_TANKS);
+    public static SlurryStack getStoredSlurryFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        return getStoredChemicalFromAttachment(stack, SlurryStack.EMPTY, MekanismAttachmentTypes.SLURRY_TANKS);
+    }
+
+    @NotNull
+    private static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>, ATTACHMENT extends AttachedChemicalTanks<?, STACK, TANK>>
+    STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack, Supplier<AttachmentType<ATTACHMENT>> attachmentType) {
+        STACK chemicalStack = emptyStack;
+        if (stack.hasData(attachmentType)) {
+            ATTACHMENT attachment = stack.getData(attachmentType);
+            for (TANK tank : attachment.getChemicalTanks(null)) {
+                if (tank.isEmpty()) {
+                    continue;
+                }
+                if (chemicalStack.isEmpty()) {
+                    chemicalStack = ChemicalUtil.copy(tank.getStack());
+                } else if (tank.isTypeEqual(chemicalStack)) {
+                    if (chemicalStack.getAmount() < Long.MAX_VALUE - tank.getStored()) {
+                        chemicalStack.grow(tank.getStored());
+                    } else {
+                        chemicalStack.setAmount(Long.MAX_VALUE);
+                    }
+                }
+                //Note: If we have multiple tanks that have different types stored we only return the first type
+            }
+        }
+        return chemicalStack;
     }
 
     /**
-     * Gets the slurry if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a slurry handler
-     * attached to our item, but it may have stored data in its tank from when it was a block
+     * Gets the energy if one is stored from an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
+     * a capability from our item, but it may have stored data in its container from when it was a block
      */
-    @NotNull
-    public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
-        return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.SLURRY.createDummy(Long.MAX_VALUE), NBTConstants.SLURRY_TANKS);
+    public static FloatingLong getStoredEnergyFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+        FloatingLong energy = FloatingLong.ZERO;
+        if (stack.hasData(MekanismAttachmentTypes.ENERGY_CONTAINERS)) {
+            AttachedEnergyContainers attachment = stack.getData(MekanismAttachmentTypes.ENERGY_CONTAINERS);
+            for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
+                energy = energy.plusEqual(energyContainer.getEnergy());
+            }
+        }
+        return energy;
     }
 
-    @NotNull
-    private static <STACK extends ChemicalStack<?>> STACK getStoredChemicalFromNBT(ItemStack stack, IChemicalTank<?, STACK> tank, String tag) {
-        ItemDataUtils.readContainers(stack, tag, Collections.singletonList(tank));
-        return tank.getStack();
-    }
-
-    /**
-     * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
-     * an energy handler attached to our item, but it may have stored data in its container from when it was a block
-     */
-    public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
-        BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
-        ItemDataUtils.readContainers(stack, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
-        return container.getEnergy();
-    }
-
-    public static ItemStack getFilledEnergyVariant(ItemStack toFill, CachedFloatingLongValue capacity) {
-        return getFilledEnergyVariant(toFill, capacity.getOrDefault());
-    }
-
-    public static ItemStack getFilledEnergyVariant(ItemStack toFill, FloatingLong capacity) {
-        //Manually handle this as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
-        BasicEnergyContainer container = BasicEnergyContainer.create(capacity, null);
-        container.setEnergy(capacity);
-        ItemDataUtils.writeContainers(toFill, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
+    public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
+        //TODO - 1.20.4: Why doesn't this work for what is displayed in JEI, and why does it display for the creative energy cube
+        AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachment(toFill);
+        if (attachment != null) {
+            for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
+                //TODO - 1.20.4: Evaluate these direct set calls, both here and for fluids and chemicals
+                energyContainer.setEnergy(energyContainer.getMaxEnergy());
+            }
+        }
         //The item is now filled return it for convenience
         return toFill;
     }

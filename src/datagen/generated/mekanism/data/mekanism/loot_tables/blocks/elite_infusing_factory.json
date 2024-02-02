@@ -52,12 +52,12 @@
                 {
                   "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
+                  "target": "neoforge:attachments.mekanism:energy_container"
                 },
                 {
                   "op": "replace",
                   "source": "InfusionTanks",
-                  "target": "mekData.InfusionTanks"
+                  "target": "neoforge:attachments.mekanism:infusion_tanks"
                 },
                 {
                   "op": "replace",

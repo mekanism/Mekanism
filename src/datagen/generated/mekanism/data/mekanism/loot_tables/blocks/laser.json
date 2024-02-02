@@ -28,7 +28,7 @@
                 {
                   "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
+                  "target": "neoforge:attachments.mekanism:energy_container"
                 }
               ],
               "source": "block_entity"

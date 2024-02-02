@@ -10,6 +10,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -42,7 +43,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
+public class ItemRobit extends ItemEnergized implements IItemSustainedInventory, ICapabilityAware {
 
     public ItemRobit(Properties properties) {
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
@@ -135,7 +136,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
         ItemStackSecurityObject.attachCapsToItem(event, this);
+        //TODO - 1.20.4: Expose an energy cap?
     }
 }

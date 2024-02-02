@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -26,6 +27,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.functions.ConstantPredicates;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -33,6 +35,18 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class MergedChemicalTank {
+
+    /**
+     * A merged chemical tank of tanks that don't accept anything.
+     *
+     * @since 10.5.0
+     */
+    public static final MergedChemicalTank INVALID = MergedChemicalTank.create(
+          ChemicalTankBuilder.GAS.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.GAS.alwaysFalse, null),
+          ChemicalTankBuilder.INFUSION.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.INFUSION.alwaysFalse, null),
+          ChemicalTankBuilder.PIGMENT.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.PIGMENT.alwaysFalse, null),
+          ChemicalTankBuilder.SLURRY.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.SLURRY.alwaysFalse, null)
+    );
 
     /**
      * Creates a new merged chemical tank out of a variety of chemical tanks.

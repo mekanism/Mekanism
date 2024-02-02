@@ -83,8 +83,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //Note: Security and owner info gets skipped if the stack doesn't expose them
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         addTypeDetails(stack, world, tooltip, flag);
-        //TODO: Make this support "multiple" tanks, and probably expose the tank via capabilities
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }

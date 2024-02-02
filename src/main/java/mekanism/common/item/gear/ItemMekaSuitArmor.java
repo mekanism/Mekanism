@@ -14,7 +14,9 @@ import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
@@ -29,13 +31,15 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
+import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
-import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler;
-import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler.FluidTankSpec;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.capabilities.fluid.item.FluidTankSpec;
+import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
@@ -46,7 +50,6 @@ import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
@@ -85,13 +88,15 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents {
+public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents,
+      IAttachmentAware {
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
 
@@ -240,7 +245,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.mekaSuitBaseEnergyCapacity));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 
     @Override
@@ -256,17 +261,31 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
+    public void attachAttachments(IEventBus eventBus) {
+        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+        // Internal is used by the "null" side, which is what will get used for most items
+        ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
+              () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
+              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get()),
+              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue
+        ), MekanismConfig.gear);
+
+        if (!gasTankSpecs.isEmpty()) {
+            ContainerType.GAS.addDefaultContainers(eventBus, this, stack -> gasTankSpecs.stream()
+                  .<IGasTank>map(spec -> spec.createTank(RateLimitGasTank::create, stack))
+                  .toList(), MekanismConfig.gear);
+        }
+        if (!fluidTankSpecs.isEmpty()) {
+            ContainerType.FLUID.addDefaultContainers(eventBus, this, stack -> fluidTankSpecs.stream()
+                  .<IExtendedFluidTank>map(spec -> spec.createTank(RateLimitFluidTank::create, stack))
+                  .toList(), MekanismConfig.gear);
+        }
+    }
+
+    @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         super.attachCapabilities(event);
-        //Note: The all our providers only expose the capabilities if the required configs for initializing that capability are loaded
-        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {
-                return null;
-            }
-            //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-            // Internal is used by the "null" side, which is what will get used for most items
-            return RateLimitEnergyHandler.create(stack, () -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
-        });
+        //Note: The all our providers only expose the capabilities (both those via attachmenst and those here) if the required configs for initializing that capability are loaded
         event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
@@ -278,13 +297,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             //Note: This doesn't rely on configs, so we can skip the gear loaded check
             return isModuleEnabled(stack, MekanismModules.LASER_DISSIPATION_UNIT) ? LaserDissipationHandler.create(laserDissipation, laserRefraction) : null;
         }, this);
-
-        if (!gasTankSpecs.isEmpty()) {
-            event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankGasHandler.create(stack, gasTankSpecs) : null, this);
-        }
-        if (!fluidTankSpecs.isEmpty()) {
-            event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankFluidHandler.create(stack, fluidTankSpecs) : null, this);
-        }
     }
 
     public List<ChemicalTankSpec<Gas>> getGasTankSpecs() {
@@ -371,14 +383,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void useJetpackFuel(ItemStack stack) {
         useGas(stack, MekanismGases.HYDROGEN.get(), 1);
-    }
-
-    private FloatingLong getMaxEnergy(ItemStack stack) {
-        return ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get());
-    }
-
-    private FloatingLong getChargeRate(ItemStack stack) {
-        return ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaSuitBaseChargeRate.get());
     }
 
     @NotNull

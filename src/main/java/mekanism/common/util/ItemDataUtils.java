@@ -1,23 +1,17 @@
 package mekanism.common.util;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - V11: Rewrite this into a helper object that gets made for a stack so that we can easier make sure it doesn't add any extra data when we don't want it
-// And then for some things we may want when they go back to a full empty state make the NBT go away
-//TODO - 1.20.2: Evaluate if we want to move any data from being stored here into a mekanism data attachment type
-// At the very least potentially for some of the capability related data
+@Deprecated//TODO - 1.20.4: Remove the need for as much of this as possible by rewriting usages of it into attachments
 public final class ItemDataUtils {
 
     private ItemDataUtils() {
@@ -60,7 +54,7 @@ public final class ItemDataUtils {
         }
     }
 
-    public static <T> T getDataValue(ItemStack stack, Function<CompoundTag, T> getter, T fallback) {
+    private static <T> T getDataValue(ItemStack stack, Function<CompoundTag, T> getter, T fallback) {
         CompoundTag dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? fallback : getter.apply(dataMap);
     }
@@ -80,27 +74,12 @@ public final class ItemDataUtils {
         return dataMap != null && dataMap.getBoolean(key);
     }
 
-    public static double getDouble(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        return dataMap == null ? 0 : dataMap.getDouble(key);
-    }
-
     public static String getString(ItemStack stack, String key) {
         return getDataValue(stack, dataMap -> dataMap.getString(key), "");
     }
 
     public static CompoundTag getCompound(ItemStack stack, String key) {
         return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundTag());
-    }
-
-    public static CompoundTag getOrAddCompound(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMap(stack);
-        if (dataMap.contains(key, Tag.TAG_COMPOUND)) {
-            return dataMap.getCompound(key);
-        }
-        CompoundTag compound = new CompoundTag();
-        dataMap.put(key, compound);
-        return compound;
     }
 
     public static void setCompoundIfPresent(ItemStack stack, String key, Consumer<CompoundTag> setter) {
@@ -135,24 +114,16 @@ public final class ItemDataUtils {
         }
     }
 
-    public static void setLong(ItemStack stack, String key, long l) {
-        getDataMap(stack).putLong(key, l);
-    }
-
     public static void setLongOrRemove(ItemStack stack, String key, long l) {
         if (l == 0) {
             removeData(stack, key);
         } else {
-            setLong(stack, key, l);
+            getDataMap(stack).putLong(key, l);
         }
     }
 
     public static void setBoolean(ItemStack stack, String key, boolean b) {
         getDataMap(stack).putBoolean(key, b);
-    }
-
-    public static void setDouble(ItemStack stack, String key, double d) {
-        getDataMap(stack).putDouble(key, d);
     }
 
     public static void setString(ItemStack stack, String key, String s) {
@@ -171,15 +142,11 @@ public final class ItemDataUtils {
         }
     }
 
-    public static void setList(ItemStack stack, String key, ListTag tag) {
-        getDataMap(stack).put(key, tag);
-    }
-
     public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
         if (tag.isEmpty()) {
             removeData(stack, key);
         } else {
-            setList(stack, key, tag);
+            getDataMap(stack).put(key, tag);
         }
     }
 
@@ -192,18 +159,6 @@ public final class ItemDataUtils {
             removeData(stack, key);
         } else {
             getDataMap(stack).putLongArray(key, array);
-        }
-    }
-
-    public static void readContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
-        if (!stack.isEmpty()) {
-            DataHandlerUtils.readContainers(containers, getList(stack, containerKey));
-        }
-    }
-
-    public static void writeContainers(ItemStack stack, String containerKey, List<? extends INBTSerializable<CompoundTag>> containers) {
-        if (!stack.isEmpty()) {
-            setListOrRemove(stack, containerKey, DataHandlerUtils.writeContainers(containers));
         }
     }
 }

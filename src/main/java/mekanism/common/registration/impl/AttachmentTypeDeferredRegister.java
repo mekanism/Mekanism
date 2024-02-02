@@ -2,16 +2,21 @@ package mekanism.common.registration.impl;
 
 import java.util.Objects;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.containers.AttachedContainers;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @NothingNullByDefault
@@ -19,6 +24,15 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
 
     public AttachmentTypeDeferredRegister(String namespace) {
         super(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, namespace);
+    }
+
+    public <CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>>
+    MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name,
+          Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
+        return register(name, () -> AttachmentType.serializable(holder -> typeSupplier.get().getDefault(holder))
+              //TODO - 1.20.4: Can we add some sort of custom comparator?
+              //.comparator(Objects::equals)
+              .build());
     }
 
     public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> registerBoolean(String name, boolean defaultValue) {

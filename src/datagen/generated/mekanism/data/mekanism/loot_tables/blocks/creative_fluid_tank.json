@@ -32,7 +32,7 @@
                 {
                   "op": "replace",
                   "source": "FluidTanks",
-                  "target": "mekData.FluidTanks"
+                  "target": "neoforge:attachments.mekanism:fluid_tanks"
                 },
                 {
                   "op": "replace",

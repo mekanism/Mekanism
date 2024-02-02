@@ -47,22 +47,22 @@
                 {
                   "op": "replace",
                   "source": "GasTanks",
-                  "target": "mekData.GasTanks"
+                  "target": "neoforge:attachments.mekanism:gas_tanks"
                 },
                 {
                   "op": "replace",
                   "source": "InfusionTanks",
-                  "target": "mekData.InfusionTanks"
+                  "target": "neoforge:attachments.mekanism:infusion_tanks"
                 },
                 {
                   "op": "replace",
                   "source": "PigmentTanks",
-                  "target": "mekData.PigmentTanks"
+                  "target": "neoforge:attachments.mekanism:pigment_tanks"
                 },
                 {
                   "op": "replace",
                   "source": "SlurryTanks",
-                  "target": "mekData.SlurryTanks"
+                  "target": "neoforge:attachments.mekanism:slurry_tanks"
                 },
                 {
                   "op": "replace",

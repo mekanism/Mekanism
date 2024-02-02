@@ -80,8 +80,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public ItemStack getCheatItemStack(STACK ingredient) {
-        ItemStack stack = MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
-        return ChemicalUtil.getFilledVariant(stack, ChemicalTankTier.CREATIVE.getStorage(), ingredient.getType());
+        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), ingredient.getType());
     }
 
     @Override

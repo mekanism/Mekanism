@@ -4,12 +4,13 @@ import java.util.List;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.item.ChemicalTankContentsHandler;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.util.ChemicalUtil;
@@ -19,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> implements IItemSustainedInventory {
@@ -65,8 +66,8 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
-        ChemicalTankContentsHandler.attachCapsToItem(event, this);
+    public void attachAttachments(IEventBus eventBus) {
+        super.attachAttachments(eventBus);
+        ContainerType.addMergedDefaultContainer(eventBus, this, MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER);
     }
 }

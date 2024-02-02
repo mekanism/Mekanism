@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -27,6 +29,7 @@ import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -38,6 +41,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,6 +77,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
+        //TODO - 1.20.4: Should this query the attachment or is getting the capability which we add at the same time as attachment support
+        // good enough?
         if (Capabilities.STRICT_ENERGY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.ENERGY)) {
             //If we are for a block that handles energy, or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
@@ -119,9 +125,16 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
-        ListTag containers = ItemDataUtils.getList(stack, key);
-        return containers.isEmpty() ? null : creator.apply(containers);
+    private static <ATTACHMENT extends AttachedContainers<?>, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack,
+          Supplier<AttachmentType<ATTACHMENT>> attachmentType, Function<ATTACHMENT, TYPE> creator) {
+        if (stack.hasData(attachmentType)) {
+            ATTACHMENT attachment = stack.getData(attachmentType);
+            if (!attachment.getContainers().isEmpty()) {
+                return creator.apply(attachment);
+            }
+        }
+        //TODO - 1.20.4: Handle legacy data?
+        return null;
     }
 
     /**
@@ -131,12 +144,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
         Item item = stack.getItem();
         return switch (type) {
-            case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
-            case FLUID -> getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
-            case GAS -> getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
-            case INFUSION -> getContainerUpgradeData(stack, NBTConstants.INFUSION_TANKS, InfusionRecipeData::new);
-            case PIGMENT -> getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
-            case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
+            case ENERGY -> getContainerUpgradeData(stack, MekanismAttachmentTypes.ENERGY_CONTAINERS, EnergyRecipeData::new);
+            case FLUID -> getContainerUpgradeData(stack, MekanismAttachmentTypes.FLUID_TANKS, FluidRecipeData::new);
+            case GAS -> getContainerUpgradeData(stack, MekanismAttachmentTypes.GAS_TANKS, GasRecipeData::new);
+            case INFUSION -> getContainerUpgradeData(stack, MekanismAttachmentTypes.INFUSION_TANKS, InfusionRecipeData::new);
+            case PIGMENT -> getContainerUpgradeData(stack, MekanismAttachmentTypes.PIGMENT_TANKS, PigmentRecipeData::new);
+            case SLURRY -> getContainerUpgradeData(stack, MekanismAttachmentTypes.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM -> {
                 if (item instanceof IItemSustainedInventory sustainedInventory) {
                     ListTag inventory = sustainedInventory.getSustainedInventory(stack);

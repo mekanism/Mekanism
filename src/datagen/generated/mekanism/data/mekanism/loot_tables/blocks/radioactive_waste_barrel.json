@@ -3,22 +3,14 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks"
-                }
-              ],
-              "source": "block_entity"
-            }
-          ],
           "name": "mekanism:radioactive_waste_barrel"
         }
       ],

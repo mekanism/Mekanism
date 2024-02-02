@@ -13,6 +13,9 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.AttachedContainers;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -27,6 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -34,7 +38,9 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -63,6 +69,8 @@ import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -193,12 +201,26 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
+                ItemStack stack = new ItemStack(block);
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
-                    if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
-                        nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
-                        if (type != SubstanceType.ENERGY && type != SubstanceType.HEAT) {
-                            hasContents = true;
+                    ContainerType<?, ?, ?> containerType = type.getContainerType();
+                    AttachedContainers<?> attachment = containerType.getAttachment(stack);
+                    List<? extends INBTSerializable<CompoundTag>> containers = tileEntity.handles(type) ? type.getContainers(tileEntity) : List.of();
+                    List<?> attachmentContainers = attachment == null ? List.of() : attachment.getContainers();
+                    if (containers.size() == attachmentContainers.size()) {
+                        if (!containers.isEmpty()) {
+                            nbtBuilder.copy(containerType.getTag(), AttachmentHolder.ATTACHMENTS_NBT_KEY + "." + containerType.getAttachmentName());
+                            if (type != SubstanceType.ENERGY && type != SubstanceType.HEAT) {
+                                hasContents = true;
+                            }
                         }
+                    } else if (attachmentContainers.isEmpty()) {
+                        Mekanism.logger.warn("Substance type: {}, item missing attachments: {}", type, RegistryUtils.getName(block));
+                    } else if (containers.isEmpty()) {
+                        Mekanism.logger.warn("Substance type: {}, item has attachments but block doesn't have containers: {}", type, RegistryUtils.getName(block));
+                    } else {
+                        Mekanism.logger.warn("Substance type: {}, has {} item attachments and block has {} containers: {}", type, attachmentContainers.size(),
+                              containers.size(), RegistryUtils.getName(block));
                     }
                 }
             }
@@ -214,6 +236,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 else if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
                     if (!(tile instanceof TileEntityMekanism tileMek) || tileMek.persistInventory()) {
+                        //TODO - 1.20.4: IMPLEMENT VIA ATTACHMENTS??
                         nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
                         hasContents = true;
                     }

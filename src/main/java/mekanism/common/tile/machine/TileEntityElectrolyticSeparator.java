@@ -92,7 +92,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * The maximum amount of gas this block can store.
      */
-    private static final long MAX_GAS = 2_400;
+    public static final long MAX_GAS = 2_400;
+    public static final int MAX_FLUID = 24_000;
     private static final BiFunction<FloatingLong, TileEntityElectrolyticSeparator, FloatingLong> BASE_ENERGY_CALCULATOR =
           (base, tile) -> base.multiply(tile.getRecipeEnergyMultiplier());
 
@@ -184,7 +185,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(fluidTank = BasicFluidTank.input(24_000, this::containsRecipe, recipeCacheListener));
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, this::containsRecipe, recipeCacheListener));
         return builder.build();
     }
 
