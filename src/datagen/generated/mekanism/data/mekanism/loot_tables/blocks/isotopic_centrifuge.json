@@ -47,7 +47,7 @@
                 {
                   "op": "replace",
                   "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_container"
+                  "target": "neoforge:attachments.mekanism:energy_containers"
                 },
                 {
                   "op": "replace",

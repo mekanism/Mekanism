@@ -157,7 +157,7 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BUCKET_MODE = ATTACHMENT_TYPES.registerBoolean("bucket_mode", false);
 
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_container", () -> ContainerType.ENERGY);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_containers", () -> ContainerType.ENERGY);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInventorySlots>> INVENTORY_SLOTS = ATTACHMENT_TYPES.registerContainer("inventory_slots", () -> ContainerType.ITEM);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedFluidTanks>> FLUID_TANKS = ATTACHMENT_TYPES.registerContainer("fluid_tanks", () -> ContainerType.FLUID);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedGasTanks>> GAS_TANKS = ATTACHMENT_TYPES.registerContainer("gas_tanks", () -> ContainerType.GAS);
