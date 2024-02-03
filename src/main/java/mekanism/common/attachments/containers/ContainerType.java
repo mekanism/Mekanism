@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,7 +13,6 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryHandler;
@@ -59,13 +57,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final ContainerType<IEnergyContainer, AttachedEnergyContainers, IStrictEnergyHandler> ENERGY =
           new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY) {
               @Override
-              protected void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, @Nullable Predicate<ItemStack> customValidation, IMekanismConfig... requiredConfigs) {
-                  EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(customValidation, requiredConfigs));
+              public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
+                  EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(requiredConfigs));
               }
 
               @Override
-              protected void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<?> entityType, @Nullable Predicate<Entity> customValidation, IMekanismConfig... requiredConfigs) {
-                  EnergyCompatUtils.registerEntityCapabilities(event, entityType, getCapabilityProvider(customValidation, requiredConfigs));
+              protected void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<?> entityType, IMekanismConfig... requiredConfigs) {
+                  EnergyCompatUtils.registerEntityCapabilities(event, entityType, getCapabilityProvider(requiredConfigs));
               }
           };
     //TODO - 1.20.4: Implement these
@@ -112,53 +110,37 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     //TODO - 1.20.4: Rename this method to be more obvious that it also registers the capability
     public void addDefaultContainer(@Nullable IEventBus eventBus, Item item, Function<ItemStack, CONTAINER> defaultCreator, IMekanismConfig... requiredConfigs) {
-        addDefaultContainer(eventBus, item, defaultCreator, null, requiredConfigs);
-    }
-
-    public void addDefaultContainer(@Nullable IEventBus eventBus, Item item, Function<ItemStack, CONTAINER> defaultCreator,
-          @Nullable Predicate<ItemStack> customValidation, IMekanismConfig... requiredConfigs) {
-        addDefaultContainers(eventBus, item, defaultCreator.andThen(List::of), customValidation, requiredConfigs);
+        addDefaultContainers(eventBus, item, defaultCreator.andThen(List::of), requiredConfigs);
     }
 
     public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
-        addDefaultContainers(eventBus, item, defaultCreators, null, requiredConfigs);
-    }
-
-    public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators,
-          @Nullable Predicate<ItemStack> customValidation, IMekanismConfig... requiredConfigs) {
         //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
         knownDefaultItemContainers.put(item, defaultCreators);
         if (eventBus != null && capability != null) {
-            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, customValidation, requiredConfigs));
+            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, requiredConfigs));
         }
     }
 
-    protected void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, @Nullable Predicate<ItemStack> customValidation, IMekanismConfig... requiredConfigs) {
+    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
         if (capability != null) {
-            event.registerItem(capability.item(), getCapabilityProvider(customValidation, requiredConfigs), item);
+            event.registerItem(capability.item(), getCapabilityProvider(requiredConfigs), item);
         }
     }
 
     public void addDefaultContainer(RegisterCapabilitiesEvent event, Holder<EntityType<?>> entityType, Function<Entity, CONTAINER> defaultCreator, IMekanismConfig... requiredConfigs) {
-        addDefaultContainer(event, entityType, defaultCreator, null, requiredConfigs);
+        addDefaultContainers(event, entityType, defaultCreator.andThen(List::of), requiredConfigs);
     }
 
-    public void addDefaultContainer(RegisterCapabilitiesEvent event, Holder<EntityType<?>> entityType, Function<Entity, CONTAINER> defaultCreator,
-          @Nullable Predicate<Entity> customValidation, IMekanismConfig... requiredConfigs) {
-        addDefaultContainers(event, entityType, defaultCreator.andThen(List::of), customValidation, requiredConfigs);
-    }
-
-    public void addDefaultContainers(RegisterCapabilitiesEvent event, Holder<EntityType<?>> holder, Function<Entity, List<CONTAINER>> defaultCreators,
-          @Nullable Predicate<Entity> customValidation, IMekanismConfig... requiredConfigs) {
+    public void addDefaultContainers(RegisterCapabilitiesEvent event, Holder<EntityType<?>> holder, Function<Entity, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
         EntityType<?> entityType = holder.value();
         //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
         knownDefaultEntityContainers.put(entityType, defaultCreators);
-        registerEntityCapabilities(event, entityType, customValidation, requiredConfigs);
+        registerEntityCapabilities(event, entityType, requiredConfigs);
     }
 
-    protected void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<?> entityType, @Nullable Predicate<Entity> customValidation, IMekanismConfig... requiredConfigs) {
+    protected void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<?> entityType, IMekanismConfig... requiredConfigs) {
         if (capability != null) {
-            event.registerEntity(capability.entity(), entityType, getCapabilityProvider(customValidation, requiredConfigs));
+            event.registerEntity(capability.entity(), entityType, getCapabilityProvider(requiredConfigs));
         }
     }
 
@@ -210,8 +192,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return attachmentConstructor.apply(List.of());
     }
 
-    protected <HOLDER extends IAttachmentHolder, CONTEXT, H extends HANDLER> ICapabilityProvider<HOLDER, CONTEXT, H> getCapabilityProvider(
-          @Nullable Predicate<HOLDER> customValidation, IMekanismConfig... requiredConfigs) {
+    protected <HOLDER extends IAttachmentHolder, CONTEXT, H extends HANDLER> ICapabilityProvider<HOLDER, CONTEXT, H> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
         ICapabilityProvider<HOLDER, CONTEXT, ?> provider;
         if (requiredConfigs.length == 0) {
             provider = (stack, context) -> getAttachment(stack);
@@ -226,17 +207,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
                 return getAttachment(stack);
             };
         }
-        if (customValidation != null) {
-            ICapabilityProvider<HOLDER, CONTEXT, ?> wrappedProvider = (stack, context) -> customValidation.test(stack) ? provider.getCapability(stack, context) : null;
-            return (ICapabilityProvider<HOLDER, CONTEXT, H>) wrappedProvider;
-        }
         return (ICapabilityProvider<HOLDER, CONTEXT, H>) provider;
-    }
-
-    public static <TANK extends MergedChemicalTank> void addMergedDefaultContainer(@Nullable IEventBus eventBus, Item item, Supplier<AttachmentType<TANK>> backingAttachment) {
-        ContainerType.GAS.addDefaultContainer(eventBus, item, stack -> stack.getData(backingAttachment).getGasTank());
-        ContainerType.INFUSION.addDefaultContainer(eventBus, item, stack -> stack.getData(backingAttachment).getInfusionTank());
-        ContainerType.PIGMENT.addDefaultContainer(eventBus, item, stack -> stack.getData(backingAttachment).getPigmentTank());
-        ContainerType.SLURRY.addDefaultContainer(eventBus, item, stack -> stack.getData(backingAttachment).getSlurryTank());
     }
 }

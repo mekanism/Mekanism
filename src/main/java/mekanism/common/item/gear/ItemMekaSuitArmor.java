@@ -36,7 +36,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
@@ -262,12 +261,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
         ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
               () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
-              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get()),
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue
+              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
         ), MekanismConfig.gear);
 
         if (!gasTankSpecs.isEmpty()) {

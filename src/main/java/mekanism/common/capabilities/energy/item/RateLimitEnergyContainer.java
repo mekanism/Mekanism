@@ -14,6 +14,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RateLimitEnergyContainer extends VariableCapacityEnergyContainer {
 
+    public static RateLimitEnergyContainer create(FloatingLongSupplier rate, FloatingLongSupplier capacity) {
+        return create(rate, capacity, manualOnly, alwaysTrue);
+    }
+
     public static RateLimitEnergyContainer create(FloatingLongSupplier capacity, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert) {
         return create(() -> capacity.get().multiply(0.005), capacity, canExtract, canInsert);
     }
@@ -37,6 +41,10 @@ public class RateLimitEnergyContainer extends VariableCapacityEnergyContainer {
 
     @Override
     protected FloatingLong getRate(@Nullable AutomationType automationType) {
+        //TODO - 1.20.4: Generify this comment and put somewhere
+        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+        // Internal is used by the "null" side, which is what will get used for most items
+
         //TODO - 1.20.4: Do we want to move this up a package and somehow specify this as a parameter or something so that this container isn't limited to items
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.get();

@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.LongSupplier;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -64,10 +63,10 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        ContainerType.GAS.addDefaultContainer(eventBus, this, stack -> RateLimitGasTank.create(
+        ContainerType.GAS.addDefaultContainer(eventBus, this, stack -> RateLimitGasTank.createInternalStorage(
               getFillRate(),
               getMaxGas(),
-              ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == getGasType().getChemical()
+              gas -> gas == getGasType().getChemical()
         ), MekanismConfig.gear);
     }
 }

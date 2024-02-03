@@ -13,7 +13,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
@@ -90,12 +89,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
         ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
               MekanismConfig.gear.freeRunnerChargeRate,
-              MekanismConfig.gear.freeRunnerMaxEnergy,
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue
+              MekanismConfig.gear.freeRunnerMaxEnergy
         ), MekanismConfig.gear);
     }
 

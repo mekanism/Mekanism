@@ -6,6 +6,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -26,6 +27,10 @@ public class RateLimitGasTank extends RateLimitChemicalTank<Gas, GasStack> imple
           BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert, Predicate<@NotNull Gas> isValid) {
         //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityChemicalTank instead
         return create(() -> 1_024, capacity, canExtract, canInsert, isValid);
+    }
+
+    public static RateLimitGasTank createInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Gas> isValid) {
+        return create(rate, capacity, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, isValid);
     }
 
     public static RateLimitGasTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract,

@@ -9,10 +9,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
@@ -25,12 +22,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemGaugeDropper extends Item implements IAttachmentAware {
+public class ItemGaugeDropper extends Item {
 
     public ItemGaugeDropper(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
@@ -85,11 +81,5 @@ public class ItemGaugeDropper extends Item implements IAttachmentAware {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredSubstance(stack, tooltip, false);
-    }
-
-    @Override
-    public void attachAttachments(IEventBus eventBus) {
-        ContainerType.addMergedDefaultContainer(eventBus, this, MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER);
-        ContainerType.FLUID.addDefaultContainer(eventBus, this, stack -> stack.getData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER).getFluidTank());
     }
 }

@@ -60,23 +60,25 @@ public class GeneratorsBlocks {
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityHeatGenerator, Generator<TileEntityHeatGenerator>>, ItemBlockMachine> HEAT_GENERATOR = BLOCKS.register("heat_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.HEAT_GENERATOR, properties -> properties.mapColor(MapColor.METAL)), ItemBlockMachine::new)
-          .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(MekanismGeneratorsConfig.generators.heatTankCapacity,
-                BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-                fluidStack -> fluidStack.is(FluidTags.LAVA)
-          )).addAttachmentOnlyContainer(ContainerType.HEAT, stack -> BasicHeatCapacitor.createBasicItem(TileEntityHeatGenerator.HEAT_CAPACITY,
-                TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT
-          ));
+          .forItemHolder(holder -> holder
+                .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(MekanismGeneratorsConfig.generators.heatTankCapacity,
+                      BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
+                      fluidStack -> fluidStack.is(FluidTags.LAVA)
+                )).addAttachmentOnlyContainer(ContainerType.HEAT, stack -> BasicHeatCapacitor.createBasicItem(TileEntityHeatGenerator.HEAT_CAPACITY,
+                      TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT
+                ))
+          );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarGenerator, Generator<TileEntitySolarGenerator>>, ItemBlockMachine> SOLAR_GENERATOR = BLOCKS.register("solar_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.SOLAR_GENERATOR, properties -> properties.mapColor(MapColor.COLOR_BLUE)), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityGasGenerator, Generator<TileEntityGasGenerator>>, ItemBlockMachine> GAS_BURNING_GENERATOR = BLOCKS.register("gas_burning_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.GAS_BURNING_GENERATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockMachine::new)
-          .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(MekanismGeneratorsConfig.generators.gbgTankCapacity,
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(MekanismGeneratorsConfig.generators.gbgTankCapacity,
                 ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
                 gas -> gas.has(Fuel.class)
-          ));
+          )));
     public static final BlockRegistryObject<BlockTileModel<TileEntityBioGenerator, Generator<TileEntityBioGenerator>>, ItemBlockMachine> BIO_GENERATOR = BLOCKS.register("bio_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.BIO_GENERATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockMachine::new)
-          .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(MekanismGeneratorsConfig.generators.bioTankCapacity,
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(MekanismGeneratorsConfig.generators.bioTankCapacity,
                 BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
                 fluidStack -> fluidStack.is(GeneratorTags.Fluids.BIOETHANOL)
-          ));
+          )));
     public static final BlockRegistryObject<BlockTileModel<TileEntityAdvancedSolarGenerator, Generator<TileEntityAdvancedSolarGenerator>>, ItemBlockMachine> ADVANCED_SOLAR_GENERATOR = BLOCKS.register("advanced_solar_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.ADVANCED_SOLAR_GENERATOR, properties -> properties.mapColor(MapColor.COLOR_BLUE)), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityWindGenerator, Generator<TileEntityWindGenerator>>, ItemBlockWindGenerator> WIND_GENERATOR = BLOCKS.register("wind_generator", () -> new BlockTileModel<>(GeneratorsBlockTypes.WIND_GENERATOR, properties -> properties.mapColor(MapColor.METAL)), ItemBlockWindGenerator::new);
 

@@ -437,8 +437,11 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
-        return RateLimitEnergyContainer.create(() -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
-              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get()), canExtract, canInsert);
+        return RateLimitEnergyContainer.create(
+              () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
+              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get()),
+              canExtract, canInsert
+        );
     }
 
     @Override

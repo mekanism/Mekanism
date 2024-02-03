@@ -1,21 +1,15 @@
 package mekanism.generators.common.item;
 
 import java.util.List;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
-import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -23,11 +17,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemHohlraum extends Item implements ICustomCreativeTabContents, IAttachmentAware {
+public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
     public ItemHohlraum(Properties properties) {
         super(properties.stacksTo(1));
@@ -71,14 +64,5 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents, IA
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
         tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), GeneratorsGases.FUSION_FUEL));
-    }
-
-    @Override
-    public void attachAttachments(IEventBus eventBus) {
-        ContainerType.GAS.addDefaultContainer(eventBus, this, stack -> RateLimitGasTank.create(
-              MekanismGeneratorsConfig.generators.hohlraumFillRate,
-              MekanismGeneratorsConfig.generators.hohlraumMaxGas,
-              ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas.is(GeneratorTags.Gases.FUSION_FUEL)
-        ), MekanismGeneratorsConfig.generators);
     }
 }

@@ -104,13 +104,10 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
         if (attributeEnergy == null) {
             throw new IllegalStateException("Block " + RegistryUtils.getName(block) + " expected to have energy attribute");
         }
-        FloatingLongSupplier maxEnergy;
+        FloatingLongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-            maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
-        } else {
-            //Otherwise, just return that the max is what the base max is
-            maxEnergy = attributeEnergy::getStorage;
+            maxEnergy = new UpgradeBasedFloatingLongCache(stack, maxEnergy);
         }
         return RateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
     }
@@ -127,8 +124,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
         if (Attribute.has(block, AttributeEnergy.class)) {
             //Only expose the capability if the stack can't stack and the required configs are loaded
             IEventBus energyEventBus = new ItemStack(this).isStackable() ? null : eventBus;
-            //TODO - 1.20.4: I believe we are able to remove the custom validation because of the above check
-            ContainerType.ENERGY.addDefaultContainer(energyEventBus, this, this::getDefaultEnergyContainer, stack -> !stack.isStackable(), MekanismConfig.storage, MekanismConfig.usage);
+            ContainerType.ENERGY.addDefaultContainer(energyEventBus, this, this::getDefaultEnergyContainer, MekanismConfig.storage, MekanismConfig.usage);
         }
     }
 

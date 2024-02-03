@@ -8,10 +8,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
@@ -38,12 +34,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentAware, IAttachmentBasedModeItem<Boolean> {
+public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
         super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
@@ -178,17 +173,6 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
         tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
-    }
-
-    @Override
-    public void attachAttachments(IEventBus eventBus) {
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-        ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
-              MekanismConfig.gear.electricBowChargeRate,
-              MekanismConfig.gear.electricBowMaxEnergy,
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue
-        ), MekanismConfig.gear);
     }
 
     @Override

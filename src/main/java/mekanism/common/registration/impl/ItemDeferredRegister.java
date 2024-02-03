@@ -1,12 +1,11 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -36,28 +36,25 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
     @Override
     public void register(@NotNull IEventBus bus) {
         super.register(bus);
-        bus.addListener(RegisterCapabilitiesEvent.class, event -> {
-            for (Holder<Item> itemProvider : getEntries()) {
-                if (itemProvider.value().asItem() instanceof ICapabilityAware capabilityAware) {
-                    capabilityAware.attachCapabilities(event);
-                }
-            }
-        });
+        bus.addListener(RegisterCapabilitiesEvent.class, event -> forEntries(registryObject -> registryObject.registerCapabilities(event)));
         //Listen at the lowest priority so that it happens after our elements have been registered
         // and then see if any need to apply attachments
         bus.addListener(EventPriority.LOWEST, RegisterEvent.class, event -> {
             if (event.getRegistryKey().equals(Registries.ITEM)) {
-                for (Holder<Item> itemProvider : getEntries()) {
-                    if (itemProvider.value().asItem() instanceof IAttachmentAware attachmentAware) {
-                        attachmentAware.attachAttachments(bus);
-                    }
-                    //Note: This should always be the case but validate it just to make sure
-                    if (itemProvider instanceof ItemRegistryObject<?> registryObject) {
-                        registryObject.attachDefaultContainers();
-                    }
-                }
+                forEntries(registryObject -> registryObject.attachDefaultContainers(bus));
             }
         });
+    }
+
+    private void forEntries(Consumer<ItemRegistryObject<?>> consumer) {
+        for (Holder<Item> entry : getEntries()) {
+            //Note: All entries should be of this type
+            if (entry instanceof ItemRegistryObject<?> registryObject) {
+                consumer.accept(registryObject);
+            } else if (!FMLEnvironment.production) {
+                throw new IllegalStateException("Expected entry to be an ItemRegistryObject");
+            }
+        }
     }
 
     public ItemRegistryObject<Item> register(String name) {

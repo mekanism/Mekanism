@@ -9,7 +9,12 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
@@ -77,10 +82,17 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemConfigurationCard> CONFIGURATION_CARD = ITEMS.registerItem("configuration_card", ItemConfigurationCard::new);
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.registerItem("crafting_formula", ItemCraftingFormula::new);
     public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new);
-    public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new);
+    public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
+          .addMissingMergedAttachments(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER, true);
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
-    public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new);
+    public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new)
+          .addAttachedContainerCapability(ContainerType.FLUID, stack -> RateLimitFluidTank.create(
+                MekanismConfig.gear.canteenTransferRate,
+                MekanismConfig.gear.canteenMaxStorage,
+                BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
+                fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid())
+          ), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new);
     // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
@@ -89,8 +101,17 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemQIODrive> SUPERMASSIVE_QIO_DRIVE = registerQIODrive(QIODriveTier.SUPERMASSIVE);
     // Tools
     public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.registerItem("atomic_disassembler", ItemAtomicDisassembler::new);
-    public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.registerItem("electric_bow", ItemElectricBow::new);
-    public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new);
+    public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.registerItem("electric_bow", ItemElectricBow::new)
+          .addAttachedContainerCapability(ContainerType.ENERGY, stack -> RateLimitEnergyContainer.create(
+                MekanismConfig.gear.electricBowChargeRate,
+                MekanismConfig.gear.electricBowMaxEnergy
+          ), MekanismConfig.gear);
+    public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new)
+          .addAttachedContainerCapability(ContainerType.GAS, stack -> RateLimitGasTank.createInternalStorage(
+                MekanismConfig.gear.flamethrowerFillRate,
+                MekanismConfig.gear.flamethrowerMaxGas,
+                gas -> gas == MekanismGases.HYDROGEN.getChemical()
+          ), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new);
     // Armor
     public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new);
