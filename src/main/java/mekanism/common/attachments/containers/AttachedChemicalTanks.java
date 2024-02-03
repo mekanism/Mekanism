@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers;
 
 import java.util.List;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -29,8 +30,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       extends AttachedContainers<TANK> implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
-    protected AttachedChemicalTanks(List<TANK> tanks) {
-        super(tanks);
+    AttachedChemicalTanks(List<TANK> tanks, @Nullable IContentsListener listener) {
+        super(tanks, listener);
     }
 
     @Override
@@ -38,31 +39,36 @@ public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>,
         return containers;
     }
 
+    @Override
+    protected boolean isContainerCompatible(TANK a, TANK b) {
+        return a.isTypeEqual(b.getType());
+    }
+
     public static class AttachedGasTanks extends AttachedChemicalTanks<Gas, GasStack, IGasTank> implements IMekanismGasHandler {
 
-        public AttachedGasTanks(List<IGasTank> tanks) {
-            super(tanks);
+        AttachedGasTanks(List<IGasTank> tanks, @Nullable IContentsListener listener) {
+            super(tanks, listener);
         }
     }
 
     public static class AttachedInfusionTanks extends AttachedChemicalTanks<InfuseType, InfusionStack, IInfusionTank> implements IMekanismInfusionHandler {
 
-        public AttachedInfusionTanks(List<IInfusionTank> tanks) {
-            super(tanks);
+        AttachedInfusionTanks(List<IInfusionTank> tanks, @Nullable IContentsListener listener) {
+            super(tanks, listener);
         }
     }
 
     public static class AttachedPigmentTanks extends AttachedChemicalTanks<Pigment, PigmentStack, IPigmentTank> implements IMekanismPigmentHandler {
 
-        public AttachedPigmentTanks(List<IPigmentTank> tanks) {
-            super(tanks);
+        AttachedPigmentTanks(List<IPigmentTank> tanks, @Nullable IContentsListener listener) {
+            super(tanks, listener);
         }
     }
 
     public static class AttachedSlurryTanks extends AttachedChemicalTanks<Slurry, SlurryStack, ISlurryTank> implements IMekanismSlurryHandler {
 
-        public AttachedSlurryTanks(List<ISlurryTank> tanks) {
-            super(tanks);
+        AttachedSlurryTanks(List<ISlurryTank> tanks, @Nullable IContentsListener listener) {
+            super(tanks, listener);
         }
     }
 }

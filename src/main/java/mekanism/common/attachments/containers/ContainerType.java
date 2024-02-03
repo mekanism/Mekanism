@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -34,6 +35,7 @@ import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -68,7 +70,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
                   EnergyCompatUtils.registerEntityCapabilities(event, entityType, getCapabilityProvider(requiredConfigs));
               }
           };
-    //TODO - 1.20.4: Implement these
+    //TODO - 1.20.4: Implement item containers using this system?
     public static final ContainerType<IInventorySlot, AttachedInventorySlots, IItemHandler> ITEM = new ContainerType<>(MekanismAttachmentTypes.INVENTORY_SLOTS, NBTConstants.ITEMS, AttachedInventorySlots::new, Capabilities.ITEM);
     public static final ContainerType<IExtendedFluidTank, AttachedFluidTanks, IFluidHandler> FLUID = new ContainerType<>(MekanismAttachmentTypes.FLUID_TANKS, NBTConstants.FLUID_TANKS, AttachedFluidTanks::new, AttachedItemFluidTanks::new, Capabilities.FLUID);
     public static final ContainerType<IGasTank, AttachedGasTanks, IGasHandler> GAS = new ContainerType<>(MekanismAttachmentTypes.GAS_TANKS, NBTConstants.GAS_TANKS, AttachedGasTanks::new, Capabilities.GAS);
@@ -80,7 +82,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     private final Map<Item, Function<ItemStack, List<CONTAINER>>> knownDefaultItemContainers = new Reference2ObjectOpenHashMap<>();
     private final Map<EntityType<?>, Function<Entity, List<CONTAINER>>> knownDefaultEntityContainers = new Reference2ObjectOpenHashMap<>();
-    private final Function<List<CONTAINER>, ATTACHMENT> attachmentConstructor;
+    private final BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor;
     @Nullable
     private final BiFunction<ItemStack, List<CONTAINER>, ATTACHMENT> itemAttachmentConstructor;
     private final Supplier<AttachmentType<ATTACHMENT>> attachment;
@@ -88,12 +90,12 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     private final IMultiTypeCapability<HANDLER, ?> capability;
     private final String containerTag;
 
-    private ContainerType(Supplier<AttachmentType<ATTACHMENT>> attachment, String containerTag, Function<List<CONTAINER>, ATTACHMENT> attachmentConstructor,
+    private ContainerType(Supplier<AttachmentType<ATTACHMENT>> attachment, String containerTag, BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor,
           @Nullable IMultiTypeCapability<HANDLER, ?> capability) {
         this(attachment, containerTag, attachmentConstructor, null, capability);
     }
 
-    private ContainerType(Supplier<AttachmentType<ATTACHMENT>> attachment, String containerTag, Function<List<CONTAINER>, ATTACHMENT> attachmentConstructor,
+    private ContainerType(Supplier<AttachmentType<ATTACHMENT>> attachment, String containerTag, BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor,
           @Nullable BiFunction<ItemStack, List<CONTAINER>, ATTACHMENT> itemAttachmentConstructor, @Nullable IMultiTypeCapability<HANDLER, ?> capability) {
         this.attachment = attachment;
         this.containerTag = containerTag;
@@ -154,9 +156,19 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     }
 
+    public List<CONTAINER> getAttachmentContainersIfPresent(IAttachmentHolder holder) {
+        ATTACHMENT attachment = getAttachmentIfPresent(holder);
+        return attachment == null ? List.of() : attachment.getContainers();
+    }
+
     @Nullable
     public ATTACHMENT getAttachmentIfPresent(IAttachmentHolder holder) {
         if (holder.hasData(attachment)) {
+            return holder.getData(attachment);
+        }
+        if (holder instanceof ItemStack stack && hasLegacyData(stack)) {
+            //If the holder is an item that has legacy data then we want have the attachment get attached which will cause the legacy data to be removed
+            // and converted to the new format
             return holder.getData(attachment);
         }
         return null;
@@ -164,22 +176,37 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     public ATTACHMENT getAttachment(IAttachmentHolder holder) {
-        if (holder.hasData(attachment)) {
-            return holder.getData(attachment);
-        }
-        if (holder instanceof ItemStack stack) {
+        if (holder.hasData(this.attachment)) {
+            return holder.getData(this.attachment);
+        } else if (holder instanceof ItemStack stack) {
             if (knownDefaultItemContainers.containsKey(stack.getItem())) {
                 //TODO - 1.20.4: A way to load legacy data? Potentially when doesn't have attachment but is known default container
-                return stack.getData(attachment);
+                return stack.getData(this.attachment);
             }
         } else if (holder instanceof Entity entity) {
             if (knownDefaultEntityContainers.containsKey(entity.getType())) {
-                //TODO - 1.20.4: A way to load legacy data? Potentially when doesn't have attachment but is known default container
-                return holder.getData(attachment);
+                return holder.getData(this.attachment);
             }
         }
         //TODO - 1.20.4: Support other types of holders?
         return null;
+    }
+
+    @Deprecated//TODO - 1.21?: Remove all usages of this
+    public boolean hasLegacyData(ItemStack stack) {
+        return !stack.isEmpty() && ItemDataUtils.hasData(stack, containerTag, Tag.TAG_LIST);
+    }
+
+    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
+    public ATTACHMENT getDefaultWithLegacy(IAttachmentHolder holder) {
+        ATTACHMENT attachment = getDefault(holder);
+        //If it is an itemstack try to load legacy data
+        if (holder instanceof ItemStack stack && hasLegacyData(stack)) {
+            attachment.deserializeNBT(ItemDataUtils.getList(stack, containerTag));
+            //Remove the legacy data now that it has been parsed and loaded
+            ItemDataUtils.removeData(stack, containerTag);
+        }
+        return attachment;
     }
 
     public ATTACHMENT getDefault(IAttachmentHolder holder) {
@@ -194,11 +221,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         } else if (holder instanceof Entity entity) {
             defaultContainers = knownDefaultEntityContainers.getOrDefault(entity.getType(), s -> List.of()).apply(entity);
         }
-        if (!defaultContainers.isEmpty()) {
-            return attachmentConstructor.apply(defaultContainers);
-        }
-        //TODO - 1.20.4: Return an immutable non serialized version that potentially NO-OPs certain aspects
-        return attachmentConstructor.apply(List.of());
+        //TODO: If we end up supporting other types of attachment holders than stacks and entities we will want to make sure to pass a contents listener to them
+        // we don't need to for items or entities as attachments on them are always saved
+        return attachmentConstructor.apply(defaultContainers, null);
     }
 
     protected <HOLDER extends IAttachmentHolder, CONTEXT, H extends HANDLER> ICapabilityProvider<HOLDER, CONTEXT, H> getCapabilityProvider(IMekanismConfig... requiredConfigs) {

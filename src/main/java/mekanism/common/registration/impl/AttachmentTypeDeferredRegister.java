@@ -29,9 +29,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
     public <CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>>
     MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name,
           Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
-        return register(name, () -> AttachmentType.serializable(holder -> typeSupplier.get().getDefault(holder))
-              //TODO - 1.20.4: Can we add some sort of custom comparator?
-              //.comparator(Objects::equals)
+        return register(name, () -> AttachmentType.serializable(holder -> typeSupplier.get().getDefaultWithLegacy(holder))
+              .comparator(AttachedContainers::isCompatible)
               .build());
     }
 

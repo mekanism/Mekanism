@@ -12,11 +12,7 @@ import mekanism.common.attachments.containers.ContainerType;
 @NothingNullByDefault
 public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack, IPigmentTank> {
 
-    public PigmentRecipeData(AttachedPigmentTanks attachment) {
-        super(attachment);
-    }
-
-    private PigmentRecipeData(List<IPigmentTank> tanks) {
+    public PigmentRecipeData(List<IPigmentTank> tanks) {
         super(tanks);
     }
 

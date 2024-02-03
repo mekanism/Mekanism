@@ -27,7 +27,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.AttachedChemicalTanks;
 import mekanism.common.attachments.containers.AttachedEnergyContainers;
-import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -201,89 +200,84 @@ public class StorageUtils {
     }
 
     /**
-     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
+     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as a capability
+     * from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {
         FluidStack fluid = FluidStack.EMPTY;
-        AttachedFluidTanks attachment = ContainerType.FLUID.getAttachmentIfPresent(stack);
-        if (attachment != null) {
-            for (IExtendedFluidTank tank : attachment.getFluidTanks(null)) {
-                if (tank.isEmpty()) {
-                    continue;
-                }
-                if (fluid.isEmpty()) {
-                    fluid = tank.getFluid().copy();
-                } else if (tank.isFluidEqual(fluid)) {
-                    if (fluid.getAmount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
-                        fluid.grow(tank.getFluidAmount());
-                    } else {
-                        fluid.setAmount(Integer.MAX_VALUE);
-                    }
-                }
-                //Note: If we have multiple tanks that have different types stored we only return the first type
+        for (IExtendedFluidTank tank : ContainerType.FLUID.getAttachmentContainersIfPresent(stack)) {
+            if (tank.isEmpty()) {
+                continue;
             }
+            if (fluid.isEmpty()) {
+                fluid = tank.getFluid().copy();
+            } else if (tank.isFluidEqual(fluid)) {
+                if (fluid.getAmount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
+                    fluid.grow(tank.getFluidAmount());
+                } else {
+                    fluid.setAmount(Integer.MAX_VALUE);
+                }
+            }
+            //Note: If we have multiple tanks that have different types stored we only return the first type
         }
         return fluid;
     }
+
     /**
-     * Gets the gas stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
+     * Gets the gas stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as a capability
+     * from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static GasStack getStoredGasFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static GasStack getStoredGasFromAttachment(ItemStack stack) {
         return getStoredChemicalFromAttachment(stack, GasStack.EMPTY, ContainerType.GAS);
     }
 
     /**
-     * Gets the infuse type stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
+     * Gets the infuse type stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as a
+     * capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static InfusionStack getStoredInfusionFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static InfusionStack getStoredInfusionFromAttachment(ItemStack stack) {
         return getStoredChemicalFromAttachment(stack, InfusionStack.EMPTY, ContainerType.INFUSION);
     }
 
     /**
-     * Gets the pigment stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
+     * Gets the pigment stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as a
+     * capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static PigmentStack getStoredPigmentFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static PigmentStack getStoredPigmentFromAttachment(ItemStack stack) {
         return getStoredChemicalFromAttachment(stack, PigmentStack.EMPTY, ContainerType.PIGMENT);
     }
 
     /**
-     * Gets the slurry stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
-     * a capability from our item, but it may have stored data in its container from when it was a block
+     * Gets the slurry stored in an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as a
+     * capability from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static SlurryStack getStoredSlurryFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static SlurryStack getStoredSlurryFromAttachment(ItemStack stack) {
         return getStoredChemicalFromAttachment(stack, SlurryStack.EMPTY, ContainerType.SLURRY);
     }
 
     @NotNull
-    private static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>, ATTACHMENT extends AttachedChemicalTanks<?, STACK, TANK>>
-    STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack, ContainerType<?, ATTACHMENT, ?> containerType) {
+    private static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack,
+          ContainerType<TANK, ? extends AttachedChemicalTanks<?, STACK, TANK>, ?> containerType) {
         STACK chemicalStack = emptyStack;
-        ATTACHMENT attachment = containerType.getAttachmentIfPresent(stack);
-        if (attachment != null) {
-            for (TANK tank : attachment.getChemicalTanks(null)) {
-                if (tank.isEmpty()) {
-                    continue;
-                }
-                if (chemicalStack.isEmpty()) {
-                    chemicalStack = ChemicalUtil.copy(tank.getStack());
-                } else if (tank.isTypeEqual(chemicalStack)) {
-                    if (chemicalStack.getAmount() < Long.MAX_VALUE - tank.getStored()) {
-                        chemicalStack.grow(tank.getStored());
-                    } else {
-                        chemicalStack.setAmount(Long.MAX_VALUE);
-                    }
-                }
-                //Note: If we have multiple tanks that have different types stored we only return the first type
+        for (TANK tank : containerType.getAttachmentContainersIfPresent(stack)) {
+            if (tank.isEmpty()) {
+                continue;
             }
+            if (chemicalStack.isEmpty()) {
+                chemicalStack = ChemicalUtil.copy(tank.getStack());
+            } else if (tank.isTypeEqual(chemicalStack)) {
+                if (chemicalStack.getAmount() < Long.MAX_VALUE - tank.getStored()) {
+                    chemicalStack.grow(tank.getStored());
+                } else {
+                    chemicalStack.setAmount(Long.MAX_VALUE);
+                }
+            }
+            //Note: If we have multiple tanks that have different types stored we only return the first type
         }
         return chemicalStack;
     }
@@ -292,23 +286,18 @@ public class StorageUtils {
      * Gets the energy if one is stored from an item's container by checking the attachment. This is for cases when we may not actually have an energy handler provided as
      * a capability from our item, but it may have stored data in its container from when it was a block
      */
-    public static FloatingLong getStoredEnergyFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
+    public static FloatingLong getStoredEnergyFromAttachment(ItemStack stack) {
         FloatingLong energy = FloatingLong.ZERO;
-        AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachmentIfPresent(stack);
-        if (attachment != null) {
-            for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
-                energy = energy.plusEqual(energyContainer.getEnergy());
-            }
+        for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
+            energy = energy.plusEqual(energyContainer.getEnergy());
         }
         return energy;
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
-        //TODO - 1.20.4: Why doesn't this work for what is displayed in JEI, and why does it display for the creative energy cube
         AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachment(toFill);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
-                //TODO - 1.20.4: Evaluate these direct set calls, both here and for fluids and chemicals
                 energyContainer.setEnergy(energyContainer.getMaxEnergy());
             }
         }

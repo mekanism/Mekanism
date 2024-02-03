@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers;
 
 import java.util.List;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -12,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class AttachedFluidTanks extends AttachedContainers<IExtendedFluidTank> implements IMekanismFluidHandler {
 
-    public AttachedFluidTanks(List<IExtendedFluidTank> tanks) {
-        super(tanks);
+    AttachedFluidTanks(List<IExtendedFluidTank> tanks, @Nullable IContentsListener listener) {
+        super(tanks, listener);
     }
 
     @Override
@@ -21,12 +22,18 @@ public class AttachedFluidTanks extends AttachedContainers<IExtendedFluidTank> i
         return containers;
     }
 
+    @Override
+    protected boolean isContainerCompatible(IExtendedFluidTank a, IExtendedFluidTank b) {
+        return a.isFluidEqual(b.getFluid());
+    }
+
     public static class AttachedItemFluidTanks extends AttachedFluidTanks implements IFluidHandlerItem {
 
         private final ItemStack stack;
 
-        public AttachedItemFluidTanks(ItemStack stack, List<IExtendedFluidTank> tanks) {
-            super(tanks);
+        AttachedItemFluidTanks(ItemStack stack, List<IExtendedFluidTank> tanks) {
+            //Attachments on ItemStacks auto save, so we don't need to bother taking a listener as a parameter
+            super(tanks, null);
             this.stack = stack;
         }
 

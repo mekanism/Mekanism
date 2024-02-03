@@ -54,7 +54,11 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
 
     private ModuleContainer(ItemStack container) {
         this(container, new LinkedHashMap<>(), new LinkedHashMap<>());
-        //TODO - 1.21?: Remove this way of loading legacy data
+        loadLegacyData();
+    }
+
+    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
+    private void loadLegacyData() {
         //Load legacy modules
         if (ItemDataUtils.hasData(this.container, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
             CompoundTag legacyModules = ItemDataUtils.getCompound(this.container, NBTConstants.MODULES);
@@ -79,7 +83,7 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
         this.container = container;
         this.modules = modules;
         this.modulesView = Collections.unmodifiableMap(this.modules);
-        this.enchantments =enchantments;
+        this.enchantments = enchantments;
         this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
     }
 

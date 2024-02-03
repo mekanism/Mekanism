@@ -12,11 +12,7 @@ import mekanism.common.attachments.containers.ContainerType;
 @NothingNullByDefault
 public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionStack, IInfusionTank> {
 
-    public InfusionRecipeData(AttachedInfusionTanks attachment) {
-        super(attachment);
-    }
-
-    private InfusionRecipeData(List<IInfusionTank> tanks) {
+    public InfusionRecipeData(List<IInfusionTank> tanks) {
         super(tanks);
     }
 

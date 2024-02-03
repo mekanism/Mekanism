@@ -12,11 +12,7 @@ import mekanism.common.attachments.containers.ContainerType;
 @NothingNullByDefault
 public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank> {
 
-    public GasRecipeData(AttachedGasTanks attachment) {
-        super(attachment);
-    }
-
-    private GasRecipeData(List<IGasTank> tanks) {
+    public GasRecipeData(List<IGasTank> tanks) {
         super(tanks);
     }
 

@@ -7,14 +7,19 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class AttachedContainers<CONTAINER extends INBTSerializable<CompoundTag>> implements INBTSerializable<ListTag>, IContentsListener {
 
+    @Nullable
+    private final IContentsListener listener;
     protected final List<CONTAINER> containers;
 
-    protected AttachedContainers(List<CONTAINER> containers) {
-        this.containers = containers;
+    AttachedContainers(List<CONTAINER> containers, @Nullable IContentsListener listener) {
+        //Ensure that the list the attachment receives is immutable. In general, we will already have an immutable type and this will not cause any copying to occur
+        this.containers = List.copyOf(containers);
+        this.listener = listener;
     }
 
     @Override
@@ -29,10 +34,28 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
 
     @Override
     public void onContentsChanged() {
-        //TODO - 1.20.4: Do this based on the holder type? Items and entities always save
+        if (this.listener != null) {
+            this.listener.onContentsChanged();
+        }
     }
 
     public List<CONTAINER> getContainers() {
         return containers;
+    }
+
+    /**
+     * @implNote This only needs a basic check of contents as that is what would happen if the stacks were serialized. Checking the capacity of the containers can be
+     * skipped.
+     */
+    protected abstract boolean isContainerCompatible(CONTAINER a, CONTAINER b);
+
+    public boolean isCompatible(AttachedContainers<CONTAINER> other) {
+        int containerCount = containers.size();
+        if (containerCount == other.containers.size()) {
+            for (int i = 0; i < containerCount; i++) {
+                isContainerCompatible(containers.get(i), other.containers.get(i));
+            }
+        }
+        return false;
     }
 }

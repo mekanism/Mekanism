@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
@@ -16,11 +15,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
 
     private final List<IExtendedFluidTank> fluidTanks;
 
-    FluidRecipeData(AttachedFluidTanks attachment) {
-        this(attachment.getFluidTanks(null));
-    }
-
-    private FluidRecipeData(List<IExtendedFluidTank> fluidTanks) {
+    FluidRecipeData(List<IExtendedFluidTank> fluidTanks) {
         this.fluidTanks = fluidTanks;
     }
 
@@ -39,17 +34,15 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         }
         //TODO: Improve the logic used so that it tries to batch similar types of fluids together first
         // and maybe make it try multiple slot combinations??
-        IMekanismFluidHandler outputHandler = ContainerType.FLUID.getAttachment(stack);
+        AttachedFluidTanks outputHandler = ContainerType.FLUID.getAttachment(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         for (IExtendedFluidTank fluidTank : this.fluidTanks) {
-            if (!fluidTank.isEmpty()) {
-                if (!outputHandler.insertFluid(fluidTank.getFluid(), Action.EXECUTE).isEmpty()) {
-                    //If we have a remainder something failed so bail
-                    return false;
-                }
+            if (!outputHandler.insertFluid(fluidTank.getFluid(), Action.EXECUTE).isEmpty()) {
+                //If we have a remainder something failed so bail
+                return false;
             }
         }
         return true;

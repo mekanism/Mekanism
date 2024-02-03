@@ -117,8 +117,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putDouble(NBTConstants.STORED, getHeat());
+        CompoundTag nbt = IHeatCapacitor.super.serializeNBT();
         nbt.putDouble(NBTConstants.HEAT_CAPACITY, getHeatCapacity());
         return nbt;
     }

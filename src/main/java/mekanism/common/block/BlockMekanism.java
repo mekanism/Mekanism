@@ -13,7 +13,6 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -30,9 +29,8 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tier.ChemicalTankTier;
-import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -162,23 +160,16 @@ public abstract class BlockMekanism extends Block {
     public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootParams.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
         //If radiation is enabled, check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
-        if (IRadiationManager.INSTANCE.isRadiationEnabled() && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
+        // we skip handling creative chemical tanks
+        if (IRadiationManager.INSTANCE.isRadiationEnabled() && !state.is(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getBlock()) && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
             BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
-            if (tile instanceof TileEntityMekanism mekTile) {
-                //Skip tiles that have no tanks and skip chemical creative tanks
-                if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||
-                                                             chemicalTank.getTier() != ChemicalTankTier.CREATIVE)) {
-                    for (ItemStack drop : drops) {
-                        AttachedGasTanks attachment = ContainerType.GAS.getAttachmentIfPresent(drop);
-                        if (attachment != null) {
-                            for (IGasTank tank : attachment.getChemicalTanks(null)) {
-                                if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
-                                    //If the tank isn't empty and has a radioactive gas in it, clear the tank
-                                    tank.setEmpty();
-                                    //TODO - 1.20.4: Re-evaluate and test this, I don't know if the items can even have radioactive things stored in them
-                                    // so it may just fail (or it may crash)
-                                }
-                            }
+            //Skip tiles that have no gas tanks
+            if (tile instanceof TileEntityMekanism mekTile && !mekTile.getGasTanks(null).isEmpty()) {
+                for (ItemStack drop : drops) {
+                    for (IGasTank tank : ContainerType.GAS.getAttachmentContainersIfPresent(drop)) {
+                        if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
+                            //If the tank isn't empty and has a radioactive gas in it, clear the tank
+                            tank.setEmpty();
                         }
                     }
                 }

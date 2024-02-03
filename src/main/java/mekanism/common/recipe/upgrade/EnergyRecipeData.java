@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.attachments.containers.AttachedEnergyContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
@@ -16,11 +15,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
 
     private final List<IEnergyContainer> energyContainers;
 
-    EnergyRecipeData(AttachedEnergyContainers containers) {
-        this(containers.getEnergyContainers(null));
-    }
-
-    private EnergyRecipeData(List<IEnergyContainer> energyContainers) {
+    EnergyRecipeData(List<IEnergyContainer> energyContainers) {
         this.energyContainers = energyContainers;
     }
 
@@ -37,14 +32,14 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         if (energyContainers.isEmpty()) {
             return true;
         }
-        IStrictEnergyHandler outputHandler = ContainerType.ENERGY.getAttachment(stack);
+        AttachedEnergyContainers outputHandler = ContainerType.ENERGY.getAttachment(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         for (IEnergyContainer energyContainer : this.energyContainers) {
             //TODO - 1.20.4: We probably need to do this as manual for the automation type as we don't want to be limited in our transfer rate
-            if (!energyContainer.isEmpty() && !outputHandler.insertEnergy(energyContainer.getEnergy(), Action.EXECUTE).isZero()) {
+            if (!outputHandler.insertEnergy(energyContainer.getEnergy(), Action.EXECUTE).isZero()) {
                 //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
                 break;
             }

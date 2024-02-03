@@ -12,11 +12,7 @@ import mekanism.common.attachments.containers.ContainerType;
 @NothingNullByDefault
 public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, ISlurryTank> {
 
-    public SlurryRecipeData(AttachedSlurryTanks attachment) {
-        super(attachment);
-    }
-
-    private SlurryRecipeData(List<ISlurryTank> tanks) {
+    public SlurryRecipeData(List<ISlurryTank> tanks) {
         super(tanks);
     }
 

@@ -6,7 +6,6 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.attachments.containers.AttachedChemicalTanks;
 import mekanism.common.attachments.containers.ContainerType;
@@ -19,10 +18,6 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
       implements RecipeUpgradeData<ChemicalRecipeData<CHEMICAL, STACK, TANK>> {
 
     protected final List<TANK> tanks;
-
-    protected ChemicalRecipeData(AttachedChemicalTanks<CHEMICAL, STACK, TANK> attachment) {
-        this(attachment.getChemicalTanks(null));
-    }
 
     protected ChemicalRecipeData(List<TANK> tanks) {
         this.tanks = tanks;
@@ -47,17 +42,15 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        IChemicalHandler<CHEMICAL, STACK> outputHandler = getContainerType().getAttachment(stack);
+        AttachedChemicalTanks<CHEMICAL, STACK, TANK> outputHandler = getContainerType().getAttachment(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         for (TANK tank : this.tanks) {
-            if (!tank.isEmpty()) {
-                if (!outputHandler.insertChemical(tank.getStack(), Action.EXECUTE).isEmpty()) {
-                    //If we have a remainder something failed so bail
-                    return false;
-                }
+            if (!outputHandler.insertChemical(tank.getStack(), Action.EXECUTE).isEmpty()) {
+                //If we have a remainder something failed so bail
+                return false;
             }
         }
         return true;
