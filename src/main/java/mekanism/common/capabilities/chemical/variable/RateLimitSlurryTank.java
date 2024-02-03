@@ -11,6 +11,7 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.config.MekanismConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +19,7 @@ public class RateLimitSlurryTank extends RateLimitChemicalTank<Slurry, SlurrySta
 
     public static RateLimitSlurryTank createBasicItem(long capacity, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull Slurry, @NotNull AutomationType> canInsert, Predicate<@NotNull Slurry> isValid) {
-        //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityChemicalTank instead
-        return create(() -> 1_024, () -> capacity, canExtract, canInsert, isValid);
+        return create(MekanismConfig.general.chemicalItemFillRate, () -> capacity, canExtract, canInsert, isValid);
     }
 
     public static RateLimitSlurryTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,

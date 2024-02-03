@@ -41,11 +41,7 @@ public class RateLimitEnergyContainer extends VariableCapacityEnergyContainer {
 
     @Override
     protected FloatingLong getRate(@Nullable AutomationType automationType) {
-        //TODO - 1.20.4: Generify this comment and put somewhere
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-
-        //TODO - 1.20.4: Do we want to move this up a package and somehow specify this as a parameter or something so that this container isn't limited to items
+        //TODO: Do we want to move this up a package and somehow specify this as a parameter or something so that this container isn't limited to items
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.get();
     }

@@ -2,7 +2,6 @@ package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
 import java.util.Objects;
-import java.util.function.LongSupplier;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.Mekanism;
@@ -26,6 +25,7 @@ import mekanism.common.capabilities.chemical.variable.RateLimitSlurryTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.ItemBlockChemicalTank;
@@ -42,7 +42,6 @@ import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.fluids.FluidType;
 
 public class MekanismAttachmentTypes {
 
@@ -84,21 +83,17 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedTank>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
           () -> AttachmentType.builder(holder -> {
               if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.is(MekanismItems.GAUGE_DROPPER)) {
-                  //TODO - 1.20.4: Convert these to config options: Convert this to a long and make it a config option after making fluids be able to handle longs
-                  int CAPACITY = 16 * FluidType.BUCKET_VOLUME;
-                  int TRANSFER_RATE = 256;
-                  LongSupplier rate = () -> TRANSFER_RATE;
-                  LongSupplier capacity = () -> CAPACITY;
                   return MergedTank.create(
-                        RateLimitFluidTank.create(() -> TRANSFER_RATE, () -> CAPACITY, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, null),
-                        RateLimitGasTank.create(rate, capacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                              ChemicalTankBuilder.GAS.alwaysTrue, null, null),
-                        RateLimitInfusionTank.create(rate, capacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
-                              ChemicalTankBuilder.INFUSION.alwaysTrue, null),
-                        RateLimitPigmentTank.create(rate, capacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                              ChemicalTankBuilder.PIGMENT.alwaysTrue, null),
-                        RateLimitSlurryTank.create(rate, capacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
-                              ChemicalTankBuilder.SLURRY.alwaysTrue, null)
+                        RateLimitFluidTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
+                              BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue),
+                        RateLimitGasTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
+                              ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue),
+                        RateLimitInfusionTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
+                              ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrue),
+                        RateLimitPigmentTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
+                              ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue),
+                        RateLimitSlurryTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
+                              ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue)
                   );
               }
               return MergedTank.INVALID;

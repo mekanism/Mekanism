@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.config.MekanismConfig;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,8 +21,7 @@ public class RateLimitFluidTank extends VariableCapacityFluidTank {
 
     public static RateLimitFluidTank createBasicItem(IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> isValid) {
-        //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityFluidTank instead
-        return create(() -> 1_024, capacity, canExtract, canInsert, isValid);
+        return create(MekanismConfig.general.fluidItemFillRate, capacity, canExtract, canInsert, isValid);
     }
 
     public static RateLimitFluidTank create(IntSupplier rate, IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,

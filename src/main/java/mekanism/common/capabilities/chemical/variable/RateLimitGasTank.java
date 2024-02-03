@@ -12,6 +12,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.common.config.MekanismConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +26,7 @@ public class RateLimitGasTank extends RateLimitChemicalTank<Gas, GasStack> imple
 
     public static RateLimitGasTank createBasicItem(LongSupplier capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert, Predicate<@NotNull Gas> isValid) {
-        //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityChemicalTank instead
-        return create(() -> 1_024, capacity, canExtract, canInsert, isValid);
+        return create(MekanismConfig.general.chemicalItemFillRate, capacity, canExtract, canInsert, isValid);
     }
 
     public static RateLimitGasTank createInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<@NotNull Gas> isValid) {

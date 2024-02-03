@@ -11,6 +11,7 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.common.config.MekanismConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +19,7 @@ public class RateLimitInfusionTank extends RateLimitChemicalTank<InfuseType, Inf
 
     public static RateLimitInfusionTank createBasicItem(long capacity, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canInsert, Predicate<@NotNull InfuseType> isValid) {
-        //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityChemicalTank instead
-        return create(() -> 1_024, () -> capacity, canExtract, canInsert, isValid);
+        return create(MekanismConfig.general.chemicalItemFillRate, () -> capacity, canExtract, canInsert, isValid);
     }
 
     public static RateLimitInfusionTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,

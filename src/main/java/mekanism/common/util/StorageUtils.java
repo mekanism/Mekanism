@@ -3,7 +3,6 @@ package mekanism.common.util;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -32,12 +31,10 @@ import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -210,8 +207,8 @@ public class StorageUtils {
     @NotNull
     public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
         FluidStack fluid = FluidStack.EMPTY;
-        if (stack.hasData(MekanismAttachmentTypes.FLUID_TANKS)) {
-            AttachedFluidTanks attachment = stack.getData(MekanismAttachmentTypes.FLUID_TANKS);
+        AttachedFluidTanks attachment = ContainerType.FLUID.getAttachmentIfPresent(stack);
+        if (attachment != null) {
             for (IExtendedFluidTank tank : attachment.getFluidTanks(null)) {
                 if (tank.isEmpty()) {
                     continue;
@@ -236,7 +233,7 @@ public class StorageUtils {
      */
     @NotNull
     public static GasStack getStoredGasFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
-        return getStoredChemicalFromAttachment(stack, GasStack.EMPTY, MekanismAttachmentTypes.GAS_TANKS);
+        return getStoredChemicalFromAttachment(stack, GasStack.EMPTY, ContainerType.GAS);
     }
 
     /**
@@ -245,7 +242,7 @@ public class StorageUtils {
      */
     @NotNull
     public static InfusionStack getStoredInfusionFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
-        return getStoredChemicalFromAttachment(stack, InfusionStack.EMPTY, MekanismAttachmentTypes.INFUSION_TANKS);
+        return getStoredChemicalFromAttachment(stack, InfusionStack.EMPTY, ContainerType.INFUSION);
     }
 
     /**
@@ -254,7 +251,7 @@ public class StorageUtils {
      */
     @NotNull
     public static PigmentStack getStoredPigmentFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
-        return getStoredChemicalFromAttachment(stack, PigmentStack.EMPTY, MekanismAttachmentTypes.PIGMENT_TANKS);
+        return getStoredChemicalFromAttachment(stack, PigmentStack.EMPTY, ContainerType.PIGMENT);
     }
 
     /**
@@ -263,15 +260,15 @@ public class StorageUtils {
      */
     @NotNull
     public static SlurryStack getStoredSlurryFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
-        return getStoredChemicalFromAttachment(stack, SlurryStack.EMPTY, MekanismAttachmentTypes.SLURRY_TANKS);
+        return getStoredChemicalFromAttachment(stack, SlurryStack.EMPTY, ContainerType.SLURRY);
     }
 
     @NotNull
     private static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>, ATTACHMENT extends AttachedChemicalTanks<?, STACK, TANK>>
-    STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack, Supplier<AttachmentType<ATTACHMENT>> attachmentType) {
+    STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack, ContainerType<?, ATTACHMENT, ?> containerType) {
         STACK chemicalStack = emptyStack;
-        if (stack.hasData(attachmentType)) {
-            ATTACHMENT attachment = stack.getData(attachmentType);
+        ATTACHMENT attachment = containerType.getAttachmentIfPresent(stack);
+        if (attachment != null) {
             for (TANK tank : attachment.getChemicalTanks(null)) {
                 if (tank.isEmpty()) {
                     continue;
@@ -297,8 +294,8 @@ public class StorageUtils {
      */
     public static FloatingLong getStoredEnergyFromAttachment(ItemStack stack) {//TODO - 1.20.4: Test this
         FloatingLong energy = FloatingLong.ZERO;
-        if (stack.hasData(MekanismAttachmentTypes.ENERGY_CONTAINERS)) {
-            AttachedEnergyContainers attachment = stack.getData(MekanismAttachmentTypes.ENERGY_CONTAINERS);
+        AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+        if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
                 energy = energy.plusEqual(energyContainer.getEnergy());
             }

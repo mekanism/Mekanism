@@ -1,10 +1,11 @@
 package mekanism.common.config.value;
 
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
-public class CachedIntValue extends CachedValue<Integer> implements IntSupplier {
+public class CachedIntValue extends CachedValue<Integer> implements IntSupplier, LongSupplier {
 
     private boolean resolved;
     private int cachedValue;
@@ -35,6 +36,11 @@ public class CachedIntValue extends CachedValue<Integer> implements IntSupplier 
 
     @Override
     public int getAsInt() {
+        return get();
+    }
+
+    @Override
+    public long getAsLong() {
         return get();
     }
 

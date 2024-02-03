@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class FluidTankSpec extends GenericTankSpec<FluidStack> {
 
-    final IntSupplier rate;
-    final IntSupplier capacity;
+    private final IntSupplier rate;
+    private final IntSupplier capacity;
 
     public FluidTankSpec(IntSupplier rate, IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
           TriPredicate<@NotNull FluidStack, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull FluidStack> isValid,

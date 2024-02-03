@@ -15,6 +15,7 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedContainers;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -29,7 +30,6 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -169,8 +169,8 @@ public abstract class BlockMekanism extends Block {
                 if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||
                                                              chemicalTank.getTier() != ChemicalTankTier.CREATIVE)) {
                     for (ItemStack drop : drops) {
-                        if (drop.hasData(MekanismAttachmentTypes.GAS_TANKS)) {
-                            AttachedGasTanks attachment = drop.getData(MekanismAttachmentTypes.GAS_TANKS);
+                        AttachedGasTanks attachment = ContainerType.GAS.getAttachmentIfPresent(drop);
+                        if (attachment != null) {
                             for (IGasTank tank : attachment.getChemicalTanks(null)) {
                                 if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
                                     //If the tank isn't empty and has a radioactive gas in it, clear the tank

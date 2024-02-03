@@ -11,6 +11,7 @@ import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.common.config.MekanismConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +19,7 @@ public class RateLimitPigmentTank extends RateLimitChemicalTank<Pigment, Pigment
 
     public static RateLimitPigmentTank createBasicItem(long capacity, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull Pigment, @NotNull AutomationType> canInsert, Predicate<@NotNull Pigment> isValid) {
-        //TODO - 1.20.4: Config for transfer rate?? Otherwise use a VariableCapacityChemicalTank instead
-        return create(() -> 1_024, () -> capacity, canExtract, canInsert, isValid);
+        return create(MekanismConfig.general.chemicalItemFillRate, () -> capacity, canExtract, canInsert, isValid);
     }
 
     public static RateLimitPigmentTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract,

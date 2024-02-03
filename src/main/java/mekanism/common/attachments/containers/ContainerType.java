@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -35,6 +36,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -121,6 +123,14 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     }
 
+    public void saveTo(CompoundTag tag, List<CONTAINER> containers) {
+        tag.put(containerTag, DataHandlerUtils.writeContainers(containers));
+    }
+
+    public void readFrom(CompoundTag tag, List<CONTAINER> containers) {
+        DataHandlerUtils.readContainers(containers, tag.getList(containerTag, Tag.TAG_COMPOUND));
+    }
+
     public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
         if (capability != null) {
             event.registerItem(capability.item(), getCapabilityProvider(requiredConfigs), item);
@@ -146,7 +156,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     public ATTACHMENT getAttachmentIfPresent(IAttachmentHolder holder) {
-        //TODO - 1.20.4: Use this helper in more places
         if (holder.hasData(attachment)) {
             return holder.getData(attachment);
         }

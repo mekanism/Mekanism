@@ -1,9 +1,9 @@
 package mekanism.common.item.predicate;
 
 import com.mojang.serialization.Codec;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.common.attachments.containers.AttachedFluidTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.gear.ItemCanteen;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismFluids;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate;
@@ -24,9 +24,10 @@ public class FullCanteenItemPredicate implements ICustomItemPredicate {
     @Override
     public boolean test(@NotNull ItemStack stack) {
         if (stack.getItem() instanceof ItemCanteen) {
-            if (stack.hasData(MekanismAttachmentTypes.FLUID_TANKS)) {
-                IExtendedFluidTank tank = stack.getData(MekanismAttachmentTypes.FLUID_TANKS).getFluidTank(0, null);
-                return tank != null && tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE.getFluid());
+            AttachedFluidTanks attachment = ContainerType.FLUID.getAttachmentIfPresent(stack);
+            if (attachment != null) {
+                return attachment.getFluidTanks(null).stream()
+                      .allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
             }
         }
         return false;

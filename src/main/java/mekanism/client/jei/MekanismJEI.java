@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -53,14 +52,13 @@ import mekanism.client.jei.machine.SPSRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.AttachedChemicalTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismFluids;
@@ -93,11 +91,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -148,10 +145,10 @@ public class MekanismJEI implements IModPlugin {
         //TODO - 1.20.4: Come up with a better way to check if there are attachments?
         // Also a way to determine whether an attachment should be written
         if (context == UidContext.Ingredient && (stack.hasTag() || stack.serializeAttachments() != null)) {
-            String representation = getChemicalComponent(stack, MekanismAttachmentTypes.GAS_TANKS, Capabilities.GAS.item());
-            representation = addInterpretation(representation, getChemicalComponent(stack, MekanismAttachmentTypes.INFUSION_TANKS, Capabilities.INFUSION.item()));
-            representation = addInterpretation(representation, getChemicalComponent(stack, MekanismAttachmentTypes.PIGMENT_TANKS, Capabilities.PIGMENT.item()));
-            representation = addInterpretation(representation, getChemicalComponent(stack, MekanismAttachmentTypes.SLURRY_TANKS, Capabilities.SLURRY.item()));
+            String representation = getChemicalComponent(stack, ContainerType.GAS, Capabilities.GAS.item());
+            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.INFUSION, Capabilities.INFUSION.item()));
+            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item()));
+            representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.SLURRY, Capabilities.SLURRY.item()));
             representation = addInterpretation(representation, getFluidComponent(stack));
             representation = addInterpretation(representation, getEnergyComponent(stack));
             return representation;
@@ -163,12 +160,10 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
-    private static String getChemicalComponent(ItemStack stack, Supplier<? extends AttachmentType<? extends AttachedChemicalTanks<?, ?, ?>>> attachmentType,
+    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ? extends IChemicalHandler<?, ?>, ?> containerType,
           ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
-        IChemicalHandler<?, ?> handler;
-        if (stack.hasData(attachmentType.get())) {
-            handler = stack.getData(attachmentType.get());
-        } else {
+        IChemicalHandler<?, ?> handler = containerType.getAttachmentIfPresent(stack);
+        if (handler == null) {
             handler = stack.getCapability(capability);
         }
         if (handler != null) {
@@ -187,10 +182,8 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getFluidComponent(ItemStack stack) {
-        IFluidHandlerItem handler;
-        if (stack.hasData(MekanismAttachmentTypes.FLUID_TANKS)) {
-            handler = (IFluidHandlerItem) stack.getData(MekanismAttachmentTypes.FLUID_TANKS);
-        } else {
+        IFluidHandler handler = ContainerType.FLUID.getAttachmentIfPresent(stack);
+        if (handler == null) {
             handler = Capabilities.FLUID.getCapability(stack);
         }
         if (handler != null) {
@@ -209,10 +202,8 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getEnergyComponent(ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem;
-        if (stack.hasData(MekanismAttachmentTypes.ENERGY_CONTAINERS)) {
-            energyHandlerItem = stack.getData(MekanismAttachmentTypes.ENERGY_CONTAINERS);
-        } else {
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+        if (energyHandlerItem == null) {
             energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         }
         if (energyHandlerItem != null) {
