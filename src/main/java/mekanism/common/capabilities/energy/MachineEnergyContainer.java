@@ -67,9 +67,8 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     public void setMaxEnergy(FloatingLong maxEnergy) {
         Objects.requireNonNull(maxEnergy, "Max energy cannot be null");
         this.currentMaxEnergy = maxEnergy;
-        if (getEnergy().greaterThan(getMaxEnergy())) {
-            setEnergy(getMaxEnergy());
-        }
+        //Clamp the energy
+        setEnergy(getEnergy());
     }
 
     public FloatingLong getEnergyPerTick() {

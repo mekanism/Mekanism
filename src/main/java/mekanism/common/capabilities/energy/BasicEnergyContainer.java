@@ -76,6 +76,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(FloatingLong energy) {
+        energy = energy.min(getMaxEnergy());
         if (!stored.equals(energy)) {
             stored = energy.copy();
             onContentsChanged();

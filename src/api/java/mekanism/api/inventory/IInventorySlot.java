@@ -3,6 +3,7 @@ package mekanism.api.inventory;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.Slot;
@@ -283,5 +284,20 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      */
     default int getCount() {
         return getStack().getCount();
+    }
+
+    @Override
+    default CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
+        if (!isEmpty()) {
+            CompoundTag stackTag = new CompoundTag();
+            ItemStack current = getStack();
+            current.save(stackTag);
+            nbt.put(NBTConstants.ITEM, stackTag);
+            if (getCount() > current.getMaxStackSize()) {
+                nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
+            }
+        }
+        return nbt;
     }
 }

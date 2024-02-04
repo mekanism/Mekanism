@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileEntityResistiveHeater> {
 
+    public static final long USAGE_MULTIPLIER = 400;
+
     public static ResistiveHeaterEnergyContainer input(TileEntityResistiveHeater tile, @Nullable IContentsListener listener) {
         AttributeEnergy electricBlock = validateBlock(tile);
         return new ResistiveHeaterEnergyContainer(electricBlock.getStorage(), electricBlock.getUsage(), notExternal, alwaysTrue, tile, listener);
@@ -33,7 +35,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
 
     public void updateEnergyUsage(FloatingLong energyUsage) {
         currentEnergyPerTick = energyUsage;
-        setMaxEnergy(energyUsage.multiply(400));
+        setMaxEnergy(energyUsage.multiply(USAGE_MULTIPLIER));
     }
 
     @Override
@@ -45,7 +47,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        super.deserializeNBT(nbt);
     }
 }
