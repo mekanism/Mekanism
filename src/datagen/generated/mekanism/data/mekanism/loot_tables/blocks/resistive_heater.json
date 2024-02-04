@@ -31,21 +31,18 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
-                },
-                {
-                  "op": "replace",
-                  "source": "HeatCapacitors",
-                  "target": "neoforge:attachments.mekanism:heat_capacitors"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:heat_capacitors"
+              ]
             }
           ],
           "name": "mekanism:resistive_heater"

@@ -31,16 +31,15 @@
                 },
                 {
                   "op": "replace",
-                  "source": "FluidTanks",
-                  "target": "neoforge:attachments.mekanism:fluid_tanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:fluid_tanks",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:basic_fluid_tank"

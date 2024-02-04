@@ -46,31 +46,20 @@
                 },
                 {
                   "op": "replace",
-                  "source": "GasTanks",
-                  "target": "neoforge:attachments.mekanism:gas_tanks"
-                },
-                {
-                  "op": "replace",
-                  "source": "InfusionTanks",
-                  "target": "neoforge:attachments.mekanism:infusion_tanks"
-                },
-                {
-                  "op": "replace",
-                  "source": "PigmentTanks",
-                  "target": "neoforge:attachments.mekanism:pigment_tanks"
-                },
-                {
-                  "op": "replace",
-                  "source": "SlurryTanks",
-                  "target": "neoforge:attachments.mekanism:slurry_tanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:gas_tanks",
+                "mekanism:infusion_tanks",
+                "mekanism:pigment_tanks",
+                "mekanism:slurry_tanks"
+              ]
             }
           ],
           "name": "mekanism:creative_chemical_tank"

@@ -17,6 +17,10 @@ public class LootFunctionDeferredRegister extends MekanismDeferredRegister<LootI
     }
 
     public MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> registerBasic(String name, Supplier<LootItemFunction> sup) {
-        return register(name, () -> new LootItemFunctionType(Codec.unit(sup.get())));
+        return registerCodec(name, () -> Codec.unit(sup.get()));
+    }
+
+    public MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> registerCodec(String name, Supplier<Codec<? extends LootItemFunction>> sup) {
+        return register(name, () -> new LootItemFunctionType(sup.get()));
     }
 }

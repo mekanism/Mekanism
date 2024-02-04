@@ -27,8 +27,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
     }
 
     public <CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>>
-    MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name,
-          Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
+    MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name, Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
         return register(name, () -> AttachmentType.serializable(holder -> typeSupplier.get().getDefaultWithLegacy(holder))
               .comparator(AttachedContainers::isCompatible)
               .build());

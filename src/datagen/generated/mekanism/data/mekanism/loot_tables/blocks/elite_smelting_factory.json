@@ -51,16 +51,15 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:elite_smelting_factory"

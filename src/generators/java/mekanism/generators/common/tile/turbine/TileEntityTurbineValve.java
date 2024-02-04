@@ -6,10 +6,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -48,9 +48,9 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public boolean persists(SubstanceType type) {
+    public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle gas when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.GAS || type == SubstanceType.ENERGY) {
+        if (type == ContainerType.GAS || type == ContainerType.ENERGY) {
             return false;
         }
         return super.persists(type);

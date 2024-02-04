@@ -35,6 +35,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeSound;
@@ -110,7 +111,6 @@ import mekanism.common.tile.interfaces.chemical.IInfusionTile;
 import mekanism.common.tile.interfaces.chemical.IPigmentTile;
 import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
@@ -268,15 +268,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setSupportedTypes(block);
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
-        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(getListener(SubstanceType.GAS, saveOnlyListener)));
-        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(getListener(SubstanceType.INFUSION, saveOnlyListener)));
-        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(getListener(SubstanceType.PIGMENT, saveOnlyListener)));
-        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(getListener(SubstanceType.SLURRY, saveOnlyListener)));
-        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(getListener(SubstanceType.FLUID, saveOnlyListener)), this));
-        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(getListener(SubstanceType.ENERGY, saveOnlyListener)), this));
-        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(getListener(null, saveOnlyListener)), this));
+        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(getListener(ContainerType.GAS, saveOnlyListener)));
+        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(getListener(ContainerType.INFUSION, saveOnlyListener)));
+        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(getListener(ContainerType.PIGMENT, saveOnlyListener)));
+        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(getListener(ContainerType.SLURRY, saveOnlyListener)));
+        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener)), this));
+        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener)), this));
+        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener)), this));
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(getListener(SubstanceType.HEAT, saveOnlyListener), ambientTemperature), this));
+        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature), this));
         this.ambientTemperature = canHandleHeat() ? ambientTemperature : null;
         addCapabilityResolvers(capabilityHandlerManagers);
         frequencyComponent = new TileComponentFrequency(this);
@@ -325,14 +325,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Should data related to the given type be persisted in this tile save
      */
-    public boolean persists(SubstanceType type) {
+    public boolean persists(ContainerType<?, ?, ?> type) {
         return type.canHandle(this);
     }
 
     /**
      * Should data related to the given type be saved to the item and synced to the client in the GUI
      */
-    public boolean handles(SubstanceType type) {
+    public boolean handles(ContainerType<?, ?, ?> type) {
         return persists(type);
     }
 
@@ -562,7 +562,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         tile.onUpdateServer();
         tile.updateRadiationScale();
         //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
-        if (tile.persists(SubstanceType.HEAT)) {
+        if (tile.persists(ContainerType.HEAT)) {
             // update heat after server tick as we now have simulated changes
             // we use persists, as only one reference should update
             tile.updateHeatCapacitors(null);
@@ -650,9 +650,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasInventory() && persistInventory()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbt.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
         }
-        for (SubstanceType type : EnumUtils.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (type.canHandle(this) && persists(type)) {
-                type.read(this, nbt);
+                type.deserialize(this, nbt.getList(type.getTag(), Tag.TAG_COMPOUND));
             }
         }
         if (isActivatable()) {
@@ -679,9 +679,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         }
 
-        for (SubstanceType type : EnumUtils.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (type.canHandle(this) && persists(type)) {
-                type.write(this, nbtTags);
+                nbtTags.put(type.getTag(), type.serialize(this));
             }
         }
 
@@ -729,37 +729,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         boolean isClient = isRemote();
-        if (canHandleGas() && handles(SubstanceType.GAS)) {
+        if (canHandleGas() && handles(ContainerType.GAS)) {
             List<IGasTank> gasTanks = getGasTanks(null);
             for (IGasTank gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank, isClient));
             }
         }
-        if (canHandleInfusion() && handles(SubstanceType.INFUSION)) {
+        if (canHandleInfusion() && handles(ContainerType.INFUSION)) {
             List<IInfusionTank> infusionTanks = getInfusionTanks(null);
             for (IInfusionTank infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank, isClient));
             }
         }
-        if (canHandlePigment() && handles(SubstanceType.PIGMENT)) {
+        if (canHandlePigment() && handles(ContainerType.PIGMENT)) {
             List<IPigmentTank> pigmentTanks = getPigmentTanks(null);
             for (IPigmentTank pigmentTank : pigmentTanks) {
                 container.track(SyncablePigmentStack.create(pigmentTank, isClient));
             }
         }
-        if (canHandleSlurry() && handles(SubstanceType.SLURRY)) {
+        if (canHandleSlurry() && handles(ContainerType.SLURRY)) {
             List<ISlurryTank> slurryTanks = getSlurryTanks(null);
             for (ISlurryTank slurryTank : slurryTanks) {
                 container.track(SyncableSlurryStack.create(slurryTank, isClient));
             }
         }
-        if (canHandleFluid() && handles(SubstanceType.FLUID)) {
+        if (canHandleFluid() && handles(ContainerType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank, isClient));
             }
         }
-        if (canHandleHeat() && handles(SubstanceType.HEAT)) {
+        if (canHandleHeat() && handles(ContainerType.HEAT)) {
             List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
@@ -768,7 +768,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        if (canHandleEnergy() && handles(SubstanceType.ENERGY)) {
+        if (canHandleEnergy() && handles(ContainerType.ENERGY)) {
             container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
@@ -914,19 +914,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /**
-     * @param type Type or {@code null} for items.
+     * @param type Type of container that got updated
      *
      * @implNote It can be assumed {@link #supportsComparator()} is true before this is called.
      */
-    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
         //Assume that items make it dirty unless otherwise overridden, as we use this before we can call hasInventory
         // and if we aren't using an inventory as our comparator thing we will be overriding this method anyway
         // and if we don't have an inventory we can't assign this listener to anything as adding slots and assigning it
         // is what binds the listener to the main tile
-        return type == null;
+        return type == ContainerType.ITEM;
     }
 
-    protected final IContentsListener getListener(@Nullable SubstanceType type, IContentsListener saveOnlyListener) {
+    protected final IContentsListener getListener(ContainerType<?, ?, ?> type, IContentsListener saveOnlyListener) {
         //If we don't support comparators we can just skip having a special one that only marks for save as our
         // setChanged won't actually do anything so there is no reason to bother creating a save only listener
         return !supportsComparator() || makesComparatorDirty(type) ? this : saveOnlyListener;

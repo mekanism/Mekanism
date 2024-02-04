@@ -13,15 +13,8 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
-                }
-              ],
-              "source": "block_entity"
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:ultimate_induction_cell"

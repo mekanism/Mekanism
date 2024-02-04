@@ -36,21 +36,18 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
-                },
-                {
-                  "op": "replace",
-                  "source": "FluidTanks",
-                  "target": "neoforge:attachments.mekanism:fluid_tanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:fluid_tanks"
+              ]
             }
           ],
           "name": "mekanism:fluidic_plenisher"

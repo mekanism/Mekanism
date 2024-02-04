@@ -33,14 +33,13 @@
                   "op": "replace",
                   "source": "controlType",
                   "target": "mekData.controlType"
-                },
-                {
-                  "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:laser_amplifier"

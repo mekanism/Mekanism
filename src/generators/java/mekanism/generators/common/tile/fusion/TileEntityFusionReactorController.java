@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.fusion;
 
-import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -32,8 +32,8 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
     }
 
     @Override
-    public boolean handles(SubstanceType type) {
-        if (type == SubstanceType.GAS || type == SubstanceType.FLUID || type == SubstanceType.HEAT) {
+    public boolean handles(ContainerType<?, ?, ?> type) {
+        if (type == ContainerType.GAS || type == ContainerType.FLUID || type == ContainerType.HEAT) {
             return false;
         }
         return super.handles(type);

@@ -23,13 +23,12 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.resource.ore.OreBlockType;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
@@ -38,7 +37,6 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -69,8 +67,6 @@ import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.neoforged.neoforge.attachment.AttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -164,6 +160,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 continue;
             }
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
+            TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
             boolean hasContents = false;
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
             //delayed items until after NBT copy is added
@@ -202,15 +199,14 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
                 ItemStack stack = new ItemStack(block);
-                for (SubstanceType type : EnumUtils.SUBSTANCES) {
-                    ContainerType<?, ?, ?> containerType = type.getContainerType();
-                    AttachedContainers<?> attachment = containerType.getAttachment(stack);
-                    List<? extends INBTSerializable<CompoundTag>> containers = tileEntity.handles(type) ? type.getContainers(tileEntity) : List.of();
+                for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
+                    AttachedContainers<?> attachment = type.getAttachment(stack);
+                    List<?> containers = tileEntity.handles(type) ? type.getContainers(tileEntity) : List.of();
                     List<?> attachmentContainers = attachment == null ? List.of() : attachment.getContainers();
                     if (containers.size() == attachmentContainers.size()) {
                         if (!containers.isEmpty()) {
-                            nbtBuilder.copy(containerType.getTag(), AttachmentHolder.ATTACHMENTS_NBT_KEY + "." + containerType.getAttachmentName());
-                            if (type != SubstanceType.ENERGY && type != SubstanceType.HEAT) {
+                            containerBuilder.copy(type);
+                            if (type != ContainerType.ENERGY && type != ContainerType.HEAT) {
                                 hasContents = true;
                             }
                         }
@@ -248,6 +244,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (nbtBuilder.hasData()) {
                 itemLootPool.apply(nbtBuilder);
+            }
+            if (containerBuilder.hasData()) {
+                itemLootPool.apply(containerBuilder);
             }
             //apply the delayed ones last, so that NBT funcs have happened first
             for (LootItemFunction.Builder function : delayedPool.functions) {
@@ -350,8 +349,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
         private boolean hasData = false;
 
-        public TrackingNbtBuilder(NbtProvider pNbtSource) {
-            super(pNbtSource);
+        public TrackingNbtBuilder(NbtProvider source) {
+            super(source);
         }
 
         public boolean hasData() {
@@ -359,9 +358,26 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         }
 
         @Override
-        public CopyNbtFunction.Builder copy(String pSourcePath, String pTargetPath, MergeStrategy pCopyAction) {
+        public CopyNbtFunction.Builder copy(String sourcePath, String targetPath, MergeStrategy copyAction) {
             this.hasData = true;
-            return super.copy(pSourcePath, pTargetPath, pCopyAction);
+            return super.copy(sourcePath, targetPath, copyAction);
+        }
+    }
+
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNotNullByDefault
+    public static class TrackingContainerBuilder extends CopyContainersLootFunction.Builder {
+
+        private boolean hasData = false;
+
+        public boolean hasData() {
+            return this.hasData;
+        }
+
+        @Override
+        public CopyContainersLootFunction.Builder copy(ContainerType<?, ?, ?> containerType) {
+            this.hasData = true;
+            return super.copy(containerType);
         }
     }
 

@@ -1,12 +1,8 @@
 package mekanism.common.block;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IItemSecurityUtils;
@@ -29,9 +25,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
@@ -39,7 +33,6 @@ import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileRadioactive;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -69,7 +62,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -139,12 +131,11 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             NBTUtils.writeEnum(lazyDataMap.get(), NBTConstants.CONTROL_TYPE, tile.getControlType());
         }
-        for (SubstanceType type : EnumUtils.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (tile.handles(type)) {
-                //TODO - 1.20.4: Improve how this copies it??
-                AttachedContainers<?> attachment = type.getContainerType().getAttachmentIfPresent(stack);
+                AttachedContainers<?> attachment = type.getAttachmentIfPresent(stack);
                 if (attachment != null) {
-                    attachment.deserializeNBT(DataHandlerUtils.writeContainers(type.getContainers(tile)));
+                    attachment.deserializeNBT(type.serialize(tile));
                 }
             }
         }
@@ -152,30 +143,6 @@ public abstract class BlockMekanism extends Block {
             sustainedInventory.setSustainedInventory(tile.getSustainedInventory(), stack);
         }
         return stack;
-    }
-
-    @NotNull
-    @Override
-    @Deprecated
-    public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootParams.Builder builder) {
-        List<ItemStack> drops = super.getDrops(state, builder);
-        //If radiation is enabled, check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
-        // we skip handling creative chemical tanks
-        if (IRadiationManager.INSTANCE.isRadiationEnabled() && !state.is(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getBlock()) && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
-            BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
-            //Skip tiles that have no gas tanks
-            if (tile instanceof TileEntityMekanism mekTile && !mekTile.getGasTanks(null).isEmpty()) {
-                for (ItemStack drop : drops) {
-                    for (IGasTank tank : ContainerType.GAS.getAttachmentContainersIfPresent(drop)) {
-                        if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
-                            //If the tank isn't empty and has a radioactive gas in it, clear the tank
-                            tank.setEmpty();
-                        }
-                    }
-                }
-            }
-        }
-        return drops;
     }
 
     @Override
@@ -298,12 +265,11 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().read(dataMap);
             config.getEjector().read(dataMap);
         }
-        for (SubstanceType type : EnumUtils.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (type.canHandle(tile)) {
-                //TODO - 1.20.4: Improve how this copies it??
-                AttachedContainers<?> attachment = type.getContainerType().getAttachmentIfPresent(stack);
+                AttachedContainers<?> attachment = type.getAttachmentIfPresent(stack);
                 if (attachment != null) {
-                    DataHandlerUtils.readContainers(type.getContainers(tile), attachment.serializeNBT());
+                    type.deserialize(tile, attachment.serializeNBT());
                 }
             }
         }

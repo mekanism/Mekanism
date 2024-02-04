@@ -51,21 +51,18 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "neoforge:attachments.mekanism:energy_containers"
-                },
-                {
-                  "op": "replace",
-                  "source": "InfusionTanks",
-                  "target": "neoforge:attachments.mekanism:infusion_tanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:infusion_tanks"
+              ]
             }
           ],
           "name": "mekanism:advanced_infusing_factory"

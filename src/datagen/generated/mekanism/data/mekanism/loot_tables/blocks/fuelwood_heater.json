@@ -26,16 +26,15 @@
                 },
                 {
                   "op": "replace",
-                  "source": "HeatCapacitors",
-                  "target": "neoforge:attachments.mekanism:heat_capacitors"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:heat_capacitors",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:fuelwood_heater"

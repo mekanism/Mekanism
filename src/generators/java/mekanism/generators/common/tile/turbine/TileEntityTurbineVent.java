@@ -3,9 +3,9 @@ package mekanism.generators.common.tile.turbine;
 import java.util.Collections;
 import java.util.Set;
 import mekanism.api.IContentsListener;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.FluidUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -41,9 +41,9 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IM
     }
 
     @Override
-    public boolean persists(SubstanceType type) {
+    public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle fluid when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.FLUID) {
+        if (type == ContainerType.FLUID) {
             return false;
         }
         return super.persists(type);
