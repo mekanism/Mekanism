@@ -261,6 +261,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         } else if (holder instanceof Entity entity) {
             defaultContainers = knownDefaultEntityContainers.getOrDefault(entity.getType(), s -> List.of()).apply(entity);
         }
+        if (defaultContainers.isEmpty()) {
+            throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object that doesn't have containers of that type.");
+        }
         //TODO: If we end up supporting other types of attachment holders than stacks and entities we will want to make sure to pass a contents listener to them
         // we don't need to for items or entities as attachments on them are always saved
         return attachmentConstructor.apply(defaultContainers, null);

@@ -78,11 +78,11 @@ public class MekanismAttachmentTypes {
                         new SlurryTankRateLimitChemicalTank(tier, null)
                   );
               }
-              return MergedChemicalTank.INVALID;
+              throw new IllegalArgumentException("Attempted to attach a CHEMICAL_TANK_CONTENTS_HANDLER to an object other than a chemical tank.");
           }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedTank>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
           () -> AttachmentType.builder(holder -> {
-              if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.is(MekanismItems.GAUGE_DROPPER)) {
+              if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER)) {
                   return MergedTank.create(
                         RateLimitFluidTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
                               BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue),
@@ -96,11 +96,11 @@ public class MekanismAttachmentTypes {
                               ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue)
                   );
               }
-              return MergedTank.INVALID;
+              throw new IllegalArgumentException("Attempted to attach a GAUGE_DROPPER_CONTENTS_HANDLER to an object other than a gauge dropper.");
           }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CDC_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("cdc_contents_handler",
           () -> AttachmentType.builder(holder -> {
-              if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.is(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.asItem())) {
+              if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.asItem())) {
                   return MergedChemicalTank.create(
                         RateLimitGasTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
                               ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
@@ -116,11 +116,11 @@ public class MekanismAttachmentTypes {
                         )
                   );
               }
-              return MergedChemicalTank.INVALID;
+              throw new IllegalArgumentException("Attempted to attach a CDC_CONTENTS_HANDLER to an object other than a chemical dissolution chamber.");
           }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CRYSTALLIZER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("crystallizer_contents_handler",
           () -> AttachmentType.builder(holder -> {
-              if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.is(MekanismBlocks.CHEMICAL_CRYSTALLIZER.asItem())) {
+              if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_CRYSTALLIZER.asItem())) {
                   return MergedChemicalTank.create(
                         RateLimitGasTank.createBasicItem(TileEntityChemicalCrystallizer.MAX_CHEMICAL,
                               ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
@@ -140,7 +140,7 @@ public class MekanismAttachmentTypes {
                         )
                   );
               }
-              return MergedChemicalTank.INVALID;
+              throw new IllegalArgumentException("Attempted to attach a CRYSTALLIZER_CONTENTS_HANDLER to an object other than a chemical crystallizer.");
           }).build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DisassemblerMode>> DISASSEMBLER_MODE = ATTACHMENT_TYPES.register("disassembler_mode", DisassemblerMode.class);

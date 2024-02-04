@@ -34,26 +34,24 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
-public sealed class ModuleContainer implements IModuleContainer permits InvalidModuleContainer {
+public final class ModuleContainer implements IModuleContainer {
 
     public static ModuleContainer create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && IModuleHelper.INSTANCE.isModuleContainer(stack)) {
             return new ModuleContainer(stack);
         }
-        //If someone tries to attach this to something that isn't a stack or isn't a module container item return an instance that NO-OPs
-        // and won't write any data when serialized
-        return InvalidModuleContainer.INSTANCE;
+        throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
     }
 
-    private final Map<ModuleData<?>, Module<?>> modules;
-    private final Map<ModuleData<?>, Module<?>> modulesView;
-    private final Map<Enchantment, Integer> enchantments;
-    private final Map<Enchantment, Integer> enchantmentsView;
+    private final Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>();
+    private final Map<ModuleData<?>, Module<?>> modulesView = Collections.unmodifiableMap(modules);
+    private final Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
+    private final Map<Enchantment, Integer> enchantmentsView = Collections.unmodifiableMap(enchantments);
 
     final ItemStack container;
 
     private ModuleContainer(ItemStack container) {
-        this(container, new LinkedHashMap<>(), new LinkedHashMap<>());
+        this.container = container;
         loadLegacyData();
     }
 
@@ -77,14 +75,6 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
             ItemDataUtils.removeData(this.container, NBTConstants.MODULES);
             ItemDataUtils.removeData(this.container, NBTConstants.ENCHANTMENTS);
         }
-    }
-
-    ModuleContainer(ItemStack container, Map<ModuleData<?>, Module<?>> modules, Map<Enchantment, Integer> enchantments) {
-        this.container = container;
-        this.modules = modules;
-        this.modulesView = Collections.unmodifiableMap(this.modules);
-        this.enchantments = enchantments;
-        this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -12,22 +11,12 @@ import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 
 @NothingNullByDefault
 public class MergedTank extends MergedChemicalTank {
-
-    public static final MergedTank INVALID = MergedTank.create(
-          BasicFluidTank.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), BasicFluidTank.alwaysFalse, null),
-          ChemicalTankBuilder.GAS.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.GAS.alwaysFalse, null),
-          ChemicalTankBuilder.INFUSION.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.INFUSION.alwaysFalse, null),
-          ChemicalTankBuilder.PIGMENT.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.PIGMENT.alwaysFalse, null),
-          ChemicalTankBuilder.SLURRY.create(1, ConstantPredicates.alwaysFalseBi(), ConstantPredicates.alwaysFalseBi(), ChemicalTankBuilder.SLURRY.alwaysFalse, null)
-    );
 
     public static MergedTank create(IExtendedFluidTank fluidTank, IGasTank gasTank, IInfusionTank infusionTank, IPigmentTank pigmentTank, ISlurryTank slurryTank) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
