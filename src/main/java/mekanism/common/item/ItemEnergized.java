@@ -77,7 +77,6 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
         ContainerType.ENERGY.addDefaultContainer(eventBus, this, this::getDefaultEnergyContainer, MekanismConfig.gear);
     }
 
-    //TODO - 1.20.4: Are these necessary with energy being stored in an attachment and the default impl not comparing attachments?
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         //Ignore NBT for energized items causing re-equip animations

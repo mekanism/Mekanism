@@ -22,6 +22,7 @@ public class AttachedEnergyContainers extends AttachedContainers<IEnergyContaine
 
     @Override
     protected boolean isContainerCompatible(IEnergyContainer a, IEnergyContainer b) {
+        //TODO - 1.20.4: Compare usage for resistive heater block items
         return a.getEnergy().equals(b.getEnergy());
     }
 }

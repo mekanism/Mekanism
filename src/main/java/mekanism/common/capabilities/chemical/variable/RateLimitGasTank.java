@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class RateLimitGasTank extends RateLimitChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
-    //TODO - 1.20.4: Validate the insert predicate for all the createBasicItems
     public static RateLimitGasTank createBasicItem(long capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert, Predicate<@NotNull Gas> isValid) {
         return createBasicItem(() -> capacity, canExtract, canInsert, isValid);

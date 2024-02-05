@@ -51,11 +51,14 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
 
     public boolean isCompatible(AttachedContainers<CONTAINER> other) {
         int containerCount = containers.size();
-        if (containerCount == other.containers.size()) {
-            for (int i = 0; i < containerCount; i++) {
-                isContainerCompatible(containers.get(i), other.containers.get(i));
+        if (containerCount != other.containers.size()) {
+            return false;
+        }
+        for (int i = 0; i < containerCount; i++) {
+            if (!isContainerCompatible(containers.get(i), other.containers.get(i))) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
