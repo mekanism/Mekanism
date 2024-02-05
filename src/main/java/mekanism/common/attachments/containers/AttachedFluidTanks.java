@@ -24,7 +24,7 @@ public class AttachedFluidTanks extends AttachedContainers<IExtendedFluidTank> i
 
     @Override
     protected boolean isContainerCompatible(IExtendedFluidTank a, IExtendedFluidTank b) {
-        return a.isFluidEqual(b.getFluid());
+        return a.isCompatible(b);
     }
 
     public static class AttachedItemFluidTanks extends AttachedFluidTanks implements IFluidHandlerItem {

@@ -41,7 +41,7 @@ public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Override
     protected boolean isContainerCompatible(TANK a, TANK b) {
-        return a.isTypeEqual(b.getType());
+        return a.isCompatible(b);
     }
 
     public static class AttachedGasTanks extends AttachedChemicalTanks<Gas, GasStack, IGasTank> implements IMekanismGasHandler {

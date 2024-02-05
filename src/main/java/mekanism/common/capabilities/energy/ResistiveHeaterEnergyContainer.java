@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
@@ -43,6 +44,11 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
         CompoundTag nbt = super.serializeNBT();
         nbt.putString(NBTConstants.ENERGY_USAGE, getEnergyPerTick().toString());
         return nbt;
+    }
+
+    @Override
+    public boolean isCompatible(IEnergyContainer other) {
+        return super.isCompatible(other) && getEnergyPerTick().equals(((ResistiveHeaterEnergyContainer) other).getEnergyPerTick());
     }
 
     @Override

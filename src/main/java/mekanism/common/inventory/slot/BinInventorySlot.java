@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -139,6 +140,11 @@ public class BinInventorySlot extends BasicInventorySlot {
             nbt.put(NBTConstants.LOCK_STACK, stackTag);
         }
         return nbt;
+    }
+
+    @Override
+    public boolean isCompatible(IInventorySlot other) {
+        return super.isCompatible(other) && isLocked() == ((BinInventorySlot) other).isLocked();
     }
 
     @Override

@@ -123,6 +123,11 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
+    public boolean isCompatible(IHeatCapacitor other) {
+        return IHeatCapacitor.super.isCompatible(other) && getHeatCapacity() == other.getHeatCapacity();
+    }
+
+    @Override
     public double getHeat() {
         initStoredHeat();
         return storedHeat;

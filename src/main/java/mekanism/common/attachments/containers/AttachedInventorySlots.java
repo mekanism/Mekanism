@@ -6,7 +6,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -23,6 +22,6 @@ public class AttachedInventorySlots extends AttachedContainers<IInventorySlot> i
 
     @Override
     protected boolean isContainerCompatible(IInventorySlot a, IInventorySlot b) {
-        return ItemStack.matches(a.getStack(), b.getStack());
+        return a.isCompatible(b);
     }
 }

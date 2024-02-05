@@ -22,6 +22,6 @@ public class AttachedHeatCapacitors extends AttachedContainers<IHeatCapacitor> i
 
     @Override
     protected boolean isContainerCompatible(IHeatCapacitor a, IHeatCapacitor b) {
-        return a.getHeat() == b.getHeat() && a.getHeatCapacity() == b.getHeatCapacity();
+        return a.isCompatible(b);
     }
 }

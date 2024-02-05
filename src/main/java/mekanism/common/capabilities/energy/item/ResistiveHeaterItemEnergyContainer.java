@@ -3,6 +3,7 @@ package mekanism.common.capabilities.energy.item;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -45,6 +46,11 @@ public class ResistiveHeaterItemEnergyContainer extends RateLimitEnergyContainer
         CompoundTag nbt = super.serializeNBT();
         nbt.putString(NBTConstants.ENERGY_USAGE, energyPerTick.toString());
         return nbt;
+    }
+
+    @Override
+    public boolean isCompatible(IEnergyContainer other) {
+        return super.isCompatible(other) && energyPerTick.equals(((ResistiveHeaterItemEnergyContainer) other).energyPerTick);
     }
 
     @Override
