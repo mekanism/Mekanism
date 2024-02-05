@@ -307,7 +307,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return DataHandlerUtils.writeContainers(getContainers(tile));
     }
 
-    public void deserialize(TileEntityMekanism tile, ListTag containers) {
-        DataHandlerUtils.readContainers(getContainers(tile), containers);
+    public void deserialize(TileEntityMekanism tile, @Nullable ListTag containers) {
+        if (containers != null) {
+            DataHandlerUtils.readContainers(getContainers(tile), containers);
+        }
     }
 }

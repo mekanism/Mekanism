@@ -22,9 +22,11 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
         this.listener = listener;
     }
 
+    @Nullable
     @Override
     public ListTag serializeNBT() {
-        return DataHandlerUtils.writeContainers(this.containers);
+        ListTag serialized = DataHandlerUtils.writeContainers(this.containers);
+        return serialized.isEmpty() ? null : serialized;
     }
 
     @Override

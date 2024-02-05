@@ -53,7 +53,7 @@ public class MekanismAttachmentTypes {
     //Note: We do not specify copy on death as we want radiation to reset to baseline on death
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
           () -> AttachmentType.builder(() -> RadiationManager.BASELINE)
-                .serialize(Codec.doubleRange(RadiationManager.BASELINE, Double.MAX_VALUE))
+                .serialize(Codec.doubleRange(RadiationManager.BASELINE, Double.MAX_VALUE), radiation -> radiation != RadiationManager.BASELINE)
                 //Note: Technically this comparator is not needed as by default neo only checks for attachment compatability for item stacks,
                 // but we set it regardless just so that if anyone is checking it for entities then they can bypass the serialization for it
                 .comparator(Objects::equals)

@@ -18,6 +18,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<AttachmentType<?>> {
@@ -35,17 +36,9 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
 
     public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> registerBoolean(String name, boolean defaultValue) {
         return register(name, () -> AttachmentType.builder(() -> defaultValue)
-              .serialize(new IAttachmentSerializer<ByteTag, Boolean>() {
-                  @Override
-                  public ByteTag write(Boolean attachment) {
-                      return ByteTag.valueOf(attachment);
-                  }
-
-                  @Override
-                  public Boolean read(IAttachmentHolder holder, ByteTag tag) {
-                      return tag.getAsByte() != 0;
-                  }
-              }).comparator(Objects::equals)
+              //If we are true by default we only care about serializing the value when it is false
+              .serialize(defaultValue ? FALSE_SERIALIZER : TRUE_SERIALIZER)
+              .comparator(Objects::equals)
               .build());
     }
 
@@ -63,8 +56,12 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
         }
         return register(name, () -> AttachmentType.builder(() -> defaultValue)
               .serialize(new IAttachmentSerializer<IntTag, ENUM>() {
+                  @Nullable
                   @Override
                   public IntTag write(ENUM attachment) {
+                      if (attachment == defaultValue) {
+                          return null;
+                      }
                       return IntTag.valueOf(attachment.ordinal());
                   }
 
@@ -75,4 +72,31 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               }).comparator(Objects::equals)
               .build());
     }
+
+
+    private static final IAttachmentSerializer<ByteTag, Boolean> TRUE_SERIALIZER = new IAttachmentSerializer<>() {
+        @Nullable
+        @Override
+        public ByteTag write(Boolean attachment) {
+            return attachment ? ByteTag.ONE : null;
+        }
+
+        @Override
+        public Boolean read(IAttachmentHolder holder, ByteTag tag) {
+            return tag.getAsByte() != 0;
+        }
+    };
+
+    private static final IAttachmentSerializer<ByteTag, Boolean> FALSE_SERIALIZER = new IAttachmentSerializer<>() {
+        @Nullable
+        @Override
+        public ByteTag write(Boolean attachment) {
+            return attachment ? null : ByteTag.ZERO;
+        }
+
+        @Override
+        public Boolean read(IAttachmentHolder holder, ByteTag tag) {
+            return tag.getAsByte() != 0;
+        }
+    };
 }

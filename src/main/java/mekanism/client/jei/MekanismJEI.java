@@ -142,9 +142,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
-        //TODO - 1.20.4: Come up with a better way to check if there are attachments?
-        // Also a way to determine whether an attachment should be written
-        if (context == UidContext.Ingredient && (stack.hasTag() || stack.serializeAttachments() != null)) {
+        if (context == UidContext.Ingredient && (stack.hasTag() || stack.hasAttachments())) {
             String representation = getChemicalComponent(stack, ContainerType.GAS, Capabilities.GAS.item());
             representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.INFUSION, Capabilities.INFUSION.item()));
             representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item()));

@@ -12,7 +12,8 @@ import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -70,8 +71,10 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
                 }
             }
             //Skip tiles that have no gas tanks and skip the creative chemical tank
-            //TODO - 1.20.4: Check the chemical tank in a different way?
-            if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tile.getGasTanks(null).isEmpty() && !tile.getBlockState().is(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getBlock())) {
+            if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tile.getGasTanks(null).isEmpty()) {
+                if (tile instanceof TileEntityChemicalTank chemicalTank && chemicalTank.getTier() == ChemicalTankTier.CREATIVE) {
+                    return stack;
+                }
                 for (IGasTank tank : ContainerType.GAS.getAttachmentContainersIfPresent(stack)) {
                     if (!tank.isEmpty() && tank.getStack().has(GasAttributes.Radiation.class)) {
                         //If the tank isn't empty and has a radioactive gas in it, clear the tank

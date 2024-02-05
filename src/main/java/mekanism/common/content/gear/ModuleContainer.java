@@ -77,8 +77,12 @@ public final class ModuleContainer implements IModuleContainer {
         }
     }
 
+    @Nullable
     @Override
     public CompoundTag serializeNBT() {
+        if (modules.isEmpty() && enchantments.isEmpty()) {
+            return null;
+        }
         CompoundTag modulesTag = new CompoundTag();
         modules.forEach((type, module) -> modulesTag.put(type.getRegistryName().toString(), module.save()));
         //Add any extra data we may be tracking that isn't specifically modules to module info
