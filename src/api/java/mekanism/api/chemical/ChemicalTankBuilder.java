@@ -43,6 +43,10 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
     public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
+    /**
+     * @since 10.5.0
+     */
+    public final BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> manualOnly = (chemical, automationType) -> automationType == AutomationType.MANUAL;
 
     private final BasicTankCreator<CHEMICAL, STACK, TANK> tankCreator;
 

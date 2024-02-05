@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
@@ -138,6 +139,15 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
             nbt.putBoolean(NBTConstants.FILLING, true);
         }
         return nbt;
+    }
+
+    @Override
+    public boolean isCompatible(@NotNull IInventorySlot o) {
+        if (super.isCompatible(o)) {
+            HybridInventorySlot other = (HybridInventorySlot) o;
+            return isDraining == other.isDraining && isFilling == other.isFilling;
+        }
+        return false;
     }
 
     @Override

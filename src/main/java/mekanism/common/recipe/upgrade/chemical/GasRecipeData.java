@@ -1,31 +1,18 @@
 package mekanism.common.recipe.upgrade.chemical;
 
 import java.util.List;
-import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.capabilities.ItemCapability;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
+import mekanism.common.attachments.containers.ContainerType;
 
 @NothingNullByDefault
-public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, IGasHandler> {
+public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank> {
 
-    public GasRecipeData(ListTag tanks) {
-        super(tanks);
-    }
-
-    private GasRecipeData(List<IGasTank> tanks) {
+    public GasRecipeData(List<IGasTank> tanks) {
         super(tanks);
     }
 
@@ -35,42 +22,7 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, I
     }
 
     @Override
-    protected SubstanceType getSubstanceType() {
-        return SubstanceType.GAS;
-    }
-
-    @Override
-    protected ChemicalTankBuilder<Gas, GasStack, IGasTank> getTankBuilder() {
-        return ChemicalTankBuilder.GAS;
-    }
-
-    @Override
-    protected IGasHandler getOutputHandler(List<IGasTank> tanks) {
-        return new IMekanismGasHandler() {
-            @NotNull
-            @Override
-            public List<IGasTank> getChemicalTanks(@Nullable Direction side) {
-                return tanks;
-            }
-
-            @Override
-            public void onContentsChanged() {
-            }
-        };
-    }
-
-    @Override
-    protected ItemCapability<IGasHandler, Void> getCapability() {
-        return Capabilities.GAS.item();
-    }
-
-    @Override
-    protected Predicate<Gas> cloneValidator(IGasHandler handler, int tank) {
-        return type -> handler.isValid(tank, new GasStack(type, 1));
-    }
-
-    @Override
-    protected IGasHandler getHandlerFromTile(TileEntityMekanism tile) {
-        return tile.getGasManager().getInternal();
+    protected ContainerType<IGasTank, AttachedGasTanks, IGasHandler> getContainerType() {
+        return ContainerType.GAS;
     }
 }

@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -22,7 +23,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem {
+public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem, ICapabilityAware {
 
     public ItemPortableTeleporter(Properties properties) {
         super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties.rarity(Rarity.RARE));
@@ -53,7 +54,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
         event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
     }
 }

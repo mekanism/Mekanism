@@ -41,6 +41,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -477,7 +478,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             homeLocation.write(nbtTags);
         }
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
-        nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
+        ContainerType.ENERGY.saveTo(nbtTags, getEnergyContainers(null));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         NBTUtils.writeResourceKey(nbtTags, NBTConstants.SKIN, getSkin());
     }
@@ -491,7 +492,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
-        DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, Tag.TAG_COMPOUND));
+        ContainerType.ENERGY.readFrom(nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));

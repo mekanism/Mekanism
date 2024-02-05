@@ -77,9 +77,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
      * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
      */
     public static ItemStack fullyChargedStack() {
-        ItemAtomicDisassembler disassembler = MekanismItems.ATOMIC_DISASSEMBLER.get();
-        ItemStack stack = new ItemStack(disassembler);
-        return StorageUtils.getFilledEnergyVariant(stack, disassembler.getMaxEnergy(stack));
+        return StorageUtils.getFilledEnergyVariant(MekanismItems.ATOMIC_DISASSEMBLER.getItemStack());
     }
 
     private final AttributeCache attributeCache;

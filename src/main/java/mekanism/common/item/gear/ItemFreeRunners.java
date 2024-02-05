@@ -11,10 +11,10 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
@@ -33,13 +33,13 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode> {
+public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>, IAttachmentAware {
 
     private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -64,7 +64,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 
     @Override
@@ -88,15 +88,11 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
-        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
-                return null;
-            }
-            return RateLimitEnergyHandler.create(stack, MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy,
-                  BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
-        });
+    public void attachAttachments(IEventBus eventBus) {
+        ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
+              MekanismConfig.gear.freeRunnerChargeRate,
+              MekanismConfig.gear.freeRunnerMaxEnergy
+        ), MekanismConfig.gear);
     }
 
     @Override

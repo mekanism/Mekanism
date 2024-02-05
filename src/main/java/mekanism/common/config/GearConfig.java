@@ -17,6 +17,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class GearConfig extends BaseMekanismConfig {
 
@@ -24,6 +25,7 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String CONFIGURATOR_CATEGORY = "configurator";
     private static final String ELECTRIC_BOW_CATEGORY = "electric_bow";
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
+    private static final String GAUGE_DROPPER_CATEGORY = "gauge_dropper";
     private static final String FLAMETHROWER_CATEGORY = "flamethrower";
     private static final String FREE_RUNNER_CATEGORY = "free_runner";
     private static final String ARMORED_SUBCATEGORY = "armored";
@@ -64,6 +66,9 @@ public class GearConfig extends BaseMekanismConfig {
     //Energy Tablet
     public final CachedFloatingLongValue tabletMaxEnergy;
     public final CachedFloatingLongValue tabletChargeRate;
+    //Gauge Dropper
+    public final CachedIntValue gaugeDroppedTransferRate;
+    public final CachedIntValue gaugeDropperCapacity;
     //Flamethrower
     public final CachedLongValue flamethrowerMaxGas;
     public final CachedLongValue flamethrowerFillRate;
@@ -207,6 +212,13 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(1_000_000));
         tabletChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Energy Tablet can accept per tick.",
               "chargeRate", FloatingLong.createConst(5_000));
+        builder.pop();
+
+        builder.comment("Gauge Dropper Settings").push(GAUGE_DROPPER_CATEGORY);
+        gaugeDroppedTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which a gauge dropper can be filled or emptied.")
+              .defineInRange("transferRate", 256, 1, Integer.MAX_VALUE));
+        gaugeDropperCapacity = CachedIntValue.wrap(this, builder.comment("Capacity of gauge droppers.")
+              .defineInRange("capacity", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("Flamethrower Settings").push(FLAMETHROWER_CATEGORY);

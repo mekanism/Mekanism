@@ -27,6 +27,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IRadialModuleContainerItem;
@@ -435,13 +436,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    protected FloatingLong getMaxEnergy(ItemStack stack) {
-        return ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get());
-    }
-
-    @Override
-    protected FloatingLong getChargeRate(ItemStack stack) {
-        return ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get());
+    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
+        return RateLimitEnergyContainer.create(
+              () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
+              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get()),
+              canExtract, canInsert
+        );
     }
 
     @Override

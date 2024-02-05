@@ -22,7 +22,6 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.core.Direction;
@@ -149,11 +148,6 @@ public class EnumUtils {
      * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final Upgrade[] UPGRADES = Upgrade.values();
-
-    /**
-     * Cached value of {@link SubstanceType#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final SubstanceType[] SUBSTANCES = SubstanceType.values();
 
     /**
      * Cached value of {@link OreType#values()}. DO NOT MODIFY THIS LIST.

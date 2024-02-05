@@ -242,6 +242,19 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     /**
+     * Checks if this fluid tank is equivalent to another one for the purposes of attachments.
+     *
+     * @param other Fluid tank to compare to.
+     *
+     * @return {@code true} If this fluid tank can be considered equivalent and compatible with the other tank.
+     *
+     * @since 10.5.0
+     */
+    default boolean isCompatible(IExtendedFluidTank other) {
+        return getClass() == other.getClass() && getFluid().isFluidStackIdentical(other.getFluid());
+    }
+
+    /**
      * {@inheritDoc}
      *
      * Wrapped to properly use our method declarations

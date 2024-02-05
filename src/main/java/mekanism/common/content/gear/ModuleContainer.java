@@ -34,27 +34,29 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
-public sealed class ModuleContainer implements IModuleContainer permits InvalidModuleContainer {
+public final class ModuleContainer implements IModuleContainer {
 
     public static ModuleContainer create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && IModuleHelper.INSTANCE.isModuleContainer(stack)) {
             return new ModuleContainer(stack);
         }
-        //If someone tries to attach this to something that isn't a stack or isn't a module container item return an instance that NO-OPs
-        // and won't write any data when serialized
-        return InvalidModuleContainer.INSTANCE;
+        throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
     }
 
-    private final Map<ModuleData<?>, Module<?>> modules;
-    private final Map<ModuleData<?>, Module<?>> modulesView;
-    private final Map<Enchantment, Integer> enchantments;
-    private final Map<Enchantment, Integer> enchantmentsView;
+    private final Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>();
+    private final Map<ModuleData<?>, Module<?>> modulesView = Collections.unmodifiableMap(modules);
+    private final Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
+    private final Map<Enchantment, Integer> enchantmentsView = Collections.unmodifiableMap(enchantments);
 
     final ItemStack container;
 
     private ModuleContainer(ItemStack container) {
-        this(container, new LinkedHashMap<>(), new LinkedHashMap<>());
-        //TODO - 1.21?: Remove this way of loading legacy data
+        this.container = container;
+        loadLegacyData();
+    }
+
+    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
+    private void loadLegacyData() {
         //Load legacy modules
         if (ItemDataUtils.hasData(this.container, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
             CompoundTag legacyModules = ItemDataUtils.getCompound(this.container, NBTConstants.MODULES);
@@ -75,16 +77,12 @@ public sealed class ModuleContainer implements IModuleContainer permits InvalidM
         }
     }
 
-    ModuleContainer(ItemStack container, Map<ModuleData<?>, Module<?>> modules, Map<Enchantment, Integer> enchantments) {
-        this.container = container;
-        this.modules = modules;
-        this.modulesView = Collections.unmodifiableMap(this.modules);
-        this.enchantments =enchantments;
-        this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
-    }
-
+    @Nullable
     @Override
     public CompoundTag serializeNBT() {
+        if (modules.isEmpty() && enchantments.isEmpty()) {
+            return null;
+        }
         CompoundTag modulesTag = new CompoundTag();
         modules.forEach((type, module) -> modulesTag.put(type.getRegistryName().toString(), module.save()));
         //Add any extra data we may be tracking that isn't specifically modules to module info

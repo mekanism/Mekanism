@@ -212,6 +212,12 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
+    public boolean isCompatible(IEnergyContainer other) {
+        //Unused
+        return false;
+    }
+
+    @Override
     public void deserializeNBT(CompoundTag nbt) {
 
     }

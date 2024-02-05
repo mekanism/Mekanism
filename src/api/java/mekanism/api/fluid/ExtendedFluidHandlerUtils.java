@@ -14,6 +14,10 @@ public class ExtendedFluidHandlerUtils {
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
     public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, InsertFluid insertFluid) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return FluidStack.EMPTY;
+        }
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return insertFluid.insert(0, stack, action);

@@ -333,4 +333,17 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
         }
         return nbt;
     }
+
+    /**
+     * Checks if this chemical tank is equivalent to another one for the purposes of attachments.
+     *
+     * @param other Chemical tank to compare to.
+     *
+     * @return {@code true} If this chemical tank can be considered equivalent and compatible with the other tank.
+     *
+     * @since 10.5.0
+     */
+    default boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
+        return getClass() == other.getClass() && getStack().isStackIdentical(other.getStack());
+    }
 }

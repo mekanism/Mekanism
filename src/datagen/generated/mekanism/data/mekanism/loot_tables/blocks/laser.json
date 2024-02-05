@@ -24,14 +24,13 @@
                   "op": "replace",
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode"
-                },
-                {
-                  "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:laser"

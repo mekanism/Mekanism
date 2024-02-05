@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.math.MathUtils;
@@ -14,9 +13,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
@@ -37,12 +33,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, ICapabilityAware, IAttachmentBasedModeItem<FlamethrowerMode> {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair());
@@ -81,23 +76,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas, MekanismGases.HYDROGEN));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGases.HYDROGEN));
     }
 
     @Override
     public AttachmentType<FlamethrowerMode> getModeAttachment() {
         return MekanismAttachmentTypes.FLAMETHROWER_MODE.get();
-    }
-
-    @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
-                return null;
-            }
-            return RateLimitGasHandler.create(stack, MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
-                  ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical());
-        }, this);
     }
 
     @Override

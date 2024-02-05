@@ -51,21 +51,18 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
-                },
-                {
-                  "op": "replace",
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:gas_tanks"
+              ]
             }
           ],
           "name": "mekanism:ultimate_purifying_factory"

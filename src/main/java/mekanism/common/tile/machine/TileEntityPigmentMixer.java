@@ -67,6 +67,9 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
+    public static final long MAX_INPUT_PIGMENT = 1_000;
+    public static final long MAX_OUTPUT_PIGMENT = 2 * MAX_INPUT_PIGMENT;
+
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
                                                                                         "getLeftInputFilledPercentage"}, docPlaceholder = "left pigment tank")
     public IPigmentTank leftInputTank;
@@ -139,11 +142,11 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
+        builder.addTank(leftInputTank = ChemicalTankBuilder.PIGMENT.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
               this::containsRecipe, recipeCacheListener));
-        builder.addTank(rightInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
+        builder.addTank(rightInputTank = ChemicalTankBuilder.PIGMENT.input(MAX_INPUT_PIGMENT, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
               this::containsRecipe, recipeCacheListener));
-        builder.addTank(outputTank = ChemicalTankBuilder.PIGMENT.output(2_000, listener));
+        builder.addTank(outputTank = ChemicalTankBuilder.PIGMENT.output(MAX_OUTPUT_PIGMENT, listener));
         return builder.build();
     }
 

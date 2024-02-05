@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.Consumer;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.minecraft.world.item.Item;
@@ -23,5 +24,13 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
     @Override
     public ITEM asItem() {
         return getSecondary();
+    }
+
+    public BlockRegistryObject<BLOCK, ITEM> forItemHolder(Consumer<ItemRegistryObject<ITEM>> consumer) {
+        if (secondaryRO instanceof ItemRegistryObject<ITEM> itemHolder) {
+            consumer.accept(itemHolder);
+            return this;
+        }
+        throw new IllegalStateException("Called method requires an ItemRegistryObject");
     }
 }

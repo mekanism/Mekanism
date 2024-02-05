@@ -59,6 +59,8 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
 
+    public static final long MAX_PIGMENT = 15_000;
+
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
                                                                                         "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IPigmentTank pigmentTank;
@@ -96,7 +98,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(15_000, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

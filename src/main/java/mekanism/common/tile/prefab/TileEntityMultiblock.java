@@ -9,6 +9,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
@@ -22,7 +23,6 @@ import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -192,7 +192,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected boolean makesComparatorDirty(@Nullable SubstanceType type) {
+    protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
         //Comparators are handled via the multiblock, no special listeners are needed
         return false;
     }

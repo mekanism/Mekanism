@@ -46,26 +46,19 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
-                },
-                {
-                  "op": "replace",
-                  "source": "FluidTanks",
-                  "target": "mekData.FluidTanks"
-                },
-                {
-                  "op": "replace",
-                  "source": "SlurryTanks",
-                  "target": "mekData.SlurryTanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:fluid_tanks",
+                "mekanism:slurry_tanks"
+              ]
             }
           ],
           "name": "mekanism:chemical_washer"

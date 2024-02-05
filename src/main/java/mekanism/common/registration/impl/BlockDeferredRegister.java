@@ -4,31 +4,18 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.DoubleDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public BlockDeferredRegister(String modid) {
+        //Note: We use our own deferred register so that we also can automatically attach any capability aware items we register
         super(modid, Registries.BLOCK, new ItemDeferredRegister(modid));
-    }
-
-    @Override
-    public void register(@NotNull IEventBus bus) {
-        super.register(bus);
-        bus.addListener(this::registerCapabilities);
-    }
-
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        Capabilities.registerCapabilityAwareCapabilities(event, getSecondaryEntries());
     }
 
     public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {

@@ -74,7 +74,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     private static final int BASE_DURATION = 100;
-    private static final long MAX_GAS = 10_000;
+    public static final int MAX_FLUID = 10_000;
+    public static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
                                                                                      "getInputFluidFilledPercentage"}, docPlaceholder = "fluid input")
@@ -134,7 +135,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputFluidTank = BasicFluidTank.input(10_000, fluid -> containsRecipeBAC(inputSlot.getStack(), fluid, inputGasTank.getStack()),
+        builder.addTank(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeBAC(inputSlot.getStack(), fluid, inputGasTank.getStack()),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }

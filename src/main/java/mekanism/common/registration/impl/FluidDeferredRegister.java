@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -35,7 +34,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -80,12 +78,13 @@ public class FluidDeferredRegister {
     private final DeferredRegister<FluidType> fluidTypeRegister;
     private final DeferredRegister<Fluid> fluidRegister;
     private final DeferredRegister<Block> blockRegister;
-    private final DeferredRegister<Item> itemRegister;
+    private final ItemDeferredRegister itemRegister;
 
     public FluidDeferredRegister(String modid) {
         blockRegister = MekanismDeferredRegister.create(Registries.BLOCK, modid);
         fluidRegister = MekanismDeferredRegister.create(Registries.FLUID, modid);
         fluidTypeRegister = MekanismDeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
+        //Note: We use our own deferred register so that we also can automatically attach any capability aware buckets we register
         itemRegister = new ItemDeferredRegister(modid);
     }
 
@@ -185,11 +184,6 @@ public class FluidDeferredRegister {
         fluidRegister.register(bus);
         fluidTypeRegister.register(bus);
         itemRegister.register(bus);
-        bus.addListener(this::registerCapabilities);
-    }
-
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        Capabilities.registerCapabilityAwareCapabilities(event, getBucketEntries());
     }
 
     public Collection<DeferredHolder<FluidType, ? extends FluidType>> getFluidTypeEntries() {

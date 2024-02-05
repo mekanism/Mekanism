@@ -17,6 +17,10 @@ public class FloatingLongTransferUtils {
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
      */
     public static FloatingLong insert(FloatingLong stack, Action action, IntSupplier containerCount, Int2ObjectFunction<FloatingLong> inContainerGetter, InsertFloatingLong insert) {
+        if (stack.isZero()) {
+            //Short circuit if no energy is trying to be inserted
+            return FloatingLong.ZERO;
+        }
         int containers = containerCount.getAsInt();
         if (containers == 1) {
             return insert.insert(0, stack, action);

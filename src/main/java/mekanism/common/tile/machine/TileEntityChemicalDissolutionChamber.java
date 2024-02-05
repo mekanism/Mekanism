@@ -29,6 +29,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -53,7 +54,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
@@ -76,7 +76,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final long MAX_CHEMICAL = 10_000;
+    public static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_TICKS_REQUIRED = 100;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded",
@@ -125,10 +125,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         super.presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
         outputTank = MergedChemicalTank.create(
-              ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, getListener(SubstanceType.GAS, saveOnlyListener)),
-              ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, getListener(SubstanceType.INFUSION, saveOnlyListener)),
-              ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, getListener(SubstanceType.PIGMENT, saveOnlyListener)),
-              ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, getListener(SubstanceType.SLURRY, saveOnlyListener))
+              ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, getListener(ContainerType.GAS, saveOnlyListener)),
+              ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, getListener(ContainerType.INFUSION, saveOnlyListener)),
+              ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, getListener(ContainerType.PIGMENT, saveOnlyListener)),
+              ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, getListener(ContainerType.SLURRY, saveOnlyListener))
         );
     }
 

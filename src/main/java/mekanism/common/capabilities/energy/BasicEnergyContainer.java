@@ -76,6 +76,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(FloatingLong energy) {
+        energy = energy.min(getMaxEnergy());
         if (!stored.equals(energy)) {
             stored = energy.copy();
             onContentsChanged();
@@ -158,6 +159,16 @@ public class BasicEnergyContainer implements IEnergyContainer {
             nbt.putString(NBTConstants.STORED, stored.toString());
         }
         return nbt;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
+     */
+    @Override
+    public boolean isCompatible(IEnergyContainer other) {
+        return getClass() == other.getClass() && stored.equals(((BasicEnergyContainer) other).stored);
     }
 
     @Override

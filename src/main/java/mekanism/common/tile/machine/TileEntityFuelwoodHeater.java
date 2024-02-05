@@ -28,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
+    public static final double HEAT_CAPACITY = 100;
+    public static final double INVERSE_CONDUCTION_COEFFICIENT = 5;
+    public static final double INVERSE_INSULATION_COEFFICIENT = 10;
+
     public int burnTime;
     public int maxBurnTime;
 
@@ -55,7 +59,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 10, ambientTemperature, listener));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(HEAT_CAPACITY, INVERSE_CONDUCTION_COEFFICIENT, INVERSE_INSULATION_COEFFICIENT, ambientTemperature, listener));
         return builder.build();
     }
 

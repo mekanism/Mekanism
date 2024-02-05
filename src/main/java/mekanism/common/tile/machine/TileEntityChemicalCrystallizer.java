@@ -66,7 +66,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final long MAX_CHEMICAL = 10_000;
+    public static final long MAX_CHEMICAL = 10_000;
 
     public MergedChemicalTank inputTank;
 

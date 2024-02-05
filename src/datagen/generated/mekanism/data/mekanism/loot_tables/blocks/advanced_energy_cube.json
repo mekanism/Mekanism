@@ -41,16 +41,15 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:advanced_energy_cube"

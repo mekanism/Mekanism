@@ -31,6 +31,10 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
     }
 
+    public static BasicHeatCapacitor createBasicItem(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
+        return create(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, () -> HeatAPI.AMBIENT_TEMP, null);
+    }
+
     public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
         if (heatCapacity < 1) {
@@ -113,10 +117,14 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putDouble(NBTConstants.STORED, getHeat());
+        CompoundTag nbt = IHeatCapacitor.super.serializeNBT();
         nbt.putDouble(NBTConstants.HEAT_CAPACITY, getHeatCapacity());
         return nbt;
+    }
+
+    @Override
+    public boolean isCompatible(IHeatCapacitor other) {
+        return IHeatCapacitor.super.isCompatible(other) && getHeatCapacity() == other.getHeatCapacity();
     }
 
     @Override

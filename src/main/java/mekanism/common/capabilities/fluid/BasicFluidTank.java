@@ -25,6 +25,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> alwaysTrueBi = ConstantPredicates.alwaysTrueBi();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
     public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
+    public static final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> manualOnly = (fluid, automationType) -> automationType == AutomationType.MANUAL;
 
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
@@ -327,6 +328,16 @@ public class BasicFluidTank implements IExtendedFluidTank {
             nbt.put(NBTConstants.STORED, stored.writeToNBT(new CompoundTag()));
         }
         return nbt;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
+     */
+    @Override
+    public boolean isCompatible(IExtendedFluidTank other) {
+        return getClass() == other.getClass() && stored.isFluidStackIdentical(((BasicFluidTank) other).stored);
     }
 
     @Override

@@ -56,6 +56,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedIntValue maxSolarNeutronActivatorRate;
+    public final CachedIntValue fluidItemFillRate;
+    public final CachedLongValue chemicalItemFillRate;
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
@@ -160,6 +162,11 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("superheatingHeatTransfer", 16_000_000, 0.1, 1_024_000_000));
         maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
               .defineInRange("maxSolarNeutronActivatorRate", 64, 1, 1_024));
+
+        fluidItemFillRate = CachedIntValue.wrap(this, builder.comment("Rate at which generic fluid storage items can be filled or emptied.")
+              .defineInRange("fluidItemFillRate", 1_024, 1, Integer.MAX_VALUE));
+        chemicalItemFillRate = CachedLongValue.wrap(this, builder.comment("Rate at which generic chemical storage items can be filled or emptied.")
+              .defineInRange("chemicalItemFillRate", 1_024, 1, Long.MAX_VALUE));
 
         builder.comment("Dynamic Tank Settings").push(DYNAMIC_TANK);
         int maxVolume = 18 * 18 * 18;

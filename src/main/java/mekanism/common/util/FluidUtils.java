@@ -1,17 +1,15 @@
 package mekanism.common.util;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.OptionalInt;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
+import mekanism.common.attachments.containers.AttachedFluidTanks;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,21 +32,19 @@ public final class FluidUtils {
     private FluidUtils() {
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, CachedIntValue capacity, IFluidProvider provider) {
-        return getFilledVariant(toFill, capacity.getOrDefault(), provider);
-    }
-
-    public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IFluidProvider provider) {
-        IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
-        //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
-        dummyTank.setStack(provider.getFluidStack(dummyTank.getCapacity()));
-        ItemDataUtils.writeContainers(toFill, NBTConstants.FLUID_TANKS, Collections.singletonList(dummyTank));
+    public static ItemStack getFilledVariant(ItemStack toFill, IFluidProvider provider) {
+        AttachedFluidTanks attachment = ContainerType.FLUID.getAttachment(toFill);
+        if (attachment != null) {
+            for (IExtendedFluidTank fluidTank : attachment.getFluidTanks(null)) {
+                fluidTank.setStack(provider.getFluidStack(fluidTank.getCapacity()));
+            }
+        }
         //The item is now filled return it for convenience
         return toFill;
     }
 
     public static OptionalInt getRGBDurabilityForDisplay(ItemStack stack) {
-        return getRGBDurabilityForDisplay(StorageUtils.getStoredFluidFromNBT(stack));
+        return getRGBDurabilityForDisplay(StorageUtils.getStoredFluidFromAttachment(stack));
     }
 
     public static OptionalInt getRGBDurabilityForDisplay(FluidStack stack) {

@@ -8,11 +8,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -39,11 +35,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, ICapabilityAware, IAttachmentBasedModeItem<Boolean> {
+public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
         super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
@@ -177,20 +172,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.electricBowMaxEnergy));
-    }
-
-    @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
-                return null;
-            }
-            //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-            // Internal is used by the "null" side, which is what will get used for most items
-            return RateLimitEnergyHandler.create(stack, MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
-                  BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
-        });
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 
     @Override

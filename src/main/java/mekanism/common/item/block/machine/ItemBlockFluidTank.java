@@ -15,7 +15,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -58,7 +57,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -89,7 +87,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
     @Override
     protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {
@@ -239,12 +237,6 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IAttachmentB
     @Override
     public AttachmentType<Boolean> getModeAttachment() {
         return MekanismAttachmentTypes.BUCKET_MODE.get();
-    }
-
-    @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
-        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> RateLimitFluidHandler.create(stack, getTier()), this);
     }
 
     @Override

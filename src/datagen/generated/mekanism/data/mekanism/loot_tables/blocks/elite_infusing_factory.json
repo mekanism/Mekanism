@@ -51,21 +51,18 @@
                 },
                 {
                   "op": "replace",
-                  "source": "EnergyContainers",
-                  "target": "mekData.EnergyContainers"
-                },
-                {
-                  "op": "replace",
-                  "source": "InfusionTanks",
-                  "target": "mekData.InfusionTanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:infusion_tanks"
+              ]
             }
           ],
           "name": "mekanism:elite_infusing_factory"

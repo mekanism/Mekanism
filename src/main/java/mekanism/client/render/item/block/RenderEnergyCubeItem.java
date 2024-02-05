@@ -63,7 +63,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
         }
         ModelData modelData = ModelData.builder().with(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates).build();
         renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
-        double energyPercentage = StorageUtils.getStoredEnergyFromNBT(stack).divideToLevel(tier.getMaxEnergy());
+        double energyPercentage = StorageUtils.getEnergyRatio(stack);
         if (energyPercentage > 0) {
             float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
             float scaledTicks = 4 * ticks;

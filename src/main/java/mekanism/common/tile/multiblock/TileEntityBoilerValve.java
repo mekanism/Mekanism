@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -17,7 +18,6 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -63,9 +63,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
     }
 
     @Override
-    public boolean persists(SubstanceType type) {
+    public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle fluid or gas when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.FLUID || type == SubstanceType.GAS) {
+        if (type == ContainerType.FLUID || type == ContainerType.GAS) {
             return false;
         }
         return super.persists(type);

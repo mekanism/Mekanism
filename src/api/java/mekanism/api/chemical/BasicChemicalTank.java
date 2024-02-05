@@ -275,6 +275,16 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         return nbt;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
+     */
+    @Override
+    public boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
+        return getClass() == other.getClass() && stored.isStackIdentical(((BasicChemicalTank<CHEMICAL, STACK>) other).stored);
+    }
+
     @Override
     public int getTanks() {
         return 1;

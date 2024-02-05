@@ -12,15 +12,16 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
+import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
@@ -28,16 +29,16 @@ import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,36 +66,30 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             Block block = blockItem.getBlock();
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
                 BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
-                if (tileEntity instanceof TileEntityMekanism) {
-                    tile = (TileEntityMekanism) tileEntity;
+                if (tileEntity instanceof TileEntityMekanism tileMek) {
+                    tile = tileMek;
                 }
             }
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (Capabilities.STRICT_ENERGY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.ENERGY)) {
-            //If we are for a block that handles energy, or we have an energy handler capability
+        if (ContainerType.ENERGY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (Capabilities.FLUID.hasCapability(stack) || tile != null && tile.handles(SubstanceType.FLUID)) {
-            //If we are for a block that handles fluid, or we have a fluid handler capability
+        if (ContainerType.FLUID.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (Capabilities.GAS.hasCapability(stack) || tile != null && tile.handles(SubstanceType.GAS)) {
-            //If we are for a block that handles gas, or we have a gas handler capability
+        if (ContainerType.GAS.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (Capabilities.INFUSION.hasCapability(stack) || tile != null && tile.handles(SubstanceType.INFUSION)) {
-            //If we are for a block that handles infusion, or we have an infusion handler capability
+        if (ContainerType.INFUSION.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (Capabilities.PIGMENT.hasCapability(stack) || tile != null && tile.handles(SubstanceType.PIGMENT)) {
-            //If we are for a block that handles pigment, or we have a pigment handler capability
+        if (ContainerType.PIGMENT.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (Capabilities.SLURRY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.SLURRY)) {
-            //If we are for a block that handles slurry, or we have a slurry handler capability
+        if (ContainerType.SLURRY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
@@ -109,7 +104,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If it isn't a creative bin try transferring the lock data
             supportedTypes.add(RecipeUpgradeType.LOCK);
         }
-        if (tile instanceof TileEntityFactory) {
+        if (item instanceof ItemBlockFactory) {
             supportedTypes.add(RecipeUpgradeType.SORTING);
         }
         if (item instanceof IQIODriveItem) {
@@ -119,8 +114,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
-        ListTag containers = ItemDataUtils.getList(stack, key);
+    private static <CONTAINER extends INBTSerializable<CompoundTag>, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack,
+          ContainerType<CONTAINER, ?, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
+        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
 
@@ -131,12 +127,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
         Item item = stack.getItem();
         return switch (type) {
-            case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
-            case FLUID -> getContainerUpgradeData(stack, NBTConstants.FLUID_TANKS, FluidRecipeData::new);
-            case GAS -> getContainerUpgradeData(stack, NBTConstants.GAS_TANKS, GasRecipeData::new);
-            case INFUSION -> getContainerUpgradeData(stack, NBTConstants.INFUSION_TANKS, InfusionRecipeData::new);
-            case PIGMENT -> getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
-            case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
+            case ENERGY -> getContainerUpgradeData(stack, ContainerType.ENERGY, EnergyRecipeData::new);
+            case FLUID -> getContainerUpgradeData(stack, ContainerType.FLUID, FluidRecipeData::new);
+            case GAS -> getContainerUpgradeData(stack, ContainerType.GAS, GasRecipeData::new);
+            case INFUSION -> getContainerUpgradeData(stack, ContainerType.INFUSION, InfusionRecipeData::new);
+            case PIGMENT -> getContainerUpgradeData(stack, ContainerType.PIGMENT, PigmentRecipeData::new);
+            case SLURRY -> getContainerUpgradeData(stack, ContainerType.SLURRY, SlurryRecipeData::new);
             case ITEM -> {
                 if (item instanceof IItemSustainedInventory sustainedInventory) {
                     ListTag inventory = sustainedInventory.getSustainedInventory(stack);

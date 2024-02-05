@@ -4,21 +4,22 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.ItemStackEnergyHandler;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
@@ -30,11 +31,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements ICapabilityAware {
+public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements ICapabilityAware, IAttachmentAware {
 
     @NotNull
     private final BLOCK block;
@@ -97,20 +99,17 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
     }
 
     @Nullable
-    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {
+    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
         AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
         if (attributeEnergy == null) {
             throw new IllegalStateException("Block " + RegistryUtils.getName(block) + " expected to have energy attribute");
         }
-        FloatingLongSupplier maxEnergy;
+        FloatingLongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-            maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
-        } else {
-            //Otherwise, just return that the max is what the base max is
-            maxEnergy = attributeEnergy::getStorage;
+            maxEnergy = new UpgradeBasedFloatingLongCache(stack, maxEnergy);
         }
-        return RateLimitEnergyHandler.create(stack, maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
+        return RateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
     }
 
     @Override
@@ -118,14 +117,14 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
         if (Attribute.has(block, AttributeSecurity.class)) {
             ItemStackSecurityObject.attachCapsToItem(event, this);
         }
+    }
+
+    @Override
+    public void attachAttachments(IEventBus eventBus) {
         if (Attribute.has(block, AttributeEnergy.class)) {
-            EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
-                if (stack.isStackable() || !MekanismConfig.storage.isLoaded() || !MekanismConfig.usage.isLoaded()) {
-                    //Only expose the capability if the stack can't stack and the required configs are loaded
-                    return null;
-                }
-                return createEnergyCap(stack);
-            });
+            //Only expose the capability if the stack can't stack and the required configs are loaded
+            IEventBus energyEventBus = new ItemStack(this).isStackable() ? null : eventBus;
+            ContainerType.ENERGY.addDefaultContainer(energyEventBus, this, this::getDefaultEnergyContainer, MekanismConfig.storage, MekanismConfig.usage);
         }
     }
 

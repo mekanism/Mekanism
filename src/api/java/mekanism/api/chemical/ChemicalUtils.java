@@ -152,6 +152,10 @@ public class ChemicalUtils {
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, Action action, STACK empty,
           IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return empty;
+        }
         int tanks = tankCount.getAsInt();
         if (tanks == 1) {
             return insertChemical.insert(0, stack, action);

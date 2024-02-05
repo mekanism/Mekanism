@@ -2,10 +2,10 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.LongSupplier;
-import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IGasItem;
@@ -20,11 +20,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem, ICustomCreativeTabContents {
+public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem, ICustomCreativeTabContents, IAttachmentAware {
 
     protected ItemGasArmor(ArmorMaterial material, ArmorItem.Type armorType, Properties properties) {
         super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
@@ -58,18 +58,15 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), getMaxGas(), getGasType()));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), getGasType()));
     }
 
     @Override
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        super.attachCapabilities(event);
-        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
-                return null;
-            }
-            return RateLimitGasHandler.create(stack, getFillRate(), getMaxGas(), ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                  gas -> gas == getGasType().getChemical());
-        }, this);
+    public void attachAttachments(IEventBus eventBus) {
+        ContainerType.GAS.addDefaultContainer(eventBus, this, stack -> RateLimitGasTank.createInternalStorage(
+              getFillRate(),
+              getMaxGas(),
+              gas -> gas == getGasType().getChemical()
+        ), MekanismConfig.gear);
     }
 }

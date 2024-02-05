@@ -41,16 +41,15 @@
                 },
                 {
                   "op": "replace",
-                  "source": "GasTanks",
-                  "target": "mekData.GasTanks"
-                },
-                {
-                  "op": "replace",
                   "source": "Items",
                   "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "type": "mekanism:gas_tanks",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:solar_neutron_activator"

@@ -5,13 +5,13 @@ import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
@@ -47,9 +47,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean persists(SubstanceType type) {
+    public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle energy when it comes to syncing it/saving this tile to disk
-        if (type == SubstanceType.ENERGY) {
+        if (type == ContainerType.ENERGY) {
             return false;
         }
         return super.persists(type);
