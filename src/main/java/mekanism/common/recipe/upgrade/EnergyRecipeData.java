@@ -3,9 +3,12 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.common.attachments.containers.AttachedEnergyContainers;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongTransferUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -32,18 +35,24 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         if (energyContainers.isEmpty()) {
             return true;
         }
-        AttachedEnergyContainers outputHandler = ContainerType.ENERGY.getAttachment(stack);
+        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.getAttachment(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         for (IEnergyContainer energyContainer : this.energyContainers) {
-            //TODO - 1.20.4: We probably need to do this as manual for the automation type as we don't want to be limited in our transfer rate
-            if (!outputHandler.insertEnergy(energyContainer.getEnergy(), Action.EXECUTE).isZero()) {
+            if (!energyContainer.isEmpty() && !insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()).isZero()) {
                 //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
                 break;
             }
         }
         return true;
+    }
+
+    private FloatingLong insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, FloatingLong energy) {
+        //Insert into the output using manual as the automation type
+        List<IEnergyContainer> energyContainers = outputHandler.getEnergyContainers(null);
+        return FloatingLongTransferUtils.insert(energy, Action.EXECUTE, energyContainers::size, container -> energyContainers.get(container).getEnergy(),
+              (container, amount, action) -> energyContainers.get(container).insert(amount, action, AutomationType.MANUAL));
     }
 }

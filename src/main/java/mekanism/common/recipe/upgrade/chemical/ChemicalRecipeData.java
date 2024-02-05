@@ -3,11 +3,13 @@ package mekanism.common.recipe.upgrade.chemical;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.common.attachments.containers.AttachedChemicalTanks;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.recipe.upgrade.RecipeUpgradeData;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +35,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected abstract ChemicalRecipeData<CHEMICAL, STACK, TANK> create(List<TANK> tanks);
 
-    protected abstract ContainerType<TANK, ? extends AttachedChemicalTanks<CHEMICAL, STACK, TANK>, ?> getContainerType();
+    protected abstract ContainerType<TANK, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>, ?> getContainerType();
 
     @Override
     public boolean applyToStack(ItemStack stack) {
@@ -42,17 +44,24 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        AttachedChemicalTanks<CHEMICAL, STACK, TANK> outputHandler = getContainerType().getAttachment(stack);
+        IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler = getContainerType().getAttachment(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
         for (TANK tank : this.tanks) {
-            if (!outputHandler.insertChemical(tank.getStack(), Action.EXECUTE).isEmpty()) {
+            if (!tank.isEmpty() && !insertManualIntoOutputContainer(outputHandler, tank.getStack()).isEmpty()) {
                 //If we have a remainder something failed so bail
                 return false;
             }
         }
         return true;
+    }
+
+    private STACK insertManualIntoOutputContainer(IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler, STACK chemical) {
+        //Insert into the output using manual as the automation type
+        List<TANK> chemicalTanks = outputHandler.getChemicalTanks(null);
+        return ChemicalUtils.insert(chemical, Action.EXECUTE, outputHandler.getEmptyStack(), chemicalTanks::size, container -> chemicalTanks.get(container).getStack(),
+              (container, amount, action) -> chemicalTanks.get(container).insert(amount, action, AutomationType.MANUAL));
     }
 }

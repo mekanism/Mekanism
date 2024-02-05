@@ -97,10 +97,8 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> INFUSION = new ContainerType<>(MekanismAttachmentTypes.INFUSION_TANKS, NBTConstants.INFUSION_TANKS, AttachedInfusionTanks::new, Capabilities.INFUSION, IInfusionTile::getInfusionTanks, IInfusionTile::canHandleInfusion);
     public static final ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> PIGMENT = new ContainerType<>(MekanismAttachmentTypes.PIGMENT_TANKS, NBTConstants.PIGMENT_TANKS, AttachedPigmentTanks::new, Capabilities.PIGMENT, IPigmentTile::getPigmentTanks, IPigmentTile::canHandlePigment);
     public static final ContainerType<ISlurryTank, AttachedSlurryTanks, ISlurryHandler> SLURRY = new ContainerType<>(MekanismAttachmentTypes.SLURRY_TANKS, NBTConstants.SLURRY_TANKS, AttachedSlurryTanks::new, Capabilities.SLURRY, ISlurryTile::getSlurryTanks, ISlurryTile::canHandleSlurry);
-    //TODO - 1.20.4: Re-evaluate this in regards to the capability
     public static final ContainerType<IHeatCapacitor, AttachedHeatCapacitors, IHeatHandler> HEAT = new ContainerType<>(MekanismAttachmentTypes.HEAT_CAPACITORS, NBTConstants.HEAT_CAPACITORS, AttachedHeatCapacitors::new, null, IMekanismHeatHandler::getHeatCapacitors, IMekanismHeatHandler::canHandleHeat);
 
-    //TODO - 1.20.4: Re-evaluate this
     public static final Codec<ContainerType<?, ?, ?>> CODEC = NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().comapFlatMap(attachmentType -> {
         for (ContainerType<?, ?, ?> type : TYPES) {
             if (type.attachment.value() == attachmentType) {
@@ -160,13 +158,17 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return containerTag;
     }
 
-    //TODO - 1.20.4: Rename this method to be more obvious that it also registers the capability
+    /**
+     * Adds a container as default and exposes it as a capability that requires the given configs if the specified bus is present.
+     */
     public void addDefaultContainer(@Nullable IEventBus eventBus, Item item, Function<ItemStack, CONTAINER> defaultCreator, IMekanismConfig... requiredConfigs) {
         addDefaultContainers(eventBus, item, defaultCreator.andThen(List::of), requiredConfigs);
     }
 
+    /**
+     * Adds some containers as default and exposes it as a capability that requires the given configs if the specified bus is present.
+     */
     public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
-        //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
         knownDefaultItemContainers.put(item, defaultCreators);
         if (eventBus != null && capability != null) {
             eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, requiredConfigs));
@@ -179,13 +181,18 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     }
 
+    /**
+     * Adds a container as default and exposes it as a capability that requires the given configs if the specified bus is present.
+     */
     public void addDefaultContainer(RegisterCapabilitiesEvent event, Holder<EntityType<?>> entityType, Function<Entity, CONTAINER> defaultCreator, IMekanismConfig... requiredConfigs) {
         addDefaultContainers(event, entityType, defaultCreator.andThen(List::of), requiredConfigs);
     }
 
+    /**
+     * Adds a container as default and exposes it as a capability that requires the given configs if the specified bus is present.
+     */
     public void addDefaultContainers(RegisterCapabilitiesEvent event, Holder<EntityType<?>> holder, Function<Entity, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
         EntityType<?> entityType = holder.value();
-        //TODO - 1.20.4: Do we need to check if the config is loaded here if there are required configs? Given our creator may create the container before the necessary configs are present
         knownDefaultEntityContainers.put(entityType, defaultCreators);
         registerEntityCapabilities(event, entityType, requiredConfigs);
     }
@@ -220,7 +227,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             return holder.getData(this.attachment);
         } else if (holder instanceof ItemStack stack) {
             if (knownDefaultItemContainers.containsKey(stack.getItem())) {
-                //TODO - 1.20.4: A way to load legacy data? Potentially when doesn't have attachment but is known default container
                 return stack.getData(this.attachment);
             }
         } else if (holder instanceof Entity entity) {
@@ -228,7 +234,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
                 return holder.getData(this.attachment);
             }
         }
-        //TODO - 1.20.4: Support other types of holders?
         return null;
     }
 
@@ -285,6 +290,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             };
         }
         return (ICapabilityProvider<HOLDER, CONTEXT, H>) provider;
+    }
+
+    public boolean supports(ItemStack stack) {
+        if (stack.hasData(attachment) || hasLegacyData(stack)) {
+            return true;
+        }
+        return knownDefaultItemContainers.containsKey(stack.getItem());
     }
 
     public void saveTo(CompoundTag tag, List<CONTAINER> containers) {

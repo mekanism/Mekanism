@@ -141,7 +141,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
             attachmentAware.attachAttachments(eventBus);
         }
         if (defaultContainers != null) {
-            //TODO - 1.20.4: Put this comment somewhere
             //Note: We pass null for the event bus to not expose this attachment as a capability
             defaultContainers.forEach(((containerType, defaultCreators) -> containerType.addDefaultContainers(null, item, (Function) defaultCreators)));
             //We only allow them being attached once

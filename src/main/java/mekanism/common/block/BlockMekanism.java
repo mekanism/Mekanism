@@ -133,7 +133,7 @@ public abstract class BlockMekanism extends Block {
         }
         for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (tile.handles(type)) {
-                AttachedContainers<?> attachment = type.getAttachmentIfPresent(stack);
+                AttachedContainers<?> attachment = type.getAttachment(stack);
                 if (attachment != null) {
                     attachment.deserializeNBT(type.serialize(tile));
                 }

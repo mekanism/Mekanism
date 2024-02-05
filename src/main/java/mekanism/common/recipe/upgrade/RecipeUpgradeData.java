@@ -28,7 +28,6 @@ import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -75,22 +74,22 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (stack.hasData(MekanismAttachmentTypes.ENERGY_CONTAINERS) || ContainerType.ENERGY.hasLegacyData(stack)) {
+        if (ContainerType.ENERGY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (stack.hasData(MekanismAttachmentTypes.FLUID_TANKS) || ContainerType.FLUID.hasLegacyData(stack)) {
+        if (ContainerType.FLUID.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (stack.hasData(MekanismAttachmentTypes.GAS_TANKS) || ContainerType.GAS.hasLegacyData(stack)) {
+        if (ContainerType.GAS.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (stack.hasData(MekanismAttachmentTypes.INFUSION_TANKS) || ContainerType.INFUSION.hasLegacyData(stack)) {
+        if (ContainerType.INFUSION.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (stack.hasData(MekanismAttachmentTypes.PIGMENT_TANKS) || ContainerType.PIGMENT.hasLegacyData(stack)) {
+        if (ContainerType.PIGMENT.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (stack.hasData(MekanismAttachmentTypes.SLURRY_TANKS) || ContainerType.SLURRY.hasLegacyData(stack)) {
+        if (ContainerType.SLURRY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
