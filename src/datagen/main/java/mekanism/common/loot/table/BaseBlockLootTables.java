@@ -211,11 +211,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                             }
                         }
                     } else if (attachmentContainers.isEmpty()) {
-                        Mekanism.logger.warn("Substance type: {}, item missing attachments: {}", type, RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Substance type: {}, item missing attachments: {}", type.getAttachmentName(), RegistryUtils.getName(block));
                     } else if (containers.isEmpty()) {
-                        Mekanism.logger.warn("Substance type: {}, item has attachments but block doesn't have containers: {}", type, RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Substance type: {}, item has attachments but block doesn't have containers: {}", type.getAttachmentName(), RegistryUtils.getName(block));
                     } else {
-                        Mekanism.logger.warn("Substance type: {}, has {} item attachments and block has {} containers: {}", type, attachmentContainers.size(),
+                        Mekanism.logger.warn("Substance type: {}, has {} item attachments and block has {} containers: {}", type.getAttachmentName(), attachmentContainers.size(),
                               containers.size(), RegistryUtils.getName(block));
                     }
                 }

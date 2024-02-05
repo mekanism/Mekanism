@@ -357,8 +357,6 @@ public class Mekanism {
             registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
             registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
                   MekanismItems.MEKASUIT_BOOTS);
-            //Add any extra game event frequencies
-            MekanismGameEvents.addFrequencies();
         });
 
         //Register player tracker

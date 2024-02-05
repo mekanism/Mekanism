@@ -1,0 +1,16 @@
+{
+  "values": {
+    "mekanism:gravity_modulate": {
+      "frequency": 4
+    },
+    "mekanism:gravity_modulate_boosted": {
+      "frequency": 5
+    },
+    "mekanism:jetpack_burn": {
+      "frequency": 4
+    },
+    "mekanism:seismic_vibration": {
+      "frequency": 10
+    }
+  }
+}
