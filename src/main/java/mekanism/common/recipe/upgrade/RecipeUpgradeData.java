@@ -3,15 +3,19 @@ package mekanism.common.recipe.upgrade;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -28,6 +32,7 @@ import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
@@ -165,7 +170,17 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 boolean sorting = ItemDataUtils.getBoolean(stack, NBTConstants.SORTING);
                 yield sorting ? SortingRecipeData.SORTING : null;
             }
-            case UPGRADE -> UpgradesRecipeData.tryCreate(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
+            case UPGRADE -> {
+                if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
+                    UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+                    Map<Upgrade, Integer> upgrades = upgradeAware.getUpgrades();
+                    List<IInventorySlot> slots = upgradeAware.getInventorySlots(null);
+                    if (!upgrades.isEmpty() || slots.stream().anyMatch(slot -> !slot.isEmpty())) {
+                        yield new UpgradesRecipeData(upgrades, slots);
+                    }
+                }
+                yield null;
+            }
             case QIO_DRIVE -> {
                 DriveMetadata data = DriveMetadata.load(stack);
                 if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {

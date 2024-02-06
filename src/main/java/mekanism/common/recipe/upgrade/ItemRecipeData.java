@@ -141,19 +141,22 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             public void onContentsChanged() {
             }
         };
-        boolean hasData = false;
-        for (IInventorySlot slot : dataSlots) {
-            if (!slot.isEmpty()) {
-                if (!ItemHandlerHelper.insertItemStacked(outputHandler, slot.getStack(), false).isEmpty()) {
-                    //If we have a remainder something failed so bail
-                    return false;
-                }
-                hasData = true;
+        if (applyToStack(outputHandler, dataSlots)) {
+            if (dataSlots.stream().anyMatch(slot -> !slot.isEmpty())) {
+                //We managed to transfer it all into valid slots, so save it to the stack
+                return stackWriter.test(DataHandlerUtils.writeContainers(stackSlots));
             }
+            return true;
         }
-        if (hasData) {
-            //We managed to transfer it all into valid slots, so save it to the stack
-            return stackWriter.test(DataHandlerUtils.writeContainers(stackSlots));
+        return false;
+    }
+
+    static boolean applyToStack(IMekanismInventory outputHandler, List<IInventorySlot> dataSlots) {
+        for (IInventorySlot slot : dataSlots) {
+            if (!slot.isEmpty() && !ItemHandlerHelper.insertItemStacked(outputHandler, slot.getStack(), false).isEmpty()) {
+                //If we have a remainder something failed so bail
+                return false;
+            }
         }
         return true;
     }

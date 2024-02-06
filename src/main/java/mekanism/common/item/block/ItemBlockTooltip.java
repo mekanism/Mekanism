@@ -12,12 +12,13 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
+import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -92,7 +93,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory.hasSustainedInventory(stack))));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
-            MekanismUtils.addUpgradesToTooltip(stack, tooltip);
+            stack.getData(MekanismAttachmentTypes.UPGRADES).getUpgrades().forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent()));
         }
     }
 

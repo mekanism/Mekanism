@@ -48,24 +48,16 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData() {
-        CompoundTag frequencyCompound = null;
         if (ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, Tag.TAG_COMPOUND)) {
-            frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
+            deserializeNBT(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
             //Remove the legacy data now that it has been parsed and loaded
             ItemDataUtils.removeData(stack, NBTConstants.FREQUENCY);
         } else if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
             CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
             if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                frequencyCompound = frequencyComponent.getCompound(frequencyType.getName());
+                deserializeNBT(frequencyComponent.getCompound(frequencyType.getName()));
             }
             //Note: We don't remove legacy data here as it is still necessary/used, and we are just reading the identity
-        }
-        if (frequencyCompound != null) {
-            identity = FrequencyIdentity.load(frequencyType, frequencyCompound);
-            if (identity != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                owner = frequencyCompound.getUUID(NBTConstants.OWNER_UUID);
-                frequency = frequencyType.getManager(identity, owner).getFrequency(identity.key());
-            }
         }
     }
 

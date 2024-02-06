@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -51,7 +50,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -343,18 +341,13 @@ public final class MekanismUtils {
     /**
      * Gets the maximum energy for a machine's item form via its upgrades.
      *
-     * @param stack - stack holding energy upgrades
-     * @param def   - original, default max energy
+     * @param energyUpgrades number of installed energy upgrades
+     * @param def            original, default max energy
      *
      * @return max energy
      */
-    public static FloatingLong getMaxEnergy(ItemStack stack, FloatingLong def) {
-        float numUpgrades = 0;
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            numUpgrades = upgrades.getOrDefault(Upgrade.ENERGY, 0);
-        }
-        return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), numUpgrades / Upgrade.ENERGY.getMax()));
+    public static FloatingLong getMaxEnergy(int energyUpgrades, FloatingLong def) {
+        return def.multiply(Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), energyUpgrades / (double) Upgrade.ENERGY.getMax()));
     }
 
     /**
@@ -458,11 +451,6 @@ public final class MekanismUtils {
             }
             tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
         }
-    }
-
-    public static void addUpgradesToTooltip(ItemStack stack, List<Component> tooltip) {
-        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_UPGRADE, upgradeComponent -> Upgrade.buildMap(upgradeComponent)
-              .forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent())));
     }
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {

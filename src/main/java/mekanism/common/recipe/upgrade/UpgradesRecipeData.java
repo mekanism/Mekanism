@@ -1,22 +1,14 @@
 package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.inventory.slot.UpgradeInventorySlot;
-import mekanism.common.util.ItemDataUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.BlockItem;
+import mekanism.common.attachments.UpgradeAware;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,26 +18,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
     private final Map<Upgrade, Integer> upgrades;
     private final List<IInventorySlot> slots;
 
-    @Nullable
-    static UpgradesRecipeData tryCreate(CompoundTag componentUpgrade) {
-        if (componentUpgrade.isEmpty()) {
-            return null;
-        }
-        Map<Upgrade, Integer> upgrades = Upgrade.buildMap(componentUpgrade);
-        List<IInventorySlot> slots;
-        if (componentUpgrade.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
-            slots = ItemRecipeData.readContents(componentUpgrade.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
-        } else {
-            slots = Collections.emptyList();
-        }
-        if (upgrades.isEmpty() && slots.isEmpty()) {
-            //There isn't actually any valid data stored
-            return null;
-        }
-        return new UpgradesRecipeData(upgrades, slots);
-    }
-
-    private UpgradesRecipeData(Map<Upgrade, Integer> upgrades, List<IInventorySlot> slots) {
+    UpgradesRecipeData(Map<Upgrade, Integer> upgrades, List<IInventorySlot> slots) {
         this.upgrades = upgrades;
         this.slots = slots;
     }
@@ -82,33 +55,17 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
 
     @Override
     public boolean applyToStack(ItemStack stack) {
-        if (upgrades.isEmpty() && slots.isEmpty()) {
+        if (upgrades.isEmpty() && slots.stream().allMatch(IInventorySlot::isEmpty)) {
             return true;
         }
-        AttributeUpgradeSupport upgradeSupport = Attribute.get(((BlockItem) stack.getItem()).getBlock(), AttributeUpgradeSupport.class);
-        if (upgradeSupport == null) {
-            return false;
-        }
-        Set<Upgrade> supportedUpgrades = upgradeSupport.supportedUpgrades();
-        if (!supportedUpgrades.containsAll(upgrades.keySet())) {
+        UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+        if (!upgradeAware.getSupportedUpgrades().containsAll(upgrades.keySet())) {
             //Not all upgrades are supported, fail
             return false;
         }
-        List<IInventorySlot> stackSlots = List.of(
-              UpgradeInventorySlot.input(null, supportedUpgrades),
-              UpgradeInventorySlot.output(null)
-        );
-        CompoundTag nbt = new CompoundTag();
-        if (!upgrades.isEmpty()) {
-            //Only bother saving which upgrades we have if we actually have any
-            Upgrade.saveMap(upgrades, nbt);
-        }
-        if (ItemRecipeData.applyToStack(slots, stackSlots, toWrite -> nbt.put(NBTConstants.ITEMS, toWrite))) {
-            //Try merging stored stacks, writing if needed. If we did merge (even if we didn't have to write)
-            // then save and return that we applied to our stack
-            ItemDataUtils.setCompound(stack, NBTConstants.COMPONENT_UPGRADE, nbt);
-            return true;
-        }
-        return false;
+        //Add any upgrades we might have to the stack
+        upgradeAware.setUpgrades(upgrades);
+        //Try merging stored stacks
+        return ItemRecipeData.applyToStack(upgradeAware, slots);
     }
 }

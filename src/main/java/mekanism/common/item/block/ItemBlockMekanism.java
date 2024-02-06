@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -11,6 +10,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
 import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -21,11 +21,8 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.BlockItem;
@@ -132,37 +129,27 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
 
     private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {
 
-        private final ItemStack stack;
         //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
         // for how much energy a machine can store changes
         private final FloatingLongSupplier baseStorage;
-        @Nullable
-        private CompoundTag lastNBT;
+        private final UpgradeAware upgradeAware;
+        private int lastInstalled;
         private FloatingLong value;
 
         private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
-            this.stack = stack;
-            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-                this.lastNBT = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE).copy();
-            } else {
-                this.lastNBT = null;
-            }
+            this.upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+            this.lastInstalled = this.upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             this.baseStorage = baseStorage;
-            this.value = MekanismUtils.getMaxEnergy(this.stack, this.baseStorage.get());
+            this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.get());
         }
 
         @NotNull
         @Override
         public FloatingLong get() {
-            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-                CompoundTag upgrades = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
-                if (lastNBT == null || !lastNBT.equals(upgrades)) {
-                    lastNBT = upgrades.copy();
-                    value = MekanismUtils.getMaxEnergy(stack, baseStorage.get());
-                }
-            } else if (lastNBT != null) {
-                lastNBT = null;
-                value = MekanismUtils.getMaxEnergy(stack, baseStorage.get());
+            int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
+            if (installed != lastInstalled) {
+                lastInstalled = installed;
+                value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.get());
             }
             return value;
         }

@@ -10,6 +10,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -126,7 +127,7 @@ public abstract class BlockMekanism extends Block {
             }
         }
         if (tile.supportsUpgrades()) {
-            tile.getComponent().write(lazyDataMap.get());
+            stack.getData(MekanismAttachmentTypes.UPGRADES).deserializeNBT(tile.getComponent().writeUpgradeNbt());
         }
         if (tile instanceof ISideConfiguration config) {
             CompoundTag dataMap = lazyDataMap.get();
@@ -264,9 +265,13 @@ public abstract class BlockMekanism extends Block {
                 }
             }
         }
-        if (tile.supportsUpgrades()) {
+        if (tile.supportsUpgrades() && stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
             //The read method validates that data is stored
-            tile.getComponent().read(dataMap);
+            UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+            CompoundTag upgradeNbt = upgradeAware.serializeNBT();
+            if (upgradeNbt != null) {
+                tile.getComponent().readUpgradeNbt(upgradeNbt);
+            }
         }
         if (tile instanceof ISideConfiguration config) {
             //The read methods validate that data is stored

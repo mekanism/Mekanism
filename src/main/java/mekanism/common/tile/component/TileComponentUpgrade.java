@@ -179,24 +179,32 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_UPGRADE, upgradeNBT -> {
-            upgrades.clear();
-            upgrades.putAll(Upgrade.buildMap(upgradeNBT));
-            for (Upgrade upgrade : getSupportedTypes()) {
-                tile.recalculateUpgrades(upgrade);
-            }
-            //Load the inventory
-            NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
-        });
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_UPGRADE, this::readUpgradeNbt);
+    }
+
+    public void readUpgradeNbt(CompoundTag upgradeNBT) {
+        upgrades.clear();
+        upgrades.putAll(Upgrade.buildMap(upgradeNBT));
+        for (Upgrade upgrade : getSupportedTypes()) {
+            tile.recalculateUpgrades(upgrade);
+        }
+        //Load the inventory
+        NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
+    }
+
+    public CompoundTag writeUpgradeNbt() {
+        CompoundTag upgradeNBT = new CompoundTag();
+        if (!upgrades.isEmpty()) {
+            Upgrade.saveMap(upgrades, upgradeNBT);
+        }
+        //Save the inventory
+        upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getSlots()));
+        return upgradeNBT;
     }
 
     @Override
     public void write(CompoundTag nbtTags) {
-        CompoundTag upgradeNBT = new CompoundTag();
-        Upgrade.saveMap(upgrades, upgradeNBT);
-        //Save the inventory
-        upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getSlots()));
-        nbtTags.put(NBTConstants.COMPONENT_UPGRADE, upgradeNBT);
+        nbtTags.put(NBTConstants.COMPONENT_UPGRADE, writeUpgradeNbt());
     }
 
     @Override

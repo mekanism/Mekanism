@@ -15,6 +15,9 @@
               "function": "mekanism:copy_security"
             },
             {
+              "function": "mekanism:copy_upgrades"
+            },
+            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
@@ -25,11 +28,6 @@
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "componentUpgrade",
-                  "target": "mekData.componentUpgrade"
                 },
                 {
                   "op": "replace",

@@ -2,25 +2,21 @@ package mekanism.common.integration.projecte.processors;
 
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,12 +46,14 @@ public class MekanismContentsProcessor implements INBTProcessor {
                 }
             }
         }
-        if (stack.getItem() instanceof BlockItem blockItem) {
-            //Stored upgrades
-            if (Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class) && ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-                Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-                for (Map.Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-                    currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+        if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {//Stored upgrades
+            UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+            for (Map.Entry<Upgrade, Integer> entry : upgradeAware.getUpgrades().entrySet()) {
+                currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+            }
+            for (IInventorySlot slot : upgradeAware.getInventorySlots(null)) {
+                if (!slot.isEmpty()) {
+                    currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
                 }
             }
         }

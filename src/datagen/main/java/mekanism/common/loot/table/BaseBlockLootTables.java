@@ -26,6 +26,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
 import mekanism.common.item.loot.CopySecurityLootFunction;
+import mekanism.common.item.loot.CopyUpgradesLootFunction;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -193,7 +194,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 itemLootPool.apply(CopySecurityLootFunction.builder());
             }
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
-                nbtBuilder.copy(NBTConstants.COMPONENT_UPGRADE, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_UPGRADE);
+                itemLootPool.apply(CopyUpgradesLootFunction.builder());
             }
             if (tile instanceof ISideConfiguration) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_CONFIG, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_CONFIG);
