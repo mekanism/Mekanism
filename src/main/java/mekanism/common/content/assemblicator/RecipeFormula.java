@@ -24,21 +24,15 @@ public class RecipeFormula {
     public RecipeHolder<CraftingRecipe> recipe;
     private final CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
 
-    public RecipeFormula(Level world, NonNullList<ItemStack> inv) {
-        for (int i = 0; i < 9; i++) {
-            input.set(i, inv.get(i).copyWithCount(1));
-        }
-        resetToRecipe();
-        recipe = getRecipeFromGrid(dummy, world);
+    public RecipeFormula() {
     }
 
     public RecipeFormula(Level world, List<IInventorySlot> craftingGridSlots) {
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot craftingSlot = craftingGridSlots.get(i);
-            if (!craftingSlot.isEmpty()) {
-                input.set(i, craftingSlot.getStack().copyWithCount(1));
-            }
+            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
+            input.set(i, craftingSlot.getStack().copyWithCount(1));
         }
         resetToRecipe();
         recipe = getRecipeFromGrid(dummy, world);

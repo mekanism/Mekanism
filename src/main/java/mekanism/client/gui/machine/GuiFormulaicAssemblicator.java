@@ -12,11 +12,11 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
@@ -130,10 +130,11 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private boolean canEncode() {
-        if (tile.formula != null && tile.formula.isValidFormula() || tile.getFormulaSlot().isEmpty()) {
+        if (tile.formula != null && tile.formula.isValidFormula()) {
             return false;
         }
-        ItemStack formulaStack = tile.getFormulaSlot().getStack();
-        return formulaStack.getItem() instanceof ItemCraftingFormula formula && !formula.hasInventory(formulaStack);
+        return FormulaAttachment.formula(tile.getFormulaSlot().getStack())
+              .filter(FormulaAttachment::isEmpty)
+              .isPresent();
     }
 }

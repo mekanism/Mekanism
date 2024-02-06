@@ -145,11 +145,11 @@ import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
@@ -251,14 +251,16 @@ public class ClientRegistration {
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
                   (stack, world, entity, seed) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(world, stack) == null ? 0 : 1);
 
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
-                ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.hasInventory(stack) && formula.isInvalid(stack) ? 1 : 0;
-            });
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) -> {
-                ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.hasInventory(stack) && !formula.isInvalid(stack) ? 1 : 0;
-            });
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) ->
+                  FormulaAttachment.formula(stack)
+                        .filter(attachment -> attachment.hasItems() && attachment.isInvalid())
+                        .isPresent() ? 1 : 0
+            );
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) ->
+                  FormulaAttachment.formula(stack)
+                        .filter(attachment -> attachment.hasItems() && attachment.isValid())
+                        .isPresent() ? 1 : 0
+            );
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
 

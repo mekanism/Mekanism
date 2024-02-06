@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.ColoredItem;
+import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
@@ -109,6 +110,11 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UpgradeAware>> UPGRADES = ATTACHMENT_TYPES.register("upgrades",
           () -> AttachmentType.serializable(UpgradeAware::create)
                 .comparator(UpgradeAware::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FormulaAttachment>> FORMULA_HOLDER = ATTACHMENT_TYPES.register("formula",
+          () -> AttachmentType.serializable(FormulaAttachment::create)
+                .comparator(FormulaAttachment::isCompatible)
                 .build());
 
     //Non-serializable attachments for use in persisting a backing object between multiple capabilities

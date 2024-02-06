@@ -1,17 +1,16 @@
 package mekanism.common.item;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import mekanism.common.attachments.FormulaAttachment;
+import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemCraftingFormula extends Item {
 
@@ -31,27 +29,13 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        NonNullList<ItemStack> inv = getInventory(itemStack);
-        if (inv != null) {
-            List<ItemStack> stacks = new ArrayList<>();
-            for (ItemStack stack : inv) {
-                if (!stack.isEmpty()) {
-                    boolean found = false;
-                    for (ItemStack iterStack : stacks) {
-                        if (InventoryUtils.areItemsStackable(stack, iterStack)) {
-                            iterStack.grow(stack.getCount());
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        stacks.add(stack);
-                    }
-                }
-            }
+        Map<HashedItem, Integer> stacks = FormulaAttachment.formula(itemStack)
+              .stream().flatMap(attachment -> attachment.getItems().stream())
+              .filter(slot -> !slot.isEmpty())
+              .collect(Collectors.toMap(slot -> HashedItem.raw(slot.getStack()), IInventorySlot::getCount, Integer::sum, LinkedHashMap::new));
+        if (!stacks.isEmpty()) {
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
-            for (ItemStack stack : stacks) {
-                tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, stack, stack.getCount()));
-            }
+            stacks.forEach((stack, count) -> tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, stack.getInternalStack(), count)));
         }
     }
 
@@ -61,8 +45,7 @@ public class ItemCraftingFormula extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                setInventory(stack, null);
-                setInvalid(stack, false);
+                FormulaAttachment.formula(stack).ifPresent(FormulaAttachment::clear);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
@@ -70,66 +53,24 @@ public class ItemCraftingFormula extends Item {
     }
 
     @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return hasInventory(stack) ? 1 : 64;
+    public int getMaxStackSize(@NotNull ItemStack stack) {
+        return FormulaAttachment.formula(stack)
+                     .filter(FormulaAttachment::hasItems)
+                     .isPresent() ? 1 : super.getMaxStackSize(stack);
     }
 
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {
-        if (hasInventory(stack)) {
-            if (isInvalid(stack)) {
+        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.formula(stack)
+              .filter(FormulaAttachment::hasItems);
+        if (formulaAttachment.isPresent()) {
+            FormulaAttachment attachment = formulaAttachment.get();
+            if (attachment.isInvalid()) {
                 return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
             }
             return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
         }
         return super.getName(stack);
-    }
-
-    public boolean isInvalid(ItemStack stack) {
-        return ItemDataUtils.getBoolean(stack, NBTConstants.INVALID);
-    }
-
-    public void setInvalid(ItemStack stack, boolean invalid) {
-        ItemDataUtils.setBoolean(stack, NBTConstants.INVALID, invalid);
-    }
-
-    public boolean hasInventory(ItemStack stack) {
-        return ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
-    }
-
-    @Nullable
-    public NonNullList<ItemStack> getInventory(ItemStack stack) {
-        if (!hasInventory(stack)) {
-            return null;
-        }
-        ListTag tagList = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
-        NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
-            CompoundTag tagCompound = tagList.getCompound(tagCount);
-            byte slotID = tagCompound.getByte(NBTConstants.SLOT);
-            if (slotID >= 0 && slotID < 9) {
-                inventory.set(slotID, ItemStack.of(tagCompound));
-            }
-        }
-        return inventory;
-    }
-
-    public void setInventory(ItemStack stack, @Nullable NonNullList<ItemStack> inv) {
-        if (inv == null) {
-            ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
-            return;
-        }
-        ListTag tagList = new ListTag();
-        for (int slotCount = 0; slotCount < 9; slotCount++) {
-            ItemStack slotStack = inv.get(slotCount);
-            if (!slotStack.isEmpty()) {
-                CompoundTag stackTag = new CompoundTag();
-                slotStack.save(stackTag);
-                stackTag.putByte(NBTConstants.SLOT, (byte) slotCount);
-                tagList.add(stackTag);
-            }
-        }
-        ItemDataUtils.setListOrRemove(stack, NBTConstants.ITEMS, tagList);
     }
 }
