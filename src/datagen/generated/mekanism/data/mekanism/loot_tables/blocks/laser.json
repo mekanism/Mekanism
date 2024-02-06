@@ -13,20 +13,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "componentSecurity.owner",
-                  "target": "mekData.owner"
-                },
-                {
-                  "op": "replace",
-                  "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode"
-                }
-              ],
-              "source": "block_entity"
+              "function": "mekanism:copy_security"
             },
             {
               "type": "mekanism:energy_containers",

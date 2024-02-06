@@ -5,6 +5,8 @@ import java.util.Objects;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.ColoredItem;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedPigmentTanks;
@@ -14,6 +16,9 @@ import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.AttachedHeatCapacitors;
 import mekanism.common.attachments.containers.AttachedInventorySlots;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.security.OwnerObject;
+import mekanism.common.attachments.security.OwnerObject.OwnerOnlyObject;
+import mekanism.common.attachments.security.SecurityObject;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.GasTankRateLimitChemicalTank;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.InfusionTankRateLimitChemicalTank;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.PigmentTankRateLimitChemicalTank;
@@ -56,15 +61,49 @@ public class MekanismAttachmentTypes {
                 .serialize(Codec.doubleRange(RadiationManager.BASELINE, Double.MAX_VALUE), radiation -> radiation != RadiationManager.BASELINE)
                 //Note: Technically this comparator is not needed as by default neo only checks for attachment compatability for item stacks,
                 // but we set it regardless just so that if anyone is checking it for entities then they can bypass the serialization for it
-                .comparator(Objects::equals)
+                .comparator(Double::equals)
                 .build()
     );
 
-    //Note: As we only attach this to items we don't need to make it copy on death
+    //Item based attachments:
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ModuleContainer>> MODULE_CONTAINER = ATTACHMENT_TYPES.register("module_container",
           () -> AttachmentType.serializable(ModuleContainer::create)
                 .comparator(ModuleContainer::isCompatible)
                 .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DisassemblerMode>> DISASSEMBLER_MODE = ATTACHMENT_TYPES.register("disassembler_mode", DisassemblerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ConfiguratorMode>> CONFIGURATOR_MODE = ATTACHMENT_TYPES.register("configurator_mode", ConfiguratorMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FlamethrowerMode>> FLAMETHROWER_MODE = ATTACHMENT_TYPES.register("flamethrower_mode", FlamethrowerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FreeRunnerMode>> FREE_RUNNER_MODE = ATTACHMENT_TYPES.register("free_runner_mode", FreeRunnerMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<JetpackMode>> JETPACK_MODE = ATTACHMENT_TYPES.register("jetpack_mode", JetpackMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SCUBA_TANK_MODE = ATTACHMENT_TYPES.registerBoolean("scuba_tank_mode", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BUCKET_MODE = ATTACHMENT_TYPES.registerBoolean("bucket_mode", false);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_containers", () -> ContainerType.ENERGY);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInventorySlots>> INVENTORY_SLOTS = ATTACHMENT_TYPES.registerContainer("inventory_slots", () -> ContainerType.ITEM);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedFluidTanks>> FLUID_TANKS = ATTACHMENT_TYPES.registerContainer("fluid_tanks", () -> ContainerType.FLUID);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedGasTanks>> GAS_TANKS = ATTACHMENT_TYPES.registerContainer("gas_tanks", () -> ContainerType.GAS);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInfusionTanks>> INFUSION_TANKS = ATTACHMENT_TYPES.registerContainer("infusion_tanks", () -> ContainerType.INFUSION);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedPigmentTanks>> PIGMENT_TANKS = ATTACHMENT_TYPES.registerContainer("pigment_tanks", () -> ContainerType.PIGMENT);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedSlurryTanks>> SLURRY_TANKS = ATTACHMENT_TYPES.registerContainer("slurry_tanks", () -> ContainerType.SLURRY);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedHeatCapacitors>> HEAT_CAPACITORS = ATTACHMENT_TYPES.registerContainer("heat_capacitors", () -> ContainerType.HEAT);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OwnerOnlyObject>> OWNER_ONLY = ATTACHMENT_TYPES.register("owner",
+          () -> AttachmentType.serializable(OwnerOnlyObject::new)
+                .comparator(OwnerObject::isCompatible)
+                .build());
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<SecurityObject>> SECURITY = ATTACHMENT_TYPES.register("security",
+          () -> AttachmentType.serializable(SecurityObject::new)
+                .comparator(SecurityObject::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ColoredItem>> COLORABLE = ATTACHMENT_TYPES.register("color",
+          () -> AttachmentType.serializable(ColoredItem::new)
+                .comparator(ColoredItem::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> FREQUENCY_AWARE = ATTACHMENT_TYPES.registerFrequencyAware("frequency_aware", FrequencyAware::create);
 
     //Non-serializable attachments for use in persisting a backing object between multiple capabilities
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CHEMICAL_TANK_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("chemical_tank_contents_handler",
@@ -142,22 +181,4 @@ public class MekanismAttachmentTypes {
               }
               throw new IllegalArgumentException("Attempted to attach a CRYSTALLIZER_CONTENTS_HANDLER to an object other than a chemical crystallizer.");
           }).build());
-
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DisassemblerMode>> DISASSEMBLER_MODE = ATTACHMENT_TYPES.register("disassembler_mode", DisassemblerMode.class);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ConfiguratorMode>> CONFIGURATOR_MODE = ATTACHMENT_TYPES.register("configurator_mode", ConfiguratorMode.class);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FlamethrowerMode>> FLAMETHROWER_MODE = ATTACHMENT_TYPES.register("flamethrower_mode", FlamethrowerMode.class);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FreeRunnerMode>> FREE_RUNNER_MODE = ATTACHMENT_TYPES.register("free_runner_mode", FreeRunnerMode.class);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<JetpackMode>> JETPACK_MODE = ATTACHMENT_TYPES.register("jetpack_mode", JetpackMode.class);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SCUBA_TANK_MODE = ATTACHMENT_TYPES.registerBoolean("scuba_tank_mode", false);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BUCKET_MODE = ATTACHMENT_TYPES.registerBoolean("bucket_mode", false);
-
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_containers", () -> ContainerType.ENERGY);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInventorySlots>> INVENTORY_SLOTS = ATTACHMENT_TYPES.registerContainer("inventory_slots", () -> ContainerType.ITEM);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedFluidTanks>> FLUID_TANKS = ATTACHMENT_TYPES.registerContainer("fluid_tanks", () -> ContainerType.FLUID);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedGasTanks>> GAS_TANKS = ATTACHMENT_TYPES.registerContainer("gas_tanks", () -> ContainerType.GAS);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInfusionTanks>> INFUSION_TANKS = ATTACHMENT_TYPES.registerContainer("infusion_tanks", () -> ContainerType.INFUSION);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedPigmentTanks>> PIGMENT_TANKS = ATTACHMENT_TYPES.registerContainer("pigment_tanks", () -> ContainerType.PIGMENT);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedSlurryTanks>> SLURRY_TANKS = ATTACHMENT_TYPES.registerContainer("slurry_tanks", () -> ContainerType.SLURRY);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedHeatCapacitors>> HEAT_CAPACITORS = ATTACHMENT_TYPES.registerContainer("heat_capacitors", () -> ContainerType.HEAT);
 }

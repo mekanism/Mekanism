@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
@@ -13,6 +14,10 @@ import org.jetbrains.annotations.Nullable;
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequencies
  */
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
+
+    public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyAware<FREQUENCY> frequencyAware) {
+        return create(frequencyAware.getFrequencyType(), frequencyAware::getFrequency, frequencyAware::setFrequency);
+    }
 
     public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
         return new SyncableFrequency<>(type, getter, setter);

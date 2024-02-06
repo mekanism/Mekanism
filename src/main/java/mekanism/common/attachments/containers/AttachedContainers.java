@@ -52,6 +52,11 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
     protected abstract boolean isContainerCompatible(CONTAINER a, CONTAINER b);
 
     public boolean isCompatible(AttachedContainers<CONTAINER> other) {
+        if (other == this) {
+            return true;
+        } else if (getClass() != other.getClass()) {
+            return false;
+        }
         int containerCount = containers.size();
         if (containerCount != other.containers.size()) {
             return false;

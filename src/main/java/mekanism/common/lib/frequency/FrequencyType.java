@@ -1,5 +1,6 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.serialization.Codec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +22,8 @@ public class FrequencyType<FREQ extends Frequency> {
 
     private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
     private static int maxNameLength = 0;
+
+    public static final Codec<FrequencyType<?>> CODEC = ExtraCodecs.stringResolverCodec(FrequencyType::getName, registryMap::get);
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),

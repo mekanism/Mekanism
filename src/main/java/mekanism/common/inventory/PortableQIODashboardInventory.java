@@ -7,7 +7,7 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,16 +61,10 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
     @Nullable
     @Override
     public QIOFrequency getFrequency() {
-        if (world != null && !world.isClientSide()) {
-            IFrequencyItem frequencyItem = (IFrequencyItem) stack.getItem();
-            if (frequencyItem.hasFrequency(stack)) {
-                Frequency frequency = frequencyItem.getFrequency(stack);
-                if (frequency instanceof QIOFrequency freq) {
-                    return freq;
-                } else {
-                    // if this frequency no longer exists, remove the reference from the stack
-                    frequencyItem.setFrequency(stack, null);
-                }
+        if (world != null && !world.isClientSide() && !stack.isEmpty()) {//Note: This shouldn't be empty but we validate it just in case
+            Frequency frequency = stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).getFrequency();
+            if (frequency instanceof QIOFrequency freq) {
+                return freq;
             }
         }
         return null;

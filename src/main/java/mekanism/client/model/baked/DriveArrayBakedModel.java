@@ -5,32 +5,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -159,13 +157,9 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
         }
 
         private boolean hasFrequency(ItemStack stack) {
-            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-                CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
-                if (frequencyComponent.contains(FrequencyType.QIO.getName(), Tag.TAG_COMPOUND)) {
-                    CompoundTag frequencyCompound = frequencyComponent.getCompound(FrequencyType.QIO.getName());
-                    FrequencyIdentity identity = FrequencyIdentity.load(FrequencyType.QIO, frequencyCompound);
-                    return identity != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID);
-                }
+            if (stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == FrequencyType.QIO) {
+                FrequencyAware<?> frequencyAware = stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
+                return frequencyAware.getIdentity() != null && frequencyAware.getOwner() != null;
             }
             return false;
         }

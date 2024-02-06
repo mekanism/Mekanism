@@ -8,7 +8,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
-import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
@@ -26,11 +25,6 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
 
     public ItemStack getStack() {
         return stack;
-    }
-
-    @Override
-    public FrequencyType<TeleporterFrequency> getFrequencyType() {
-        return FrequencyType.TELEPORTER;
     }
 
     public byte getStatus() {

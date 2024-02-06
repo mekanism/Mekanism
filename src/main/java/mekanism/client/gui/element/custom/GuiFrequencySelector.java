@@ -253,6 +253,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             PacketUtils.sendToServer(new PacketSetTileFrequency<>(set, getFrequencyType(), identity, getTileEntity().getBlockPos()));
         }
 
+        @Nullable
         @Override
         default FREQ getFrequency() {
             return getTileEntity().getFrequency(getFrequencyType());
@@ -287,6 +288,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             PacketUtils.sendToServer(new PacketSetItemFrequency<>(set, getFrequencyType(), identity, getFrequencyContainer().getHand()));
         }
 
+        @Nullable
         @Override
         default FREQ getFrequency() {
             return getFrequencyContainer().getFrequency();

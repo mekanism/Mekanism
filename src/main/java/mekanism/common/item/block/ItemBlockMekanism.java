@@ -7,6 +7,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
 import mekanism.common.attachments.IAttachmentAware;
@@ -18,8 +19,8 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
-import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
@@ -115,7 +116,8 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         if (Attribute.has(block, AttributeSecurity.class)) {
-            ItemStackSecurityObject.attachCapsToItem(event, this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
         }
     }
 

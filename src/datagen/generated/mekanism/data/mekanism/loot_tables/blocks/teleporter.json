@@ -8,6 +8,13 @@
           "type": "minecraft:item",
           "functions": [
             {
+              "type": "Teleporter",
+              "function": "mekanism:copy_custom_frequency"
+            },
+            {
+              "function": "mekanism:copy_security"
+            },
+            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
@@ -18,16 +25,6 @@
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "componentSecurity.owner",
-                  "target": "mekData.owner"
-                },
-                {
-                  "op": "replace",
-                  "source": "componentSecurity.securityMode",
-                  "target": "mekData.securityMode"
                 },
                 {
                   "op": "replace",

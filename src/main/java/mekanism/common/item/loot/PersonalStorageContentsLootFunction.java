@@ -37,7 +37,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return MekanismLootFunctions.PERSONAL_STORAGE_LOOT_FUNC.get();
+        return MekanismLootFunctions.PERSONAL_STORAGE.get();
     }
 
     @Override

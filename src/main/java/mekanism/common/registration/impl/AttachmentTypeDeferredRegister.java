@@ -1,11 +1,13 @@
 package mekanism.common.registration.impl;
 
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -34,11 +36,18 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               .build());
     }
 
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> registerFrequencyAware(String name,
+          Function<IAttachmentHolder, FrequencyAware<?>> defaultValueConstructor) {
+        return register(name, () -> AttachmentType.serializable(defaultValueConstructor)
+              .comparator(FrequencyAware::isCompatible)
+              .build());
+    }
+
     public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> registerBoolean(String name, boolean defaultValue) {
         return register(name, () -> AttachmentType.builder(() -> defaultValue)
               //If we are true by default we only care about serializing the value when it is false
               .serialize(defaultValue ? FALSE_SERIALIZER : TRUE_SERIALIZER)
-              .comparator(Objects::equals)
+              .comparator(Boolean::equals)
               .build());
     }
 

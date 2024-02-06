@@ -1,9 +1,11 @@
 package mekanism.common.lib.frequency;
 
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -41,6 +43,13 @@ public class TileComponentFrequency implements ITileComponent {
             return supportedFrequencies.size() > 1;
         }
         return !supportedFrequencies.isEmpty();
+    }
+
+    public Set<FrequencyType<?>> getCustomFrequencies() {
+        if (supportedFrequencies.containsKey(FrequencyType.SECURITY)) {
+            return Sets.difference(supportedFrequencies.keySet(), Set.of(FrequencyType.SECURITY));
+        }
+        return supportedFrequencies.keySet();
     }
 
     public void tickServer() {

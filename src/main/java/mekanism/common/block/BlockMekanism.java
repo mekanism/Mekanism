@@ -1,5 +1,6 @@
 package mekanism.common.block;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
@@ -21,10 +22,13 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -104,8 +108,12 @@ public abstract class BlockMekanism extends Block {
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = stack.getItem();
         Lazy<CompoundTag> lazyDataMap = Lazy.of(() -> ItemDataUtils.getDataMap(stack));
-        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
+        Set<FrequencyType<?>> customFrequencies = tile.getFrequencyComponent().getCustomFrequencies();
+        if (!customFrequencies.isEmpty()) {
             tile.getFrequencyComponent().write(lazyDataMap.get());
+            if (item instanceof IFrequencyItem frequencyItem && customFrequencies.contains(frequencyItem.getFrequencyType())) {
+                stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).copyFromComponent(tile.getFrequencyComponent());
+            }
         }
         if (tile.hasSecurity()) {
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);

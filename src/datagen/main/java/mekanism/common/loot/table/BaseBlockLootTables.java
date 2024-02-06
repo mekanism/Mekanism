@@ -24,7 +24,11 @@ import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.item.loot.CopyContainersLootFunction;
+import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
+import mekanism.common.item.loot.CopySecurityLootFunction;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
+import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -162,6 +166,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
             TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
             boolean hasContents = false;
+            ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
             //delayed items until after NBT copy is added
             DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
@@ -170,13 +175,22 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
                 tile = hasTileEntity.createDummyBlockEntity();
             }
-            if (tile instanceof IFrequencyHandler frequencyHandler && frequencyHandler.getFrequencyComponent().hasCustomFrequencies()) {
-                nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
+            if (tile instanceof IFrequencyHandler frequencyHandler) {
+                Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
+                if (!customFrequencies.isEmpty()) {
+                    nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
+                    if (stack.getItem() instanceof IFrequencyItem frequencyItem) {
+                        FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
+                        if (customFrequencies.contains(frequencyType)) {
+                            itemLootPool.apply(CopyCustomFrequencyLootFunction.builder(frequencyType));
+                        } else {
+                            Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), RegistryUtils.getName(block));
+                        }
+                    }
+                }
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
-                //TODO: Should we just save the entire security component?
-                nbtBuilder.copy(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID, NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID);
-                nbtBuilder.copy(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
+                itemLootPool.apply(CopySecurityLootFunction.builder());
             }
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_UPGRADE, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_UPGRADE);
@@ -198,7 +212,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
-                ItemStack stack = new ItemStack(block);
                 for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
                     AttachedContainers<?> attachment = type.getAttachment(stack);
                     List<?> containers = tileEntity.handles(type) ? type.getContainers(tileEntity) : List.of();

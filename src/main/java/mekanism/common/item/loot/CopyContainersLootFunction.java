@@ -28,7 +28,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 /**
- * Loot function which copies the Personal Storage inventory to the saved data and adds an inv id to the stack
+ * Loot function which copies containers to the stack's attachments
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
@@ -57,7 +57,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return MekanismLootFunctions.COPY_CONTAINERS_LOOT_FUNC.get();
+        return MekanismLootFunctions.COPY_CONTAINERS.get();
     }
 
     @Override
