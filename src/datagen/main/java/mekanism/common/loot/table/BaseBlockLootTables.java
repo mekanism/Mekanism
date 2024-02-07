@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.NBTConstants;
@@ -25,15 +25,19 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
+import mekanism.common.item.loot.CopyFiltersLootFunction;
 import mekanism.common.item.loot.CopySecurityLootFunction;
+import mekanism.common.item.loot.CopyToAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyUpgradesLootFunction;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
@@ -72,6 +76,7 @@ import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -165,6 +170,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 continue;
             }
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
+            TrackingAttachmentBuilder attachmentBuilder = new TrackingAttachmentBuilder(ContextNbtProvider.BLOCK_ENTITY);
             TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
@@ -200,14 +206,16 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 nbtBuilder.copy(NBTConstants.COMPONENT_CONFIG, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_CONFIG);
                 nbtBuilder.copy(NBTConstants.COMPONENT_EJECTOR, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_EJECTOR);
             }
+            if (tile instanceof ITileFilterHolder<?>) {
+                itemLootPool.apply(CopyFiltersLootFunction.builder());
+            }
             if (tile instanceof ISustainedData sustainedData) {
-                Set<Entry<String, String>> remapEntries = sustainedData.getTileDataRemap().entrySet();
-                for (Entry<String, String> remapEntry : remapEntries) {
-                    nbtBuilder.copy(remapEntry.getKey(), NBTConstants.MEK_DATA + "." + remapEntry.getValue());
+                for (Map.Entry<String, Holder<AttachmentType<?>>> remapEntry : sustainedData.getTileDataAttachmentRemap().entrySet()) {
+                    attachmentBuilder.copy(remapEntry.getKey(), remapEntry.getValue());
                 }
             }
             if (Attribute.has(block, AttributeRedstone.class)) {
-                nbtBuilder.copy(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
+                attachmentBuilder.copy(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
@@ -256,10 +264,13 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
             }
-            if (nbtBuilder.hasData()) {
+            if (attachmentBuilder.hasData) {
+                itemLootPool.apply(attachmentBuilder);
+            }
+            if (nbtBuilder.hasData) {
                 itemLootPool.apply(nbtBuilder);
             }
-            if (containerBuilder.hasData()) {
+            if (containerBuilder.hasData) {
                 itemLootPool.apply(containerBuilder);
             }
             //apply the delayed ones last, so that NBT funcs have happened first
@@ -359,16 +370,12 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
-    public static class TrackingNbtBuilder extends CopyNbtFunction.Builder {
+    private static class TrackingNbtBuilder extends CopyNbtFunction.Builder {
 
         private boolean hasData = false;
 
         public TrackingNbtBuilder(NbtProvider source) {
             super(source);
-        }
-
-        public boolean hasData() {
-            return this.hasData;
         }
 
         @Override
@@ -380,18 +387,31 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
-    public static class TrackingContainerBuilder extends CopyContainersLootFunction.Builder {
+    private static class TrackingContainerBuilder extends CopyContainersLootFunction.Builder {
 
         private boolean hasData = false;
-
-        public boolean hasData() {
-            return this.hasData;
-        }
 
         @Override
         public CopyContainersLootFunction.Builder copy(ContainerType<?, ?, ?> containerType) {
             this.hasData = true;
             return super.copy(containerType);
+        }
+    }
+
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNotNullByDefault
+    private static class TrackingAttachmentBuilder extends CopyToAttachmentsLootFunction.Builder {
+
+        private boolean hasData = false;
+
+        public TrackingAttachmentBuilder(NbtProvider source) {
+            super(source);
+        }
+
+        @Override
+        public CopyToAttachmentsLootFunction.Builder copy(String sourcePath, AttachmentType<?> target) {
+            this.hasData = true;
+            return super.copy(sourcePath, target);
         }
     }
 

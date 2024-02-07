@@ -2,7 +2,6 @@ package mekanism.common.tile.factory;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -63,6 +63,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.Tag;
@@ -70,6 +71,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -402,10 +404,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.SORTING, NBTConstants.SORTING);
-        return remap;
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        return Map.of(NBTConstants.SORTING, MekanismAttachmentTypes.SORTING);
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.SORTING, isSorting());
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        sorting = stack.getData(MekanismAttachmentTypes.SORTING);
     }
 
     @Override

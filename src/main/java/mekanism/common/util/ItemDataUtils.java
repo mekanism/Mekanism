@@ -102,15 +102,11 @@ public final class ItemDataUtils {
         return getDataValue(stack, dataMap -> dataMap.getList(key, Tag.TAG_COMPOUND), new ListTag());
     }
 
-    public static void setInt(ItemStack stack, String key, int i) {
-        getDataMap(stack).putInt(key, i);
-    }
-
     public static void setIntOrRemove(ItemStack stack, String key, int i) {
         if (i == 0) {
             removeData(stack, key);
         } else {
-            setInt(stack, key, i);
+            getDataMap(stack).putInt(key, i);
         }
     }
 

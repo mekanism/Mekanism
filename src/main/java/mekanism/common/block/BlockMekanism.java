@@ -3,7 +3,6 @@ package mekanism.common.block;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.NBTConstants;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IItemSecurityUtils;
@@ -22,6 +21,7 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -34,13 +34,12 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
-import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -134,11 +133,17 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().write(dataMap);
             config.getEjector().write(dataMap);
         }
+        if (tile instanceof ITileFilterHolder<?> filterHolder) {
+            FilterManager<?> filterManager = filterHolder.getFilterManager();
+            if (!filterManager.getFilters().isEmpty()) {
+                stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyFrom(filterManager);
+            }
+        }
         if (tile instanceof ISustainedData sustainedData) {
-            sustainedData.writeSustainedData(lazyDataMap.get());
+            sustainedData.writeToStack(stack);
         }
         if (tile.supportsRedstone()) {
-            NBTUtils.writeEnum(lazyDataMap.get(), NBTConstants.CONTROL_TYPE, tile.getControlType());
+            stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, tile.getControlType());
         }
         for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
             if (tile.handles(type)) {
@@ -286,12 +291,14 @@ public abstract class BlockMekanism extends Block {
                 }
             }
         }
-        if (tile instanceof ISustainedData sustainedData && stack.hasTag()) {
-            //TODO - 1.18: do we want to be checking it has a tag or not so that we can set things to stuff
-            sustainedData.readSustainedData(dataMap);
+        if (tile instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
+            stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyTo(filterHolder.getFilterManager());
+        }
+        if (tile instanceof ISustainedData sustainedData) {
+            sustainedData.readFromStack(stack);
         }
         if (tile.supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(dataMap, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, tile::setControlType);
+            tile.setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
         }
         if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory()) {
             tile.setSustainedInventory(sustainedInventory.getSustainedInventory(stack));

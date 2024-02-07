@@ -20,12 +20,11 @@
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_nbt",
+              "function": "mekanism:copy_attachments",
               "ops": [
                 {
-                  "op": "replace",
                   "source": "controlType",
-                  "target": "mekData.controlType"
+                  "target": "mekanism:redstone_control"
                 }
               ],
               "source": "block_entity"

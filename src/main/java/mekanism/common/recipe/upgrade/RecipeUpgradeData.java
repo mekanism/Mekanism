@@ -166,10 +166,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
-            case SORTING -> {
-                boolean sorting = ItemDataUtils.getBoolean(stack, NBTConstants.SORTING);
-                yield sorting ? SortingRecipeData.SORTING : null;
-            }
+            case SORTING -> stack.getData(MekanismAttachmentTypes.SORTING) ? SortingRecipeData.SORTING : null;
             case UPGRADE -> {
                 if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
                     UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);

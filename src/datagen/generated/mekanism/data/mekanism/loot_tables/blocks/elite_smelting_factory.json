@@ -18,6 +18,20 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "sorting",
+                  "target": "mekanism:sorting"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "function": "minecraft:copy_nbt",
               "ops": [
                 {
@@ -29,16 +43,6 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "sorting",
-                  "target": "mekData.sorting"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
                 },
                 {
                   "op": "replace",

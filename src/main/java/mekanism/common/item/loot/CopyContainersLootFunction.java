@@ -34,7 +34,6 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @ParametersAreNotNullByDefault
 public class CopyContainersLootFunction extends LootItemConditionalFunction {
 
-    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
     public static final Codec<CopyContainersLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
           .and(NeoForgeExtraCodecs.withAlternative(
                 ContainerType.CODEC.<List<ContainerType<?, ?, ?>>>flatComapMap(List::of, list -> {
@@ -88,7 +87,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-        return REFERENCED_PARAMS;
+        return MekanismLootFunctions.BLOCK_ENTITY_LOOT_CONTEXT;
     }
 
     public static Builder builder() {
@@ -114,7 +113,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
 
         @Override
         public LootItemFunction build() {
-            return new CopyContainersLootFunction(this.getConditions(), this.containerTypes);
+            return new CopyContainersLootFunction(getConditions(), this.containerTypes);
         }
     }
 }

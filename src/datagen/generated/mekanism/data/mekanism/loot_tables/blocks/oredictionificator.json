@@ -11,7 +11,20 @@
               "function": "mekanism:copy_security"
             },
             {
+              "function": "mekanism:copy_filters"
+            },
+            {
               "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                }
+              ],
               "source": "block_entity"
             },
             {
@@ -26,16 +39,6 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "filters",
-                  "target": "mekData.filters"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
                 },
                 {
                   "op": "replace",

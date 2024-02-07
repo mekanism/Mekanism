@@ -18,6 +18,24 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "dumpLeft",
+                  "target": "mekanism:dump_mode"
+                },
+                {
+                  "source": "dumpRight",
+                  "target": "mekanism:secondary_dump_mode"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "function": "minecraft:copy_nbt",
               "ops": [
                 {
@@ -29,21 +47,6 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "dumpLeft",
-                  "target": "mekData.dumpLeft"
-                },
-                {
-                  "op": "replace",
-                  "source": "dumpRight",
-                  "target": "mekData.dumpRight"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
                 },
                 {
                   "op": "replace",

@@ -27,6 +27,16 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "function": "minecraft:copy_nbt",
               "ops": [
                 {
@@ -43,11 +53,6 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
                 }
               ],
               "source": "block_entity"

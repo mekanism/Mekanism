@@ -15,13 +15,18 @@
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_nbt",
+              "function": "mekanism:copy_attachments",
               "ops": [
                 {
-                  "op": "replace",
                   "source": "editMode",
-                  "target": "mekData.editMode"
-                },
+                  "target": "mekanism:edit_mode"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
                 {
                   "op": "replace",
                   "source": "Items",

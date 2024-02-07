@@ -24,32 +24,34 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "amount",
+                  "target": "mekanism:long_amount"
+                },
+                {
+                  "source": "color",
+                  "target": "mekanism:color"
+                },
+                {
+                  "source": "fuzzyMode",
+                  "target": "mekanism:fuzzy"
+                },
+                {
+                  "source": "singleItem",
+                  "target": "mekanism:item_target"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "function": "minecraft:copy_nbt",
               "ops": [
                 {
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "amount",
-                  "target": "mekData.amount"
-                },
-                {
-                  "op": "replace",
-                  "source": "singleItem",
-                  "target": "mekData.singleItem"
-                },
-                {
-                  "op": "replace",
-                  "source": "color",
-                  "target": "mekData.color"
-                },
-                {
-                  "op": "replace",
-                  "source": "fuzzyMode",
-                  "target": "mekData.fuzzyMode"
                 }
               ],
               "source": "block_entity"

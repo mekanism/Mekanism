@@ -1,8 +1,6 @@
 package mekanism.common.tile.qio;
 
 import java.util.List;
-import java.util.Map;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.content.filter.SortableFilterManager;
@@ -39,13 +37,6 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     public void readSustainedData(CompoundTag dataMap) {
         super.readSustainedData(dataMap);
         filterManager.readFromNBT(dataMap);
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = super.getTileDataRemap();
-        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
-        return remap;
     }
 
     @Override

@@ -1,12 +1,10 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -168,13 +166,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         filterManager.readFromNBT(dataMap);
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
-        return remap;
     }
 
     @Override

@@ -29,7 +29,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 @ParametersAreNotNullByDefault
 public class CopyCustomFrequencyLootFunction extends LootItemConditionalFunction {
 
-    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
     public static final Codec<CopyCustomFrequencyLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
           .and(ExtraCodecs.validate(FrequencyType.CODEC,
                 type -> type == FrequencyType.SECURITY ? DataResult.error(() -> "Cannot copy security frequency") : DataResult.success(type)
@@ -60,7 +59,7 @@ public class CopyCustomFrequencyLootFunction extends LootItemConditionalFunction
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-        return REFERENCED_PARAMS;
+        return MekanismLootFunctions.BLOCK_ENTITY_LOOT_CONTEXT;
     }
 
     public static Builder builder(FrequencyType<?> frequencyType) {
@@ -82,7 +81,7 @@ public class CopyCustomFrequencyLootFunction extends LootItemConditionalFunction
 
         @Override
         public LootItemFunction build() {
-            return new CopyCustomFrequencyLootFunction(this.getConditions(), this.frequencyType);
+            return new CopyCustomFrequencyLootFunction(getConditions(), this.frequencyType);
         }
     }
 }

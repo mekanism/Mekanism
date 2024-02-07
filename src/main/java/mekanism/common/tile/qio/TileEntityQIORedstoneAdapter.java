@@ -10,10 +10,12 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
@@ -99,12 +102,35 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = super.getTileDataRemap();
-        remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
-        remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
-        remap.put(NBTConstants.FUZZY_MODE, NBTConstants.FUZZY_MODE);
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.SINGLE_ITEM, MekanismAttachmentTypes.ITEM_TARGET);
+        remap.put(NBTConstants.AMOUNT, MekanismAttachmentTypes.LONG_AMOUNT);
+        remap.put(NBTConstants.FUZZY_MODE, MekanismAttachmentTypes.FUZZY);
         return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        if (itemType != null) {
+            stack.setData(MekanismAttachmentTypes.ITEM_TARGET, itemType.getInternalStack());
+        }
+        stack.setData(MekanismAttachmentTypes.LONG_AMOUNT, count);
+        stack.setData(MekanismAttachmentTypes.FUZZY, fuzzy);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        if (stack.hasData(MekanismAttachmentTypes.ITEM_TARGET)) {
+            ItemStack type = stack.getData(MekanismAttachmentTypes.ITEM_TARGET);
+            itemType = type.isEmpty() ? null : HashedItem.create(type);
+        } else {
+            itemType = null;
+        }
+        count = stack.getData(MekanismAttachmentTypes.LONG_AMOUNT);
+        fuzzy = stack.getData(MekanismAttachmentTypes.FUZZY);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

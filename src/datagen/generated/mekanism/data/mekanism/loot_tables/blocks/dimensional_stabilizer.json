@@ -18,18 +18,22 @@
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_nbt",
+              "function": "mekanism:copy_attachments",
               "ops": [
                 {
-                  "op": "replace",
-                  "source": "stabilizerChunksToLoad",
-                  "target": "mekData.stabilizerChunksToLoad"
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
                 },
                 {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
-                },
+                  "source": "stabilizerChunksToLoad",
+                  "target": "mekanism:stabilzer_chunks"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
                 {
                   "op": "replace",
                   "source": "Items",

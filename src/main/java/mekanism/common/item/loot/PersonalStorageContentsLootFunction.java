@@ -26,7 +26,6 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
     public static final PersonalStorageContentsLootFunction INSTANCE = new PersonalStorageContentsLootFunction();
-    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
 
     private PersonalStorageContentsLootFunction() {
     }
@@ -63,6 +62,6 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-        return REFERENCED_PARAMS;
+        return MekanismLootFunctions.BLOCK_ENTITY_LOOT_CONTEXT;
     }
 }

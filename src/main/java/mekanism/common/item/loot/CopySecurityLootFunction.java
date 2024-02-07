@@ -27,7 +27,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 @ParametersAreNotNullByDefault
 public class CopySecurityLootFunction extends LootItemConditionalFunction {
 
-    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
     public static final Codec<CopySecurityLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
           .apply(instance, CopySecurityLootFunction::new)
     );
@@ -56,7 +55,7 @@ public class CopySecurityLootFunction extends LootItemConditionalFunction {
 
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
-        return REFERENCED_PARAMS;
+        return MekanismLootFunctions.BLOCK_ENTITY_LOOT_CONTEXT;
     }
 
     public static Builder builder() {
@@ -75,7 +74,7 @@ public class CopySecurityLootFunction extends LootItemConditionalFunction {
 
         @Override
         public LootItemFunction build() {
-            return new CopySecurityLootFunction(this.getConditions());
+            return new CopySecurityLootFunction(getConditions());
         }
     }
 }

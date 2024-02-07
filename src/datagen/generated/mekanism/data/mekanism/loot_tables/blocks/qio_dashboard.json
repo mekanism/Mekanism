@@ -19,17 +19,22 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "color",
+                  "target": "mekanism:color"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "function": "minecraft:copy_nbt",
               "ops": [
                 {
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "color",
-                  "target": "mekData.color"
                 },
                 {
                   "op": "replace",

@@ -1,8 +1,9 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -12,15 +13,19 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,10 +74,20 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.COLOR, NBTConstants.COLOR);
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        remap.put(NBTConstants.COLOR, MekanismAttachmentTypes.COLOR);
         return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.COLOR, Optional.ofNullable(lastColor));
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        lastColor = stack.getData(MekanismAttachmentTypes.COLOR).orElse(null);
     }
 
     @NotNull

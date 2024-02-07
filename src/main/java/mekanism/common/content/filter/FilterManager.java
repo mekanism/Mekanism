@@ -1,6 +1,7 @@
 package mekanism.common.content.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -61,6 +62,17 @@ public class FilterManager<FILTER extends IFilter<?>> {
             //Clear the cache of enabled filters as we either need to remove the element from it or add to it
             enabledFilters = null;
         }
+    }
+
+    public void trySetFilters(Collection<IFilter<?>> filters) {
+        this.filters.clear();
+        //Instantiate an empty cache for enabled filters so that when we add enabled filters
+        // we can also add them to the enabled ones, and also overwrite our old cache
+        enabledFilters = new ArrayList<>();
+        for (IFilter<?> filter : filters) {
+            tryAddFilter(filter, false);
+        }
+        markForSave.run();
     }
 
     public void tryAddFilter(IFilter<?> toAdd, boolean save) {

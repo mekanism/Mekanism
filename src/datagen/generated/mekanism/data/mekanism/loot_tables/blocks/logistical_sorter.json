@@ -14,42 +14,41 @@
               "function": "mekanism:copy_upgrades"
             },
             {
+              "function": "mekanism:copy_filters"
+            },
+            {
               "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "color",
+                  "target": "mekanism:transporter_color"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "eject",
+                  "target": "mekanism:eject"
+                },
+                {
+                  "source": "roundRobin",
+                  "target": "mekanism:round_robin"
+                },
+                {
+                  "source": "singleItem",
+                  "target": "mekanism:single"
+                }
+              ],
               "source": "block_entity"
             },
             {
               "function": "minecraft:copy_nbt",
               "ops": [
-                {
-                  "op": "replace",
-                  "source": "singleItem",
-                  "target": "mekData.singleItem"
-                },
-                {
-                  "op": "replace",
-                  "source": "color",
-                  "target": "mekData.color"
-                },
-                {
-                  "op": "replace",
-                  "source": "filters",
-                  "target": "mekData.filters"
-                },
-                {
-                  "op": "replace",
-                  "source": "eject",
-                  "target": "mekData.eject"
-                },
-                {
-                  "op": "replace",
-                  "source": "roundRobin",
-                  "target": "mekData.roundRobin"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
-                },
                 {
                   "op": "replace",
                   "source": "Items",

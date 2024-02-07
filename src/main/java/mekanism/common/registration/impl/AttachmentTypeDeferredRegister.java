@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -15,7 +16,10 @@ import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.util.Mth;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentComparator;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -51,6 +55,56 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               .build());
     }
 
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> registerNonNegativeInt(String name, int defaultValue) {
+        return registerInt(name, defaultValue, 0, Integer.MAX_VALUE);
+    }
+
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> registerInt(String name, int defaultValue, int min, int max) {
+        return register(name, () -> AttachmentType.builder(() -> defaultValue)
+              .serialize(new IAttachmentSerializer<IntTag, Integer>() {
+                  @Nullable
+                  @Override
+                  public IntTag write(Integer value) {
+                      if (value == defaultValue || value < min || value > max) {
+                          //If it is the default or invalid value that was manually set then don't save it
+                          return null;
+                      }
+                      return IntTag.valueOf(value);
+                  }
+
+                  @Override
+                  public Integer read(IAttachmentHolder holder, IntTag tag) {
+                      return Mth.clamp(tag.getAsInt(), min, max);
+                  }
+              }).comparator(Integer::equals)
+              .build());
+    }
+
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Long>> registerNonNegativeLong(String name, long defaultValue) {
+        return registerLong(name, defaultValue, 0, Long.MAX_VALUE);
+    }
+
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Long>> registerLong(String name, long defaultValue, long min, long max) {
+        return register(name, () -> AttachmentType.builder(() -> defaultValue)
+              .serialize(new IAttachmentSerializer<LongTag, Long>() {
+                  @Nullable
+                  @Override
+                  public LongTag write(Long value) {
+                      if (value == defaultValue || value < min || value > max) {
+                          //If it is the default or invalid value that was manually set then don't save it
+                          return null;
+                      }
+                      return LongTag.valueOf(value);
+                  }
+
+                  @Override
+                  public Long read(IAttachmentHolder holder, LongTag tag) {
+                      return Mth.clamp(tag.getAsLong(), min, max);
+                  }
+              }).comparator(Long::equals)
+              .build());
+    }
+
     public <ENUM extends Enum<ENUM>> MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ENUM>> register(String name, Class<ENUM> clazz) {
         ENUM[] values = clazz.getEnumConstants();
         ENUM defaultValue = values[0];
@@ -67,11 +121,11 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               .serialize(new IAttachmentSerializer<IntTag, ENUM>() {
                   @Nullable
                   @Override
-                  public IntTag write(ENUM attachment) {
-                      if (attachment == defaultValue) {
+                  public IntTag write(ENUM value) {
+                      if (value == defaultValue) {
                           return null;
                       }
-                      return IntTag.valueOf(attachment.ordinal());
+                      return IntTag.valueOf(value.ordinal());
                   }
 
                   @Override
@@ -80,6 +134,34 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   }
               }).comparator(Objects::equals)
               .build());
+    }
+
+    public <ENUM extends Enum<ENUM>> MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<ENUM>>> registerOptional(String name, Class<ENUM> clazz) {
+        ENUM[] values = clazz.getEnumConstants();
+        IntFunction<Optional<ENUM>> reader;
+        if (clazz.isAssignableFrom(IDisableableEnum.class)) {
+            reader = index -> Optional.of(MathUtils.getByIndexMod(values, index)).filter(value -> ((IDisableableEnum<?>) value).isEnabled());
+        } else {
+            reader = index -> Optional.of(MathUtils.getByIndexMod(values, index));
+        }
+        return register(name, () -> AttachmentType.<Optional<ENUM>>builder(Optional::empty)
+              .serialize(new IAttachmentSerializer<IntTag, Optional<ENUM>>() {
+                  @Nullable
+                  @Override
+                  public IntTag write(Optional<ENUM> value) {
+                      return value.map(val -> IntTag.valueOf(val.ordinal())).orElse(null);
+                  }
+
+                  @Override
+                  public Optional<ENUM> read(IAttachmentHolder holder, IntTag tag) {
+                      return reader.apply(tag.getAsInt());
+                  }
+              }).comparator(optionalComparator(Objects::equals))
+              .build());
+    }
+
+    public static <TYPE> IAttachmentComparator<Optional<TYPE>> optionalComparator(IAttachmentComparator<TYPE> innerComparator) {
+        return (a, b) -> a.map(aVal -> b.filter(bVal -> innerComparator.areCompatible(aVal, bVal)).isPresent()).orElseGet(b::isEmpty);
     }
 
 

@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -56,6 +55,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -70,8 +70,11 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -344,11 +347,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.DUMP_LEFT, NBTConstants.DUMP_LEFT);
-        remap.put(NBTConstants.DUMP_RIGHT, NBTConstants.DUMP_RIGHT);
-        return remap;
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        return Map.of(
+              NBTConstants.DUMP_LEFT, MekanismAttachmentTypes.DUMP_MODE,
+              NBTConstants.DUMP_RIGHT, MekanismAttachmentTypes.SECONDARY_DUMP_MODE
+        );
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.DUMP_MODE, dumpLeft);
+        stack.setData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE, dumpRight);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        dumpLeft = stack.getData(MekanismAttachmentTypes.DUMP_MODE);
+        dumpRight = stack.getData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
     }
 
     @Override

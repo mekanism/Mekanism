@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +25,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -33,10 +33,13 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData, IHasVisualization {
@@ -249,10 +252,47 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
-        return remap;
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        return Map.of(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, MekanismAttachmentTypes.STABILIZER_CHUNKS);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        //TODO - 1.20.4: Deduplicate this and the from nbt
+        boolean changed = false;
+        int lastChunksLoaded = chunksLoaded;
+        boolean[] chunksToLoad = stack.getData(MekanismAttachmentTypes.STABILIZER_CHUNKS);
+        if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
+            //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
+            // where to position our values
+            chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
+        }
+        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
+            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
+                changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z]);
+            }
+        }
+        if (changed) {
+            if (chunksLoaded != lastChunksLoaded) {
+                //If the number of chunks loaded is different we need to update our energy to use
+                energyContainer.updateEnergyPerTick();
+            }
+            if (hasLevel()) {
+                //Refresh the chunks that are loaded as it has changed
+                getChunkLoader().refreshChunkTickets();
+            }
+        }
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        boolean[] chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
+        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
+            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
+                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = isChunkLoadingAt(x, z);
+            }
+        }
+        stack.setData(MekanismAttachmentTypes.STABILIZER_CHUNKS, chunksToLoad);
     }
 
     @Override

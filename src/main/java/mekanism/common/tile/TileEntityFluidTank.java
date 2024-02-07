@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.Map;
 import mekanism.api.Action;
@@ -25,6 +24,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
@@ -39,13 +39,16 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,10 +158,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.EDIT_MODE, NBTConstants.EDIT_MODE);
-        return remap;
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        return Map.of(NBTConstants.EDIT_MODE, MekanismAttachmentTypes.EDIT_MODE);
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.EDIT_MODE, editMode);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        editMode = stack.getData(MekanismAttachmentTypes.EDIT_MODE);
     }
 
     @Override

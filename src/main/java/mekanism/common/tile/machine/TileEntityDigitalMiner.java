@@ -6,12 +6,12 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,6 +29,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.attachments.OverflowAware;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
@@ -62,6 +63,7 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -78,11 +80,11 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -100,6 +102,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -374,7 +377,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setRadius(int newRadius) {
-        if (radius != newRadius) {
+        if (radius != newRadius && newRadius >= 0) {
             radius = newRadius;
             if (hasLevel() && !isRemote()) {
                 energyContainer.updateMinerEnergyPerTick();
@@ -843,14 +846,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.writeEnum(nbtTags, NBTConstants.STATE, searcher.state);
         if (!overflow.isEmpty()) {
             //Persist any items that are stored as overflow
-            ListTag overflowTag = new ListTag();
-            for (Object2IntMap.Entry<HashedItem> entry : overflow.object2IntEntrySet()) {
-                CompoundTag overflowComponent = new CompoundTag();
-                overflowComponent.put(NBTConstants.TYPE, entry.getKey().internalToNBT());
-                overflowComponent.putInt(NBTConstants.COUNT, entry.getIntValue());
-                overflowTag.add(overflowComponent);
-            }
-            nbtTags.put(NBTConstants.OVERFLOW, overflowTag);
+            nbtTags.put(NBTConstants.OVERFLOW, OverflowAware.writeOverflow(overflow));
         }
     }
 
@@ -991,20 +987,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.setListIfPresent(dataMap, NBTConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
-            for (int i = 0, size = overflowTag.size(); i < size; i++) {
-                CompoundTag overflowComponent = overflowTag.getCompound(i);
-                int count = overflowComponent.getInt(NBTConstants.COUNT);
-                if (count > 0) {
-                    //The count should always be greater than zero, but validate it just in case before trying to read the item
-                    CompoundTag type = overflowComponent.getCompound(NBTConstants.TYPE);
-                    ItemStack stack = ItemStack.of(type);
-                    //Only add the item if the item could be read. If it can't that means the mod adding the item was probably removed
-                    if (!stack.isEmpty()) {
-                        //Note: We can use a raw stack as we just created a new stack from NBT
-                        overflow.put(HashedItem.raw(stack), count);
-                    }
-                }
-            }
+            OverflowAware.readOverflow(overflow, overflowTag);
             hasOverflow = !overflow.isEmpty();
             //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
             // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
@@ -1014,20 +997,63 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.RADIUS, NBTConstants.RADIUS);
-        remap.put(NBTConstants.MIN, NBTConstants.MIN);
-        remap.put(NBTConstants.MAX, NBTConstants.MAX);
-        remap.put(NBTConstants.EJECT, NBTConstants.EJECT);
-        remap.put(NBTConstants.PULL, NBTConstants.PULL);
-        remap.put(NBTConstants.SILK_TOUCH, NBTConstants.SILK_TOUCH);
-        remap.put(NBTConstants.INVERSE, NBTConstants.INVERSE);
-        remap.put(NBTConstants.REPLACE_STACK, NBTConstants.REPLACE_STACK);
-        remap.put(NBTConstants.INVERSE_REQUIRES_REPLACE, NBTConstants.INVERSE_REQUIRES_REPLACE);
-        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
-        remap.put(NBTConstants.OVERFLOW, NBTConstants.OVERFLOW);
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        remap.put(NBTConstants.RADIUS, MekanismAttachmentTypes.RADIUS);
+        remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_Y);
+        remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_Y);
+        remap.put(NBTConstants.EJECT, MekanismAttachmentTypes.EJECT);
+        remap.put(NBTConstants.PULL, MekanismAttachmentTypes.PULL);
+        remap.put(NBTConstants.SILK_TOUCH, MekanismAttachmentTypes.SILK_TOUCH);
+        remap.put(NBTConstants.INVERSE, MekanismAttachmentTypes.INVERSE);
+        remap.put(NBTConstants.REPLACE_STACK, MekanismAttachmentTypes.REPLACE_STACK);
+        remap.put(NBTConstants.INVERSE_REQUIRES_REPLACE, MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
+        remap.put(NBTConstants.OVERFLOW, MekanismAttachmentTypes.OVERFLOW_AWARE);
         return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.RADIUS, getRadius());
+        stack.setData(MekanismAttachmentTypes.MIN_Y, getMinY());
+        stack.setData(MekanismAttachmentTypes.MAX_Y, getMaxY());
+        stack.setData(MekanismAttachmentTypes.EJECT, doEject);
+        stack.setData(MekanismAttachmentTypes.PULL, doPull);
+        stack.setData(MekanismAttachmentTypes.SILK_TOUCH, getSilkTouch());
+        stack.setData(MekanismAttachmentTypes.INVERSE, inverse);
+        stack.setData(MekanismAttachmentTypes.REPLACE_STACK, inverseReplaceTarget);
+        stack.setData(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        stack.getData(MekanismAttachmentTypes.OVERFLOW_AWARE).setOverflow(overflow);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        //TODO - 1.20.4: Can we deduplicate this code from the read sustained data?
+        // maybe by using the tile data to attachment remap and then pass in a method that gets the proper object?
+        setRadius(Math.min(stack.getData(MekanismAttachmentTypes.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        int newMinY = stack.getData(MekanismAttachmentTypes.MIN_Y);
+        int newMaxY = stack.getData(MekanismAttachmentTypes.MAX_Y);
+        if (level != null && !isRemote()) {
+            setMinY(Math.max(newMinY, level.getMinBuildHeight()));
+            setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
+        } else {
+            setMinY(newMinY);
+            setMaxY(newMaxY);
+        }
+        doEject = stack.getData(MekanismAttachmentTypes.EJECT);
+        doPull = stack.getData(MekanismAttachmentTypes.PULL);
+        setSilkTouch(stack.getData(MekanismAttachmentTypes.SILK_TOUCH));
+        inverse = stack.getData(MekanismAttachmentTypes.INVERSE);
+        inverseReplaceTarget = stack.getData(MekanismAttachmentTypes.REPLACE_STACK);
+        inverseRequiresReplacement = stack.getData(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
+        //Clear any existing overflow and read what is the actual overflow from the stack
+        overflow.clear();
+        overflow.putAll(stack.getData(MekanismAttachmentTypes.OVERFLOW_AWARE).getOverflow());
+        hasOverflow = !overflow.isEmpty();
+        //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
+        // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
+        // had the inventory change which caused a save, but the next tick never happened the overflow may actually need to be updated
+        recheckOverflow = hasOverflow;
     }
 
     @Override

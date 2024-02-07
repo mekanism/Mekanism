@@ -25,15 +25,18 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
@@ -135,10 +138,22 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = super.getTileDataRemap();
-        remap.put(NBTConstants.AUTO, NBTConstants.AUTO);
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.AUTO, MekanismAttachmentTypes.AUTO);
         return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        stack.setData(MekanismAttachmentTypes.AUTO, exportWithoutFilter);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        exportWithoutFilter = stack.getData(MekanismAttachmentTypes.AUTO);
     }
 
     //Methods relating to IComputerTile

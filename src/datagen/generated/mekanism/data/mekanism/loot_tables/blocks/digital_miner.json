@@ -14,72 +14,65 @@
               "function": "mekanism:copy_upgrades"
             },
             {
+              "function": "mekanism:copy_filters"
+            },
+            {
               "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "eject",
+                  "target": "mekanism:eject"
+                },
+                {
+                  "source": "inverse",
+                  "target": "mekanism:inverse"
+                },
+                {
+                  "source": "inverseReplace",
+                  "target": "mekanism:inverse_replace"
+                },
+                {
+                  "source": "max",
+                  "target": "mekanism:max_y"
+                },
+                {
+                  "source": "min",
+                  "target": "mekanism:min_y"
+                },
+                {
+                  "source": "overflow",
+                  "target": "mekanism:overflow"
+                },
+                {
+                  "source": "pull",
+                  "target": "mekanism:pull"
+                },
+                {
+                  "source": "radius",
+                  "target": "mekanism:radius"
+                },
+                {
+                  "source": "replaceStack",
+                  "target": "mekanism:replace_stack"
+                },
+                {
+                  "source": "silkTouch",
+                  "target": "mekanism:silk_touch"
+                }
+              ],
               "source": "block_entity"
             },
             {
               "function": "minecraft:copy_nbt",
               "ops": [
-                {
-                  "op": "replace",
-                  "source": "inverseReplace",
-                  "target": "mekData.inverseReplace"
-                },
-                {
-                  "op": "replace",
-                  "source": "pull",
-                  "target": "mekData.pull"
-                },
-                {
-                  "op": "replace",
-                  "source": "overflow",
-                  "target": "mekData.overflow"
-                },
-                {
-                  "op": "replace",
-                  "source": "max",
-                  "target": "mekData.max"
-                },
-                {
-                  "op": "replace",
-                  "source": "radius",
-                  "target": "mekData.radius"
-                },
-                {
-                  "op": "replace",
-                  "source": "filters",
-                  "target": "mekData.filters"
-                },
-                {
-                  "op": "replace",
-                  "source": "eject",
-                  "target": "mekData.eject"
-                },
-                {
-                  "op": "replace",
-                  "source": "silkTouch",
-                  "target": "mekData.silkTouch"
-                },
-                {
-                  "op": "replace",
-                  "source": "min",
-                  "target": "mekData.min"
-                },
-                {
-                  "op": "replace",
-                  "source": "replaceStack",
-                  "target": "mekData.replaceStack"
-                },
-                {
-                  "op": "replace",
-                  "source": "inverse",
-                  "target": "mekData.inverse"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
-                },
                 {
                   "op": "replace",
                   "source": "Items",

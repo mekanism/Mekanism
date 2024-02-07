@@ -1,8 +1,9 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -27,6 +28,7 @@ import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedData;
@@ -38,11 +40,13 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -250,14 +254,29 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.COLOR, NBTConstants.COLOR);
-        remap.put(NBTConstants.EJECT, NBTConstants.EJECT);
-        remap.put(NBTConstants.ROUND_ROBIN, NBTConstants.ROUND_ROBIN);
-        remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
-        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        remap.put(NBTConstants.COLOR, MekanismAttachmentTypes.TRANSPORTER_COLOR);
+        remap.put(NBTConstants.EJECT, MekanismAttachmentTypes.EJECT);
+        remap.put(NBTConstants.ROUND_ROBIN, MekanismAttachmentTypes.ROUND_ROBIN);
+        remap.put(NBTConstants.SINGLE_ITEM, MekanismAttachmentTypes.SINGLE_ITEM);
         return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.TRANSPORTER_COLOR, Optional.ofNullable(color));
+        stack.setData(MekanismAttachmentTypes.EJECT, autoEject);
+        stack.setData(MekanismAttachmentTypes.ROUND_ROBIN, roundRobin);
+        stack.setData(MekanismAttachmentTypes.SINGLE_ITEM, singleItem);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        color = stack.getData(MekanismAttachmentTypes.TRANSPORTER_COLOR).orElse(null);
+        autoEject = stack.getData(MekanismAttachmentTypes.EJECT);
+        roundRobin = stack.getData(MekanismAttachmentTypes.ROUND_ROBIN);
+        singleItem = stack.getData(MekanismAttachmentTypes.SINGLE_ITEM);
     }
 
     @Override

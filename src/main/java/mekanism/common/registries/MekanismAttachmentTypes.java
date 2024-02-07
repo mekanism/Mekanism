@@ -2,12 +2,17 @@ package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
 import java.util.Objects;
+import java.util.Optional;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.ColoredItem;
+import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
@@ -45,11 +50,29 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.AttachmentTypeDeferredRegister;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tile.TileEntityChemicalTank.GasMode;
+import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
+import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
+import mekanism.common.util.TransporterUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class MekanismAttachmentTypes {
 
     private MekanismAttachmentTypes() {
@@ -78,9 +101,53 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FlamethrowerMode>> FLAMETHROWER_MODE = ATTACHMENT_TYPES.register("flamethrower_mode", FlamethrowerMode.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FreeRunnerMode>> FREE_RUNNER_MODE = ATTACHMENT_TYPES.register("free_runner_mode", FreeRunnerMode.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<JetpackMode>> JETPACK_MODE = ATTACHMENT_TYPES.register("jetpack_mode", JetpackMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ContainerEditMode>> EDIT_MODE = ATTACHMENT_TYPES.register("edit_mode", ContainerEditMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GasMode>> DUMP_MODE = ATTACHMENT_TYPES.register("dump_mode", GasMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GasMode>> SECONDARY_DUMP_MODE = ATTACHMENT_TYPES.register("secondary_dump_mode", GasMode.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneControl>> REDSTONE_CONTROL = ATTACHMENT_TYPES.register("redstone_control", RedstoneControl.class);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> COLOR = ATTACHMENT_TYPES.registerOptional("color", EnumColor.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> TRANSPORTER_COLOR = ATTACHMENT_TYPES.register("transporter_color",
+          () -> AttachmentType.<Optional<EnumColor>>builder(Optional::empty)
+                .serialize(new IAttachmentSerializer<IntTag, Optional<EnumColor>>() {
+                    @Nullable
+                    @Override
+                    public IntTag write(Optional<EnumColor> value) {
+                        if (value.isEmpty()) {
+                            return null;
+                        }
+                        int index = TransporterUtils.getColorIndex(value.get());
+                        return index == -1 ? null : IntTag.valueOf(index);
+                    }
+
+                    @Override
+                    public Optional<EnumColor> read(IAttachmentHolder holder, IntTag tag) {
+                        return Optional.ofNullable(TransporterUtils.readColor(tag.getAsInt()));
+                    }
+                }).comparator(AttachmentTypeDeferredRegister.optionalComparator(Objects::equals))
+                .build());
+
+
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SCUBA_TANK_MODE = ATTACHMENT_TYPES.registerBoolean("scuba_tank_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BUCKET_MODE = ATTACHMENT_TYPES.registerBoolean("bucket_mode", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> AUTO = ATTACHMENT_TYPES.registerBoolean("auto", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SORTING = ATTACHMENT_TYPES.registerBoolean("sorting", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> EJECT = ATTACHMENT_TYPES.registerBoolean("eject", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> PULL = ATTACHMENT_TYPES.registerBoolean("pull", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ROUND_ROBIN = ATTACHMENT_TYPES.registerBoolean("round_robin", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SINGLE_ITEM = ATTACHMENT_TYPES.registerBoolean("single", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> FUZZY = ATTACHMENT_TYPES.registerBoolean("fuzzy", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SILK_TOUCH = ATTACHMENT_TYPES.registerBoolean("silk_touch", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE = ATTACHMENT_TYPES.registerBoolean("inverse", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE_REQUIRES_REPLACE = ATTACHMENT_TYPES.registerBoolean("inverse_replace", false);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> RADIUS = ATTACHMENT_TYPES.registerNonNegativeInt("radius", TileEntityDigitalMiner.DEFAULT_RADIUS);
+    //TODO - 1.20.4: Better min and max for these?
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MIN_Y = ATTACHMENT_TYPES.registerInt("min_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MAX_Y = ATTACHMENT_TYPES.registerInt("max_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Long>> LONG_AMOUNT = ATTACHMENT_TYPES.registerNonNegativeLong("long_amount", 0);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_containers", () -> ContainerType.ENERGY);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInventorySlots>> INVENTORY_SLOTS = ATTACHMENT_TYPES.registerContainer("inventory_slots", () -> ContainerType.ITEM);
@@ -100,9 +167,98 @@ public class MekanismAttachmentTypes {
                 .comparator(SecurityObject::isCompatible)
                 .build());
 
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ColoredItem>> COLORABLE = ATTACHMENT_TYPES.register("color",
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ColoredItem>> COLORABLE = ATTACHMENT_TYPES.register("colorable",
           () -> AttachmentType.serializable(ColoredItem::new)
                 .comparator(ColoredItem::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FilterAware>> FILTER_AWARE = ATTACHMENT_TYPES.register("filters",
+          () -> AttachmentType.serializable(FilterAware::new)
+                .comparator(FilterAware::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OverflowAware>> OVERFLOW_AWARE = ATTACHMENT_TYPES.register("overflow",
+          () -> AttachmentType.serializable(OverflowAware::new)
+                .comparator(OverflowAware::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Item>> REPLACE_STACK = ATTACHMENT_TYPES.register("replace_stack",
+          () -> AttachmentType.builder(() -> Items.AIR)
+                .serialize(new IAttachmentSerializer<StringTag, Item>() {
+                    @Nullable
+                    @Override
+                    public StringTag write(Item item) {
+                        if (item == Items.AIR) {
+                            return null;
+                        }
+                        return StringTag.valueOf(BuiltInRegistries.ITEM.getKey(item).toString());
+                    }
+
+                    @Override
+                    public Item read(IAttachmentHolder holder, StringTag tag) {
+                        ResourceLocation registryName = ResourceLocation.tryParse(tag.getAsString());
+                        if (registryName == null) {
+                            return Items.AIR;
+                        }
+                        return BuiltInRegistries.ITEM.get(registryName);
+                    }
+                })
+                .comparator(Objects::equals)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ItemStack>> ITEM_TARGET = ATTACHMENT_TYPES.register("item_target",
+          () -> AttachmentType.builder(() -> ItemStack.EMPTY)
+                .serialize(new IAttachmentSerializer<CompoundTag, ItemStack>() {
+                    @Nullable
+                    @Override
+                    public CompoundTag write(ItemStack stack) {
+                        if (stack.isEmpty()) {
+                            return null;
+                        }
+                        CompoundTag nbt = new CompoundTag();
+                        stack.save(nbt);
+                        return nbt;
+                    }
+
+                    @Override
+                    public ItemStack read(IAttachmentHolder holder, CompoundTag tag) {
+                        return ItemStack.of(tag);
+                    }
+                })
+                .comparator(ItemStack::matches)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<boolean[]>> STABILIZER_CHUNKS = ATTACHMENT_TYPES.register("stabilzer_chunks",
+          () -> AttachmentType.builder(() -> new boolean[TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER])
+                .serialize(new IAttachmentSerializer<ByteArrayTag, boolean[]>() {
+                    @Nullable
+                    @Override
+                    public ByteArrayTag write(boolean[] value) {
+                        for (boolean v : value) {
+                            if (v) {
+                                byte[] bytes = new byte[value.length];
+                                for (int i = 0; i < value.length; i++) {
+                                    bytes[i] = (byte) (value[i] ? 1 : 0);
+                                }
+                                return new ByteArrayTag(bytes);
+                            }
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public boolean[] read(IAttachmentHolder holder, ByteArrayTag tag) {
+                        boolean[] chunksToLoad = new boolean[TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER];
+                        byte[] bytes = tag.getAsByteArray();
+                        if (bytes.length == chunksToLoad.length) {
+                            for (int i = 0; i < chunksToLoad.length; i++) {
+                                chunksToLoad[i] = bytes[i] == 1;
+                            }
+                        }
+                        return chunksToLoad;
+                    }
+                })
+                .comparator(Objects::equals)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> FREQUENCY_AWARE = ATTACHMENT_TYPES.registerFrequencyAware("frequency_aware", FrequencyAware::create);

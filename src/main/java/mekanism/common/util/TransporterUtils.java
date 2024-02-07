@@ -32,11 +32,14 @@ public final class TransporterUtils {
 
     @Nullable
     public static EnumColor readColor(int inputColor) {
-        return inputColor == -1 ? null : TransporterUtils.colors.get(inputColor);
+        if (inputColor < 0 || inputColor >= colors.size()) {
+            return null;
+        }
+        return colors.get(inputColor);
     }
 
     public static int getColorIndex(@Nullable EnumColor color) {
-        return color == null ? -1 : TransporterUtils.colors.indexOf(color);
+        return color == null ? -1 : colors.indexOf(color);
     }
 
     public static boolean isValidAcceptorOnSide(Level level, BlockPos pos, Direction side) {

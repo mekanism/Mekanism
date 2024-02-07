@@ -23,7 +23,28 @@
               "function": "mekanism:copy_upgrades"
             },
             {
+              "function": "mekanism:copy_filters"
+            },
+            {
               "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_attachments",
+              "ops": [
+                {
+                  "source": "auto",
+                  "target": "mekanism:auto"
+                },
+                {
+                  "source": "color",
+                  "target": "mekanism:color"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekanism:redstone_control"
+                }
+              ],
               "source": "block_entity"
             },
             {
@@ -33,26 +54,6 @@
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "color",
-                  "target": "mekData.color"
-                },
-                {
-                  "op": "replace",
-                  "source": "filters",
-                  "target": "mekData.filters"
-                },
-                {
-                  "op": "replace",
-                  "source": "auto",
-                  "target": "mekData.auto"
-                },
-                {
-                  "op": "replace",
-                  "source": "controlType",
-                  "target": "mekData.controlType"
                 }
               ],
               "source": "block_entity"
