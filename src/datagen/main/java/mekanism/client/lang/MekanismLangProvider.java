@@ -811,6 +811,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED, "Retrogen is disabled, please enable it in the config.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_FAILURE, "Failed to queue any chunks for retrogen.");
         //Tooltip stuff
+        add(MekanismLang.UNKNOWN, "Unknown");
         add(MekanismLang.MODE, "Mode: %1$s");
         add(MekanismLang.FIRE_MODE, "Fire Mode: %1$s");
         add(MekanismLang.BUCKET_MODE, "Bucket Mode: %1$s");

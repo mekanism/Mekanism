@@ -23,6 +23,7 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.item.loot.CopyAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
 import mekanism.common.item.loot.CopyFiltersLootFunction;
@@ -170,7 +171,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 continue;
             }
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
-            TrackingAttachmentBuilder attachmentBuilder = new TrackingAttachmentBuilder(ContextNbtProvider.BLOCK_ENTITY);
+            TrackingNbtToAttachmentBuilder nbtToAttachmentBuilder = new TrackingNbtToAttachmentBuilder(ContextNbtProvider.BLOCK_ENTITY);
+            TrackingAttachmentBuilder attachmentBuilder = new TrackingAttachmentBuilder();
             TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
@@ -211,11 +213,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof ISustainedData sustainedData) {
                 for (Map.Entry<String, Holder<AttachmentType<?>>> remapEntry : sustainedData.getTileDataAttachmentRemap().entrySet()) {
-                    attachmentBuilder.copy(remapEntry.getKey(), remapEntry.getValue());
+                    nbtToAttachmentBuilder.copy(remapEntry.getKey(), remapEntry.getValue());
                 }
             }
             if (Attribute.has(block, AttributeRedstone.class)) {
-                attachmentBuilder.copy(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
+                nbtToAttachmentBuilder.copy(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
@@ -262,10 +264,13 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
-                nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
+                attachmentBuilder.copy(MekanismAttachmentTypes.BLOCK_DATA);
             }
             if (attachmentBuilder.hasData) {
                 itemLootPool.apply(attachmentBuilder);
+            }
+            if (nbtToAttachmentBuilder.hasData) {
+                itemLootPool.apply(nbtToAttachmentBuilder);
             }
             if (nbtBuilder.hasData) {
                 itemLootPool.apply(nbtBuilder);
@@ -400,11 +405,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
-    private static class TrackingAttachmentBuilder extends CopyToAttachmentsLootFunction.Builder {
+    private static class TrackingNbtToAttachmentBuilder extends CopyToAttachmentsLootFunction.Builder {
 
         private boolean hasData = false;
 
-        public TrackingAttachmentBuilder(NbtProvider source) {
+        public TrackingNbtToAttachmentBuilder(NbtProvider source) {
             super(source);
         }
 
@@ -412,6 +417,19 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         public CopyToAttachmentsLootFunction.Builder copy(String sourcePath, AttachmentType<?> target) {
             this.hasData = true;
             return super.copy(sourcePath, target);
+        }
+    }
+
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNotNullByDefault
+    private static class TrackingAttachmentBuilder extends CopyAttachmentsLootFunction.Builder {
+
+        private boolean hasData = false;
+
+        @Override
+        public CopyAttachmentsLootFunction.Builder copy(AttachmentType<?> attachmentType) {
+            this.hasData = true;
+            return super.copy(attachmentType);
         }
     }
 

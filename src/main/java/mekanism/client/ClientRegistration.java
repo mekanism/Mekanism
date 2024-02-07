@@ -150,12 +150,12 @@ import mekanism.common.base.HolidayManager;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
-import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -249,7 +249,7 @@ public class ClientRegistration {
                 ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
             }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
-                  (stack, world, entity, seed) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(world, stack) == null ? 0 : 1);
+                  (stack, world, entity, seed) -> stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) ->
                   FormulaAttachment.formula(stack)

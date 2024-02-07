@@ -13,7 +13,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_attachments",
+              "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
                   "source": "controlType",

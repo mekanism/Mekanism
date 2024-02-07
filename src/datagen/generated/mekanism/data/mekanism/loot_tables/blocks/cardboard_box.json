@@ -13,15 +13,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "data",
-                  "target": "mekData.data"
-                }
+              "attachments": [
+                "mekanism:block_data"
               ],
-              "source": "block_entity"
+              "function": "mekanism:copy_attachments"
             }
           ],
           "name": "mekanism:cardboard_box"

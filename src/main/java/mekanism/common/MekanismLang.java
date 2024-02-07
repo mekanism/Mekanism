@@ -169,6 +169,7 @@ public enum MekanismLang implements ILangEntry {
     TRANSMISSION_TYPE_ITEM("transmission", "items"),
     TRANSMISSION_TYPE_HEAT("transmission", "heat"),
     //Tooltip stuff
+    UNKNOWN("tooltip", "unknown"),
     MODE("tooltip", "mode"),
     FIRE_MODE("tooltip", "fire_mode"),
     BUCKET_MODE("tooltip", "bucket_mode"),

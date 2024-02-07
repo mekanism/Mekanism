@@ -1,32 +1,28 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import mekanism.api.NBTConstants;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.BlockData;
 import mekanism.common.block.BlockCardboardBox;
-import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,7 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -44,15 +39,16 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(world, stack) != null)));
-        BlockData data = getBlockData(world, stack);
-        if (data != null) {
-            try {
-                tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
-                if (data.tileTag != null) {
-                    tooltip.add(MekanismLang.BLOCK_ENTITY.translate(data.tileTag.getString(NBTConstants.ID)));
-                }
-            } catch (Exception ignored) {
+        boolean hasData = stack.hasData(MekanismAttachmentTypes.BLOCK_DATA);
+        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(hasData)));
+        if (hasData) {
+            BlockData data = stack.getData(MekanismAttachmentTypes.BLOCK_DATA);
+            tooltip.add(MekanismLang.BLOCK.translate(data.getBlock()));
+            if (data.hasBlockEntity()) {
+                data.getBlockEntityName().ifPresentOrElse(
+                      name -> tooltip.add(MekanismLang.BLOCK_ENTITY.translate(name)),
+                      () -> tooltip.add(MekanismLang.BLOCK_ENTITY.translate(MekanismLang.UNKNOWN))
+                );
             }
         }
     }
@@ -80,7 +76,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        if (getBlockData(world, stack) == null && !player.isShiftKeyDown()) {
+        if (!stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(world, pos) != -1) {
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
@@ -99,11 +95,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     return InteractionResult.FAIL;
                 }
                 if (!world.isClientSide) {
-                    BlockData data = new BlockData(state);
-                    if (tile != null) {
-                        //Note: We check security access above
-                        data.tileTag = tile.saveWithFullMetadata();
-                    }
+                    BlockData data = new BlockData(state, tile);
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
@@ -115,7 +107,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
-                        box.storedData = data;
+                        box.setData(MekanismAttachmentTypes.BLOCK_DATA, data);
                     }
                 }
                 return InteractionResult.SUCCESS;
@@ -125,35 +117,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
-        Level world = context.getLevel();
-        if (world.isClientSide) {
-            return true;
-        }
-        if (super.placeBlock(context, state)) {
-            TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getClickedPos());
-            if (tile != null) {
-                tile.storedData = getBlockData(world, context.getItemInHand());
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void setBlockData(ItemStack stack, BlockData data) {
-        ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundTag()));
-    }
-
-    public BlockData getBlockData(@Nullable Level level, ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.DATA, Tag.TAG_COMPOUND)) {
-            return BlockData.read(level, ItemDataUtils.getCompound(stack, NBTConstants.DATA));
-        }
-        return null;
-    }
-
-    @Override
     public int getMaxStackSize(ItemStack stack) {
-        BlockData blockData = getBlockData(null, stack);
-        return blockData == null ? super.getMaxStackSize(stack) : 1;
+        return stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) ? 1 : super.getMaxStackSize(stack);
     }
 }

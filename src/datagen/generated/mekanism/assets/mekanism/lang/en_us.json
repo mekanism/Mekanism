@@ -1608,6 +1608,7 @@
   "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %1$s",
   "tooltip.mekanism.stored_energy": "Stored energy: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Stored %1$s: %2$s mB (%3$s)",
+  "tooltip.mekanism.unknown": "Unknown",
   "transmission.mekanism.energy": "Energy",
   "transmission.mekanism.fluids": "Fluids",
   "transmission.mekanism.gases": "Gases",

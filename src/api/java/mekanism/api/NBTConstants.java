@@ -101,6 +101,10 @@ public final class NBTConstants {
     public static final String ENERGY_CONTAINERS = "EnergyContainers";
     public static final String ENERGY_STORED = "energy";
     public static final String ENERGY_USAGE = "energyUsage";
+    /**
+     * @since 10.5.0
+     */
+    public static final String BE_TAG = "beTag";
     public static final String FILLING = "filling";
     public static final String FILTER = "filter";
     public static final String FILTERS = "filters";
@@ -211,7 +215,6 @@ public final class NBTConstants {
     public static final String TAG_NAME = "tagName";
     public static final String TANK = "Tank";
     public static final String TEMPERATURE = "temperature";
-    public static final String TILE_TAG = "tileTag";
     public static final String TIME = "time";
     public static final String TRUSTED = "trusted";
     public static final String TYPE = "type";

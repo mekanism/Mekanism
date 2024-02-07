@@ -130,7 +130,7 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
         }
     }
 
-    record CopyOperation<ATTACHMENT>(CopyNbtFunction.Path sourcePath, AttachmentType<ATTACHMENT> target) {
+    private record CopyOperation<ATTACHMENT>(CopyNbtFunction.Path sourcePath, AttachmentType<ATTACHMENT> target) {
 
         public static final Codec<CopyOperation<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               CopyNbtFunction.Path.CODEC.fieldOf("source").forGetter(CopyOperation::sourcePath),

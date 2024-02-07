@@ -41,6 +41,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.registration.impl.AttachmentTypeDeferredRegister;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.chemical.IGasTile;

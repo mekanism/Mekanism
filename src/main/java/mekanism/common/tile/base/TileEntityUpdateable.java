@@ -1,5 +1,7 @@
 package mekanism.common.tile.base;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import java.util.Objects;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -12,12 +14,16 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,12 +34,24 @@ import org.jetbrains.annotations.Nullable;
 public abstract class TileEntityUpdateable extends BlockEntity implements ITileWrapper {
 
     @Nullable
+    private BiMap<AttachmentType<? extends INBTSerializable<?>>, String> syncableAttachmentTypes;
+    @Nullable
     private Coord4D cachedCoord;
     private boolean cacheCoord;
     private long lastSave;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
+    }
+
+    /**
+     * Call this to mark specific attachments as syncing when on this block
+     */
+    protected <SERIALIZABLE extends INBTSerializable<?>> void syncAttachmentType(DeferredHolder<AttachmentType<?>, AttachmentType<SERIALIZABLE>> holder) {
+        if (syncableAttachmentTypes == null) {
+            syncableAttachmentTypes = HashBiMap.create();
+        }
+        syncableAttachmentTypes.put(holder.value(), holder.getId().toString());
     }
 
     /**
@@ -125,7 +143,29 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @NotNull
     public CompoundTag getReducedUpdateTag() {
         //Add the base update tag information
-        return super.getUpdateTag();
+        CompoundTag updateTag = super.getUpdateTag();
+        if (syncableAttachmentTypes != null) {
+            CompoundTag serializedAttachments;
+            if (updateTag.contains(ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
+                //Maybe someone mixed in and is already syncing some attachment, so we don't want to overwrite it
+                serializedAttachments = updateTag.getCompound(ATTACHMENTS_NBT_KEY);
+            } else {
+                serializedAttachments = new CompoundTag();
+            }
+            //Serialize our subset of attachments that we know need to be sync'd
+            syncableAttachmentTypes.forEach((type, name) -> {
+                if (hasData(type)) {
+                    Tag serialized = getData(type).serializeNBT();
+                    if (serialized != null) {
+                        serializedAttachments.put(name, serialized);
+                    }
+                }
+            });
+            if (!serializedAttachments.isEmpty()) {
+                updateTag.put(ATTACHMENTS_NBT_KEY, serializedAttachments);
+            }
+        }
+        return updateTag;
     }
 
     @Override

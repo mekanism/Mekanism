@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.ColoredItem;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
@@ -180,6 +181,11 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OverflowAware>> OVERFLOW_AWARE = ATTACHMENT_TYPES.register("overflow",
           () -> AttachmentType.serializable(OverflowAware::new)
                 .comparator(OverflowAware::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<BlockData>> BLOCK_DATA = ATTACHMENT_TYPES.register("block_data",
+          () -> AttachmentType.serializable(BlockData::createWithLegacy)
+                .comparator(BlockData::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Item>> REPLACE_STACK = ATTACHMENT_TYPES.register("replace_stack",
