@@ -10,10 +10,10 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
+import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -125,11 +125,11 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
                     } else {
                         driveStack = ItemStack.EMPTY;
                     }
-                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem)) {
+                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem) || !driveStack.hasData(MekanismAttachmentTypes.DRIVE_METADATA)) {
                         status = DriveStatus.NONE;
                     } else if (hasFrequency) {
                         allEmpty = false;
-                        DriveMetadata metadata = DriveMetadata.load(driveStack);
+                        DriveMetadata metadata = driveStack.getData(MekanismAttachmentTypes.DRIVE_METADATA);
                         long countCapacity = driveItem.getCountCapacity(driveStack);
                         if (metadata.count() == countCapacity) {
                             //If we are at max item capacity: Full

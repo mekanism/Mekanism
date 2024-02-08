@@ -102,22 +102,6 @@ public final class ItemDataUtils {
         return getDataValue(stack, dataMap -> dataMap.getList(key, Tag.TAG_COMPOUND), new ListTag());
     }
 
-    public static void setIntOrRemove(ItemStack stack, String key, int i) {
-        if (i == 0) {
-            removeData(stack, key);
-        } else {
-            getDataMap(stack).putInt(key, i);
-        }
-    }
-
-    public static void setLongOrRemove(ItemStack stack, String key, long l) {
-        if (l == 0) {
-            removeData(stack, key);
-        } else {
-            getDataMap(stack).putLong(key, l);
-        }
-    }
-
     public static void setBoolean(ItemStack stack, String key, boolean b) {
         getDataMap(stack).putBoolean(key, b);
     }
@@ -148,13 +132,5 @@ public final class ItemDataUtils {
 
     public static long[] getLongArray(ItemStack stack, String key) {
         return getDataValue(stack, dataMap -> dataMap.getLongArray(key), new long[0]);
-    }
-
-    public static void setLongArrayOrRemove(ItemStack stack, String key, long[] array) {
-        if (array.length == 0) {
-            removeData(stack, key);
-        } else {
-            getDataMap(stack).putLongArray(key, array);
-        }
     }
 }

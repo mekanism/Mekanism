@@ -8,20 +8,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
@@ -35,7 +34,6 @@ import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
@@ -179,14 +177,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield null;
             }
             case QIO_DRIVE -> {
-                DriveMetadata data = DriveMetadata.load(stack);
-                if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
+                DriveMetadata data = stack.getData(MekanismAttachmentTypes.DRIVE_METADATA);
+                if (data.count() > 0 && data.types() > 0) {
                     //If we don't have any stored items don't actually grab any recipe data
-                    long[] storedItems = ItemDataUtils.getLongArray(stack, NBTConstants.QIO_ITEM_MAP);
-                    if (storedItems.length % 3 == 0) {
-                        //Ensure we have valid data and not some unknown thing
-                        yield new QIORecipeData(data, storedItems);
-                    }
+                    yield new QIORecipeData(data);
                 }
                 yield null;
             }

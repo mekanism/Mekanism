@@ -10,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.ColoredItem;
+import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
@@ -181,6 +182,11 @@ public class MekanismAttachmentTypes {
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OverflowAware>> OVERFLOW_AWARE = ATTACHMENT_TYPES.register("overflow",
           () -> AttachmentType.serializable(OverflowAware::new)
                 .comparator(OverflowAware::isCompatible)
+                .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DriveMetadata>> DRIVE_METADATA = ATTACHMENT_TYPES.register("drive_metadata",
+          () -> AttachmentType.serializable(DriveMetadata::new)
+                .comparator(DriveMetadata::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<BlockData>> BLOCK_DATA = ATTACHMENT_TYPES.register("block_data",

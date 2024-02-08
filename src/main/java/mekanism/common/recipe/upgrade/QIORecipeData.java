@@ -4,13 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,12 +24,9 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     private final Object2LongMap<UUID> itemMap;
     private final long itemCount;
 
-    QIORecipeData(DriveMetadata data, long[] serializedMap) {
+    QIORecipeData(DriveMetadata data) {
         itemCount = data.count();
-        itemMap = new Object2LongOpenHashMap<>(data.types());
-        for (int i = 0; i < serializedMap.length; i++) {
-            itemMap.put(new UUID(serializedMap[i++], serializedMap[i++]), serializedMap[i]);
-        }
+        itemMap = data.uuidBasedMap();
     }
 
     private QIORecipeData(Object2LongMap<UUID> itemMap, long itemCount) {
@@ -72,17 +68,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        int i = 0;
-        long[] serializedMap = new long[3 * itemMap.size()];
-        for (Entry<UUID> entry : itemMap.object2LongEntrySet()) {
-            UUID uuid = entry.getKey();
-            serializedMap[i++] = uuid.getMostSignificantBits();
-            serializedMap[i++] = uuid.getLeastSignificantBits();
-            serializedMap[i++] = entry.getLongValue();
-        }
-        ItemDataUtils.setLongArrayOrRemove(stack, NBTConstants.QIO_ITEM_MAP, serializedMap);
-        DriveMetadata meta = new DriveMetadata(itemCount, itemMap.size());
-        meta.write(stack);
+        stack.getData(MekanismAttachmentTypes.DRIVE_METADATA).update(itemMap, itemCount);
         return true;
     }
 }
