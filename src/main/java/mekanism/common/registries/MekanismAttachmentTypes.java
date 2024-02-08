@@ -3,6 +3,7 @@ package mekanism.common.registries;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -148,6 +149,8 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SILK_TOUCH = ATTACHMENT_TYPES.registerBoolean("silk_touch", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE = ATTACHMENT_TYPES.registerBoolean("inverse", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE_REQUIRES_REPLACE = ATTACHMENT_TYPES.registerBoolean("inverse_replace", false);
+    //TODO: Re-evaluate the from_recipe data
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> FROM_RECIPE = ATTACHMENT_TYPES.registerBoolean("from_recipe", false);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> RADIUS = ATTACHMENT_TYPES.registerNonNegativeInt("radius", TileEntityDigitalMiner.DEFAULT_RADIUS);
     //TODO - 1.20.4: Better min and max for these?
@@ -155,6 +158,8 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MAX_Y = ATTACHMENT_TYPES.registerInt("max_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Long>> LONG_AMOUNT = ATTACHMENT_TYPES.registerNonNegativeLong("long_amount", 0);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UUID>> PERSONAL_STORAGE_ID = ATTACHMENT_TYPES.registerUUID("storage_id");
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = ATTACHMENT_TYPES.registerContainer("energy_containers", () -> ContainerType.ENERGY);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedInventorySlots>> INVENTORY_SLOTS = ATTACHMENT_TYPES.registerContainer("inventory_slots", () -> ContainerType.ITEM);

@@ -1,7 +1,7 @@
 package mekanism.common.registration.impl;
 
-import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -13,12 +13,15 @@ import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -113,6 +116,23 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               .build());
     }
 
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UUID>> registerUUID(String name) {
+        return register(name, () -> AttachmentType.builder(() -> Util.NIL_UUID)
+              .serialize(new IAttachmentSerializer<IntArrayTag, UUID>() {
+                  @Nullable
+                  @Override
+                  public IntArrayTag write(UUID value) {
+                      return value.equals(Util.NIL_UUID) ? null : NbtUtils.createUUID(value);
+                  }
+
+                  @Override
+                  public UUID read(IAttachmentHolder holder, IntArrayTag tag) {
+                      return NbtUtils.loadUUID(tag);
+                  }
+              }).comparator(UUID::equals)
+              .build());
+    }
+
     public <ENUM extends Enum<ENUM>> MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ENUM>> register(String name, Class<ENUM> clazz) {
         ENUM[] values = clazz.getEnumConstants();
         ENUM defaultValue = values[0];
@@ -140,7 +160,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public ENUM read(IAttachmentHolder holder, IntTag tag) {
                       return reader.apply(tag.getAsInt());
                   }
-              }).comparator(Objects::equals)
+              }).comparator((a, b) -> a == b)
               .build());
     }
 
@@ -164,7 +184,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public Optional<ENUM> read(IAttachmentHolder holder, IntTag tag) {
                       return reader.apply(tag.getAsInt());
                   }
-              }).comparator(optionalComparator(Objects::equals))
+              }).comparator(optionalComparator((a, b) -> a == b))
               .build());
     }
 
@@ -188,7 +208,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                             .result()
                             .orElseGet(defaultValueSupplier);
                   }
-              }).comparator(Objects::equals)
+              }).comparator(Component::equals)
               .build());
     }
 
@@ -211,7 +231,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                       ResourceLocation rl = ResourceLocation.tryParse(tag.getAsString());
                       return rl == null ? defaultValueSupplier.get() : ResourceKey.create(registryKey, rl);
                   }
-              }).comparator(Objects::equals)
+              }).comparator(ResourceKey::equals)
               .build());
     }
 

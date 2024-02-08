@@ -1,7 +1,8 @@
 package mekanism.common.util;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
@@ -59,34 +60,30 @@ public final class ItemDataUtils {
         return dataMap == null ? fallback : getter.apply(dataMap);
     }
 
+    public static <T> Optional<T> getAndRemoveData(ItemStack stack, String key, BiFunction<CompoundTag, String, T> getter) {
+        return Optional.ofNullable(stack.getTag())
+              .filter(tag -> tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND))
+              .map(tag -> tag.getCompound(NBTConstants.MEK_DATA))
+              .filter(mekData -> mekData.contains(key))
+              .map(mekData -> {
+                  T value = getter.apply(mekData, key);
+                  mekData.remove(key);
+                  if (mekData.isEmpty()) {
+                      //If our data map no longer has any elements after removing a piece of stored data
+                      // then remove the data tag to make the stack nice and clean again
+                      stack.removeTagKey(NBTConstants.MEK_DATA);
+                  }
+                  return value;
+              });
+    }
+
     public static int getInt(ItemStack stack, String key) {
         CompoundTag dataMap = getDataMapIfPresent(stack);
         return dataMap == null ? 0 : dataMap.getInt(key);
     }
 
-    public static long getLong(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        return dataMap == null ? 0 : dataMap.getLong(key);
-    }
-
-    public static boolean getBoolean(ItemStack stack, String key) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        return dataMap != null && dataMap.getBoolean(key);
-    }
-
-    public static String getString(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getString(key), "");
-    }
-
     public static CompoundTag getCompound(ItemStack stack, String key) {
         return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundTag());
-    }
-
-    public static void setCompoundIfPresent(ItemStack stack, String key, Consumer<CompoundTag> setter) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        if (dataMap != null && dataMap.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(dataMap.getCompound(key));
-        }
     }
 
     @Nullable
@@ -102,24 +99,8 @@ public final class ItemDataUtils {
         return getDataValue(stack, dataMap -> dataMap.getList(key, Tag.TAG_COMPOUND), new ListTag());
     }
 
-    public static void setBoolean(ItemStack stack, String key, boolean b) {
-        getDataMap(stack).putBoolean(key, b);
-    }
-
-    public static void setString(ItemStack stack, String key, String s) {
-        getDataMap(stack).putString(key, s);
-    }
-
     public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
         getDataMap(stack).put(key, tag);
-    }
-
-    public static void setUUID(ItemStack stack, String key, @Nullable UUID uuid) {
-        if (uuid == null) {
-            removeData(stack, key);
-        } else {
-            getDataMap(stack).putUUID(key, uuid);
-        }
     }
 
     public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
@@ -128,9 +109,5 @@ public final class ItemDataUtils {
         } else {
             getDataMap(stack).put(key, tag);
         }
-    }
-
-    public static long[] getLongArray(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getLongArray(key), new long[0]);
     }
 }

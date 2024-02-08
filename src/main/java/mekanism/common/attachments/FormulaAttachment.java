@@ -60,7 +60,8 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
             ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
         }
         if (ItemDataUtils.hasData(stack, NBTConstants.INVALID, Tag.TAG_BYTE)) {
-            invalid = ItemDataUtils.getBoolean(stack, NBTConstants.INVALID);
+            CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
+            invalid = dataMap != null && dataMap.getBoolean(NBTConstants.INVALID);
             //Remove the legacy data now that it has been parsed and loaded
             ItemDataUtils.removeData(stack, NBTConstants.INVALID);
         }

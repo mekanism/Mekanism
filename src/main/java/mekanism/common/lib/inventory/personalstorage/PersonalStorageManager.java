@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -18,10 +17,10 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
@@ -54,17 +53,7 @@ public class PersonalStorageManager {
             return Optional.empty();
         }
         UUID invId = getInventoryId(stack);
-        return forOwner(owner).map(data -> {
-            AbstractPersonalStorageItemInventory storageItemInventory = data.getOrAddInventory(invId);
-            //TODO - After 1.20: Remove legacy loading
-            ListTag legacyData = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
-            if (!legacyData.isEmpty()) {
-                DataHandlerUtils.readContainers(storageItemInventory.getInventorySlots(null), legacyData);
-                ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
-            }
-
-            return storageItemInventory;
-        });
+        return forOwner(owner).map(data -> data.getOrAddInventory(invId));
     }
 
     public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
@@ -90,33 +79,31 @@ public class PersonalStorageManager {
      */
     public static Optional<AbstractPersonalStorageItemInventory> getInventoryIfPresent(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-        UUID invId = getInventoryIdNullable(stack);
-        //TODO - After 1.20: Remove legacy loading
-        boolean hasLegacyData = ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
-        return owner != null && (invId != null || hasLegacyData) ? getInventoryFor(stack) : Optional.empty();
+        convertLegacyToAttachment(stack);
+        return owner != null && stack.hasData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID) ? getInventoryFor(stack) : Optional.empty();
     }
 
     public static void deleteInventory(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-        UUID invId = getInventoryIdNullable(stack);
-        if (owner != null && invId != null) {
-            forOwner(owner).ifPresent(handler -> handler.removeInventory(invId));
+        if (owner != null) {
+            convertLegacyToAttachment(stack);
+            UUID storageId = stack.removeData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
+            if (storageId != null) {
+                //If there actually was an id stored then remove the corresponding inventory
+                forOwner(owner).ifPresent(handler -> handler.removeInventory(storageId));
+            }
         }
     }
 
     @NotNull
     private static UUID getInventoryId(ItemStack stack) {
-        UUID invId = getInventoryIdNullable(stack);
-        if (invId == null) {
-            invId = UUID.randomUUID();
-            ItemDataUtils.setUUID(stack, NBTConstants.PERSONAL_STORAGE_ID, invId);
+        convertLegacyToAttachment(stack);
+        if (stack.hasData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID)) {
+            return stack.getData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
         }
+        UUID invId = UUID.randomUUID();
+        stack.setData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID, invId);
         return invId;
-    }
-
-    @Nullable
-    private static UUID getInventoryIdNullable(ItemStack stack) {
-        return ItemDataUtils.getUniqueID(stack, NBTConstants.PERSONAL_STORAGE_ID);
     }
 
     public static void reset() {
@@ -132,4 +119,9 @@ public class PersonalStorageManager {
         }
     }
 
+    @Deprecated//TODO - 1.21: Remove this
+    private static void convertLegacyToAttachment(ItemStack stack) {
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.PERSONAL_STORAGE_ID, CompoundTag::getUUID)
+              .ifPresent(legacyId -> stack.setData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID, legacyId));
+    }
 }

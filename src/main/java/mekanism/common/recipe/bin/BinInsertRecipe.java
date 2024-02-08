@@ -6,12 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
@@ -117,7 +116,7 @@ public class BinInsertRecipe extends BinRecipe {
             }
         }
         //TODO: I think we can just skip this when handling it as a SpecialQIORecipe
-        ItemDataUtils.setBoolean(binStack, NBTConstants.FROM_RECIPE, true);
+        binStack.setData(MekanismAttachmentTypes.FROM_RECIPE, true);
         return binStack;
     }
 
@@ -182,30 +181,33 @@ public class BinInsertRecipe extends BinRecipe {
 
     public static void onCrafting(ItemCraftedEvent event) {
         ItemStack result = event.getCrafting();
-        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin && ItemDataUtils.getBoolean(result, NBTConstants.FROM_RECIPE)) {
-            BinInventorySlot slot = convertToSlot(result);
-            ItemStack storedStack = slot.getStack();
-            if (!storedStack.isEmpty()) {
-                Container craftingMatrix = event.getInventory();
-                for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
-                    ItemStack stack = craftingMatrix.getItem(i);
-                    //Check remaining items
-                    if (stack.getCount() > 1 && ItemHandlerHelper.canItemStacksStack(storedStack, stack)) {
-                        //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
-                        ItemStack toInsert = stack.copyWithCount(stack.getCount() - 1);
-                        ItemStack remaining = slot.insertItem(toInsert, Action.EXECUTE, AutomationType.MANUAL);
-                        if (remaining.isEmpty()) {
-                            //Set it to the single item we skipped
-                            craftingMatrix.setItem(i, stack.copyWithCount(1));
-                        } else if (remaining.getCount() < toInsert.getCount()) {
-                            //Set the stack to whatever amount we were unable to insert
-                            craftingMatrix.setItem(i, stack.copyWithCount(remaining.getCount() + 1));
+        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin) {
+            //Remove the marker that the bin was crafted from a bin recipe
+            Boolean fromRecipe = result.removeData(MekanismAttachmentTypes.FROM_RECIPE);
+            if (fromRecipe != null && fromRecipe) {
+                //And if it was try to move extra items from the container into it
+                BinInventorySlot slot = convertToSlot(result);
+                ItemStack storedStack = slot.getStack();
+                if (!storedStack.isEmpty()) {
+                    Container craftingMatrix = event.getInventory();
+                    for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
+                        ItemStack stack = craftingMatrix.getItem(i);
+                        //Check remaining items
+                        if (stack.getCount() > 1 && ItemHandlerHelper.canItemStacksStack(storedStack, stack)) {
+                            //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
+                            ItemStack toInsert = stack.copyWithCount(stack.getCount() - 1);
+                            ItemStack remaining = slot.insertItem(toInsert, Action.EXECUTE, AutomationType.MANUAL);
+                            if (remaining.isEmpty()) {
+                                //Set it to the single item we skipped
+                                craftingMatrix.setItem(i, stack.copyWithCount(1));
+                            } else if (remaining.getCount() < toInsert.getCount()) {
+                                //Set the stack to whatever amount we were unable to insert
+                                craftingMatrix.setItem(i, stack.copyWithCount(remaining.getCount() + 1));
+                            }
                         }
                     }
                 }
             }
-            //Remove the marker that the bin was crafted from a bin recipe
-            ItemDataUtils.removeData(result, NBTConstants.FROM_RECIPE);
         }
     }
 }

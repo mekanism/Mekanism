@@ -42,7 +42,10 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
     private void loadLegacyData(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
             if (ItemDataUtils.hasData(stack, NBTConstants.QIO_META_COUNT, Tag.TAG_LONG)) {
-                this.count = ItemDataUtils.getLong(stack, NBTConstants.QIO_META_COUNT);
+                CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
+                if (dataMap != null) {
+                    this.count = dataMap.getLong(NBTConstants.QIO_META_COUNT);
+                }
                 ItemDataUtils.removeData(stack, NBTConstants.QIO_META_COUNT);
             }
             if (ItemDataUtils.hasData(stack, NBTConstants.QIO_META_TYPES, Tag.TAG_INT)) {
@@ -50,7 +53,8 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
                 ItemDataUtils.removeData(stack, NBTConstants.QIO_META_TYPES);
             }
             if (ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, Tag.TAG_LONG_ARRAY)) {
-                long[] itemMap = ItemDataUtils.getLongArray(stack, NBTConstants.QIO_ITEM_MAP);
+                CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
+                long[] itemMap = dataMap == null ? EMPTY_ITEM_MAP : dataMap.getLongArray(NBTConstants.QIO_ITEM_MAP);
                 if (itemMap.length > 0 && itemMap.length % 3 == 0) {
                     //Ensure we have valid data and not some value we don't know how to process
                     serializedItemMap = itemMap;

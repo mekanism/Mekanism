@@ -81,7 +81,6 @@ public final class NBTConstants {
     public static final String DATA_NAME = "dataName";
     public static final String DATA_TYPE = "dataType";
     public static final String DELAY = "delay";
-    public static final String DIMENSION = "dimension";
     public static final String DISABLED = "disabled";
     public static final String DRAINING = "draining";
     public static final String DRIVES = "drives";
