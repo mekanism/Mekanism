@@ -3,11 +3,14 @@ package mekanism.common.registries;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.Optional;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.ColoredItem;
 import mekanism.common.attachments.DriveMetadata;
@@ -65,6 +68,8 @@ import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -75,7 +80,7 @@ import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class MekanismAttachmentTypes {
+public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
 
     private MekanismAttachmentTypes() {
     }
@@ -193,6 +198,10 @@ public class MekanismAttachmentTypes {
           () -> AttachmentType.serializable(BlockData::createWithLegacy)
                 .comparator(BlockData::isCompatible)
                 .build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Component>> ROBIT_NAME = ATTACHMENT_TYPES.registerComponent("robit_name", MekanismLang.ROBIT::translate);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = ATTACHMENT_TYPES.registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> MekanismRobitSkins.BASE);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Item>> REPLACE_STACK = ATTACHMENT_TYPES.register("replace_stack",
           () -> AttachmentType.builder(() -> Items.AIR)

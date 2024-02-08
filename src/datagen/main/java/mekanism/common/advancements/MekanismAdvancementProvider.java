@@ -18,6 +18,7 @@ import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -287,7 +288,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.value())))
               .save(consumer);
         ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
-        MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
+        skinnedRobit.setData(MekanismAttachmentTypes.ROBIT_SKIN, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
         advancement(MekanismAdvancements.ROBIT_AESTHETICS)
               .display(skinnedRobit, null, AdvancementType.TASK, true, false, true)
               .addCriterion("change_skin", ChangeRobitSkinTrigger.TriggerInstance.toAny())

@@ -1,4 +1,4 @@
-// 1.20.4	2023-12-08T20:08:14.0397618	Advancements: mekanism
+// 1.20.4	2024-02-08T15:57:45.9302205	Advancements: mekanism
 36110f1a2e73a7c7c0fb13c367cf65db57abc286 data/mekanism/advancements/advanced_control_circuit.json
 ff3733968bc0eb409dfe73abfda90ef55c6bfa66 data/mekanism/advancements/advanced_qio_drive.json
 842095d4699b626bee12849c995b070bf4f04ef8 data/mekanism/advancements/alarm.json
@@ -72,7 +72,7 @@ fc101d50f4aec9a7a1912786265563316034cc65 data/mekanism/advancements/radiation_pr
 e9605c88234e6570ba9fa28fb06a252b0c6bd419 data/mekanism/advancements/reinforced_alloy.json
 5903f58281c17079a4ace5906fb8a1b4704c5008 data/mekanism/advancements/restrictive_item_transport.json
 35cdc3684a4f908c2957ca9c9104336cb3964e6a data/mekanism/advancements/robit.json
-36c46e1c9d9cea85aaf8562eb33e6d937b429be0 data/mekanism/advancements/robit_aesthetics.json
+02d647019d1b0d26db977563635d403604dc1546 data/mekanism/advancements/robit_aesthetics.json
 cf2043d9210d349ee40c8532c3d94815db176507 data/mekanism/advancements/root.json
 b2646678743038bc8e52bb02c87564a845b06cf1 data/mekanism/advancements/running_free.json
 d7346352eaf31feda6ccdc2d775766b495d39e6c data/mekanism/advancements/sawmill.json

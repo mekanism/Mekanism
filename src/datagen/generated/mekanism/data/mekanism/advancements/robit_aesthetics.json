@@ -13,7 +13,7 @@
     "hidden": true,
     "icon": {
       "item": "mekanism:robit",
-      "nbt": "{mekData:{skin:\"mekanism:trans\"}}"
+      "neoforge:attachments": "{\"mekanism:robit_skin\":\"mekanism:trans\"}"
     },
     "title": {
       "translate": "advancements.mekanism.robit_aesthetics.title"

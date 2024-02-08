@@ -1,6 +1,7 @@
 package mekanism.common.integration.lookingat.jade;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Optional;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -17,8 +18,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -61,14 +64,14 @@ public class JadeTooltipRenderer implements IBlockComponentProvider, IEntityComp
                 CompoundTag elementData = list.getCompound(i);
                 LookingAtElement element;
                 ResourceLocation name;
-                if (elementData.contains(JadeLookingAtHelper.TEXT, Tag.TAG_STRING)) {
-                    Component text = Component.Serializer.fromJson(elementData.getString(JadeLookingAtHelper.TEXT));
-                    if (text != null) {
+                if (elementData.contains(JadeLookingAtHelper.TEXT)) {
+                    Optional<Component> text = ComponentSerialization.CODEC.parse(NbtOps.INSTANCE, elementData.get(JadeLookingAtHelper.TEXT)).result();
+                    if (text.isPresent()) {
                         if (lastText != null) {
                             //Fallback to printing the last text
                             tooltip.add(lastText);
                         }
-                        lastText = text;
+                        lastText = text.get();
                     }
                     continue;
                 } else if (elementData.contains(NBTConstants.ENERGY_STORED, Tag.TAG_STRING)) {

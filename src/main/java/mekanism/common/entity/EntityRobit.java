@@ -62,6 +62,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataSerializers;
@@ -438,15 +439,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ItemRobit item = (ItemRobit) stack.getItem();
-        item.setSustainedInventory(getSustainedInventory(), stack);
-        item.setName(stack, getName());
+        ((ItemRobit) stack.getItem()).setSustainedInventory(getSustainedInventory(), stack);
+        if (hasCustomName()) {
+            stack.setData(MekanismAttachmentTypes.ROBIT_NAME, getName());
+        }
         ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
         }
-        item.setSkin(stack, getSkin());
+        stack.setData(MekanismAttachmentTypes.ROBIT_SKIN, getSkin());
         return stack;
     }
 

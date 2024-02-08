@@ -6,7 +6,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.lookingat.LookingAtHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class JadeLookingAtHelper implements LookingAtHelper {
@@ -18,9 +20,12 @@ public class JadeLookingAtHelper implements LookingAtHelper {
 
     @Override
     public void addText(Component text) {
-        CompoundTag textData = new CompoundTag();
-        textData.putString(TEXT, Component.Serializer.toJson(text));
-        data.add(textData);
+        //TODO - 1.20.4: Once Jade updates to run with neo's networking changes test to make sure this works properly using nbt instead of json as string
+        ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, text).result().ifPresent(tag -> {
+            CompoundTag textData = new CompoundTag();
+            textData.put(TEXT, tag);
+            data.add(textData);
+        });
     }
 
     @Override

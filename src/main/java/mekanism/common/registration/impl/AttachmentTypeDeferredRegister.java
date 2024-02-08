@@ -13,10 +13,18 @@ import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentComparator;
@@ -160,10 +168,56 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
               .build());
     }
 
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Component>> registerComponent(String name, Supplier<Component> defaultValueSupplier) {
+        return register(name, () -> AttachmentType.builder(defaultValueSupplier)
+              .serialize(new IAttachmentSerializer<>() {
+                  @Nullable
+                  @Override
+                  public Tag write(Component value) {
+                      if (value.equals(defaultValueSupplier.get())) {
+                          return null;
+                      }
+                      return ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, value)
+                            .result()
+                            .orElse(null);
+                  }
+
+                  @Override
+                  public Component read(IAttachmentHolder holder, Tag tag) {
+                      return ComponentSerialization.CODEC.parse(NbtOps.INSTANCE, tag)
+                            .result()
+                            .orElseGet(defaultValueSupplier);
+                  }
+              }).comparator(Objects::equals)
+              .build());
+    }
+
+    public <TYPE> MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ResourceKey<TYPE>>> registerResourceKey(String name, ResourceKey<? extends Registry<TYPE>> registryKey,
+          Supplier<ResourceKey<TYPE>> defaultValueSupplier) {
+        return register(name, () -> AttachmentType.builder(defaultValueSupplier)
+              .serialize(new IAttachmentSerializer<StringTag, ResourceKey<TYPE>>() {
+                  @Nullable
+                  @Override
+                  public StringTag write(ResourceKey<TYPE> value) {
+                      //Note: ResourceKeys are interned so can be compared directly
+                      if (value == defaultValueSupplier.get()) {
+                          return null;
+                      }
+                      return StringTag.valueOf(value.location().toString());
+                  }
+
+                  @Override
+                  public ResourceKey<TYPE> read(IAttachmentHolder holder, StringTag tag) {
+                      ResourceLocation rl = ResourceLocation.tryParse(tag.getAsString());
+                      return rl == null ? defaultValueSupplier.get() : ResourceKey.create(registryKey, rl);
+                  }
+              }).comparator(Objects::equals)
+              .build());
+    }
+
     public static <TYPE> IAttachmentComparator<Optional<TYPE>> optionalComparator(IAttachmentComparator<TYPE> innerComparator) {
         return (a, b) -> a.map(aVal -> b.filter(bVal -> innerComparator.areCompatible(aVal, bVal)).isPresent()).orElseGet(b::isEmpty);
     }
-
 
     private static final IAttachmentSerializer<ByteTag, Boolean> TRUE_SERIALIZER = new IAttachmentSerializer<>() {
         @Nullable

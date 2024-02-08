@@ -2,8 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
@@ -16,19 +14,15 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -57,8 +51,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
-        tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
-        tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(getRobitSkin(stack))));
+        tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, stack.getData(MekanismAttachmentTypes.ROBIT_NAME)));
+        tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getData(MekanismAttachmentTypes.ROBIT_SKIN))));
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
     }
@@ -94,12 +88,12 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     robit.setOwnerUUID(ownerUUID);
                 }
                 robit.setSustainedInventory(getSustainedInventory(stack));
-                robit.setCustomName(getRobitName(stack));
+                robit.setCustomName(stack.getData(MekanismAttachmentTypes.ROBIT_NAME));
                 ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
                 if (securityObject != null) {
                     robit.setSecurityMode(securityObject.getSecurityMode());
                 }
-                robit.setSkin(getRobitSkin(stack), player);
+                robit.setSkin(stack.getData(MekanismAttachmentTypes.ROBIT_SKIN), player);
                 world.addFreshEntity(robit);
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
                 stack.shrink(1);
@@ -108,30 +102,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return InteractionResult.PASS;
-    }
-
-    public void setName(ItemStack stack, Component name) {
-        ItemDataUtils.setString(stack, NBTConstants.NAME, Component.Serializer.toJson(name));
-    }
-
-    private Component getRobitName(ItemStack stack) {
-        String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
-        return name.isEmpty() ? MekanismLang.ROBIT.translate() : Component.Serializer.fromJson(name);
-    }
-
-    public void setSkin(ItemStack stack, ResourceKey<RobitSkin> skin) {
-        ItemDataUtils.setString(stack, NBTConstants.SKIN, skin.location().toString());
-    }
-
-    public ResourceKey<RobitSkin> getRobitSkin(ItemStack stack) {
-        String skin = ItemDataUtils.getString(stack, NBTConstants.SKIN);
-        if (!skin.isEmpty()) {
-            ResourceLocation rl = ResourceLocation.tryParse(skin);
-            if (rl != null) {
-                return ResourceKey.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, rl);
-            }
-        }
-        return MekanismRobitSkins.BASE;
     }
 
     @Override
