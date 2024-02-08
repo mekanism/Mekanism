@@ -4,8 +4,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -24,9 +24,10 @@ public final class ColoredItem implements INBTSerializable<IntTag> {
 
     @Deprecated//TODO - 1.21: Remove this legacy way of loading data
     private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && ItemDataUtils.hasData(stack, NBTConstants.COLOR, Tag.TAG_INT)) {
-            this.color = EnumColor.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.COLOR));
-            ItemDataUtils.removeData(stack, NBTConstants.COLOR);
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.COLOR, CompoundTag::getInt)
+                  .map(EnumColor::byIndexStatic)
+                  .ifPresent(value -> color = value);
         }
     }
 

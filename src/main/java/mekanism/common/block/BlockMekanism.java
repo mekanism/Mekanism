@@ -241,12 +241,9 @@ public abstract class BlockMekanism extends Block {
 
         //Handle item
         Item item = stack.getItem();
-        CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
-        if (dataMap == null) {
-            //Don't bother modifying the stack even though it doesn't matter as it is going away but return an empty compound
-            // the same as we would normally do if we had to add the data map
-            dataMap = new CompoundTag();
-        }
+        //Don't bother modifying the stack even though it doesn't matter as it is going away but return an empty compound
+        // the same as we would normally do if we had to add the data map
+        CompoundTag dataMap = ItemDataUtils.getMekData(stack).orElseGet(CompoundTag::new);
 
         //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check

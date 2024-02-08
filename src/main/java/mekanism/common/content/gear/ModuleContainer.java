@@ -58,23 +58,17 @@ public final class ModuleContainer implements IModuleContainer {
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     private void loadLegacyData() {
         //Load legacy modules
-        if (ItemDataUtils.hasData(this.container, NBTConstants.MODULES, Tag.TAG_COMPOUND)) {
-            CompoundTag legacyModules = ItemDataUtils.getCompound(this.container, NBTConstants.MODULES);
+        ItemDataUtils.getAndRemoveData(this.container, NBTConstants.MODULES, CompoundTag::getCompound).ifPresent(legacyModules -> {
             CompoundTag extraData = new CompoundTag();
-            if (ItemDataUtils.hasData(this.container, NBTConstants.ENCHANTMENTS, Tag.TAG_LIST)) {
-                //Handle legacy enchantments from enchantment modules
-                ListTag enchantmentTag = ItemDataUtils.getList(this.container, NBTConstants.ENCHANTMENTS);
-                extraData.put(NBTConstants.ENCHANTMENTS, enchantmentTag);
-            }
+            //Handle legacy enchantments from enchantment modules
+            ItemDataUtils.getAndRemoveData(this.container, NBTConstants.ENCHANTMENTS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND))
+                  .ifPresent(enchantmentTag -> extraData.put(NBTConstants.ENCHANTMENTS, enchantmentTag));
             if (!extraData.isEmpty()) {
                 legacyModules = legacyModules.copy();
                 legacyModules.put(NBTConstants.EXTRA_DATA, extraData);
             }
             deserializeNBT(legacyModules);
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(this.container, NBTConstants.MODULES);
-            ItemDataUtils.removeData(this.container, NBTConstants.ENCHANTMENTS);
-        }
+        });
     }
 
     @Nullable

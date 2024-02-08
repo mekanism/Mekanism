@@ -48,17 +48,14 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData() {
-        if (ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, Tag.TAG_COMPOUND)) {
-            deserializeNBT(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.FREQUENCY);
-        } else if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
-            if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                deserializeNBT(frequencyComponent.getCompound(frequencyType.getName()));
-            }
-            //Note: We don't remove legacy data here as it is still necessary/used, and we are just reading the identity
-        }
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound)
+              //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
+              .or(() -> ItemDataUtils.getMekData(stack)
+                    .filter(mekData -> mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND))
+                    .map(mekData -> mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY))
+                    .filter(frequencyComponent -> frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND))
+                    .map(frequencyComponent -> frequencyComponent.getCompound(frequencyType.getName())))
+              .ifPresent(this::deserializeNBT);
     }
 
     @Nullable

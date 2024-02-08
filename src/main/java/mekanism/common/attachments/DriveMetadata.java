@@ -13,7 +13,6 @@ import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -41,26 +40,12 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
     @Deprecated//TODO - 1.21: Remove this legacy way of loading data
     private void loadLegacyData(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            if (ItemDataUtils.hasData(stack, NBTConstants.QIO_META_COUNT, Tag.TAG_LONG)) {
-                CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
-                if (dataMap != null) {
-                    this.count = dataMap.getLong(NBTConstants.QIO_META_COUNT);
-                }
-                ItemDataUtils.removeData(stack, NBTConstants.QIO_META_COUNT);
-            }
-            if (ItemDataUtils.hasData(stack, NBTConstants.QIO_META_TYPES, Tag.TAG_INT)) {
-                this.types = ItemDataUtils.getInt(stack, NBTConstants.QIO_META_TYPES);
-                ItemDataUtils.removeData(stack, NBTConstants.QIO_META_TYPES);
-            }
-            if (ItemDataUtils.hasData(stack, NBTConstants.QIO_ITEM_MAP, Tag.TAG_LONG_ARRAY)) {
-                CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
-                long[] itemMap = dataMap == null ? EMPTY_ITEM_MAP : dataMap.getLongArray(NBTConstants.QIO_ITEM_MAP);
-                if (itemMap.length > 0 && itemMap.length % 3 == 0) {
-                    //Ensure we have valid data and not some value we don't know how to process
-                    serializedItemMap = itemMap;
-                }
-                ItemDataUtils.removeData(stack, NBTConstants.QIO_ITEM_MAP);
-            }
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_COUNT, CompoundTag::getLong).ifPresent(count -> this.count = count);
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_TYPES, CompoundTag::getInt).ifPresent(types -> this.types = types);
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_ITEM_MAP, CompoundTag::getLongArray)
+                  .filter(itemMap -> itemMap.length > 0 && itemMap.length % 3 == 0)
+                  //Ensure we have valid data and not some value we don't know how to process
+                  .ifPresent(itemMap -> serializedItemMap = itemMap);
         }
     }
 

@@ -25,11 +25,9 @@ public class SecurityObject extends OwnerObject implements ISecurityObject, INBT
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
         super.loadLegacyData(stack);
-        if (ItemDataUtils.hasData(stack, NBTConstants.SECURITY_MODE, Tag.TAG_INT)) {
-            securityMode = SecurityMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.SECURITY_MODE));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.SECURITY_MODE);
-        }
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.SECURITY_MODE, CompoundTag::getInt)
+              .map(SecurityMode::byIndexStatic)
+              .ifPresent(mode -> this.securityMode = mode);
     }
 
     @Override

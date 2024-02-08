@@ -54,17 +54,9 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST)) {
-            DataHandlerUtils.readContainers(inventory, ItemDataUtils.getList(stack, NBTConstants.ITEMS));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
-        }
-        if (ItemDataUtils.hasData(stack, NBTConstants.INVALID, Tag.TAG_BYTE)) {
-            CompoundTag dataMap = ItemDataUtils.getDataMapIfPresent(stack);
-            invalid = dataMap != null && dataMap.getBoolean(NBTConstants.INVALID);
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.INVALID);
-        }
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.ITEMS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND))
+              .ifPresent(items -> DataHandlerUtils.readContainers(inventory, items));
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.INVALID, CompoundTag::getBoolean).ifPresent(invalid -> this.invalid = invalid);
     }
 
     public void clear() {

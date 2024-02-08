@@ -49,11 +49,7 @@ public class UpgradeAware implements INBTSerializable<CompoundTag>, IMekanismInv
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
-            deserializeNBT(ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.COMPONENT_UPGRADE);
-        }
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_UPGRADE, CompoundTag::getCompound).ifPresent(this::deserializeNBT);
     }
 
     public Set<Upgrade> getSupportedUpgrades() {

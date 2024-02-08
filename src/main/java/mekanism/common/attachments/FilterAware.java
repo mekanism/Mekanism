@@ -26,10 +26,8 @@ public final class FilterAware implements INBTSerializable<ListTag> {
 
     @Deprecated//TODO - 1.21: Remove this legacy way of loading data
     private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && ItemDataUtils.hasData(stack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
-            deserializeNBT(ItemDataUtils.getList(stack, NBTConstants.FILTERS));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.FILTERS);
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.FILTERS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(this::deserializeNBT);
         }
     }
 

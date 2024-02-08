@@ -29,10 +29,8 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
     public static BlockData createWithLegacy(IAttachmentHolder attachmentHolder) {
         BlockData blockData = create();
         //TODO - 1.21: Remove this legacy way of loading data
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && ItemDataUtils.hasData(stack, NBTConstants.DATA, Tag.TAG_COMPOUND)) {
-            blockData.loadLegacyData(ItemDataUtils.getCompound(stack, NBTConstants.DATA));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.DATA);
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.DATA, CompoundTag::getCompound).ifPresent(blockData::loadLegacyData);
         }
         return blockData;
     }

@@ -9,9 +9,9 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -33,11 +33,7 @@ public class OwnerObject implements IOwnerObject {
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, NBTConstants.OWNER_UUID, Tag.TAG_INT_ARRAY)) {
-            ownerUUID = ItemDataUtils.getUniqueID(stack, NBTConstants.OWNER_UUID);
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, NBTConstants.OWNER_UUID);
-        }
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.OWNER_UUID, CompoundTag::getUUID).ifPresent(owner -> this.ownerUUID = owner);
     }
 
     @Nullable

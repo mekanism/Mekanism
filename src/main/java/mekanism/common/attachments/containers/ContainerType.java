@@ -41,7 +41,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.registration.impl.AttachmentTypeDeferredRegister;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.chemical.IGasTile;
@@ -240,17 +239,15 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Deprecated//TODO - 1.21?: Remove all usages of this
     public boolean hasLegacyData(ItemStack stack) {
-        return !stack.isEmpty() && ItemDataUtils.hasData(stack, containerTag, Tag.TAG_LIST);
+        return !stack.isEmpty() && ItemDataUtils.getMekData(stack).filter(mekData -> mekData.contains(containerTag, Tag.TAG_LIST)).isPresent();
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     public ATTACHMENT getDefaultWithLegacy(IAttachmentHolder holder) {
         ATTACHMENT attachment = getDefault(holder);
         //If it is an itemstack try to load legacy data
-        if (holder instanceof ItemStack stack && hasLegacyData(stack)) {
-            attachment.deserializeNBT(ItemDataUtils.getList(stack, containerTag));
-            //Remove the legacy data now that it has been parsed and loaded
-            ItemDataUtils.removeData(stack, containerTag);
+        if (holder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, containerTag, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(attachment::deserializeNBT);
         }
         return attachment;
     }
