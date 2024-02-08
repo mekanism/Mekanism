@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
@@ -63,6 +64,7 @@ import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteArrayTag;
@@ -207,6 +209,30 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Component>> ROBIT_NAME = ATTACHMENT_TYPES.registerComponent("robit_name", MekanismLang.ROBIT::translate);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = ATTACHMENT_TYPES.registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> MekanismRobitSkins.BASE);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<CompoundTag>> CONFIGURATION_DATA = ATTACHMENT_TYPES.register("configuration_data",
+          //TODO - 1.21: Remove legacy way of loading data and just return this
+          //() -> AttachmentType.builder(CompoundTag::new)
+          () -> AttachmentType.builder(attachmentHolder -> {
+                    if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+                        return ItemDataUtils.getAndRemoveData(stack, NBTConstants.DATA, CompoundTag::getCompound).orElseGet(CompoundTag::new);
+                    }
+                    return new CompoundTag();
+                })
+                .serialize(new IAttachmentSerializer<CompoundTag, CompoundTag>() {
+                    @Nullable
+                    @Override
+                    public CompoundTag write(CompoundTag tag) {
+                        return tag.isEmpty() ? null : tag;
+                    }
+
+                    @Override
+                    public CompoundTag read(IAttachmentHolder holder, CompoundTag tag) {
+                        return tag;
+                    }
+                })
+                .comparator(CompoundTag::equals)
+                .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Item>> REPLACE_STACK = ATTACHMENT_TYPES.register("replace_stack",
           () -> AttachmentType.builder(() -> Items.AIR)

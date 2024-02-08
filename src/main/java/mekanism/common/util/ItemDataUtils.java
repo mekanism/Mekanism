@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -30,17 +29,9 @@ public final class ItemDataUtils {
 
     @Nullable
     public static CompoundTag getDataMapIfPresent(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {
-            return tag.getCompound(NBTConstants.MEK_DATA);
-        }
-        return null;
+        return getMekData(stack).orElse(null);
     }
 
-    private static <T> T getDataValue(ItemStack stack, Function<CompoundTag, T> getter, T fallback) {
-        CompoundTag dataMap = getDataMapIfPresent(stack);
-        return dataMap == null ? fallback : getter.apply(dataMap);
-    }
 
     public static Optional<CompoundTag> getMekData(ItemStack stack) {
         return Optional.ofNullable(stack.getTag())
@@ -63,12 +54,10 @@ public final class ItemDataUtils {
               });
     }
 
-    public static CompoundTag getCompound(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getCompound(key), new CompoundTag());
-    }
-
     public static ListTag getList(ItemStack stack, String key) {
-        return getDataValue(stack, dataMap -> dataMap.getList(key, Tag.TAG_COMPOUND), new ListTag());
+        return getMekData(stack)
+              .map(mekData -> mekData.getList(key, Tag.TAG_COMPOUND))
+              .orElseGet(ListTag::new);
     }
 
     public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
@@ -77,15 +66,14 @@ public final class ItemDataUtils {
 
     public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
         if (tag.isEmpty()) {
-            CompoundTag dataMap = getDataMapIfPresent(stack);
-            if (dataMap != null) {
-                dataMap.remove(key);
-                if (dataMap.isEmpty()) {
+            getMekData(stack).ifPresent(mekData -> {
+                mekData.remove(key);
+                if (mekData.isEmpty()) {
                     //If our data map no longer has any elements after removing a piece of stored data
                     // then remove the data tag to make the stack nice and clean again
                     stack.removeTagKey(NBTConstants.MEK_DATA);
                 }
-            }
+            });
         } else {
             getDataMap(stack).put(key, tag);
         }

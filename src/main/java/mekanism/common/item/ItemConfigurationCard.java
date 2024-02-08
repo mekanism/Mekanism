@@ -9,7 +9,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -67,7 +67,7 @@ public class ItemConfigurationCard extends Item {
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
                     NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
-                    ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
+                    stack.setData(MekanismAttachmentTypes.CONFIGURATION_DATA, data);
                     player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
                 }
@@ -95,8 +95,13 @@ public class ItemConfigurationCard extends Item {
     }
 
     private CompoundTag getData(ItemStack stack) {
-        CompoundTag data = ItemDataUtils.getCompound(stack, NBTConstants.DATA);
-        return data.isEmpty() ? null : data;
+        if (stack.hasData(MekanismAttachmentTypes.CONFIGURATION_DATA)) {
+            CompoundTag data = stack.getData(MekanismAttachmentTypes.CONFIGURATION_DATA);
+            if (!data.isEmpty()) {
+                return data;
+            }
+        }
+        return null;
     }
 
     @Nullable
