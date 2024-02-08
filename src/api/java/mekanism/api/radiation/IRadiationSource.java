@@ -1,6 +1,6 @@
 package mekanism.api.radiation;
 
-import mekanism.api.Coord4D;
+import net.minecraft.core.GlobalPos;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,7 +12,7 @@ public interface IRadiationSource {
      * Gets the location of this {@link IRadiationSource}.
      */
     @NotNull
-    Coord4D getPos();
+    GlobalPos getPos();
 
     /**
      * Get the radiation level (in Sv/h) of this {@link IRadiationSource}.

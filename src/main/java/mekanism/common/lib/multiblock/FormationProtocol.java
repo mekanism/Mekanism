@@ -10,7 +10,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
@@ -22,6 +21,7 @@ import mekanism.common.lib.multiblock.MultiblockCache.RejectContents;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -126,7 +126,7 @@ public class FormationProtocol<T extends MultiblockData> {
                         radiation += rejectedGas.mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
                     }
                     if (radiation > 0) {
-                        Coord4D dumpLocation = new Coord4D(structureFound.getBounds().getCenter(), world);
+                        GlobalPos dumpLocation = GlobalPos.of(world.dimension(), structureFound.getBounds().getCenter());
                         IRadiationManager.INSTANCE.radiate(dumpLocation, radiation);
                     }
                 }

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -60,6 +59,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -74,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
-    private final Map<Coord4D, TileEntityQuantumEntangloporter> activeQEs = new Object2ObjectOpenHashMap<>();
+    private final Map<GlobalPos, TileEntityQuantumEntangloporter> activeQEs = new Object2ObjectOpenHashMap<>();
     private long lastEject = -1;
 
     private BasicFluidTank storedFluid;
@@ -231,9 +231,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         boolean changedData = super.update(tile);
         if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
-            activeQEs.put(entangloporter.getTileCoord(), entangloporter);
+            activeQEs.put(entangloporter.getTileGlobalPos(), entangloporter);
         } else {
-            activeQEs.remove(new Coord4D(tile));
+            activeQEs.remove(GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos()));
         }
         return changedData;
     }
@@ -241,7 +241,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public boolean onDeactivate(BlockEntity tile) {
         boolean changedData = super.onDeactivate(tile);
-        activeQEs.remove(new Coord4D(tile));
+        activeQEs.remove(GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos()));
         return changedData;
     }
 

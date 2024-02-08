@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import mekanism.api.Coord4D;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.MekCodecs;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -63,7 +63,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || clazz.isEnum()) {
             return "String (" + clazz.getSimpleName() + ")";
         }
-        if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
+        if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
             return "Table (" + clazz.getSimpleName() + ")";
         }
         if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class || Number.class.isAssignableFrom(clazz)) {

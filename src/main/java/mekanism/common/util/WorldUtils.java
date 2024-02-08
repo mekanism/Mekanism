@@ -431,8 +431,8 @@ public class WorldUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && SectionPos.blockToSectionCoord(coord.getX()) == chunk.x &&
-                                                                   SectionPos.blockToSectionCoord(coord.getZ()) == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x &&
+                                                                   SectionPos.blockToSectionCoord(coord.pos().getZ()) == chunk.z);
     }
 
     public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable Direction side) {

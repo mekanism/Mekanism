@@ -80,7 +80,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                 if (robit == null) {
                     return InteractionResult.FAIL;
                 }
-                robit.setHome(chargepad.getTileCoord());
+                robit.setHome(chargepad.getTileGlobalPos());
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 if (energyContainer != null) {
                     robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());

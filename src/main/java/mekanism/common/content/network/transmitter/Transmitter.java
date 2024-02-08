@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -24,6 +23,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -131,8 +131,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @Override
-    public Coord4D getTileCoord() {
-        return transmitterTile.getTileCoord();
+    public GlobalPos getTileGlobalPos() {
+        return transmitterTile.getTileGlobalPos();
     }
 
     @Override

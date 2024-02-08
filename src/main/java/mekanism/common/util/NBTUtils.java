@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-import mekanism.api.Coord4D;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -145,12 +144,6 @@ public class NBTUtils {
     public static void setBlockPosIfPresent(CompoundTag nbt, String key, Consumer<BlockPos> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
             setter.accept(NbtUtils.readBlockPos(nbt.getCompound(key)));
-        }
-    }
-
-    public static void setCoord4DIfPresent(CompoundTag nbt, String key, Consumer<Coord4D> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(Coord4D.read(nbt.getCompound(key)));
         }
     }
 

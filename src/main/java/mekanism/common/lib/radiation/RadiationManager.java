@@ -11,11 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -44,6 +42,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -54,6 +53,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -103,7 +103,6 @@ public class RadiationManager implements IRadiationManager {
     }
 
     private static final String DATA_HANDLER_NAME = "radiation_manager";
-    private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
     private static final RandomSource RAND = RandomSource.create();
 
     public static final double BASELINE = 0.000_000_100; // 100 nSv/h
@@ -111,8 +110,8 @@ public class RadiationManager implements IRadiationManager {
 
     private boolean loaded;
 
-    private final Table<Chunk3D, Coord4D, RadiationSource> radiationTable = HashBasedTable.create();
-    private final Table<Chunk3D, Coord4D, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
+    private final Table<Chunk3D, GlobalPos, RadiationSource> radiationTable = HashBasedTable.create();
+    private final Table<Chunk3D, GlobalPos, IRadiationSource> radiationView = Tables.unmodifiableTable(radiationTable);
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Map<UUID, PreviousRadiationData> playerEnvironmentalExposureMap = new Object2ObjectOpenHashMap<>();
@@ -153,7 +152,7 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double getRadiationLevel(Entity entity) {
-        return getRadiationLevel(new Coord4D(entity));
+        return getRadiationLevel(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 
     /**
@@ -174,13 +173,13 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources() {
+    public Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources() {
         return radiationView;
     }
 
     @Override
     public void removeRadiationSources(Chunk3D chunk) {
-        Map<Coord4D, RadiationSource> chunkSources = radiationTable.row(chunk);
+        Map<GlobalPos, RadiationSource> chunkSources = radiationTable.row(chunk);
         if (!chunkSources.isEmpty()) {
             chunkSources.clear();
             markDirty();
@@ -189,33 +188,34 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void removeRadiationSource(Coord4D coord) {
-        Chunk3D chunk = new Chunk3D(coord);
-        if (radiationTable.contains(chunk, coord)) {
-            radiationTable.remove(chunk, coord);
+    public void removeRadiationSource(GlobalPos pos) {
+        Chunk3D chunk = new Chunk3D(pos);
+        if (radiationTable.contains(chunk, pos)) {
+            radiationTable.remove(chunk, pos);
             markDirty();
-            updateClientRadiationForAll(coord.dimension);
+            updateClientRadiationForAll(pos.dimension());
         }
     }
 
     @Override
-    public double getRadiationLevel(Coord4D coord) {
-        return getRadiationLevelAndMaxMagnitude(coord).level();
+    public double getRadiationLevel(GlobalPos pos) {
+        return getRadiationLevelAndMaxMagnitude(pos).level();
     }
 
-    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Entity player) {
-        return getRadiationLevelAndMaxMagnitude(new Coord4D(player));
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Entity entity) {
+        return getRadiationLevelAndMaxMagnitude(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 
-    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Coord4D coord) {
+    public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(GlobalPos pos) {
         double level = BASELINE;
         double maxMagnitude = BASELINE;
-        for (Chunk3D chunk : new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get())) {
-            for (Map.Entry<Coord4D, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
-                // we only compute exposure when within the MAX_RANGE bounds
-                if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
+        // we only compute exposure when within the MAX_RANGE bounds
+        double maxRange = Mth.square(MekanismConfig.general.radiationChunkCheckRadius.get() * 16);
+        for (Chunk3D chunk : new Chunk3D(pos).expand(MekanismConfig.general.radiationChunkCheckRadius.get())) {
+            for (Map.Entry<GlobalPos, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
+                if (entry.getKey().pos().distSqr(pos.pos()) <= maxRange) {
                     RadiationSource source = entry.getValue();
-                    level += computeExposure(coord, source);
+                    level += computeExposure(pos, source);
                     maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
                 }
             }
@@ -224,20 +224,20 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void radiate(Coord4D coord, double magnitude) {
+    public void radiate(GlobalPos pos, double magnitude) {
         if (!isRadiationEnabled()) {
             return;
         }
-        Map<Coord4D, RadiationSource> radiationSourceMap = radiationTable.row(new Chunk3D(coord));
-        RadiationSource src = radiationSourceMap.get(coord);
+        Map<GlobalPos, RadiationSource> radiationSourceMap = radiationTable.row(new Chunk3D(pos));
+        RadiationSource src = radiationSourceMap.get(pos);
         if (src == null) {
-            radiationSourceMap.put(coord, new RadiationSource(coord, magnitude));
+            radiationSourceMap.put(pos, new RadiationSource(pos, magnitude));
         } else {
             src.radiate(magnitude);
         }
         markDirty();
         //Update radiation levels immediately
-        updateClientRadiationForAll(coord.dimension);
+        updateClientRadiationForAll(pos.dimension());
     }
 
     @Override
@@ -254,31 +254,31 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public void dumpRadiation(Coord4D coord, IGasHandler gasHandler, boolean clearRadioactive) {
+    public void dumpRadiation(GlobalPos pos, IGasHandler gasHandler, boolean clearRadioactive) {
         for (int tank = 0, gasTanks = gasHandler.getTanks(); tank < gasTanks; tank++) {
-            if (dumpRadiation(coord, gasHandler.getChemicalInTank(tank)) && clearRadioactive) {
+            if (dumpRadiation(pos, gasHandler.getChemicalInTank(tank)) && clearRadioactive) {
                 gasHandler.setChemicalInTank(tank, GasStack.EMPTY);
             }
         }
     }
 
     @Override
-    public void dumpRadiation(Coord4D coord, List<IGasTank> gasTanks, boolean clearRadioactive) {
+    public void dumpRadiation(GlobalPos pos, List<IGasTank> gasTanks, boolean clearRadioactive) {
         for (IGasTank gasTank : gasTanks) {
-            if (dumpRadiation(coord, gasTank.getStack()) && clearRadioactive) {
+            if (dumpRadiation(pos, gasTank.getStack()) && clearRadioactive) {
                 gasTank.setEmpty();
             }
         }
     }
 
     @Override
-    public boolean dumpRadiation(Coord4D coord, GasStack stack) {
+    public boolean dumpRadiation(GlobalPos pos, GasStack stack) {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
         if (isRadiationEnabled() && !stack.isEmpty()) {
             double radioactivity = stack.mapAttributeToDouble(Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
             if (radioactivity > 0) {
-                radiate(coord, radioactivity);
+                radiate(pos, radioactivity);
                 return true;
             }
         }
@@ -298,8 +298,8 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    private double computeExposure(Coord4D coord, RadiationSource source) {
-        return source.getMagnitude() / Math.max(1, coord.distanceToSquared(source.getPos()));
+    private double computeExposure(GlobalPos pos, RadiationSource source) {
+        return source.getMagnitude() / Math.max(1, pos.pos().distSqr(source.getPos().pos()));
     }
 
     private double getRadiationResistance(LivingEntity entity) {
@@ -635,7 +635,7 @@ public class RadiationManager implements IRadiationManager {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>(list.size());
                 for (Tag nbt : list) {
-                    loadedSources.add(RadiationSource.load((CompoundTag) nbt));
+                    RadiationSource.load((CompoundTag) nbt).ifPresent(loadedSources::add);
                 }
             } else {
                 loadedSources = Collections.emptyList();
@@ -662,9 +662,7 @@ public class RadiationManager implements IRadiationManager {
             if (manager != null && !manager.radiationTable.isEmpty()) {
                 ListTag list = new ListTag();
                 for (RadiationSource source : manager.radiationTable.values()) {
-                    CompoundTag compound = new CompoundTag();
-                    source.write(compound);
-                    list.add(compound);
+                    list.add(source.write());
                 }
                 nbtTags.put(NBTConstants.RADIATION_LIST, list);
             }

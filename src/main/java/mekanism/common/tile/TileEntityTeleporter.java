@@ -15,7 +15,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
@@ -51,6 +50,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
@@ -183,8 +183,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    private Coord4D getClosest(@Nullable TeleporterFrequency frequency) {
-        return frequency == null ? null : frequency.getClosestCoords(getTileCoord());
+    private GlobalPos getClosest(@Nullable TeleporterFrequency frequency) {
+        return frequency == null ? null : frequency.getClosestCoords(getTileGlobalPos());
     }
 
     private void cleanTeleportCache() {
@@ -220,11 +220,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             frameDirection = direction;
             resetBounds();
         }
-        Coord4D closestCoords = getClosest(frequency);
+        GlobalPos closestCoords = getClosest(frequency);
         if (closestCoords == null || level == null) {
             return NO_LINK;
         }
-        boolean sameDimension = level.dimension() == closestCoords.dimension;
+        boolean sameDimension = level.dimension() == closestCoords.dimension();
         Level targetWorld;
         if (sameDimension) {
             targetWorld = level;
@@ -233,7 +233,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             if (server == null) {//Should not happen
                 return NO_LINK;
             }
-            targetWorld = server.getLevel(closestCoords.dimension);
+            targetWorld = server.getLevel(closestCoords.dimension());
             if (targetWorld == null) {//In theory should not happen
                 return NO_LINK;
             }
@@ -281,12 +281,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return;
         }
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        boolean sameDimension = level.dimension() == teleportInfo.closest.dimension;
-        Level teleWorld = sameDimension ? level : currentServer.getLevel(teleportInfo.closest.dimension);
-        BlockPos closestPos = teleportInfo.closest.getPos();
+        boolean sameDimension = level.dimension() == teleportInfo.closest.dimension();
+        Level teleWorld = sameDimension ? level : currentServer.getLevel(teleportInfo.closest.dimension());
+        BlockPos closestPos = teleportInfo.closest.pos();
         TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
-            Set<Coord4D> activeCoords = frequency.getActiveCoords();
+            Set<GlobalPos> activeCoords = frequency.getActiveCoords();
             BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
             for (Entity entity : teleportInfo.toTeleport) {
                 markTeleported(teleporter, entity, sameDimension);
@@ -302,9 +302,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     alignPlayer(player, teleporterTargetPos, teleporter);
                     MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
                 }
-                for (Coord4D coords : activeCoords) {
-                    Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
-                    TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.getPos());
+                for (GlobalPos coords : activeCoords) {
+                    Level world = level.dimension() == coords.dimension() ? level : currentServer.getLevel(coords.dimension());
+                    TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.pos());
                     if (tile != null) {
                         tile.sendTeleportParticles();
                     }
@@ -434,27 +434,28 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @apiNote Only call from the server side
      */
     @Nullable
-    public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
+    public static FloatingLong calculateEnergyCost(Entity entity, GlobalPos pos) {
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         if (currentServer != null) {
-            Level targetWorld = currentServer.getLevel(coords.dimension);
+            Level targetWorld = currentServer.getLevel(pos.dimension());
             if (targetWorld != null) {
-                return calculateEnergyCost(entity, targetWorld, coords);
+                return calculateEnergyCost(entity, targetWorld, pos);
             }
         }
         return null;
     }
 
     @NotNull
-    public static FloatingLong calculateEnergyCost(Entity entity, Level targetWorld, Coord4D coords) {
+    public static FloatingLong calculateEnergyCost(Entity entity, Level targetWorld, GlobalPos coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
-        boolean sameDimension = entity.level().dimension() == coords.dimension;
+        boolean sameDimension = entity.level().dimension() == coords.dimension();
+        BlockPos pos = coords.pos();
         if (sameDimension) {
-            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.distanceToSqr(coords.getX(), coords.getY(), coords.getZ()))));
+            energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()))));
         } else {
             double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
-            double yDifference = entity.getY() - coords.getY();
+            double yDifference = entity.getY() - pos.getY();
             //Note: coordinate scale only affects x and z, y is 1:1
             double xDifference, zDifference;
             if (currentScale <= targetScale) {
@@ -462,15 +463,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 // - changed dimensions
                 // - teleported the distance
                 double scale = currentScale / targetScale;
-                xDifference = entity.getX() * scale - coords.getX();
-                zDifference = entity.getZ() * scale - coords.getZ();
+                xDifference = entity.getX() * scale - pos.getX();
+                zDifference = entity.getZ() * scale - pos.getZ();
             } else {
                 //If however our current scale is greater than our target scale, then the cheapest way of teleporting is to act like we:
                 // - teleported the distance
                 // - changed dimensions
                 double inverseScale = targetScale / currentScale;
-                xDifference = entity.getX() - coords.getX() * inverseScale;
-                zDifference = entity.getZ() - coords.getZ() * inverseScale;
+                xDifference = entity.getX() - pos.getX() * inverseScale;
+                zDifference = entity.getZ() - pos.getZ() * inverseScale;
             }
             double distance = Mth.length(xDifference, yDifference, zDifference);
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get())
@@ -722,7 +723,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
-    Set<Coord4D> getActiveTeleporters() throws ComputerException {
+    Set<GlobalPos> getActiveTeleporters() throws ComputerException {
         return getFrequency().getActiveCoords();
     }
 
@@ -740,6 +741,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
     //End methods IComputerTile
 
-    private record TeleportInfo(byte status, @Nullable Coord4D closest, List<Entity> toTeleport) {
+    private record TeleportInfo(byte status, @Nullable GlobalPos closest, List<Entity> toTeleport) {
     }
 }

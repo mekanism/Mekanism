@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -44,6 +43,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -295,7 +295,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                                    getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
                 //When the meltdown actually happens, release radiation into the atmosphere
-                radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+                radiationManager.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), radiation);
             }
             //Dump the heated coolant as "loss" that didn't survive the meltdown
             heatedCoolantTank.setEmpty();
@@ -406,7 +406,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
                 wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
-                      IRadiationManager.INSTANCE.radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
+                      IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * attribute.getRadioactivity()));
             }
         }
         // update previous burn

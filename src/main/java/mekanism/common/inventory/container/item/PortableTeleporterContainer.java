@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.item;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
@@ -11,6 +10,7 @@ import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +51,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                         if (energyContainer == null) {
                             status = 4;
                         } else {
-                            Coord4D coords = freq.getClosestCoords(new Coord4D(inv.player));
+                            GlobalPos coords = freq.getClosestCoords(GlobalPos.of(inv.player.level().dimension(), inv.player.blockPosition()));
                             if (coords != null) {
                                 FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
                                 if (energyNeeded != null && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {

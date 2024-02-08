@@ -4,12 +4,12 @@ import com.google.common.collect.Table;
 import java.util.List;
 import java.util.ServiceLoader;
 import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -79,11 +79,11 @@ public interface IRadiationManager {
     /**
      * Get the radiation level (in Sv/h) at a certain location.
      *
-     * @param coord Location
+     * @param pos Location
      *
      * @return radiation level (in Sv/h).
      */
-    double getRadiationLevel(Coord4D coord);
+    double getRadiationLevel(GlobalPos pos);
 
     /**
      * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use
@@ -100,7 +100,7 @@ public interface IRadiationManager {
      *
      * @return Unmodifiable table of radiation sources.
      */
-    Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources();
+    Table<Chunk3D, GlobalPos, IRadiationSource> getRadiationSources();
 
     /**
      * Removes all radiation sources in a given chunk.
@@ -114,15 +114,15 @@ public interface IRadiationManager {
      *
      * @param coord Location.
      */
-    void removeRadiationSource(Coord4D coord);
+    void removeRadiationSource(GlobalPos pos);
 
     /**
      * Applies a radiation source (Sv) of the given magnitude to a given location.
      *
-     * @param coord     Location to release radiation.
+     * @param pos       Location to release radiation.
      * @param magnitude Amount of radiation to apply (Sv).
      */
-    void radiate(Coord4D coord, double magnitude);
+    void radiate(GlobalPos pos, double magnitude);
 
     /**
      * Applies an additional magnitude of radiation (Sv) to the given entity after taking into account the radiation resistance provided to the entity by its armor.
@@ -137,33 +137,33 @@ public interface IRadiationManager {
     /**
      * Helper to "dump" any radioactive gases stored in the tanks handled by the given gas handler.
      *
-     * @param coord            Location to dump radiation at.
+     * @param pos              Location to dump radiation at.
      * @param gasHandler       Gas handler to process the tanks of.
      * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
      *
      * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
      *                          {@link IGasHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      */
-    void dumpRadiation(Coord4D coord, IGasHandler gasHandler, boolean clearRadioactive);
+    void dumpRadiation(GlobalPos pos, IGasHandler gasHandler, boolean clearRadioactive);
 
     /**
      * Helper to "dump" any radioactive gases stored in the given gas tanks.
      *
-     * @param coord            Location to dump radiation at.
+     * @param pos              Location to dump radiation at.
      * @param gasTanks         Tanks to process.
      * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
      */
-    void dumpRadiation(Coord4D coord, List<IGasTank> gasTanks, boolean clearRadioactive);
+    void dumpRadiation(GlobalPos pos, List<IGasTank> gasTanks, boolean clearRadioactive);
 
     /**
      * Checks if the given {@link GasStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
      *
-     * @param coord Location to dump radiation at.
+     * @param pos   Location to dump radiation at.
      * @param stack Stack to check.
      *
      * @return {@code true} if the stack was radioactive and radiation got dumped.
      *
      * @apiNote If radiation is disabled this may still return {@code true}.
      */
-    boolean dumpRadiation(Coord4D coord, GasStack stack);
+    boolean dumpRadiation(GlobalPos pos, GasStack stack);
 }

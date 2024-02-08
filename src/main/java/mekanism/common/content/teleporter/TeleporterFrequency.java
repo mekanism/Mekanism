@@ -3,7 +3,6 @@ package mekanism.common.content.teleporter;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
@@ -11,6 +10,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TeleporterFrequency extends Frequency implements IColorableFrequency {
 
-    private final Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
+    private final Set<GlobalPos> activeCoords = new ObjectOpenHashSet<>();
     private EnumColor color = EnumColor.PURPLE;
 
     /**
@@ -32,7 +32,7 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
         super(FrequencyType.TELEPORTER);
     }
 
-    public Set<Coord4D> getActiveCoords() {
+    public Set<GlobalPos> getActiveCoords() {
         return activeCoords;
     }
 
@@ -70,18 +70,18 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
         return changedData;
     }
 
-    private Coord4D getCoord(BlockEntity tile) {
+    private GlobalPos getCoord(BlockEntity tile) {
         if (tile instanceof ITileWrapper tileWrapper) {
             //Note: This should be the case the majority of the time, and allows us to use the cached coord4d object
-            return tileWrapper.getTileCoord();
+            return tileWrapper.getTileGlobalPos();
         }
-        return new Coord4D(tile);
+        return GlobalPos.of(tile.getLevel().dimension(), tile.getBlockPos());
     }
 
-    public Coord4D getClosestCoords(Coord4D coord) {
-        Coord4D closest = null;
-        for (Coord4D iterCoord : activeCoords) {
-            if (iterCoord.equals(coord)) {
+    public GlobalPos getClosestCoords(GlobalPos pos) {
+        GlobalPos closest = null;
+        for (GlobalPos iterCoord : activeCoords) {
+            if (iterCoord.equals(pos)) {
                 continue;
             }
             if (closest == null) {
@@ -89,10 +89,10 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
                 continue;
             }
 
-            if (coord.dimension != closest.dimension && coord.dimension == iterCoord.dimension) {
+            if (pos.dimension() != closest.dimension() && pos.dimension() == iterCoord.dimension()) {
                 closest = iterCoord;
-            } else if (coord.dimension != closest.dimension || coord.dimension == iterCoord.dimension) {
-                if (coord.distanceTo(closest) > coord.distanceTo(iterCoord)) {
+            } else if (pos.dimension() != closest.dimension() || pos.dimension() == iterCoord.dimension()) {
+                if (pos.pos().distSqr(closest.pos()) > pos.pos().distSqr(iterCoord.pos())) {
                     closest = iterCoord;
                 }
             }

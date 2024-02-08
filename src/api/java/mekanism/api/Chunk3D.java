@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
@@ -51,12 +52,12 @@ public class Chunk3D extends ChunkPos {
     }
 
     /**
-     * Creates a Chunk3D based on the positional information of the given Coord4D.
+     * Creates a Chunk3D based on the positional information of the given global position.
      *
-     * @param coord Coordinate
+     * @param pos Position
      */
-    public Chunk3D(Coord4D coord) {
-        this(coord.dimension, SectionPos.blockToSectionCoord(coord.getX()), SectionPos.blockToSectionCoord(coord.getZ()));
+    public Chunk3D(GlobalPos pos) {
+        this(pos.dimension(), SectionPos.blockToSectionCoord(pos.pos().getX()), SectionPos.blockToSectionCoord(pos.pos().getZ()));
     }
 
     /**

@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
@@ -38,6 +37,7 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -313,15 +313,15 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(@Nullable Coord4D coord) {
-        if (coord == null) {
+    public Object convert(@Nullable GlobalPos globalPos) {
+        if (globalPos == null) {
             return null;
         }
         Map<String, Object> wrapped = new HashMap<>(4);
-        wrapped.put("x", coord.getX());
-        wrapped.put("y", coord.getY());
-        wrapped.put("z", coord.getZ());
-        wrapped.put("dimension", convert(coord.dimension.location()));
+        wrapped.put("x", globalPos.pos().getX());
+        wrapped.put("y", globalPos.pos().getY());
+        wrapped.put("z", globalPos.pos().getZ());
+        wrapped.put("dimension", convert(globalPos.dimension().location()));
         return wrapped;
     }
 
@@ -470,7 +470,7 @@ public abstract class BaseComputerHelper {
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return String.class;
         }
-        if (clazz == Frequency.class || clazz == Coord4D.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class) {
+        if (clazz == Frequency.class || clazz == GlobalPos.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class) {
             return Map.class;
         }
         if (ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
@@ -485,7 +485,7 @@ public abstract class BaseComputerHelper {
     private static Map<Class<?>, TableType> getBuiltInTables() {
         Map<Class<?>, TableType> types = new HashMap<>();
 
-        TableType.builder(Coord4D.class, "An xyz position with a dimension component")
+        TableType.builder(GlobalPos.class, "An xyz position with a dimension component")
               .addField("x", int.class, "The x component")
               .addField("y", int.class, "The y component")
               .addField("z", int.class, "The z component")

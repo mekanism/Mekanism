@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -79,9 +78,11 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -162,7 +163,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 100;
 
-    public Coord4D homeLocation;
+    @Nullable
+    private GlobalPos homeLocation;
     private int lastTextureUpdate;
     private int textureIndex;
     private int progress;
@@ -312,8 +314,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
 
             if (tickCount % SharedConstants.TICKS_PER_SECOND == 0) {
-                Level serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension);
-                BlockPos homePos = homeLocation.getPos();
+                Level serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension());
+                BlockPos homePos = homeLocation.pos();
                 if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                     drop();
                     discard();
@@ -367,17 +369,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public void goHome() {
-        if (level().isClientSide()) {
+        if (level().isClientSide() || homeLocation == null) {
             return;
         }
         setFollowing(false);
-        if (level().dimension() == homeLocation.dimension) {
+        BlockPos homePos = homeLocation.pos();
+        if (level().dimension() == homeLocation.dimension()) {
             setDeltaMovement(0, 0, 0);
-            teleportTo(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+            teleportTo(homePos.getX() + 0.5, homePos.getY() + 0.3, homePos.getZ() + 0.5);
         } else {
-            ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(homeLocation.dimension);
+            ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(homeLocation.dimension());
             if (newWorld != null) {
-                Vec3 destination = new Vec3(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+                Vec3 destination = new Vec3(homePos.getX() + 0.5, homePos.getY() + 0.3, homePos.getZ() + 0.5);
                 changeDimension(newWorld, new ITeleporter() {
                     @Override
                     public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
@@ -475,7 +478,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
-            homeLocation.write(nbtTags);
+            GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, homeLocation).result()
+                  .ifPresent(home -> nbtTags.put(NBTConstants.HOME_LOCATION, home));
         }
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         ContainerType.ENERGY.saveTo(nbtTags, getEnergyContainers(null));
@@ -490,7 +494,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
-        homeLocation = Coord4D.read(nbtTags);
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result()
+              .ifPresent(pos -> homeLocation = pos));
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
         ContainerType.ENERGY.readFrom(nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
@@ -523,7 +528,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     protected void tickDeath() {
     }
 
-    public void setHome(Coord4D home) {
+    public void setHome(GlobalPos home) {
         homeLocation = home;
     }
 

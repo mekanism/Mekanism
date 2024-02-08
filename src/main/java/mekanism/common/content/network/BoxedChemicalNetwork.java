@@ -239,7 +239,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@NotNull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
         if (chemical instanceof GasStack stack) {
             // Handle radiation leakage
-            IRadiationManager.INSTANCE.dumpRadiation(triggerTransmitter.getTileCoord(), stack);
+            IRadiationManager.INSTANCE.dumpRadiation(triggerTransmitter.getTileGlobalPos(), stack);
         }
     }
 

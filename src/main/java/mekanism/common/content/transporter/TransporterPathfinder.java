@@ -11,7 +11,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.InventoryNetwork.AcceptorData;
@@ -30,6 +29,7 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -42,7 +42,7 @@ public final class TransporterPathfinder {
     }
 
     private static List<Destination> getPaths(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {
             return Collections.emptyList();
@@ -107,7 +107,7 @@ public final class TransporterPathfinder {
 
     @Nullable
     public static Destination getNewBasePath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         List<Destination> paths = getPaths(start, stack, request, min, additionalFlowingStacks);
         if (paths.isEmpty()) {
             return null;

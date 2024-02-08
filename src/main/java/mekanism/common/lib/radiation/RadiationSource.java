@@ -1,27 +1,29 @@
 package mekanism.common.lib.radiation;
 
 import java.util.Objects;
-import mekanism.api.Coord4D;
+import java.util.Optional;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import org.jetbrains.annotations.NotNull;
 
 public class RadiationSource implements IRadiationSource {
 
-    private final Coord4D pos;
+    private final GlobalPos pos;
     /** In Sv/h */
     private double magnitude;
 
-    public RadiationSource(Coord4D pos, double magnitude) {
+    public RadiationSource(GlobalPos pos, double magnitude) {
         this.pos = pos;
         this.magnitude = magnitude;
     }
 
     @NotNull
     @Override
-    public Coord4D getPos() {
+    public GlobalPos getPos() {
         return pos;
     }
 
@@ -41,13 +43,16 @@ public class RadiationSource implements IRadiationSource {
         return magnitude < RadiationManager.MIN_MAGNITUDE;
     }
 
-    public static RadiationSource load(CompoundTag tag) {
-        return new RadiationSource(Coord4D.read(tag), tag.getDouble(NBTConstants.RADIATION));
+    public static Optional<RadiationSource> load(CompoundTag tag) {
+        return GlobalPos.CODEC.parse(NbtOps.INSTANCE, tag).result()
+              .map(pos -> new RadiationSource(pos, tag.getDouble(NBTConstants.RADIATION)));
     }
 
-    public void write(CompoundTag tag) {
-        pos.write(tag);
+    public CompoundTag write() {
+        CompoundTag tag = (CompoundTag) GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, pos).result()
+              .orElseGet(CompoundTag::new);
         tag.putDouble(NBTConstants.RADIATION, magnitude);
+        return tag;
     }
 
     @Override

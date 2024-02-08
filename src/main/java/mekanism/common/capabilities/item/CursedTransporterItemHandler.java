@@ -7,20 +7,20 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.LongSupplier;
-import mekanism.api.Coord4D;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class CursedTransporterItemHandler implements IItemHandler {
 
-    private final Map<Coord4D, Set<TransporterStack>> simulatedFlowingStacks = new Object2ObjectOpenHashMap<>();
+    private final Map<GlobalPos, Set<TransporterStack>> simulatedFlowingStacks = new Object2ObjectOpenHashMap<>();
     //Note: We keep track of stacks that insert as simulate has seen and also stacks that actually inserting has seen
     // this is because if a stack is simulated it is likely the same stack may be used for actually inserting, but we
     // want to make sure that if a mod is just trying to insert without simulating across the different slots that we
@@ -96,7 +96,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
             if (stack.getPathType() != Path.NONE) {
                 //If the stack actually has a path add that simulated insert to a list of locally simulated flowing stacks so that
                 // if the mod simulates against the next slot as well we can give a more accurate result
-                simulatedFlowingStacks.computeIfAbsent(new Coord4D(stack.getDest(), transporter.getLevel()), k -> new ObjectOpenHashSet<>()).add(stack);
+                simulatedFlowingStacks.computeIfAbsent(GlobalPos.of(transporter.getLevel().dimension(), stack.getDest()), k -> new ObjectOpenHashSet<>()).add(stack);
             }
         } else {
             if (!seenExecutedStacks.add(itemStack)) {

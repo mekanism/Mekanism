@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
@@ -13,6 +12,7 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -22,19 +22,19 @@ public class TransporterManager {
     private TransporterManager() {
     }
 
-    private static final Map<Coord4D, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
+    private static final Map<GlobalPos, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
 
     public static void reset() {
         flowingStacks.clear();
     }
 
     public static void add(Level world, TransporterStack stack) {
-        flowingStacks.computeIfAbsent(new Coord4D(stack.getDest(), world), k -> new ObjectOpenHashSet<>()).add(stack);
+        flowingStacks.computeIfAbsent(GlobalPos.of(world.dimension(), stack.getDest()), k -> new ObjectOpenHashSet<>()).add(stack);
     }
 
     public static void remove(Level world, TransporterStack stack) {
         if (stack.hasPath() && stack.getPathType() != Path.NONE) {
-            flowingStacks.get(new Coord4D(stack.getDest(), world)).remove(stack);
+            flowingStacks.get(GlobalPos.of(world.dimension(), stack.getDest())).remove(stack);
         }
     }
 
@@ -183,8 +183,8 @@ public class TransporterManager {
      *
      * @return {@link TransitResponse} of expected items to use
      */
-    public static TransitResponse getPredictedInsert(Coord4D position, Direction side, IItemHandler handler, TransitRequest request,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+    public static TransitResponse getPredictedInsert(GlobalPos position, Direction side, IItemHandler handler, TransitRequest request,
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         InventoryInfo inventoryInfo = new InventoryInfo(handler);
         //Before we see if this item can fit in the destination, we must first check the stacks that are
         // en-route. Note that we also have to simulate the current inventory after each stack; we'll keep
@@ -200,8 +200,8 @@ public class TransporterManager {
         return getPredictedInsert(inventoryInfo, handler, request);
     }
 
-    private static boolean predictFlowing(Coord4D position, Direction side, IItemHandler handler, InventoryInfo inventoryInfo,
-          Map<Coord4D, Set<TransporterStack>> flowingStacks) {
+    private static boolean predictFlowing(GlobalPos position, Direction side, IItemHandler handler, InventoryInfo inventoryInfo,
+          Map<GlobalPos, Set<TransporterStack>> flowingStacks) {
         Set<TransporterStack> transporterStacks = flowingStacks.get(position);
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {

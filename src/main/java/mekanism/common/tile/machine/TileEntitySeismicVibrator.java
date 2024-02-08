@@ -91,16 +91,16 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     private void updateActiveVibrators() {
         if (getActive()) {
-            Mekanism.activeVibrators.add(getTileCoord());
+            Mekanism.activeVibrators.add(getTileGlobalPos());
         } else {
-            Mekanism.activeVibrators.remove(getTileCoord());
+            Mekanism.activeVibrators.remove(getTileGlobalPos());
         }
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        Mekanism.activeVibrators.remove(getTileCoord());
+        Mekanism.activeVibrators.remove(getTileGlobalPos());
     }
 
     public MachineEnergyContainer<TileEntitySeismicVibrator> getEnergyContainer() {

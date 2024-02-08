@@ -3,7 +3,6 @@ package mekanism.common.network.to_server;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
@@ -18,6 +17,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,10 +58,10 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
             if (found == null) {
                 return;
             }
-            Coord4D coords = found.getClosestCoords(new Coord4D(player));
+            GlobalPos coords = found.getClosestCoords(GlobalPos.of(player.level().dimension(), player.blockPosition()));
             if (coords != null) {
-                Level teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension);
-                TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
+                Level teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension());
+                TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
                     if (!player.isCreative()) {
                         FloatingLong energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
@@ -77,7 +77,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         teleporter.teleDelay = 5;
                         player.connection.aboveGroundTickCount = 0;
                         player.closeContainer();
-                        PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.getPos());
+                        PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
                         if (player.isPassenger()) {
                             player.stopRiding();
                         }

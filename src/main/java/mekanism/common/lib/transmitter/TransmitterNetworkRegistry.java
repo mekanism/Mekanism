@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -24,6 +23,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.level.Level;
@@ -43,7 +43,7 @@ public class TransmitterNetworkRegistry {
     private Object2BooleanMap<Chunk3D> changedTicketChunks = new Object2BooleanOpenHashMap<>();
     private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
-    private Map<Coord4D, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private Map<GlobalPos, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
     private Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
 
@@ -99,10 +99,10 @@ public class TransmitterNetworkRegistry {
             //If we weren't an invalid transmitter, then we need to add it as a new orphan, otherwise removing it is good enough
             // as if it was an orphan before it still will be one, and if it wasn't then it still will be part of the network it
             // was in.
-            Coord4D coord = transmitter.getTileCoord();
-            Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
+            GlobalPos pos = transmitter.getTileGlobalPos();
+            Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(pos, transmitter);
             if (previous != null && previous != transmitter) {
-                Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", coord);
+                Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", pos);
             }
         }
     }
@@ -223,7 +223,7 @@ public class TransmitterNetworkRegistry {
 
     private void assignOrphans() {
         if (!newOrphanTransmitters.isEmpty()) {
-            Map<Coord4D, Transmitter<?, ?, ?>> orphanTransmitters = newOrphanTransmitters;
+            Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters = newOrphanTransmitters;
             newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
             if (MekanismAPI.debug) {
                 Mekanism.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
@@ -280,7 +280,7 @@ public class TransmitterNetworkRegistry {
             transmitterValidator = startPoint.getNewOrphanValidator();
         }
 
-        NETWORK getNetworkFromOrphan(Map<Coord4D, Transmitter<?, ?, ?>> orphanTransmitters) {
+        NETWORK getNetworkFromOrphan(Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters) {
             //Calculate the network
             if (queue.peek() != null) {
                 Mekanism.logger.error("OrphanPathFinder queue was not empty?!");
@@ -312,9 +312,9 @@ public class TransmitterNetworkRegistry {
             return network;
         }
 
-        private void iterate(Map<Coord4D, Transmitter<?, ?, ?>> orphanTransmitters, BlockPos from) {
+        private void iterate(Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters, BlockPos from) {
             if (iterated.add(from)) {
-                Coord4D fromCoord = new Coord4D(from, world);
+                GlobalPos fromCoord = GlobalPos.of(world.dimension(), from);
                 Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
                 if (transmitter != null) {
                     if (transmitter.isValid() && transmitter.isOrphan() && startPoint.supportsTransmissionType(transmitter) &&

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -24,6 +23,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -42,14 +42,14 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     }
 
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Map.Entry<BlockPos, Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
             if (!pos.equals(stack.homeLocation)) {
                 BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();
-                Coord4D position = new Coord4D(pos, getWorld());
+                GlobalPos position = GlobalPos.of(getWorld().dimension(), pos);
                 for (Map.Entry<Direction, IItemHandler> acceptorEntry : entry.getValue().entrySet()) {
                     IItemHandler handler = acceptorEntry.getValue();
                     Direction side = acceptorEntry.getKey();

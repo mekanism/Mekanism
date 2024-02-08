@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -20,6 +19,7 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -176,12 +176,12 @@ public class TransporterStack {
     }
 
     public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         return recalculatePath(request, transporter, min, false, additionalFlowingStacks);
     }
 
     private TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing,
-          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
         Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min, additionalFlowingStacks);
         if (newPath == null) {
             return request.getEmptyResponse();

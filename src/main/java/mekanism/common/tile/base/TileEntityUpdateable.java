@@ -4,7 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.util.Objects;
 import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -12,6 +11,7 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -36,7 +36,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @Nullable
     private BiMap<AttachmentType<? extends INBTSerializable<?>>, String> syncableAttachmentTypes;
     @Nullable
-    private Coord4D cachedCoord;
+    private GlobalPos cachedCoord;
     private boolean cacheCoord;
     private long lastSave;
 
@@ -55,7 +55,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     /**
-     * Call this for tiles that we may call {@link #getTileCoord()} a fair amount on to cache the coord when position/world information changes.
+     * Call this for tiles that we may call {@link #getTileGlobalPos()} a fair amount on to cache the coord when position/world information changes.
      */
     protected void cacheCoord() {
         //Mark that we want to cache the coord and then update the coord if needed
@@ -219,13 +219,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
 
     private void updateCoord() {
         if (cacheCoord && level != null) {
-            cachedCoord = new Coord4D(worldPosition, level);
+            cachedCoord = GlobalPos.of(level.dimension(), worldPosition);
         }
     }
 
     @Override
-    public Coord4D getTileCoord() {
-        return cacheCoord && cachedCoord != null ? cachedCoord : ITileWrapper.super.getTileCoord();
+    public GlobalPos getTileGlobalPos() {
+        return cacheCoord && cachedCoord != null ? cachedCoord : ITileWrapper.super.getTileGlobalPos();
     }
 
     @Override

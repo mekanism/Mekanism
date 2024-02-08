@@ -1,25 +1,5 @@
 ---
 builtInTables:
-  mekanism.api.Coord4D:
-    description: An xyz position with a dimension component
-    fields:
-      dimension:
-        description: The dimension component
-        javaType: net.minecraft.resources.ResourceLocation
-        type: String (ResourceLocation)
-      x:
-        description: The x component
-        javaType: int
-        type: Number (int)
-      y:
-        description: The y component
-        javaType: int
-        type: Number (int)
-      z:
-        description: The z component
-        javaType: int
-        type: Number (int)
-    humanName: Table (Coord4D)
   mekanism.api.chemical.ChemicalStack:
     description: An amount of Gas/Fluid/Slurry/Pigment
     fields:
@@ -234,6 +214,26 @@ builtInTables:
         javaType: int
         type: Number (int)
     humanName: Table (BlockPos)
+  net.minecraft.core.GlobalPos:
+    description: An xyz position with a dimension component
+    fields:
+      dimension:
+        description: The dimension component
+        javaType: net.minecraft.resources.ResourceLocation
+        type: String (ResourceLocation)
+      x:
+        description: The x component
+        javaType: int
+        type: Number (int)
+      y:
+        description: The y component
+        javaType: int
+        type: Number (int)
+      z:
+        description: The z component
+        javaType: int
+        type: Number (int)
+    humanName: Table (GlobalPos)
   net.minecraft.world.item.ItemStack:
     description: A stack of Item(s)
     fields:
@@ -4415,9 +4415,9 @@ methods:
     methodName: getActiveTeleporters
     returns:
       javaExtra:
-      - mekanism.api.Coord4D
+      - net.minecraft.core.GlobalPos
       javaType: java.util.Set
-      type: List (Table (Coord4D))
+      type: List (Table (GlobalPos))
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem
     returns:

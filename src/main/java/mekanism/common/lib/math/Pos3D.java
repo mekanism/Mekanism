@@ -1,9 +1,10 @@
 package mekanism.common.lib.math;
 
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -32,10 +33,6 @@ public class Pos3D extends Vec3 {
         super(vec.x, vec.y, vec.z);
     }
 
-    public Pos3D(Coord4D coord) {
-        super(coord.getX(), coord.getY(), coord.getZ());
-    }
-
     public Pos3D(double x, double y, double z) {
         super(x, y, z);
     }
@@ -51,6 +48,10 @@ public class Pos3D extends Vec3 {
 
     public static Pos3D create(BlockEntity tile) {
         return create(tile.getBlockPos());
+    }
+
+    public static Pos3D create(GlobalPos pos) {
+        return create(pos.pos());
     }
 
     public static Pos3D create(Vec3i vec) {
@@ -113,14 +114,14 @@ public class Pos3D extends Vec3 {
     }
 
     /**
-     * Creates a new Coord4D representing this Pos3D in the provided dimension.
+     * Creates a new GlobalPos representing this Pos3D in the provided dimension.
      *
      * @param dimension - the dimension this Pos3D is in
      *
-     * @return Coord4D representing this Pos3D
+     * @return GlobalPos representing this Pos3D
      */
-    public Coord4D getCoord(ResourceKey<Level> dimension) {
-        return new Coord4D((int) x, (int) y, (int) z, dimension);
+    public GlobalPos getGlobalPos(ResourceKey<Level> dimension) {
+        return GlobalPos.of(dimension, BlockPos.containing(x, y, z));
     }
 
     /**

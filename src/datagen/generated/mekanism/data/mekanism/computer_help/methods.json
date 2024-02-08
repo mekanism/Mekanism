@@ -6646,9 +6646,9 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getActiveTeleporters",
       "returns": {
-        "type": "List (Table (Coord4D))",
+        "type": "List (Table (GlobalPos))",
         "javaExtra": [
-          "mekanism.api.Coord4D"
+          "net.minecraft.core.GlobalPos"
         ],
         "javaType": "java.util.Set"
       }

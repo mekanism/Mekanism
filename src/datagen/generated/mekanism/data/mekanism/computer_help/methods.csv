@@ -756,7 +756,7 @@ Solar Neutron Activator,getPeakProductionRate,,Number (float),,false,
 Solar Neutron Activator,getProductionRate,,Number (float),,false,
 Teleporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
 Teleporter,decrementFrequencyColor,,,,true,Requires a frequency to be selected
-Teleporter,getActiveTeleporters,,List (Table (Coord4D)),,false,Requires a frequency to be selected
+Teleporter,getActiveTeleporters,,List (Table (GlobalPos)),,false,Requires a frequency to be selected
 Teleporter,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Teleporter,getFrequencies,,List (Table (TeleporterFrequency)),,false,Lists public frequencies
 Teleporter,getFrequency,,Table (TeleporterFrequency),,false,Requires a frequency to be selected

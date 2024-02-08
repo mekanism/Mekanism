@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.providers.IItemProvider;
@@ -67,8 +66,8 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.PacketUtils;
-import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketChemicalNetworkContents;
+import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
@@ -98,6 +97,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -174,7 +174,7 @@ public class Mekanism {
      */
     public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes(StandardCharsets.UTF_8)), Mekanism.LOG_TAG);
     public static final KeySync keyMap = new KeySync();
-    public static final Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
+    public static final Set<GlobalPos> activeVibrators = new ObjectOpenHashSet<>();
 
     private ReloadListener recipeCacheManager;
 

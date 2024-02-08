@@ -3,7 +3,6 @@ package mekanism.common.network.to_server;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -33,6 +32,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -82,7 +82,7 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
                     if (tile instanceof TileEntityMultiblock<?> multiblock) {
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
-                            handleTankType(structure, player, stack, new Coord4D(structure.getBounds().getCenter(), player.level()));
+                            handleTankType(structure, player, stack, GlobalPos.of(player.level().dimension(), structure.getBounds().getCenter()));
                         }
                     } else {
                         if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -93,7 +93,7 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
                                 return;
                             }
                         }
-                        handleTankType(tile, player, stack, tile.getTileCoord());
+                        handleTankType(tile, player, stack, tile.getTileGlobalPos());
                     }
                 }
             }
@@ -101,40 +101,40 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
     }
 
     private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
-          ServerPlayer player, ItemStack stack, Coord4D coord) {
+          ServerPlayer player, ItemStack stack, GlobalPos pos) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank);
             }
         } else if (tankType == TankType.GAS_TANK) {
-            handleChemicalTanks(player, stack, handler.getGasTanks(null), coord);
+            handleChemicalTanks(player, stack, handler.getGasTanks(null), pos);
         } else if (tankType == TankType.INFUSION_TANK) {
-            handleChemicalTanks(player, stack, handler.getInfusionTanks(null), coord);
+            handleChemicalTanks(player, stack, handler.getInfusionTanks(null), pos);
         } else if (tankType == TankType.PIGMENT_TANK) {
-            handleChemicalTanks(player, stack, handler.getPigmentTanks(null), coord);
+            handleChemicalTanks(player, stack, handler.getPigmentTanks(null), pos);
         } else if (tankType == TankType.SLURRY_TANK) {
-            handleChemicalTanks(player, stack, handler.getSlurryTanks(null), coord);
+            handleChemicalTanks(player, stack, handler.getSlurryTanks(null), pos);
         }
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTanks(
-          ServerPlayer player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
+          ServerPlayer player, ItemStack stack, List<TANK> tanks, GlobalPos pos) {
         //This method is a workaround for Eclipse's compiler showing an error/warning if we try to just assign the tanks
         // to a variable in handleTankType and then have the size check and call to handleChemicalTank happen there
         if (tankId < tanks.size()) {
-            handleChemicalTank(player, stack, tanks.get(tankId), coord);
+            handleChemicalTank(player, stack, tanks.get(tankId), pos);
         }
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(ServerPlayer player, ItemStack stack,
-          IChemicalTank<CHEMICAL, STACK> tank, Coord4D coord) {
+          IChemicalTank<CHEMICAL, STACK> tank, GlobalPos pos) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
                 if (tank instanceof IGasTank gasTank) {
                     //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
-                    IRadiationManager.INSTANCE.dumpRadiation(coord, gasTank.getStack());
+                    IRadiationManager.INSTANCE.dumpRadiation(pos, gasTank.getStack());
                 }
                 tank.setEmpty();
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
