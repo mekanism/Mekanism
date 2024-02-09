@@ -21,6 +21,10 @@
               "source": "block_entity"
             },
             {
+              "type": "mekanism:inventory_slots",
+              "function": "mekanism:copy_containers"
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -42,17 +46,6 @@
                 {
                   "source": "singleItem",
                   "target": "mekanism:single"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"

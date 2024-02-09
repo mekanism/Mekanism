@@ -13,9 +13,6 @@
             {
               "function": "minecraft:copy_name",
               "source": "block_entity"
-            },
-            {
-              "function": "mekanism:personal_storage_contents"
             }
           ],
           "name": "mekanism:personal_chest"

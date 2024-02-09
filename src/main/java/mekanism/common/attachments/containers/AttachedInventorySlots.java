@@ -16,6 +16,11 @@ public class AttachedInventorySlots extends AttachedContainers<IInventorySlot> i
     }
 
     @Override
+    protected ContainerType<IInventorySlot, ?, ?> getContainerType() {
+        return ContainerType.ITEM;
+    }
+
+    @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return containers;
     }

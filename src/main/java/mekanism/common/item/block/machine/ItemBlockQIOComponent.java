@@ -4,7 +4,6 @@ import java.util.List;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IColoredItem;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.util.MekanismUtils;
@@ -38,12 +37,5 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     @Override
     public FrequencyType<?> getFrequencyType() {
         return FrequencyType.QIO;
-    }
-
-    public static class ItemBlockQIOInventoryComponent extends ItemBlockQIOComponent implements IItemSustainedInventory {
-
-        public ItemBlockQIOInventoryComponent(BlockTile<?, ?> block) {
-            super(block);
-        }
     }
 }

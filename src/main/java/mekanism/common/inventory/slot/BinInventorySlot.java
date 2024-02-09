@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -8,6 +9,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.AttachedInventorySlots;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
@@ -22,6 +25,23 @@ import org.jetbrains.annotations.Nullable;
 public class BinInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NotNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
+
+    @Nullable
+    public static BinInventorySlot getForStack(@NotNull ItemStack stack) {
+        if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
+            AttachedInventorySlots attachment = ContainerType.ITEM.getAttachment(stack);
+            if (attachment != null) {
+                List<IInventorySlot> slots = attachment.getInventorySlots(null);
+                if (slots.size() == 1) {
+                    IInventorySlot slot = slots.get(0);
+                    if (slot instanceof BinInventorySlot binSlot) {
+                        return binSlot;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public static BinInventorySlot create(@Nullable IContentsListener listener, BinTier tier) {
         Objects.requireNonNull(tier, "Bin tier cannot be null");

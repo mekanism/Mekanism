@@ -18,6 +18,11 @@ public class AttachedFluidTanks extends AttachedContainers<IExtendedFluidTank> i
     }
 
     @Override
+    protected ContainerType<IExtendedFluidTank, ?, ?> getContainerType() {
+        return ContainerType.FLUID;
+    }
+
+    @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return containers;
     }

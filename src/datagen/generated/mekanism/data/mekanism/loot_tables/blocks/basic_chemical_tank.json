@@ -15,6 +15,16 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:inventory_slots",
+                "mekanism:gas_tanks",
+                "mekanism:infusion_tanks",
+                "mekanism:pigment_tanks",
+                "mekanism:slurry_tanks"
+              ]
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -40,23 +50,9 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:gas_tanks",
-                "mekanism:infusion_tanks",
-                "mekanism:pigment_tanks",
-                "mekanism:slurry_tanks"
-              ]
             }
           ],
           "name": "mekanism:basic_chemical_tank"

@@ -4,9 +4,10 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.item.block.ItemBlockTooltip;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockLaserTractorBeam extends ItemBlockMachine {
+public class ItemBlockLaserTractorBeam extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     public ItemBlockLaserTractorBeam(BlockTile<?, ?> block) {
         super(block);

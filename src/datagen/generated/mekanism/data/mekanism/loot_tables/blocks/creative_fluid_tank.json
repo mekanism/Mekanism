@@ -15,6 +15,13 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:inventory_slots",
+                "mekanism:fluid_tanks"
+              ]
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -23,21 +30,6 @@
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "type": "mekanism:fluid_tanks",
-              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:creative_fluid_tank"

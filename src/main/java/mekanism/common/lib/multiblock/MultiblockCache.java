@@ -2,8 +2,6 @@ package mekanism.common.lib.multiblock;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.DataHandlerUtils;
-import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -23,6 +21,7 @@ import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -35,7 +34,6 @@ import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -86,23 +84,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void load(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            int stored = nbtTags.getInt(type.getTagKey() + "_stored");
-            if (stored > 0) {
-                type.prefab(this, stored);
-                DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), Tag.TAG_COMPOUND));
-            }
+            type.readFrom(nbtTags, this);
         }
     }
 
     public void save(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            List<INBTSerializable<CompoundTag>> containers = type.getContainerList(this);
-            if (!containers.isEmpty()) {
-                //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
-                // because getInt will default to 0 for keys that aren't present
-                nbtTags.putInt(type.getTagKey() + "_stored", containers.size());
-                nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(containers));
-            }
+            type.saveTo(nbtTags, this);
         }
     }
 
@@ -192,9 +180,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public final List<SlurryStack> rejectedSlurries = new ArrayList<>();
     }
 
-    public abstract static class CacheSubstance<HANDLER, ELEMENT> {
+    public abstract static class CacheSubstance<HANDLER, ELEMENT extends INBTSerializable<CompoundTag>> {
 
-        public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(NBTConstants.ITEMS) {
+        public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(ContainerType.ITEM) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0));
@@ -211,7 +199,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank> FLUID = new CacheSubstance<>(NBTConstants.FLUID_TANKS) {
+        public static final CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache));
@@ -228,7 +216,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IGasTracker, IGasTank> GAS = new CacheSubstance<>(NBTConstants.GAS_TANKS) {
+        public static final CacheSubstance<IGasTracker, IGasTank> GAS = new CacheSubstance<>(ContainerType.GAS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.gasTanks.add(ChemicalTankBuilder.GAS.createAllValid(Long.MAX_VALUE, cache));
@@ -245,7 +233,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IInfusionTracker, IInfusionTank> INFUSION = new CacheSubstance<>(NBTConstants.INFUSION_TANKS) {
+        public static final CacheSubstance<IInfusionTracker, IInfusionTank> INFUSION = new CacheSubstance<>(ContainerType.INFUSION) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.infusionTanks.add(ChemicalTankBuilder.INFUSION.createAllValid(Long.MAX_VALUE, cache));
@@ -262,7 +250,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IPigmentTracker, IPigmentTank> PIGMENT = new CacheSubstance<>(NBTConstants.PIGMENT_TANKS) {
+        public static final CacheSubstance<IPigmentTracker, IPigmentTank> PIGMENT = new CacheSubstance<>(ContainerType.PIGMENT) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.pigmentTanks.add(ChemicalTankBuilder.PIGMENT.createAllValid(Long.MAX_VALUE, cache));
@@ -279,7 +267,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<ISlurryTracker, ISlurryTank> SLURRY = new CacheSubstance<>(NBTConstants.SLURRY_TANKS) {
+        public static final CacheSubstance<ISlurryTracker, ISlurryTank> SLURRY = new CacheSubstance<>(ContainerType.SLURRY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.slurryTanks.add(ChemicalTankBuilder.SLURRY.createAllValid(Long.MAX_VALUE, cache));
@@ -296,7 +284,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(NBTConstants.ENERGY_CONTAINERS) {
+        public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache));
@@ -313,7 +301,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<>(NBTConstants.HEAT_CAPACITORS) {
+        public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<>(ContainerType.HEAT) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, cache));
@@ -345,10 +333,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
               HEAT
         };
 
-        private final String tagKey;
+        private final ContainerType<ELEMENT, ?, ?> containerType;
 
-        public CacheSubstance(String tagKey) {
-            this.tagKey = tagKey;
+        public CacheSubstance(ContainerType<ELEMENT, ?, ?> containerType) {
+            this.containerType = containerType;
         }
 
         protected abstract void defaultPrefab(MultiblockCache<?> cache);
@@ -374,8 +362,26 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         }
 
-        public String getTagKey() {
-            return tagKey;
+        private String getStoredTagKey() {
+            return containerType.getTag() + "_stored";
+        }
+
+        public void readFrom(CompoundTag tag, MultiblockCache<?> cache) {
+            int stored = tag.getInt(getStoredTagKey());
+            if (stored > 0) {
+                prefab(cache, stored);
+                containerType.readFrom(tag, getContainerList(cache));
+            }
+        }
+
+        public void saveTo(CompoundTag tag, MultiblockCache<?> holder) {
+            List<ELEMENT> containers = getContainerList(holder);
+            if (!containers.isEmpty()) {
+                //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
+                // because getInt will default to 0 for keys that aren't present
+                tag.putInt(getStoredTagKey(), containers.size());
+                containerType.saveTo(tag, getContainerList(holder));
+            }
         }
     }
 }

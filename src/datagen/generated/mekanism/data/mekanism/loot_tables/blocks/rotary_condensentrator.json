@@ -18,11 +18,24 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:inventory_slots",
+                "mekanism:fluid_tanks",
+                "mekanism:gas_tanks"
+              ]
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
                   "source": "controlType",
                   "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "mode",
+                  "target": "mekanism:rotary_mode"
                 }
               ],
               "source": "block_entity"
@@ -39,22 +52,9 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy_containers",
-                "mekanism:fluid_tanks",
-                "mekanism:gas_tanks"
-              ]
             }
           ],
           "name": "mekanism:rotary_condensentrator"

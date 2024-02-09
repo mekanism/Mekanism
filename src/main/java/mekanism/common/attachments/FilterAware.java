@@ -1,5 +1,8 @@
 package mekanism.common.attachments;
 
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.filter.BaseFilter;
@@ -39,6 +42,21 @@ public final class FilterAware implements INBTSerializable<ListTag> {
     public void copyFrom(FilterManager<?> filterManager) {
         filters.clear();
         filters.addAll(filterManager.getFilters());
+    }
+
+    private <FILTER extends IFilter<?>> Stream<FILTER> getEnabledStream(Class<FILTER> filterClass) {
+        return filters.stream()
+              .filter(filter -> filter.isEnabled() && filterClass.isInstance(filter))
+              .map(filterClass::cast);
+    }
+
+    public <FILTER extends IFilter<?>> List<FILTER> getEnabled(Class<FILTER> filterClass) {
+        //TODO - 1.20.4: Do we want to cache enabled filters like we do for the filter manager?
+        return getEnabledStream(filterClass).toList();
+    }
+
+    public <FILTER extends IFilter<?>> boolean anyEnabledMatch(Class<FILTER> filterClass, Predicate<FILTER> validator) {
+        return getEnabledStream(filterClass).anyMatch(validator);
     }
 
     public boolean isCompatible(FilterAware other) {

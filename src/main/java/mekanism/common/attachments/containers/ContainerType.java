@@ -48,7 +48,6 @@ import mekanism.common.tile.interfaces.chemical.IInfusionTile;
 import mekanism.common.tile.interfaces.chemical.IPigmentTile;
 import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -78,7 +77,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
     public static final ContainerType<IEnergyContainer, AttachedEnergyContainers, IStrictEnergyHandler> ENERGY =
-          new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY, IMekanismStrictEnergyHandler::getEnergyContainers,
+          new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY, IMekanismStrictEnergyHandler::getEnergyContainers,
                 IMekanismStrictEnergyHandler::canHandleEnergy) {
               @Override
               public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
@@ -90,14 +89,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
                   EnergyCompatUtils.registerEntityCapabilities(event, entityType, getCapabilityProvider(requiredConfigs));
               }
           };
-    //TODO - 1.20.4: Implement item containers using this system?
-    public static final ContainerType<IInventorySlot, AttachedInventorySlots, IItemHandler> ITEM = new ContainerType<>(MekanismAttachmentTypes.INVENTORY_SLOTS, NBTConstants.ITEMS, AttachedInventorySlots::new, Capabilities.ITEM, IMekanismInventory::getInventorySlots, IMekanismInventory::hasInventory);
-    public static final ContainerType<IExtendedFluidTank, AttachedFluidTanks, IFluidHandler> FLUID = new ContainerType<>(MekanismAttachmentTypes.FLUID_TANKS, NBTConstants.FLUID_TANKS, AttachedFluidTanks::new, AttachedItemFluidTanks::new, Capabilities.FLUID, IMekanismFluidHandler::getFluidTanks, IMekanismFluidHandler::canHandleFluid);
-    public static final ContainerType<IGasTank, AttachedGasTanks, IGasHandler> GAS = new ContainerType<>(MekanismAttachmentTypes.GAS_TANKS, NBTConstants.GAS_TANKS, AttachedGasTanks::new, Capabilities.GAS, IGasTile::getGasTanks, IGasTile::canHandleGas);
-    public static final ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> INFUSION = new ContainerType<>(MekanismAttachmentTypes.INFUSION_TANKS, NBTConstants.INFUSION_TANKS, AttachedInfusionTanks::new, Capabilities.INFUSION, IInfusionTile::getInfusionTanks, IInfusionTile::canHandleInfusion);
-    public static final ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> PIGMENT = new ContainerType<>(MekanismAttachmentTypes.PIGMENT_TANKS, NBTConstants.PIGMENT_TANKS, AttachedPigmentTanks::new, Capabilities.PIGMENT, IPigmentTile::getPigmentTanks, IPigmentTile::canHandlePigment);
-    public static final ContainerType<ISlurryTank, AttachedSlurryTanks, ISlurryHandler> SLURRY = new ContainerType<>(MekanismAttachmentTypes.SLURRY_TANKS, NBTConstants.SLURRY_TANKS, AttachedSlurryTanks::new, Capabilities.SLURRY, ISlurryTile::getSlurryTanks, ISlurryTile::canHandleSlurry);
-    public static final ContainerType<IHeatCapacitor, AttachedHeatCapacitors, IHeatHandler> HEAT = new ContainerType<>(MekanismAttachmentTypes.HEAT_CAPACITORS, NBTConstants.HEAT_CAPACITORS, AttachedHeatCapacitors::new, null, IMekanismHeatHandler::getHeatCapacitors, IMekanismHeatHandler::canHandleHeat);
+    public static final ContainerType<IInventorySlot, AttachedInventorySlots, IItemHandler> ITEM = new ContainerType<>(MekanismAttachmentTypes.INVENTORY_SLOTS, NBTConstants.ITEMS, NBTConstants.SLOT, AttachedInventorySlots::new, Capabilities.ITEM, IMekanismInventory::getInventorySlots, IMekanismInventory::hasInventory);
+    public static final ContainerType<IExtendedFluidTank, AttachedFluidTanks, IFluidHandler> FLUID = new ContainerType<>(MekanismAttachmentTypes.FLUID_TANKS, NBTConstants.FLUID_TANKS, NBTConstants.TANK, AttachedFluidTanks::new, AttachedItemFluidTanks::new, Capabilities.FLUID, IMekanismFluidHandler::getFluidTanks, IMekanismFluidHandler::canHandleFluid);
+    public static final ContainerType<IGasTank, AttachedGasTanks, IGasHandler> GAS = new ContainerType<>(MekanismAttachmentTypes.GAS_TANKS, NBTConstants.GAS_TANKS, NBTConstants.TANK, AttachedGasTanks::new, Capabilities.GAS, IGasTile::getGasTanks, IGasTile::canHandleGas);
+    public static final ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> INFUSION = new ContainerType<>(MekanismAttachmentTypes.INFUSION_TANKS, NBTConstants.INFUSION_TANKS, NBTConstants.TANK, AttachedInfusionTanks::new, Capabilities.INFUSION, IInfusionTile::getInfusionTanks, IInfusionTile::canHandleInfusion);
+    public static final ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> PIGMENT = new ContainerType<>(MekanismAttachmentTypes.PIGMENT_TANKS, NBTConstants.PIGMENT_TANKS, NBTConstants.TANK, AttachedPigmentTanks::new, Capabilities.PIGMENT, IPigmentTile::getPigmentTanks, IPigmentTile::canHandlePigment);
+    public static final ContainerType<ISlurryTank, AttachedSlurryTanks, ISlurryHandler> SLURRY = new ContainerType<>(MekanismAttachmentTypes.SLURRY_TANKS, NBTConstants.SLURRY_TANKS, NBTConstants.TANK, AttachedSlurryTanks::new, Capabilities.SLURRY, ISlurryTile::getSlurryTanks, ISlurryTile::canHandleSlurry);
+    public static final ContainerType<IHeatCapacitor, AttachedHeatCapacitors, IHeatHandler> HEAT = new ContainerType<>(MekanismAttachmentTypes.HEAT_CAPACITORS, NBTConstants.HEAT_CAPACITORS, NBTConstants.CONTAINER, AttachedHeatCapacitors::new, null, IMekanismHeatHandler::getHeatCapacitors, IMekanismHeatHandler::canHandleHeat);
 
     public static final Codec<ContainerType<?, ?, ?>> CODEC = NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().comapFlatMap(attachmentType -> {
         for (ContainerType<?, ?, ?> type : TYPES) {
@@ -107,13 +105,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
         return DataResult.error(() -> "Attachment type " + NeoForgeRegistries.ATTACHMENT_TYPES.getKey(attachmentType) + " does not have a corresponding container type");
     }, containerType -> containerType.attachment.get());
-
-    //TODO - 1.20.4: Replace with just using TYPES once we move items over to attachments
-    public static final List<ContainerType<?, ?, ?>> SUBSTANCES = Util.make(() -> {
-        List<ContainerType<?, ?, ?>> containers = new ArrayList<>(TYPES);
-        containers.remove(ITEM);
-        return Collections.unmodifiableList(containers);
-    });
 
     private final Map<Item, Function<ItemStack, List<CONTAINER>>> knownDefaultItemContainers = new Reference2ObjectOpenHashMap<>();
     private final Map<EntityType<?>, Function<Entity, List<CONTAINER>>> knownDefaultEntityContainers = new Reference2ObjectOpenHashMap<>();
@@ -126,18 +117,21 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     private final IMultiTypeCapability<HANDLER, ?> capability;
     private final Predicate<TileEntityMekanism> canHandle;
     private final String containerTag;
+    private final String containerKey;
 
-    private ContainerType(DeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> attachment, String containerTag, BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor,
-          @Nullable IMultiTypeCapability<HANDLER, ?> capability, BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
-        this(attachment, containerTag, attachmentConstructor, null, capability, containersFromTile, canHandle);
+    private ContainerType(DeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> attachment, String containerTag, String containerKey,
+          BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor, @Nullable IMultiTypeCapability<HANDLER, ?> capability,
+          BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
+        this(attachment, containerTag, containerKey, attachmentConstructor, null, capability, containersFromTile, canHandle);
     }
 
-    private ContainerType(DeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> attachment, String containerTag, BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor,
-          @Nullable BiFunction<ItemStack, List<CONTAINER>, ATTACHMENT> itemAttachmentConstructor, @Nullable IMultiTypeCapability<HANDLER, ?> capability,
-          BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
+    private ContainerType(DeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> attachment, String containerTag, String containerKey,
+          BiFunction<List<CONTAINER>, @Nullable IContentsListener, ATTACHMENT> attachmentConstructor, @Nullable BiFunction<ItemStack, List<CONTAINER>, ATTACHMENT> itemAttachmentConstructor,
+          @Nullable IMultiTypeCapability<HANDLER, ?> capability, BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
         TYPES_INTERNAL.add(this);
         this.attachment = attachment;
         this.containerTag = containerTag;
+        this.containerKey = containerKey;
         this.attachmentConstructor = attachmentConstructor;
         this.itemAttachmentConstructor = itemAttachmentConstructor;
         this.containersFromTile = containersFromTile;
@@ -227,7 +221,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             return holder.getData(this.attachment);
         } else if (holder instanceof ItemStack stack) {
             if (knownDefaultItemContainers.containsKey(stack.getItem())) {
-                return stack.getData(this.attachment);
+                 return stack.getData(this.attachment);
             }
         } else if (holder instanceof Entity entity) {
             if (knownDefaultEntityContainers.containsKey(entity.getType())) {
@@ -297,12 +291,55 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return knownDefaultItemContainers.containsKey(stack.getItem());
     }
 
+    ListTag save(List<CONTAINER> containers) {
+        return DataHandlerUtils.writeContents(containers, containerKey);
+    }
+
+    void read(List<CONTAINER> containers, @Nullable ListTag storedContainers) {
+        if (storedContainers != null) {
+            DataHandlerUtils.readContents(containers, storedContainers, containerKey);
+        }
+    }
+
+    public void saveTo(CompoundTag tag, TileEntityMekanism tile) {
+        saveTo(tag, getContainers(tile));
+    }
+
     public void saveTo(CompoundTag tag, List<CONTAINER> containers) {
-        tag.put(containerTag, DataHandlerUtils.writeContainers(containers));
+        ListTag serialized = save(containers);
+        if (!serialized.isEmpty()) {
+            tag.put(containerTag, serialized);
+        }
+    }
+
+    public void readFrom(CompoundTag tag, TileEntityMekanism tile) {
+        readFrom(tag, getContainers(tile));
     }
 
     public void readFrom(CompoundTag tag, List<CONTAINER> containers) {
-        DataHandlerUtils.readContainers(containers, tag.getList(containerTag, Tag.TAG_COMPOUND));
+        read(containers, tag.getList(containerTag, Tag.TAG_COMPOUND));
+    }
+
+    public void copyTo(TileEntityMekanism tile, ItemStack stack) {
+        copyTo(getContainers(tile), stack);
+    }
+
+    public void copyTo(List<CONTAINER> containers, ItemStack stack) {
+        ATTACHMENT attachment = getAttachment(stack);
+        if (attachment != null) {
+            attachment.deserializeNBT(save(containers));
+        }
+    }
+
+    public void copyFrom(ItemStack stack, TileEntityMekanism tile) {
+        copyFrom(stack, getContainers(tile));
+    }
+
+    public void copyFrom(ItemStack stack, List<CONTAINER> containers) {
+        ATTACHMENT attachment = getAttachment(stack);
+        if (attachment != null) {
+            read(containers, attachment.serializeNBT());
+        }
     }
 
     public boolean canHandle(TileEntityMekanism tile) {
@@ -311,15 +348,5 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public List<CONTAINER> getContainers(TileEntityMekanism tile) {
         return containersFromTile.apply(tile, null);
-    }
-
-    public ListTag serialize(TileEntityMekanism tile) {
-        return DataHandlerUtils.writeContainers(getContainers(tile));
-    }
-
-    public void deserialize(TileEntityMekanism tile, @Nullable ListTag containers) {
-        if (containers != null) {
-            DataHandlerUtils.readContainers(getContainers(tile), containers);
-        }
     }
 }

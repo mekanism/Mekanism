@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
@@ -34,7 +36,19 @@ public final class InventoryUtils {
      */
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
-        if (!entity.level().isClientSide && !stack.isEmpty() && stack.getItem() instanceof IDroppableContents inventory && inventory.canContentsDrop(stack)) {
+        if (!entity.level().isClientSide && !stack.isEmpty()) {
+            Function<ItemStack, List<IInventorySlot>> droppedSlots = null;
+            //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
+            if (stack.getItem() instanceof IDroppableContents inventory) {
+                if (inventory.canContentsDrop(stack)) {
+                    droppedSlots = inventory::getDroppedSlots;
+                }
+            } else if (ContainerType.ITEM.supports(stack)) {
+                droppedSlots = ContainerType.ITEM::getAttachmentContainersIfPresent;
+            }
+            if (droppedSlots == null) {
+                return;
+            }
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
@@ -44,10 +58,9 @@ public final class InventoryUtils {
                 shouldDrop = IItemSecurityUtils.INSTANCE.canAccess(null, stack, false);
             }
             if (shouldDrop) {
-                for (IInventorySlot slot : inventory.getDroppedSlots(stack)) {
+                for (IInventorySlot slot : droppedSlots.apply(stack)) {
                     if (!slot.isEmpty()) {
-                        //Note: While some implementations return a dummy slot, so we would be able to pass them directly without copying
-                        // we have implementations that pass the actual backing slot, so we have to copy the stack just in case
+                        //Copy the stack as the passed slot is likely to be the actual backing slot
                         dropStack(slot.getStack().copy(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }

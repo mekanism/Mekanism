@@ -53,9 +53,15 @@ public class BasicInventorySlot implements IInventorySlot {
 
     public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        return at(canExtract, canInsert, alwaysTrue, listener, x, y);
+    }
+
+    public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, listener, x, y);
+        Objects.requireNonNull(validator, "Item validity check cannot be null");
+        return new BasicInventorySlot(canExtract, canInsert, validator, listener, x, y);
     }
 
     /**

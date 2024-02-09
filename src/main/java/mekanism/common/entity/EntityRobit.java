@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -71,7 +70,6 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -82,9 +80,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -130,8 +126,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, ISustainedInventory, IMekanismStrictEnergyHandler,
-      ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, IMekanismStrictEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
         return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
@@ -439,7 +434,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ((ItemRobit) stack.getItem()).setSustainedInventory(getSustainedInventory(), stack);
+        ContainerType.ITEM.copyTo(getInventorySlots(null), stack);
         if (hasCustomName()) {
             stack.setData(MekanismAttachmentTypes.ROBIT_NAME, getName());
         }
@@ -483,7 +478,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, homeLocation).result()
                   .ifPresent(home -> nbtTags.put(NBTConstants.HOME_LOCATION, home));
         }
-        nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
+        ContainerType.ITEM.saveTo(nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.saveTo(nbtTags, getEnergyContainers(null));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         NBTUtils.writeResourceKey(nbtTags, NBTConstants.SKIN, getSkin());
@@ -498,7 +493,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result()
               .ifPresent(pos -> homeLocation = pos));
-        DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
+        ContainerType.ITEM.readFrom(nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.readFrom(nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
@@ -605,18 +600,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     public void setDropPickup(boolean pickup) {
         entityData.set(DROP_PICKUP, pickup);
-    }
-
-    @Override
-    public void setSustainedInventory(ListTag nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty()) {
-            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
-        }
-    }
-
-    @Override
-    public ListTag getSustainedInventory() {
-        return DataHandlerUtils.writeContainers(getInventorySlots(null));
     }
 
     @NotNull

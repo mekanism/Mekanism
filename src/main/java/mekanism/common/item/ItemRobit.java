@@ -8,9 +8,9 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -37,7 +37,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemRobit extends ItemEnergized implements IItemSustainedInventory, ICapabilityAware {
+public class ItemRobit extends ItemEnergized implements ICapabilityAware {
 
     public ItemRobit(Properties properties) {
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
@@ -54,7 +54,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, stack.getData(MekanismAttachmentTypes.ROBIT_NAME)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getData(MekanismAttachmentTypes.ROBIT_SKIN))));
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
     }
 
     @NotNull
@@ -87,7 +87,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                 } else {
                     robit.setOwnerUUID(ownerUUID);
                 }
-                robit.setSustainedInventory(getSustainedInventory(stack));
+                ContainerType.ITEM.copyFrom(stack, robit.getInventorySlots(null));
                 robit.setCustomName(stack.getData(MekanismAttachmentTypes.ROBIT_NAME));
                 ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
                 if (securityObject != null) {

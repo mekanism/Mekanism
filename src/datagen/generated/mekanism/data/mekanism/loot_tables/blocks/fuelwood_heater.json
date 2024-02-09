@@ -15,19 +15,11 @@
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "type": "mekanism:heat_capacitors",
-              "function": "mekanism:copy_containers"
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:inventory_slots",
+                "mekanism:heat_capacitors"
+              ]
             }
           ],
           "name": "mekanism:fuelwood_heater"

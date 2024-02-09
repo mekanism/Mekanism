@@ -4,20 +4,18 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -95,22 +93,19 @@ public class UpgradeAware implements INBTSerializable<CompoundTag>, IMekanismInv
     @Nullable
     @Override
     public CompoundTag serializeNBT() {
-        if (upgrades.isEmpty() && this.upgradeSlots.stream().allMatch(IInventorySlot::isEmpty)) {
-            return null;
-        }
         CompoundTag upgradeNBT = new CompoundTag();
         if (!upgrades.isEmpty()) {
             Upgrade.saveMap(upgrades, upgradeNBT);
         }
         //Save the inventory
-        upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(upgradeSlots));
-        return upgradeNBT;
+        ContainerType.ITEM.saveTo(upgradeNBT, upgradeSlots);
+        return upgradeNBT.isEmpty() ? null : upgradeNBT;
     }
 
     @Override
     public void deserializeNBT(CompoundTag upgradeNBT) {
         setUpgrades(Upgrade.buildMap(upgradeNBT));
         //Load the inventory
-        NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(upgradeSlots, list));
+        ContainerType.ITEM.readFrom(upgradeNBT, upgradeSlots);
     }
 }

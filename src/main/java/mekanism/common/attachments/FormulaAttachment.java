@@ -3,20 +3,17 @@ package mekanism.common.attachments;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -54,8 +51,8 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.ITEMS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND))
-              .ifPresent(items -> DataHandlerUtils.readContainers(inventory, items));
+        ItemDataUtils.getAndRemoveData(stack, NBTConstants.ITEMS, (mekData, key) -> mekData)
+              .ifPresent(mekData -> ContainerType.ITEM.readFrom(mekData, inventory));
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.INVALID, CompoundTag::getBoolean).ifPresent(invalid -> this.invalid = invalid);
     }
 
@@ -114,24 +111,18 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
     @Nullable
     @Override
     public CompoundTag serializeNBT() {
-        ListTag items = DataHandlerUtils.writeContainers(this.inventory);
-        if (isValid() && items.isEmpty()) {
-            return null;
-        }
         CompoundTag nbt = new CompoundTag();
         if (invalid) {
             nbt.putBoolean(NBTConstants.INVALID, true);
         }
-        if (!items.isEmpty()) {
-            nbt.put(NBTConstants.ITEMS, items);
-        }
-        return nbt;
+        ContainerType.ITEM.saveTo(nbt, this.inventory);
+        return nbt.isEmpty() ? null : nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         invalid = nbt.getBoolean(NBTConstants.INVALID);
-        NBTUtils.setListIfPresent(nbt, NBTConstants.ITEMS, Tag.TAG_COMPOUND, items -> DataHandlerUtils.readContainers(inventory, items));
+        ContainerType.ITEM.readFrom(nbt, inventory);
     }
 
     /**

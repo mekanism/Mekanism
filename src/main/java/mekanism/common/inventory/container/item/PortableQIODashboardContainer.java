@@ -1,10 +1,11 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.attachments.PortableQIODashboardInventory;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
-import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,7 +27,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     public PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote) {
-        this(id, inv, hand, stack, remote, new PortableQIODashboardInventory(stack, inv));
+        this(id, inv, hand, stack, remote, stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).updateLevel(inv.player.level()));
     }
 
     public InteractionHand getHand() {
@@ -42,6 +43,15 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         PortableQIODashboardContainer container = new PortableQIODashboardContainer(containerId, inv, hand, stack, true, craftingWindowHolder);
         sync(container);
         return container;
+    }
+
+    @Override
+    protected void closeInventory(@NotNull Player player) {
+        super.closeInventory(player);
+        if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory) {
+            //Clear the level, this should only be called on close as recreating doesn't cause closeInventory to be called
+            inventory.updateLevel(null);
+        }
     }
 
     @Override

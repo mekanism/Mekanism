@@ -12,7 +12,6 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.item.EnergyCubeRateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.tier.EnergyCubeTier;
@@ -31,7 +30,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemSustainedInventory, ICustomCreativeTabContents {
+public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
         super(block);

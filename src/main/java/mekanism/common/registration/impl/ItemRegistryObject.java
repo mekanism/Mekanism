@@ -1,7 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -54,7 +54,9 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachmentOnlyContainers(ContainerType<CONTAINER, ?, ?> containerType,
           Function<ItemStack, List<CONTAINER>> defaultCreators) {
         if (defaultContainers == null) {
-            defaultContainers = new HashMap<>();
+            //In case any containers have deps on others make this linked even though it really shouldn't matter
+            // as nothing should be trying to construct the containers between register calls
+            defaultContainers = new LinkedHashMap<>();
         }
         if (defaultContainers.put(containerType, defaultCreators) != null) {
             throw new IllegalStateException("Duplicate attachments added for container type: " + containerType.getAttachmentName());

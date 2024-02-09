@@ -5,9 +5,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
-import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.item.interfaces.IDroppableContents.IDroppableAttachmentContents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -17,7 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
+public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
 
     public ItemBlockBin(BlockBin block) {
         super(block, new Item.Properties().stacksTo(1));
@@ -30,10 +29,9 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
 
     @Override
     protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        BinMekanismInventory inventory = BinMekanismInventory.create(stack);
+        BinInventorySlot slot = BinInventorySlot.getForStack(stack);
         BinTier tier = getTier();
-        if (inventory != null && tier != null) {
-            BinInventorySlot slot = inventory.getBinSlot();
+        if (slot != null && tier != null) {
             if (slot.isEmpty()) {
                 tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {

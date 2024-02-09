@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -98,7 +97,6 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ISustainedData;
-import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
@@ -122,8 +120,6 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -142,9 +138,8 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer,
-      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive,
-      Nameable {
+      ITileRedstone, ISecurityTile, IMekanismInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
+      IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -647,12 +642,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.read(nbt);
         }
         loadGeneralPersistentData(nbt);
-        if (hasInventory() && persistInventory()) {
-            DataHandlerUtils.readContainers(getInventorySlots(null), nbt.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
-        }
-        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
-                type.deserialize(this, nbt.getList(type.getTag(), Tag.TAG_COMPOUND));
+                type.readFrom(nbt, this);
             }
         }
         if (isActivatable()) {
@@ -675,13 +667,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.write(nbtTags);
         }
         addGeneralPersistentData(nbtTags);
-        if (hasInventory() && persistInventory()) {
-            nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
-        }
 
-        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
-                nbtTags.put(type.getTag(), type.serialize(this));
+                type.saveTo(nbtTags, this);
             }
         }
 
@@ -699,6 +688,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
+    //TODO - 1.20.4: Remove overrides maybe and make this all be ISustainedData??
+    // And then copy the control type over via that instead? At the very least the laser amplifier override we probably want persisted
+    // when the block is broken so should be moved to sustained data
     protected void addGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
@@ -988,25 +980,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void onContentsChanged() {
         setChanged();
-    }
-
-    @Override
-    public void setSustainedInventory(ListTag nbtTags) {
-        if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
-            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
-        }
-    }
-
-    @Override
-    public ListTag getSustainedInventory() {
-        return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListTag();
-    }
-
-    /**
-     * Should the inventory be persisted in this tile save
-     */
-    public boolean persistInventory() {
-        return hasInventory();
     }
     //End methods ITileContainer
 

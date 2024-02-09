@@ -6,6 +6,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
+import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +15,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockFactory extends ItemBlockMachine {
+public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     public ItemBlockFactory(BlockFactory<?> block) {
         super(block);

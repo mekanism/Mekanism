@@ -20,6 +20,7 @@ import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.OverflowAware;
+import mekanism.common.attachments.PortableQIODashboardInventory;
 import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
@@ -141,6 +142,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SCUBA_TANK_MODE = ATTACHMENT_TYPES.registerBoolean("scuba_tank_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ELECTRIC_BOW_MODE = ATTACHMENT_TYPES.registerBoolean("electric_bow_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> BUCKET_MODE = ATTACHMENT_TYPES.registerBoolean("bucket_mode", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ROTARY_MODE = ATTACHMENT_TYPES.registerBoolean("rotary_mode", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> AUTO = ATTACHMENT_TYPES.registerBoolean("auto", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SORTING = ATTACHMENT_TYPES.registerBoolean("sorting", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> EJECT = ATTACHMENT_TYPES.registerBoolean("eject", false);
@@ -326,6 +328,8 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                 .build());
 
     //Non-serializable attachments for use in persisting a backing object between multiple capabilities
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<PortableQIODashboardInventory>> QIO_DASHBOARD = ATTACHMENT_TYPES.register("qio_dashboard",
+          () -> AttachmentType.builder(PortableQIODashboardInventory::create).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CHEMICAL_TANK_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("chemical_tank_contents_handler",
           () -> AttachmentType.builder(holder -> {
               if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof ItemBlockChemicalTank tank) {
@@ -341,7 +345,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
           }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedTank>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
           () -> AttachmentType.builder(holder -> {
-              if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER)) {
+              if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER.asItem())) {
                   return MergedTank.create(
                         RateLimitFluidTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
                               BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue),

@@ -15,6 +15,14 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:inventory_slots",
+                "mekanism:heat_capacitors"
+              ]
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -23,24 +31,6 @@
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy_containers",
-                "mekanism:heat_capacitors"
-              ]
             }
           ],
           "name": "mekanism:resistive_heater"

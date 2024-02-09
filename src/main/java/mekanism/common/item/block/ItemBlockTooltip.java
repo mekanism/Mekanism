@@ -6,12 +6,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StorageUtils;
@@ -89,8 +89,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (!fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
-        if (Attribute.has(getBlock(), AttributeInventory.class) && stack.getItem() instanceof IItemSustainedInventory inventory) {
-            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory.hasSustainedInventory(stack))));
+        if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
+            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             stack.getData(MekanismAttachmentTypes.UPGRADES).getUpgrades().forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent()));

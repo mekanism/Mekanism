@@ -35,7 +35,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Fills the container from this item OR converts the given item to energy
      */
-    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
@@ -101,7 +101,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return itemEnergyHandler != null && !itemEnergyHandler.extractEnergy(FloatingLong.MAX_VALUE, Action.SIMULATE).isZero();
     }
 
-    private final Supplier<Level> worldSupplier;
+    private final Supplier<@Nullable Level> worldSupplier;
     private final IEnergyContainer energyContainer;
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
@@ -109,7 +109,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<@Nullable Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
           Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         this.energyContainer = energyContainer;

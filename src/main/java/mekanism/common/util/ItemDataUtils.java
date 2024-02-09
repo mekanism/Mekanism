@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -54,28 +53,7 @@ public final class ItemDataUtils {
               });
     }
 
-    public static ListTag getList(ItemStack stack, String key) {
-        return getMekData(stack)
-              .map(mekData -> mekData.getList(key, Tag.TAG_COMPOUND))
-              .orElseGet(ListTag::new);
-    }
-
     public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
         getDataMap(stack).put(key, tag);
-    }
-
-    public static void setListOrRemove(ItemStack stack, String key, ListTag tag) {
-        if (tag.isEmpty()) {
-            getMekData(stack).ifPresent(mekData -> {
-                mekData.remove(key);
-                if (mekData.isEmpty()) {
-                    //If our data map no longer has any elements after removing a piece of stored data
-                    // then remove the data tag to make the stack nice and clean again
-                    stack.removeTagKey(NBTConstants.MEK_DATA);
-                }
-            });
-        } else {
-            getDataMap(stack).put(key, tag);
-        }
     }
 }

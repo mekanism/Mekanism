@@ -315,8 +315,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public boolean persistInventory() {
-        return false;
+    public boolean persists(ContainerType<?, ?, ?> type) {
+        if (type == ContainerType.ITEM) {
+            return false;
+        }
+        return super.persists(type);
     }
 
     @NotNull

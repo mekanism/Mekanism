@@ -49,12 +49,22 @@ public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>,
         AttachedGasTanks(List<IGasTank> tanks, @Nullable IContentsListener listener) {
             super(tanks, listener);
         }
+
+        @Override
+        protected ContainerType<IGasTank, ?, ?> getContainerType() {
+            return ContainerType.GAS;
+        }
     }
 
     public static class AttachedInfusionTanks extends AttachedChemicalTanks<InfuseType, InfusionStack, IInfusionTank> implements IMekanismInfusionHandler {
 
         AttachedInfusionTanks(List<IInfusionTank> tanks, @Nullable IContentsListener listener) {
             super(tanks, listener);
+        }
+
+        @Override
+        protected ContainerType<IInfusionTank, ?, ?> getContainerType() {
+            return ContainerType.INFUSION;
         }
     }
 
@@ -63,12 +73,22 @@ public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>,
         AttachedPigmentTanks(List<IPigmentTank> tanks, @Nullable IContentsListener listener) {
             super(tanks, listener);
         }
+
+        @Override
+        protected ContainerType<IPigmentTank, ?, ?> getContainerType() {
+            return ContainerType.PIGMENT;
+        }
     }
 
     public static class AttachedSlurryTanks extends AttachedChemicalTanks<Slurry, SlurryStack, ISlurryTank> implements IMekanismSlurryHandler {
 
         AttachedSlurryTanks(List<ISlurryTank> tanks, @Nullable IContentsListener listener) {
             super(tanks, listener);
+        }
+
+        @Override
+        protected ContainerType<ISlurryTank, ?, ?> getContainerType() {
+            return ContainerType.SLURRY;
         }
     }
 }

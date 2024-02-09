@@ -68,7 +68,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //Only allow inserting items with tags that match filters, but mark all items that have any filterable tags as valid
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> !getResult(item).isEmpty(), this::hasFilterableTags, listener, 26, 115));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> hasResult(filterManager.getEnabledFilters(), item), this::hasFilterableTags, listener, 26, 115));
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 134, 115));
         return builder.build();
     }
@@ -83,7 +83,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }
         didProcess = false;
         if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
-            ItemStack result = getResult(inputSlot.getStack());
+            ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getStack());
             if (!result.isEmpty()) {
                 ItemStack outputStack = outputSlot.getStack();
                 if (outputStack.isEmpty()) {
@@ -111,7 +111,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
     }
 
-    private List<ResourceLocation> getFilterableTags(ItemStack stack) {
+    private static List<ResourceLocation> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
         Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
         //For each tag that matches a tag that is filterable, add it to the resulting list
@@ -140,8 +140,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return false;
     }
 
-    private ItemStack getResult(ItemStack stack) {
-        List<OredictionificatorItemFilter> enabledFilters = filterManager.getEnabledFilters();
+    public static boolean hasResult(List<OredictionificatorItemFilter> enabledFilters, ItemStack stack) {
+        return !getResult(enabledFilters, stack).isEmpty();
+    }
+
+    private static ItemStack getResult(List<OredictionificatorItemFilter> enabledFilters, ItemStack stack) {
         if (!enabledFilters.isEmpty()) {
             for (ResourceLocation filterableTag : getFilterableTags(stack)) {
                 for (OredictionificatorItemFilter filter : enabledFilters) {

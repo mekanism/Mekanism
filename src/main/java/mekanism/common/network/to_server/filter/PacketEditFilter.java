@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server.filter;
 
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
@@ -11,6 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.20.4: SP: Validate this doesn't have any issues in single player, I believe the edited filter is always new on the client and then the gui is closed
 // and the referenced removed, so we can use that implementation detail to not require any copying or stuff, and the filter is only used for lookup

@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.lib.MekanismSavedData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -63,7 +64,7 @@ class PersonalStorageData extends MekanismSavedData {
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag entry = entries.getCompound(i);
             PersonalStorageItemInventory inv = createInventory();
-            inv.deserializeNBT(entry.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
+            ContainerType.ITEM.readFrom(entry, inv.getInventorySlots(null));
             inventoriesById.put(entry.getUUID(NBTConstants.PERSONAL_STORAGE_ID), inv);
         }
     }
@@ -74,7 +75,7 @@ class PersonalStorageData extends MekanismSavedData {
         inventoriesById.forEach((uuid, inv) -> {
             CompoundTag nbtEntry = new CompoundTag();
             nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, uuid);
-            nbtEntry.put(NBTConstants.ITEMS, inv.serializeNBT());
+            ContainerType.ITEM.saveTo(nbtEntry, inv.getInventorySlots(null));
             entries.add(nbtEntry);
         });
         compoundTag.put(NBTConstants.DATA, entries);

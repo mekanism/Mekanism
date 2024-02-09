@@ -4,8 +4,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 @MethodsReturnNonnullByDefault
 public abstract class BooleanStateDisplay implements IHasTextComponent {
@@ -36,6 +38,10 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
 
         public static YesNo of(boolean value) {
             return of(value, false);
+        }
+
+        public static YesNo hasInventory(ItemStack stack) {
+            return of(ContainerType.ITEM.getAttachmentContainersIfPresent(stack).stream().anyMatch(slot -> !slot.isEmpty()));
         }
 
         public static YesNo of(boolean value, boolean colored) {

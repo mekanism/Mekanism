@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -26,7 +26,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
@@ -189,7 +188,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             tile.recalculateUpgrades(upgrade);
         }
         //Load the inventory
-        NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
+        ContainerType.ITEM.readFrom(upgradeNBT, getSlots());
     }
 
     public CompoundTag writeUpgradeNbt() {
@@ -198,7 +197,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             Upgrade.saveMap(upgrades, upgradeNBT);
         }
         //Save the inventory
-        upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getSlots()));
+        ContainerType.ITEM.saveTo(upgradeNBT, getSlots());
         return upgradeNBT;
     }
 

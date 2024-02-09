@@ -10,7 +10,6 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.attachments.UpgradeAware;
-import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -22,7 +21,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.filter.FilterManager;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -145,16 +143,10 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, tile.getControlType());
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (tile.handles(type)) {
-                AttachedContainers<?> attachment = type.getAttachment(stack);
-                if (attachment != null) {
-                    attachment.deserializeNBT(type.serialize(tile));
-                }
+                type.copyTo(tile, stack);
             }
-        }
-        if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
-            sustainedInventory.setSustainedInventory(tile.getSustainedInventory(), stack);
         }
         return stack;
     }
@@ -280,12 +272,9 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().read(dataMap);
             config.getEjector().read(dataMap);
         }
-        for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
-            if (type.canHandle(tile)) {
-                AttachedContainers<?> attachment = type.getAttachmentIfPresent(stack);
-                if (attachment != null) {
-                    type.deserialize(tile, attachment.serializeNBT());
-                }
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+            if (tile.handles(type)) {
+                type.copyFrom(stack, tile);
             }
         }
         if (tile instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
@@ -296,9 +285,6 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile.supportsRedstone()) {
             tile.setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
-        }
-        if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory()) {
-            tile.setSustainedInventory(sustainedInventory.getSustainedInventory(stack));
         }
     }
 

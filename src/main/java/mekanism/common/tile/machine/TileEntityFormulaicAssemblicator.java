@@ -74,8 +74,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
+    public static final Predicate<@NotNull ItemStack> FORMULA_SLOT_VALIDATOR = stack -> stack.getItem() instanceof ItemCraftingFormula;
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
-    private static final Predicate<@NotNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
     private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
 
@@ -140,7 +140,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(formulaSlot = BasicInventorySlot.at(formulaSlotValidator, listener, 6, 26))
+        builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listener, 6, 26))
               .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {

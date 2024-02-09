@@ -12,12 +12,11 @@ import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.recipe.upgrade.ItemRecipeData;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
@@ -28,7 +27,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -111,9 +109,8 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
         @Nullable
         @Override
         public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-            if (!stack.isEmpty() && stack.getItem() == MekanismBlocks.QIO_DRIVE_ARRAY.asItem()) {
-                ListTag inventory = ((IItemSustainedInventory) stack.getItem()).getSustainedInventory(stack);
-                List<IInventorySlot> inventorySlots = ItemRecipeData.readContents(inventory);
+            if (!stack.isEmpty() && stack.is(MekanismBlocks.QIO_DRIVE_ARRAY.asItem())) {
+                List<IInventorySlot> inventorySlots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
                 byte[] driveStatus = new byte[TileEntityQIODriveArray.DRIVE_SLOTS];
                 boolean hasFrequency = hasFrequency(stack);
                 boolean allEmpty = true;

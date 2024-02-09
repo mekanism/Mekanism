@@ -16,6 +16,11 @@ public class AttachedHeatCapacitors extends AttachedContainers<IHeatCapacitor> i
     }
 
     @Override
+    protected ContainerType<IHeatCapacitor, ?, ?> getContainerType() {
+        return ContainerType.HEAT;
+    }
+
+    @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return containers;
     }

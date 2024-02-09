@@ -17,12 +17,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockCardboardBox;
+import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.loot.CopyAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
@@ -45,6 +45,7 @@ import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -52,6 +53,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -78,7 +80,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -173,7 +174,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
             TrackingNbtToAttachmentBuilder nbtToAttachmentBuilder = new TrackingNbtToAttachmentBuilder(ContextNbtProvider.BLOCK_ENTITY);
             TrackingAttachmentBuilder attachmentBuilder = new TrackingAttachmentBuilder();
-            TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
@@ -181,8 +181,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
             @Nullable
             BlockEntity tile = null;
-            if (block instanceof IHasTileEntity<?> hasTileEntity) {
-                tile = hasTileEntity.createDummyBlockEntity();
+            if (block instanceof EntityBlock entityBlock) {
+                tile = entityBlock.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
             }
             if (tile instanceof IFrequencyHandler frequencyHandler) {
                 Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
@@ -223,7 +223,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
-                for (ContainerType<?, ?, ?> type : ContainerType.SUBSTANCES) {
+                TrackingContainerBuilder containerBuilder = new TrackingContainerBuilder();
+                for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
                     AttachedContainers<?> attachment = type.getAttachment(stack);
                     List<?> containers = tileEntity.handles(type) ? type.getContainers(tileEntity) : List.of();
                     List<?> attachmentContainers = attachment == null ? List.of() : attachment.getContainers();
@@ -235,31 +236,22 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                             }
                         }
                     } else if (attachmentContainers.isEmpty()) {
-                        Mekanism.logger.warn("Substance type: {}, item missing attachments: {}", type.getAttachmentName(), RegistryUtils.getName(block));
+                        //TODO: Improve how we handle skipping warnings for known missing types
+                        if (type == ContainerType.ITEM && block.asItem() instanceof ItemBlockPersonalStorage) {
+                            //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
+                            hasContents = true;
+                        } else if (type != ContainerType.GAS || !(block instanceof BlockRadioactiveWasteBarrel)) {
+                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getAttachmentName(), RegistryUtils.getName(block));
+                        }
                     } else if (containers.isEmpty()) {
-                        Mekanism.logger.warn("Substance type: {}, item has attachments but block doesn't have containers: {}", type.getAttachmentName(), RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getAttachmentName(), RegistryUtils.getName(block));
                     } else {
-                        Mekanism.logger.warn("Substance type: {}, has {} item attachments and block has {} containers: {}", type.getAttachmentName(), attachmentContainers.size(),
+                        Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getAttachmentName(), attachmentContainers.size(),
                               containers.size(), RegistryUtils.getName(block));
                     }
                 }
-            }
-            @SuppressWarnings("unchecked")
-            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
-            if (attributeInventory != null) {
-                if (attributeInventory.hasCustomLoot()) {
-                    hasContents = attributeInventory.applyLoot(delayedPool, nbtBuilder);
-                }
-                //If the block has an inventory and no custom loot function, copy the inventory slots,
-                // but if it is an IItemHandler, which for most cases of ours it will be,
-                // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
-                else if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
-                    //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
-                    if (!(tile instanceof TileEntityMekanism tileMek) || tileMek.persistInventory()) {
-                        //TODO - 1.20.4: IMPLEMENT VIA ATTACHMENTS??
-                        nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
-                        hasContents = true;
-                    }
+                if (containerBuilder.hasData) {
+                    itemLootPool.apply(containerBuilder);
                 }
             }
             if (block instanceof BlockCardboardBox) {
@@ -274,9 +266,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (nbtBuilder.hasData) {
                 itemLootPool.apply(nbtBuilder);
-            }
-            if (containerBuilder.hasData) {
-                itemLootPool.apply(containerBuilder);
             }
             //apply the delayed ones last, so that NBT funcs have happened first
             for (LootItemFunction.Builder function : delayedPool.functions) {

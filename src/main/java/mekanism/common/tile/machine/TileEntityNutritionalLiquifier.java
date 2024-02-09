@@ -126,20 +126,22 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
-                  if (stack.getItem().isEdible()) {//Double-check the stack is food
-                      FoodProperties food = stack.getFoodProperties(null);
-                      //And only allow inserting foods that actually would provide paste
-                      return food != null && food.getNutrition() > 0;
-                  }
-                  return false;
-              }, recipeCacheListener, 26, 36)
+        builder.addSlot(inputSlot = InputInventorySlot.at(TileEntityNutritionalLiquifier::isValidInput, recipeCacheListener, 26, 36)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(containerFillSlot = FluidInventorySlot.drain(fluidTank, listener, 155, 25));
         builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 155, 56));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 155, 5));
         containerFillSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
+    }
+
+    public static boolean isValidInput(ItemStack stack) {
+        if (stack.getItem().isEdible()) {//Double-check the stack is food
+            FoodProperties food = stack.getFoodProperties(null);
+            //And only allow inserting foods that actually would provide paste
+            return food != null && food.getNutrition() > 0;
+        }
+        return false;
     }
 
     @Override

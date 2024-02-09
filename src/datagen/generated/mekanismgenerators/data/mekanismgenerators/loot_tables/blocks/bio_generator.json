@@ -18,6 +18,14 @@
               "source": "block_entity"
             },
             {
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:inventory_slots",
+                "mekanism:fluid_tanks"
+              ]
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -26,24 +34,6 @@
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy_containers",
-                "mekanism:fluid_tanks"
-              ]
             }
           ],
           "name": "mekanismgenerators:bio_generator"

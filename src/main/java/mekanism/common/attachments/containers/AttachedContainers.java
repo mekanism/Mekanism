@@ -1,7 +1,6 @@
 package mekanism.common.attachments.containers;
 
 import java.util.List;
-import mekanism.api.DataHandlerUtils;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -22,16 +21,18 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
         this.listener = listener;
     }
 
+    protected abstract ContainerType<CONTAINER, ?, ?> getContainerType();
+
     @Nullable
     @Override
     public ListTag serializeNBT() {
-        ListTag serialized = DataHandlerUtils.writeContainers(this.containers);
+        ListTag serialized = getContainerType().save(this.containers);
         return serialized.isEmpty() ? null : serialized;
     }
 
     @Override
     public void deserializeNBT(ListTag nbt) {
-        DataHandlerUtils.readContainers(this.containers, nbt);
+        getContainerType().read(this.containers, nbt);
     }
 
     @Override

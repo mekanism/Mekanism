@@ -15,19 +15,11 @@
               "source": "block_entity"
             },
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "type": "mekanism:energy_containers",
-              "function": "mekanism:copy_containers"
+              "function": "mekanism:copy_containers",
+              "types": [
+                "mekanism:energy_containers",
+                "mekanism:inventory_slots"
+              ]
             }
           ],
           "name": "mekanism:laser_tractor_beam"

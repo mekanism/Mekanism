@@ -199,11 +199,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    public boolean persistInventory() {
-        return false;
-    }
-
-    @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         // don't persist ANY substance types
         return false;

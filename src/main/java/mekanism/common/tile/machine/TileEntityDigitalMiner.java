@@ -791,6 +791,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         markForSave();
     }
 
+    public static boolean isSavedReplaceTarget(ItemStack stack, Item target) {
+        //This method is here to make it easier to maintain parity if we change the logic of isReplaceTarget
+        if (stack.getData(MekanismAttachmentTypes.INVERSE)) {
+            Item inverseReplaceTarget = stack.getData(MekanismAttachmentTypes.REPLACE_STACK);
+            return inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
+        }
+        return stack.getData(MekanismAttachmentTypes.FILTER_AWARE)
+              .anyEnabledMatch(MinerFilter.class, filter -> filter.replaceTargetMatches(target));
+    }
+
     public boolean isReplaceTarget(Item target) {
         if (inverse) {
             //If we are in inverse mode only check our replace target, and not the filter's replace targets

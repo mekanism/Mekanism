@@ -34,14 +34,14 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             return ItemStack.EMPTY;
         }
         ItemStack toReturn = resultItem.copy();
-        List<ItemStack> nbtInputs = new ArrayList<>();
+        List<ItemStack> attachmentInputs = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (!stack.isEmpty() && stack.hasTag()) {
-                nbtInputs.add(stack);
+            if (!stack.isEmpty() && stack.hasAttachments()) {
+                attachmentInputs.add(stack);
             }
         }
-        if (nbtInputs.isEmpty()) {
+        if (attachmentInputs.isEmpty()) {
             //If none of our items have NBT we can skip checking what data can be transferred
             return toReturn;
         }
@@ -52,7 +52,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
         }
         Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
         //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
-        for (ItemStack stack : nbtInputs) {
+        for (ItemStack stack : attachmentInputs) {
             Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(stack);
             for (RecipeUpgradeType supportedType : stackSupportedTypes) {
                 if (supportedTypes.contains(supportedType)) {

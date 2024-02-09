@@ -20,6 +20,10 @@
               "source": "block_entity"
             },
             {
+              "type": "mekanism:energy_containers",
+              "function": "mekanism:copy_containers"
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -28,10 +32,6 @@
                 }
               ],
               "source": "block_entity"
-            },
-            {
-              "type": "mekanism:energy_containers",
-              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:laser_amplifier"

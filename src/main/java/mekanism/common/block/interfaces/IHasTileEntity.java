@@ -4,7 +4,6 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -16,14 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public interface IHasTileEntity<TILE extends BlockEntity> extends EntityBlock {
 
     TileEntityTypeRegistryObject<? extends TILE> getTileType();
-
-    default TILE createDummyBlockEntity() {
-        return createDummyBlockEntity(((Block) this).defaultBlockState());
-    }
-
-    default TILE createDummyBlockEntity(@NotNull BlockState state) {
-        return newBlockEntity(BlockPos.ZERO, state);
-    }
 
     @Override
     default TILE newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {

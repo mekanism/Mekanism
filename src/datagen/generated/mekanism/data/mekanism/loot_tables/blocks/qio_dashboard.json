@@ -19,6 +19,10 @@
               "source": "block_entity"
             },
             {
+              "type": "mekanism:inventory_slots",
+              "function": "mekanism:copy_containers"
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -35,11 +39,6 @@
                   "op": "replace",
                   "source": "componentFrequency",
                   "target": "mekData.componentFrequency"
-                },
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"

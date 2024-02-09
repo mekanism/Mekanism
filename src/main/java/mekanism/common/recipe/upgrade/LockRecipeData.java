@@ -1,7 +1,7 @@
 package mekanism.common.recipe.upgrade;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.inventory.BinMekanismInventory;
+import mekanism.common.inventory.slot.BinInventorySlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -11,8 +11,8 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     private final ItemStack lock;
 
-    LockRecipeData(BinMekanismInventory inventory) {
-        this.lock = inventory.getBinSlot().getLockStack();
+    LockRecipeData(BinInventorySlot slot) {
+        this.lock = slot.getLockStack();
     }
 
     @Nullable
@@ -23,12 +23,11 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     @Override
     public boolean applyToStack(ItemStack stack) {
-        BinMekanismInventory inventory = BinMekanismInventory.create(stack);
-        if (inventory == null) {
+        BinInventorySlot slot = BinInventorySlot.getForStack(stack);
+        if (slot == null) {
             return false;
         }
-        inventory.getBinSlot().setLockStack(this.lock);
-        inventory.onContentsChanged();
+        slot.setLockStack(this.lock);
         return true;
     }
 }

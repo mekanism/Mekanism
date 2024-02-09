@@ -16,6 +16,8 @@ import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.ItemSlotsBuilder;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -49,6 +51,8 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.resource.IResource;
@@ -73,7 +77,14 @@ public class MekanismItems {
     public static final ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
 
-    public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.registerItem("robit", ItemRobit::new);
+    public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.registerItem("robit", ItemRobit::new)
+          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .addSlots(3 * 9, BasicInventorySlot::at)
+                .addEnergy()
+                .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
+                .addOutput()
+                .build()
+          );
     public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.registerItem("configurator", ItemConfigurator::new);
     public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.registerItem("network_reader", ItemNetworkReader::new);
@@ -93,7 +104,8 @@ public class MekanismItems {
                 BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
                 fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid())
           ), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new);
+    public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new)
+          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).getSlots());
     // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);

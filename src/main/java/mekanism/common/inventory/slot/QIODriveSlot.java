@@ -1,29 +1,33 @@
 package mekanism.common.inventory.slot;
 
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class QIODriveSlot extends BasicInventorySlot {
 
+    public static final Predicate<ItemStack> IS_QIO_ITEM = stack -> stack.getItem() instanceof IQIODriveItem;
+
+    private final Supplier<@Nullable Level> levelSupplier;
     private final IQIODriveHolder driveHolder;
     private final QIODriveKey key;
 
-    public <TILE extends IMekanismInventory & IQIODriveHolder> QIODriveSlot(TILE inventory, int slot, @Nullable IContentsListener listener, int x, int y) {
-        super(notExternal, notExternal, stack -> stack.getItem() instanceof IQIODriveItem, listener, x, y);
-        key = new QIODriveKey(inventory, slot);
-        driveHolder = inventory;
+    public QIODriveSlot(IQIODriveHolder driveHolder, int slot, Supplier<@Nullable Level> levelSupplier, @Nullable IContentsListener listener, int x, int y) {
+        super(notExternal, notExternal, IS_QIO_ITEM, listener, x, y);
+        this.driveHolder = driveHolder;
+        this.levelSupplier = levelSupplier;
+        this.key = new QIODriveKey(this.driveHolder, slot);
     }
 
     @Override
@@ -81,10 +85,10 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private boolean isRemote() {
-        Level world = ((BlockEntity) driveHolder).getLevel();
+        Level level = levelSupplier.get();
         //Treat world as remote if it is null (hasn't been assigned yet)
         // which may happen when loading the drives from memory
-        return world == null || world.isClientSide();
+        return level == null || level.isClientSide();
     }
 
     private void addDrive(ItemStack stack) {

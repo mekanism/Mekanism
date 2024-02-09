@@ -8,15 +8,8 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
-                }
-              ],
-              "source": "block_entity"
+              "type": "mekanism:inventory_slots",
+              "function": "mekanism:copy_containers"
             }
           ],
           "name": "mekanism:ultimate_bin"

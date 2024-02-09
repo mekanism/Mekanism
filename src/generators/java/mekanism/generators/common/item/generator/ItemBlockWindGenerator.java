@@ -2,12 +2,12 @@ package mekanism.generators.common.item.generator;
 
 import java.util.function.Consumer;
 import mekanism.common.block.prefab.BlockTile;
-import mekanism.common.item.block.machine.ItemBlockMachine;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.client.render.GeneratorsRenderPropertiesProvider;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockWindGenerator extends ItemBlockMachine {
+public class ItemBlockWindGenerator extends ItemBlockTooltip<BlockTile<?, ?>> {
 
     public ItemBlockWindGenerator(BlockTile<?, ?> block) {
         super(block);

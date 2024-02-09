@@ -18,6 +18,10 @@
               "source": "block_entity"
             },
             {
+              "type": "mekanism:inventory_slots",
+              "function": "mekanism:copy_containers"
+            },
+            {
               "function": "mekanism:copy_to_attachments",
               "ops": [
                 {
@@ -39,11 +43,6 @@
                   "op": "replace",
                   "source": "componentEjector",
                   "target": "mekData.componentEjector"
-                },
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"

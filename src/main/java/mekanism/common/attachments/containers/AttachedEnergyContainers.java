@@ -16,6 +16,11 @@ public class AttachedEnergyContainers extends AttachedContainers<IEnergyContaine
     }
 
     @Override
+    protected ContainerType<IEnergyContainer, ?, ?> getContainerType() {
+        return ContainerType.ENERGY;
+    }
+
+    @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return containers;
     }

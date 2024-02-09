@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.processors;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Upgrade;
@@ -8,15 +9,13 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.UpgradeAware;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.recipe.upgrade.ItemRecipeData;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,24 +37,13 @@ public class MekanismContentsProcessor implements INBTProcessor {
         IEMCProxy emcProxy = IEMCProxy.INSTANCE;
         ItemStack stack = info.createStack();
         //Stored items
-        if (stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
-            ListTag storedContents = sustainedInventory.getSustainedInventory(stack);
-            for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
-                if (!slot.isEmpty()) {
-                    currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
-                }
-            }
-        }
+        currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(stack));
         if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {//Stored upgrades
             UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
             for (Map.Entry<Upgrade, Integer> entry : upgradeAware.getUpgrades().entrySet()) {
                 currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
-            for (IInventorySlot slot : upgradeAware.getInventorySlots(null)) {
-                if (!slot.isEmpty()) {
-                    currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
-                }
-            }
+            currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.getInventorySlots(null));
         }
         //Stored modules
         Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
@@ -63,6 +51,15 @@ public class MekanismContentsProcessor implements INBTProcessor {
             for (IModule<?> module : moduleContainer.get().modules()) {
                 ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
                 currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
+            }
+        }
+        return currentEMC;
+    }
+
+    private static long addEmc(IEMCProxy emcProxy, long currentEMC, List<IInventorySlot> slots) throws ArithmeticException {
+        for (IInventorySlot slot : slots) {
+            if (!slot.isEmpty()) {
+                currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());
             }
         }
         return currentEMC;

@@ -10,7 +10,6 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -64,10 +63,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof TileEntityMekanism tile) {
             for (ContainerType<?, ?, ?> containerType : this.containerTypes) {
-                AttachedContainers<?> attachment = containerType.getAttachment(stack);
-                if (attachment != null) {
-                    attachment.deserializeNBT(containerType.serialize(tile));
-                }
+                containerType.copyTo(tile, stack);
             }
             //Skip tiles that have no gas tanks and skip the creative chemical tank
             if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tile.getGasTanks(null).isEmpty()) {

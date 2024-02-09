@@ -1,7 +1,6 @@
 package mekanism.common.recipe.bin;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -17,7 +16,11 @@ public abstract class BinRecipe extends CustomRecipe {
     }
 
     protected static BinInventorySlot convertToSlot(ItemStack binStack) {
-        return BinMekanismInventory.create(binStack).getBinSlot();
+        BinInventorySlot slot = BinInventorySlot.getForStack(binStack);
+        if (slot == null) {
+            throw new IllegalStateException("Expected bin stack to have an inventory");
+        }
+        return slot;
     }
 
     @Override

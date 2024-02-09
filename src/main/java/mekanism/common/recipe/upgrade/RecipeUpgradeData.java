@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
@@ -19,13 +18,11 @@ import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.content.qio.IQIODriveItem;
-import mekanism.common.inventory.BinMekanismInventory;
+import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.machine.ItemBlockFactory;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
@@ -33,14 +30,10 @@ import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,24 +51,14 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {
-        //TODO: Add more types of data that can be transferred such as side configs, auto sort, bucket mode, dumping mode
+        //TODO: Add more types of data that can be transferred such as side configs, bucket mode, dumping mode
         if (stack.isEmpty()) {
             return Collections.emptySet();
         }
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
         Item item = stack.getItem();
-        TileEntityMekanism tile = null;
-        if (item instanceof BlockItem blockItem) {
-            Block block = blockItem.getBlock();
-            if (block instanceof IHasTileEntity<?> hasTileEntity) {
-                BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
-                if (tileEntity instanceof TileEntityMekanism tileMek) {
-                    tile = tileMek;
-                }
-            }
-            if (Attribute.has(block, AttributeUpgradeSupport.class)) {
-                supportedTypes.add(RecipeUpgradeType.UPGRADE);
-            }
+        if (item instanceof BlockItem blockItem && Attribute.has(blockItem.getBlock(), AttributeUpgradeSupport.class)) {
+            supportedTypes.add(RecipeUpgradeType.UPGRADE);
         }
         if (ContainerType.ENERGY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.ENERGY);
@@ -95,10 +78,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (ContainerType.SLURRY.supports(stack)) {
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
-        if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
+        if (ContainerType.ITEM.supports(stack) || item instanceof ItemBlockPersonalStorage) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null || tile != null && tile.hasSecurity()) {
+        if (IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -128,7 +111,6 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      */
     @Nullable
     static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
-        Item item = stack.getItem();
         return switch (type) {
             case ENERGY -> getContainerUpgradeData(stack, ContainerType.ENERGY, EnergyRecipeData::new);
             case FLUID -> getContainerUpgradeData(stack, ContainerType.FLUID, FluidRecipeData::new);
@@ -137,21 +119,18 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case PIGMENT -> getContainerUpgradeData(stack, ContainerType.PIGMENT, PigmentRecipeData::new);
             case SLURRY -> getContainerUpgradeData(stack, ContainerType.SLURRY, SlurryRecipeData::new);
             case ITEM -> {
-                if (item instanceof IItemSustainedInventory sustainedInventory) {
-                    ListTag inventory = sustainedInventory.getSustainedInventory(stack);
-                    yield inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
-                } else if (item instanceof ItemBlockPersonalStorage<?>) {
-                    yield PersonalStorageManager.getInventoryIfPresent(stack).map(inv -> new ItemRecipeData(inv.getInventorySlots(null))).orElse(null);
+                List<IInventorySlot> slots;
+                if (stack.getItem() instanceof ItemBlockPersonalStorage) {
+                    slots = PersonalStorageManager.getInventoryIfPresent(stack).map(inv -> inv.getInventorySlots(null)).orElse(List.of());
+                } else {
+                    slots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
                 }
-                if (MekanismAPI.debug) {
-                    throw new IllegalStateException("Requested ITEM upgrade data, but unable to handle");
-                }
-                yield null;
+                yield slots.isEmpty() ? null : new ItemRecipeData(slots);
             }
             case LOCK -> {
-                BinMekanismInventory inventory = BinMekanismInventory.create(stack);
+                BinInventorySlot slot = BinInventorySlot.getForStack(stack);
                 //If there is no inventory, or it isn't locked just skip
-                yield inventory == null || !inventory.getBinSlot().isLocked() ? null : new LockRecipeData(inventory);
+                yield slot == null || !slot.isLocked() ? null : new LockRecipeData(slot);
             }
             case SECURITY -> {
                 UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
@@ -201,16 +180,5 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             }
         }
         return data;
-    }
-
-    @Nullable
-    default TileEntityMekanism getTileFromBlock(Block block) {
-        if (block instanceof IHasTileEntity<?> hasTileEntity) {
-            BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
-            if (tileEntity instanceof TileEntityMekanism) {
-                return (TileEntityMekanism) tileEntity;
-            }
-        }
-        return null;
     }
 }
