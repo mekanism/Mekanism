@@ -418,7 +418,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
             return InteractionResult.PASS;
         } else if (!level().isClientSide) {
-            MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
+            MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this, true);
             if (provider != null) {
                 gameEvent(GameEvent.ENTITY_INTERACT, player);
                 //Validate the provider isn't null, it shouldn't be but just in case

@@ -519,7 +519,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.PASS;
             }
 
-            player.openMenu(Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
+            player.openMenu(Attribute.get(getBlockType(), AttributeGui.class).getProvider(this, true), worldPosition);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;

@@ -62,7 +62,7 @@ public record PacketTileButtonPress(ClickedTileButton buttonClicked, BlockPos po
             //Special handling to basically reset to the tiles default gui container
             AttributeGui attributeGui = Attribute.get(tile.getBlockType(), AttributeGui.class);
             if (attributeGui != null) {
-                return attributeGui.getProvider(tile);
+                return attributeGui.getProvider(tile, false);
             }
             return null;
         }),

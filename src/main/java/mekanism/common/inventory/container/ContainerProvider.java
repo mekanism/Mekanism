@@ -14,14 +14,21 @@ public class ContainerProvider implements MenuProvider {
 
     private final Component displayName;
     private final MenuConstructor provider;
+    private final boolean resetMousePosition;
 
     public ContainerProvider(ILangEntry translationHelper, MenuConstructor provider) {
-        this(translationHelper.translate(), provider);
+        this(translationHelper.translate(), provider, true);
     }
 
-    public ContainerProvider(Component displayName, MenuConstructor provider) {
+    public ContainerProvider(Component displayName, MenuConstructor provider, boolean resetMousePosition) {
         this.displayName = displayName;
         this.provider = provider;
+        this.resetMousePosition = resetMousePosition;
+    }
+
+    @Override
+    public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+        return resetMousePosition;
     }
 
     @Nullable

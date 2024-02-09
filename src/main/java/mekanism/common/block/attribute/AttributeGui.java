@@ -19,8 +19,8 @@ public class AttributeGui implements Attribute {
         this.customName = customName;
     }
 
-    public <TILE extends TileEntityMekanism> MenuProvider getProvider(TILE tile) {
-        return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile);
+    public <TILE extends TileEntityMekanism> MenuProvider getProvider(TILE tile, boolean resetMousePosition) {
+        return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile, resetMousePosition);
     }
 
     /**

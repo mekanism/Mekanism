@@ -32,20 +32,25 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
 
     @Nullable
     public MenuProvider getProvider(ILangEntry name, Object object) {
-        return getProvider(name.translate(), object);
+        return getProvider(name, object, false);
     }
 
     @Nullable
-    public MenuProvider getProvider(Component name, Object object) {
-        MenuConstructor provider = null;
+    public MenuProvider getProvider(ILangEntry name, Object object, boolean resetMousePosition) {
+        return getProvider(name.translate(), object, resetMousePosition);
+    }
+
+    @Nullable
+    public MenuProvider getProvider(Component name, Object object, boolean resetMousePosition) {
+        MenuConstructor constructor = null;
         MenuType<CONTAINER> containerType = get();
         if (containerType instanceof MekanismContainerType<?, CONTAINER> mekanismContainerType) {
-            provider = mekanismContainerType.create(object);
+            constructor = mekanismContainerType.create(object);
         }
-        if (provider == null) {
+        if (constructor == null) {
             Mekanism.logger.info("Unable to create container for type: {}", RegistryUtils.getName(containerType));
         }
-        return provider == null ? null : new ContainerProvider(name, provider);
+        return constructor == null ? null : new ContainerProvider(name, constructor, resetMousePosition);
     }
 
     @Nullable
@@ -55,19 +60,24 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
 
     @Nullable
     public MenuProvider getProvider(Component name, InteractionHand hand, ItemStack stack) {
-        MenuConstructor provider = null;
+        return getProvider(name, hand, stack, false);
+    }
+
+    @Nullable
+    public MenuProvider getProvider(Component name, InteractionHand hand, ItemStack stack, boolean resetMousePosition) {
+        MenuConstructor constructor = null;
         MenuType<CONTAINER> containerType = get();
         if (containerType instanceof MekanismItemContainerType<?, ?> mekanismItemContainerType) {
-            provider = mekanismItemContainerType.create(hand, stack);
+            constructor = mekanismItemContainerType.create(hand, stack);
         }
-        if (provider == null) {
+        if (constructor == null) {
             Mekanism.logger.info("Unable to create container for type: {}", RegistryUtils.getName(containerType));
         }
-        return provider == null ? null : new ContainerProvider(name, provider);
+        return constructor == null ? null : new ContainerProvider(name, constructor, resetMousePosition);
     }
 
     public void tryOpenGui(ServerPlayer player, InteractionHand hand, ItemStack stack) {
-        MenuProvider provider = getProvider(stack.getHoverName(), hand, stack);
+        MenuProvider provider = getProvider(stack.getHoverName(), hand, stack, true);
         if (provider != null) {
             //Validate the provider isn't null, it shouldn't be but just in case
             player.openMenu(provider, buf -> {
