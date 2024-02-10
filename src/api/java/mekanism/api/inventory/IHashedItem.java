@@ -61,4 +61,16 @@ public interface IHashedItem {
     default CompoundTag getInternalTag() {
         return getInternalStack().getTag();
     }
+
+    /**
+     * Helper to serialize the attachments of the internal {@link ItemStack} that backs this item type.
+     *
+     * @return New serialization of the internal {@link ItemStack} that backs this item type.
+     *
+     * @since 10.5.0
+     */
+    @Nullable
+    default CompoundTag serializeAttachments() {
+        return getInternalStack().serializeAttachments();
+    }
 }

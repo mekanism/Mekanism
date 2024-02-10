@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -31,7 +30,7 @@ public class NucleosynthesizingRecipeSerializer implements RecipeSerializer<Basi
             codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicNucleosynthesizingRecipe::getOutputRaw),
+                  ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicNucleosynthesizingRecipe::getOutputRaw),
                   ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
             ).apply(instance, factory::create));
         }

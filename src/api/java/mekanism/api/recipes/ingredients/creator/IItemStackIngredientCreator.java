@@ -37,6 +37,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         stack = stack.copy();
         //Support NBT that is on the stack in case it matters
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
+        //TODO - 1.20.4: Support attachments
         //TODO - 1.20.4: Should this be a strict ingredient or not?
         Ingredient ingredient = stack.hasTag() ? NBTIngredient.of(true, stack) : Ingredient.of(stack);
         return from(ingredient, amount);

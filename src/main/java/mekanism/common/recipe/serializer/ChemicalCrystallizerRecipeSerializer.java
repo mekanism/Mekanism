@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.codec.DependentMapCodec;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
@@ -34,7 +33,7 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance -> instance.group(
                   chemicalStackIngredientMapEncoder.forGetter(BasicChemicalCrystallizerRecipe::getInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
+                  ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

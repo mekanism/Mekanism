@@ -214,6 +214,8 @@ public abstract class TransitRequest {
             if (inserted.hasTag()) {
                 code = 31 * code + inserted.getTag().hashCode();
             }
+            //Note: We intentionally do not include attachments in the hashcode as we don't want to have to serialize them every time,
+            // and they will be caught by the equals check
             code = 31 * code + slotData.hashCode();
             return code;
         }

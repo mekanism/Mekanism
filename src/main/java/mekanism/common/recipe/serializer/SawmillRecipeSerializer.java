@@ -32,8 +32,8 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
         if (codec == null) {
             Codec<Double> chanceCodec = ExtraCodecs.validate(Codec.DOUBLE, d -> d > 0 && d <= 1 ? DataResult.success(d) : DataResult.error(() -> "Expected secondaryChance to be greater than zero, and less than or equal to one. Found " + d));
             MapCodec<Optional<Double>> secondaryChanceFieldBase = ExtraCodecs.strictOptionalField(chanceCodec, JsonConstants.SECONDARY_CHANCE);
-            MapCodec<Optional<ItemStack>> mainOutputFieldBase = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
-            RecordCodecBuilder<BasicSawmillRecipe, Optional<ItemStack>> secondaryOutputField = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(BasicSawmillRecipe::getSecondaryOutputRaw);
+            MapCodec<Optional<ItemStack>> mainOutputFieldBase = ItemStack.ITEM_WITH_COUNT_CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
+            RecordCodecBuilder<BasicSawmillRecipe, Optional<ItemStack>> secondaryOutputField = ItemStack.ITEM_WITH_COUNT_CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(BasicSawmillRecipe::getSecondaryOutputRaw);
 
             codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),

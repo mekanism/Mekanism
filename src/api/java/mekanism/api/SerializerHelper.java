@@ -20,7 +20,6 @@ import mekanism.api.chemical.ChemicalUtils;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
@@ -48,15 +47,6 @@ public class SerializerHelper {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
-
-    /**
-     * Codec version of the old CraftingHelper.getItemStack
-     */
-    public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).forGetter(ItemStack::getItem),
-          ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.COUNT, 1).forGetter(ItemStack::getCount),
-          CraftingHelper.TAG_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
-    ).apply(instance, ItemStack::new));
 
     /**
      * Fluid Codec which makes extra sure we don't end up with an empty/invalid fluid

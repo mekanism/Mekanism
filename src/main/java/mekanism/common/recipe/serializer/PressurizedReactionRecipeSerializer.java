@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
@@ -39,7 +38,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Bas
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
                   FloatingLong.CODEC.optionalFieldOf(JsonConstants.ENERGY_REQUIRED, FloatingLong.ZERO).forGetter(PressurizedReactionRecipe::getEnergyRequired),
                   ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
-                  SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputItem),
+                  ItemStack.ITEM_WITH_COUNT_CODEC.optionalFieldOf(JsonConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputItem),
                   ChemicalUtils.GAS_STACK_CODEC.optionalFieldOf(JsonConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
             ).apply(instance, factory::create));
 

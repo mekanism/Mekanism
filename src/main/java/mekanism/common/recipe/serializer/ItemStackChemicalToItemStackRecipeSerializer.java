@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.basic.IBasicItemStackOutput;
@@ -37,7 +36,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
             codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
                   getDeserializer().codec().fieldOf(JsonConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(IBasicItemStackOutput::getOutputRaw)
+                  ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(IBasicItemStackOutput::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

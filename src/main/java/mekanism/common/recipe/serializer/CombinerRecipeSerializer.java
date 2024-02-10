@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -29,7 +28,7 @@ public class CombinerRecipeSerializer implements RecipeSerializer<BasicCombinerR
             codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.MAIN_INPUT).forGetter(CombinerRecipe::getMainInput),
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.EXTRA_INPUT).forGetter(CombinerRecipe::getExtraInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicCombinerRecipe::getOutputRaw)
+                  ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicCombinerRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

@@ -183,15 +183,19 @@ public abstract class BaseComputerHelper {
             Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get("name")));
             int count = SpecialConverters.getIntFromRaw(map.get("count"));
             String nbt = (String) map.get("nbt");
+            String attachments = (String) map.get("attachments");
             ItemStack stack = new ItemStack(item, count);
             if (nbt != null) {
                 stack.setTag(NbtUtils.snbtToStructure(nbt));
+            }
+            if (attachments != null) {
+                SpecialConverters.setAttachments(stack, NbtUtils.snbtToStructure(attachments));
             }
             return stack;
         } catch (ClassCastException ex) {
             throw new ComputerException("Invalid ItemStack at index " + param);
         } catch (CommandSyntaxException e) {
-            throw new ComputerException("Invalid NBT data");
+            throw new ComputerException("Invalid NBT or Attachment data");
         }
     }
 
@@ -266,14 +270,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getTag());
+        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getTag(), null);
     }
 
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getTag());
+        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getTag(), stack.serializeAttachments());
     }
 
     public Object convert(@Nullable BlockState state) {
@@ -351,6 +355,10 @@ public abstract class BaseComputerHelper {
                 CompoundTag tag = stack.getTag();
                 if (tag != null && !tag.isEmpty()) {
                     wrapped.put("itemNBT", SpecialConverters.wrapNBT(tag));
+                }
+                CompoundTag attachments = stack.serializeAttachments();
+                if (attachments != null && !attachments.isEmpty()) {
+                    wrapped.put("itemAttachments", SpecialConverters.wrapNBT(attachments));
                 }
             }
         } else if (result instanceof IModIDFilter<?> modIDFilter) {
@@ -502,6 +510,7 @@ public abstract class BaseComputerHelper {
               .addField("name", Item.class, "The Item's registered name")
               .addField("count", int.class, "The count of items in the stack")
               .addField("nbt", String.class, "Any NBT of the item, in Command JSON format")
+              .addField("attachments", String.class, "Any Attachment NBT of the item, in Command JSON format")
               .build(types);
 
         TableType.builder(FluidStack.class, "An amount of fluid")
@@ -566,7 +575,8 @@ public abstract class BaseComputerHelper {
         Builder itemstackBuilder = TableType.builder(itemStackFilterClass, deviceName + " filter with ItemStack filter properties")
               .extendedFrom(deviceFilterType)
               .addField("item", Item.class, "The filtered item's registered name")
-              .addField("itemNBT", String.class, "The NBT data of the filtered item, optional");
+              .addField("itemNBT", String.class, "The NBT data of the filtered item, optional")
+              .addField("itemAttachments", String.class, "The Attachment NBT data of the filtered item, optional");
         if (hasFuzzyItem) {
             itemstackBuilder.addField("fuzzy", boolean.class, "Whether Fuzzy mode is enabled (checks only the item name/type)");
         }

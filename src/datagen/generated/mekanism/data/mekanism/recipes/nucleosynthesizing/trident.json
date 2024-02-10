@@ -14,7 +14,6 @@
     }
   },
   "output": {
-    "item": "minecraft:trident",
-    "nbt": "{Damage:0}"
+    "item": "minecraft:trident"
   }
 }

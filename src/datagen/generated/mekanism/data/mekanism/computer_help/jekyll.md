@@ -50,6 +50,10 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
+      itemAttachments:
+        description: The Attachment NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
       itemNBT:
         description: The NBT data of the filtered item, optional
         javaType: java.lang.String
@@ -103,6 +107,10 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
+      itemAttachments:
+        description: The Attachment NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
       itemNBT:
         description: The NBT data of the filtered item, optional
         javaType: java.lang.String
@@ -163,6 +171,10 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
+      itemAttachments:
+        description: The Attachment NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
       itemNBT:
         description: The NBT data of the filtered item, optional
         javaType: java.lang.String
@@ -237,6 +249,10 @@ builtInTables:
   net.minecraft.world.item.ItemStack:
     description: A stack of Item(s)
     fields:
+      attachments:
+        description: Any Attachment NBT of the item, in Command JSON format
+        javaType: java.lang.String
+        type: String
       count:
         description: The count of items in the stack
         javaType: int

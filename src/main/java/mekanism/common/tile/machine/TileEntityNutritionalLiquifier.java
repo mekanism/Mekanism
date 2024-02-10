@@ -48,14 +48,9 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -230,11 +225,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT());
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
-            NBTUtils.writeRegistryEntry(item, NBTConstants.ID, BuiltInRegistries.ITEM, lastPasteItem.getItem());
-            CompoundTag tag = lastPasteItem.getInternalTag();
-            if (tag != null) {
-                item.put(NBTConstants.TAG, tag.copy());
-            }
+            lastPasteItem.getInternalStack().save(item);
         }
         updateTag.put(NBTConstants.ITEM, item);
         return updateTag;
@@ -247,19 +238,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {
             if (nbt.isEmpty()) {
                 lastPasteItem = null;
-            } else if (nbt.contains(NBTConstants.ID, Tag.TAG_STRING)) {
-                ResourceLocation id = ResourceLocation.tryParse(nbt.getString(NBTConstants.ID));
-                if (id != null) {
-                    Item item = BuiltInRegistries.ITEM.get(id);
-                    if (item != Items.AIR) {
-                        ItemStack stack = new ItemStack(item);
-                        if (nbt.contains(NBTConstants.TAG, Tag.TAG_COMPOUND)) {
-                            stack.setTag(nbt.getCompound(NBTConstants.TAG));
-                        }
-                        //Use raw because we have a new stack, so we don't need to bother copying it
-                        lastPasteItem = HashedItem.raw(stack);
-                    }
-                }
+            } else {
+                lastPasteItem = HashedItem.raw(ItemStack.of(nbt));
             }
         });
     }

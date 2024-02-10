@@ -1,6 +1,8 @@
 package mekanism.common.integration.computer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -20,6 +22,7 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -27,10 +30,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper.UnableToFindMethodException;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialConverters {
+
+    @Nullable
+    private static final Method DESERIALIZE_ATTACHMENTS = Util.make(() -> {
+        try {
+            return ObfuscationReflectionHelper.findMethod(AttachmentHolder.class, "deserializeAttachments", CompoundTag.class);
+        } catch (UnableToFindMethodException e) {
+            return null;
+        }
+    });
 
     @Nullable
     public static <ENUM extends Enum<?>> ENUM sanitizeStringToEnum(Class<? extends ENUM> expectedType, String argument) {
@@ -47,7 +62,7 @@ public class SpecialConverters {
         return null;
     }
 
-    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawNBT) throws ComputerException {
+    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawNBT, @Nullable String rawAttachments) throws ComputerException {
         Item item = tryCreateItem(rawName);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
@@ -56,6 +71,13 @@ public class SpecialConverters {
         if (rawNBT != null) {
             try {
                 stack.setTag(NbtUtils.snbtToStructure(rawNBT));
+            } catch (CommandSyntaxException ex) {
+                throw new ComputerException("Invalid SNBT: " + ex.getMessage());
+            }
+        }
+        if (rawAttachments != null) {
+            try {
+                setAttachments(stack, NbtUtils.snbtToStructure(rawNBT));
             } catch (CommandSyntaxException ex) {
                 throw new ComputerException("Invalid SNBT: " + ex.getMessage());
             }
@@ -207,20 +229,31 @@ public class SpecialConverters {
     }
 
     private static void decodeItemStackFilter(@NotNull Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
-        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemNBT"));
+        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemNBT"), (String) map.get("itemAttachments"));
         if (stack.isEmpty()) {
             throw new ComputerException("Invalid or missing item specified for ItemStack filter");
         }
         itemFilter.setItemStack(stack);
     }
 
-    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @Nullable CompoundTag tag) {
+    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @Nullable CompoundTag tag, @Nullable CompoundTag attachments) {
+        int elements = 2;
         boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
-        Map<String, Object> wrapped = new HashMap<>(hasTag ? 3 : 2);
+        if (hasTag) {
+            elements++;
+        }
+        boolean hasAttachments = attachments != null && !attachments.isEmpty() && amount > 0;
+        if (hasAttachments) {
+            elements++;
+        }
+        Map<String, Object> wrapped = new HashMap<>(elements);
         wrapped.put("name", name == null ? "unknown" : name.toString());
         wrapped.put(sizeKey, amount);
         if (hasTag) {
             wrapped.put("nbt", wrapNBT(tag));
+        }
+        if (hasAttachments) {
+            wrapped.put("attachments", wrapNBT(attachments));
         }
         return wrapped;
     }
@@ -229,4 +262,13 @@ public class SpecialConverters {
         return NbtUtils.structureToSnbt(nbt);
     }
 
+    static void setAttachments(ItemStack stack, CompoundTag tag) {
+        if (DESERIALIZE_ATTACHMENTS != null) {
+            try {
+                DESERIALIZE_ATTACHMENTS.invoke(stack, tag);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

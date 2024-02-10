@@ -343,7 +343,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
     }
 
     private IRecipeTransferError invalidSource(@NotNull HashedItem type) {
-        Mekanism.logger.warn("Error finding source for: {} with nbt: {}. This should not be possible.", type.getItem(), type.getInternalTag());
+        Mekanism.logger.warn("Error finding source for: {} with nbt: {} and attachments: {}. This should not be possible.", type.getItem(), type.getInternalTag(),
+              type.serializeAttachments());
         return handlerHelper.createInternalError();
     }
 
