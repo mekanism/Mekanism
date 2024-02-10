@@ -1,5 +1,7 @@
 package mekanism.common.tile.laser;
 
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -20,15 +22,20 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IHasMode;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 
-public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
+public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode, ISustainedData {
 
     private FloatingLong minThreshold = FloatingLong.ZERO;
     private FloatingLong maxThreshold = MekanismConfig.storage.laserAmplifier.get();
@@ -158,8 +165,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundTag data) {
-        super.loadGeneralPersistentData(data);
+    public void readSustainedData(CompoundTag data) {
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
@@ -167,12 +173,37 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundTag data) {
-        super.addGeneralPersistentData(data);
+    public void writeSustainedData(CompoundTag data) {
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
         data.putInt(NBTConstants.TIME, delay);
         NBTUtils.writeEnum(data, NBTConstants.OUTPUT_MODE, outputMode);
+    }
+
+    @Override
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_THRESHOLD);
+        remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_THRESHOLD);
+        remap.put(NBTConstants.TIME, MekanismAttachmentTypes.DELAY);
+        remap.put(NBTConstants.OUTPUT_MODE, MekanismAttachmentTypes.REDSTONE_OUTPUT);
+        return remap;
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        updateMinThreshold(stack.getData(MekanismAttachmentTypes.MIN_THRESHOLD));
+        updateMaxThreshold(stack.getData(MekanismAttachmentTypes.MAX_THRESHOLD));
+        setDelay(stack.getData(MekanismAttachmentTypes.DELAY));
+        outputMode = stack.getData(MekanismAttachmentTypes.REDSTONE_OUTPUT);
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        stack.setData(MekanismAttachmentTypes.MIN_THRESHOLD, minThreshold);
+        stack.setData(MekanismAttachmentTypes.MAX_THRESHOLD, maxThreshold);
+        stack.setData(MekanismAttachmentTypes.DELAY, delay);
+        stack.setData(MekanismAttachmentTypes.REDSTONE_OUTPUT, outputMode);
     }
 
     @Override

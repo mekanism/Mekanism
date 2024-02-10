@@ -99,7 +99,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         CompoundTag configNBT = new CompoundTag();
         configNBT.put(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal(), sideConfig);
         ItemStack stack = new ItemStack(this);
-        ItemDataUtils.setCompound(stack, NBTConstants.COMPONENT_CONFIG, configNBT);
+        ItemDataUtils.getDataMap(stack).put(NBTConstants.COMPONENT_CONFIG, configNBT);
         return stack;
     }
 

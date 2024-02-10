@@ -52,8 +52,4 @@ public final class ItemDataUtils {
                   return value;
               });
     }
-
-    public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
-        getDataMap(stack).put(key, tag);
-    }
 }

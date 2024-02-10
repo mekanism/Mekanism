@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -61,6 +62,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -116,6 +118,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GasMode>> DUMP_MODE = ATTACHMENT_TYPES.register("dump_mode", GasMode.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GasMode>> SECONDARY_DUMP_MODE = ATTACHMENT_TYPES.register("secondary_dump_mode", GasMode.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneControl>> REDSTONE_CONTROL = ATTACHMENT_TYPES.register("redstone_control", RedstoneControl.class);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneOutput>> REDSTONE_OUTPUT = ATTACHMENT_TYPES.register("redstone_output", RedstoneOutput.class);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> COLOR = ATTACHMENT_TYPES.registerOptional("color", EnumColor.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> TRANSPORTER_COLOR = ATTACHMENT_TYPES.register("transporter_color",
@@ -161,7 +164,12 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MIN_Y = ATTACHMENT_TYPES.registerInt("min_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MAX_Y = ATTACHMENT_TYPES.registerInt("max_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> DELAY = ATTACHMENT_TYPES.registerInt("delay", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Long>> LONG_AMOUNT = ATTACHMENT_TYPES.registerNonNegativeLong("long_amount", 0);
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FloatingLong>> MIN_THRESHOLD = ATTACHMENT_TYPES.registerFloatingLong("min_threshold", () -> FloatingLong.ZERO);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FloatingLong>> MAX_THRESHOLD = ATTACHMENT_TYPES.registerFloatingLong("max_threshold", MekanismConfig.storage.laserAmplifier);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UUID>> PERSONAL_STORAGE_ID = ATTACHMENT_TYPES.registerUUID("storage_id");
 

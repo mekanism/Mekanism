@@ -29,6 +29,22 @@
                 {
                   "source": "controlType",
                   "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "max",
+                  "target": "mekanism:max_threshold"
+                },
+                {
+                  "source": "min",
+                  "target": "mekanism:min_threshold"
+                },
+                {
+                  "source": "outputMode",
+                  "target": "mekanism:redstone_output"
+                },
+                {
+                  "source": "time",
+                  "target": "mekanism:delay"
                 }
               ],
               "source": "block_entity"

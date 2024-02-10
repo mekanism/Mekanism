@@ -1,4 +1,4 @@
-// 1.20.4	2024-02-09T15:11:34.0111926	Loot Tables
+// 1.20.4	2024-02-09T18:46:46.2396811	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 8ad582fa24f3cbdd3696b69f65155c1d450d14e5 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 f577694505915614508f04e448649aed2b2b1a69 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -114,7 +114,7 @@ d280ac21c58c4b5277e6e5963482b81d084d705f data/mekanism/loot_tables/blocks/induct
 6ff486acb21500cb3969281471078073d9b9e050 data/mekanism/loot_tables/blocks/industrial_alarm.json
 1bd8909cfd974973760f4db84279b382bfef6c33 data/mekanism/loot_tables/blocks/isotopic_centrifuge.json
 ac8c749139a88f16f2cedc0db95868f2b3611d8a data/mekanism/loot_tables/blocks/laser.json
-7a429340d7ff5d43412c8b9f77dd5eaf5020cce1 data/mekanism/loot_tables/blocks/laser_amplifier.json
+2b01deec8c7285b0d547bff83c96017677d024e0 data/mekanism/loot_tables/blocks/laser_amplifier.json
 c6a9162acef0b96d782673731b24ded6d409269b data/mekanism/loot_tables/blocks/laser_tractor_beam.json
 3deff265b88e591833bee438fbe99d447d41a565 data/mekanism/loot_tables/blocks/lead_ore.json
 b7635eb5c7e8ebd0d9ce528898b568d67a57f5f0 data/mekanism/loot_tables/blocks/logistical_sorter.json

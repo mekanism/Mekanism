@@ -688,10 +688,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    //TODO - 1.20.4: Remove overrides maybe and make this all be ISustainedData??
-    // And then copy the control type over via that instead? At the very least the laser amplifier override we probably want persisted
-    // when the block is broken so should be moved to sustained data
-    protected void addGeneralPersistentData(CompoundTag data) {
+    private void addGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
         }
@@ -700,7 +697,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    protected void loadGeneralPersistentData(CompoundTag data) {
+    private void loadGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
         }

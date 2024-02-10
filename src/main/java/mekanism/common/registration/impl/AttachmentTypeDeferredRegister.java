@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -7,6 +8,8 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.containers.AttachedContainers;
@@ -113,6 +116,27 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                       return Mth.clamp(tag.getAsLong(), min, max);
                   }
               }).comparator(Long::equals)
+              .build());
+    }
+
+    public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FloatingLong>> registerFloatingLong(String name, FloatingLongSupplier defaultValue) {
+        return register(name, () -> AttachmentType.builder(defaultValue)
+              .serialize(new IAttachmentSerializer<StringTag, FloatingLong>() {
+                  @Nullable
+                  @Override
+                  public StringTag write(FloatingLong value) {
+                      if (value.equals(defaultValue.get())) {
+                          //If it is the default or invalid value that was manually set then don't save it
+                          return null;
+                      }
+                      return StringTag.valueOf(value.toString());
+                  }
+
+                  @Override
+                  public FloatingLong read(IAttachmentHolder holder, StringTag tag) {
+                      return FloatingLong.parseFloatingLong(tag.getAsString());
+                  }
+              }).comparator(Objects::equals)
               .build());
     }
 

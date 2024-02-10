@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.TransporterUtils;
@@ -160,6 +161,10 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
                         if (source instanceof LongTag longTag) {
                             setLong(targetStack, longTag.getAsLong());
                         }
+                    } else if (data instanceof FloatingLong) {
+                        if (source instanceof StringTag stringTag) {
+                            setFloatingLong(targetStack, FloatingLong.parseFloatingLong(stringTag.getAsString()));
+                        }
                     } else if (data instanceof boolean[]) {
                         if (source instanceof ByteArrayTag byteArrayTag) {
                             setBooleanArray(targetStack, byteArrayTag.getAsByteArray());
@@ -217,6 +222,11 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
         @SuppressWarnings("unchecked")
         private void setLong(ItemStack stack, long value) {
             stack.setData((AttachmentType<Long>) target, value);
+        }
+
+        @SuppressWarnings("unchecked")
+        private void setFloatingLong(ItemStack stack, FloatingLong value) {
+            stack.setData((AttachmentType<FloatingLong>) target, value);
         }
 
         @SuppressWarnings("unchecked")
