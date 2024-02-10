@@ -87,9 +87,9 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
 import mekanism.common.item.block.ItemBlockLaserAmplifier;
+import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.ItemBlockRadioactiveWasteBarrel;
-import mekanism.common.item.block.ItemBlockResource;
 import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.block.machine.ItemBlockFactory;
@@ -241,12 +241,12 @@ public class MekanismBlocks {
         }
     }
 
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> BRONZE_BLOCK = registerResourceBlock(BlockResourceInfo.BRONZE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_OBSIDIAN_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_OBSIDIAN);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
+    public static final BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
 
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(MekanismBlockTypes.BASIC_BIN);
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(MekanismBlockTypes.ADVANCED_BIN);
@@ -816,12 +816,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
     public static final BlockRegistryObject<Block, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", Properties.of().strength(0.5F).sound(SoundType.SAND).instrument(NoteBlockInstrument.SNARE));
 
-    private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {
+    private static BlockRegistryObject<BlockResource, ItemBlockMekanism<BlockResource>> registerResourceBlock(BlockResourceInfo resource) {
         return BLOCKS.registerDefaultProperties("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), (block, properties) -> {
             if (!block.getResourceInfo().burnsInFire()) {
                 properties = properties.fireResistant();
             }
-            return new ItemBlockResource(block, properties);
+            return new ItemBlockMekanism<>(block, properties);
         });
     }
 

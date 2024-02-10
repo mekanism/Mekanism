@@ -1,0 +1,7 @@
+{
+  "values": {
+    "mekanism:block_charcoal": {
+      "burn_time": 16000
+    }
+  }
+}
