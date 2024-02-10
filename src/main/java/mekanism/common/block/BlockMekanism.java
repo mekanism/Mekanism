@@ -1,14 +1,9 @@
 package mekanism.common.block;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
-import mekanism.api.security.IItemSecurityUtils;
-import mekanism.api.security.IOwnerObject;
-import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -18,18 +13,15 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.content.filter.FilterManager;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
+import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
-import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -89,43 +81,9 @@ public abstract class BlockMekanism extends Block {
     @Override
     public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
         ItemStack stack = new ItemStack(this);
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tile == null) {
-            return stack;
-        }
-        //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
-        // the server doesn't bother syncing the data to the client. For example with what frequencies there are
-        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
-            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyFrom(tile.getFrequencyComponent());
-        }
-        if (tile.hasSecurity()) {
-            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
-            if (ownerObject != null) {
-                ownerObject.setOwnerUUID(tile.getOwnerUUID());
-                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-                if (securityObject != null) {
-                    securityObject.setSecurityMode(tile.getSecurityMode());
-                }
-            }
-        }
-        if (tile.supportsUpgrades()) {
-            stack.getData(MekanismAttachmentTypes.UPGRADES).copyFrom(tile.getComponent());
-        }
-        if (tile instanceof ISideConfiguration config) {
-            stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyFrom(config.getConfig());
-            stack.getData(MekanismAttachmentTypes.EJECTOR).copyFrom(config.getEjector());
-        }
-        if (tile instanceof ITileFilterHolder<?> filterHolder) {
-            FilterManager<?> filterManager = filterHolder.getFilterManager();
-            if (!filterManager.getFilters().isEmpty()) {
-                stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyFrom(filterManager);
-            }
-        }
-        tile.writeToStack(stack);
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (tile.handles(type)) {
-                type.copyTo(tile, stack);
-            }
+        TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
+        if (tile != null) {
+            tile.writeToStack(stack);
         }
         return stack;
     }
@@ -198,58 +156,18 @@ public abstract class BlockMekanism extends Block {
         if (hasBounding != null) {
             hasBounding.placeBoundingBlocks(world, pos, state);
         }
-        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tile == null) {
-            return;
-        }
-        if (tile.supportsRedstone()) {
-            tile.updatePower();
-        }
-        // Check if the stack has a custom name, and if the tile supports naming, name it
-        if (tile.isNameable() && stack.hasCustomHoverName()) {
-            tile.setCustomName(stack.getHoverName());
-        }
-
-        //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
-        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
-        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
-        if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
-            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyTo(tile.getFrequencyComponent());
-        }
-        if (tile.hasSecurity()) {
-            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-            if (security != null) {
-                tile.setSecurityMode(security.getSecurityMode());
-            }
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-            if (ownerUUID != null) {
-                tile.setOwnerUUID(ownerUUID);
-            } else if (placer != null) {
-                tile.setOwnerUUID(placer.getUUID());
+        TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
+        if (tile != null) {
+            tile.readFromStack(stack);
+            if (tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
+                //There was no stored owner that got set, use the placer's id
+                securityTile.setOwnerUUID(placer.getUUID());
                 if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
                     PacketUtils.sendToAll(new PacketSyncSecurity(placer.getUUID()));
                 }
             }
         }
-        if (tile.supportsUpgrades() && stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
-            //The read method validates that data is stored
-            stack.getData(MekanismAttachmentTypes.UPGRADES).copyTo(tile.getComponent());
-        }
-        if (tile instanceof ISideConfiguration config) {
-            //The read methods validate that data is stored
-            stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyTo(config.getConfig());
-            stack.getData(MekanismAttachmentTypes.EJECTOR).copyTo(config.getEjector());
-        }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (tile.handles(type)) {
-                type.copyFrom(stack, tile);
-            }
-        }
-        if (tile instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
-            stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyTo(filterHolder.getFilterManager());
-        }
-        tile.readFromStack(stack);
     }
 
     @Override

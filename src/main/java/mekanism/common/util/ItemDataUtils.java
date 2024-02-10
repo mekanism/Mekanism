@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 @Deprecated//TODO - 1.21??: Remove this
@@ -14,9 +13,7 @@ public final class ItemDataUtils {
     }
 
     public static Optional<CompoundTag> getMekData(ItemStack stack) {
-        return Optional.ofNullable(stack.getTag())
-              .filter(tag -> tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND))
-              .map(tag -> tag.getCompound(NBTConstants.MEK_DATA));
+        return Optional.ofNullable(stack.getTagElement(NBTConstants.MEK_DATA));
     }
 
     public static <T> Optional<T> getAndRemoveData(ItemStack stack, String key, BiFunction<CompoundTag, String, T> getter) {

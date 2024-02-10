@@ -18,6 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,6 +53,12 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
             syncableAttachmentTypes = HashBiMap.create();
         }
         syncableAttachmentTypes.put(holder.value(), holder.getId().toString());
+    }
+
+    public void readFromStack(ItemStack stack) {
+    }
+
+    public void writeToStack(ItemStack stack) {
     }
 
     /**

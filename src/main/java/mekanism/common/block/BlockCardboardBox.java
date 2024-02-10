@@ -14,17 +14,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
@@ -71,28 +67,6 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
             }
         }
         return false;
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
-        ItemStack itemStack = new ItemStack(this);
-        TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
-        if (tile != null && tile.hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
-            itemStack.setData(MekanismAttachmentTypes.BLOCK_DATA, tile.getData(MekanismAttachmentTypes.BLOCK_DATA));
-        }
-        return itemStack;
-    }
-
-    @Override
-    public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
-        super.setPlacedBy(world, pos, state, placer, stack);
-        if (stack.hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
-            TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
-            if (box != null) {
-                box.setData(MekanismAttachmentTypes.BLOCK_DATA, stack.getData(MekanismAttachmentTypes.BLOCK_DATA));
-            }
-        }
     }
 
     @Nullable

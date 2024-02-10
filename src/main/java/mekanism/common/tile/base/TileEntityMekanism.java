@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import mekanism.api.Action;
@@ -32,6 +33,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
+import mekanism.api.security.IOwnerObject;
+import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
@@ -68,6 +72,7 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.FactoryRegistry;
@@ -102,6 +107,7 @@ import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
@@ -714,15 +720,84 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return remap;
     }
 
+    @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        if (supportsRedstone()) {
+            updatePower();
+        }
+        // Check if the stack has a custom name, and if the tile supports naming, name it
+        if (isNameable() && stack.hasCustomHoverName()) {
+            setCustomName(stack.getHoverName());
+        }
+
+        //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
+        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
+        if (!isRemote() && getFrequencyComponent().hasCustomFrequencies()) {
+            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyTo(getFrequencyComponent());
+        }
+        if (hasSecurity()) {
+            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+            if (security != null) {
+                setSecurityMode(security.getSecurityMode());
+            }
+            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+            if (ownerUUID != null) {
+                setOwnerUUID(ownerUUID);
+            }
+        }
+        if (supportsUpgrades() && stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
+            //The read method validates that data is stored
+            stack.getData(MekanismAttachmentTypes.UPGRADES).copyTo(getComponent());
+        }
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+            if (handles(type)) {
+                type.copyFrom(stack, this);
+            }
+        }
+        if (this instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
+            stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyTo(filterHolder.getFilterManager());
+        }
         if (supportsRedstone()) {
             setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
         }
     }
 
+    @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
+        // the server doesn't bother syncing the data to the client. For example with what frequencies there are
+        if (getFrequencyComponent().hasCustomFrequencies()) {
+            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyFrom(getFrequencyComponent());
+        }
+        if (hasSecurity()) {
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
+            if (ownerObject != null) {
+                ownerObject.setOwnerUUID(getOwnerUUID());
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                if (securityObject != null) {
+                    securityObject.setSecurityMode(getSecurityMode());
+                }
+            }
+        }
+        if (supportsUpgrades()) {
+            stack.getData(MekanismAttachmentTypes.UPGRADES).copyFrom(getComponent());
+        }
+        if (this instanceof ITileFilterHolder<?> filterHolder) {
+            FilterManager<?> filterManager = filterHolder.getFilterManager();
+            if (!filterManager.getFilters().isEmpty()) {
+                stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyFrom(filterManager);
+            }
+        }
         if (supportsRedstone()) {
             stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, controlType);
+        }
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+            if (handles(type)) {
+                type.copyTo(this, stack);
+            }
         }
     }
 

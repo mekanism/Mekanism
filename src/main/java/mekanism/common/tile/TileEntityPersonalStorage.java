@@ -1,8 +1,10 @@
 package mekanism.common.tile;
 
+import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -103,5 +105,19 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
             PiglinAi.angerNearbyPiglins(player, true);
         }
         return result;
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        if (!isRemote()) {
+            PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(storageItemInventory -> {
+                List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots(null);
+                for (int i = 0; i < inventorySlots.size(); i++) {
+                    IInventorySlot itemSlot = inventorySlots.get(i);
+                    setStackInSlot(i, itemSlot.getStack().copy());
+                }
+            });
+        }
     }
 }
