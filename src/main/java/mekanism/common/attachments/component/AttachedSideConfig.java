@@ -1,4 +1,4 @@
-package mekanism.common.attachments;
+package mekanism.common.attachments.component;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -22,12 +22,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class AttachedSideConfig implements INBTSerializable<CompoundTag> {
+public final class AttachedSideConfig implements IAttachedComponent<TileComponentConfig> {
 
     public static AttachedSideConfig create(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
@@ -70,10 +69,12 @@ public final class AttachedSideConfig implements INBTSerializable<CompoundTag> {
         return this.configInfo.get(transmissionType);
     }
 
+    @Override
     public void copyFrom(TileComponentConfig component) {
         deserializeNBT(component.serialize());
     }
 
+    @Override
     public void copyTo(TileComponentConfig component) {
         CompoundTag configNBT = serializeNBT();
         if (configNBT != null) {

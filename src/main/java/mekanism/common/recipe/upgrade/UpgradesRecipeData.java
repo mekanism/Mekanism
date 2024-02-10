@@ -7,7 +7,7 @@ import java.util.Map;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.UpgradeAware;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;

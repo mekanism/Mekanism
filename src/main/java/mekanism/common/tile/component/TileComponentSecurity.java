@@ -14,7 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -73,25 +72,29 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_SECURITY, Tag.TAG_COMPOUND)) {
-            CompoundTag securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
-            NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
-            //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
-            // Or if it was cleared due to changing owner data as an item, the block place should update it properly
-            //TODO: If this ends up causing issues anywhere we may want to consider ensuring the frequency gets set if it is missing
-            NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        }
+    public String getComponentKey() {
+        return NBTConstants.COMPONENT_SECURITY;
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
+    public void deserialize(CompoundTag securityNBT) {
+        NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+        //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
+        // Or if it was cleared due to changing owner data as an item, the block place should update it properly
+        //TODO: If this ends up causing issues anywhere we may want to consider ensuring the frequency gets set if it is missing
+        NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+    }
+
+    @Override
+    public CompoundTag serialize() {
         CompoundTag securityNBT = new CompoundTag();
-        NBTUtils.writeEnum(securityNBT, NBTConstants.SECURITY_MODE, securityMode);
+        if (securityMode != SecurityMode.PUBLIC) {
+            NBTUtils.writeEnum(securityNBT, NBTConstants.SECURITY_MODE, securityMode);
+        }
         if (ownerUUID != null) {
             securityNBT.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
-        nbtTags.put(NBTConstants.COMPONENT_SECURITY, securityNBT);
+        return securityNBT;
     }
 
     @Override

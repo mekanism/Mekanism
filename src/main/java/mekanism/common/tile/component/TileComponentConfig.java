@@ -267,10 +267,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, this::deserialize);
+    public String getComponentKey() {
+        return NBTConstants.COMPONENT_CONFIG;
     }
 
+    @Override
     public void deserialize(CompoundTag configNBT) {
         read(configNBT, configInfo, (type, side) -> {
             if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
@@ -301,13 +302,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        CompoundTag configNBT = serialize();
-        if (!configNBT.isEmpty()) {
-            nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
-        }
-    }
-
     public CompoundTag serialize() {
         return write(configInfo, true);
     }
@@ -339,13 +333,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public void addToUpdateTag(CompoundTag updateTag) {
         CompoundTag configNBT = write(configInfo, false);
         if (!configNBT.isEmpty()) {
-            updateTag.put(NBTConstants.COMPONENT_CONFIG, configNBT);
+            updateTag.put(getComponentKey(), configNBT);
         }
     }
 
     @Override
     public void readFromUpdateTag(CompoundTag updateTag) {
-        NBTUtils.setCompoundIfPresent(updateTag, NBTConstants.COMPONENT_CONFIG, configNBT -> read(configNBT, configInfo));
+        NBTUtils.setCompoundIfPresent(updateTag, getComponentKey(), configNBT -> read(configNBT, configInfo));
     }
 
     @Override

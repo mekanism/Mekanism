@@ -10,7 +10,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
 import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.UpgradeAware;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;

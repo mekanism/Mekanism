@@ -8,7 +8,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.UpgradeAware;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UpgradeUtils;

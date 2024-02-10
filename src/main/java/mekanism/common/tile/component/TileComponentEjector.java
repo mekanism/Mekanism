@@ -285,10 +285,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_EJECTOR, this::deserialize);
+    public String getComponentKey() {
+        return NBTConstants.COMPONENT_EJECTOR;
     }
 
+    @Override
     public void deserialize(CompoundTag ejectorNBT) {
         deserialize(ejectorNBT, strict -> strictInput = strict, output -> outputColor = output, inputColors);
     }
@@ -303,13 +304,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        CompoundTag ejectorNBT = serialize();
-        if (!ejectorNBT.isEmpty()) {
-            nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
-        }
-    }
-
     public CompoundTag serialize() {
         return serialize(strictInput, inputColors, outputColor);
     }

@@ -9,7 +9,6 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.attachments.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -40,7 +39,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -121,7 +119,7 @@ public abstract class BlockMekanism extends Block {
             }
         }
         if (tile.supportsUpgrades()) {
-            stack.getData(MekanismAttachmentTypes.UPGRADES).deserializeNBT(tile.getComponent().writeUpgradeNbt());
+            stack.getData(MekanismAttachmentTypes.UPGRADES).copyFrom(tile.getComponent());
         }
         if (tile instanceof ISideConfiguration config) {
             stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyFrom(config.getConfig());
@@ -246,11 +244,7 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile.supportsUpgrades() && stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
             //The read method validates that data is stored
-            UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
-            CompoundTag upgradeNbt = upgradeAware.serializeNBT();
-            if (upgradeNbt != null) {
-                tile.getComponent().readUpgradeNbt(upgradeNbt);
-            }
+            stack.getData(MekanismAttachmentTypes.UPGRADES).copyTo(tile.getComponent());
         }
         if (tile instanceof ISideConfiguration config) {
             //The read methods validate that data is stored

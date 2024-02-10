@@ -177,11 +177,12 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_UPGRADE, this::readUpgradeNbt);
+    public String getComponentKey() {
+        return NBTConstants.COMPONENT_UPGRADE;
     }
 
-    public void readUpgradeNbt(CompoundTag upgradeNBT) {
+    @Override
+    public void deserialize(CompoundTag upgradeNBT) {
         upgrades.clear();
         upgrades.putAll(Upgrade.buildMap(upgradeNBT));
         for (Upgrade upgrade : getSupportedTypes()) {
@@ -191,7 +192,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         ContainerType.ITEM.readFrom(upgradeNBT, getSlots());
     }
 
-    public CompoundTag writeUpgradeNbt() {
+    @Override
+    public CompoundTag serialize() {
         CompoundTag upgradeNBT = new CompoundTag();
         if (!upgrades.isEmpty()) {
             Upgrade.saveMap(upgrades, upgradeNBT);
@@ -199,11 +201,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         //Save the inventory
         ContainerType.ITEM.saveTo(upgradeNBT, getSlots());
         return upgradeNBT;
-    }
-
-    @Override
-    public void write(CompoundTag nbtTags) {
-        nbtTags.put(NBTConstants.COMPONENT_UPGRADE, writeUpgradeNbt());
     }
 
     @Override

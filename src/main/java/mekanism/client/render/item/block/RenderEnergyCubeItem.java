@@ -8,7 +8,7 @@ import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
-import mekanism.common.attachments.AttachedSideConfig;
+import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;

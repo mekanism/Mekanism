@@ -42,7 +42,7 @@ public class CopyUpgradesLootFunction extends LootItemConditionalFunction {
     public ItemStack run(ItemStack stack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof IUpgradeTile tile) {
-            stack.getData(MekanismAttachmentTypes.UPGRADES).deserializeNBT(tile.getComponent().writeUpgradeNbt());
+            stack.getData(MekanismAttachmentTypes.UPGRADES).copyFrom(tile.getComponent());
         }
         return stack;
     }

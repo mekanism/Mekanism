@@ -33,7 +33,6 @@ public class SecurityObject extends OwnerObject implements ISecurityObject, INBT
     @Override
     public SecurityMode getSecurityMode() {
         return securityMode;
-        //return stack.isEmpty() ? SecurityMode.PUBLIC : SecurityMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.SECURITY_MODE));
     }
 
     @Override

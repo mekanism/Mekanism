@@ -45,7 +45,6 @@ public class CopySecurityLootFunction extends LootItemConditionalFunction {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof ISecurityTile tile) {
             TileComponentSecurity security = tile.getSecurity();
-            //TODO: Should we just save the entire security component?
             SecurityObject securityObject = stack.getData(MekanismAttachmentTypes.SECURITY);
             securityObject.setSecurityMode(security.getMode());
             securityObject.setOwnerUUID(security.getOwnerUUID());

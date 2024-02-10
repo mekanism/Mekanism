@@ -179,22 +179,24 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            CompoundTag frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
-                FrequencyType<?> type = entry.getKey();
-                if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-                    Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
-                    frequency.setValid(false);
-                    entry.getValue().setFrequency(frequency);
-                }
+    public String getComponentKey() {
+        return NBTConstants.COMPONENT_FREQUENCY;
+    }
+
+    @Override
+    public void deserialize(CompoundTag frequencyNBT) {
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+            FrequencyType<?> type = entry.getKey();
+            if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
+                Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
+                frequency.setValid(false);
+                entry.getValue().setFrequency(frequency);
             }
         }
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
+    public CompoundTag serialize() {
         CompoundTag frequencyNBT = new CompoundTag();
         for (FrequencyData frequencyData : supportedFrequencies.values()) {
             Frequency frequency = frequencyData.selectedFrequency;
@@ -208,12 +210,12 @@ public class TileComponentFrequency implements ITileComponent {
                 frequencyNBT.put(frequency.getType().getName(), frequencyTag);
             }
         }
-        nbtTags.put(NBTConstants.COMPONENT_FREQUENCY, frequencyNBT);
+        return frequencyNBT;
     }
 
     public void readConfiguredFrequencies(Player player, CompoundTag data) {
-        if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            CompoundTag frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+        if (hasCustomFrequencies() && data.contains(getComponentKey(), Tag.TAG_COMPOUND)) {
+            CompoundTag frequencyNBT = data.getCompound(getComponentKey());
             for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
                 FrequencyType<?> type = entry.getKey();
                 if (type != FrequencyType.SECURITY) {
@@ -249,7 +251,7 @@ public class TileComponentFrequency implements ITileComponent {
             }
         }
         if (!frequencyNBT.isEmpty()) {
-            data.put(NBTConstants.COMPONENT_FREQUENCY, frequencyNBT);
+            data.put(getComponentKey(), frequencyNBT);
         }
     }
 

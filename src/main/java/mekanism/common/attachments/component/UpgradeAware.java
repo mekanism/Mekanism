@@ -1,4 +1,4 @@
-package mekanism.common.attachments;
+package mekanism.common.attachments.component;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -13,17 +13,17 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class UpgradeAware implements INBTSerializable<CompoundTag>, IMekanismInventory {
+public class UpgradeAware implements IMekanismInventory, IAttachedComponent<TileComponentUpgrade> {
 
     public static UpgradeAware create(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
@@ -82,12 +82,16 @@ public class UpgradeAware implements INBTSerializable<CompoundTag>, IMekanismInv
     }
 
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return upgradeSlots;
+    public void copyFrom(TileComponentUpgrade component) {
+        deserializeNBT(component.serialize());
     }
 
     @Override
-    public void onContentsChanged() {
+    public void copyTo(TileComponentUpgrade component) {
+        CompoundTag configNBT = serializeNBT();
+        if (configNBT != null) {
+            component.deserialize(configNBT);
+        }
     }
 
     @Nullable
@@ -107,5 +111,14 @@ public class UpgradeAware implements INBTSerializable<CompoundTag>, IMekanismInv
         setUpgrades(Upgrade.buildMap(upgradeNBT));
         //Load the inventory
         ContainerType.ITEM.readFrom(upgradeNBT, upgradeSlots);
+    }
+
+    @Override
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        return upgradeSlots;
+    }
+
+    @Override
+    public void onContentsChanged() {
     }
 }

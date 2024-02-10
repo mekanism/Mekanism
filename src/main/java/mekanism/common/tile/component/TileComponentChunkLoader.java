@@ -182,6 +182,21 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
+    public String getComponentKey() {
+        //Unused
+        return "componentChunkLoader";
+    }
+
+    @Override
+    public void deserialize(CompoundTag componentTag) {
+    }
+
+    @Override
+    public CompoundTag serialize() {
+        return new CompoundTag();
+    }
+
+    @Override
     public void read(CompoundTag nbtTags) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
@@ -201,7 +216,9 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     @Override
     public void write(CompoundTag nbtTags) {
-        nbtTags.putLongArray(NBTConstants.CHUNK_SET, chunkSet.toLongArray());
+        if (!chunkSet.isEmpty()) {
+            nbtTags.putLongArray(NBTConstants.CHUNK_SET, chunkSet.toLongArray());
+        }
     }
 
     @Override
