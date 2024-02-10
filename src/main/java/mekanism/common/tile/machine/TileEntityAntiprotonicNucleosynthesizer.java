@@ -44,7 +44,6 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.recipe.lookup.monitor.NucleosynthesizerRecipeCacheLookupMonitor;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
@@ -89,7 +88,6 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

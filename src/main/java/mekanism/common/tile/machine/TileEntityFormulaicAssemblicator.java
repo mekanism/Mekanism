@@ -47,7 +47,6 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -112,7 +111,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {

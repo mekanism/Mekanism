@@ -6,6 +6,7 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
+import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -13,6 +14,7 @@ import mekanism.common.block.attribute.AttributeUpgradeable;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.math.Pos3D;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -61,6 +63,11 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
             // assign the value here, and then return the builder itself as it is the same object
             builder.withComputerSupport(tier, type.getRegistryNameComponentCapitalized() + "Factory");
             builder.withCustomShape(BlockShapes.getShape(tier, type));
+            builder.with(switch (type) {
+                case SMELTING, ENRICHING, CRUSHING, COMBINING, SAWING -> AttributeSideConfig.ELECTRIC_MACHINE;
+                case COMPRESSING, INJECTING, PURIFYING -> AttributeSideConfig.ADVANCED_ELECTRIC_MACHINE;
+                case INFUSING -> AttributeSideConfig.create(TransmissionType.ITEM, TransmissionType.INFUSION, TransmissionType.ENERGY);
+            });
             builder.replace(new AttributeParticleFX().addDense(ParticleTypes.SMOKE, 5, rand -> new Pos3D(
                   rand.nextFloat() * 0.7F - 0.3F,
                   rand.nextFloat() * 0.1F + 0.7F,

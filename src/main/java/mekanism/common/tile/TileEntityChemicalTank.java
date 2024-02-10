@@ -50,7 +50,6 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
@@ -82,8 +81,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY,
-              TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), RelativeSide.FRONT).setEjecting(true);
         configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT).setEjecting(true);

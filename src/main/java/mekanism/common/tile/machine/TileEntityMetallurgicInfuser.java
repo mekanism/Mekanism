@@ -40,7 +40,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
@@ -85,7 +84,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     public TileEntityMetallurgicInfuser(BlockPos pos, BlockState state) {
         super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, TRACKED_ERROR_TYPES, 200);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.INFUSION);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, infusionSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);

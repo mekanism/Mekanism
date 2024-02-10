@@ -65,7 +65,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,10 +103,9 @@ public abstract class BlockMekanism extends Block {
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = stack.getItem();
-        Lazy<CompoundTag> lazyDataMap = Lazy.of(() -> ItemDataUtils.getDataMap(stack));
         Set<FrequencyType<?>> customFrequencies = tile.getFrequencyComponent().getCustomFrequencies();
         if (!customFrequencies.isEmpty()) {
-            tile.getFrequencyComponent().write(lazyDataMap.get());
+            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(stack));
             if (item instanceof IFrequencyItem frequencyItem && customFrequencies.contains(frequencyItem.getFrequencyType())) {
                 stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).copyFromComponent(tile.getFrequencyComponent());
             }
@@ -126,9 +124,8 @@ public abstract class BlockMekanism extends Block {
             stack.getData(MekanismAttachmentTypes.UPGRADES).deserializeNBT(tile.getComponent().writeUpgradeNbt());
         }
         if (tile instanceof ISideConfiguration config) {
-            CompoundTag dataMap = lazyDataMap.get();
-            config.getConfig().write(dataMap);
-            config.getEjector().write(dataMap);
+            stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyFrom(config.getConfig());
+            stack.getData(MekanismAttachmentTypes.EJECTOR).copyFrom(config.getEjector());
         }
         if (tile instanceof ITileFilterHolder<?> filterHolder) {
             FilterManager<?> filterManager = filterHolder.getFilterManager();
@@ -225,17 +222,11 @@ public abstract class BlockMekanism extends Block {
             tile.setCustomName(stack.getHoverName());
         }
 
-        //Handle item
-        Item item = stack.getItem();
-        //Don't bother modifying the stack even though it doesn't matter as it is going away but return an empty compound
-        // the same as we would normally do if we had to add the data map
-        CompoundTag dataMap = ItemDataUtils.getMekData(stack).orElseGet(CompoundTag::new);
-
         //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
-            tile.getFrequencyComponent().read(dataMap);
+            ItemDataUtils.getMekData(stack).ifPresent(tile.getFrequencyComponent()::read);
         }
         if (tile.hasSecurity()) {
             ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
@@ -263,8 +254,8 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile instanceof ISideConfiguration config) {
             //The read methods validate that data is stored
-            config.getConfig().read(dataMap);
-            config.getEjector().read(dataMap);
+            stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyTo(config.getConfig());
+            stack.getData(MekanismAttachmentTypes.EJECTOR).copyTo(config.getEjector());
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (tile.handles(type)) {

@@ -1,5 +1,6 @@
 package mekanism.common.tile.component;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
@@ -57,7 +59,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
-    private final EnumColor[] inputColors = new EnumColor[6];
+    private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
@@ -284,29 +286,50 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_EJECTOR, ejectorNBT -> {
-            strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
-            NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor, color -> outputColor = color);
-            //Input colors
-            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-                int index = i;
-                NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, TransporterUtils::readColor, color -> inputColors[index] = color);
-            }
-        });
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_EJECTOR, this::deserialize);
+    }
+
+    public void deserialize(CompoundTag ejectorNBT) {
+        deserialize(ejectorNBT, strict -> strictInput = strict, output -> outputColor = output, inputColors);
+    }
+
+    public static void deserialize(CompoundTag ejectorNBT, BooleanConsumer strictInputSetter, Consumer<EnumColor> outputColorSetter, EnumColor[] inputColors) {
+        strictInputSetter.accept(ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT));
+        outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor));
+        //Input colors
+        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+            inputColors[i] = NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR + i, TransporterUtils::readColor);
+        }
     }
 
     @Override
     public void write(CompoundTag nbtTags) {
+        CompoundTag ejectorNBT = serialize();
+        if (!ejectorNBT.isEmpty()) {
+            nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
+        }
+    }
+
+    public CompoundTag serialize() {
+        return serialize(strictInput, inputColors, outputColor);
+    }
+
+    public static CompoundTag serialize(boolean strictInput, EnumColor[] inputColors, @Nullable EnumColor outputColor) {
         CompoundTag ejectorNBT = new CompoundTag();
-        ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, strictInput);
+        if (strictInput) {
+            ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, true);
+        }
         if (outputColor != null) {
             ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
         }
         //Input colors
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColors[i]));
+        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+            EnumColor inputColor = inputColors[i];
+            if (inputColor != null) {
+                ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColor));
+            }
         }
-        nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
+        return ejectorNBT;
     }
 
     @Override
@@ -314,7 +337,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
         list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
             int idx = i;
             list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(inputColors[idx]), index -> inputColors[idx] = TransporterUtils.readColor(index)));
         }

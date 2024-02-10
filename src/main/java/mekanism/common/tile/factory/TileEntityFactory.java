@@ -49,7 +49,6 @@ import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -116,8 +115,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         super(blockProvider, pos, state);
-        type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+        type = Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
 

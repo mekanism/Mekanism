@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Deprecated//TODO - 1.20.4: Remove the need for as much of this as possible by rewriting usages of it into attachments
 public final class ItemDataUtils {
@@ -25,12 +24,6 @@ public final class ItemDataUtils {
         tag.put(NBTConstants.MEK_DATA, dataMap);
         return dataMap;
     }
-
-    @Nullable
-    public static CompoundTag getDataMapIfPresent(ItemStack stack) {
-        return getMekData(stack).orElse(null);
-    }
-
 
     public static Optional<CompoundTag> getMekData(ItemStack stack) {
         return Optional.ofNullable(stack.getTag())

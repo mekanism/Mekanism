@@ -39,7 +39,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
@@ -81,7 +80,6 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     public TileEntityPaintingMachine(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PAINTING_MACHINE, pos, state, TRACKED_ERROR_TYPES, 200);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, pigmentInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.PIGMENT, pigmentTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

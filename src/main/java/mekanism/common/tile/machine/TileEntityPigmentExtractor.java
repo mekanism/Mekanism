@@ -40,7 +40,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
@@ -78,7 +77,6 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, 100);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.PIGMENT, pigmentTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

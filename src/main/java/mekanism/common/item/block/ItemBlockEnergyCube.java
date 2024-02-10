@@ -2,8 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.NBTConstants;
-import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
@@ -14,14 +12,13 @@ import mekanism.common.capabilities.energy.item.EnergyCubeRateLimitEnergyContain
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -92,14 +89,11 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     private ItemStack withEnergyCubeSideConfig(DataType dataType) {
-        CompoundTag sideConfig = new CompoundTag();
-        for (RelativeSide side : EnumUtils.SIDES) {
-            NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), dataType);
-        }
-        CompoundTag configNBT = new CompoundTag();
-        configNBT.put(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal(), sideConfig);
         ItemStack stack = new ItemStack(this);
-        ItemDataUtils.getDataMap(stack).put(NBTConstants.COMPONENT_CONFIG, configNBT);
+        IPersistentConfigInfo config = stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).getConfig(TransmissionType.ENERGY);
+        if (config != null) {
+            config.setDataType(dataType, EnumUtils.SIDES);
+        }
         return stack;
     }
 

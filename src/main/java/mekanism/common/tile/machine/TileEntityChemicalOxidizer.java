@@ -39,7 +39,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
@@ -76,7 +75,6 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     public TileEntityChemicalOxidizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_OXIDIZER, pos, state, TRACKED_ERROR_TYPES, 100);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

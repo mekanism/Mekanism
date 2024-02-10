@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -29,6 +30,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.tile.component.config.slot.BaseSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.InfusionSlotInfo;
@@ -55,10 +57,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     //TODO: See if we can come up with a way of not needing this. The issue is we want this to be sorted, but getting the keySet of configInfo doesn't work for us
     private final List<TransmissionType> transmissionTypes = new ArrayList<>();
 
-    public TileComponentConfig(TileEntityMekanism tile, TransmissionType... types) {
+    public TileComponentConfig(TileEntityMekanism tile, Set<TransmissionType> types) {
         this.tile = tile;
         for (TransmissionType type : types) {
-            addSupported(type);
+            configInfo.put(type, new ConfigInfo(tile::getDirection));
+            transmissionTypes.add(type);
         }
         tile.addComponent(this);
     }
@@ -101,13 +104,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     @ComputerMethod(nameOverride = "getConfigurableTypes")
     public List<TransmissionType> getTransmissions() {
         return transmissionTypes;
-    }
-
-    public void addSupported(TransmissionType type) {
-        if (!configInfo.containsKey(type)) {
-            configInfo.put(type, new ConfigInfo(tile::getDirection));
-            transmissionTypes.add(type);
-        }
     }
 
     public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
@@ -272,40 +268,65 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @Override
     public void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, configNBT -> {
-            configInfo.forEach((type, info) -> {
-                NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
-                NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
-                    for (RelativeSide side : EnumUtils.SIDES) {
-                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
-                            if (info.getDataType(side) != dataType) {
-                                info.setDataType(dataType, side);
-                                if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
-                                    Direction direction = side.getDirection(tile.getDirection());
-                                    sideChangedBasic(type, direction);
-                                }
-                            }
-                        });
-                    }
-                });
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, this::deserialize);
+    }
+
+    public void deserialize(CompoundTag configNBT) {
+        read(configNBT, configInfo, (type, side) -> {
+            if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
+                Direction direction = side.getDirection(tile.getDirection());
+                sideChangedBasic(type, direction);
+            }
+        });
+    }
+
+    public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo) {
+        read(configNBT, configInfo, (type, side) -> {
+        });
+    }
+
+    public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
+        configInfo.forEach((type, info) -> {
+            NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
+            NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
+                for (RelativeSide side : EnumUtils.SIDES) {
+                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
+                        if (info.setDataType(dataType, side)) {
+                            onChange.accept(type, side);
+                        }
+                    });
+                }
             });
         });
     }
 
     @Override
     public void write(CompoundTag nbtTags) {
+        CompoundTag configNBT = serialize();
+        if (!configNBT.isEmpty()) {
+            nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
+        }
+    }
+
+    public CompoundTag serialize() {
+        return write(configInfo, true);
+    }
+
+    public static CompoundTag write(Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
         CompoundTag configNBT = new CompoundTag();
-        for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
+        for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
-            ConfigInfo info = entry.getValue();
-            configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
+            IPersistentConfigInfo info = entry.getValue();
+            if (full) {
+                configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
+            }
             CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
                 NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
             }
             configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
         }
-        nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
+        return configNBT;
     }
 
     /**
@@ -316,32 +337,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
      */
     @Override
     public void addToUpdateTag(CompoundTag updateTag) {
-        CompoundTag configNBT = new CompoundTag();
-        for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
-            TransmissionType type = entry.getKey();
-            ConfigInfo info = entry.getValue();
-            CompoundTag sideConfig = new CompoundTag();
-            for (RelativeSide side : EnumUtils.SIDES) {
-                NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
-            }
-            configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
+        CompoundTag configNBT = write(configInfo, false);
+        if (!configNBT.isEmpty()) {
+            updateTag.put(NBTConstants.COMPONENT_CONFIG, configNBT);
         }
-        updateTag.put(NBTConstants.COMPONENT_CONFIG, configNBT);
     }
 
     @Override
     public void readFromUpdateTag(CompoundTag updateTag) {
-        NBTUtils.setCompoundIfPresent(updateTag, NBTConstants.COMPONENT_CONFIG, configNBT -> {
-            for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
-                TransmissionType type = entry.getKey();
-                ConfigInfo info = entry.getValue();
-                NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
-                    for (RelativeSide side : EnumUtils.SIDES) {
-                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
-                    }
-                });
-            }
-        });
+        NBTUtils.setCompoundIfPresent(updateTag, NBTConstants.COMPONENT_CONFIG, configNBT -> read(configNBT, configInfo));
     }
 
     @Override

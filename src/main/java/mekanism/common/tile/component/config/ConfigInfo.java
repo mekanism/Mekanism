@@ -23,7 +23,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConfigInfo {
+public class ConfigInfo implements IPersistentConfigInfo {
 
     private final Supplier<Direction> facingSupplier;
     //TODO: Ejecting/can eject, how do we want to use these
@@ -56,10 +56,12 @@ public class ConfigInfo {
         this.canEject = canEject;
     }
 
+    @Override
     public boolean isEjecting() {
         return ejecting;
     }
 
+    @Override
     public void setEjecting(boolean ejecting) {
         this.ejecting = ejecting;
     }
@@ -82,16 +84,14 @@ public class ConfigInfo {
     }
 
     @NotNull
+    @Override
     public DataType getDataType(@NotNull RelativeSide side) {
         return sideConfig.get(side);
     }
 
-    public void setDataType(@NotNull DataType dataType, @NotNull RelativeSide... sides) {
-        for (RelativeSide side : sides) {
-            if (isSideEnabled(side)) {
-                sideConfig.put(side, dataType);
-            }
-        }
+    @Override
+    public boolean setDataType(@NotNull DataType dataType, @NotNull RelativeSide side) {
+        return isSideEnabled(side) && sideConfig.put(side, dataType) != dataType;
     }
 
     @NotNull

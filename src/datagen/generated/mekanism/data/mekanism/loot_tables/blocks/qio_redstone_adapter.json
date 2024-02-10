@@ -13,6 +13,17 @@
           "type": "minecraft:item",
           "functions": [
             {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "componentFrequency",
+                  "target": "mekData.componentFrequency"
+                }
+              ],
+              "source": "block_entity"
+            },
+            {
               "type": "QIO",
               "function": "mekanism:copy_custom_frequency"
             },
@@ -41,17 +52,6 @@
                 {
                   "source": "singleItem",
                   "target": "mekanism:item_target"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "componentFrequency",
-                  "target": "mekData.componentFrequency"
                 }
               ],
               "source": "block_entity"

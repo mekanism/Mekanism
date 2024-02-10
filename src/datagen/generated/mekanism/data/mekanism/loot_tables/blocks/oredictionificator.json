@@ -11,6 +11,9 @@
               "function": "mekanism:copy_security"
             },
             {
+              "function": "mekanism:copy_side_config"
+            },
+            {
               "function": "mekanism:copy_filters"
             },
             {
@@ -27,22 +30,6 @@
                 {
                   "source": "controlType",
                   "target": "mekanism:redstone_control"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "componentConfig",
-                  "target": "mekData.componentConfig"
-                },
-                {
-                  "op": "replace",
-                  "source": "componentEjector",
-                  "target": "mekData.componentEjector"
                 }
               ],
               "source": "block_entity"

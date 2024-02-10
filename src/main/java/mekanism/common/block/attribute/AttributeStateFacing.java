@@ -89,7 +89,7 @@ public class AttributeStateFacing implements AttributeState {
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
         AttributeStateFacing newStateFacingAttribute = Attribute.get(newState, AttributeStateFacing.class);
         if (newStateFacingAttribute != null) {
-            DirectionProperty oldFacingProperty = Attribute.get(oldState, AttributeStateFacing.class).getFacingProperty();
+            DirectionProperty oldFacingProperty = Attribute.getOrThrow(oldState, AttributeStateFacing.class).getFacingProperty();
             newState = newState.setValue(newStateFacingAttribute.getFacingProperty(), oldState.getValue(oldFacingProperty));
         }
         return newState;

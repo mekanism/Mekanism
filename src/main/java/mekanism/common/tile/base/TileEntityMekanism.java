@@ -285,7 +285,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
-        soundEvent = hasSound() ? Attribute.get(block, AttributeSound.class).getSoundEvent() : null;
+        soundEvent = hasSound() ? Attribute.getOrThrow(block, AttributeSound.class).getSoundEvent() : null;
     }
 
     private void setSupportedTypes(Block block) {
@@ -301,7 +301,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
         hasChunkloader = this instanceof IChunkLoader;
-        nameable = hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
+        nameable = hasGui() && !Attribute.getOrThrow(getBlockType(), AttributeGui.class).hasCustomName();
     }
 
     /**
@@ -496,7 +496,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return WrenchResult.DISMANTLED;
             }
             //Special ITileDirectional handling
-            if (isDirectional() && Attribute.get(getBlockType(), AttributeStateFacing.class).canRotate()) {
+            if (isDirectional() && Attribute.getOrThrow(getBlockType(), AttributeStateFacing.class).canRotate()) {
                 setFacing(getDirection().getClockWise());
             }
             return WrenchResult.SUCCESS;
@@ -523,7 +523,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return InteractionResult.PASS;
             }
 
-            player.openMenu(Attribute.get(getBlockType(), AttributeGui.class).getProvider(this, true), worldPosition);
+            player.openMenu(Attribute.getOrThrow(getBlockType(), AttributeGui.class).getProvider(this, true), worldPosition);
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
@@ -953,7 +953,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).supportedUpgrades();
+            return Attribute.getOrThrow(getBlockType(), AttributeUpgradeSupport.class).supportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -1260,7 +1260,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public String getComputerName() {
         if (hasComputerSupport()) {
-            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name();
+            return Attribute.getOrThrow(getBlockType(), AttributeComputerIntegration.class).name();
         }
         return "";
     }

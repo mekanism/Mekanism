@@ -86,7 +86,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
-        configComponent.addSupported(TransmissionType.GAS);
         if (allowExtractingChemical()) {
             configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT).setCanEject(false);
         } else {
@@ -196,7 +195,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private boolean allowExtractingChemical() {
         //Note: We can't use type directly as when this is being used for creating the chemical tank the type field hasn't been set yet
-        return Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.COMPRESSING;
+        return Attribute.getOrThrow(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.COMPRESSING;
     }
 
     private boolean useStatisticalMechanics() {

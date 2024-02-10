@@ -14,6 +14,8 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.AttachedEjector;
+import mekanism.common.attachments.AttachedSideConfig;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.ColoredItem;
 import mekanism.common.attachments.DriveMetadata;
@@ -189,6 +191,14 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<SecurityObject>> SECURITY = ATTACHMENT_TYPES.register("security",
           () -> AttachmentType.serializable(SecurityObject::new)
                 .comparator(SecurityObject::isCompatible)
+                .build());
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEjector>> EJECTOR = ATTACHMENT_TYPES.register("ejector",
+          () -> AttachmentType.serializable(AttachedEjector::new)
+                .comparator(AttachedEjector::isCompatible)
+                .build());
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedSideConfig>> SIDE_CONFIG = ATTACHMENT_TYPES.register("side_config",
+          () -> AttachmentType.serializable(AttachedSideConfig::create)
+                .comparator(AttachedSideConfig::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ColoredItem>> COLORABLE = ATTACHMENT_TYPES.register("colorable",

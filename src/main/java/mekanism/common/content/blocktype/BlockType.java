@@ -11,10 +11,12 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeMultiblock;
+import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.ITypeBlock;
+import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -123,6 +125,10 @@ public class BlockType {
         public final T without(Class<? extends Attribute>... attrs) {
             holder.remove(attrs);
             return self();
+        }
+
+        public final T withSideConfig(TransmissionType... types) {
+            return with(AttributeSideConfig.create(types));
         }
 
         public T withCustomShape(VoxelShape[] shape) {

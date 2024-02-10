@@ -9,6 +9,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -37,13 +38,24 @@ public interface Attribute {
     }
 
     @Nullable
-    static <ATTRIBUTE extends Attribute> ATTRIBUTE get(IBlockProvider blockProvider, Class<ATTRIBUTE> type) {
-        return get(blockProvider.getBlock(), type);
-    }
-
-    @Nullable
     static <ATTRIBUTE extends Attribute> ATTRIBUTE get(Block block, Class<ATTRIBUTE> type) {
         return block instanceof ITypeBlock typeBlock ? typeBlock.getType().get(type) : null;
+    }
+
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(BlockState state, Class<ATTRIBUTE> type) {
+        return getOrThrow(state.getBlock(), type);
+    }
+
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(IBlockProvider blockProvider, Class<ATTRIBUTE> type) {
+        return getOrThrow(blockProvider.getBlock(), type);
+    }
+
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Block block, Class<ATTRIBUTE> type) {
+        ATTRIBUTE attribute = get(block, type);
+        if (attribute == null) {
+            throw new IllegalStateException("Expected " + RegistryUtils.getName(block) + " to have an attribute of type " + type.getSimpleName());
+        }
+        return attribute;
     }
 
     static Collection<Attribute> getAll(Block block) {

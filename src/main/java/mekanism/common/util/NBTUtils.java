@@ -34,6 +34,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
 public class NBTUtils {
@@ -267,6 +268,15 @@ public class NBTUtils {
         setResourceLocationIfPresentElse(nbt, key, rl -> setter.accept(ResourceKey.create(registryName, rl)), notPresent);
     }
 
+    @Nullable
+    public static <ENUM extends Enum<ENUM>> ENUM getEnum(CompoundTag nbt, String key, Int2ObjectFunction<ENUM> indexLookup) {
+        if (nbt.contains(key, Tag.TAG_INT)) {
+            return indexLookup.apply(nbt.getInt(key));
+        }
+        return null;
+    }
+
+    //TODO - 1.20.4: Replace some usages of this with getEnum
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundTag nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, Tag.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));

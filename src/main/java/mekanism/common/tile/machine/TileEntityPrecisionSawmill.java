@@ -32,7 +32,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
@@ -70,7 +69,6 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     public TileEntityPrecisionSawmill(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PRECISION_SAWMILL, pos, state, TRACKED_ERROR_TYPES, 200);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Collections.singletonList(inputSlot), List.of(outputSlot, secondaryOutputSlot), energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
