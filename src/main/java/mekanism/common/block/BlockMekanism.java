@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.radiation.IRadiationManager;
@@ -20,8 +19,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.filter.FilterManager;
-import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.PacketUtils;
@@ -34,7 +31,6 @@ import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -44,7 +40,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -100,13 +95,8 @@ public abstract class BlockMekanism extends Block {
         }
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
-        Item item = stack.getItem();
-        Set<FrequencyType<?>> customFrequencies = tile.getFrequencyComponent().getCustomFrequencies();
-        if (!customFrequencies.isEmpty()) {
-            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(stack));
-            if (item instanceof IFrequencyItem frequencyItem && customFrequencies.contains(frequencyItem.getFrequencyType())) {
-                stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).copyFromComponent(tile.getFrequencyComponent());
-            }
+        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
+            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyFrom(tile.getFrequencyComponent());
         }
         if (tile.hasSecurity()) {
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
@@ -224,7 +214,7 @@ public abstract class BlockMekanism extends Block {
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
-            ItemDataUtils.getMekData(stack).ifPresent(tile.getFrequencyComponent()::read);
+            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyTo(tile.getFrequencyComponent());
         }
         if (tile.hasSecurity()) {
             ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);

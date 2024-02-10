@@ -69,19 +69,6 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
         return this.configInfo.get(transmissionType);
     }
 
-    @Override
-    public void copyFrom(TileComponentConfig component) {
-        deserializeNBT(component.serialize());
-    }
-
-    @Override
-    public void copyTo(TileComponentConfig component) {
-        CompoundTag configNBT = serializeNBT();
-        if (configNBT != null) {
-            component.deserialize(configNBT);
-        }
-    }
-
     @Nullable
     @Override
     public CompoundTag serializeNBT() {

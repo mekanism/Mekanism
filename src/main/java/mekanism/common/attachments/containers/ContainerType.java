@@ -232,7 +232,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     @Deprecated//TODO - 1.21?: Remove all usages of this
-    public boolean hasLegacyData(ItemStack stack) {
+    private boolean hasLegacyData(ItemStack stack) {
         return !stack.isEmpty() && ItemDataUtils.getMekData(stack).filter(mekData -> mekData.contains(containerTag, Tag.TAG_LIST)).isPresent();
     }
 

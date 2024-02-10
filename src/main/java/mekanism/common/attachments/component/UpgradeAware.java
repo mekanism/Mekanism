@@ -81,19 +81,6 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
         return true;
     }
 
-    @Override
-    public void copyFrom(TileComponentUpgrade component) {
-        deserializeNBT(component.serialize());
-    }
-
-    @Override
-    public void copyTo(TileComponentUpgrade component) {
-        CompoundTag configNBT = serializeNBT();
-        if (configNBT != null) {
-            component.deserialize(configNBT);
-        }
-    }
-
     @Nullable
     @Override
     public CompoundTag serializeNBT() {

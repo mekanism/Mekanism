@@ -16,7 +16,7 @@ public class MekanismLootFunctions {
 
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_ATTACHMENTS = REGISTER.registerCodec("copy_attachments", () -> CopyAttachmentsLootFunction.CODEC);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_CONTAINERS = REGISTER.registerCodec("copy_containers", () -> CopyContainersLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_CUSTOM_FREQUENCY = REGISTER.registerCodec("copy_custom_frequency", () -> CopyCustomFrequencyLootFunction.CODEC);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FREQUENCIES = REGISTER.registerCodec("copy_frequencies", () -> CopyFrequencyLootFunction.CODEC);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FILTERS = REGISTER.registerCodec("copy_filters", () -> CopyFiltersLootFunction.CODEC);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SECURITY = REGISTER.registerCodec("copy_security", () -> CopySecurityLootFunction.CODEC);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SIDE_CONFIG = REGISTER.registerCodec("copy_side_config", () -> CopySideConfigLootFunction.CODEC);

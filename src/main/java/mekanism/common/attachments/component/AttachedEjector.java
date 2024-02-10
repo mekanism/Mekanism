@@ -38,19 +38,6 @@ public final class AttachedEjector implements IAttachedComponent<TileComponentEj
         return strictInput == other.strictInput && outputColor == other.outputColor && Arrays.equals(inputColors, other.inputColors);
     }
 
-    @Override
-    public void copyFrom(TileComponentEjector component) {
-        deserializeNBT(component.serialize());
-    }
-
-    @Override
-    public void copyTo(TileComponentEjector component) {
-        CompoundTag configNBT = serializeNBT();
-        if (configNBT != null) {
-            component.deserialize(configNBT);
-        }
-    }
-
     @Nullable
     @Override
     public CompoundTag serializeNBT() {

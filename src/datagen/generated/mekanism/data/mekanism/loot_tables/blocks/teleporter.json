@@ -8,19 +8,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_nbt",
-              "ops": [
-                {
-                  "op": "replace",
-                  "source": "componentFrequency",
-                  "target": "mekData.componentFrequency"
-                }
-              ],
-              "source": "block_entity"
-            },
-            {
-              "type": "Teleporter",
-              "function": "mekanism:copy_custom_frequency"
+              "function": "mekanism:copy_frequencies"
             },
             {
               "function": "mekanism:copy_security"

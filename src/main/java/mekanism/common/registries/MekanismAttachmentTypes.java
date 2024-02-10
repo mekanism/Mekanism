@@ -15,6 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
+import mekanism.common.attachments.component.AttachedFrequencyComponent;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.ColoredItem;
@@ -334,6 +335,10 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> FREQUENCY_AWARE = ATTACHMENT_TYPES.registerFrequencyAware("frequency_aware", FrequencyAware::create);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedFrequencyComponent>> FREQUENCY_COMPONENT = ATTACHMENT_TYPES.register("frequencies",
+          () -> AttachmentType.serializable(AttachedFrequencyComponent::new)
+                .comparator(AttachedFrequencyComponent::isCompatible)
+                .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UpgradeAware>> UPGRADES = ATTACHMENT_TYPES.register("upgrades",
           () -> AttachmentType.serializable(UpgradeAware::create)

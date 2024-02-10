@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IBlockProvider;
@@ -24,7 +23,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.loot.CopyAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyContainersLootFunction;
-import mekanism.common.item.loot.CopyCustomFrequencyLootFunction;
+import mekanism.common.item.loot.CopyFrequencyLootFunction;
 import mekanism.common.item.loot.CopyFiltersLootFunction;
 import mekanism.common.item.loot.CopySecurityLootFunction;
 import mekanism.common.item.loot.CopySideConfigLootFunction;
@@ -63,7 +62,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
-import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -184,14 +182,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (tile instanceof IFrequencyHandler frequencyHandler) {
                 Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
                 if (!customFrequencies.isEmpty()) {
-                    CopyNbtFunction.Builder nbtBuilder = CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY);
-                    nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
-                    itemLootPool.apply(nbtBuilder);
+                    itemLootPool.apply(CopyFrequencyLootFunction.builder());
                     if (stack.getItem() instanceof IFrequencyItem frequencyItem) {
                         FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
-                        if (customFrequencies.contains(frequencyType)) {
-                            itemLootPool.apply(CopyCustomFrequencyLootFunction.builder(frequencyType));
-                        } else {
+                        if (!customFrequencies.contains(frequencyType)) {
                             Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), RegistryUtils.getName(block));
                         }
                     }

@@ -6,23 +6,11 @@ import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-@Deprecated//TODO - 1.20.4: Remove the need for as much of this as possible by rewriting usages of it into attachments
+@Deprecated//TODO - 1.21??: Remove this
 public final class ItemDataUtils {
 
     private ItemDataUtils() {
-    }
-
-    @NotNull
-    public static CompoundTag getDataMap(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {
-            return tag.getCompound(NBTConstants.MEK_DATA);
-        }
-        CompoundTag dataMap = new CompoundTag();
-        tag.put(NBTConstants.MEK_DATA, dataMap);
-        return dataMap;
     }
 
     public static Optional<CompoundTag> getMekData(ItemStack stack) {

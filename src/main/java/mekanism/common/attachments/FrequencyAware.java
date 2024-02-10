@@ -92,7 +92,7 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
         }
     }
 
-    public void copyFromComponent(TileComponentFrequency component) {
+    public void copyFrom(TileComponentFrequency component) {
         setFrequency(component.getFrequency(frequencyType));
     }
 
