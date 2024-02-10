@@ -19,7 +19,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
 
     public static PortableQIODashboardInventory create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && !stack.isEmpty()) {
-            if (stack.is(MekanismItems.PORTABLE_QIO_DASHBOARD.asItem()) || stack.is(MekanismBlocks.QIO_DASHBOARD.asItem())) {
+            if (stack.is(MekanismItems.PORTABLE_QIO_DASHBOARD) || stack.is(MekanismBlocks.QIO_DASHBOARD.asItem())) {
                 //Legacy is loaded by the container type
                 return new PortableQIODashboardInventory(stack);
             }

@@ -21,7 +21,7 @@ public class MekanismElytraLayer<ENTITY extends LivingEntity, MODEL extends Enti
 
     @Override
     public boolean shouldRender(@NotNull ItemStack stack, @NotNull ENTITY entity) {
-        return stack.is(MekanismItems.HDPE_REINFORCED_ELYTRA.asItem());
+        return stack.is(MekanismItems.HDPE_REINFORCED_ELYTRA);
     }
 
     @NotNull

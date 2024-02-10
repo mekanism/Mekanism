@@ -95,7 +95,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
      * @return whether the given chestplate should be filled with hydrogen.
      */
     private boolean checkChestPlate(ItemStack chestPlate) {
-        if (chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
+        if (chestPlate.is(MekanismItems.MEKASUIT_BODYARMOR)) {
             return IModuleHelper.INSTANCE.getModuleContainer(chestPlate)
                   .map(container -> container.get(MekanismModules.JETPACK_UNIT))
                   .isPresent();

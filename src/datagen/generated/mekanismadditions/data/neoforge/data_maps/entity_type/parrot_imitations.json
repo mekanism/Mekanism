@@ -1,0 +1,16 @@
+{
+  "values": {
+    "mekanismadditions:baby_creeper": {
+      "sound": "minecraft:entity.parrot.imitate.creeper"
+    },
+    "mekanismadditions:baby_skeleton": {
+      "sound": "minecraft:entity.parrot.imitate.skeleton"
+    },
+    "mekanismadditions:baby_stray": {
+      "sound": "minecraft:entity.parrot.imitate.stray"
+    },
+    "mekanismadditions:baby_wither_skeleton": {
+      "sound": "minecraft:entity.parrot.imitate.wither_skeleton"
+    }
+  }
+}

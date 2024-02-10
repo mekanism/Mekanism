@@ -21,6 +21,6 @@ public class ItemHDPEElytra extends ElytraItem {
 
     @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repair) {
-        return repair.getItem() == MekanismItems.HDPE_SHEET.asItem();
+        return repair.is(MekanismItems.HDPE_SHEET);
     }
 }

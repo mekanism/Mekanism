@@ -1,8 +1,6 @@
 package mekanism.common.integration.computer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +20,6 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -30,22 +27,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.fml.util.ObfuscationReflectionHelper.UnableToFindMethodException;
-import net.neoforged.neoforge.attachment.AttachmentHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialConverters {
-
-    @Nullable
-    private static final Method DESERIALIZE_ATTACHMENTS = Util.make(() -> {
-        try {
-            return ObfuscationReflectionHelper.findMethod(AttachmentHolder.class, "deserializeAttachments", CompoundTag.class);
-        } catch (UnableToFindMethodException e) {
-            return null;
-        }
-    });
 
     @Nullable
     public static <ENUM extends Enum<?>> ENUM sanitizeStringToEnum(Class<? extends ENUM> expectedType, String argument) {
@@ -67,17 +52,19 @@ public class SpecialConverters {
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack = new ItemStack(item);
+        ItemStack stack;
+        if (rawAttachments != null) {
+            try {
+                stack = new ItemStack(item, 1, NbtUtils.snbtToStructure(rawAttachments));
+            } catch (CommandSyntaxException ex) {
+                throw new ComputerException("Invalid Attachment SNBT: " + ex.getMessage());
+            }
+        } else {
+            stack = new ItemStack(item);
+        }
         if (rawNBT != null) {
             try {
                 stack.setTag(NbtUtils.snbtToStructure(rawNBT));
-            } catch (CommandSyntaxException ex) {
-                throw new ComputerException("Invalid SNBT: " + ex.getMessage());
-            }
-        }
-        if (rawAttachments != null) {
-            try {
-                setAttachments(stack, NbtUtils.snbtToStructure(rawNBT));
             } catch (CommandSyntaxException ex) {
                 throw new ComputerException("Invalid SNBT: " + ex.getMessage());
             }
@@ -260,15 +247,5 @@ public class SpecialConverters {
 
     static String wrapNBT(@NotNull CompoundTag nbt) {
         return NbtUtils.structureToSnbt(nbt);
-    }
-
-    static void setAttachments(ItemStack stack, CompoundTag tag) {
-        if (DESERIALIZE_ATTACHMENTS != null) {
-            try {
-                DESERIALIZE_ATTACHMENTS.invoke(stack, tag);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

@@ -151,7 +151,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             armorPreview.tryUpdateFull(stack);
             scrollList.updateItemAndList(stack);
             scrollList.clearSelection();
-            optionsButton.active = stack.getItem() == MekanismItems.MEKASUIT_HELMET.get();
+            optionsButton.active = stack.is(MekanismItems.MEKASUIT_HELMET);
             return true;
         }
         return false;

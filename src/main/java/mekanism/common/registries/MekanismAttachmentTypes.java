@@ -363,7 +363,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
           }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedTank>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
           () -> AttachmentType.builder(holder -> {
-              if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER.asItem())) {
+              if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER)) {
                   return MergedTank.create(
                         RateLimitFluidTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
                               BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue),

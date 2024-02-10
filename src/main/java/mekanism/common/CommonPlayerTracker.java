@@ -85,7 +85,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock event) {
         ItemStack itemInHand = event.getEntity().getItemInHand(event.getHand());
-        if (itemInHand.is(Items.CONFIGURATORS) && !itemInHand.is(MekanismItems.CONFIGURATOR.asItem())) {
+        if (itemInHand.is(Items.CONFIGURATORS) && !itemInHand.is(MekanismItems.CONFIGURATOR)) {
             //it's a wrench, see if it's our block. Not the configurator, as it handles bypass correctly
             Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
             if (block instanceof BlockMekanism || block instanceof BlockBounding) {

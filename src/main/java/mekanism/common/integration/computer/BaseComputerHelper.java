@@ -184,12 +184,14 @@ public abstract class BaseComputerHelper {
             int count = SpecialConverters.getIntFromRaw(map.get("count"));
             String nbt = (String) map.get("nbt");
             String attachments = (String) map.get("attachments");
-            ItemStack stack = new ItemStack(item, count);
+            ItemStack stack;
+            if (attachments == null) {
+                stack = new ItemStack(item, count);
+            } else {
+                stack = new ItemStack(item, count, NbtUtils.snbtToStructure(attachments));
+            }
             if (nbt != null) {
                 stack.setTag(NbtUtils.snbtToStructure(nbt));
-            }
-            if (attachments != null) {
-                SpecialConverters.setAttachments(stack, NbtUtils.snbtToStructure(attachments));
             }
             return stack;
         } catch (ClassCastException ex) {
