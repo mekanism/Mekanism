@@ -58,7 +58,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -72,7 +71,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe> implements IHasMode, ISustainedData {
+public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe> implements IHasMode {
 
     public static final RecipeError NOT_ENOUGH_FLUID_INPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_GAS_INPUT_ERROR = RecipeError.create();
@@ -234,26 +233,32 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Override
     public void readSustainedData(CompoundTag data) {
+        super.readSustainedData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.MODE, value -> mode = value);
     }
 
     @Override
     public void writeSustainedData(CompoundTag data) {
+        super.writeSustainedData(data);
         data.putBoolean(NBTConstants.MODE, mode);
     }
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        return Map.of(NBTConstants.MODE, MekanismAttachmentTypes.ROTARY_MODE);
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.MODE, MekanismAttachmentTypes.ROTARY_MODE);
+        return remap;
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         mode = stack.getData(MekanismAttachmentTypes.ROTARY_MODE);
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.ROTARY_MODE, mode);
     }
 

@@ -26,7 +26,6 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
@@ -43,7 +42,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
-public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISustainedData, ITileFilterHolder<OredictionificatorItemFilter> {
+public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ITileFilterHolder<OredictionificatorItemFilter> {
 
     private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave);
     public boolean didProcess;
@@ -163,11 +162,13 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         filterManager.writeToNBT(dataMap);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         filterManager.readFromNBT(dataMap);
     }
 

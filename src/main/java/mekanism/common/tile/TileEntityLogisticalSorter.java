@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +30,6 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
@@ -51,7 +49,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>> {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ITileFilterHolder<SorterFilter<?>> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
@@ -238,6 +236,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         dataMap.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         dataMap.putBoolean(NBTConstants.EJECT, autoEject);
         dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
@@ -247,6 +246,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         NBTUtils.setEnumIfPresent(dataMap, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         autoEject = dataMap.getBoolean(NBTConstants.EJECT);
         roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
@@ -256,7 +256,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
         remap.put(NBTConstants.COLOR, MekanismAttachmentTypes.TRANSPORTER_COLOR);
         remap.put(NBTConstants.EJECT, MekanismAttachmentTypes.EJECT);
         remap.put(NBTConstants.ROUND_ROBIN, MekanismAttachmentTypes.ROUND_ROBIN);
@@ -266,6 +266,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.TRANSPORTER_COLOR, Optional.ofNullable(color));
         stack.setData(MekanismAttachmentTypes.EJECT, autoEject);
         stack.setData(MekanismAttachmentTypes.ROUND_ROBIN, roundRobin);
@@ -274,6 +275,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         color = stack.getData(MekanismAttachmentTypes.TRANSPORTER_COLOR).orElse(null);
         autoEject = stack.getData(MekanismAttachmentTypes.EJECT);
         roundRobin = stack.getData(MekanismAttachmentTypes.ROUND_ROBIN);

@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -70,7 +69,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IHasVisualization;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -111,8 +109,7 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
-      IHasVisualization {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>, IHasVisualization {
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
@@ -953,6 +950,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         dataMap.putInt(NBTConstants.RADIUS, getRadius());
         dataMap.putInt(NBTConstants.MIN, getMinY());
         dataMap.putInt(NBTConstants.MAX, getMaxY());
@@ -969,6 +967,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, newMinY -> {
             if (hasLevel() && !isRemote()) {
@@ -1008,7 +1007,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
         remap.put(NBTConstants.RADIUS, MekanismAttachmentTypes.RADIUS);
         remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_Y);
         remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_Y);
@@ -1024,6 +1023,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.RADIUS, getRadius());
         stack.setData(MekanismAttachmentTypes.MIN_Y, getMinY());
         stack.setData(MekanismAttachmentTypes.MAX_Y, getMaxY());
@@ -1038,6 +1038,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         //TODO - 1.20.4: Can we deduplicate this code from the read sustained data?
         // maybe by using the tile data to attachment remap and then pass in a method that gets the proper object?
         setRadius(Math.min(stack.getData(MekanismAttachmentTypes.RADIUS), MekanismConfig.general.minerMaxRadius.get()));

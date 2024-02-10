@@ -20,7 +20,6 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
-import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.loot.CopyAttachmentsLootFunction;
@@ -37,7 +36,6 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -211,15 +209,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (tile instanceof ITileFilterHolder<?>) {
                 itemLootPool.apply(CopyFiltersLootFunction.builder());
             }
-            if (tile instanceof ISustainedData sustainedData) {
-                for (Map.Entry<String, Holder<AttachmentType<?>>> remapEntry : sustainedData.getTileDataAttachmentRemap().entrySet()) {
+            if (tile instanceof TileEntityMekanism tileEntity) {
+                for (Map.Entry<String, Holder<AttachmentType<?>>> remapEntry : tileEntity.getTileDataAttachmentRemap().entrySet()) {
                     nbtToAttachmentBuilder.copy(remapEntry.getKey(), remapEntry.getValue());
                 }
-            }
-            if (Attribute.has(block, AttributeRedstone.class)) {
-                nbtToAttachmentBuilder.copy(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
-            }
-            if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }

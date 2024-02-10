@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -42,7 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, ISustainedData, IHasVisualization {
+public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
@@ -215,6 +214,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
@@ -226,6 +226,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
         byte[] chunksToLoad = dataMap.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
@@ -253,11 +254,14 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        return Map.of(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, MekanismAttachmentTypes.STABILIZER_CHUNKS);
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, MekanismAttachmentTypes.STABILIZER_CHUNKS);
+        return remap;
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         //TODO - 1.20.4: Deduplicate this and the from nbt
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
@@ -286,6 +290,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         boolean[] chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {

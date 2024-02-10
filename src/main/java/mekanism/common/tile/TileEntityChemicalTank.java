@@ -53,7 +53,6 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasGasMode;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -68,7 +67,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
+public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements IHasGasMode {
 
     @SyntheticComputerMethod(getter = "getDumpingMode", getterDescription = "Get the current Dumping configuration")
     public GasMode dumping = GasMode.IDLE;
@@ -254,26 +253,32 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_MODE, dumping);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
     }
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        return Map.of(NBTConstants.DUMP_MODE, MekanismAttachmentTypes.DUMP_MODE);
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.DUMP_MODE, MekanismAttachmentTypes.DUMP_MODE);
+        return remap;
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.DUMP_MODE, dumping);
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         dumping = stack.getData(MekanismAttachmentTypes.DUMP_MODE);
     }
 

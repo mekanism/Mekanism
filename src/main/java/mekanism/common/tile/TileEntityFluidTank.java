@@ -29,7 +29,6 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
@@ -53,7 +52,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ISustainedData {
+public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                      "getFilledPercentage"}, docPlaceholder = "tank")
@@ -149,26 +148,32 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public void writeSustainedData(CompoundTag data) {
+        super.writeSustainedData(data);
         NBTUtils.writeEnum(data, NBTConstants.EDIT_MODE, editMode);
     }
 
     @Override
     public void readSustainedData(CompoundTag data) {
+        super.writeSustainedData(data);
         NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        return Map.of(NBTConstants.EDIT_MODE, MekanismAttachmentTypes.EDIT_MODE);
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.EDIT_MODE, MekanismAttachmentTypes.EDIT_MODE);
+        return remap;
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.EDIT_MODE, editMode);
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         editMode = stack.getData(MekanismAttachmentTypes.EDIT_MODE);
     }
 

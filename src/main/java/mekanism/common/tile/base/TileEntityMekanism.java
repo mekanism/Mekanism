@@ -3,7 +3,9 @@ package mekanism.common.tile.base;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -91,12 +93,12 @@ import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IComparatorSupport;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
@@ -119,6 +121,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -133,6 +136,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -641,7 +645,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.read(nbt);
         }
-        loadGeneralPersistentData(nbt);
+        readSustainedData(nbt);
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
                 type.readFrom(nbt, this);
@@ -666,7 +670,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.write(nbtTags);
         }
-        addGeneralPersistentData(nbtTags);
+        writeSustainedData(nbtTags);
 
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
@@ -688,21 +692,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    private void addGeneralPersistentData(CompoundTag data) {
+    public void writeSustainedData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
         }
-        if (this instanceof ISustainedData sustainedData) {
-            sustainedData.writeSustainedData(data);
-        }
     }
 
-    private void loadGeneralPersistentData(CompoundTag data) {
+    public void readSustainedData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
         }
-        if (this instanceof ISustainedData sustainedData) {
-            sustainedData.readSustainedData(data);
+    }
+
+    //Key is tile save string, value is the attachment target
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        //Ensure a consistent ordering
+        Map<String, Holder<AttachmentType<?>>> remap = new LinkedHashMap<>();
+        if (supportsRedstone()) {
+            remap.put(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
+        }
+        return remap;
+    }
+
+    public void readFromStack(ItemStack stack) {
+        if (supportsRedstone()) {
+            setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
+        }
+    }
+
+    public void writeToStack(ItemStack stack) {
+        if (supportsRedstone()) {
+            stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, controlType);
         }
     }
 
@@ -1113,14 +1133,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public CompoundTag getConfigurationData(Player player) {
         CompoundTag data = new CompoundTag();
-        addGeneralPersistentData(data);
+        writeSustainedData(data);
         getFrequencyComponent().writeConfiguredFrequencies(data);
         return data;
     }
 
     @Override
     public void setConfigurationData(Player player, CompoundTag data) {
-        loadGeneralPersistentData(data);
+        readSustainedData(data);
         getFrequencyComponent().readConfiguredFrequencies(player, data);
     }
 

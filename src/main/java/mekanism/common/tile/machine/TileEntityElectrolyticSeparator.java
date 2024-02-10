@@ -65,7 +65,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -79,8 +78,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe>,
-      ISustainedData {
+public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe> {
 
     public static final RecipeError NOT_ENOUGH_SPACE_LEFT_OUTPUT_ERROR = RecipeError.create();
     public static final RecipeError NOT_ENOUGH_SPACE_RIGHT_OUTPUT_ERROR = RecipeError.create();
@@ -336,32 +334,36 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_LEFT, dumpLeft);
         NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
         NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        return Map.of(
-              NBTConstants.DUMP_LEFT, MekanismAttachmentTypes.DUMP_MODE,
-              NBTConstants.DUMP_RIGHT, MekanismAttachmentTypes.SECONDARY_DUMP_MODE
-        );
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.DUMP_LEFT, MekanismAttachmentTypes.DUMP_MODE);
+        remap.put(NBTConstants.DUMP_RIGHT, MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
+        return remap;
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.DUMP_MODE, dumpLeft);
         stack.setData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE, dumpRight);
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         dumpLeft = stack.getData(MekanismAttachmentTypes.DUMP_MODE);
         dumpRight = stack.getData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
     }

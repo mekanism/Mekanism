@@ -33,7 +33,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.ItemDataUtils;
@@ -137,12 +136,7 @@ public abstract class BlockMekanism extends Block {
                 stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyFrom(filterManager);
             }
         }
-        if (tile instanceof ISustainedData sustainedData) {
-            sustainedData.writeToStack(stack);
-        }
-        if (tile.supportsRedstone()) {
-            stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, tile.getControlType());
-        }
+        tile.writeToStack(stack);
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (tile.handles(type)) {
                 type.copyTo(tile, stack);
@@ -280,12 +274,7 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
             stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyTo(filterHolder.getFilterManager());
         }
-        if (tile instanceof ISustainedData sustainedData) {
-            sustainedData.readFromStack(stack);
-        }
-        if (tile.supportsRedstone()) {
-            tile.setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
-        }
+        tile.readFromStack(stack);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.common.tile.qio;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.NBTConstants;
@@ -15,7 +14,6 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -29,7 +27,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder, ISustainedData {
+public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
     @Nullable
     private EnumColor lastColor;
@@ -60,6 +58,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
         if (lastColor != null) {
             NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, lastColor);
         }
@@ -67,6 +66,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
         EnumColor color = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(dataMap.getInt(NBTConstants.COLOR)) : null;
         if (lastColor != color) {
             lastColor = color;
@@ -75,18 +75,20 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
         remap.put(NBTConstants.COLOR, MekanismAttachmentTypes.COLOR);
         return remap;
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.COLOR, Optional.ofNullable(lastColor));
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         lastColor = stack.getData(MekanismAttachmentTypes.COLOR).orElse(null);
     }
 

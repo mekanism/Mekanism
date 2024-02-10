@@ -1,6 +1,5 @@
 package mekanism.common.tile.laser;
 
-import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
@@ -25,7 +24,6 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
@@ -35,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 
-public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode, ISustainedData {
+public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
     private FloatingLong minThreshold = FloatingLong.ZERO;
     private FloatingLong maxThreshold = MekanismConfig.storage.laserAmplifier.get();
@@ -166,6 +164,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public void readSustainedData(CompoundTag data) {
+        super.readSustainedData(data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
@@ -174,6 +173,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public void writeSustainedData(CompoundTag data) {
+        super.writeSustainedData(data);
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
         data.putInt(NBTConstants.TIME, delay);
@@ -182,7 +182,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
         remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_THRESHOLD);
         remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_THRESHOLD);
         remap.put(NBTConstants.TIME, MekanismAttachmentTypes.DELAY);
@@ -192,6 +192,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
         updateMinThreshold(stack.getData(MekanismAttachmentTypes.MIN_THRESHOLD));
         updateMaxThreshold(stack.getData(MekanismAttachmentTypes.MAX_THRESHOLD));
         setDelay(stack.getData(MekanismAttachmentTypes.DELAY));
@@ -200,6 +201,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Override
     public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.MIN_THRESHOLD, minThreshold);
         stack.setData(MekanismAttachmentTypes.MAX_THRESHOLD, maxThreshold);
         stack.setData(MekanismAttachmentTypes.DELAY, delay);
