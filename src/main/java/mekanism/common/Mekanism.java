@@ -75,6 +75,7 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
+import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
@@ -226,6 +227,7 @@ public class Mekanism {
         MekanismModules.MODULES.register(modEventBus);
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
+        MekanismDataMapTypes.REGISTER.register(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         modEventBus.addListener(this::registerRegistries);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle

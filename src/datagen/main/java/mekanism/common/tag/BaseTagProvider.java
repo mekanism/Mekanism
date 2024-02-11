@@ -290,6 +290,14 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @SafeVarargs
+    protected final <TYPE> void addToTag(TagKey<TYPE> tag, ResourceKey<TYPE>... values) {
+        final TagBuilder builder = getTagBuilder(tag.registry(), tag);
+        for (ResourceKey<TYPE> value : values) {
+            builder.addElement(value.location());
+        }
+    }
+
+    @SafeVarargs
     protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(IntrinsicMekanismTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
         tagBuilder.addTyped(IChemicalProvider::getChemical, providers);
     }
