@@ -1,7 +1,11 @@
 package mekanism.common;
 
 import java.util.concurrent.CompletableFuture;
+
+import mekanism.common.datamaps.MekaSuitAbsorption;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -32,5 +36,8 @@ public class MekanismDataMapsProvider extends DataMapProvider {
         builder(NeoForgeDataMaps.FURNACE_FUELS)
               .add(MekanismBlocks.CHARCOAL_BLOCK.getId(), new FurnaceFuel(16_000), false)
         ;
+
+        final var absorption = builder(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
+        ItemMekaSuitArmor.BASE_ALWAYS_SUPPORTED.forEach(key -> absorption.add(key, new MekaSuitAbsorption(ItemMekaSuitArmor.getBaseDamageRatio(key)), false));
     }
 }
