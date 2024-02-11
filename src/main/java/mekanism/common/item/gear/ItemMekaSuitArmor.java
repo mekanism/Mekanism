@@ -49,10 +49,12 @@ import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.datamaps.MekaSuitAbsorption;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
+import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
@@ -477,17 +479,18 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     if (source.is(Tags.DamageTypes.IS_TECHNICAL) || !source.is(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED) && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                         break;
                     }
-                    // Next lookup the ratio at which we can absorb the given damage type from the config
-                    ResourceLocation damageTypeName = source.typeHolder().unwrapKey()
-                          .map(ResourceKey::location)
+                    // Next lookup the ratio at which we can absorb the given damage type from the data map
+                    MekaSuitAbsorption damageTypeAbsorb = source.typeHolder().unwrapKey()
+                          // Reference holders can query data map values
+                          .map(type -> source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
                           //Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
                           // but just in case have the fallback to look up the name from the registry
                           .orElseGet(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE)
-                                .map(registry -> registry.getKey(source.type()))
+                                .map(registry -> registry.wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
                                 .orElse(null)
                           );
-                    if (damageTypeName != null) {//Note: This should not be null unless something went wrong and the damage source is for a damage type that is not registered
-                        absorbRatio = MekanismConfig.gear.mekaSuitDamageRatios.get().get(damageTypeName);
+                    if (damageTypeAbsorb != null) {
+                        absorbRatio = damageTypeAbsorb.absorption();
                     }
                     if (absorbRatio == null) {
                         absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.getAsFloat();
