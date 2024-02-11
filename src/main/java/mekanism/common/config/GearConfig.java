@@ -387,12 +387,12 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
               .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.getKnockbackResistance(), 0, Float.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
-        mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
+        mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuzit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
               .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
         mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.",
-                    "Note: Support for specific damage types can be added by adding an entry for the damage type in the damageReductionRatio config.")
+                    "Note: Support for specific damage types can be added by adding an entry for the damage type in the mekanism:mekasuit_absorption data map.")
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
         builder.pop(2);
 

@@ -1,13 +1,9 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
@@ -33,7 +29,6 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
@@ -41,7 +36,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -52,6 +46,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
@@ -499,10 +497,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
         getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 
-        MekanismTagBuilder<DamageType, ?> alwaysSupported = getDamageTypeBuilder(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED);
-        for (ResourceKey<DamageType> damageType : ItemMekaSuitArmor.BASE_ALWAYS_SUPPORTED) {
-            alwaysSupported.add(damageType);
-        }
+        addToTag(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED, DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
+                DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
+                DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
+                DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
     }
 
     private void addFluids() {

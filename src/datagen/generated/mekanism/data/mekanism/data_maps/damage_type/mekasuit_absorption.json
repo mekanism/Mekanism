@@ -1,25 +1,6 @@
 {
   "values": {
-    "minecraft:cactus": 1.0,
-    "minecraft:cramming": 1.0,
-    "minecraft:dragon_breath": 1.0,
-    "minecraft:dry_out": 1.0,
-    "minecraft:fall": 1.0,
-    "minecraft:falling_anvil": 1.0,
-    "minecraft:falling_block": 1.0,
-    "minecraft:falling_stalactite": 1.0,
-    "minecraft:fly_into_wall": 1.0,
-    "minecraft:freeze": 1.0,
-    "minecraft:generic": 1.0,
-    "minecraft:hot_floor": 1.0,
-    "minecraft:in_fire": 1.0,
-    "minecraft:in_wall": 1.0,
-    "minecraft:lava": 1.0,
-    "minecraft:lightning_bolt": 1.0,
-    "minecraft:on_fire": 1.0,
-    "minecraft:sonic_boom": 0.75,
-    "minecraft:stalagmite": 1.0,
-    "minecraft:sweet_berry_bush": 1.0,
-    "minecraft:wither": 1.0
+    "#mekanism:mekasuit_always_supported": 1.0,
+    "minecraft:sonic_boom": 0.75
   }
 }

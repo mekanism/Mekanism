@@ -49,7 +49,7 @@ import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
-import mekanism.common.datamaps.MekaSuitAbsorption;
+import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
@@ -65,12 +65,8 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,18 +96,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
       IAttachmentAware {
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
-
-    public static final List<ResourceKey<DamageType>> BASE_ALWAYS_SUPPORTED = List.of(DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
-          DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
-          DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
-          DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
-
-    public static float getBaseDamageRatio(ResourceKey<DamageType> damageType) {
-        if (damageType == DamageTypes.SONIC_BOOM) {
-            return 0.75F;
-        }
-        return 1F;
-    }
 
     private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?
@@ -480,23 +464,17 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
-                    MekaSuitAbsorption damageTypeAbsorb = source.typeHolder().unwrapKey()
-                          // Reference holders can query data map values
-                          .map(type -> source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
-                          //Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
-                          // but just in case have the fallback to look up the name from the registry
-                          .orElseGet(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE)
-                                .map(registry -> registry.wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
-                                .orElse(null)
-                          );
-                    if (damageTypeAbsorb != null) {
-                        absorbRatio = damageTypeAbsorb.absorption();
-                    }
-                    if (absorbRatio == null) {
-                        absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.getAsFloat();
-                    }
+                    absorbRatio = source.typeHolder().unwrapKey()
+                            // Reference holders can query data map values
+                            .map(type -> source.typeHolder())
+                            // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
+                            // but just in case have the fallback to look up the name from the registry
+                            .or(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE).map(registry -> registry.wrapAsHolder(source.type())))
+                            .map(holder -> holder.getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
+                            .map(MekaSuitAbsorption::absorption)
+                            .orElseGet(MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio::get);
                     if (absorbRatio == 0) {
-                        //If the config specifies that the damage type shouldn't be blocked at all
+                        //If the config or the data map specifies that the damage type shouldn't be blocked at all
                         // stop checking if the armor is able to
                         break;
                     }
