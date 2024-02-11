@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
  * changing how much damage of a given type the meka suit should absorb.
  *
  * @param absorption how much damage will be absorbed
+ * @since 10.5.0
  */
 public record MekaSuitAbsorption(float absorption) {
     /**
