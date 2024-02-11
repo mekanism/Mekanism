@@ -387,7 +387,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
               .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.getKnockbackResistance(), 0, Float.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
-        mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuzit Boots when they have enough power.")
+        mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
               .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
