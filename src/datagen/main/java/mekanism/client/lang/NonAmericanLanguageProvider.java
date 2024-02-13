@@ -17,6 +17,7 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
         addEntry(map, "Pressurized", "Pressurised");
         addEntry(map, "Stabilizer", "Stabiliser");
         addEntry(map, "Stabilizing", "Stabilising");
+        addEntry(map, "Stabilization", "Stabilisation");
         addEntry(map, "Crystallizer", "Crystalliser");
         addEntry(map, "Nucleosynthesizer", "Nucleosynthesiser");
         addEntry(map, "Color", "Colour");
