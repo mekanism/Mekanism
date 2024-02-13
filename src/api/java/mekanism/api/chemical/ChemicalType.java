@@ -6,8 +6,16 @@ import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -149,5 +157,49 @@ public enum ChemicalType implements StringRepresentable {
             return SLURRY;
         }
         throw new IllegalStateException("Unknown chemical ingredient type");
+    }
+
+    /**
+     * Gets the Chemical Type of a chemical handler.
+     *
+     * @param handler Handler.
+     *
+     * @return Chemical Type.
+     *
+     * @since 10.5.0
+     */
+    public static ChemicalType getTypeFor(IChemicalHandler<?, ?> handler) {
+        if (handler instanceof IGasHandler) {
+            return GAS;
+        } else if (handler instanceof IInfusionHandler) {
+            return INFUSION;
+        } else if (handler instanceof IPigmentHandler) {
+            return PIGMENT;
+        } else if (handler instanceof ISlurryHandler) {
+            return SLURRY;
+        }
+        throw new IllegalStateException("Unknown chemical handler type");
+    }
+
+    /**
+     * Gets the Chemical Type of a chemical tank.
+     *
+     * @param tank Tank.
+     *
+     * @return Chemical Type.
+     *
+     * @since 10.5.0
+     */
+    public static ChemicalType getTypeFor(IChemicalTank<?, ?> tank) {
+        if (tank instanceof IGasTank) {
+            return GAS;
+        } else if (tank instanceof IInfusionTank) {
+            return INFUSION;
+        } else if (tank instanceof IPigmentTank) {
+            return PIGMENT;
+        } else if (tank instanceof ISlurryTank) {
+            return SLURRY;
+        }
+        throw new IllegalStateException("Unknown chemical tank type");
     }
 }

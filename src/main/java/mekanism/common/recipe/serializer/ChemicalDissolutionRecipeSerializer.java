@@ -5,11 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -46,22 +42,15 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Bas
     public BasicChemicalDissolutionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
         GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
-        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        ChemicalStack<?> output = switch (chemicalType) {
-            case GAS -> GasStack.readFromPacket(buffer);
-            case INFUSION -> InfusionStack.readFromPacket(buffer);
-            case PIGMENT -> PigmentStack.readFromPacket(buffer);
-            case SLURRY -> SlurryStack.readFromPacket(buffer);
-        };
-        return this.factory.create(itemInput, gasInput, output);
+        BoxedChemicalStack boxedChemicalStack = BoxedChemicalStack.read(buffer);
+        return this.factory.create(itemInput, gasInput, boxedChemicalStack.getChemicalStack());
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicChemicalDissolutionRecipe recipe) {
         recipe.getItemInput().write(buffer);
         recipe.getGasInput().write(buffer);
-        buffer.writeEnum(recipe.getOutputRaw().getChemicalType());
-        recipe.getOutputRaw().getChemicalStack().writeToPacket(buffer);
+        recipe.getOutputRaw().write(buffer);
     }
 
     @FunctionalInterface

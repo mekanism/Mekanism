@@ -9,6 +9,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +53,30 @@ public class BoxedChemicalStack implements IHasTextComponent {
             case PIGMENT -> PigmentStack.readFromNBT(nbt);
             case SLURRY -> SlurryStack.readFromNBT(nbt);
         });
+    }
+
+    /**
+     * Reads a Boxed Chemical Stack from a Packet Buffer.
+     *
+     * @param buffer Buffer.
+     *
+     * @return Boxed Chemical Stack.
+     *
+     * @since 10.5.0
+     */
+    public static BoxedChemicalStack read(FriendlyByteBuf buffer) {
+        if (!buffer.readBoolean()) {
+            return EMPTY;
+        }
+        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
+        ChemicalStack<?> stack = switch (chemicalType) {
+            case GAS -> GasStack.readFromPacket(buffer);
+            case INFUSION -> InfusionStack.readFromPacket(buffer);
+            case PIGMENT -> PigmentStack.readFromPacket(buffer);
+            case SLURRY -> SlurryStack.readFromPacket(buffer);
+        };
+        //It should never be empty here as it should have been caught by the initial boolean check
+        return stack.isEmpty() ? EMPTY : new BoxedChemicalStack(chemicalType, stack);
     }
 
     private final ChemicalType chemicalType;
@@ -99,6 +124,23 @@ public class BoxedChemicalStack implements IHasTextComponent {
         chemicalType.write(nbt);
         chemicalStack.write(nbt);
         return nbt;
+    }
+
+    /**
+     * Writes this BoxedChemicalStack to a Packet Buffer.
+     *
+     * @param buffer - Buffer to write to.
+     *
+     * @since 10.5.0
+     */
+    public void write(FriendlyByteBuf buffer) {
+        if (isEmpty()) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            buffer.writeEnum(chemicalType);
+            chemicalStack.writeToPacket(buffer);
+        }
     }
 
     /**
