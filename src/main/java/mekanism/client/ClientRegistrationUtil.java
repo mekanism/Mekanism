@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -64,7 +65,11 @@ public class ClientRegistrationUtil {
     private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
         if (tintIndex == 1 && item instanceof IColoredItem) {
-            return stack.getData(MekanismAttachmentTypes.COLORABLE).getTint();
+            return stack.getData(MekanismAttachmentTypes.COLORABLE)
+                  .map(color -> {
+                      int[] rgbCode = color.getRgbCode();
+                      return FastColor.ARGB32.color(255, rgbCode[0], rgbCode[1], rgbCode[2]);
+                  }).orElse(0xFF555555);
         }
         return -1;
     };

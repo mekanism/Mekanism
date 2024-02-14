@@ -24,12 +24,17 @@ public final class AttachedFrequencyComponent implements IAttachedComponent<Tile
     private CompoundTag frequencyNBT;
 
     public AttachedFrequencyComponent(IAttachmentHolder attachmentHolder) {
+        this(attachmentHolder, null);
+        loadLegacyData();
+    }
+
+    private AttachedFrequencyComponent(IAttachmentHolder attachmentHolder, @Nullable CompoundTag frequencyNBT) {
         if (attachmentHolder instanceof ItemStack itemStack) {
             this.stack = itemStack;
         } else {
             this.stack = ItemStack.EMPTY;
         }
-        loadLegacyData();
+        this.frequencyNBT = frequencyNBT;
     }
 
     @Deprecated//TODO - 1.21: Remove this legacy way of loading data
@@ -75,5 +80,13 @@ public final class AttachedFrequencyComponent implements IAttachedComponent<Tile
         } else {
             this.frequencyNBT = frequencyNBT;
         }
+    }
+
+    @Nullable
+    public AttachedFrequencyComponent copy(IAttachmentHolder holder) {
+        if (frequencyNBT == null || frequencyNBT.isEmpty()) {
+            return null;
+        }
+        return new AttachedFrequencyComponent(holder, frequencyNBT.copy());
     }
 }

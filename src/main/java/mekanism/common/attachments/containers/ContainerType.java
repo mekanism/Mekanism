@@ -60,6 +60,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentCopyHandler;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -71,7 +72,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>, HANDLER> {
+public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>, HANDLER> implements IAttachmentCopyHandler<ATTACHMENT> {
 
     private static final List<ContainerType<?, ?, ?>> TYPES_INTERNAL = new ArrayList<>();
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
@@ -340,6 +341,26 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         if (attachment != null) {
             read(containers, attachment.serializeNBT());
         }
+    }
+
+    public void copy(List<CONTAINER> toCopy, List<CONTAINER> target) {
+        ListTag serialized = save(toCopy);
+        if (!serialized.isEmpty()) {
+            read(target, serialized);
+        }
+    }
+
+    @Nullable
+    @Override
+    public ATTACHMENT copy(IAttachmentHolder holder, ATTACHMENT attachment) {
+        ListTag serialized = attachment.serializeNBT();
+        if (serialized == null) {
+            return null;
+        }
+        //Copy via deserialization
+        ATTACHMENT copy = getDefault(holder);
+        copy.deserializeNBT(serialized);
+        return copy;
     }
 
     public boolean canHandle(TileEntityMekanism tile) {

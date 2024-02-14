@@ -35,6 +35,10 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
         return blockData;
     }
 
+    public static BlockData create(BlockState state, @Nullable BlockEntity blockEntity) {
+        return new BlockData(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata());
+    }
+
     public static BlockData create() {
         return new BlockData(Blocks.AIR.defaultBlockState(), null);
     }
@@ -43,11 +47,9 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
     @Nullable
     private CompoundTag blockEntityTag;
 
-    public BlockData(BlockState state, @Nullable BlockEntity blockEntity) {
+    private BlockData(BlockState state, @Nullable CompoundTag blockEntityTag) {
         this.blockState = state;
-        if (blockEntity != null) {
-            this.blockEntityTag = blockEntity.saveWithFullMetadata();
-        }
+        this.blockEntityTag = blockEntityTag;
     }
 
     @Deprecated
@@ -114,5 +116,13 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag nbt) {
         blockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt);
         NBTUtils.setCompoundIfPresent(nbt, NBTConstants.BE_TAG, tag -> blockEntityTag = tag);
+    }
+
+    @Nullable
+    public BlockData copy(IAttachmentHolder holder) {
+        if (blockState.isAir()) {
+            return null;
+        }
+        return new BlockData(blockState, blockEntityTag == null ? null : blockEntityTag.copy());
     }
 }

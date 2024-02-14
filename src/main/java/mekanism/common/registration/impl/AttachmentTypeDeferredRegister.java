@@ -34,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentComparator;
+import net.neoforged.neoforge.attachment.IAttachmentCopyHandler;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -49,14 +50,19 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
 
     public <CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>>
     MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name, Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
-        return register(name, () -> AttachmentType.serializable(holder -> typeSupplier.get().getDefaultWithLegacy(holder))
-              .comparator(AttachedContainers::isCompatible)
-              .build());
+        return register(name, () -> {
+            ContainerType<CONTAINER, ATTACHMENT, ?> containerType = typeSupplier.get();
+            return AttachmentType.serializable(containerType::getDefaultWithLegacy)
+                  .copyHandler(containerType)
+                  .comparator(AttachedContainers::isCompatible)
+                  .build();
+        });
     }
 
     public MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> registerFrequencyAware(String name,
           Function<IAttachmentHolder, FrequencyAware<?>> defaultValueConstructor) {
         return register(name, () -> AttachmentType.serializable(defaultValueConstructor)
+              .copyHandler((holder, attachment) -> attachment.copy(holder))
               .comparator(FrequencyAware::isCompatible)
               .build());
     }
@@ -65,6 +71,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
         return register(name, () -> AttachmentType.builder(() -> defaultValue)
               //If we are true by default we only care about serializing the value when it is false
               .serialize(defaultValue ? FALSE_SERIALIZER : TRUE_SERIALIZER)
+              .copyHandler(defaultValue ? FALSE_COPIER : TRUE_COPIER)
               .comparator(Boolean::equals)
               .build());
     }
@@ -90,7 +97,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public Integer read(IAttachmentHolder holder, IntTag tag) {
                       return Mth.clamp(tag.getAsInt(), min, max);
                   }
-              }).comparator(Integer::equals)
+              }).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_INT : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+              .comparator(Integer::equals)
               .build());
     }
 
@@ -115,7 +123,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public Long read(IAttachmentHolder holder, LongTag tag) {
                       return Mth.clamp(tag.getAsLong(), min, max);
                   }
-              }).comparator(Long::equals)
+              }).copyHandler(defaultValue == 0 ? COPY_NON_ZERO_LONG : (holder, attachment) -> attachment == defaultValue ? null : attachment)
+              .comparator(Long::equals)
               .build());
     }
 
@@ -136,7 +145,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public FloatingLong read(IAttachmentHolder holder, StringTag tag) {
                       return FloatingLong.parseFloatingLong(tag.getAsString());
                   }
-              }).comparator(Objects::equals)
+              }).copyHandler((holder, attachment) -> attachment.equals(defaultValue.get()) ? null : attachment.copyAsConst())
+              .comparator(Objects::equals)
               .build());
     }
 
@@ -153,7 +163,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public UUID read(IAttachmentHolder holder, IntArrayTag tag) {
                       return NbtUtils.loadUUID(tag);
                   }
-              }).comparator(UUID::equals)
+              }).copyHandler((holder, uuid) -> uuid.equals(Util.NIL_UUID) ? null : uuid)
+              .comparator(UUID::equals)
               .build());
     }
 
@@ -184,7 +195,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public ENUM read(IAttachmentHolder holder, IntTag tag) {
                       return reader.apply(tag.getAsInt());
                   }
-              }).comparator((a, b) -> a == b)
+              }).copyHandler((holder, attachment) -> attachment == defaultValue ? null : attachment)
+              .comparator((a, b) -> a == b)
               .build());
     }
 
@@ -208,7 +220,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                   public Optional<ENUM> read(IAttachmentHolder holder, IntTag tag) {
                       return reader.apply(tag.getAsInt());
                   }
-              }).comparator(optionalComparator((a, b) -> a == b))
+              }).copyHandler(optionalCopier((holder, attachment) -> attachment))
+              .comparator(optionalComparator((a, b) -> a == b))
               .build());
     }
 
@@ -232,7 +245,8 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                             .result()
                             .orElseGet(defaultValueSupplier);
                   }
-              }).comparator(Component::equals)
+              }).copyHandler((holder, attachment) -> attachment.copy())//TODO - 1.20.4: Deep copy? and only copy if not default
+              .comparator(Component::equals)
               .build());
     }
 
@@ -255,8 +269,23 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
                       ResourceLocation rl = ResourceLocation.tryParse(tag.getAsString());
                       return rl == null ? defaultValueSupplier.get() : ResourceKey.create(registryKey, rl);
                   }
-              }).comparator(ResourceKey::equals)
+              })
+              //Resource keys are interned so can be copied and compared directly
+              .copyHandler((holder, attachment) -> attachment == defaultValueSupplier.get() ? null : attachment)
+              .comparator((a, b) -> a == b)
               .build());
+    }
+
+    //Note: We intentionally want it to return null to not perform the copy
+    @SuppressWarnings("OptionalAssignedToNull")
+    public static <TYPE> IAttachmentCopyHandler<Optional<TYPE>> optionalCopier(IAttachmentCopyHandler<TYPE> innerCopier) {
+        return (attachmentHolder, optional) -> {
+            Optional<TYPE> result = optional.map(value -> innerCopier.copy(attachmentHolder, value));
+            if (result.isPresent()) {
+                return result;
+            }
+            return null;
+        };
     }
 
     public static <TYPE> IAttachmentComparator<Optional<TYPE>> optionalComparator(IAttachmentComparator<TYPE> innerComparator) {
@@ -288,4 +317,9 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
             return tag.getAsByte() != 0;
         }
     };
+
+    private static final IAttachmentCopyHandler<Boolean> TRUE_COPIER = (holder, bool) -> bool ? true : null;
+    private static final IAttachmentCopyHandler<Boolean> FALSE_COPIER = (holder, bool) -> bool ? null : false;
+    private static final IAttachmentCopyHandler<Integer> COPY_NON_ZERO_INT = (holder, i) -> i == 0 ? null : i;
+    private static final IAttachmentCopyHandler<Long> COPY_NON_ZERO_LONG = (holder, l) -> l == 0 ? null : l;
 }

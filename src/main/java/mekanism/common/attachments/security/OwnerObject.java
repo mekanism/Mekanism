@@ -31,6 +31,11 @@ public class OwnerObject implements IOwnerObject {
         }
     }
 
+    protected OwnerObject(IAttachmentHolder attachmentHolder, @Nullable UUID ownerUUID) {
+        this.attachmentHolder = attachmentHolder;
+        this.ownerUUID = ownerUUID;
+    }
+
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.OWNER_UUID, CompoundTag::getUUID).ifPresent(owner -> this.ownerUUID = owner);
@@ -55,11 +60,13 @@ public class OwnerObject implements IOwnerObject {
 
     @Override
     public void setOwnerUUID(@Nullable UUID owner) {
-        if (attachmentHolder.hasData(MekanismAttachmentTypes.FREQUENCY_AWARE)) {
-            //If the object happens to be a frequency aware object reset the frequency when the owner changes
-            attachmentHolder.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).setFrequency(null);
+        if (!Objects.equals(this.ownerUUID, owner)) {
+            if (attachmentHolder.hasData(MekanismAttachmentTypes.FREQUENCY_AWARE)) {
+                //If the object happens to be a frequency aware object reset the frequency when the owner changes
+                attachmentHolder.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).setFrequency(null);
+            }
+            this.ownerUUID = owner;
         }
-        this.ownerUUID = owner;
     }
 
     public boolean isCompatible(OwnerObject other) {
@@ -77,6 +84,10 @@ public class OwnerObject implements IOwnerObject {
             super(attachmentHolder);
         }
 
+        private OwnerOnlyObject(IAttachmentHolder attachmentHolder, @Nullable UUID ownerUUID) {
+            super(attachmentHolder, ownerUUID);
+        }
+
         @Nullable
         @Override
         public IntArrayTag serializeNBT() {
@@ -86,6 +97,11 @@ public class OwnerObject implements IOwnerObject {
         @Override
         public void deserializeNBT(IntArrayTag nbt) {
             ownerUUID = NbtUtils.loadUUID(nbt);
+        }
+
+        @Nullable
+        public OwnerOnlyObject copy(IAttachmentHolder holder) {
+            return ownerUUID == null ? null : new OwnerOnlyObject(holder, ownerUUID);
         }
     }
 }

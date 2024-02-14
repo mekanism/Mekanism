@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,17 +15,16 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.component.AttachedEjector;
-import mekanism.common.attachments.component.AttachedFrequencyComponent;
-import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.BlockData;
-import mekanism.common.attachments.ColoredItem;
 import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.PortableQIODashboardInventory;
+import mekanism.common.attachments.component.AttachedEjector;
+import mekanism.common.attachments.component.AttachedFrequencyComponent;
+import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
@@ -100,8 +100,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
           () -> AttachmentType.builder(() -> RadiationManager.BASELINE)
                 .serialize(Codec.doubleRange(RadiationManager.BASELINE, Double.MAX_VALUE), radiation -> radiation != RadiationManager.BASELINE)
-                //Note: Technically this comparator is not needed as by default neo only checks for attachment compatability for item stacks,
-                // but we set it regardless just so that if anyone is checking it for entities then they can bypass the serialization for it
+                .copyHandler((holder, radiation) -> radiation == RadiationManager.BASELINE ? null : radiation)
                 .comparator(Double::equals)
                 .build()
     );
@@ -109,6 +108,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     //Item based attachments:
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ModuleContainer>> MODULE_CONTAINER = ATTACHMENT_TYPES.register("module_container",
           () -> AttachmentType.serializable(ModuleContainer::create)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(ModuleContainer::isCompatible)
                 .build());
 
@@ -141,7 +141,8 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                     public Optional<EnumColor> read(IAttachmentHolder holder, IntTag tag) {
                         return Optional.ofNullable(TransporterUtils.readColor(tag.getAsInt()));
                     }
-                }).comparator(AttachmentTypeDeferredRegister.optionalComparator(Objects::equals))
+                }).copyHandler(AttachmentTypeDeferredRegister.optionalCopier((holder, attachment) -> attachment))
+                .comparator(AttachmentTypeDeferredRegister.optionalComparator(Objects::equals))
                 .build());
 
 
@@ -187,43 +188,48 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OwnerOnlyObject>> OWNER_ONLY = ATTACHMENT_TYPES.register("owner",
           () -> AttachmentType.serializable(OwnerOnlyObject::new)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(OwnerObject::isCompatible)
                 .build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<SecurityObject>> SECURITY = ATTACHMENT_TYPES.register("security",
           () -> AttachmentType.serializable(SecurityObject::new)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(SecurityObject::isCompatible)
                 .build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEjector>> EJECTOR = ATTACHMENT_TYPES.register("ejector",
-          () -> AttachmentType.serializable(AttachedEjector::new)
+          () -> AttachmentType.serializable(AttachedEjector::createWithLegacy)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(AttachedEjector::isCompatible)
                 .build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedSideConfig>> SIDE_CONFIG = ATTACHMENT_TYPES.register("side_config",
           () -> AttachmentType.serializable(AttachedSideConfig::create)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(AttachedSideConfig::isCompatible)
                 .build());
 
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ColoredItem>> COLORABLE = ATTACHMENT_TYPES.register("colorable",
-          () -> AttachmentType.serializable(ColoredItem::new)
-                .comparator(ColoredItem::isCompatible)
-                .build());
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> COLORABLE = ATTACHMENT_TYPES.registerOptional("colorable", EnumColor.class);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FilterAware>> FILTER_AWARE = ATTACHMENT_TYPES.register("filters",
           () -> AttachmentType.serializable(FilterAware::new)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(FilterAware::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OverflowAware>> OVERFLOW_AWARE = ATTACHMENT_TYPES.register("overflow",
-          () -> AttachmentType.serializable(OverflowAware::new)
+          () -> AttachmentType.serializable(OverflowAware::createWithLegacy)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(OverflowAware::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DriveMetadata>> DRIVE_METADATA = ATTACHMENT_TYPES.register("drive_metadata",
-          () -> AttachmentType.serializable(DriveMetadata::new)
+          () -> AttachmentType.serializable(DriveMetadata::createWithLegacy)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(DriveMetadata::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<BlockData>> BLOCK_DATA = ATTACHMENT_TYPES.register("block_data",
           () -> AttachmentType.serializable(BlockData::createWithLegacy)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(BlockData::isCompatible)
                 .build());
 
@@ -251,7 +257,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                     public CompoundTag read(IAttachmentHolder holder, CompoundTag tag) {
                         return tag;
                     }
-                })
+                }).copyHandler((holder, attachment) -> attachment.isEmpty() ? null : attachment.copy())
                 .comparator(CompoundTag::equals)
                 .build());
 
@@ -275,7 +281,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                         }
                         return BuiltInRegistries.ITEM.get(registryName);
                     }
-                })
+                }).copyHandler((holder, item) -> item == Items.AIR ? null : item)
                 .comparator(Objects::equals)
                 .build());
 
@@ -297,7 +303,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                     public ItemStack read(IAttachmentHolder holder, CompoundTag tag) {
                         return ItemStack.of(tag);
                     }
-                })
+                }).copyHandler((holder, stack) -> stack.isEmpty() ? null : stack.copy())
                 .comparator(ItemStack::matches)
                 .build());
 
@@ -307,16 +313,17 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                     @Nullable
                     @Override
                     public ByteArrayTag write(boolean[] value) {
-                        for (boolean v : value) {
-                            if (v) {
-                                byte[] bytes = new byte[value.length];
-                                for (int i = 0; i < value.length; i++) {
-                                    bytes[i] = (byte) (value[i] ? 1 : 0);
-                                }
-                                return new ByteArrayTag(bytes);
+                        boolean hasValue = false;
+                        byte[] bytes = new byte[value.length];
+                        for (int i = 0; i < value.length; i++) {
+                            if (value[i]) {
+                                bytes[i] = 1;
+                                hasValue = true;
+                            } else {
+                                bytes[i] = 0;
                             }
                         }
-                        return null;
+                        return hasValue ? new ByteArrayTag(bytes) : null;
                     }
 
                     @Override
@@ -330,23 +337,27 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                         }
                         return chunksToLoad;
                     }
-                })
+                })//For simplicity’s sake we copy the array regardless to whether it won't be serialized
+                .copyHandler((holder, attachment) -> Arrays.copyOf(attachment, attachment.length))
                 .comparator(Objects::equals)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FrequencyAware<?>>> FREQUENCY_AWARE = ATTACHMENT_TYPES.registerFrequencyAware("frequency_aware", FrequencyAware::create);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedFrequencyComponent>> FREQUENCY_COMPONENT = ATTACHMENT_TYPES.register("frequencies",
           () -> AttachmentType.serializable(AttachedFrequencyComponent::new)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(AttachedFrequencyComponent::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<UpgradeAware>> UPGRADES = ATTACHMENT_TYPES.register("upgrades",
           () -> AttachmentType.serializable(UpgradeAware::create)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(UpgradeAware::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<FormulaAttachment>> FORMULA_HOLDER = ATTACHMENT_TYPES.register("formula",
           () -> AttachmentType.serializable(FormulaAttachment::create)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(FormulaAttachment::isCompatible)
                 .build());
 

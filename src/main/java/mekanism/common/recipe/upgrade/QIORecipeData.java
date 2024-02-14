@@ -26,7 +26,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
     QIORecipeData(DriveMetadata data) {
         itemCount = data.count();
-        itemMap = data.uuidBasedMap();
+        itemMap = data.namedItemMap();
     }
 
     private QIORecipeData(Object2LongMap<UUID> itemMap, long itemCount) {

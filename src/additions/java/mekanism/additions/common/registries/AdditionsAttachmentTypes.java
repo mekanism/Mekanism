@@ -16,6 +16,7 @@ public class AdditionsAttachmentTypes {
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<WalkieData>> WALKIE_DATA = ATTACHMENT_TYPES.register("walkie_data",
           () -> AttachmentType.serializable(WalkieData::new)
+                .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(Objects::equals)
                 .build());
 }

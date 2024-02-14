@@ -1,10 +1,10 @@
 package mekanism.common.attachments;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.EnumColor;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -26,13 +26,13 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
 
     public static FrequencyAware<?> create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem) {
-            return new FrequencyAware<>(frequencyItem.getFrequencyType(), stack);
+            return new FrequencyAware<>(stack, frequencyItem.getFrequencyType());
         }
         throw new IllegalArgumentException("Attempted to attach frequency awareness to an object that does not support frequencies.");
     }
 
     private final FrequencyType<FREQ> frequencyType;
-    private final ItemStack stack;
+    private final IAttachmentHolder attachmentHolder;
     @Nullable
     private FrequencyIdentity identity;
     @Nullable
@@ -40,14 +40,22 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
     @Nullable
     private UUID owner;
 
-    private FrequencyAware(FrequencyType<FREQ> frequencyType, ItemStack stack) {
+    private FrequencyAware(ItemStack stack, FrequencyType<FREQ> frequencyType) {
+        this(stack, frequencyType, null, null, null);
+        loadLegacyData(stack);
+    }
+
+    private FrequencyAware(IAttachmentHolder attachmentHolder, FrequencyType<FREQ> frequencyType, @Nullable FrequencyIdentity identity, @Nullable FREQ frequency,
+          @Nullable UUID owner) {
+        this.attachmentHolder = attachmentHolder;
         this.frequencyType = frequencyType;
-        this.stack = stack;
-        loadLegacyData();
+        this.frequency = frequency;
+        this.identity = identity;
+        this.owner = owner;
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData() {
+    protected void loadLegacyData(ItemStack stack) {
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound)
               //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
               .or(() -> ItemDataUtils.getMekData(stack)
@@ -86,9 +94,12 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
             this.identity = this.frequency.getIdentity();
             this.owner = this.frequency.getOwner();
         }
-        if (stack.getItem() instanceof IColoredItem) {
-            EnumColor color = this.frequency == null ? null : ((IColorableFrequency) this.frequency).getColor();
-            stack.getData(MekanismAttachmentTypes.COLORABLE).setColor(color);
+        if (IColoredItem.supports(attachmentHolder)) {
+            if (this.frequency == null) {
+                attachmentHolder.removeData(MekanismAttachmentTypes.COLORABLE);
+            } else {
+                attachmentHolder.setData(MekanismAttachmentTypes.COLORABLE, Optional.of(((IColorableFrequency) this.frequency).getColor()));
+            }
         }
     }
 
@@ -121,5 +132,16 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
             owner = nbt.getUUID(NBTConstants.OWNER_UUID);
             frequency = frequencyType.getManager(identity, owner).getFrequency(identity.key());
         }
+    }
+
+    @Nullable
+    public FrequencyAware<FREQ> copy(IAttachmentHolder holder) {
+        if (frequency == null) {
+            return null;
+        }
+        if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == frequencyType) {
+            return new FrequencyAware<>(stack, frequencyType, identity, frequency, owner);
+        }
+        throw new IllegalArgumentException("Attempted to attach frequency awareness to an object that does not support frequencies.");
     }
 }

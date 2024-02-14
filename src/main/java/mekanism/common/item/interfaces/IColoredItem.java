@@ -1,14 +1,22 @@
 package mekanism.common.item.interfaces;
 
-import mekanism.api.text.EnumColor;
+import java.util.Optional;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 
 public interface IColoredItem {
 
     default void syncColorWithFrequency(ItemStack stack) {
-        EnumColor frequencyColor = stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).getFrequency() instanceof IColorableFrequency frequency ? frequency.getColor() : null;
-        stack.getData(MekanismAttachmentTypes.COLORABLE).setColor(frequencyColor);
+        if (stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).getFrequency() instanceof IColorableFrequency frequency) {
+            stack.setData(MekanismAttachmentTypes.COLORABLE, Optional.of(frequency.getColor()));
+        } else {
+            stack.removeData(MekanismAttachmentTypes.COLORABLE);
+        }
+    }
+
+    static boolean supports(IAttachmentHolder attachmentHolder) {
+        return attachmentHolder instanceof ItemStack stack && stack.getItem() instanceof IColoredItem;
     }
 }

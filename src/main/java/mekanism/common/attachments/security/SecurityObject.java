@@ -1,5 +1,6 @@
 package mekanism.common.attachments.security;
 
+import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
@@ -20,6 +21,11 @@ public class SecurityObject extends OwnerObject implements ISecurityObject, INBT
 
     public SecurityObject(IAttachmentHolder attachmentHolder) {
         super(attachmentHolder);
+    }
+
+    private SecurityObject(IAttachmentHolder attachmentHolder, @Nullable UUID ownerUUID, SecurityMode securityMode) {
+        super(attachmentHolder, ownerUUID);
+        this.securityMode = securityMode;
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
@@ -77,5 +83,13 @@ public class SecurityObject extends OwnerObject implements ISecurityObject, INBT
         if (nbt.contains(NBTConstants.SECURITY_MODE, Tag.TAG_INT)) {
             securityMode = SecurityMode.byIndexStatic(nbt.getInt(NBTConstants.SECURITY_MODE));
         }
+    }
+
+    @Nullable
+    public SecurityObject copy(IAttachmentHolder holder) {
+        if (ownerUUID == null && securityMode == SecurityMode.PUBLIC) {
+            return null;
+        }
+        return new SecurityObject(holder, ownerUUID, securityMode);
     }
 }

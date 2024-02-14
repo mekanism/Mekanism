@@ -242,7 +242,7 @@ public class MekanismJEI implements IModPlugin {
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
                 Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
                 Capabilities.SLURRY.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
-                registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, stack.getItem(), MEKANISM_NBT_INTERPRETER);
+                registry.registerSubtypeInterpreter(stack.getItem(), MEKANISM_NBT_INTERPRETER);
             }
         }
     }

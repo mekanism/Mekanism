@@ -100,6 +100,17 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
         ContainerType.ITEM.readFrom(upgradeNBT, upgradeSlots);
     }
 
+    @Nullable
+    public UpgradeAware copy(IAttachmentHolder holder) {
+        if (upgrades.isEmpty() && upgradeSlots.stream().allMatch(IInventorySlot::isEmpty)) {
+            return null;
+        }
+        UpgradeAware copy = create(holder);
+        copy.upgrades.putAll(upgrades);
+        ContainerType.ITEM.copy(upgradeSlots, copy.upgradeSlots);
+        return copy;
+    }
+
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return upgradeSlots;

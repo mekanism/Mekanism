@@ -1,11 +1,10 @@
 package mekanism.common.attachments;
 
+import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import java.util.Arrays;
+import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
+import it.unimi.dsi.fastutil.objects.Object2LongSortedMaps;
 import java.util.UUID;
-import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIODriveData;
@@ -22,31 +21,33 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public final class DriveMetadata implements INBTSerializable<CompoundTag> {
 
-    private static final long[] EMPTY_ITEM_MAP = new long[0];
+    @Deprecated
+    public static DriveMetadata createWithLegacy(IAttachmentHolder attachmentHolder) {
+        DriveMetadata metadata = create();
+        //TODO - 1.21: Remove this legacy way of loading data
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_COUNT, CompoundTag::getLong).ifPresent(count -> metadata.count = count);
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_TYPES, CompoundTag::getInt).ifPresent(types -> metadata.types = types);
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_ITEM_MAP, CompoundTag::getLongArray).ifPresent(metadata::readSerializedItemMap);
+        }
+        return metadata;
+    }
 
-    //Note: We only bother storing the partially serialized item map as we don't have to read it often and as we can't make custom
-    // attachment copiers yet, there is not much sense in fully serializing and deserializing it given how little we read it and
-    // how often MC has stacks get copied around
-    //TODO: If/when attachments support custom copying we may want to move this to either a Map<UUID, long> or Map<HashedItem, long>
-    // given we already have the hashed items in memory so it would just be a pointer (though that may not actually be the case on the client)
-    private long[] serializedItemMap = EMPTY_ITEM_MAP;
+    public static DriveMetadata create() {
+        return new DriveMetadata(0, 0, new Object2LongLinkedOpenHashMap<>());
+    }
+
+    //Sorted map so that the save order is consistent
+    private final Object2LongSortedMap<UUID> namedItemMap;
+    private final Object2LongSortedMap<UUID> namedItemMapView;
     private long count;
     private int types;
 
-    public DriveMetadata(IAttachmentHolder attachmentHolder) {
-        loadLegacyData(attachmentHolder);
-    }
-
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_COUNT, CompoundTag::getLong).ifPresent(count -> this.count = count);
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_TYPES, CompoundTag::getInt).ifPresent(types -> this.types = types);
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_ITEM_MAP, CompoundTag::getLongArray)
-                  .filter(itemMap -> itemMap.length > 0 && itemMap.length % 3 == 0)
-                  //Ensure we have valid data and not some value we don't know how to process
-                  .ifPresent(itemMap -> serializedItemMap = itemMap);
-        }
+    private DriveMetadata(long count, int types, Object2LongSortedMap<UUID> namedItemMap) {
+        this.count = count;
+        this.types = types;
+        this.namedItemMap = namedItemMap;
+        this.namedItemMapView = Object2LongSortedMaps.unmodifiable(this.namedItemMap);
     }
 
     public long count() {
@@ -57,6 +58,10 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
         return types;
     }
 
+    public Object2LongMap<UUID> namedItemMap() {
+        return namedItemMapView;
+    }
+
     public void update(QIODriveData drive) {
         this.count = drive.getTotalCount();
         this.types = drive.getTotalTypes();
@@ -65,64 +70,39 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
     public void update(Object2LongMap<UUID> itemMap, long count) {
         this.count = count;
         this.types = itemMap.size();
-        copyItemMap(itemMap, Function.identity());
+        this.namedItemMap.clear();
+        for (Object2LongMap.Entry<UUID> entry : itemMap.object2LongEntrySet()) {
+            this.namedItemMap.put(entry.getKey(), entry.getLongValue());
+        }
     }
 
     public void copyItemMap(QIODriveData data) {
-        copyItemMap(data.getItemMap(), QIOGlobalItemLookup.INSTANCE::getOrTrackUUID);
-    }
-
-    /**
-     * Writes the item map in a compact form to the stack. This compact form is a single long array tag that stores the data in partitions of three. The first partition
-     * stores the most significant bits of the UUID that represents the stack, the second partition stores the least significant bits, and the final partition stores the
-     * amount of the item that is stored in the drive. This maxes out at using {@code 3 * types per drive size * bytes per long + bytes per int} bytes to store just the
-     * array of items to in the drive. For our max drive size this is equivalent to {@code 3 * 8,192 * 8 + 4 = 196,612} bytes.
-     */
-    private <KEY> void copyItemMap(Object2LongMap<KEY> itemMap, Function<KEY, UUID> idExtractor) {
-        if (itemMap.isEmpty()) {
-            serializedItemMap = EMPTY_ITEM_MAP;
-            return;
-        }
-        serializedItemMap = new long[3 * itemMap.size()];
-        int i = 0;
-        for (Entry<KEY> entry : itemMap.object2LongEntrySet()) {
-            UUID uuid = idExtractor.apply(entry.getKey());
-            serializedItemMap[i++] = uuid.getMostSignificantBits();
-            serializedItemMap[i++] = uuid.getLeastSignificantBits();
-            serializedItemMap[i++] = entry.getLongValue();
+        this.namedItemMap.clear();
+        for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+            this.namedItemMap.put(QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(entry.getKey()), entry.getLongValue());
         }
     }
 
     public void loadItemMap(QIODriveData data) {
         Object2LongMap<HashedItem> itemMap = data.getItemMap();
-        for (int i = 0; i < serializedItemMap.length; i++) {
-            UUID uuid = new UUID(serializedItemMap[i++], serializedItemMap[i++]);
-            HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
+        for (Object2LongMap.Entry<UUID> entry : namedItemMap.object2LongEntrySet()) {
+            HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(entry.getKey());
             if (type != null) {
                 //Only add the item if the item type is known. If it can't that means the mod adding the item was probably removed
                 //TODO: Eventually we may want to keep the UUID so that if the mod gets added back it exists again?
-                itemMap.put(type, serializedItemMap[i]);
+                itemMap.put(type, entry.getLongValue());
             }
         }
     }
 
-    public Object2LongMap<UUID> uuidBasedMap() {
-        Object2LongMap<UUID> itemMap = new Object2LongOpenHashMap<>(types);
-        for (int i = 0; i < serializedItemMap.length; i++) {
-            UUID uuid = new UUID(serializedItemMap[i++], serializedItemMap[i++]);
-            itemMap.put(uuid, serializedItemMap[i]);
-        }
-        return itemMap;
-    }
-
     public boolean isCompatible(DriveMetadata other) {
-        return other == this || count == other.count && types == other.types && Arrays.equals(serializedItemMap, other.serializedItemMap);
+        return other == this || count == other.count && types == other.types && namedItemMap.equals(other.namedItemMap);
     }
 
     @Nullable
     @Override
     public CompoundTag serializeNBT() {
-        if (count == 0 && types == 0 && serializedItemMap.length == 0) {
+        if (count == 0 && types == 0 && namedItemMap.isEmpty()) {
             return null;
         }
         CompoundTag nbt = new CompoundTag();
@@ -132,22 +112,52 @@ public final class DriveMetadata implements INBTSerializable<CompoundTag> {
         if (types > 0) {
             nbt.putInt(NBTConstants.QIO_META_TYPES, types);
         }
-        if (serializedItemMap.length > 0) {
-            nbt.putLongArray(NBTConstants.QIO_ITEM_MAP, serializedItemMap);
+        if (!namedItemMap.isEmpty()) {
+            nbt.putLongArray(NBTConstants.QIO_ITEM_MAP, serializeItemMap());
         }
         return nbt;
+    }
+
+    /**
+     * Writes the item map in a compact form to the stack. This compact form is a single long array tag that stores the data in partitions of three. The first partition
+     * stores the most significant bits of the UUID that represents the stack, the second partition stores the least significant bits, and the final partition stores the
+     * amount of the item that is stored in the drive. This maxes out at using {@code 3 * types per drive size * bytes per long + bytes per int} bytes to store just the
+     * array of items to in the drive. For our max drive size this is equivalent to {@code 3 * 8,192 * 8 + 4 = 196,612} bytes.
+     */
+    private long[] serializeItemMap() {
+        int i = 0;
+        long[] serializedItemMap = new long[3 * namedItemMap.size()];
+        for (Object2LongMap.Entry<UUID> entry : namedItemMap.object2LongEntrySet()) {
+            UUID uuid = entry.getKey();
+            serializedItemMap[i++] = uuid.getMostSignificantBits();
+            serializedItemMap[i++] = uuid.getLeastSignificantBits();
+            serializedItemMap[i++] = entry.getLongValue();
+        }
+        return serializedItemMap;
     }
 
     @Override
     public void deserializeNBT(@NotNull CompoundTag nbt) {
         this.count = nbt.getLong(NBTConstants.QIO_META_COUNT);
         this.types = nbt.getInt(NBTConstants.QIO_META_TYPES);
-        long[] itemMap = nbt.getLongArray(NBTConstants.QIO_ITEM_MAP);
-        if (itemMap.length > 0 && itemMap.length % 3 == 0) {
+        readSerializedItemMap(nbt.getLongArray(NBTConstants.QIO_ITEM_MAP));
+    }
+
+    private void readSerializedItemMap(long[] serializedItemMap) {
+        namedItemMap.clear();
+        if (serializedItemMap.length > 0 && serializedItemMap.length % 3 == 0) {
             //Ensure we have valid data and not some value we don't know how to process
-            serializedItemMap = itemMap;
-        } else {
-            serializedItemMap = EMPTY_ITEM_MAP;
+            for (int i = 0; i < serializedItemMap.length; i++) {
+                namedItemMap.put(new UUID(serializedItemMap[i++], serializedItemMap[i++]), serializedItemMap[i]);
+            }
         }
+    }
+
+    @Nullable
+    public DriveMetadata copy(IAttachmentHolder holder) {
+        if (count == 0 && types == 0 && namedItemMap.isEmpty()) {
+            return null;
+        }
+        return new DriveMetadata(count, types, new Object2LongLinkedOpenHashMap<>(namedItemMap));
     }
 }

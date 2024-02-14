@@ -45,14 +45,21 @@ public final class ModuleContainer implements IModuleContainer {
 
     private final Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>();
     private final Map<ModuleData<?>, Module<?>> modulesView = Collections.unmodifiableMap(modules);
-    private final Map<Enchantment, Integer> enchantments = new LinkedHashMap<>();
-    private final Map<Enchantment, Integer> enchantmentsView = Collections.unmodifiableMap(enchantments);
+    private final Map<Enchantment, Integer> enchantments;
+    private final Map<Enchantment, Integer> enchantmentsView;
 
     final ItemStack container;
 
     private ModuleContainer(ItemStack container) {
-        this.container = container;
+        this(container, new LinkedHashMap<>());
+        //Note: We only have to load legacy data if it is a new instance as if it is from copying then the legacy data should already have been handled and removed
         loadLegacyData();
+    }
+
+    private ModuleContainer(ItemStack container, Map<Enchantment, Integer> enchantments) {
+        this.container = container;
+        this.enchantments = enchantments;
+        this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
@@ -115,6 +122,24 @@ public final class ModuleContainer implements IModuleContainer {
                 enchantments.putAll(EnchantmentHelper.deserializeEnchantments(enchantmentNbt));
             }
         }
+    }
+
+    @Nullable
+    public ModuleContainer copy(IAttachmentHolder holder) {
+        if (modules.isEmpty() && enchantments.isEmpty()) {
+            return null;
+        }
+        if (!(holder instanceof ItemStack stack) || !IModuleHelper.INSTANCE.isModuleContainer(stack)) {
+            throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
+        }
+        ModuleContainer copy = new ModuleContainer(stack, new LinkedHashMap<>(enchantments));
+        for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
+            ModuleData<?> type = entry.getKey();
+            //Copy the modules by saving and deserializing it against the new stack
+            //TODO - 1.20.4: Can we make a way of copying this that doesn't require serialization and deserialization?
+            copy.modules.put(type, copy.createNewModule(type, entry.getValue().save()));
+        }
+        return copy;
     }
 
     private <MODULE extends ICustomModule<MODULE>> Module<MODULE> createNewModule(ModuleData<MODULE> type, CompoundTag nbt) {

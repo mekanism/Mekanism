@@ -46,7 +46,12 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
     private boolean invalid;
 
     private FormulaAttachment(ItemStack stack) {
+        this(false);
         loadLegacyData(stack);
+    }
+
+    private FormulaAttachment(boolean invalid) {
+        this.invalid = invalid;
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
@@ -123,6 +128,16 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag nbt) {
         invalid = nbt.getBoolean(NBTConstants.INVALID);
         ContainerType.ITEM.readFrom(nbt, inventory);
+    }
+
+    @Nullable
+    public FormulaAttachment copy(IAttachmentHolder holder) {
+        if (!invalid && inventory.stream().allMatch(IInventorySlot::isEmpty)) {
+            return null;
+        }
+        FormulaAttachment copy = new FormulaAttachment(invalid);
+        ContainerType.ITEM.copy(inventory, copy.inventory);
+        return copy;
     }
 
     /**

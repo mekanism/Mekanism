@@ -2,7 +2,6 @@ package mekanism.common.attachments.component;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import mekanism.api.NBTConstants;
@@ -46,13 +45,18 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
         return null;
     }
 
-    private final Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+    private final Map<TransmissionType, LightConfigInfo> configInfo;
 
     private AttachedSideConfig(ItemStack stack, Set<TransmissionType> types) {
+        this(new EnumMap<>(TransmissionType.class));
         for (TransmissionType type : types) {
             configInfo.put(type, new LightConfigInfo());
         }
         loadLegacyData(stack);
+    }
+
+    private AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
+        this.configInfo = configInfo;
     }
 
     @Deprecated//TODO - 1.21: Remove this legacy way of loading data
@@ -74,7 +78,7 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
     public CompoundTag serializeNBT() {
         //Note: We can't just use TileComponentConfig#write as we don't want to write defaulted data so that fresh stacks don't set anything
         CompoundTag configNBT = new CompoundTag();
-        for (Entry<TransmissionType, LightConfigInfo> entry : configInfo.entrySet()) {
+        for (Map.Entry<TransmissionType, LightConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             LightConfigInfo info = entry.getValue();
             if (info.ejecting != null) {
@@ -94,6 +98,23 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
     @Override
     public void deserializeNBT(CompoundTag configNBT) {
         TileComponentConfig.read(configNBT, configInfo);
+    }
+
+    @Nullable
+    public AttachedSideConfig copy(IAttachmentHolder holder) {
+        boolean hasData = false;
+        Map<TransmissionType, LightConfigInfo> sideConfigCopy = new EnumMap<>(TransmissionType.class);
+        for (Map.Entry<TransmissionType, LightConfigInfo> entry : configInfo.entrySet()) {
+            LightConfigInfo info = entry.getValue();
+            LightConfigInfo infoCopy = new LightConfigInfo();
+            sideConfigCopy.put(entry.getKey(), infoCopy);
+            if (info.ejecting != null || !info.sideConfig.isEmpty()) {
+                infoCopy.ejecting = info.ejecting;
+                infoCopy.sideConfig.putAll(info.sideConfig);
+                hasData = true;
+            }
+        }
+        return hasData ? new AttachedSideConfig(sideConfigCopy) : null;
     }
 
     private static class LightConfigInfo implements IPersistentConfigInfo {

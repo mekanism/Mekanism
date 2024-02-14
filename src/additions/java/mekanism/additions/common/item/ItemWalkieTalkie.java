@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,8 +85,17 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             return null;
         }
 
-        private int channel = 1;
+        private int channel;
         private boolean running;
+
+        public WalkieData() {
+            this(1, false);
+        }
+
+        private WalkieData(int channel, boolean running) {
+            this.channel = channel;
+            this.running = running;
+        }
 
         public boolean isRunning() {
             return running;
@@ -95,8 +105,20 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             return channel;
         }
 
+        @Nullable
+        public WalkieData copy(IAttachmentHolder holder) {
+            if (channel == 1 && !running) {
+                return null;
+            }
+            return new WalkieData(channel, running);
+        }
+
+        @Nullable
         @Override
         public CompoundTag serializeNBT() {
+            if (channel == 1 && !running) {
+                return null;
+            }
             CompoundTag nbt = new CompoundTag();
             nbt.putInt(NBTConstants.CHANNEL, channel);
             nbt.putBoolean(NBTConstants.RUNNING, running);

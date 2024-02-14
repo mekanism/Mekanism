@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public final class FilterAware implements INBTSerializable<ListTag> {
 
-    private final HashList<IFilter<?>> filters = new HashList<>();
+    private final List<IFilter<?>> filters = new HashList<>();
 
     public FilterAware(IAttachmentHolder attachmentHolder) {
         loadLegacyData(attachmentHolder);
@@ -85,5 +85,17 @@ public final class FilterAware implements INBTSerializable<ListTag> {
                 filters.add(filter);
             }
         }
+    }
+
+    @Nullable
+    public FilterAware copy(IAttachmentHolder holder) {
+        if (filters.isEmpty()) {
+            return null;
+        }
+        FilterAware copy = new FilterAware(holder);
+        for (IFilter<?> filter : filters) {
+            copy.filters.add(filter.clone());
+        }
+        return copy;
     }
 }

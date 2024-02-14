@@ -298,7 +298,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         strictInputSetter.accept(ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT));
         outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor));
         //Input colors
-        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+        for (int i = 0; i < inputColors.length; i++) {
             inputColors[i] = NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR + i, TransporterUtils::readColor);
         }
     }
@@ -317,7 +317,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
         }
         //Input colors
-        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+        for (int i = 0; i < inputColors.length; i++) {
             EnumColor inputColor = inputColors[i];
             if (inputColor != null) {
                 ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColor));
@@ -331,7 +331,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
         list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));
-        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+        for (int i = 0; i < inputColors.length; i++) {
             int idx = i;
             list.add(SyncableInt.create(() -> TransporterUtils.getColorIndex(inputColors[idx]), index -> inputColors[idx] = TransporterUtils.readColor(index)));
         }

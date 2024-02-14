@@ -2,6 +2,7 @@ package mekanism.common.attachments;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.inventory.HashedItem;
@@ -17,18 +18,25 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public final class OverflowAware implements INBTSerializable<ListTag> {
 
-    //Note: Linked map to ensure each call to save is in the same order so that there is more uniformity
-    private final Object2IntMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
-
-    public OverflowAware(IAttachmentHolder attachmentHolder) {
-        loadLegacyData(attachmentHolder);
+    @Deprecated
+    public static OverflowAware createWithLegacy(IAttachmentHolder attachmentHolder) {
+        OverflowAware overflowAware = create();
+        //TODO - 1.21: Remove this legacy way of loading data
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.OVERFLOW, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(overflowAware::deserializeNBT);
+        }
+        return overflowAware;
     }
 
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.OVERFLOW, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(this::deserializeNBT);
-        }
+    public static OverflowAware create() {
+        return new OverflowAware(new Object2IntLinkedOpenHashMap<>());
+    }
+
+    //Note: Sorted map to ensure each call to save is in the same order so that there is more uniformity
+    private final Object2IntSortedMap<HashedItem> overflow;
+
+    private OverflowAware(Object2IntSortedMap<HashedItem> overflow) {
+        this.overflow = overflow;
     }
 
     public Object2IntMap<HashedItem> getOverflow() {
@@ -54,6 +62,15 @@ public final class OverflowAware implements INBTSerializable<ListTag> {
     public void deserializeNBT(ListTag overflowTag) {
         overflow.clear();
         readOverflow(overflow, overflowTag);
+    }
+
+    @Nullable
+    public OverflowAware copy(IAttachmentHolder holder) {
+        if (overflow.isEmpty()) {
+            return null;
+        }
+        //Note: We can just copy the map as HashedItems are safe and can't be mutated
+        return new OverflowAware(new Object2IntLinkedOpenHashMap<>(overflow));
     }
 
     public static ListTag writeOverflow(Object2IntMap<HashedItem> overflow) {

@@ -95,7 +95,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     return InteractionResult.FAIL;
                 }
                 if (!world.isClientSide) {
-                    BlockData data = new BlockData(state, tile);
+                    BlockData data = BlockData.create(state, tile);
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }

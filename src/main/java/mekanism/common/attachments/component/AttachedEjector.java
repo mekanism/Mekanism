@@ -1,6 +1,7 @@
 package mekanism.common.attachments.component;
 
 import java.util.Arrays;
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
@@ -15,20 +16,29 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public final class AttachedEjector implements IAttachedComponent<TileComponentEjector> {
 
-    private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
+    @Deprecated
+    public static AttachedEjector createWithLegacy(IAttachmentHolder attachmentHolder) {
+        AttachedEjector ejector = create();
+        //TODO - 1.21: Remove this legacy way of loading data
+        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
+            ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_EJECTOR, CompoundTag::getCompound).ifPresent(ejector::deserializeNBT);
+        }
+        return ejector;
+    }
+
+    public static AttachedEjector create() {
+        return new AttachedEjector(new EnumColor[EnumUtils.SIDES.length], false, null);
+    }
+
+    private final EnumColor[] inputColors;
     private boolean strictInput;
     @Nullable
     private EnumColor outputColor;
 
-    public AttachedEjector(IAttachmentHolder attachmentHolder) {
-        loadLegacyData(attachmentHolder);
-    }
-
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_EJECTOR, CompoundTag::getCompound).ifPresent(this::deserializeNBT);
-        }
+    private AttachedEjector(EnumColor[] inputColors, boolean strictInput, @Nullable EnumColor outputColor) {
+        this.inputColors = inputColors;
+        this.strictInput = strictInput;
+        this.outputColor = outputColor;
     }
 
     public boolean isCompatible(AttachedEjector other) {
@@ -48,5 +58,13 @@ public final class AttachedEjector implements IAttachedComponent<TileComponentEj
     @Override
     public void deserializeNBT(CompoundTag ejectorNBT) {
         TileComponentEjector.deserialize(ejectorNBT, strict -> strictInput = strict, output -> outputColor = output, inputColors);
+    }
+
+    @Nullable
+    public AttachedEjector copy(IAttachmentHolder holder) {
+        if (!strictInput && outputColor == null && Arrays.stream(inputColors).allMatch(Objects::isNull)) {
+            return null;
+        }
+        return new AttachedEjector(Arrays.copyOf(inputColors, inputColors.length), strictInput, outputColor);
     }
 }
