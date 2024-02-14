@@ -1,4 +1,4 @@
-// 1.20.4	2023-12-08T20:08:13.9657236	Item model provider: mekanism
+// 1.20.4	2024-02-14T16:57:35.6935318	Item model provider: mekanism
 29c1bcca686efb20894d1ff7fd9abd1cffebe22a assets/mekanism/models/item/brine_bucket.json
 2164ccf4c43d268cdce324e9f08ff85d2c51b50a assets/mekanism/models/item/chlorine_bucket.json
 bdbc104ebfd36f0fdc9b83a8d22be99adeae531b assets/mekanism/models/item/clump_copper.json
@@ -66,6 +66,7 @@ ee30463972ddf024fb4790387ee1268e0ca44081 assets/mekanism/models/item/module_nutr
 a159b2e60dfa5f061bba30a0e81fbf3a64975bae assets/mekanism/models/item/module_radiation_shielding_unit.json
 24ff5109eef0048ed4bc6febba50fc84a34bbc25 assets/mekanism/models/item/module_shearing_unit.json
 b4ea1e4c905c939c985fed3c5d8e0ce60ff328e4 assets/mekanism/models/item/module_silk_touch_unit.json
+3b67e8bec0c78dded0c2457ead370ae55636432a assets/mekanism/models/item/module_soul_surfer_unit.json
 af6a03ef197ac17e730113412de406fff55dea7f assets/mekanism/models/item/module_teleportation_unit.json
 21b6d1f171a682659cb06dd4ddb88d6b0645639e assets/mekanism/models/item/module_vein_mining_unit.json
 9d8714f1067462575b192c84e3f5b99aa339d6f6 assets/mekanism/models/item/module_vision_enhancement_unit.json

@@ -1515,6 +1515,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
         add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
         add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
+        add(MekanismModules.SOUL_SURFER_UNIT, "Soul Surfer Unit", "Allows the user to surf effortlessly across the top of souls. Install multiple for a greater speed.");
     }
 
     private void addOre(OreType type, String description) {

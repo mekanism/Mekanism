@@ -118,4 +118,6 @@ public class MekanismModules {
                 .handlesModeChange());
     public static final ModuleRegistryObject<?> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit", () -> Enchantments.FROST_WALKER,
           () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2).rarity(Rarity.RARE));
+    public static final ModuleRegistryObject<?> SOUL_SURFER_UNIT = MODULES.registerEnchantBased("soul_surfer_unit", () -> Enchantments.SOUL_SPEED,
+          () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3).rarity(Rarity.RARE));
 }

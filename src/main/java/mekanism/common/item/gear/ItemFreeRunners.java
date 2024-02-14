@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -32,6 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -85,6 +88,26 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
+    }
+
+    private int getFakeEnchantmentLevel(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
+        if (enchantment == Enchantments.SOUL_SPEED && getMode(stack) == FreeRunnerMode.NORMAL) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Enchantment enchantment) {
+        return Math.max(getFakeEnchantmentLevel(stack, enchantment), super.getEnchantmentLevel(stack, enchantment));
+    }
+
+    @NotNull
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(@NotNull ItemStack stack) {
+        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
+        enchantments.merge(Enchantments.SOUL_SPEED, getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED), Math::max);
+        return enchantments;
     }
 
     @Override

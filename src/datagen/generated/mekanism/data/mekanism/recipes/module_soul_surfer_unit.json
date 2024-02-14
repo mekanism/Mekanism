@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:free_runners"
+    },
+    "A": {
+      "tag": "forge:alloys/elite"
+    },
+    "B": {
+      "tag": "minecraft:soul_fire_base_blocks"
+    },
+    "H": {
+      "item": "mekanism:pellet_polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "APA",
+    "H#H"
+  ],
+  "result": {
+    "item": "mekanism:module_soul_surfer_unit"
+  }
+}
