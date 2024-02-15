@@ -196,7 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Tankvolym: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Luftintag: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Ånginmatning: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Dumpar ånga",
   "turbine.mekanismgenerators.tooltip.steamdump.warning": "Vatten kommer INTE återvinnas",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Dumpar överskottsånga",
   "wind_generator.mekanismgenerators.no_wind": "Ingen vind",
   "wind_generator.mekanismgenerators.sky_blocked": "Himlen är blockerad"
 }
