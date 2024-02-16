@@ -20,7 +20,6 @@ public class JadeLookingAtHelper implements LookingAtHelper {
 
     @Override
     public void addText(Component text) {
-        //TODO - 1.20.4: Once Jade updates to run with neo's networking changes test to make sure this works properly using nbt instead of json as string
         ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, text).result().ifPresent(tag -> {
             CompoundTag textData = new CompoundTag();
             textData.put(TEXT, tag);
