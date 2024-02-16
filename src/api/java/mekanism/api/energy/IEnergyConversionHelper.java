@@ -25,9 +25,4 @@ public interface IEnergyConversionHelper {
      * @return The conversion rate config between Joules and Forge Energy.
      */
     IEnergyConversion feConversion();
-
-    /**
-     * @return The conversion rate config between Joules and IC2's EU.
-     */
-    IEnergyConversion euConversion();
 }

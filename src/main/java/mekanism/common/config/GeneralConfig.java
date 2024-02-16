@@ -72,8 +72,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue prefilledPigmentTanks;
     public final CachedBooleanValue prefilledSlurryTanks;
     //Energy Conversion
-    public final CachedBooleanValue blacklistIC2;
-    public final CachedFloatingLongValue ic2ConversionRate;
     public final CachedBooleanValue blacklistForge;
     public final CachedFloatingLongValue forgeConversionRate;
     public final CachedBooleanValue blacklistFluxNetworks;
@@ -199,11 +197,6 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         builder.comment("Energy Conversion Rate Settings").push(CONVERSION_CATEGORY);
-        blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
-              .worldRestart()
-              .define("blacklistIC2", false));
-        ic2ConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * euConversionRate = Joules)",
-              "euConversionRate", FloatingLong.createConst(10), CachedFloatingLongValue.ENERGY_CONVERSION);
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));

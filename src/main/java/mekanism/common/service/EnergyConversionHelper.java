@@ -19,9 +19,4 @@ public class EnergyConversionHelper implements IEnergyConversionHelper {
     public IEnergyConversion feConversion() {
         return EnergyUnit.FORGE_ENERGY;
     }
-
-    @Override
-    public IEnergyConversion euConversion() {
-        return EnergyUnit.ELECTRICAL_UNITS;
-    }
 }

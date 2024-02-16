@@ -1,21 +1,6 @@
 {
   "API Global: computerEnergyHelper": [
     {
-      "description": "Convert IC2 Energy Units to Mekanism Joules",
-      "methodName": "euToJoules",
-      "params": [
-        {
-          "type": "Number (FloatingLong)",
-          "javaType": "mekanism.api.math.FloatingLong",
-          "name": "eu"
-        }
-      ],
-      "returns": {
-        "type": "Number (FloatingLong)",
-        "javaType": "mekanism.api.math.FloatingLong"
-      }
-    },
-    {
       "description": "Convert Forge Energy to Mekanism Joules",
       "methodName": "feToJoules",
       "params": [
@@ -23,21 +8,6 @@
           "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "fe"
-        }
-      ],
-      "returns": {
-        "type": "Number (FloatingLong)",
-        "javaType": "mekanism.api.math.FloatingLong"
-      }
-    },
-    {
-      "description": "Convert Mekanism Joules to IC2 Energy Units",
-      "methodName": "joulesToEU",
-      "params": [
-        {
-          "type": "Number (FloatingLong)",
-          "javaType": "mekanism.api.math.FloatingLong",
-          "name": "joules"
         }
       ],
       "returns": {

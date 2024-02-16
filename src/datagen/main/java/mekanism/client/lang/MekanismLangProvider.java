@@ -656,8 +656,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addPackData(MekanismLang.MEKANISM, MekanismLang.PACK_DESCRIPTION);
         add(MekanismLang.DEBUG_TITLE, modName + " Debug");
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");
-        add(MekanismLang.FORGE, "MinecraftForge");
-        add(MekanismLang.IC2, "IndustrialCraft");
+        add(MekanismLang.FORGE, "NeoForge");
         add(MekanismLang.ERROR, "Error");
         add(MekanismLang.ALPHA_WARNING, "Warning: " + modName + " is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
@@ -1261,9 +1260,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ENERGY_JOULES_SHORT, "J");
         add(MekanismLang.ENERGY_FORGE, "Forge Energy");
         add(MekanismLang.ENERGY_FORGE_SHORT, "FE");
-        add(MekanismLang.ENERGY_EU, "Electrical Unit");
-        add(MekanismLang.ENERGY_EU_PLURAL, "Electrical Units");
-        add(MekanismLang.ENERGY_EU_SHORT, "EU");
         //Network Reader
         add(MekanismLang.NETWORK_READER_BORDER, "%1$s %2$s %1$s");
         add(MekanismLang.NETWORK_READER_TEMPERATURE, " *Temperature: %1$s");

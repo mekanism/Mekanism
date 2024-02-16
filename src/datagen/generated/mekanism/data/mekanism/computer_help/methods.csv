@@ -1,7 +1,5 @@
 Class,Method Name,Params,Returns,Restriction,Requires Public Security,Description
-API Global: computerEnergyHelper,euToJoules,eu: Number (FloatingLong),Number (FloatingLong),,false,Convert IC2 Energy Units to Mekanism Joules
 API Global: computerEnergyHelper,feToJoules,fe: Number (FloatingLong),Number (FloatingLong),,false,Convert Forge Energy to Mekanism Joules
-API Global: computerEnergyHelper,joulesToEU,joules: Number (FloatingLong),Number (FloatingLong),,false,Convert Mekanism Joules to IC2 Energy Units
 API Global: computerEnergyHelper,joulesToFE,joules: Number (FloatingLong),Number (FloatingLong),,false,Convert Mekanism Joules to Forge Energy
 API Global: computerFilterHelper,createMinerItemFilter,item: String (Item),Table (MinerItemStackFilter),,false,Create a Digital Miner Item Filter from an Item name
 API Global: computerFilterHelper,createMinerModIdFilter,modId: String,Table (MinerModIDFilter),,false,Create a Digital Miner Mod Id Filter from a mod id

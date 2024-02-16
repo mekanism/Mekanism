@@ -164,15 +164,4 @@ public class EnergyCompatUtils {
         }
         return null;
     }
-
-    /**
-     * Whether IC2 power should be used, taking into account whether it is installed or another mod is providing its API.
-     *
-     * @return if IC2 power should be used
-     */
-    public static boolean useIC2() {
-        //TODO: IC2
-        //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
-        return false;//Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.getOrDefault();
-    }
 }

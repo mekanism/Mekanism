@@ -16,7 +16,6 @@ public enum MekanismLang implements ILangEntry {
     LOG_FORMAT("constants", "log_format"),
     PACK_DESCRIPTION("constants", "pack_description"),
     FORGE("constants", "forge"),
-    IC2("constants", "ic2"),
     ERROR("constants", "error"),
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
@@ -606,9 +605,6 @@ public enum MekanismLang implements ILangEntry {
     ENERGY_JOULES_SHORT("energy", "joules.short"),
     ENERGY_FORGE("energy", "forge"),
     ENERGY_FORGE_SHORT("energy", "forge.short"),
-    ENERGY_EU("energy", "eu"),
-    ENERGY_EU_PLURAL("energy", "eu.plural"),
-    ENERGY_EU_SHORT("energy", "eu.short"),
     //Network Reader
     NETWORK_READER_BORDER("network_reader", "border"),
     NETWORK_READER_TEMPERATURE("network_reader", "temperature"),

@@ -16,7 +16,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -165,9 +164,7 @@ public class UnitDisplayUtils {
         },
         FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> MekanismConfig.general.forgeConversionRate,
               //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
-              () -> !MekanismConfig.general.blacklistForge.getOrDefault()),
-        ELECTRICAL_UNITS(MekanismLang.ENERGY_EU, MekanismLang.ENERGY_EU_PLURAL, MekanismLang.ENERGY_EU_SHORT, "eu", () -> MekanismConfig.general.ic2ConversionRate,
-              EnergyCompatUtils::useIC2);
+              () -> !MekanismConfig.general.blacklistForge.getOrDefault());
 
         private static final EnergyUnit[] TYPES = values();
 

@@ -31,7 +31,6 @@ public final class MekanismHooks {
     public static final String CURIOS_MODID = "curios";
     public static final String DARK_MODE_EVERYWHERE_MODID = "darkmodeeverywhere";
     public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
-    public static final String IC2_MOD_ID = "ic2";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String JSON_THINGS_MOD_ID = "jsonthings";
@@ -46,7 +45,6 @@ public final class MekanismHooks {
     public boolean CuriosLoaded;
     public boolean DMELoaded;
     public boolean FluxNetworksLoaded;
-    public boolean IC2Loaded;
     public boolean JEILoaded;
     public boolean JsonThingsLoaded;
     public boolean OC2Loaded;
@@ -95,7 +93,6 @@ public final class MekanismHooks {
         ModList modList = ModList.get();
         CCLoaded = modList.isLoaded(CC_MOD_ID);
         DMELoaded = modList.isLoaded(DARK_MODE_EVERYWHERE_MODID);
-        IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
         OC2Loaded = modList.isLoaded(OC2_MOD_ID);
         RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);

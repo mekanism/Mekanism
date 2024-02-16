@@ -430,29 +430,11 @@ enums:
   - EAST
 methods:
   'API Global: computerEnergyHelper':
-  - description: Convert IC2 Energy Units to Mekanism Joules
-    methodName: euToJoules
-    params:
-    - javaType: mekanism.api.math.FloatingLong
-      name: eu
-      type: Number (FloatingLong)
-    returns:
-      javaType: mekanism.api.math.FloatingLong
-      type: Number (FloatingLong)
   - description: Convert Forge Energy to Mekanism Joules
     methodName: feToJoules
     params:
     - javaType: mekanism.api.math.FloatingLong
       name: fe
-      type: Number (FloatingLong)
-    returns:
-      javaType: mekanism.api.math.FloatingLong
-      type: Number (FloatingLong)
-  - description: Convert Mekanism Joules to IC2 Energy Units
-    methodName: joulesToEU
-    params:
-    - javaType: mekanism.api.math.FloatingLong
-      name: joules
       type: Number (FloatingLong)
     returns:
       javaType: mekanism.api.math.FloatingLong
