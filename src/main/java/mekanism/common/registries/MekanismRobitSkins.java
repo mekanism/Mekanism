@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.DatapackDeferredRegister;
 import mekanism.common.registration.DeferredCodecHolder;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -37,7 +38,7 @@ public class MekanismRobitSkins {
 
     public static final Map<RobitPrideSkinData, ResourceKey<RobitSkin>> PRIDE_SKINS = Util.make(() -> {
         Map<RobitPrideSkinData, ResourceKey<RobitSkin>> internal = new EnumMap<>(RobitPrideSkinData.class);
-        for (RobitPrideSkinData data : RobitPrideSkinData.values()) {
+        for (RobitPrideSkinData data : EnumUtils.PRIDE_SKINS) {
             internal.put(data, ROBIT_SKINS.dataKey(data.lowerCaseName()));
         }
         return Collections.unmodifiableMap(internal);

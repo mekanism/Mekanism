@@ -12,6 +12,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
@@ -349,6 +350,7 @@ public class Mekanism {
         logger.info("Version {} initializing...", versionNumber);
         hooks.hookCommonSetup();
         setRecipeCacheManager(new ReloadListener());
+        HolidayManager.init();
 
         event.enqueueWork(() -> {
             //Collect annotation scan data

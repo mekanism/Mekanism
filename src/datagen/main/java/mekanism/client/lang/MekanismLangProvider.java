@@ -729,7 +729,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.KEY_HUD, "Show HUD");
         //Holiday
         add(MekanismLang.HOLIDAY_BORDER, "%1$s%2$s%1$s");
-        add(MekanismLang.HOLIDAY_SIGNATURE, "-aidancbrady");
+        add(MekanismLang.HOLIDAY_SIGNATURE, " - The Mekanism Team");
         add(MekanismLang.CHRISTMAS_LINE_ONE, "Merry Christmas, %1$s!");
         add(MekanismLang.CHRISTMAS_LINE_TWO, "May you have plenty of Christmas cheer");
         add(MekanismLang.CHRISTMAS_LINE_THREE, "and have a relaxing holiday with your");
@@ -738,6 +738,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NEW_YEAR_LINE_TWO, "Best wishes to you as we enter this");
         add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %1$s! :)");
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %1$s!");
+        add(MekanismLang.PRIDE_LINE_ONE, "Happy Pride Month, %1$s!");
+        add(MekanismLang.PRIDE_LINE_TWO, "Regardless of what anyone tells you,");
+        add(MekanismLang.PRIDE_LINE_THREE, "you are important!");
         //Generic
         //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
         add(MekanismLang.GENERIC_PERCENT, "%1$s%%");

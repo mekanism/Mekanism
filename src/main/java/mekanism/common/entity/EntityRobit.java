@@ -40,6 +40,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -324,6 +325,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
             energySlot.fillContainerOrConvert();
             recipeCacheLookupMonitor.updateAndProcess();
+
+            if (HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
+                //Randomize the robit's skin
+                setSkin(HolidayManager.getRandomBaseSkin(level().random), null);
+            }
         }
     }
 

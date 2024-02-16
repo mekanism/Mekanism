@@ -26,8 +26,10 @@ public class VoiceConnection extends Thread {
     private final Socket socket;
     private UUID uuid;
 
-    public VoiceConnection(Socket s) {
+    VoiceConnection(Socket s) {
+        super("VoiceServer Connection Thread");
         socket = s;
+        //Note: This is set as a Daemon thread because the parent thread is a daemon thread
     }
 
     @Override
@@ -72,7 +74,7 @@ public class VoiceConnection extends Thread {
             open = false;
         }
 
-        // Main client listen thread
+        // Main client listen thread (set to daemon because the voice connection is a daemon)
         new Thread(() -> {
             while (open) {
                 try {

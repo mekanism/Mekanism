@@ -106,6 +106,9 @@ public enum MekanismLang implements ILangEntry {
     NEW_YEAR_LINE_TWO("holiday", "new_year.2"),
     NEW_YEAR_LINE_THREE("holiday", "new_year.3"),
     MAY_4_LINE_ONE("holiday", "may_4.1"),
+    PRIDE_LINE_ONE("holiday", "pride.1"),
+    PRIDE_LINE_TWO("holiday", "pride.2"),
+    PRIDE_LINE_THREE("holiday", "pride.3"),
     //Generic
     GENERIC_PERCENT("generic", "percent"),
     GENERIC_WITH_COMMA("generic", "with_comma"),

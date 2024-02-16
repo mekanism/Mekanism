@@ -26,7 +26,6 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue enablePlayerSounds;
     public final CachedBooleanValue enableMachineSounds;
     public final CachedBooleanValue whiteRadialText;
-    public final CachedBooleanValue holidays;
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue opaqueTransmitters;
     public final CachedBooleanValue allowModeScroll;
@@ -66,8 +65,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enableMachineSounds", true));
         whiteRadialText = CachedBooleanValue.wrap(this, builder.comment("If enabled tries to force all radial menu text to be white.")
               .define("whiteRadialText", false));
-        holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years).")
-              .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")
               .defineInRange("baseSoundVolume", 1D, 0, 10));
         opaqueTransmitters = CachedBooleanValue.wrap(this, builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")

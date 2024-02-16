@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigCardAccess;
@@ -257,7 +258,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling ITileSound
     @Nullable
-    protected final SoundEvent soundEvent;
+    protected final Supplier<SoundEvent> soundEvent;
+    @Nullable
+    protected SoundEvent lastSoundEvent;
 
     /**
      * Only used on the client
@@ -291,7 +294,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
         }
-        soundEvent = hasSound() ? Attribute.getOrThrow(block, AttributeSound.class).getSoundEvent() : null;
+        soundEvent = hasSound() ? Attribute.getOrThrow(block, AttributeSound.class).getSound() : null;
     }
 
     private void setSupportedTypes(Block block) {
@@ -1306,11 +1309,20 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             if (--playSoundCooldown > 0) {
                 return;
             }
+            SoundEvent sound = soundEvent.get();
+            if (sound != lastSoundEvent) {
+                if (activeSound != null) {
+                    //The sound changed, stop it so that we can start it back up again
+                    SoundHandler.stopTileSound(getSoundPos());
+                    activeSound = null;
+                }
+                lastSoundEvent = sound;
+            }
 
             // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
+                activeSound = SoundHandler.startTileSound(lastSoundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again

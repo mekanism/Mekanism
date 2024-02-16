@@ -22,7 +22,9 @@ public class VoiceClient extends Thread {
     private final String ip;
 
     public VoiceClient(String ip) {
+        super("VoiceServer Client Thread " + ip);
         this.ip = ip;
+        setDaemon(true);
     }
 
     @Override

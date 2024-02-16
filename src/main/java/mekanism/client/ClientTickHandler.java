@@ -15,7 +15,7 @@ import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.HolidayManager;
+import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -75,7 +75,6 @@ public class ClientTickHandler {
     public static boolean firstTick = true;
     public static boolean visionEnhancement = false;
 
-    public boolean initHoliday = false;
     public boolean shouldReset = false;
 
     public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
@@ -148,8 +147,6 @@ public class ClientTickHandler {
     }
 
     public void tickStart() {
-        MekanismClient.ticksPassed++;
-
         if (firstTick && minecraft.level != null) {
             MekanismClient.launchClient();
             firstTick = false;
@@ -163,10 +160,7 @@ public class ClientTickHandler {
         }
 
         if (minecraft.level != null && minecraft.player != null && !minecraft.isPaused()) {
-            if (!initHoliday || MekanismClient.ticksPassed % SharedConstants.TICKS_PER_MINUTE == 0) {
-                HolidayManager.notify(Minecraft.getInstance().player);
-                initHoliday = true;
-            }
+            HolidayManager.notify(Minecraft.getInstance().player);
 
             //Reboot player sounds if needed
             SoundHandler.restartSounds();

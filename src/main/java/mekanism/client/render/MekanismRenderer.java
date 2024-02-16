@@ -15,7 +15,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
@@ -315,8 +314,6 @@ public class MekanismRenderer {
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
         redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
         teleporterPortal = map.getSprite(Mekanism.rl("block/teleporter_portal"));
-
-        DigitalMinerBakedModel.onStitch(event);
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);

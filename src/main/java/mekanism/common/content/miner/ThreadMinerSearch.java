@@ -37,7 +37,9 @@ public class ThreadMinerSearch extends Thread {
     public int found = 0;
 
     public ThreadMinerSearch(TileEntityDigitalMiner tile) {
+        super("Digital Miner Search thread " + tile.getBlockPos());
         this.tile = tile;
+        setDaemon(true);
     }
 
     public void setChunkCache(PathNavigationRegion cache) {

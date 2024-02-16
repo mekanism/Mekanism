@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -178,4 +179,9 @@ public class EnumUtils {
      * Cached value of {@link EnumColor#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final EnumColor[] COLORS = EnumColor.values();
+
+    /**
+     * Cached value of {@link RobitPrideSkinData#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final RobitPrideSkinData[] PRIDE_SKINS = RobitPrideSkinData.values();
 }

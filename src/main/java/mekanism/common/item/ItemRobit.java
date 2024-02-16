@@ -9,11 +9,13 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.InventoryUtils;
@@ -26,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -108,5 +111,16 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
         event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
+    }
+
+    @Override
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slot, isSelected);
+        if (!level.isClientSide && HolidayManager.hasRobitSkinsToday()) {
+            if (!stack.hasData(MekanismAttachmentTypes.ROBIT_SKIN) || stack.getData(MekanismAttachmentTypes.ROBIT_SKIN) == MekanismRobitSkins.BASE) {
+                //Randomize the robit's skin
+                stack.setData(MekanismAttachmentTypes.ROBIT_SKIN, HolidayManager.getRandomBaseSkin(level.random));
+            }
+        }
     }
 }

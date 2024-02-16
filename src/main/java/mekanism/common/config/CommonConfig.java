@@ -14,6 +14,7 @@ public class CommonConfig extends BaseMekanismConfig {
     public final CachedEnumValue<EnergyUnit> energyUnit;
     public final CachedEnumValue<TemperatureUnit> tempUnit;
     public final CachedBooleanValue enableDecayTimers;
+    public final CachedBooleanValue holidays;
 
     CommonConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -24,6 +25,8 @@ public class CommonConfig extends BaseMekanismConfig {
               .defineEnum("temperatureUnit", TemperatureUnit.KELVIN));
         enableDecayTimers = CachedBooleanValue.wrap(this, builder.comment("Show time to decay radiation when readings are above safe levels. Set to false on the client side to disable MekaSuit Geiger and Dosimeter Unit timers. Set to false on the server side to disable handheld Geiger Counter and Dosimeter timers.")
               .define("enableDecayTimers", true));
+        holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. And should robit skins be randomized on the server.")
+              .define("holidays", true));
         builder.pop();
         configSpec = builder.build();
     }

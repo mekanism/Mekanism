@@ -76,7 +76,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
         @Nullable
         @Override
         public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit robit) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit) {
                 RegistryAccess registryAccess;
                 if (world != null) {
                     registryAccess = world.registryAccess();
