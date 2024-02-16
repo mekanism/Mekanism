@@ -99,7 +99,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
     public final CachedIntValue maxPumpRange;
-    public final CachedBooleanValue pumpWaterSources;
+    public final CachedBooleanValue pumpInfiniteFluidSources;
     public final CachedIntValue pumpHeavyWaterAmount;
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
@@ -258,8 +258,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.comment("Pump Settings").push(PUMP_CATEGORY);
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
               .defineInRange("maxPumpRange", 80, 1, 512));
-        pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")
-              .define("pumpWaterSources", false));
+        pumpInfiniteFluidSources = CachedBooleanValue.wrap(this, builder.comment("If enabled and waterSourceConversion is enabled makes Water and Heavy Water blocks be removed from the world on pump. Similarly behavior for lavaSourceConversion and Lava")
+              .define("pumpInfiniteFluidSources", false));
         pumpHeavyWaterAmount = CachedIntValue.wrap(this, builder.comment("mB of Heavy Water that is extracted per block of Water by the Electric Pump with a Filter Upgrade.")
               .defineInRange("pumpHeavyWaterAmount", FluidType.BUCKET_VOLUME / 100, 1, FluidType.BUCKET_VOLUME));
         maxPlenisherNodes = CachedIntValue.wrap(this, builder.comment("Fluidic Plenisher stops after this many blocks.")

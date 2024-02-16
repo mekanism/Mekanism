@@ -57,6 +57,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
@@ -226,7 +228,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                     FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
                     if (validFluid(fluidStack)) {
                         //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
-                        if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
+                        if (shouldPump(level, sourceFluid)) {
                             //Note we only attempt taking if it is not water, or we want to pump water sources
                             // otherwise we assume the type from the fluid state is correct
                             ItemStack pickedUpStack = bucketPickup.pickupBlock(null, level, pos, blockState);
@@ -254,6 +256,19 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             }
         }
         return false;
+    }
+
+    private boolean shouldPump(Level level, Fluid sourceFluid) {
+        if (!MekanismConfig.general.pumpInfiniteFluidSources.get()) {
+            if (sourceFluid == Fluids.WATER) {
+                //If we don't pump infinite sources, only pump it if water conversion is turned off
+                return !level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
+            } else if (sourceFluid == Fluids.LAVA) {
+                //If we don't pump infinite sources, only pump it if lava conversion is turned off
+                return !level.getGameRules().getBoolean(GameRules.RULE_LAVA_SOURCE_CONVERSION);
+            }
+        }
+        return true;
     }
 
     private FluidStack getOutput(Fluid sourceFluid, boolean hasFilter) {
