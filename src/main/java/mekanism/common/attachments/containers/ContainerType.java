@@ -248,6 +248,15 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     public ATTACHMENT getDefault(IAttachmentHolder holder) {
+        ATTACHMENT attachment = getDefaultInternal(holder);
+        if (attachment == null) {
+            throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object that doesn't have containers of that type.");
+        }
+        return attachment;
+    }
+
+    @Nullable
+    private ATTACHMENT getDefaultInternal(IAttachmentHolder holder) {
         List<CONTAINER> defaultContainers = List.of();
         if (holder instanceof ItemStack stack) {
             if (!stack.isEmpty()) {
@@ -260,7 +269,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             defaultContainers = knownDefaultEntityContainers.getOrDefault(entity.getType(), s -> List.of()).apply(entity);
         }
         if (defaultContainers.isEmpty()) {
-            throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object that doesn't have containers of that type.");
+            return null;
         }
         //TODO: If we end up supporting other types of attachment holders than stacks and entities we will want to make sure to pass a contents listener to them
         // we don't need to for items or entities as attachments on them are always saved
@@ -358,8 +367,10 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             return null;
         }
         //Copy via deserialization
-        ATTACHMENT copy = getDefault(holder);
-        copy.deserializeNBT(serialized);
+        ATTACHMENT copy = getDefaultInternal(holder);
+        if (copy != null) {
+            copy.deserializeNBT(serialized);
+        }
         return copy;
     }
 

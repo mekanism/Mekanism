@@ -67,9 +67,6 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        //TODO - 1.20.4: When can this be null?? I don't believe it ever is and we don't check it in other spots
-        if (ejectorComponent != null) {
-            ejectorComponent.tickServer();
-        }
+        ejectorComponent.tickServer();
     }
 }

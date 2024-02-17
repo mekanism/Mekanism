@@ -130,7 +130,7 @@ public final class ModuleContainer implements IModuleContainer {
             return null;
         }
         if (!(holder instanceof ItemStack stack) || !IModuleHelper.INSTANCE.isModuleContainer(stack)) {
-            throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
+            return null;
         }
         ModuleContainer copy = new ModuleContainer(stack, new LinkedHashMap<>(enchantments));
         for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {

@@ -138,10 +138,10 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
     public FrequencyAware<FREQ> copy(IAttachmentHolder holder) {
         if (frequency == null) {
             return null;
-        }
-        if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == frequencyType) {
+        } else if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem &&
+                   frequencyItem.getFrequencyType() == frequencyType) {
             return new FrequencyAware<>(stack, frequencyType, identity, frequency, owner);
         }
-        throw new IllegalArgumentException("Attempted to attach frequency awareness to an object that does not support frequencies.");
+        return null;
     }
 }

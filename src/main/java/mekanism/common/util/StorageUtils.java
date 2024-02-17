@@ -315,7 +315,6 @@ public class StorageUtils {
     }
 
     public static double getEnergyRatio(ItemStack stack) {
-        //TODO - 1.20.4: Move this to using attachments maybe?
         IEnergyContainer container = getEnergyContainer(stack, 0);
         return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
     }

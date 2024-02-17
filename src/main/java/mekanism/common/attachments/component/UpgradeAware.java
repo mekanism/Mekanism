@@ -26,13 +26,22 @@ import org.jetbrains.annotations.Nullable;
 public class UpgradeAware implements IMekanismInventory, IAttachedComponent<TileComponentUpgrade> {
 
     public static UpgradeAware create(IAttachmentHolder attachmentHolder) {
+        UpgradeAware upgradeAware = createInternal(attachmentHolder);
+        if (upgradeAware == null) {
+            throw new IllegalArgumentException("Attempted to attach upgrade awareness to an object that does not support upgrades.");
+        }
+        return upgradeAware;
+    }
+
+    @Nullable
+    private static UpgradeAware createInternal(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
             AttributeUpgradeSupport upgradeSupport = Attribute.get(blockItem.getBlock(), AttributeUpgradeSupport.class);
             if (upgradeSupport != null) {
                 return new UpgradeAware(stack, upgradeSupport.supportedUpgrades());
             }
         }
-        throw new IllegalArgumentException("Attempted to attach upgrade awareness to an object that does not support upgrades.");
+        return null;
     }
 
     private final Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
@@ -105,9 +114,11 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
         if (upgrades.isEmpty() && upgradeSlots.stream().allMatch(IInventorySlot::isEmpty)) {
             return null;
         }
-        UpgradeAware copy = create(holder);
-        copy.upgrades.putAll(upgrades);
-        ContainerType.ITEM.copy(upgradeSlots, copy.upgradeSlots);
+        UpgradeAware copy = createInternal(holder);
+        if (copy != null) {
+            copy.upgrades.putAll(upgrades);
+            ContainerType.ITEM.copy(upgradeSlots, copy.upgradeSlots);
+        }
         return copy;
     }
 
