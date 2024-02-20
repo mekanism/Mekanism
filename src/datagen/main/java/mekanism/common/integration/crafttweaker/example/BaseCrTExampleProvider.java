@@ -310,7 +310,9 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
                 JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
-                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, serializedIngredient, false);
+                if (vanillaIngredient.getClass() != Ingredient.class || !serializedIngredient.has(JsonConstants.TAG)) {
+                    representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, serializedIngredient);
+                }
                 if (representation != null) {
                     amount = 1;
                 }

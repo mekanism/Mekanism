@@ -36,15 +36,17 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
                 }
             }
         } else if (input instanceof CompoundIngredient compoundIngredient) {
-            //Special handling for forge's compound ingredient to map all children
+            //Special handling for neo's compound ingredient to map all children
             boolean result = false;
             for (Ingredient child : compoundIngredient.getChildren()) {
                 result |= mapIngredient(recipe, child);
             }
             return result;
         } else if (input instanceof NBTIngredient nbtIngredient && nbtIngredient.isStrict()) {
-            //Special handling for forge's NBT Ingredient as it requires an exact NBT match
-            addNbtInputCache(HashedItem.create(input.getItems()[0]), recipe);
+            //Special handling for neo's NBT Ingredient as it requires an exact NBT or attachment match
+            for (ItemStack item : input.getItems()) {
+                addNbtInputCache(HashedItem.create(item), recipe);
+            }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
             // and instead have to just mark it as complex and test as needed

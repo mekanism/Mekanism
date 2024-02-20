@@ -63,8 +63,6 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -172,30 +170,25 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized) {
-        return basicImplicitIngredient(vanillaIngredient, amount, serialized, true);
+        if (serialized.isJsonObject()) {
+            return basicImplicitIngredient(vanillaIngredient, amount, serialized.getAsJsonObject());
+        }
+        return null;
     }
 
     @Nullable
-    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
-        if (serialized.isJsonObject()) {
-            JsonObject serializedIngredient = serialized.getAsJsonObject();
-            if (vanillaIngredient.getClass() == Ingredient.class) {
-                if (serializedIngredient.has(JsonConstants.ITEM)) {
-                    Optional<Item> item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
-                    if (item.isPresent()) {
-                        return ItemStackUtil.getCommandString(new ItemStack(item.get(), amount));
-                    }
-                } else if (handleTags && serializedIngredient.has(JsonConstants.TAG)) {
-                    KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
-                    return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
-                }
-            } else if (vanillaIngredient instanceof NBTIngredient) {
-                //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
-                return new IIngredientList(Arrays.stream(vanillaIngredient.getItems())
-                      .map(stack -> IItemStack.of(stack.copyWithCount(amount)))
-                      .toArray(IIngredient[]::new))
-                      .getCommandString();
-            }
+    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonObject serializedIngredient) {
+        if (vanillaIngredient.getClass() == Ingredient.class && serializedIngredient.has(JsonConstants.TAG)) {
+            KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
+            return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
+        } else if (vanillaIngredient.synchronizeWithContents() || vanillaIngredient instanceof NBTIngredient) {
+            //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
+            // we also handle any ingredients that are synchronized by just writing their contents
+            // as then we can build a grouped ingredient for them
+            return new IIngredientList(Arrays.stream(vanillaIngredient.getItems())
+                  .map(stack -> IItemStack.of(stack.copyWithCount(amount)))
+                  .toArray(IIngredient[]::new))
+                  .getCommandString();
         }
         return null;
     }
