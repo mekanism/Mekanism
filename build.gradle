@@ -399,6 +399,7 @@ test {
 dependencies {
     implementation "net.neoforged:neoforge:${forge_version}"
 
+    implementation project(":annotation-processor")
     annotationProcessor project(":annotation-processor")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
