@@ -58,8 +58,7 @@ public class EntityBabyEnderman extends EnderMan implements IBabyEntity {
 
     @Override
     public float ridingOffset(@NotNull Entity other) {
-        //TODO - 1.20.2: Test this
-        return -0.97F;
+        return -1.3F;
     }
 
     @Override

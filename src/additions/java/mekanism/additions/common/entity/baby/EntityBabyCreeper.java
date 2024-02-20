@@ -3,7 +3,6 @@ package mekanism.additions.common.entity.baby;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
@@ -54,12 +53,6 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
             return reward;
         }
         return super.getExperienceReward();
-    }
-
-    @Override
-    public float ridingOffset(@NotNull Entity other) {
-        //TODO - 1.20.2: Test this
-        return -0.66F;
     }
 
     @Override

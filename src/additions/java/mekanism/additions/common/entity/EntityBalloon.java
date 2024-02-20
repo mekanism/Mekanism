@@ -388,7 +388,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     @NotNull
     @Override
     protected AABB makeBoundingBox() {
-        //TODO - 1.20.2: Test this
         AABB boundingBox = super.makeBoundingBox();
         return boundingBox.setMinY(boundingBox.minY - OFFSET)
               .setMaxY(boundingBox.maxY - OFFSET);
