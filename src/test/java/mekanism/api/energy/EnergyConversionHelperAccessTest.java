@@ -22,7 +22,6 @@ class EnergyConversionHelperAccessTest {
         //Validate everything references the correct one
         int types = assertEquals(EnergyUnit.JOULES, IEnergyConversionHelper.INSTANCE.jouleConversion());
         types += assertEquals(EnergyUnit.FORGE_ENERGY, IEnergyConversionHelper.INSTANCE.feConversion());
-        types += assertEquals(EnergyUnit.ELECTRICAL_UNITS, IEnergyConversionHelper.INSTANCE.euConversion());
         //And finally validate that we actually have a test for every type
         Assertions.assertEquals(energyUnitCount, types);
     }

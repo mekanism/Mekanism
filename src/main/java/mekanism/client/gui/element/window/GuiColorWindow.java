@@ -90,7 +90,7 @@ public class GuiColorWindow extends GuiWindow {
         }));
 
         if (armorPreview != null) {
-            addChild(new GuiEntityPreview(gui, relativeX + 155 + extraWidth, relativeY + 17, 80, height - 24, 5, armorPreview));
+            addChild(new GuiEntityPreview(gui, relativeX + 155 + extraWidth, relativeY + 17, 80, height - 24, armorPreview));
         }
 
         setColor(Color.rgbi(128, 70, 70));

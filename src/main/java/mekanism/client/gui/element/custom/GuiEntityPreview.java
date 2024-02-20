@@ -9,26 +9,32 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class GuiEntityPreview extends GuiElement {
 
+    private static final Vector3f PREVIEW_TRANSLATION = new Vector3f();
+    private static final Quaternionf PREVIEW_ANGLE = new Quaternionf().rotateZ(Mth.PI);
+
     private final Supplier<LivingEntity> preview;
     private final int scale;
-    private final int border;
-    private final int size;
+    private final float xOffset;
+    private final float yOffset;
 
     private boolean isDragging;
     private float rotation;
 
-    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int size, int border, Supplier<LivingEntity> preview) {
-        this(gui, x, y, size, size, border, preview);
+    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int size, Supplier<LivingEntity> preview) {
+        this(gui, x, y, size, size, preview);
     }
 
-    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int width, int height, int border, Supplier<LivingEntity> preview) {
+    public GuiEntityPreview(IGuiWrapper gui, int x, int y, int width, int height, Supplier<LivingEntity> preview) {
         super(gui, x, y, width, height);
-        this.border = border;
-        this.size = Math.min(this.width, this.height);
-        this.scale = (this.size - 2 * this.border) / 2;
+        int size = Math.min(this.width, this.height);
+        this.scale = size / 2;
+        this.xOffset = this.width / 2F;
+        this.yOffset = this.height - 2 - (this.height - size) / 2F;
         this.preview = preview;
     }
 
@@ -38,23 +44,20 @@ public class GuiEntityPreview extends GuiElement {
         renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
     }
 
-    // renderEntityInInventoryFollowsAngle(
-    //      GuiGraphics p_282802_,
-    //      int pX,
-    //      int pY,
-    //      int pScale,
-    //      int p_294406_, ??
-    //      int p_294663_, ??
-    //      float pMouseX,
-    //      float angleXComponent,
-    //      float angleYComponent,
-    //      LivingEntity p_275689_
-    //   )
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        InventoryScreen.renderEntityInInventoryFollowsAngle(guiGraphics, relativeX + width / 2, relativeY + height - 2 - border - (height - size) / 2,
-              scale, /* TODO - 1.20.2 work out what these 3 are (mouseX guessed from what param was mapped in .1) */0, 0, mouseX, rotation, 0, preview.get());
+        LivingEntity preview = this.preview.get();
+        float oldBodyRot = preview.yBodyRot;
+        float oldYRot = preview.getYRot();
+        //Apply our rotation to the entity
+        preview.yBodyRot = 180.0F + rotation * 20.0F;
+        preview.setYRot(180.0F + rotation * 40.0F);
+        InventoryScreen.renderEntityInInventory(guiGraphics, relativeX + xOffset, relativeY + yOffset, scale, PREVIEW_TRANSLATION, PREVIEW_ANGLE, null, preview);
+        //Reset the values to what they were before we applied the rotation, even though our one use case doesn't actually care
+        // as we only use the preview entity for rendering, so the correct rotation gets set every time before it is rendered
+        preview.yBodyRot = oldBodyRot;
+        preview.setYRot(oldYRot);
     }
 
     @Override
