@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "タンク容量: %1$s",
   "turbine.mekanismgenerators.stats.vents": "蒸気排出口: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "蒸気搬入量: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "蒸気を破棄する",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "水は再利用されません",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "余分な蒸気を破棄する",
   "wind_generator.mekanismgenerators.no_wind": "送風がありません",
   "wind_generator.mekanismgenerators.sky_blocked": "空に面していません"
 }
