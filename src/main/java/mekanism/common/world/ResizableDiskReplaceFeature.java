@@ -14,20 +14,13 @@ public class ResizableDiskReplaceFeature extends Feature<ResizableDiskConfig> {
 
     @Override
     public boolean place(FeaturePlaceContext<ResizableDiskConfig> context) {
-        ResizableDiskConfig config = context.config();
-        DiskConfiguration vanillaConfig = new DiskConfiguration(
-                config.stateProvider,
-                config.target,
-                config.radius,
-                config.halfHeight.getAsInt()
-        );
         FeaturePlaceContext<DiskConfiguration> vanillaContext = new FeaturePlaceContext<>(
-                context.topFeature(),
-                context.level(),
-                context.chunkGenerator(),
-                context.random(),
-                context.origin(),
-                vanillaConfig
+              context.topFeature(),
+              context.level(),
+              context.chunkGenerator(),
+              context.random(),
+              context.origin(),
+              context.config().asVanillaConfig()
         );
         return Feature.DISK.place(vanillaContext);
     }

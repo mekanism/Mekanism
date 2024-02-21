@@ -21,6 +21,7 @@ import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.world.ConfigurableConstantInt;
+import mekanism.common.world.ConfigurableUniformInt;
 import mekanism.common.world.DisableableFeaturePlacement;
 import mekanism.common.world.ResizableDiskConfig;
 import mekanism.common.world.ResizableOreFeature;
@@ -39,10 +40,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -88,8 +92,11 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                       context.register(configuredFeature(name.withSuffix("_retrogen")), configureOreFeature(oreVeinType, MekanismFeatures.ORE_RETROGEN));
                   }
               }
-              context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(),
-                    new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), MekanismConfig.world.salt)));
+              context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(), new ResizableDiskConfig(
+                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.getBlock()),
+                    BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
+                    ConfigurableUniformInt.SALT
+              )));
           })
           .add(Registries.PLACED_FEATURE, context -> {
               for (OreType type : EnumUtils.ORE_TYPES) {

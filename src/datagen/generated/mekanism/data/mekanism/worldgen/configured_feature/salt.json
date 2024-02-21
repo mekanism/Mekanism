@@ -1,6 +1,9 @@
 {
   "type": "mekanism:disk",
   "config": {
+    "radius": {
+      "type": "mekanism:configurable_uniform"
+    },
     "state_provider": {
       "fallback": {
         "type": "minecraft:simple_state_provider",
@@ -9,6 +12,13 @@
         }
       },
       "rules": []
+    },
+    "target": {
+      "type": "minecraft:matching_blocks",
+      "blocks": [
+        "minecraft:dirt",
+        "minecraft:clay"
+      ]
     }
   }
 }
