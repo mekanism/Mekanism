@@ -21,6 +21,7 @@ import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.world.ConfigurableConstantInt;
+import mekanism.common.world.ConfigurableUniformInt;
 import mekanism.common.world.DisableableFeaturePlacement;
 import mekanism.common.world.ResizableDiskConfig;
 import mekanism.common.world.ResizableOreFeature;
@@ -39,17 +40,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -88,8 +94,11 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                       context.register(configuredFeature(name.withSuffix("_retrogen")), configureOreFeature(oreVeinType, MekanismFeatures.ORE_RETROGEN));
                   }
               }
-              context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(),
-                    new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), MekanismConfig.world.salt)));
+              context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(), new ResizableDiskConfig(
+                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.getBlock()),
+                    BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
+                    ConfigurableUniformInt.SALT
+              )));
           })
           .add(Registries.PLACED_FEATURE, context -> {
               for (OreType type : EnumUtils.ORE_TYPES) {
@@ -112,6 +121,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                     CountPlacement.of(new ConfigurableConstantInt(null, MekanismConfig.world.salt.perChunk)),
                     InSquarePlacement.spread(),
                     retrogen ? PlacementUtils.HEIGHTMAP_OCEAN_FLOOR : PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                    BlockPredicateFilter.forPredicate(BlockPredicate.matchesFluids(Fluids.WATER)),
                     BiomeFilter.biome()
               ));
           })
