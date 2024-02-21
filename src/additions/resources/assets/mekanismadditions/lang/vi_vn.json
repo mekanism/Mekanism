@@ -1,1 +1,6 @@
-{}
+{
+  "advancements.mekanismadditions.hurt_by_babies.description": "Bị thương từ tất cả quái con từ Mekanism Additions",
+  "advancements.mekanismadditions.not_the_babies.description": "Giết bất kỳ quái con từ Mekanism Additions",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Tài nguyên sử dụng cho Mekanism: Additions"
+}

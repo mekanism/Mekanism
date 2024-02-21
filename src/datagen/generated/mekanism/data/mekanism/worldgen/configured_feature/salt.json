@@ -1,8 +1,24 @@
 {
   "type": "mekanism:disk",
   "config": {
-    "state": {
-      "Name": "mekanism:block_salt"
+    "radius": {
+      "type": "mekanism:configurable_uniform"
+    },
+    "state_provider": {
+      "fallback": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "mekanism:block_salt"
+        }
+      },
+      "rules": []
+    },
+    "target": {
+      "type": "minecraft:matching_blocks",
+      "blocks": [
+        "minecraft:dirt",
+        "minecraft:clay"
+      ]
     }
   }
 }

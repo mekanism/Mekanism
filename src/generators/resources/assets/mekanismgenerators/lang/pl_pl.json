@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Objętość zbiornika: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Wyciągi: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Wejście pary: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Usuwanie pary",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Woda NIE zostanie odzyskana",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Usuwanie nadmiaru Pary",
   "wind_generator.mekanismgenerators.no_wind": "Brak wiatru",
   "wind_generator.mekanismgenerators.sky_blocked": "Niebo zablokowane"
 }

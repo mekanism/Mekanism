@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Volume du Réservoir: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventilations: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Entrée de Vapeur: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Vide la vapeur",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "L'eau ne sera PAS recyclée",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Vide les excès de vapeur",
   "wind_generator.mekanismgenerators.no_wind": "Pas de vent",
   "wind_generator.mekanismgenerators.sky_blocked": "Ciel caché"
 }
