@@ -34,14 +34,11 @@ import net.minecraft.world.phys.Vec3;
 @NothingNullByDefault
 public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, TileEntitySPSCasing> {
 
-    private static final CustomEffect CORE = new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png"));
+    private static final CustomEffect CORE = Util.make(new CustomEffect(MekanismUtils.getResource(ResourceType.RENDER, "energy_effect.png")),
+          core -> core.setColor(Color.rgbai(255, 255, 255, 240)));
     private static final Map<UUID, BoltRenderer> boltRendererMap = new HashMap<>();
     private static final float MIN_SCALE = 0.1F, MAX_SCALE = 4F;
     private static final RandomSource rand = RandomSource.create();
-
-    static {
-        CORE.setColor(Color.rgbai(255, 255, 255, 240));
-    }
 
     public static void clearBoltRenderers() {
         boltRendererMap.clear();

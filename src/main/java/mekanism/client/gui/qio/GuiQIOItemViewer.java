@@ -25,6 +25,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,12 +33,11 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
-    private static final Set<Character> ALLOWED_SPECIAL_CHARS = Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':');
-
-    static {
-        // include all search prefix chars
-        ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
-    }
+    private static final Set<Character> ALLOWED_SPECIAL_CHARS = Util.make(
+          Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':'),
+          // include all search prefix chars
+          allowsChars -> allowsChars.addAll(QueryType.getPrefixChars())
+    );
 
     protected final Inventory inv;
     private GuiTextField searchField;

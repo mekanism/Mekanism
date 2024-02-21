@@ -13,6 +13,7 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
@@ -35,13 +36,11 @@ import org.joml.Vector3f;
 @NothingNullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
-    private static final Matrix3f FAKE_NORMALS;
-
-    static {
+    private static final Matrix3f FAKE_NORMALS = Util.make(() -> {
         Vector3f NORMAL = new Vector3f(1, 1, 1);
         NORMAL.normalize();
-        FAKE_NORMALS = new Matrix3f().set(new Quaternionf().setAngleAxis(0, NORMAL.x, NORMAL.y, NORMAL.z));
-    }
+        return new Matrix3f().set(new Quaternionf().setAngleAxis(0, NORMAL.x, NORMAL.y, NORMAL.z));
+    });
 
     public RenderBin(BlockEntityRendererProvider.Context context) {
         super(context);

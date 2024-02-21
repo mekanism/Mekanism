@@ -15,6 +15,7 @@ import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
+import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,14 +51,12 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttributeRefresher {
 
     private static final ToolAction PAXEL_DIG = ToolAction.get("paxel_dig");
-    private static final Set<ToolAction> PAXEL_ACTIONS = Collections.newSetFromMap(new IdentityHashMap<>());
-
-    static {
-        PAXEL_ACTIONS.add(PAXEL_DIG);
-        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_PICKAXE_ACTIONS);
-        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_SHOVEL_ACTIONS);
-        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_AXE_ACTIONS);
-    }
+    private static final Set<ToolAction> PAXEL_ACTIONS = Util.make(Collections.newSetFromMap(new IdentityHashMap<>()), actions -> {
+        actions.add(PAXEL_DIG);
+        actions.addAll(ToolActions.DEFAULT_PICKAXE_ACTIONS);
+        actions.addAll(ToolActions.DEFAULT_SHOVEL_ACTIONS);
+        actions.addAll(ToolActions.DEFAULT_AXE_ACTIONS);
+    });
 
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
