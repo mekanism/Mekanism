@@ -418,9 +418,10 @@ dependencies {
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //TODO - 1.20.4: Re-enable once it doesn't cause connection issues on servers
+    /*runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
-    }
+    }*/
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")

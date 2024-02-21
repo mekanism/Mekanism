@@ -15,9 +15,6 @@ public interface IFrequency {
      * Gets the security mode of this frequency. This determines who is able to see and select the frequency from the frequency selection screens.
      *
      * @return The frequency's security mode.
-     *
-     * @implNote This currently is only ever {@link SecurityMode#PUBLIC} or {@link SecurityMode#PRIVATE}, but eventually it may be expanded to also return
-     * {@link SecurityMode#TRUSTED}, so no assumptions should be made as to this method only returning one and if it wasn't that one it is the other..
      */
     SecurityMode getSecurity();
 
