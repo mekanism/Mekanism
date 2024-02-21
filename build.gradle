@@ -646,22 +646,8 @@ publishing {
                     NodeList dependencies = asNode().dependencies
                     NodeList allDeps = dependencies.'*'
 
-                    // Remove forge deps
-                    allDeps.<Node> findAll() { Node el ->
-                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.neoforged'
-                    }.forEach() { Node el ->
-                        el.parent().remove(el)
-                    }
-                    //remove NeoGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.<Node> findAll() { Node el ->
-                        el.version.text().contains('_mapped_')
-                    }.each { Node el ->
-                        el.version.each { Node version ->
-                            def versionText = version.text()
-                            version.setValue(versionText.substring(0, versionText.indexOf('_mapped_')))
-                        }
-                        el.appendNode('optional', true)
-                    }
+                    //As we don't actually have any hard deps, just mark everything as optional so other people don't have to inherit them
+                    allDeps.<Node>each { Node el -> el.appendNode('optional', true) }
                 }
             }
         }
