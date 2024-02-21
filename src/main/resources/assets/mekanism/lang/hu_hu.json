@@ -388,6 +388,7 @@
   "connection.mekanism.push": "Tol",
   "constants.mekanism.alpha_warning.here": "itt",
   "constants.mekanism.error": "Hiba",
+  "constants.mekanism.forge": "MinecraftForge",
   "constants.mekanism.log_format": "[%1$s] %2$s",
   "constants.mekanism.mod_name": "Mekanizmus",
   "constants.mekanism.pack_description": "Mekanismhoz felhasznált források",
