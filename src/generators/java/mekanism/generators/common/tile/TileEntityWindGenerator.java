@@ -27,8 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
-    public static final float SPEED = 32F;
-    public static final float SPEED_SCALED = 256F / SPEED;
+    private static final float SPEED = 32F;
 
     private double angle;
     private FloatingLong currentMultiplier = FloatingLong.ZERO;
@@ -75,8 +74,20 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (getActive()) {
-            angle = (angle + (getBlockPos().getY() + 4F) / SPEED_SCALED) % 360;
+            angle = (angle + getHeightSpeedRatio()) % 360;
         }
+    }
+
+    public float getHeightSpeedRatio() {
+        int height = getBlockPos().getY() + 4;
+        if (level == null) {
+            //Fallback to default values, but in general this is not going to happen
+            return SPEED * height / 384F;
+        }
+        //Shift so that a wind generator at the min build height acts as if it was at a height of zero
+        int minBuildHeight = level.getMinBuildHeight();
+        height += Math.abs(minBuildHeight);
+        return SPEED * height / (level.getMaxBuildHeight() - minBuildHeight);
     }
 
     /**

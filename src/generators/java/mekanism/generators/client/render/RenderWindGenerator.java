@@ -59,8 +59,8 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
         double angle = tile.getAngle();
-        if (tile.getActive()) {
-            angle = (tile.getAngle() + ((tile.getBlockPos().getY() + 4F) / TileEntityWindGenerator.SPEED_SCALED) * partialTick) % 360;
+        if (tile.getActive() && partialTick > 0) {
+            angle = (angle + tile.getHeightSpeedRatio() * partialTick) % 360;
         }
         renderer.render(matrix, angle);
         matrix.popPose();
