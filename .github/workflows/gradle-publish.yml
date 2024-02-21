@@ -17,7 +17,7 @@ jobs:
       #for github maven? packages: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Find last successful build (current branch)
@@ -43,7 +43,7 @@ jobs:
           file: gradle.properties
           all: true
       - name: Cache FG outputs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mappings_channel }}-${{ steps.gradle_props.outputs.mappings_version }}-${{ steps.gradle_props.outputs.forge_version }}
           path: |
@@ -53,22 +53,21 @@ jobs:
             build/downloadMcpConfig
             build/extractSrg
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: Clean Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: clean
           gradle-version: wrapper
           cache-read-only: false
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: build outputChangelog
           gradle-version: wrapper
@@ -79,7 +78,7 @@ jobs:
           GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha != github.sha && steps.last_success_build.outputs.sha || steps.last_success_build_any.outputs.sha }}
 
       - name: Upload to workflow artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: |
             build/libs/
@@ -94,7 +93,7 @@ jobs:
           target_commitish: ${{ github.sha }}
 
       - name: Publish
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           arguments: curseforge modrinth publish
           gradle-version: wrapper

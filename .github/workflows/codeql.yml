@@ -2,9 +2,11 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "1.20.4", "master" ]
+    branches: [ "1.20.4" ]
   pull_request:
     branches: [ "1.20.4" ]
+    paths-ignore:
+      - '**/lang/*.json'
   schedule:
     - cron: "57 19 * * 4"
 
@@ -25,24 +27,40 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          distribution: zulu
+          distribution: 'temurin'
           java-version: 17
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: +security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
+          upload: false # disable the upload here - we will upload in a different action
+          output: sarif-results
+
+      - name: filter-sarif
+        uses: advanced-security/filter-sarif@v1
+        with:
+          # filter out NG generated MC sources
+          patterns: |
+            -build/tmp/.cache/**
+          input: sarif-results/${{ matrix.language }}.sarif
+          output: sarif-results/${{ matrix.language }}.sarif
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif-results/${{ matrix.language }}.sarif
