@@ -35,8 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Válvula de turbina",
   "block.mekanismgenerators.turbine_vent": "Ventilación de turbina",
   "block.mekanismgenerators.wind_generator": "Molino de viento",
-  "constants.mekanismgenerators.mod_name": "Mekanism: Generadores",
-  "constants.mekanismgenerators.pack_description": "Recursos usados por Mekanism: Generadores",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Recursos utilizados por Mekanism: Generators",
   "container.mekanismgenerators.advanced_solar_generator": "Generador solar avanzado",
   "container.mekanismgenerators.bio_generator": "Bio-Generador",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Adaptador lógico de reactor de fisión",
@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Volumen del Tanque: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventilaciones: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Entrada de Vapor: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Vaciando Vapor",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "El agua NO será reciclada",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Vaciando exceso de Vapor",
   "wind_generator.mekanismgenerators.no_wind": "¡Viento bloqueado!",
   "wind_generator.mekanismgenerators.sky_blocked": "¡Luz bloqueada!"
 }
