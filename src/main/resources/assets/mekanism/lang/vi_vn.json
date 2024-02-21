@@ -273,7 +273,6 @@
   "constants.mekanism.debug_title": "Gỡ lỗi Mekanism",
   "constants.mekanism.error": "Lỗi",
   "constants.mekanism.forge": "MinecraftForge",
-  "constants.mekanism.ic2": "IndustrialCraft",
   "constants.mekanism.log_format": "[%1$s] %2$s",
   "constants.mekanism.mod_name": "Mekanism",
   "container.mekanism.advanced_chemical_tank": "Bình hoá chất cải tiến",
