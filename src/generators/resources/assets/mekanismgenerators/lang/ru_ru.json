@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Вместимость бака: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Вентилей: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Вход пара: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Сброс пара",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Вода НЕ будет утилизироваться",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Сброс избыточного пара",
   "wind_generator.mekanismgenerators.no_wind": "Нет ветра",
   "wind_generator.mekanismgenerators.sky_blocked": "Не видно неба"
 }

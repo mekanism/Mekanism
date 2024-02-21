@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Volume serbatoio: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventole: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Vapore in entrata: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Rimozione vapore",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "L'acqua NON verrà riciclata",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Rimozione vapore in eccesso",
   "wind_generator.mekanismgenerators.no_wind": "Vento assente",
   "wind_generator.mekanismgenerators.sky_blocked": "Cielo oscurato"
 }

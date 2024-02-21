@@ -1,4 +1,6 @@
 {
+  "advancements.mekanismadditions.hurt_by_babies.description": "Sebesülj meg az összes baba ellenségtől a Mekanism: Kiegészítők-ból",
+  "advancements.mekanismadditions.not_the_babies.description": "Ölj meg egy baba Mekanism: Kiegészítők-ös ellenséget",
   "block.mekanismadditions.black_glow_panel": "Fekete Világító Panel",
   "block.mekanismadditions.black_plastic": "Fekete Műanyag Blokk",
   "block.mekanismadditions.black_plastic_fence": "Fekete Műanyag Korlát",
@@ -51,6 +53,8 @@
   "block.mekanismadditions.gray_slick_plastic": "Szürke Csúszós Műanyag Blokk",
   "block.mekanismadditions.green_glow_panel": "Zöld Világító Panel",
   "block.mekanismadditions.green_plastic": "Zöld Műanyag Blokk",
+  "constants.mekanismadditions.mod_name": "Mekanism: Kiegészítők",
+  "constants.mekanismadditions.pack_description": "Mekanism: Kiegészítők höz felhasznált források",
   "description.mekanismadditions.glow_panel": "Egy modern, örökké tartó fényforrás. Most több színben is!",
   "description.mekanismadditions.obsidian_tnt": "Egy rendkívül erős, obszidiánnal ötvözött TNT blokk. Használat csak saját felelősségre.",
   "entity.mekanismadditions.baby_creeper": "Bébi Creeper",
