@@ -14,12 +14,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -29,17 +27,16 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
-public class CopyAttachmentsLootFunction extends LootItemConditionalFunction {
+public class CopyAttachmentsLootFunction implements LootItemFunction {
 
-    public static final Codec<CopyAttachmentsLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
-          .and(NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().listOf().fieldOf("attachments").forGetter(function -> function.attachments))
-          .apply(instance, CopyAttachmentsLootFunction::new)
+    public static final Codec<CopyAttachmentsLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().listOf().fieldOf("attachments").forGetter(function -> function.attachments)
+          ).apply(instance, CopyAttachmentsLootFunction::new)
     );
 
     private final List<AttachmentType<?>> attachments;
 
-    private CopyAttachmentsLootFunction(List<LootItemCondition> conditions, List<AttachmentType<?>> attachments) {
-        super(conditions);
+    private CopyAttachmentsLootFunction(List<AttachmentType<?>> attachments) {
         this.attachments = attachments;
     }
 
@@ -49,7 +46,7 @@ public class CopyAttachmentsLootFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public ItemStack run(ItemStack stack, LootContext lootContext) {
+    public ItemStack apply(ItemStack stack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity != null) {
             for (AttachmentType<?> attachment : attachments) {
@@ -79,7 +76,7 @@ public class CopyAttachmentsLootFunction extends LootItemConditionalFunction {
         return MekanismLootFunctions.BLOCK_ENTITY_LOOT_CONTEXT;
     }
 
-    public static class Builder extends LootItemConditionalFunction.Builder<CopyAttachmentsLootFunction.Builder> {
+    public static class Builder implements LootItemFunction.Builder {
 
         private final List<AttachmentType<?>> attachmentTypes = new ArrayList<>();
 
@@ -96,15 +93,10 @@ public class CopyAttachmentsLootFunction extends LootItemConditionalFunction {
         }
 
         @Override
-        protected Builder getThis() {
-            return this;
-        }
-
-        @Override
         public LootItemFunction build() {
             //Ensure the operations are always saved in the same order
             attachmentTypes.sort(Comparator.comparing(NeoForgeRegistries.ATTACHMENT_TYPES::getKey));
-            return new CopyAttachmentsLootFunction(getConditions(), attachmentTypes);
+            return new CopyAttachmentsLootFunction(attachmentTypes);
         }
     }
 }

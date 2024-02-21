@@ -3,7 +3,7 @@ package mekanism.common.tile.base;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -715,8 +715,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Key is tile save string, value is the attachment target
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        //Ensure a consistent ordering
-        Map<String, Holder<AttachmentType<?>>> remap = new LinkedHashMap<>();
+        //Ordering is enforced by the copy function
+        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
         if (supportsRedstone()) {
             remap.put(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
         }

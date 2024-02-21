@@ -20,8 +20,8 @@
             {
               "function": "mekanism:copy_containers",
               "types": [
-                "mekanism:inventory_slots",
-                "mekanism:gas_tanks"
+                "mekanism:gas_tanks",
+                "mekanism:inventory_slots"
               ]
             },
             {

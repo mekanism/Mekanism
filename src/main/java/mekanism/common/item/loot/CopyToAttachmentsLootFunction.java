@@ -31,11 +31,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.nbt.NbtProviders;
@@ -48,20 +46,18 @@ import org.jetbrains.annotations.Nullable;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
-public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
+public class CopyToAttachmentsLootFunction implements LootItemFunction {
 
-    public static final Codec<CopyToAttachmentsLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
-          .and(instance.group(
+    public static final Codec<CopyToAttachmentsLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 NbtProviders.CODEC.fieldOf("source").forGetter(function -> function.source),
-                CopyOperation.CODEC.listOf().fieldOf("ops").forGetter(function -> function.operations))
+                CopyOperation.CODEC.listOf().fieldOf("ops").forGetter(function -> function.operations)
           ).apply(instance, CopyToAttachmentsLootFunction::new)
     );
 
     private final NbtProvider source;
     private final List<CopyOperation<?>> operations;
 
-    private CopyToAttachmentsLootFunction(List<LootItemCondition> conditions, NbtProvider source, List<CopyOperation<?>> operations) {
-        super(conditions);
+    private CopyToAttachmentsLootFunction(NbtProvider source, List<CopyOperation<?>> operations) {
         this.source = source;
         this.operations = operations;
     }
@@ -72,7 +68,7 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public ItemStack run(ItemStack stack, LootContext lootContext) {
+    public ItemStack apply(ItemStack stack, LootContext lootContext) {
         Tag tag = this.source.get(lootContext);
         if (tag != null) {
             for (CopyOperation<?> operation : this.operations) {
@@ -95,7 +91,7 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
         return copyData(ContextNbtProvider.forContextEntity(entityTarget));
     }
 
-    public static class Builder extends LootItemConditionalFunction.Builder<CopyToAttachmentsLootFunction.Builder> {
+    public static class Builder implements LootItemFunction.Builder {
 
         private final List<CopyOperation<?>> operations = new ArrayList<>();
         private final NbtProvider source;
@@ -118,16 +114,11 @@ public class CopyToAttachmentsLootFunction extends LootItemConditionalFunction {
         }
 
         @Override
-        protected Builder getThis() {
-            return this;
-        }
-
-        @Override
         public LootItemFunction build() {
             //Ensure the operations are always saved in the same order
             operations.sort(Comparator.<CopyOperation<?>, String>comparing(operation -> operation.sourcePath().string())
                   .thenComparing(operation -> NeoForgeRegistries.ATTACHMENT_TYPES.getKey(operation.target())));
-            return new CopyToAttachmentsLootFunction(getConditions(), this.source, this.operations);
+            return new CopyToAttachmentsLootFunction(this.source, this.operations);
         }
     }
 

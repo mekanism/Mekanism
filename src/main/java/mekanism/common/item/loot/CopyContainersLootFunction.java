@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -18,12 +19,10 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 /**
@@ -31,25 +30,24 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
-public class CopyContainersLootFunction extends LootItemConditionalFunction {
+public class CopyContainersLootFunction implements LootItemFunction {
 
-    public static final Codec<CopyContainersLootFunction> CODEC = RecordCodecBuilder.create(instance -> commonFields(instance)
-          .and(NeoForgeExtraCodecs.withAlternative(
-                ContainerType.CODEC.<List<ContainerType<?, ?, ?>>>flatComapMap(List::of, list -> {
-                    if (list.size() == 1) {
-                        return DataResult.success(list.get(0));
-                    }
-                    return DataResult.error(() -> "Must be a single container type to be represented as a direct reference");
-                }).fieldOf("type"),
-                ContainerType.CODEC.listOf().fieldOf("types")
-          ).forGetter(function -> function.containerTypes))
-          .apply(instance, CopyContainersLootFunction::new)
+    public static final Codec<CopyContainersLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                NeoForgeExtraCodecs.withAlternative(
+                      ContainerType.CODEC.<List<ContainerType<?, ?, ?>>>flatComapMap(List::of, list -> {
+                          if (list.size() == 1) {
+                              return DataResult.success(list.get(0));
+                          }
+                          return DataResult.error(() -> "Must be a single container type to be represented as a direct reference");
+                      }).fieldOf("type"),
+                      ContainerType.CODEC.listOf().fieldOf("types")
+                ).forGetter(function -> function.containerTypes)
+          ).apply(instance, CopyContainersLootFunction::new)
     );
 
     private final List<ContainerType<?, ?, ?>> containerTypes;
 
-    private CopyContainersLootFunction(List<LootItemCondition> conditions, List<ContainerType<?, ?, ?>> containerTypes) {
-        super(conditions);
+    private CopyContainersLootFunction(List<ContainerType<?, ?, ?>> containerTypes) {
         this.containerTypes = containerTypes;
     }
 
@@ -59,7 +57,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public ItemStack run(ItemStack stack, LootContext lootContext) {
+    public ItemStack apply(ItemStack stack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof TileEntityMekanism tile) {
             for (ContainerType<?, ?, ?> containerType : this.containerTypes) {
@@ -90,7 +88,7 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
         return new Builder();
     }
 
-    public static class Builder extends LootItemConditionalFunction.Builder<CopyContainersLootFunction.Builder> {
+    public static class Builder implements LootItemFunction.Builder {
 
         private final List<ContainerType<?, ?, ?>> containerTypes = new ArrayList<>();
 
@@ -103,13 +101,10 @@ public class CopyContainersLootFunction extends LootItemConditionalFunction {
         }
 
         @Override
-        protected Builder getThis() {
-            return this;
-        }
-
-        @Override
         public LootItemFunction build() {
-            return new CopyContainersLootFunction(getConditions(), this.containerTypes);
+            //Ensure the operations are always saved in the same order
+            containerTypes.sort(Comparator.comparing(ContainerType::getAttachmentName));
+            return new CopyContainersLootFunction(this.containerTypes);
         }
     }
 }

@@ -8,7 +8,6 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
-//TODO - 1.20.4: Should we remove the fact that some of these extend LootItemConditionalFunction?
 public class MekanismLootFunctions {
 
     public static final LootFunctionDeferredRegister REGISTER = new LootFunctionDeferredRegister(Mekanism.MODID);
@@ -16,11 +15,11 @@ public class MekanismLootFunctions {
 
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_ATTACHMENTS = REGISTER.registerCodec("copy_attachments", () -> CopyAttachmentsLootFunction.CODEC);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_CONTAINERS = REGISTER.registerCodec("copy_containers", () -> CopyContainersLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FREQUENCIES = REGISTER.registerCodec("copy_frequencies", () -> CopyFrequencyLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FILTERS = REGISTER.registerCodec("copy_filters", () -> CopyFiltersLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SECURITY = REGISTER.registerCodec("copy_security", () -> CopySecurityLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SIDE_CONFIG = REGISTER.registerCodec("copy_side_config", () -> CopySideConfigLootFunction.CODEC);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FREQUENCIES = REGISTER.registerBasic("copy_frequencies", () -> CopyFrequencyLootFunction.INSTANCE);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_FILTERS = REGISTER.registerBasic("copy_filters", () -> CopyFiltersLootFunction.INSTANCE);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SECURITY = REGISTER.registerBasic("copy_security", () -> CopySecurityLootFunction.INSTANCE);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_SIDE_CONFIG = REGISTER.registerBasic("copy_side_config", () -> CopySideConfigLootFunction.INSTANCE);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_TO_ATTACHMENTS = REGISTER.registerCodec("copy_to_attachments", () -> CopyToAttachmentsLootFunction.CODEC);
-    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_UPGRADES = REGISTER.registerCodec("copy_upgrades", () -> CopyUpgradesLootFunction.CODEC);
+    public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> COPY_UPGRADES = REGISTER.registerBasic("copy_upgrades", () -> CopyUpgradesLootFunction.INSTANCE);
     public static final MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> PERSONAL_STORAGE = REGISTER.registerBasic("personal_storage_contents", () -> PersonalStorageContentsLootFunction.INSTANCE);
 }
