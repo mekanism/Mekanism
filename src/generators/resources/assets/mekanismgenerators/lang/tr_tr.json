@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Tank Hacmi: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Havalandırmalar: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Buhar Girişi: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Buhar Boşaltılıyor",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Su geri dönüştürülmeyecek",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Fazlalık buhar boşaltılıyor",
   "wind_generator.mekanismgenerators.no_wind": "Rüzgar yok",
   "wind_generator.mekanismgenerators.sky_blocked": "Gökyüzü kapalı"
 }
