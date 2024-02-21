@@ -9,7 +9,6 @@
     "ingredient": {
       "type": "neoforge:nbt",
       "item": "minecraft:diamond_sword",
-      "strict": true,
       "tag": "{Damage:0}"
     }
   },

@@ -9,7 +9,6 @@
     "ingredient": {
       "type": "neoforge:nbt",
       "item": "minecraft:bow",
-      "strict": true,
       "tag": "{Damage:0}"
     }
   },

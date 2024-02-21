@@ -1,4 +1,4 @@
-// Recipes	2024-02-16T11:08:43.510253	Recipes
+// Recipes	2024-02-20T18:48:40.3350703	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 71ad17cca903c259e417bddb3ff01a2c0a38ccec data/mekanism/recipes/bin/advanced.json
@@ -3484,7 +3484,7 @@ f4cb868a7d5e1c183641b4b6d1f09d63c4c0518f data/mekanism/recipes/module_soul_surfe
 8ef00bf43e307485b327179eb2431f9f76a58a82 data/mekanism/recipes/module_vision_enhancement_unit.json
 2325ca1d67bc55582c3ee6689c9aede5889bebcf data/mekanism/recipes/network_reader.json
 dd5b3a0759f599c012c91428757384248b0991f5 data/mekanism/recipes/nucleosynthesizing/chorus_flower.json
-f67c151493e4353be7a7aaf621087c3bd71fd90b data/mekanism/recipes/nucleosynthesizing/crossbow.json
+a2130cb4f6fbf4fd16b8d5214adaddd06ea93f4c data/mekanism/recipes/nucleosynthesizing/crossbow.json
 8343829636b88ba1a0b1e2b83a629351a260d139 data/mekanism/recipes/nucleosynthesizing/crying_obsidian.json
 04ebe732d9941f860e6c62c5a8b170bd0685a3c2 data/mekanism/recipes/nucleosynthesizing/diamond.json
 b5e21cc2c49092c753677f69e77418dba838cfbc data/mekanism/recipes/nucleosynthesizing/dragon_egg.json
@@ -3501,7 +3501,7 @@ b14ea51f78558d26aa3a3fe428322c62e3ded8b4 data/mekanism/recipes/nucleosynthesizin
 0875e5520368705a5d363f1f030d8da4e53997f0 data/mekanism/recipes/nucleosynthesizing/quartz_block.json
 74f2ff17e069cf338b8ee0a6cfbed7862617a987 data/mekanism/recipes/nucleosynthesizing/redstone_block.json
 89c076f9de42cfd7085cd82cf0c8802be6565319 data/mekanism/recipes/nucleosynthesizing/respawn_anchor.json
-54ed020bb003a0f33b131c2181fd84a1f8f8f5fe data/mekanism/recipes/nucleosynthesizing/trident.json
+d5d75c4724f4629a804f844bcc59857fc889b3f2 data/mekanism/recipes/nucleosynthesizing/trident.json
 70e24f8c773f238d107f0d6275ce0b3681759d70 data/mekanism/recipes/nucleosynthesizing/wither_skeleton_skull.json
 b0fb47e2e5a6c4172b592a63bf0faea7a8c00da8 data/mekanism/recipes/nuggets/bronze.json
 0f07e7c506cdda42d8b2c0e5b1930b842f285eb8 data/mekanism/recipes/nuggets/refined_glowstone.json
