@@ -48,12 +48,14 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
+import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -119,6 +121,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                     CountPlacement.of(new ConfigurableConstantInt(null, MekanismConfig.world.salt.perChunk)),
                     InSquarePlacement.spread(),
                     retrogen ? PlacementUtils.HEIGHTMAP_OCEAN_FLOOR : PlacementUtils.HEIGHTMAP_TOP_SOLID,
+                    BlockPredicateFilter.forPredicate(BlockPredicate.matchesFluids(Fluids.WATER)),
                     BiomeFilter.biome()
               ));
           })
