@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-10T15:23:49.8726052	Datapack registries: mekanism
+// 1.20.1	2024-02-21T09:04:10.0095565	Datapack registries: mekanism
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
 6222f7bed3dbe2cad38b36dc733d552a267cc508 data/mekanism/forge/biome_modifier/fluorite.json
@@ -40,7 +40,7 @@ b7b822dbb043a13ac11c5090a5609ca9dae59d1b data/mekanism/worldgen/configured_featu
 cfb69c9d2edb55eb8f1ea6cca5dac7c905b6074d data/mekanism/worldgen/configured_feature/ore_uranium_buried_retrogen.json
 454f1a9ab88d910db33b35a65ab9fe4581499731 data/mekanism/worldgen/configured_feature/ore_uranium_small.json
 0a73564d8d19d2cd08507bc7608cd3ed5361ce0b data/mekanism/worldgen/configured_feature/ore_uranium_small_retrogen.json
-7e8999c7cbd1af28f021d34797f2b4479679cec5 data/mekanism/worldgen/configured_feature/salt.json
+d59ce8a4e31b6b2d4b767e1cd76f638dd4668edb data/mekanism/worldgen/configured_feature/salt.json
 ea988d3afac85b04f4ab2ecdd4cb411f4955e253 data/mekanism/worldgen/placed_feature/ore_fluorite_buried.json
 93fe97d3faa48572091e26ed547277fdf276908a data/mekanism/worldgen/placed_feature/ore_fluorite_buried_retrogen.json
 cf7839cd372c2df4f97eefeafa669ebed3f934ca data/mekanism/worldgen/placed_feature/ore_fluorite_normal.json
@@ -61,5 +61,5 @@ a1acf418c1ea078a4168760acfcf6b60bf6a9d1a data/mekanism/worldgen/placed_feature/o
 73e4cabd18c10672690461d2bb851f1e2ee6a35f data/mekanism/worldgen/placed_feature/ore_uranium_buried_retrogen.json
 b9f3c4450ad8e974528c2d2d3242aeca9997a68d data/mekanism/worldgen/placed_feature/ore_uranium_small.json
 03874b1ae12a51650fd920cf5b22b198627db2c9 data/mekanism/worldgen/placed_feature/ore_uranium_small_retrogen.json
-600ca97011eebf5342dee67c9917c3e8114b2c72 data/mekanism/worldgen/placed_feature/salt.json
-80c3b08e038f5585ecadb14f7499438db503ed42 data/mekanism/worldgen/placed_feature/salt_retrogen.json
+f2ef4739fd28840f75983cb741f91aa14c5e472e data/mekanism/worldgen/placed_feature/salt.json
+214cc6fcf54e13f900a818478deb96e4154a014e data/mekanism/worldgen/placed_feature/salt_retrogen.json

@@ -2,30 +2,27 @@ package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.List;
 import java.util.function.IntSupplier;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.WorldConfig.SaltConfig;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 
-public class ResizableDiskConfig implements FeatureConfiguration {
+public record ResizableDiskConfig(RuleBasedBlockStateProvider stateProvider, BlockPredicate target, IntProvider radius, IntSupplier halfHeight) implements FeatureConfiguration {
 
     public static final Codec<ResizableDiskConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-          BlockState.CODEC.fieldOf("state").forGetter(config -> config.state)
-    ).apply(builder, state -> new ResizableDiskConfig(state, MekanismConfig.world.salt)));
+          RuleBasedBlockStateProvider.CODEC.fieldOf("state_provider").forGetter(ResizableDiskConfig::stateProvider),
+          BlockPredicate.CODEC.fieldOf("target").forGetter(ResizableDiskConfig::target),
+          IntProvider.CODEC.fieldOf("radius").forGetter(ResizableDiskConfig::radius)
+    ).apply(builder, ResizableDiskConfig::new));
 
-    public final BlockState state;
-    public final IntProvider radius;
-    public final IntSupplier halfHeight;
-    public final List<BlockState> targets;
+    public ResizableDiskConfig(RuleBasedBlockStateProvider stateProvider, BlockPredicate target, IntProvider radius) {
+        this(stateProvider, target, radius, MekanismConfig.world.salt.halfHeight);
+    }
 
-    public ResizableDiskConfig(BlockState state, SaltConfig saltConfig) {
-        this.state = state;
-        this.radius = ConfigurableUniformInt.SALT;
-        this.halfHeight = saltConfig.halfHeight;
-        this.targets = List.of(Blocks.DIRT.defaultBlockState(), Blocks.CLAY.defaultBlockState(), this.state);
+    public DiskConfiguration asVanillaConfig() {
+        return new DiskConfiguration(stateProvider, target, radius, halfHeight.getAsInt());
     }
 }
