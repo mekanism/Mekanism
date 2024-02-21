@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Tamaño de tanque: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventilaciones: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Entrada de vapor: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Vaciando Vapor",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "El agua NO será reciclada",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Vaciando exceso de Vapor",
   "wind_generator.mekanismgenerators.no_wind": "Viento bloqueado",
   "wind_generator.mekanismgenerators.sky_blocked": "Luz bloqueada"
 }
