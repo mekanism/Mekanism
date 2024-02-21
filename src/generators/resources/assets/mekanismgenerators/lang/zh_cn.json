@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "储罐容积：%1$s",
   "turbine.mekanismgenerators.stats.vents": "排气口：%1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "蒸汽输入：%1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "排出蒸汽",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "水不可重复利用",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "排出过量蒸汽",
   "wind_generator.mekanismgenerators.no_wind": "无风",
   "wind_generator.mekanismgenerators.sky_blocked": "上方被遮挡"
 }
