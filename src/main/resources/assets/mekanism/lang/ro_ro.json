@@ -563,8 +563,6 @@
   "direction.mekanism.up": "Sus",
   "direction.mekanism.west": "Vest",
   "direction.mekanism.west.short": "V",
-  "energy.mekanism.eu": "Unitate electrică",
-  "energy.mekanism.eu.plural": "Unități electrice",
   "energy.mekanism.forge": "Energie Forge",
   "entity.mekanism.flame": "Flama aruncatorului de flacari",
   "equipment.mekanism.body": "Corp",
