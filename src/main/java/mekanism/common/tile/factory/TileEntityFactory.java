@@ -63,7 +63,6 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -387,7 +386,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.put(NBTConstants.PROGRESS, new IntArrayTag(Arrays.copyOf(progress, progress.length)));
+        nbtTags.putIntArray(NBTConstants.PROGRESS, Arrays.copyOf(progress, progress.length));
     }
 
     @Override

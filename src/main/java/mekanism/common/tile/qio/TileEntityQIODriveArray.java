@@ -112,7 +112,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.putByteArray(NBTConstants.DRIVES, driveStatus);
+        updateTag.putByteArray(NBTConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
         return updateTag;
     }
 

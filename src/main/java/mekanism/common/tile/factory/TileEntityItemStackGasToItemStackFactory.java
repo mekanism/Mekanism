@@ -49,7 +49,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -246,7 +245,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.put(NBTConstants.USED_SO_FAR, new LongArrayTag(Arrays.copyOf(usedSoFar, usedSoFar.length)));
+        nbtTags.putLongArray(NBTConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
     }
 
     @Override
