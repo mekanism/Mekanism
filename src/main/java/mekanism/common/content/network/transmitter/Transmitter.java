@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -402,9 +403,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        for (Direction direction : EnumUtils.DIRECTIONS) {
-            NBTUtils.writeEnum(updateTag, NBTConstants.SIDE + direction.ordinal(), getConnectionTypeRaw(direction));
-        }
+        updateTag.putIntArray(NBTConstants.CONNECTION, getRawConnections());
         //Transmitter
         if (hasTransmitterNetwork()) {
             updateTag.putUUID(NBTConstants.NETWORK, getTransmitterNetwork().getUUID());
@@ -415,9 +414,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
-        for (Direction direction : EnumUtils.DIRECTIONS) {
-            NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
-        }
+        readRawConnections(tag, NBTConstants.SIDE);
         //Transmitter
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.NETWORK, networkID -> {
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
@@ -447,18 +444,35 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public void read(@NotNull CompoundTag nbtTags) {
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
-        for (Direction direction : EnumUtils.DIRECTIONS) {
-            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
-        }
+        readRawConnections(nbtTags, NBTConstants.CONNECTION);
     }
 
     @NotNull
     public CompoundTag write(@NotNull CompoundTag nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
-        for (Direction direction : EnumUtils.DIRECTIONS) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), getConnectionTypeRaw(direction));
-        }
+        nbtTags.putIntArray(NBTConstants.CONNECTION, getRawConnections());
         return nbtTags;
+    }
+
+    private int[] getRawConnections() {
+        int[] raw = new int[EnumUtils.DIRECTIONS.length];
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            raw[i] = getConnectionTypeRaw(EnumUtils.DIRECTIONS[i]).ordinal();
+        }
+        return raw;
+    }
+
+    private void readRawConnections(CompoundTag tag, String legacyKey) {
+        if (tag.contains(NBTConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
+            int[] raw = tag.getIntArray(NBTConstants.CONNECTION);
+            for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
+                setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.byIndexStatic(raw[i]));
+            }
+        } else {//TODO - 1.21?: Remove this legacy way of reading it and inline the passed key
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                NBTUtils.setEnumIfPresent(tag, legacyKey + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
+            }
+        }
     }
 
     private void recheckRedstone() {

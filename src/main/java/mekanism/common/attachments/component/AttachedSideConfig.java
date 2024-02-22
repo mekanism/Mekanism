@@ -16,7 +16,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -85,11 +84,11 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
                 configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
             }
             if (!info.sideConfig.isEmpty()) {
-                CompoundTag sideConfig = new CompoundTag();
-                for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
+                int[] sideData = new int[EnumUtils.SIDES.length];
+                for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+                    sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
                 }
-                configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
+                configNBT.putIntArray(NBTConstants.CONFIG + type.ordinal(), sideData);
             }
         }
         return configNBT.isEmpty() ? null : configNBT;

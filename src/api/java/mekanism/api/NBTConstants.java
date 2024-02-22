@@ -130,6 +130,10 @@ public final class NBTConstants {
     public static final String INFUSE_TYPE_STORED = "infuseType";
     public static final String INFUSION_TANKS = "InfusionTanks";
     public static final String INJECTION_RATE = "injectionRate";
+    /**
+     * @since 10.5.0
+     */
+    public static final String INPUT_COLOR = "inputColor";
     public static final String INVALID = "invalid";
     public static final String INVERSE = "inverse";
     public static final String INVERSE_REQUIRES_REPLACE = "inverseReplace";

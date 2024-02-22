@@ -50,6 +50,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -298,8 +299,16 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         strictInputSetter.accept(ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT));
         outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor));
         //Input colors
-        for (int i = 0; i < inputColors.length; i++) {
-            inputColors[i] = NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR + i, TransporterUtils::readColor);
+        if (ejectorNBT.contains(NBTConstants.INPUT_COLOR, Tag.TAG_INT_ARRAY)) {
+            int[] colors = ejectorNBT.getIntArray(NBTConstants.INPUT_COLOR);
+            for (int i = 0; i < colors.length && i < inputColors.length; i++) {
+                inputColors[i] = TransporterUtils.readColor(colors[i]);
+            }
+        } else {//TODO - 1.21?: Remove this legacy way of reading it, and use the commented line instead
+            //Arrays.fill(inputColors, null);
+            for (int i = 0; i < inputColors.length; i++) {
+                inputColors[i] = NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR + i, TransporterUtils::readColor);
+            }
         }
     }
 
@@ -317,11 +326,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
         }
         //Input colors
+        int[] colors = new int[inputColors.length];
+        boolean hasColor = false;
         for (int i = 0; i < inputColors.length; i++) {
-            EnumColor inputColor = inputColors[i];
-            if (inputColor != null) {
-                ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColor));
+            EnumColor color = inputColors[i];
+            colors[i] = TransporterUtils.getColorIndex(color);
+            if (color != null) {
+                hasColor = true;
             }
+        }
+        if (hasColor) {
+            ejectorNBT.putIntArray(NBTConstants.INPUT_COLOR, colors);
         }
         return ejectorNBT;
     }

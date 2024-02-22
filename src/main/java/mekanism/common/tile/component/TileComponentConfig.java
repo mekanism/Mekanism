@@ -45,6 +45,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -289,15 +290,26 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
         configInfo.forEach((type, info) -> {
             NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
-            NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
-                for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
-                        if (info.setDataType(dataType, side)) {
-                            onChange.accept(type, side);
-                        }
-                    });
+            String configKey = NBTConstants.CONFIG + type.ordinal();
+            if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
+                int[] sideData = configNBT.getIntArray(configKey);
+                for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
+                    RelativeSide side = EnumUtils.SIDES[i];
+                    if (info.setDataType(DataType.byIndexStatic(sideData[i]), side)) {
+                        onChange.accept(type, side);
+                    }
                 }
-            });
+            } else {//TODO - 1.21?: Remove this legacy way of reading it
+                NBTUtils.setCompoundIfPresent(configNBT, configKey, sideConfig -> {
+                    for (RelativeSide side : EnumUtils.SIDES) {
+                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
+                            if (info.setDataType(dataType, side)) {
+                                onChange.accept(type, side);
+                            }
+                        });
+                    }
+                });
+            }
         });
     }
 
@@ -314,11 +326,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             if (full) {
                 configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
             }
-            CompoundTag sideConfig = new CompoundTag();
-            for (RelativeSide side : EnumUtils.SIDES) {
-                NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), info.getDataType(side));
+            int[] sideData = new int[EnumUtils.SIDES.length];
+            for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+                sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
             }
-            configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
+            configNBT.putIntArray(NBTConstants.CONFIG + type.ordinal(), sideData);
         }
         return configNBT;
     }

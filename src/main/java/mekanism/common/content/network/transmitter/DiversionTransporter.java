@@ -17,6 +17,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -78,17 +79,26 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private void readModes(@NotNull CompoundTag tag) {
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            int index = i;
-            NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
+        if (tag.contains(NBTConstants.MODE, Tag.TAG_INT_ARRAY)) {
+            int[] modeIndices = tag.getIntArray(NBTConstants.MODE);
+            for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
+                modes[i] = DiversionControl.byIndexStatic(modeIndices[i]);
+            }
+        } else {//TODO - 1.21?: Remove this legacy way of reading it
+            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+                int index = i;
+                NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
+            }
         }
     }
 
     @NotNull
     private CompoundTag writeModes(@NotNull CompoundTag nbtTags) {
-        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.MODE + i, modes[i]);
+        int[] modeIndices = new int[modes.length];
+        for (int i = 0; i < modes.length; i++) {
+            modeIndices[i] = modes[i].ordinal();
         }
+        nbtTags.putIntArray(NBTConstants.MODE, modeIndices);
         return nbtTags;
     }
 
