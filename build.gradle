@@ -439,9 +439,8 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minecraft_version}-forge-api:${cc_tweaked_version}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minecraft_version}-core-api:${cc_tweaked_version}")
-    //runtimeOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    //runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
