@@ -21,7 +21,7 @@ import net.minecraft.util.ExtraCodecs;
 @NothingNullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
-    public static final Codec<FloatingLong> CODEC = new PrimitiveCodec<FloatingLong>() {
+    public static final Codec<FloatingLong> CODEC = new PrimitiveCodec<>() {
         @Override
         public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
             return ops.getNumberValue(input).map(number -> fromNumber(number, true));

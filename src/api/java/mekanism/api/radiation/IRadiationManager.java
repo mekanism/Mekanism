@@ -112,7 +112,7 @@ public interface IRadiationManager {
     /**
      * Removes the radiation source at the given location.
      *
-     * @param coord Location.
+     * @param pos Location.
      */
     void removeRadiationSource(GlobalPos pos);
 

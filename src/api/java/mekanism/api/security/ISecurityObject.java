@@ -1,5 +1,6 @@
 package mekanism.api.security;
 
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 
 /**
@@ -21,9 +22,9 @@ public interface ISecurityObject extends IOwnerObject {
      *
      * @return Current security mode.
      *
-     * @apiNote To retrieve the "effective" security mode of this object {@link ISecurityUtils#getSecurityMode(Object, boolean)} or
+     * @apiNote To retrieve the "effective" security mode of this object {@link ISecurityUtils#getSecurityMode(Supplier, Supplier, boolean)} or
      * {@link ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)} should be used instead.
-     * @see ISecurityUtils#getSecurityMode(Object, boolean)
+     * @see ISecurityUtils#getSecurityMode(Supplier, Supplier, boolean)
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
     SecurityMode getSecurityMode();

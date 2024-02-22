@@ -44,6 +44,6 @@ public record PacketNetworkScale(UUID networkID, float scale) implements IMekani
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeUUID(networkID);
         buffer.writeFloat(scale);
-        PacketUtils.log("Sending scale '{}' update message for network with id {}", networkID);
+        PacketUtils.log("Sending scale '{}' update message for network with id {}", scale, networkID);
     }
 }

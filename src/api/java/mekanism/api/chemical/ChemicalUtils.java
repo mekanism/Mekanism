@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import mekanism.api.Action;
@@ -141,10 +142,8 @@ public class ChemicalUtils {
             return empty;
         }
         CHEMICAL chemical = registry.get(name);
-        if (chemical == null) {//Note: This should never be null as the registry defaults to the empty variant, but we validate it anyway
-            return empty;
-        }
-        return chemical;
+        //Note: This should never be null as the registry defaults to the empty variant, but we validate it anyway
+        return Objects.requireNonNullElse(chemical, empty);
     }
 
     /**

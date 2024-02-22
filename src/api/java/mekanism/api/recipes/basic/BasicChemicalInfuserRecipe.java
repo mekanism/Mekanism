@@ -62,6 +62,7 @@ public class BasicChemicalInfuserRecipe extends ChemicalInfuserRecipe implements
         return Collections.singletonList(output);
     }
 
+    @Override
     public GasStack getOutputRaw() {
         return output;
     }

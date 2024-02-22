@@ -37,8 +37,8 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
         this.stack = stack;
         List<IInventorySlot> slots = new ArrayList<>();
         craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
-        for (byte tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
-            QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, tableIndex);
+        for (int tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
+            QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, (byte) tableIndex);
             craftingWindows[tableIndex] = craftingWindow;
             for (int slot = 0; slot < 9; slot++) {
                 slots.add(craftingWindow.getInputSlot(slot));

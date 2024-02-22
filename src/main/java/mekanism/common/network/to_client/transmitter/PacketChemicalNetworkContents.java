@@ -41,6 +41,6 @@ public record PacketChemicalNetworkContents(UUID networkID, BoxedChemical chemic
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeUUID(networkID);
         chemical.write(buffer);
-        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", networkID);
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", chemical.getChemical().getRegistryName(), networkID);
     }
 }

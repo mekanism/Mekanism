@@ -7,6 +7,7 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -41,6 +42,6 @@ public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) imple
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeUUID(networkID);
         fluid.writeToPacket(buffer);
-        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", networkID);
+        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(fluid.getFluid()), networkID);
     }
 }
