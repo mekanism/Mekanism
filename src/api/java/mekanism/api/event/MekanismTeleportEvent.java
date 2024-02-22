@@ -1,5 +1,6 @@
 package mekanism.api.event;
 
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +14,7 @@ import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
  *
  * @since 10.3.9
  */
+@NothingNullByDefault
 public class MekanismTeleportEvent extends EntityTeleportEvent {
 
     /**

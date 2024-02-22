@@ -4,11 +4,13 @@ import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class FluidTankRateLimitFluidTank extends RateLimitFluidTank {
 
     public static FluidTankRateLimitFluidTank create(FluidTankTier tier) {
