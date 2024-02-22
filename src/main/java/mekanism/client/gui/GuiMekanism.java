@@ -575,7 +575,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // shift back a whole lot so we can stack more windows
         //TODO - 1.20: Validate this, used to translate the modelViewStack
         pose.translate(0, 0, -500);
-        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         pose.popPose();
     }
