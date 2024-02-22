@@ -40,25 +40,36 @@ public final class MekanismHooks {
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String WILDFIRE_GENDER_MOD_ID = "wildfire_gender";
 
-    public boolean CCLoaded;
-    public boolean CraftTweakerLoaded;
-    public boolean CuriosLoaded;
-    public boolean DMELoaded;
-    public boolean FluxNetworksLoaded;
-    public boolean JEILoaded;
-    public boolean JsonThingsLoaded;
-    public boolean OC2Loaded;
-    public boolean ProjectELoaded;
-    public boolean RecipeStagesLoaded;
-    public boolean TOPLoaded;
-    public boolean WildfireGenderModLoaded;
+    public final boolean CCLoaded;
+    public final boolean CraftTweakerLoaded;
+    public final boolean CuriosLoaded;
+    public final boolean DMELoaded;
+    public final boolean FluxNetworksLoaded;
+    public final boolean JEILoaded;
+    public final boolean JsonThingsLoaded;
+    public final boolean OC2Loaded;
+    public final boolean ProjectELoaded;
+    public final boolean RecipeStagesLoaded;
+    public final boolean TOPLoaded;
+    public final boolean WildfireGenderModLoaded;
 
-    public void hookConstructor(final IEventBus bus) {
+    public MekanismHooks() {
         ModList modList = ModList.get();
+        CCLoaded = modList.isLoaded(CC_MOD_ID);
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         CuriosLoaded = modList.isLoaded(CURIOS_MODID);
+        DMELoaded = modList.isLoaded(DARK_MODE_EVERYWHERE_MODID);
+        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+        JEILoaded = modList.isLoaded(JEI_MOD_ID);
         JsonThingsLoaded = modList.isLoaded(JSON_THINGS_MOD_ID);
+        OC2Loaded = modList.isLoaded(OC2_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
+        RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
+        TOPLoaded = modList.isLoaded(TOP_MOD_ID);
+        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
+    }
+
+    public void hookConstructor(final IEventBus bus) {
         if (CuriosLoaded) {
             CuriosIntegration.addListeners(bus);
         }
@@ -82,21 +93,11 @@ public final class MekanismHooks {
     }
 
     public void hookCapabilityRegistration() {
-        //Note: Caps get registered before common setup, so we need to make sure these values have been set
-        ModList modList = ModList.get();
-        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
-        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         EnergyCompatUtils.initLoadedCache();
     }
 
     public void hookCommonSetup() {
         ModList modList = ModList.get();
-        CCLoaded = modList.isLoaded(CC_MOD_ID);
-        DMELoaded = modList.isLoaded(DARK_MODE_EVERYWHERE_MODID);
-        JEILoaded = modList.isLoaded(JEI_MOD_ID);
-        OC2Loaded = modList.isLoaded(OC2_MOD_ID);
-        RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
-        TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
             if (CCLoaded) {
