@@ -1,13 +1,13 @@
 package mekanism.common.config.listener;
 
+import java.util.function.Supplier;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.config.value.CachedValue;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 
 public class ConfigBasedCachedFLSupplier extends ConfigBasedCachedSupplier<FloatingLong> implements FloatingLongSupplier {
 
-    public ConfigBasedCachedFLSupplier(NonNullSupplier<FloatingLong> resolver, CachedValue<?>... dependantConfigValues) {
+    public ConfigBasedCachedFLSupplier(Supplier<FloatingLong> resolver, CachedValue<?>... dependantConfigValues) {
         super(resolver, dependantConfigValues);
     }
 }

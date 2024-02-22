@@ -3,17 +3,16 @@ package mekanism.common.config.listener;
 import java.util.function.Supplier;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConfigBasedCachedSupplier<VALUE> implements NonNullSupplier<VALUE>, Supplier<VALUE> {
+public class ConfigBasedCachedSupplier<VALUE> implements Supplier<VALUE> {
 
-    private final NonNullSupplier<VALUE> resolver;
+    private final Supplier<VALUE> resolver;
     @Nullable
     private VALUE cachedValue;
 
-    public ConfigBasedCachedSupplier(NonNullSupplier<VALUE> resolver, CachedValue<?>... dependantConfigValues) {
+    public ConfigBasedCachedSupplier(Supplier<VALUE> resolver, CachedValue<?>... dependantConfigValues) {
         this.resolver = resolver;
         IConfigValueInvalidationListener refreshListener = this::refresh;
         for (CachedValue<?> configValue : dependantConfigValues) {

@@ -2,12 +2,12 @@ package mekanism.client.gui.element.slot;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSequencedSlotDisplay extends GuiElement {
@@ -17,9 +17,9 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     private int stackSwitchTicker;
     @NotNull
     private ItemStack renderStack = ItemStack.EMPTY;
-    private final NonNullSupplier<List<ItemStack>> stackListSupplier;
+    private final Supplier<List<ItemStack>> stackListSupplier;
 
-    public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, NonNullSupplier<List<ItemStack>> stackListSupplier) {
+    public GuiSequencedSlotDisplay(IGuiWrapper gui, int x, int y, Supplier<List<ItemStack>> stackListSupplier) {
         super(gui, x, y, 16, 16);
         this.stackListSupplier = stackListSupplier;
         //Mark it as false for active so that it doesn't intercept click events and ensures that it properly clears it

@@ -1,10 +1,10 @@
 package mekanism.common.capabilities.resolver;
 
 import java.util.List;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.common.util.NonNullLazy;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapabilityResolver<CONTEXT> {
 
     public static <CAPABILITY, CONTEXT> BasicCapabilityResolver<CAPABILITY, CONTEXT> create(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
-          NonNullSupplier<CAPABILITY> supplier) {
+          Supplier<CAPABILITY> supplier) {
         return new BasicCapabilityResolver<>(supportedCapability, supplier);
     }
 
@@ -20,16 +20,16 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
      * Creates a capability resolver that strongly caches the result of the supplier. Persisting the calculated value through capability invalidation.
      */
     public static <CAPABILITY, CONTEXT> BasicCapabilityResolver<CAPABILITY, CONTEXT> persistent(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
-          NonNullSupplier<CAPABILITY> supplier) {
-        return create(supportedCapability, supplier instanceof NonNullLazy ? supplier : NonNullLazy.of(supplier));
+          Supplier<CAPABILITY> supplier) {
+        return create(supportedCapability, supplier instanceof Lazy ? supplier : Lazy.of(supplier));
     }
 
     private final List<BlockCapability<?, CONTEXT>> supportedCapabilities;
-    private final NonNullSupplier<CAPABILITY> supplier;
+    private final Supplier<CAPABILITY> supplier;
     @Nullable
     private CAPABILITY cachedCapability;
 
-    protected BasicCapabilityResolver(BlockCapability<CAPABILITY, CONTEXT> capabilityType, NonNullSupplier<CAPABILITY> supplier) {
+    protected BasicCapabilityResolver(BlockCapability<CAPABILITY, CONTEXT> capabilityType, Supplier<CAPABILITY> supplier) {
         this.supportedCapabilities = List.of(capabilityType);
         this.supplier = supplier;
     }

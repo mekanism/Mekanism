@@ -1,7 +1,6 @@
 package mekanism.api.math;
 
 import java.util.function.Supplier;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -9,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  * easier to declare {@link Supplier}'s for {@link FloatingLong}s.
  */
 @FunctionalInterface
-public interface FloatingLongSupplier extends Supplier<FloatingLong>, NonNullSupplier<FloatingLong> {
+public interface FloatingLongSupplier extends Supplier<FloatingLong> {
 
     @NotNull
     @Override
