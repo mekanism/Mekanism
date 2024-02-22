@@ -25,6 +25,10 @@
 				"south": {"uv": [1, 1, 2, 2], "texture": "#6"},
 				"west": {"uv": [1, 1, 2, 2], "texture": "#6"},
 				"up": {"uv": [1, 1, 2, 2], "texture": "#6"}
+			},
+			"neoforge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		}
 	]
