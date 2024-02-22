@@ -147,7 +147,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
@@ -194,7 +193,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -228,11 +226,7 @@ public class ClientRegistration {
         NeoForge.EVENT_BUS.register(new ClientTickHandler());
         NeoForge.EVENT_BUS.register(new RenderTickHandler());
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SoundHandler::onTilePlaySound);
-        if (ModList.get().isLoaded(MekanismHooks.JEI_MOD_ID)) {
-            //Note: We check this directly instead of using our value stored in Mekanism hooks
-            // as that is initialized in CommonSetup and I believe that may be fired in parallel
-            // to ClientSetup, in which case there would be a chance this gets ran before it is
-            // properly initialized and will have the wrong value
+        if (Mekanism.hooks.JEILoaded) {
             NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
         IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
