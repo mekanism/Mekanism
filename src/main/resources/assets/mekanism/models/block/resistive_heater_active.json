@@ -15,16 +15,16 @@
 	"elements": [
 		{
 			"name": "port_left",
-			"from": [-0.005, 4, 4],
-			"to": [0.995, 12, 12],
+			"from": [-0.008, 4, 4],
+			"to": [0.998, 12, 12],
 			"faces": {
 				"west": {"uv": [8, 0, 0, 8], "texture": "#5", "cullface": "west"}
 			}
 		},
 		{
 			"name": "port_left_led",
-			"from": [-0.005, 4, 4],
-			"to": [-0.005, 12, 12],
+			"from": [-0.008, 4, 4],
+			"to": [-0.008, 12, 12],
 			"faces": {
 				"west": {"uv": [8, 8, 16, 16], "texture": "#7", "cullface": "west"}
 			},
@@ -35,16 +35,16 @@
 		},
 		{
 			"name": "port_right",
-			"from": [15.005, 4, 4],
-			"to": [16.005, 12, 12],
+			"from": [15.008, 4, 4],
+			"to": [16.008, 12, 12],
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#5", "cullface": "east"}
 			}
 		},
 		{
 			"name": "port_right_led",
-			"from": [16.005, 4, 4],
-			"to": [16.005, 12, 12],
+			"from": [16.008, 4, 4],
+			"to": [16.008, 12, 12],
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#7", "cullface": "east"}
 			},

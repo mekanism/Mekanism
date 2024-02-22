@@ -26,8 +26,8 @@
 		},
 		{
 			"name": "drive_status_led_1",
-			"from": [11, 5, 15.005],
-			"to": [12, 6, 16.005],
+			"from": [11, 5, 15.008],
+			"to": [12, 6, 16.008],
 			"faces": {
 				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
 			},
@@ -38,8 +38,8 @@
 		},
 		{
 			"name": "drive_status_led_2",
-			"from": [11, 3, 15.005],
-			"to": [12, 4, 16.005],
+			"from": [11, 3, 15.008],
+			"to": [12, 4, 16.008],
 			"faces": {
 				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
 			},
@@ -50,8 +50,8 @@
 		},
 		{
 			"name": "drive_frequency_led_right",
-			"from": [14, 10, 15.005],
-			"to": [15, 13, 16.005],
+			"from": [14, 10, 15.008],
+			"to": [15, 13, 16.008],
 			"faces": {
 				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
 			},
@@ -62,8 +62,8 @@
 		},
 		{
 			"name": "drive_frequency_led_left",
-			"from": [1, 10, 15.005],
-			"to": [2, 13, 16.005],
+			"from": [1, 10, 15.008],
+			"to": [2, 13, 16.008],
 			"faces": {
 				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
 			},

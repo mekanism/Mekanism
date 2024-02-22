@@ -21,8 +21,8 @@
 		},
 		{
 			"name": "qio_dashboard_screen_led",
-			"from": [2, 1.005, 2],
-			"to": [14, 1.005, 14],
+			"from": [2, 1.008, 2],
+			"to": [14, 1.008, 14],
 			"faces": {
 				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1}
 			},
