@@ -52,7 +52,7 @@ public class BillboardingEffectRenderer {
         Quaternionf quaternion = camera.rotation();
         Vector3f[] vertexPos = {new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                 new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vec3 pos = effect.getPos(partialTick);
+        Vec3 pos = effect.getPos(partialTick).subtract(camera.getPosition());
         for (Vector3f vector3f : vertexPos) {
             quaternion.transform(vector3f);
             vector3f.mul(effect.getScale());

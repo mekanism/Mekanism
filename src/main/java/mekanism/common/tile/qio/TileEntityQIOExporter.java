@@ -74,6 +74,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         }
         Direction direction = getDirection();
         IItemHandler backHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(direction.getOpposite()), direction);
+        //TODO - 1.20.4: Optimize exporting into transporters
         if (backHandler == null) {
             return;
         }

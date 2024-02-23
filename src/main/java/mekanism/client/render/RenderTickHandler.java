@@ -195,7 +195,7 @@ public class RenderTickHandler {
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
             renderStage(event, boltRenderer.hasBoltsToRender(), (camera, renderer, poseStack, renderTick, partialTick) -> {
-                boltRenderer.render(partialTick, poseStack, renderer);
+                boltRenderer.render(partialTick, poseStack, renderer, camera.getPosition());
                 renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
             });
         }
@@ -203,14 +203,7 @@ public class RenderTickHandler {
 
     private void renderStage(RenderLevelStageEvent event, boolean shouldRender, StageRenderer renderer) {
         if (shouldRender) {
-            Camera camera = event.getCamera();
-            PoseStack matrix = event.getPoseStack();
-            matrix.pushPose();
-            // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-            Vec3 camVec = camera.getPosition();
-            matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-            renderer.render(camera, minecraft.renderBuffers().bufferSource(), matrix, event.getRenderTick(), event.getPartialTick());
-            matrix.popPose();
+            renderer.render(event.getCamera(), minecraft.renderBuffers().bufferSource(), event.getPoseStack(), event.getRenderTick(), event.getPartialTick());
         }
     }
 
@@ -529,6 +522,10 @@ public class RenderTickHandler {
     @FunctionalInterface
     private interface StageRenderer {
 
+        /**
+         *
+         * @param camera Camera position, in general rendering will have to be translated by the inverse position of the client viewing camera to get back to 0, 0, 0
+         */
         void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
     }
 

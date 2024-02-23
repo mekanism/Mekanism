@@ -16,6 +16,8 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public class BoltRenderer {
@@ -39,6 +41,10 @@ public class BoltRenderer {
     }
 
     public void render(float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn) {
+        render(partialTicks, matrixStack, bufferIn, null);
+    }
+
+    public void render(float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, @Nullable Vec3 cameraPos) {
         VertexConsumer buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
         Matrix4f matrix = matrixStack.last().pose();
         Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
@@ -57,7 +63,7 @@ public class BoltRenderer {
                 if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
                     data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
                 }
-                data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp));
+                data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp, cameraPos));
 
                 if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
                     iter.remove();
@@ -108,13 +114,16 @@ public class BoltRenderer {
             this.createdTimestamp = timestamp;
         }
 
-        public void render(Matrix4f matrix, VertexConsumer buffer, Timestamp timestamp) {
+        public void render(Matrix4f matrix, VertexConsumer buffer, Timestamp timestamp, @Nullable Vec3 cameraPos) {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             RenderBounds bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.start(); i < bounds.end(); i++) {
-                renderQuads.get(i).getVecs().forEach(v -> buffer.vertex(matrix, (float) v.x, (float) v.y, (float) v.z)
-                      .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
-                      .endVertex());
+                renderQuads.get(i).getVecs().forEach(v -> {
+                    Vec3 shiftedVertex = cameraPos == null ? v : v.subtract(cameraPos);
+                    buffer.vertex(matrix, (float) shiftedVertex.x, (float) shiftedVertex.y, (float) shiftedVertex.z)
+                          .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
+                          .endVertex();
+                });
             }
         }
 
