@@ -10,14 +10,14 @@ import net.darkhax.curseforgegradle.UploadArtifact
 import java.util.function.Consumer
 
 plugins {
-    id 'org.ajoberstar.grgit.service' version '5.2.1'
+    id 'org.ajoberstar.grgit.service' version '5.2.2'
     id 'net.darkhax.curseforgegradle' version '1.1.18'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.93'//https://projects.neoforged.net/neoforged/neogradle
+    id 'net.neoforged.gradle.userdev' version '7.0.94'//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
