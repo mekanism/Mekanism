@@ -1,6 +1,7 @@
 package mekanism.common.integration;
 
 import java.util.List;
+import java.util.function.Predicate;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
@@ -55,18 +56,20 @@ public final class MekanismHooks {
 
     public MekanismHooks() {
         ModList modList = ModList.get();
-        CCLoaded = modList.isLoaded(CC_MOD_ID);
-        CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
-        CuriosLoaded = modList.isLoaded(CURIOS_MODID);
-        DMELoaded = modList.isLoaded(DARK_MODE_EVERYWHERE_MODID);
-        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
-        JEILoaded = modList.isLoaded(JEI_MOD_ID);
-        JsonThingsLoaded = modList.isLoaded(JSON_THINGS_MOD_ID);
-        OC2Loaded = modList.isLoaded(OC2_MOD_ID);
-        ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
-        RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
-        TOPLoaded = modList.isLoaded(TOP_MOD_ID);
-        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
+        //Note: The modlist is null when running tests
+        Predicate<String> loadedCheck = modList == null ? modid -> false : modList::isLoaded;
+        CCLoaded = loadedCheck.test(CC_MOD_ID);
+        CraftTweakerLoaded = loadedCheck.test(CRAFTTWEAKER_MOD_ID);
+        CuriosLoaded = loadedCheck.test(CURIOS_MODID);
+        DMELoaded = loadedCheck.test(DARK_MODE_EVERYWHERE_MODID);
+        FluxNetworksLoaded = loadedCheck.test(FLUX_NETWORKS_MOD_ID);
+        JEILoaded = loadedCheck.test(JEI_MOD_ID);
+        JsonThingsLoaded = loadedCheck.test(JSON_THINGS_MOD_ID);
+        OC2Loaded = loadedCheck.test(OC2_MOD_ID);
+        ProjectELoaded = loadedCheck.test(PROJECTE_MOD_ID);
+        RecipeStagesLoaded = loadedCheck.test(RECIPE_STAGES_MOD_ID);
+        TOPLoaded = loadedCheck.test(TOP_MOD_ID);
+        WildfireGenderModLoaded = loadedCheck.test(WILDFIRE_GENDER_MOD_ID);
     }
 
     public void hookConstructor(final IEventBus bus) {
@@ -97,7 +100,6 @@ public final class MekanismHooks {
     }
 
     public void hookCommonSetup() {
-        ModList modList = ModList.get();
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
             if (CCLoaded) {
@@ -107,7 +109,7 @@ public final class MekanismHooks {
 
         //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.
         // Modifying the result doesn't apply properly when "quick crafting"
-        if (modList.isLoaded("fastbench")) {
+        if (ModList.get().isLoaded("fastbench")) {
             NeoForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         }
     }
