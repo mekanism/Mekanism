@@ -86,13 +86,13 @@ public class ItemBalloon extends Item {
                 return InteractionResult.FAIL;
             }
             Level world = context.getLevel();
-            if (WorldUtils.isValidReplaceableBlock(world, pos)) {
+            if (WorldUtils.isValidReplaceableBlock(world, null, pos)) {
                 pos = pos.below();
             }
             if (!Block.canSupportCenter(world, pos, Direction.UP)) {
                 return InteractionResult.FAIL;
             }
-            if (WorldUtils.isValidReplaceableBlock(world, pos.above()) && WorldUtils.isValidReplaceableBlock(world, pos.above(2))) {
+            if (WorldUtils.isValidReplaceableBlock(world, null, pos.above()) && WorldUtils.isValidReplaceableBlock(world, null, pos.above(2))) {
                 world.removeBlock(pos.above(), false);
                 world.removeBlock(pos.above(2), false);
                 if (!world.isClientSide) {

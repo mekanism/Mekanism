@@ -58,8 +58,10 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     @Override
     public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
-        return (hasBounding == null || WorldUtils.areBlocksValidAndReplaceable(context.getLevel(), hasBounding.getPositions(context.getClickedPos(), state))) &&
-               super.placeBlock(context, state);
+        if (hasBounding == null || WorldUtils.areBlocksValidAndReplaceable(context.getLevel(), context, hasBounding.getPositions(context.getClickedPos(), state))) {
+            return super.placeBlock(context, state);
+        }
+        return false;
     }
 
     @Override

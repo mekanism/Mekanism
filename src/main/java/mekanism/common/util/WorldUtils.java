@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
@@ -532,8 +533,8 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull BlockPos... positions) {
-        return areBlocksValidAndReplaceable(world, Arrays.stream(positions));
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos... positions) {
+        return areBlocksValidAndReplaceable(world, baseContext, Arrays.stream(positions));
     }
 
     /**
@@ -541,9 +542,9 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull Collection<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
-        return areBlocksValidAndReplaceable(world, positions.stream());
+        return areBlocksValidAndReplaceable(world, baseContext, positions.stream());
     }
 
     /**
@@ -551,8 +552,8 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @NotNull Stream<BlockPos> positions) {
-        return positions.allMatch(pos -> isValidReplaceableBlock(world, pos));
+    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull Stream<BlockPos> positions) {
+        return positions.allMatch(pos -> isValidReplaceableBlock(world, baseContext, pos));
     }
 
     /**
@@ -560,8 +561,14 @@ public class WorldUtils {
      *
      * @return True if the block can be replaced and is within the world's bounds.
      */
-    public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return isBlockInBounds(world, pos) && world.getBlockState(pos).canBeReplaced();
+    public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos pos) {
+        return getBlockState(world, pos)
+              .filter(state -> {
+                  if (baseContext == null) {
+                      return state.canBeReplaced();
+                  }
+                  return state.canBeReplaced(BlockPlaceContext.at(baseContext, pos, baseContext.getClickedFace()));
+              }).isPresent();
     }
 
     /**
