@@ -45,7 +45,8 @@ jobs:
       - name: Cache FG outputs
         uses: actions/cache@v4
         with:
-          key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mappings_channel }}-${{ steps.gradle_props.outputs.mappings_version }}-${{ steps.gradle_props.outputs.forge_version }}
+          key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.forge_version }}
+          #TODO - 1.20.4: Update what directories we cache
           path: |
             build/fg_cache
             build/createMcpToSrg
