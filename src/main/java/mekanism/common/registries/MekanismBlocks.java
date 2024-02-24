@@ -504,7 +504,7 @@ public class MekanismBlocks {
                                   gas -> MekanismRecipeType.DISSOLUTION.getInputCache().containsInputB(null, gas.getStack(1))
                             ),
                             stack.getData(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER).getGasTank()
-                      )).addMissingMergedAttachments(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER, false)
+                      )).addMissingMergedTanks(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER, false, false)
                       .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                             .addGasSlotWithConversion(0)
                             .addInput(MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputA)
@@ -538,7 +538,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>>> CHEMICAL_CRYSTALLIZER =
           BLOCKS.register("chemical_crystallizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addMissingMergedAttachments(MekanismAttachmentTypes.CRYSTALLIZER_CONTENTS_HANDLER, false)
+                      .addMissingMergedTanks(MekanismAttachmentTypes.CRYSTALLIZER_CONTENTS_HANDLER, false, false)
                       .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                             .addContainerSlot(stack.getData(MekanismAttachmentTypes.CRYSTALLIZER_CONTENTS_HANDLER), MergedChemicalInventorySlot::fill)
                             .addOutput()
@@ -885,7 +885,7 @@ public class MekanismBlocks {
           Machine<TileEntityChemicalTank> type) {
         return registerTieredBlock(type, "_chemical_tank", color -> new BlockTileModel<>(type, properties -> properties.mapColor(color)), ItemBlockChemicalTank::new)
               .forItemHolder(holder -> holder
-                    .addMissingMergedCapabilityTanks(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER, false)
+                    .addMissingMergedTanks(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER, false, true)
                     .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
                         MergedChemicalTank tank = stack.getData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER);
                         return ItemSlotsBuilder.builder(stack)

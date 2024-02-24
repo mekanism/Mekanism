@@ -87,39 +87,31 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     }
 
     @Internal
-    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedAttachments(Supplier<AttachmentType<TANK>> backingAttachment, boolean supportsFluid) {
-        return addMissingMergedTanks(backingAttachment, supportsFluid, containerType -> {
-        });
-    }
-
-    @Internal
-    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedCapabilityTanks(Supplier<AttachmentType<TANK>> backingAttachment, boolean supportsFluid) {
-        return addMissingMergedTanks(backingAttachment, supportsFluid, this::addContainerCapability);
-    }
-
-    private <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedTanks(Supplier<AttachmentType<TANK>> backingAttachment, boolean supportsFluid,
-          Consumer<ContainerType<?, ?, ?>> onAdded) {
-        int added = addMissingTankType(ContainerType.GAS, onAdded, stack -> stack.getData(backingAttachment).getGasTank());
-        added += addMissingTankType(ContainerType.INFUSION, onAdded, stack -> stack.getData(backingAttachment).getInfusionTank());
-        added += addMissingTankType(ContainerType.PIGMENT, onAdded, stack -> stack.getData(backingAttachment).getPigmentTank());
-        added += addMissingTankType(ContainerType.SLURRY, onAdded, stack -> stack.getData(backingAttachment).getSlurryTank());
+    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedTanks(Supplier<AttachmentType<TANK>> backingAttachment, boolean supportsFluid,
+          boolean exposeCapability) {
+        int added = addMissingTankType(ContainerType.GAS, exposeCapability, stack -> stack.getData(backingAttachment).getGasTank());
+        added += addMissingTankType(ContainerType.INFUSION, exposeCapability, stack -> stack.getData(backingAttachment).getInfusionTank());
+        added += addMissingTankType(ContainerType.PIGMENT, exposeCapability, stack -> stack.getData(backingAttachment).getPigmentTank());
+        added += addMissingTankType(ContainerType.SLURRY, exposeCapability, stack -> stack.getData(backingAttachment).getSlurryTank());
         if (supportsFluid) {
             Supplier<AttachmentType<MergedTank>> attachment = (Supplier) backingAttachment;
-            added += addMissingTankType(ContainerType.FLUID, onAdded, stack -> stack.getData(attachment).getFluidTank());
+            added += addMissingTankType(ContainerType.FLUID, exposeCapability, stack -> stack.getData(attachment).getFluidTank());
         }
         if (added == 0) {
-            throw new IllegalStateException("Unnecessary addMissingMergedAttachments call");
+            throw new IllegalStateException("Unnecessary addMissingMergedTanks call");
         }
         return this;
     }
 
-    private <CONTAINER extends INBTSerializable<CompoundTag>> int addMissingTankType(ContainerType<CONTAINER, ?, ?> containerType, Consumer<ContainerType<?, ?, ?>> onAdded,
+    private <CONTAINER extends INBTSerializable<CompoundTag>> int addMissingTankType(ContainerType<CONTAINER, ?, ?> containerType, boolean exposeCapability,
           Function<ItemStack, CONTAINER> defaultCreator) {
         if (defaultContainers != null && defaultContainers.containsKey(containerType)) {
             return 0;
         }
         addAttachmentOnlyContainer(containerType, defaultCreator);
-        onAdded.accept(containerType);
+        if (exposeCapability) {
+            addContainerCapability(containerType);
+        }
         return 1;
     }
 
