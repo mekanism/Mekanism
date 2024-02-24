@@ -811,6 +811,8 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         //Note: The versionName is set to the versionNumber automatically
         versionNumber = "${basicVersion}"
         versionType = "${release_type}"
+        gameVersions.add("${minecraft_version}")
+        loaders.add("neoforge")
         failSilently = true
         changelog = changeLogResolver.call()
         uploadFile = jar
