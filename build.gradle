@@ -532,25 +532,6 @@ def allJar = tasks.register('allJar', Jar, {
     MergeJars.getGeneratedClosures(versionProperties).each { closure -> from(layout.buildDirectory.dir("generated"), closure) }
 })
 
-clean {
-    //TODO: Try to come up with a slightly better solution to this that deletes more,
-    // for example make it calculate the current hash and only leave that or only do
-    // this if clean build is being ran. We also ideally would have it remove some of
-    // the data from our generated folder, but for now this will do given jenkins runs
-    // a clean build because we need to make sure it doesn't fail
-    def filteredDelete = new HashSet<>()
-    for (def toDelete : getDelete()) {
-        for (def f : file(toDelete).listFiles()) {
-            //TODO - 1.20.2: This is not longer the cache location, though it does end up in the build dir still
-            // do we want to fix it?
-            if (f.getName() != "fg_cache") {
-                filteredDelete.add(f)
-            }
-        }
-    }
-    setDelete(filteredDelete)
-}
-
 tasks.withType(JavaCompile).configureEach({
     options.encoding = 'UTF-8'
     options.compilerArgs.addAll(["-Xmaxerrs", "100000"])

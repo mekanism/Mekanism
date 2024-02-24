@@ -42,17 +42,14 @@ jobs:
         with:
           file: gradle.properties
           all: true
-      - name: Cache FG outputs
+      - name: Cache NG outputs
         uses: actions/cache@v4
         with:
           key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.forge_version }}
-          #TODO - 1.20.4: Update what directories we cache
           path: |
-            build/fg_cache
-            build/createMcpToSrg
-            build/downloadMCMeta
-            build/downloadMcpConfig
-            build/extractSrg
+            build/neoForge
+            build/neoForm
+            ~/.gradle
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
