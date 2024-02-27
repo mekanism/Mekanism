@@ -34,7 +34,8 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
                 float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
                 Vec3 renderPos = Vec3.atBottomCenterOf(tile.getBlockPos());
                 poseStack.pushPose();
-                poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
+                Vec3 offset = renderPos.subtract(camera.getPosition());
+                poseStack.translate(offset.x, offset.y, offset.z);
                 switch (tile.getDirection()) {
                     case DOWN -> {
                         poseStack.translate(0, 1, 0);

@@ -22,11 +22,13 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -202,7 +204,14 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         } else if (world.isClientSide) {
             return InteractionResult.SUCCESS;
         }
+        ServerPlayer player = null;
+        if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
+            player = serverPlayer;
+        }
         //Process the block we interacted with initially and play the sound
+        if (player != null) {
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, pos, context.getItemInHand());
+        }
         world.setBlock(pos, modifiedState, Block.UPDATE_ALL_IMMEDIATE);
         world.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
         if (particle != -1) {
@@ -234,6 +243,9 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 newPos = newPos.immutable();
                 //Update energy cost
                 energyUsed = nextEnergyUsed;
+                if (player != null) {
+                    CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, newPos, context.getItemInHand());
+                }
                 //Run it without simulation in case there are any side effects
                 state.getToolModifiedState(adjustedContext, action, false);
                 //Replace the block. Note it just directly sets it (in the same way the normal tools do).

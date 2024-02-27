@@ -39,7 +39,8 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
                 float ticks = renderTick + partialTick;
                 float scaledTicks = 4 * ticks;
                 poseStack.pushPose();
-                poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
+                Vec3 offset = renderPos.subtract(camera.getPosition());
+                poseStack.translate(offset.x, offset.y, offset.z);
                 poseStack.scale(0.4F, 0.4F, 0.4F);
                 poseStack.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
                 poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));

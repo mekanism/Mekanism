@@ -42,16 +42,15 @@ jobs:
         with:
           file: gradle.properties
           all: true
-      - name: Cache FG outputs
+      - name: Cache NG outputs
         uses: actions/cache@v4
         with:
-          key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mappings_channel }}-${{ steps.gradle_props.outputs.mappings_version }}-${{ steps.gradle_props.outputs.forge_version }}
+          key: ${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.forge_version }}
           path: |
-            build/fg_cache
-            build/createMcpToSrg
-            build/downloadMCMeta
-            build/downloadMcpConfig
-            build/extractSrg
+            build/neoForge
+            build/neoForm
+            ~/.gradle
+            .gradle
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:

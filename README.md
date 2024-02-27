@@ -49,7 +49,7 @@ dependencies {
     compileOnly "mekanism:Mekanism:${mekanism_version}:api"
     
     // If you want to test/use Mekanism & its modules during `runClient` invocation, use the following
-    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// core
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// Mekanism
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
@@ -59,7 +59,7 @@ dependencies {
 Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
-mekanism_version=1.20.1-10.4.0.14
+mekanism_version=1.20.4-10.5.0.22
 ```
 
 # Credits #
