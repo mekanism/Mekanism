@@ -418,10 +418,11 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
           .withEnergyConfig(() -> RESISTIVE_HEATER_BASE_USAGE, null)
-          .without(AttributeComparator.class, AttributeUpgradeSupport.class)
+          .without(AttributeComparator.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
           .withComputerSupport("resistiveHeater")
+          .replace(new AttributeUpgradeSupport(EnumSet.of(Upgrade.MUFFLING)))
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .build();
     // Seismic Vibrator
