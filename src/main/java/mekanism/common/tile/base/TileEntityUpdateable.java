@@ -160,14 +160,9 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
                 serializedAttachments = new CompoundTag();
             }
             //Serialize our subset of attachments that we know need to be sync'd
-            syncableAttachmentTypes.forEach((type, name) -> {
-                if (hasData(type)) {
-                    Tag serialized = getData(type).serializeNBT();
-                    if (serialized != null) {
-                        serializedAttachments.put(name, serialized);
-                    }
-                }
-            });
+            syncableAttachmentTypes.forEach((type, name) -> getExistingData(type)
+                  .map(INBTSerializable::serializeNBT)
+                  .ifPresent(serialized -> serializedAttachments.put(name, serialized)));
             if (!serializedAttachments.isEmpty()) {
                 updateTag.put(ATTACHMENTS_NBT_KEY, serializedAttachments);
             }

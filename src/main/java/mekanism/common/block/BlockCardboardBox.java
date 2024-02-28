@@ -1,6 +1,8 @@
 package mekanism.common.block;
 
+import java.util.Optional;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.attachments.BlockData;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateStorage;
@@ -43,9 +45,10 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
             return InteractionResult.FAIL;
         }
         if (!world.isClientSide) {
-            TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
-            if (box != null && box.hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
-                box.getData(MekanismAttachmentTypes.BLOCK_DATA).placeIntoWorld(world, pos);
+            Optional<BlockData> blockData = Optional.ofNullable(WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos))
+                  .flatMap(box -> box.getExistingData(MekanismAttachmentTypes.BLOCK_DATA));
+            if (blockData.isPresent()) {
+                blockData.get().placeIntoWorld(world, pos);
                 //TODO: Do we need to call setPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
                 //adjustedState.getBlock().setPlacedBy(world, pos, data.blockState, player, new ItemStack(adjustedState.getBlock()));
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());

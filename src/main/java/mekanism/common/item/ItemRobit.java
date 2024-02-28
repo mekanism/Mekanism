@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
@@ -25,6 +26,7 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -117,7 +119,8 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slot, isSelected);
         if (!level.isClientSide && HolidayManager.hasRobitSkinsToday()) {
-            if (!stack.hasData(MekanismAttachmentTypes.ROBIT_SKIN) || stack.getData(MekanismAttachmentTypes.ROBIT_SKIN) == MekanismRobitSkins.BASE) {
+            Optional<ResourceKey<RobitSkin>> nonBaseSkin = stack.getExistingData(MekanismAttachmentTypes.ROBIT_SKIN).filter(skin -> skin != MekanismRobitSkins.BASE);
+            if (nonBaseSkin.isEmpty()) {
                 //Randomize the robit's skin
                 stack.setData(MekanismAttachmentTypes.ROBIT_SKIN, HolidayManager.getRandomBaseSkin(level.random));
             }

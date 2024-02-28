@@ -94,14 +94,11 @@ public class ItemConfigurationCard extends Item {
         return InteractionResult.PASS;
     }
 
+    @Nullable
     private CompoundTag getData(ItemStack stack) {
-        if (stack.hasData(MekanismAttachmentTypes.CONFIGURATION_DATA)) {
-            CompoundTag data = stack.getData(MekanismAttachmentTypes.CONFIGURATION_DATA);
-            if (!data.isEmpty()) {
-                return data;
-            }
-        }
-        return null;
+        return stack.getExistingData(MekanismAttachmentTypes.CONFIGURATION_DATA)
+              .filter(data -> !data.isEmpty())
+              .orElse(null);
     }
 
     @Nullable

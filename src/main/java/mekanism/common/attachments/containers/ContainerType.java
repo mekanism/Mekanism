@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -205,11 +206,12 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     public ATTACHMENT getAttachmentIfPresent(IAttachmentHolder holder) {
-        if (holder.hasData(attachment)) {
-            return holder.getData(attachment);
+        Optional<ATTACHMENT> existingData = holder.getExistingData(attachment);
+        if (existingData.isPresent()) {
+            return existingData.get();
         }
         if (holder instanceof ItemStack stack && hasLegacyData(stack)) {
-            //If the holder is an item that has legacy data then we want have the attachment get attached which will cause the legacy data to be removed
+            //If the holder is an item that has legacy data then we want to have the attachment get attached which will cause the legacy data to be removed
             // and converted to the new format
             return holder.getData(attachment);
         }
@@ -218,8 +220,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     public ATTACHMENT getAttachment(IAttachmentHolder holder) {
-        if (holder.hasData(this.attachment)) {
-            return holder.getData(this.attachment);
+        Optional<ATTACHMENT> existingData = holder.getExistingData(attachment);
+        if (existingData.isPresent()) {
+            return existingData.get();
         } else if (holder instanceof ItemStack stack) {
             if (knownDefaultItemContainers.containsKey(stack.getItem())) {
                  return stack.getData(this.attachment);

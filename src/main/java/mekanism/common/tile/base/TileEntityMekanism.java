@@ -750,17 +750,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 setOwnerUUID(ownerUUID);
             }
         }
-        if (supportsUpgrades() && stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
+        if (supportsUpgrades()) {
             //The read method validates that data is stored
-            stack.getData(MekanismAttachmentTypes.UPGRADES).copyTo(getComponent());
+            stack.getExistingData(MekanismAttachmentTypes.UPGRADES).ifPresent(storedUpgrades -> storedUpgrades.copyTo(getComponent()));
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (handles(type)) {
                 type.copyFrom(stack, this);
             }
         }
-        if (this instanceof ITileFilterHolder<?> filterHolder && stack.hasData(MekanismAttachmentTypes.FILTER_AWARE)) {
-            stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyTo(filterHolder.getFilterManager());
+        if (this instanceof ITileFilterHolder<?> filterHolder) {
+            stack.getExistingData(MekanismAttachmentTypes.FILTER_AWARE).ifPresent(storedFilters -> storedFilters.copyTo(filterHolder.getFilterManager()));
         }
         if (supportsRedstone()) {
             setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));

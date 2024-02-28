@@ -61,9 +61,10 @@ public class OwnerObject implements IOwnerObject {
     @Override
     public void setOwnerUUID(@Nullable UUID owner) {
         if (!Objects.equals(this.ownerUUID, owner)) {
-            if (this.ownerUUID != null && attachmentHolder.hasData(MekanismAttachmentTypes.FREQUENCY_AWARE)) {
+            if (this.ownerUUID != null) {
                 //If the object happens to be a frequency aware object reset the frequency when the owner changes
-                attachmentHolder.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).setFrequency(null);
+                attachmentHolder.getExistingData(MekanismAttachmentTypes.FREQUENCY_AWARE)
+                      .ifPresent(frequencyAware -> frequencyAware.setFrequency(null));
             }
             this.ownerUUID = owner;
         }

@@ -17,16 +17,12 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     @Override
     public void readFromStack(ItemStack stack) {
         super.readFromStack(stack);
-        if (stack.hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
-            setData(MekanismAttachmentTypes.BLOCK_DATA, stack.getData(MekanismAttachmentTypes.BLOCK_DATA));
-        }
+        stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(storedData -> setData(MekanismAttachmentTypes.BLOCK_DATA, storedData));
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
         super.writeToStack(stack);
-        if (hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
-            stack.setData(MekanismAttachmentTypes.BLOCK_DATA, getData(MekanismAttachmentTypes.BLOCK_DATA));
-        }
+        getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(storedData -> stack.setData(MekanismAttachmentTypes.BLOCK_DATA, storedData));
     }
 }

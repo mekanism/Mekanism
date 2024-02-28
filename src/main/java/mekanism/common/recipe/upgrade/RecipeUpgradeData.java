@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -145,8 +146,9 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             }
             case SORTING -> stack.getData(MekanismAttachmentTypes.SORTING) ? SortingRecipeData.SORTING : null;
             case UPGRADE -> {
-                if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {
-                    UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+                Optional<UpgradeAware> existingData = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
+                if (existingData.isPresent()) {
+                    UpgradeAware upgradeAware = existingData.get();
                     Map<Upgrade, Integer> upgrades = upgradeAware.getUpgrades();
                     List<IInventorySlot> slots = upgradeAware.getInventorySlots(null);
                     if (!upgrades.isEmpty() || slots.stream().anyMatch(slot -> !slot.isEmpty())) {

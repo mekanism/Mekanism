@@ -64,11 +64,9 @@ public class CopyAttachmentsLootFunction implements LootItemFunction {
     }
 
     private <ATTACHMENT> void copyAttachment(IAttachmentHolder source, IAttachmentHolder target, AttachmentType<ATTACHMENT> attachmentType) {
-        if (source.hasData(attachmentType)) {
-            //TODO: Is this fine or do we need a better way of copying this as a new object? For BlockData it doesn't matter
-            // but it might for some types we add in the future?
-            target.setData(attachmentType, source.getData(attachmentType));
-        }
+        //TODO: Is this fine or do we need a better way of copying this as a new object? For BlockData it doesn't matter
+        // but it might for some types we add in the future?
+        source.getExistingData(attachmentType).ifPresent(attachment -> target.setData(attachmentType, attachment));
     }
 
     @Override

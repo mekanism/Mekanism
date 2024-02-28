@@ -98,8 +98,9 @@ public class PersonalStorageManager {
     @NotNull
     private static UUID getInventoryId(ItemStack stack) {
         convertLegacyToAttachment(stack);
-        if (stack.hasData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID)) {
-            return stack.getData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
+        Optional<UUID> existingData = stack.getExistingData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
+        if (existingData.isPresent()) {
+            return existingData.get();
         }
         UUID invId = UUID.randomUUID();
         stack.setData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID, invId);

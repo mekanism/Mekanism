@@ -25,9 +25,7 @@ public class QIODriveData {
         countCapacity = driveItem.getCountCapacity(driveStack);
         typeCapacity = driveItem.getTypeCapacity(driveStack);
         // load item map from drive stack
-        if (driveStack.hasData(MekanismAttachmentTypes.DRIVE_METADATA)) {
-            driveStack.getData(MekanismAttachmentTypes.DRIVE_METADATA).loadItemMap(this);
-        }
+        driveStack.getExistingData(MekanismAttachmentTypes.DRIVE_METADATA).ifPresent(driveData -> driveData.loadItemMap(this));
         // update cached item count value
         itemCount = itemMap.values().longStream().sum();
 

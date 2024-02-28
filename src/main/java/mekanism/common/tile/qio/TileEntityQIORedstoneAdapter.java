@@ -123,12 +123,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void readFromStack(ItemStack stack) {
         super.readFromStack(stack);
-        if (stack.hasData(MekanismAttachmentTypes.ITEM_TARGET)) {
-            ItemStack type = stack.getData(MekanismAttachmentTypes.ITEM_TARGET);
-            itemType = type.isEmpty() ? null : HashedItem.create(type);
-        } else {
-            itemType = null;
-        }
+        itemType = stack.getExistingData(MekanismAttachmentTypes.ITEM_TARGET)
+              .filter(type -> !type.isEmpty())
+              .map(HashedItem::create)
+              .orElse(null);
         count = stack.getData(MekanismAttachmentTypes.LONG_AMOUNT);
         fuzzy = stack.getData(MekanismAttachmentTypes.FUZZY);
     }

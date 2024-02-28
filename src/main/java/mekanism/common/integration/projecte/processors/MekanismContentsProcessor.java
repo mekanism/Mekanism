@@ -38,8 +38,9 @@ public class MekanismContentsProcessor implements INBTProcessor {
         ItemStack stack = info.createStack();
         //Stored items
         currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(stack));
-        if (stack.hasData(MekanismAttachmentTypes.UPGRADES)) {//Stored upgrades
-            UpgradeAware upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+        Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
+        if (existingUpgrades.isPresent()) {//Stored upgrades
+            UpgradeAware upgradeAware = existingUpgrades.get();
             for (Map.Entry<Upgrade, Integer> entry : upgradeAware.getUpgrades().entrySet()) {
                 currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
