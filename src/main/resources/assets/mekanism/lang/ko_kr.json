@@ -973,7 +973,6 @@
   "gui.mekanism.no_fluid": "액체 없음",
   "gui.mekanism.no_recipe": "(제작법 없음)",
   "gui.mekanism.none": "없음",
-  "gui.mekanism.opacity": "불투명도",
   "gui.mekanism.pigment": "안료: %1$s",
   "gui.mekanism.process_rate": "처리 속도: %1$s",
   "gui.mekanism.process_rate_mb": "처리 속도: %1$s mb/t",
