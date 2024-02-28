@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "El generador de gas boneix",
   "sound_event.mekanismgenerators.tile.generator.heat": "El generador de calor boneix",
   "sound_event.mekanismgenerators.tile.generator.solar": "El generador solar boneix",
-  "sound_event.mekanismgenerators.tile.generator.wind": "El generador de vent gira",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "El reactor de fissió boneix",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "El reactor de fusió boneix",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Combustible Insuficient",
