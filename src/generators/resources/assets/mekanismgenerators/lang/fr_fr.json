@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Bourdonnement du générateur à combustion de gaz",
   "sound_event.mekanismgenerators.tile.generator.heat": "Bourdonnement du générateur thermique",
   "sound_event.mekanismgenerators.tile.generator.solar": "Bourdonnement du panneau solaire",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Sifflement de l'éolienne",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Bourdonnement du réacteur à fission",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Bourdonnement du réacteur à fusion",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Carburant insuffisant",
