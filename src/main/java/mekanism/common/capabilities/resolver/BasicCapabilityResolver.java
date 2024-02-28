@@ -51,8 +51,7 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
 
     @Override
     public void invalidate(BlockCapability<?, CONTEXT> capability, @UnknownNullability CONTEXT side) {
-        //We only have one capability so just invalidate everything
-        invalidateAll();
+        cachedCapability = null;
     }
 
     @Override

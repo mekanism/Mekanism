@@ -66,7 +66,12 @@ public class CapabilityCache {
 
     public ICapabilityResolver<@Nullable Direction> getResolver(BlockCapability<?, @Nullable Direction> capability,
           Supplier<ICapabilityResolver<@Nullable Direction>> resolver) {
-        return capabilityResolvers.computeIfAbsent(capability, c -> resolver.get());
+        ICapabilityResolver<@Nullable Direction> knownResolver = getResolver(capability);
+        if (knownResolver == null) {
+            knownResolver = resolver.get();
+            addCapabilityResolver(knownResolver);
+        }
+        return knownResolver;
     }
 
     /**
