@@ -24,7 +24,7 @@ public class GuiArrowSelection extends GuiTexturedElement {
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= getX() + 16 && xAxis < getX() + width - 1 && yAxis >= getY() + 1 && yAxis < getY() + height - 1;
+        return this.active && this.visible && xAxis >= getX() + 16 && xAxis < getRight() - 1 && yAxis >= getY() + 1 && yAxis < getBottom() - 1;
     }
 
     @Override

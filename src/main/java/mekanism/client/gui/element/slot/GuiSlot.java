@@ -195,7 +195,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
-            if (mouseX >= getX() + borderSize() && mouseY >= getY() + borderSize() && mouseX < getX() + width - borderSize() && mouseY < getY() + height - borderSize()) {
+            if (mouseX >= getX() + borderSize() && mouseY >= getY() + borderSize() && mouseX < getRight() - borderSize() && mouseY < getBottom() - borderSize()) {
                 if (onClick.onClick(this, (int) mouseX, (int) mouseY)) {
                     playDownSound(minecraft.getSoundManager());
                     return true;

@@ -121,6 +121,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     @Override
     public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
         //Override as active is occasionally false here so isMouseOver would return false
-        return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
+        return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getRight() && mouseY < getBottom();
     }
 }

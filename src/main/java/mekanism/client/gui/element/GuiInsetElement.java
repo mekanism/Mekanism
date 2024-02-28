@@ -29,7 +29,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= getX() + border && xAxis < getX() + width - border && yAxis >= getY() + border && yAxis < getY() + height - border;
+        return this.active && this.visible && xAxis >= getX() + border && xAxis < getRight() - border && yAxis >= getY() + border && yAxis < getBottom() - border;
     }
 
     @Override

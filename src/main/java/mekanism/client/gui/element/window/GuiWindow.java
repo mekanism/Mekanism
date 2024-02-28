@@ -128,8 +128,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
         if (isDragging()) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
-            int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - (getX() + width));
-            int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - (getY() + height));
+            int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - getRight());
+            int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - getBottom());
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);

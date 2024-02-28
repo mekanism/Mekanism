@@ -206,7 +206,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     private void scissorScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
         //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
-        guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getY() + this.height - 1);
+        guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getBottom() - 1);
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         int shift = getCurrentSelection();

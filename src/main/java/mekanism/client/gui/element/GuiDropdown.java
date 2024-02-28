@@ -103,7 +103,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     private int getHoveredIndex(double mouseX, double mouseY) {
-        if (isOpen && mouseX >= getX() && mouseX < getX() + width && mouseY >= getY() + 11 && mouseY < getY() + height) {
+        if (isOpen && mouseX >= getX() && mouseX < getRight() && mouseY >= getY() + 11 && mouseY < getBottom()) {
             return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - getY() - 11) / 10)));
         }
         return -1;
