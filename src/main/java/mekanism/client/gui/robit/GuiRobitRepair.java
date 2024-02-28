@@ -19,7 +19,10 @@ import org.jetbrains.annotations.NotNull;
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
     //Use the vanilla anvil's gui texture
-    private static final ResourceLocation ANVIL_RESOURCE = new ResourceLocation("textures/gui/container/anvil.png");
+    private static final ResourceLocation TEXT_FIELD_SPRITE = new ResourceLocation("container/anvil/text_field");
+    private static final ResourceLocation TEXT_FIELD_DISABLED_SPRITE = new ResourceLocation("container/anvil/text_field_disabled");
+    private static final ResourceLocation ERROR_SPRITE = new ResourceLocation("container/anvil/error");
+    private static final ResourceLocation ANVIL_LOCATION = new ResourceLocation("textures/gui/container/anvil.png");
     private final Player player;
     private GuiTextField itemNameField;
 
@@ -100,10 +103,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(ANVIL_RESOURCE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        guiGraphics.blit(ANVIL_RESOURCE, leftPos + 59, topPos + 20, 0, imageHeight + (menu.getSlot(0).hasItem() ? 0 : 16), 110, 16);
+        guiGraphics.blit(ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blitSprite(this.menu.getSlot(0).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, this.leftPos + 59, this.topPos + 20, 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {
-            guiGraphics.blit(ANVIL_RESOURCE, leftPos + 99, topPos + 45, imageWidth, 0, 28, 21);
+            guiGraphics.blit(ERROR_SPRITE, leftPos + 99, topPos + 45, imageWidth, 0, 28, 21);
         }
     }
 
