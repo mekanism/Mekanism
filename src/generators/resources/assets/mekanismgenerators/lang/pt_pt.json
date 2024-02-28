@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Som do Gerador a Gás",
   "sound_event.mekanismgenerators.tile.generator.heat": "Som do Gerador a Calor",
   "sound_event.mekanismgenerators.tile.generator.solar": "Som do Gerador Solar",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Som do Gerador a Vento",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Som do Reator de Fissão",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Som do Reator de Fissão",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Pouco Combustível",
