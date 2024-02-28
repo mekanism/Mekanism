@@ -984,7 +984,6 @@
   "gui.mekanism.no_fluid": "Keine Flüssigkeit",
   "gui.mekanism.no_recipe": "(Kein Rezept)",
   "gui.mekanism.none": "Nichts",
-  "gui.mekanism.opacity": "Deckkraft",
   "gui.mekanism.pigment": "Pigment: %1$s",
   "gui.mekanism.process_rate": "Verarbeitungs-Rate: %1$s",
   "gui.mekanism.process_rate_mb": "Verarbeitungs-Rate: %1$s mB/t",
