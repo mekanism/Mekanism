@@ -82,7 +82,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsSounds.FUSION_REACTOR, "Fusion reactor hums");
         add(GeneratorsSounds.HEAT_GENERATOR, "Heat generator hums");
         add(GeneratorsSounds.SOLAR_GENERATOR, "Solar generator hums");
-        add(GeneratorsSounds.WIND_GENERATOR, "Wind generator wooshes");
+        add(GeneratorsSounds.WIND_GENERATOR, "Wind generator whooshes");
     }
 
     private void addAdvancements() {

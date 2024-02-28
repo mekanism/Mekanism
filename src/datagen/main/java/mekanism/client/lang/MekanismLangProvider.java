@@ -1019,6 +1019,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BLOCK_DATA, "Block data: %1$s");
         add(MekanismLang.BLOCK, "Block: %1$s");
         add(MekanismLang.BLOCK_ENTITY, "Block Entity: %1$s");
+        add(MekanismLang.BLOCK_ENTITY_SPAWN_TYPE, "Spawns: %1$s");
+        add(MekanismLang.BLOCK_ENTITY_DECORATION, "Decoration:");
         //Crafting Formula
         add(MekanismLang.INGREDIENTS, "Ingredients:");
         add(MekanismLang.ENCODED, "(Encoded)");

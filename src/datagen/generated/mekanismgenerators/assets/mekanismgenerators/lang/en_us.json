@@ -163,7 +163,7 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Gas generator hums",
   "sound_event.mekanismgenerators.tile.generator.heat": "Heat generator hums",
   "sound_event.mekanismgenerators.tile.generator.solar": "Solar generator hums",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Wind generator wooshes",
+  "sound_event.mekanismgenerators.tile.generator.wind": "Wind generator whooshes",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Fission reactor hums",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Fusion reactor hums",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Insufficient Fuel",

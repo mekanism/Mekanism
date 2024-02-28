@@ -10,6 +10,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -81,6 +82,8 @@ public class TextComponentUtil {
                 current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
                 current = translate(fluid.getFluidType().getDescriptionId());
+            } else if (component instanceof EntityType<?> entityType) {
+                current = entityType.getDescription().copy();
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
             } else if (component instanceof Boolean bool) {
@@ -200,6 +203,8 @@ public class TextComponentUtil {
                 current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
                 current = translate(fluid.getFluidType().getDescriptionId());
+            } else if (component instanceof EntityType<?> entityType) {
+                current = entityType.getDescription().copy();
             } else if (component instanceof Direction direction) {
                 current = getTranslatedDirection(direction);
             } else if (component instanceof Boolean bool) {

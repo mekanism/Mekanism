@@ -14,6 +14,18 @@ public final class NBTConstants {
     public static final String COUNT = "Count";
     public static final String CUSTOM_NAME = "CustomName";
     public static final String ENCHANTMENTS = "Enchantments";
+    /**
+     * @since 10.5.1
+     */
+    public static final String ENTITY = "entity";
+    /**
+     * @since 10.5.1
+     */
+    public static final String SPAWN_DATA = "spawn_data";
+    /**
+     * @since 10.5.1
+     */
+    public static final String SPAWN_DATA_LEGACY = "SpawnData";
     public static final String ID = "id";
     public static final String X = "x";
     public static final String Y = "y";
