@@ -653,6 +653,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
+        addModInfo("Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.");
         addPackData(MekanismLang.MEKANISM, MekanismLang.PACK_DESCRIPTION);
         add(MekanismLang.DEBUG_TITLE, modName + " Debug");
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");

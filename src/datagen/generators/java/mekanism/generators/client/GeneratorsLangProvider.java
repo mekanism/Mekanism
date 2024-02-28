@@ -93,6 +93,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        addModInfo("Generators module for Mekanism");
         addPackData(GeneratorsLang.MEKANISM_GENERATORS, GeneratorsLang.PACK_DESCRIPTION);
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling: %1$s");
         add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %1$s mB/t");

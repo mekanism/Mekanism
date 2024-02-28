@@ -17,6 +17,7 @@ public class DefenseLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        addModInfo("Defense module for Mekanism");
         addPackData(DefenseLang.MEKANISM_DEFENSE, DefenseLang.PACK_DESCRIPTION);
     }
 }

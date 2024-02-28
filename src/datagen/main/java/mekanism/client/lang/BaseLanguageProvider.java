@@ -55,6 +55,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(packDescription, "Resources used for " + modName);
     }
 
+    protected void addModInfo(String description) {
+        add("fml.menu.mods.info.displayname." + modid, modName);
+        add("fml.menu.mods.info.description." + modid, description);
+    }
+
     protected void addEntity(Holder<EntityType<?>> key, String value) {
         add(key.value().getDescriptionId(), value);
     }

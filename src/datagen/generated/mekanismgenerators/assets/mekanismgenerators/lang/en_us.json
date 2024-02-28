@@ -110,6 +110,8 @@
   "fission.mekanismgenerators.stats": "Fission Reactor Statistics",
   "fission.mekanismgenerators.surface_area": "Fuel Surface Area: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "Waste Tank",
+  "fml.menu.mods.info.description.mekanismgenerators": "Generators module for Mekanism",
+  "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generators",
   "gas.mekanismgenerators.deuterium": "Deuterium",
   "gas.mekanismgenerators.fusion_fuel": "D-T Fuel",
   "gas.mekanismgenerators.tritium": "Tritium",

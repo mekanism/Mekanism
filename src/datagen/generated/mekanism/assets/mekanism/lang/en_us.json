@@ -881,6 +881,8 @@
   "fluid_container.mekanism.both": "Both",
   "fluid_container.mekanism.empty": "Empty",
   "fluid_container.mekanism.fill": "Fill",
+  "fml.menu.mods.info.description.mekanism": "Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.",
+  "fml.menu.mods.info.displayname.mekanism": "Mekanism",
   "free_runner.mekanism.disabled": "Disabled",
   "free_runner.mekanism.mode_change": "Free runner mode changed to: %1$s",
   "free_runner.mekanism.normal": "Regular",

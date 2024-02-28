@@ -59,6 +59,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        addModInfo("Tools module for Mekanism");
         addPackData(ToolsLang.MEKANISM_TOOLS, ToolsLang.PACK_DESCRIPTION);
         add(ToolsLang.HP, "HP: %1$s");
     }
