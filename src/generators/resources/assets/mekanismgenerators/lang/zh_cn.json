@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "燃气发电机的嗡嗡声",
   "sound_event.mekanismgenerators.tile.generator.heat": "热力发电机的嗡嗡声",
   "sound_event.mekanismgenerators.tile.generator.solar": "太阳能发电机的嗡嗡声",
-  "sound_event.mekanismgenerators.tile.generator.wind": "风力涡轮机的呼呼声",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "裂变反应堆的嗡嗡声",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "聚变反应堆的嗡嗡声",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "燃料不足",
