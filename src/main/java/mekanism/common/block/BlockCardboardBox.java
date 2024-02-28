@@ -48,9 +48,10 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
             Optional<BlockData> blockData = Optional.ofNullable(WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos))
                   .flatMap(box -> box.getExistingData(MekanismAttachmentTypes.BLOCK_DATA));
             if (blockData.isPresent()) {
-                blockData.get().placeIntoWorld(world, pos);
-                //TODO: Do we need to call setPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
-                //adjustedState.getBlock().setPlacedBy(world, pos, data.blockState, player, new ItemStack(adjustedState.getBlock()));
+                if (!blockData.get().tryPlaceIntoWorld(world, pos, player)) {
+                    //Can't place it into the world, skip
+                    return InteractionResult.PASS;
+                }
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.value().trigger((ServerPlayer) player);
             }

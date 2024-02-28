@@ -47,6 +47,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowChunkloading;
     public final CachedBooleanValue easyMinerFilters;
     public final CachedIntValue blockDeactivationDelay;
+    public final CachedBooleanValue strictUnboxing;
     public final CachedConfigValue<List<? extends String>> cardboardModBlacklist;
     public final CachedBooleanValue transmitterAlloyUpgrade;
     public final CachedIntValue maxUpgradeMultiplier;
@@ -141,6 +142,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("easyMinerFilters", false));
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
               .defineInRange("blockDeactivationDelay", 3 * SharedConstants.TICKS_PER_SECOND, 0, SharedConstants.TICKS_PER_MINUTE));
+        strictUnboxing = CachedBooleanValue.wrap(this, builder.comment("Enable this to disable unboxing any block that has a fluid that would be vaporized on placement, instead of trying to vaporize it and leave the remainder of the block.")
+              .define("strictUnboxing", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")
               .defineListAllowEmpty(Collections.singletonList("cardboardModBlacklist"), ArrayList::new, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
         transmitterAlloyUpgrade = CachedBooleanValue.wrap(this, builder.comment("Allow right clicking on Cables/Pipes/Tubes with alloys to upgrade the tier.")
