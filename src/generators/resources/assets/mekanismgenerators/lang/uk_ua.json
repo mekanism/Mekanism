@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Газовий генератор гуде",
   "sound_event.mekanismgenerators.tile.generator.heat": "Тепловий генератор гуде",
   "sound_event.mekanismgenerators.tile.generator.solar": "Сонячний генератор гуде",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Вітровий генератор свистить",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Ядерний реактор гуде",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Термодерний реактор гуде",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Недостатньо палива",
