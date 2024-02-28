@@ -101,7 +101,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Hučanie plynového generátoru",
   "sound_event.mekanismgenerators.tile.generator.heat": "Bzučanie tepelného generátoru",
   "sound_event.mekanismgenerators.tile.generator.solar": "Bzučanie solárneho generátora",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Zvuky veternej turbíny",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Štiepny reaktor bzučí",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Fúzny reaktor bzučí",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Nedostatok Paliva",
