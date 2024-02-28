@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "PLTG berjalan",
   "sound_event.mekanismgenerators.tile.generator.heat": "PLTP Berjalan",
   "sound_event.mekanismgenerators.tile.generator.solar": "PLTS berjalan",
-  "sound_event.mekanismgenerators.tile.generator.wind": "PLTB wooosh",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Reaktor fisi berjalan",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Reaktor fusi berjalan",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Bahan Bakar Tidak Cukup",
