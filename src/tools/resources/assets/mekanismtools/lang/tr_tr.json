@@ -13,6 +13,8 @@
   "advancements.mekanismtools.paxel.title": "Çoklu-Araç",
   "constants.mekanismtools.mod_name": "Mekanism: Aletler",
   "constants.mekanismtools.pack_description": "Mekanism: Aletler için kullanılan kaynaklar",
+  "fml.menu.mods.info.description.mekanismtools": "Mekanism için Aletler modülü",
+  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Aletler",
   "item.mekanismtools.bronze_axe": "Bronz Balta",
   "item.mekanismtools.bronze_boots": "Bronz Bot",
   "item.mekanismtools.bronze_chestplate": "Bronz Göğüslük",
