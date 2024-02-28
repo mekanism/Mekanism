@@ -1,6 +1,7 @@
 package mekanism.common.item.block;
 
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -39,18 +40,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        boolean hasData = stack.hasData(MekanismAttachmentTypes.BLOCK_DATA);
-        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(hasData)));
-        if (hasData) {
-            BlockData data = stack.getData(MekanismAttachmentTypes.BLOCK_DATA);
-            tooltip.add(MekanismLang.BLOCK.translate(data.getBlock()));
-            if (data.hasBlockEntity()) {
-                data.getBlockEntityName().ifPresentOrElse(
-                      name -> tooltip.add(MekanismLang.BLOCK_ENTITY.translate(name)),
-                      () -> tooltip.add(MekanismLang.BLOCK_ENTITY.translate(MekanismLang.UNKNOWN))
-                );
-            }
-        }
+        Optional<BlockData> existingData = stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
+        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData.isPresent(), true)));
+        existingData.ifPresent(data -> data.addToTooltip(world, tooltip, flag));
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {

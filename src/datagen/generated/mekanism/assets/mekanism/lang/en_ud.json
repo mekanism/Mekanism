@@ -448,6 +448,8 @@
   "cardboard_box.mekanism.block": "%s :ʞɔoꞁᗺ",
   "cardboard_box.mekanism.block_data": "%s :ɐʇɐp ʞɔoꞁᗺ",
   "cardboard_box.mekanism.block_entity": "%s :ʎʇᴉʇuƎ ʞɔoꞁᗺ",
+  "cardboard_box.mekanism.block_entity.decoration": ":uoᴉʇɐɹoɔǝᗡ",
+  "cardboard_box.mekanism.block_entity.spawn_type": "%s :suʍɐdS",
   "chemical.mekanism.attribute.coolant.efficiency": "%s :ʎɔuǝᴉɔᴉɟɟƎ ʇuɐꞁooƆ - ",
   "chemical.mekanism.attribute.coolant.heat_capacity": "%s :ʎdꞁɐɥʇuƎ ꞁɐɯɹǝɥ⟘ - ",
   "chemical.mekanism.attribute.fuel.burn_ticks": "ʇ %s :ǝɯᴉ⟘ uɹnᗺ - ",

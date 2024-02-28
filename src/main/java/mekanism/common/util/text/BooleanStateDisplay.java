@@ -41,7 +41,7 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
         }
 
         public static YesNo hasInventory(ItemStack stack) {
-            return of(ContainerType.ITEM.getAttachmentContainersIfPresent(stack).stream().anyMatch(slot -> !slot.isEmpty()));
+            return of(ContainerType.ITEM.getAttachmentContainersIfPresent(stack).stream().anyMatch(slot -> !slot.isEmpty()), true);
         }
 
         public static YesNo of(boolean value, boolean colored) {

@@ -448,6 +448,8 @@
   "cardboard_box.mekanism.block": "Block: %1$s",
   "cardboard_box.mekanism.block_data": "Block data: %1$s",
   "cardboard_box.mekanism.block_entity": "Block Entity: %1$s",
+  "cardboard_box.mekanism.block_entity.decoration": "Decoration:",
+  "cardboard_box.mekanism.block_entity.spawn_type": "Spawns: %1$s",
   "chemical.mekanism.attribute.coolant.efficiency": " - Coolant Efficiency: %1$s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Thermal Enthalpy: %1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Burn Time: %1$s t",

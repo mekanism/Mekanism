@@ -374,6 +374,8 @@ public enum MekanismLang implements ILangEntry {
     BLOCK_DATA("cardboard_box", "block_data"),
     BLOCK("cardboard_box", "block"),
     BLOCK_ENTITY("cardboard_box", "block_entity"),
+    BLOCK_ENTITY_SPAWN_TYPE("cardboard_box", "block_entity.spawn_type"),
+    BLOCK_ENTITY_DECORATION("cardboard_box", "block_entity.decoration"),
     //Crafting Formula
     INGREDIENTS("crafting_formula", "ingredients"),
     ENCODED("crafting_formula", "encoded"),

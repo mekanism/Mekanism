@@ -1,25 +1,36 @@
 package mekanism.common.attachments;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.DecoratedPotBlock;
+import net.minecraft.world.level.block.SpawnerBlock;
+import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -108,18 +119,31 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
         return true;
     }
 
-    public Block getBlock() {
-        return blockState.getBlock();
-    }
-
-    public boolean hasBlockEntity() {
-        return blockEntityTag != null;
-    }
-
-    public Optional<String> getBlockEntityName() {
-        return Optional.ofNullable(blockEntityTag)
-              .filter(tag -> tag.contains(NBTConstants.ID, Tag.TAG_STRING))
-              .map(tag -> tag.getString(NBTConstants.ID));
+    public void addToTooltip(Level level, List<Component> tooltip, TooltipFlag flag) {
+        Block block = blockState.getBlock();
+        tooltip.add(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
+        if (blockEntityTag != null) {
+            Optional<BlockEntityType<?>> blockEntityType = RegistryUtils.getById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE);
+            Object beName = blockEntityType.isPresent() ? RegistryUtils.getName(blockEntityType.get()) : MekanismLang.UNKNOWN;
+            tooltip.add(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
+            if (blockEntityTag != null) {
+                if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
+                    String key = block instanceof SpawnerBlock ? NBTConstants.SPAWN_DATA_LEGACY : NBTConstants.SPAWN_DATA;
+                    RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(NBTConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
+                          .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
+                          .ifPresent(tooltip::add);
+                } else if (block instanceof DecoratedPotBlock) {
+                    DecoratedPotBlockEntity.Decorations decorations = DecoratedPotBlockEntity.Decorations.load(blockEntityTag);
+                    //Copy from DecoratedPotBlock#appendHoverText
+                    if (!decorations.equals(DecoratedPotBlockEntity.Decorations.EMPTY)) {
+                        tooltip.add(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
+                        Stream.of(decorations.front(), decorations.left(), decorations.right(), decorations.back())
+                              .map(decoration -> MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration))
+                              .forEach(tooltip::add);
+                    }
+                }
+            }
+        }
     }
 
     public boolean isCompatible(BlockData other) {

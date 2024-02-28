@@ -1,10 +1,13 @@
 package mekanism.common.util;
 
 import java.util.Optional;
+import mekanism.api.NBTConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -28,6 +31,14 @@ public class RegistryUtils {
             return BuiltInRegistries.BLOCK_ENTITY_TYPE.wrapAsHolder(type);
         }
         return holder;
+    }
+
+    public static <R> Optional<R> getById(CompoundTag nbt, Registry<R> registry) {
+        return Optional.ofNullable(nbt)
+              .filter(tag -> tag.contains(NBTConstants.ID, Tag.TAG_STRING))
+              .map(tag -> tag.getString(NBTConstants.ID))
+              .map(ResourceLocation::tryParse)
+              .flatMap(registry::getOptional);
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
