@@ -983,7 +983,6 @@
   "gui.mekanism.no_fluid": "Sem Fluído",
   "gui.mekanism.no_recipe": "(Sem receita)",
   "gui.mekanism.none": "Nenhum",
-  "gui.mekanism.opacity": "Transparência",
   "gui.mekanism.pigment": "Pigmento: %1$s",
   "gui.mekanism.process_rate": "Taxa de Processo: %1$s",
   "gui.mekanism.process_rate_mb": "Taxa de Processo: %1$s mB/t",
