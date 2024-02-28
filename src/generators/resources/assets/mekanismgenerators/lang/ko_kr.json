@@ -194,6 +194,7 @@
   "turbine.mekanismgenerators.stats.tank_volume": "탱크의 용량: %1$s",
   "turbine.mekanismgenerators.stats.vents": "증기 배출구: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "증기 투입량: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "초과 증기 배출",
   "wind_generator.mekanismgenerators.no_wind": "바람 없음",
   "wind_generator.mekanismgenerators.sky_blocked": "하늘이 보이지 않음"
 }
