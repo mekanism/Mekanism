@@ -15,6 +15,20 @@
             {
               "function": "minecraft:copy_name",
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:copy_to_attachments",
+              "ops": [
+                {
+                  "source": "activeCooled",
+                  "target": "mekanismgenerators:active_cooled"
+                },
+                {
+                  "source": "logicType",
+                  "target": "mekanismgenerators:fusion_logic"
+                }
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanismgenerators:fusion_reactor_logic_adapter"

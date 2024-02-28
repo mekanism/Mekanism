@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.fission;
 
 import java.util.EnumSet;
+import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -17,16 +18,19 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
+import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,15 +145,34 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void readSustainedData(@NotNull CompoundTag nbt) {
+        super.readSustainedData(nbt);
         NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FissionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void writeSustainedData(@NotNull CompoundTag nbtTags) {
+        super.writeSustainedData(nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
+    }
+
+    @Override
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.LOGIC_TYPE, GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
+        return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        stack.setData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE, logicType);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        logicType = stack.getData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
     }
 
     @Override

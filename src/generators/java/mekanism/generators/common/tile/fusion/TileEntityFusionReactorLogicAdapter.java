@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.fusion;
 
 import java.util.EnumSet;
+import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -17,18 +18,20 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
+import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.EventHooks;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
@@ -88,17 +91,39 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void readSustainedData(CompoundTag nbt) {
+        super.readSustainedData(nbt);
         NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FusionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
         activeCooled = nbt.getBoolean(NBTConstants.ACTIVE_COOLED);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void writeSustainedData(CompoundTag nbtTags) {
+        super.writeSustainedData(nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
         nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
+    }
+
+    @Override
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.LOGIC_TYPE, GeneratorsAttachmentTypes.FUSION_LOGIC_TYPE);
+        remap.put(NBTConstants.ACTIVE_COOLED, GeneratorsAttachmentTypes.ACTIVE_COOLED);
+        return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        stack.setData(GeneratorsAttachmentTypes.FUSION_LOGIC_TYPE, logicType);
+        stack.setData(GeneratorsAttachmentTypes.ACTIVE_COOLED, activeCooled);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        logicType = stack.getData(GeneratorsAttachmentTypes.FUSION_LOGIC_TYPE);
+        activeCooled = stack.getData(GeneratorsAttachmentTypes.ACTIVE_COOLED);
     }
 
     @Override

@@ -75,6 +75,7 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, TileEntityFissionReactorLogicAdapter::new)
           .withSimple(Capabilities.CONFIGURABLE)
+          .withSimple(Capabilities.CONFIG_CARD)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = TILE_ENTITY_TYPES.register(GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, TileEntityFissionFuelAssembly::new);
     public static final TileEntityTypeRegistryObject<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = TILE_ENTITY_TYPES.register(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, TileEntityControlRodAssembly::new);
@@ -98,6 +99,7 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, TileEntityFusionReactorLogicAdapter::new)
           .withSimple(Capabilities.CONFIGURABLE)
+          .withSimple(Capabilities.CONFIG_CARD)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_PORT, TileEntityFusionReactorPort::new)

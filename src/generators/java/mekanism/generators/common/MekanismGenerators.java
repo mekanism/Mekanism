@@ -23,6 +23,7 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
+import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
@@ -76,6 +77,7 @@ public class MekanismGenerators implements IModModule {
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
 
+        GeneratorsAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsFluids.FLUIDS.register(modEventBus);
