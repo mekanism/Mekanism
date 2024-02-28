@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Gas Generator summt",
   "sound_event.mekanismgenerators.tile.generator.heat": "Wärme Generator summt",
   "sound_event.mekanismgenerators.tile.generator.solar": "Solar Generator summt",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Windgenerator wooshes",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Fission Reaktor summt",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Fusionsreaktor summen",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Nicht genügend Treibstoff",
