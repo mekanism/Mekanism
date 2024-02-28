@@ -59,6 +59,11 @@ public class CachedFloatValue extends CachedValue<Double> implements FloatSuppli
         cachedValue = value;
     }
 
+    public void set(double value) {
+        internal.set(value);
+        cachedValue = (float) value;
+    }
+
     @Override
     protected boolean clearCachedValue(boolean checkChanged) {
         if (!resolved) {

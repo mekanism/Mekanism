@@ -895,7 +895,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
         add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
-        add(MekanismLang.OPACITY, "Opacity");
+        add(MekanismLang.OPACITY, "Opacity: %1$s%%");
+        add(MekanismLang.JITTER, "Jitter: %1$s%%");
         add(MekanismLang.DEFAULT, "Default");
         add(MekanismLang.WARNING, "Warning");
         add(MekanismLang.DANGER, "Danger");

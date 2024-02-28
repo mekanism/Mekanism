@@ -8,6 +8,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiSlider extends GuiElement {
 
@@ -53,8 +54,37 @@ public class GuiSlider extends GuiElement {
         }
     }
 
-    private void set(double mouseX, double mouseY) {
-        value = Mth.clamp(((mouseX - getX() - 2) / (width - 6)), 0, 1);
+    @Override
+    public boolean keyPressed(int key, int i, int j) {
+        if (super.keyPressed(key, i, j)) {
+            return true;
+        }
+        double shift;
+        if (isPreviousButton(key) && value > 0) {
+            shift = -0.01;
+        } else if (isNextButton(key) && value < 1) {
+            shift = 0.01;
+        } else {
+            return false;
+        }
+        value = Mth.clamp(value + shift, 0, 1);
         callback.accept(value);
+        return true;
+    }
+
+    private void set(double mouseX, double mouseY) {
+        double oldValue = value;
+        value = Mth.clamp(((mouseX - getX() - 2) / (width - 6)), 0, 1);
+        if (!Mth.equal(value, oldValue)) {
+            callback.accept(value);
+        }
+    }
+
+    private boolean isPreviousButton(int key) {
+        return key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT;
+    }
+
+    private boolean isNextButton(int key) {
+        return key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT;
     }
 }
