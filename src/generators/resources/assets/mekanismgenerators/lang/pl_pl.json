@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Generator gazowy buczy",
   "sound_event.mekanismgenerators.tile.generator.heat": "Generator cieplny buczy",
   "sound_event.mekanismgenerators.tile.generator.solar": "Generator słoneczny buczy",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Turbina wiatrowa szumi",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Reaktor rozczepiania atomów buczy",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Reaktor syntezy jądrowej buczy",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Niewystarczająca ilość paliwa",
