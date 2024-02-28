@@ -704,7 +704,6 @@
   "gui.mekanism.no_fluid": "بدون مایع",
   "gui.mekanism.no_recipe": "(بدون دستور ساخت)",
   "gui.mekanism.none": "هیچ",
-  "gui.mekanism.opacity": "شفافیت",
   "gui.mekanism.pigment": "رنگدانه:%1$s",
   "gui.mekanism.process_rate": "مقدار پردازش:%1$s",
   "gui.mekanism.process_rate_mb": "مقدار پردازش:%1$s میلی باکت/تیک",
