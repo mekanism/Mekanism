@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
@@ -19,6 +18,7 @@ import mekanism.common.lib.collection.LRU;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
 
@@ -82,10 +82,10 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget) {
                 if (widget.visible) {
-                    if (widget instanceof GuiElement element) {
+                    if (widget instanceof ContainerEventHandler eventHandler) {
                         //Start by adding any grandchild ghost targets we have as they are the "top" layer, and we want them
                         // to get checked/interacted with first
-                        ghostTargets.addAll(getTargets(element.children(), ingredient));
+                        ghostTargets.addAll(getTargets(eventHandler.children(), ingredient));
                     }
                     //Then go ahead and check if our element is a ghost target and if it is, and it supports the ingredient add it
                     if (widget instanceof IJEIGhostTarget ghostTarget) {

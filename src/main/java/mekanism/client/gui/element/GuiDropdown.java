@@ -19,7 +19,6 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     private final TYPE[] options;
 
     private boolean isOpen;
-    private boolean isHolding;
 
     public GuiDropdown(IGuiWrapper gui, int x, int y, int width, Class<TYPE> enumClass, Supplier<TYPE> curType, Consumer<TYPE> handler) {
         super(GuiInnerScreen.SCREEN, gui, x, y, width, 12);
@@ -33,19 +32,17 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
-        isHolding = true;
+        setDragging(true);
         setOpen(!isOpen || mouseY > getY() + 11);
     }
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
+        boolean wasDragging = isDragging();
         super.onRelease(mouseX, mouseY);
-        if (isHolding) {
-            isHolding = false;
-            if (isOpen && mouseY > getY() + 11) {
-                handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
-                setOpen(false);
-            }
+        if (wasDragging && isOpen && mouseY > getY() + 11) {
+            handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
+            setOpen(false);
         }
     }
 

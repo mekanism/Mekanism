@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
@@ -11,6 +10,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IGuiWrapper {
+public interface IGuiWrapper extends ContainerEventHandler {
 
     default void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, Component... components) {
         this.displayTooltips(guiGraphics, mouseX, mouseY, List.of(components));
@@ -100,21 +100,5 @@ public interface IGuiWrapper {
 
     default void setSelectedWindow(SelectedWindowData selectedWindow) {
         Mekanism.logger.error("Tried to call 'setSelectedWindow' but unsupported in {}", getClass().getName());
-    }
-
-    default void addFocusListener(GuiElement element) {
-        Mekanism.logger.error("Tried to call 'addFocusListener' but unsupported in {}", getClass().getName());
-    }
-
-    default void removeFocusListener(GuiElement element) {
-        Mekanism.logger.error("Tried to call 'removeFocusListener' but unsupported in {}", getClass().getName());
-    }
-
-    default void focusChange(GuiElement changed) {
-        Mekanism.logger.error("Tried to call 'focusChange' but unsupported in {}", getClass().getName());
-    }
-
-    default void incrementFocus(GuiElement current) {
-        Mekanism.logger.error("Tried to call 'incrementFocus' but unsupported in {}", getClass().getName());
     }
 }

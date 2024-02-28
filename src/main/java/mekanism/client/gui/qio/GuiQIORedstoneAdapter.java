@@ -74,7 +74,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         text.setInputValidator(InputValidator.DIGIT)
               .configureDigitalInput(this::setCount)
               .setMaxLength(10);
-        text.setFocused(true);
+        setInitialFocus(text);
     }
 
     private void updateStack(ItemStack stack) {

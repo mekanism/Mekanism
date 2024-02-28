@@ -11,7 +11,6 @@ import com.mojang.math.Divisor;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.List;
 import java.util.function.Predicate;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -165,14 +164,20 @@ public class GuiUtils {
     }
 
     // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
-    public static boolean checkChildren(List<? extends GuiEventListener> children, Predicate<GuiElement> checker) {
+    public static <CHILD extends GuiEventListener> boolean checkChildren(List<? extends CHILD> children, Predicate<CHILD> checker) {
+        return findChild(children, checker) != null;
+    }
+
+    // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
+    @Nullable
+    public static <CHILD extends GuiEventListener> CHILD findChild(List<? extends CHILD> children, Predicate<CHILD> checker) {
         for (int i = children.size() - 1; i >= 0; i--) {
-            Object obj = children.get(i);
-            if (obj instanceof GuiElement element && checker.test(element)) {
-                return true;
+            CHILD child = children.get(i);
+            if (checker.test(child)) {
+                return child;
             }
         }
-        return false;
+        return null;
     }
 
     public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {

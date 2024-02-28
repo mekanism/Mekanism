@@ -22,9 +22,10 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
 
-public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer {
+public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer, ContainerEventHandler {
 
     default void addSorterDefaults(IGuiWrapper gui, SorterFilter<?> filter, int slotOffset, UnaryOperator<GuiElement> childAdder, BooleanSupplier singleItem,
           BiConsumer<GuiTextField, GuiTextField> rangeSetter) {
@@ -38,12 +39,12 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"),
               () -> filter.allowDefault = !filter.allowDefault, (onHover, guiGraphics, mouseX, mouseY) -> gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_ALLOW_DEFAULT.translate()
         )));
-        GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
+        GuiTextField minField = new GuiTextField(gui, this, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText(Integer.toString(filter.min));
         childAdder.apply(minField);
-        GuiTextField maxField = new GuiTextField(gui, relativeX + 169, relativeY + 43, 20, 11);
+        GuiTextField maxField = new GuiTextField(gui, this, relativeX + 169, relativeY + 43, 20, 11);
         maxField.setMaxLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText(Integer.toString(filter.max));

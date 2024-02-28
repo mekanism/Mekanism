@@ -24,13 +24,13 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void init() {
         super.init();
-        text = addChild(new GuiTextField(gui(), relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
+        text = addChild(new GuiTextField(gui(), this, relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
         text.setMaxLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator())
               .setInputTransformer(getInputTransformer())
               .configureDigitalInput(this::setText)
               .setEditable(true);
-        text.setFocused(true);
+        setFocused(text);
     }
 
     @Override

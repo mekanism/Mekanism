@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
@@ -17,10 +19,17 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent.ArrowNavigation;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent.InitialFocus;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent.TabNavigation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -32,7 +41,8 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
+//Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
+public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
 
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
     public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
@@ -42,7 +52,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     protected ButtonBackground buttonBackground = ButtonBackground.NONE;
 
-    protected final List<GuiElement> children = new ArrayList<>();
+    private final List<GuiElement> children = new ArrayList<>();
     /**
      * Children that don't get drawn or checked for beyond transferring data. This is mainly a helper to make it easier to update positioning information of background
      * helpers.
@@ -55,6 +65,10 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     protected int relativeX;
     protected int relativeY;
     public boolean isOverlay;
+
+    @Nullable
+    private GuiElement focused;
+    private boolean isDragging;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
         this(gui, x, y, width, height, Component.empty());
@@ -133,8 +147,17 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return guiObj.getYSize();
     }
 
+    @NotNull
+    @Override
     public List<GuiElement> children() {
+        //TODO - 1.20.4: Override getRectangle?? At the very least for GuiMekanism so that elements that stick out are included
         return children;
+    }
+
+    @Override
+    public void visitWidgets(@NotNull Consumer<AbstractWidget> consumer) {
+        super.visitWidgets(consumer);
+        children.forEach(consumer);
     }
 
     public void tick() {
@@ -145,8 +168,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
      * @apiNote prevLeft and prevTop may be equal to left and top when things are being reinitialized such as when returning from viewing recipes in JEI.
      */
     public void resize(int prevLeft, int prevTop, int left, int top) {
-        setX(getX() - prevLeft + left);
-        setY(getY() - prevTop + top);
+        setPosition(getX() - prevLeft + left, getY() - prevTop + top);
         children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
         positionOnlyChildren.forEach(child -> child.resize(prevLeft, prevTop, left, top));
     }
@@ -160,8 +182,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public void move(int changeX, int changeY) {
-        setX(getX() + changeX);
-        setY(getY() + changeY);
+        setPosition(getX() + changeX, getY() + changeY);
         //Note: When moving we need to adjust our relative position but when resizing, we don't as we are relative to the
         // positions changing when resizing, instead of moving where we are in relation to
         relativeX += changeX;
@@ -251,23 +272,117 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         guiObj.displayTooltips(guiGraphics, mouseX, mouseY, components);
     }
 
-    //TODO - 1.20: Do more testing to make sure all implementations of this behave appropriately
-    // Also do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
-    @Nullable
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
-        for (int i = children.size() - 1; i >= 0; i--) {
-            GuiElement child = children.get(i);
-            GuiElement childResult = child.mouseClickedNested(mouseX, mouseY, button);
-            if (childResult != null) {
-                return childResult;
-            }
-        }
-        return super.mouseClicked(mouseX, mouseY, button) ? this : null;
+    @Override
+    public final boolean isDragging() {
+        return this.isDragging;
     }
 
     @Override
-    public final boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickedNested(mouseX, mouseY, button) != null;
+    public final void setDragging(boolean dragging) {
+        this.isDragging = dragging;
+    }
+
+    @NotNull
+    @Override
+    public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
+        if (checkWindows(mouseX, mouseY)) {
+            //If we are are not covered by a window, try to locate which child we are over
+            return Optional.ofNullable(GuiUtils.findChild(children, child -> child.isMouseOver(mouseX, mouseY)));
+        }
+        return Optional.empty();
+    }
+
+    @Nullable
+    @Override
+    public GuiElement getFocused() {
+        return this.focused;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return super.isFocused() || getFocused() != null;
+    }
+
+    @Override
+    public void setFocused(@Nullable GuiEventListener listener) {
+        if (this.focused != null) {
+            this.focused.setFocused(false);
+        }
+        if (listener instanceof GuiElement child) {
+            child.setFocused(true);
+            this.focused = child;
+        } else {
+            this.focused = null;
+        }
+    }
+
+    private void clearFocus() {
+        //Copy of Screen#clearFocus
+        // We use super's getFocusPath so that we don't change the focus of this element
+        ComponentPath path = ContainerEventHandler.super.getCurrentFocusPath();
+        if (path != null) {
+            path.applyFocus(false);
+        }
+    }
+
+    @Nullable
+    @Override
+    public ComponentPath getCurrentFocusPath() {
+        GuiElement currentFocus = getFocused();
+        if (currentFocus != null) {
+            return ComponentPath.path(this, currentFocus.getCurrentFocusPath());
+        } else if (isFocused()) {
+            return ComponentPath.leaf(this);
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ComponentPath nextFocusPath(@NotNull FocusNavigationEvent event) {
+        if (!this.active || !this.visible) {
+            //If we aren't active or aren't visible, don't check if we can be the next focus path
+            return null;
+        }
+        if (!isFocused()) {
+            if (event instanceof ArrowNavigation) {
+                if (supportsArrowNavigation()) {
+                    return ComponentPath.leaf(this);
+                }
+            } else if (event instanceof TabNavigation) {
+                if (supportsTabNavigation()) {
+                    return ComponentPath.leaf(this);
+                }
+            } else if (event instanceof InitialFocus) {
+                return ComponentPath.leaf(this);
+            }
+        }
+        return ContainerEventHandler.super.nextFocusPath(event);
+    }
+
+    protected boolean supportsTabNavigation() {
+        //TODO: Support navigation (both tab and arrow) for more elements
+        return false;
+    }
+
+    protected boolean supportsArrowNavigation() {
+        return false;
+    }
+
+    //TODO - 1.20: Do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        GuiElement clickedChild = GuiUtils.findChild(children, child -> child.mouseClicked(mouseX, mouseY, button));
+        //Note: This setFocused call is outside the clickedChild find, so that if we couldn't find one
+        // then we un-focus whatever child is currently focused
+        if (clickedChild != null) {
+            setFocused(clickedChild);
+            return true;
+        } else if (!children.isEmpty()) {
+            //If we can't find a child, but we do have some, allow clearing whatever focus we currently have
+            clearFocus();
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -282,12 +397,15 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        //TODO - 1.20.4: For this and onRelease etc do we want to somewhat do something like ContainerEventHandler does
+        // where it only does the focused element?
         children.forEach(element -> element.onDrag(mouseX, mouseY, deltaX, deltaY));
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
     }
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
+        setDragging(false);
         children.forEach(element -> element.onRelease(mouseX, mouseY));
         super.onRelease(mouseX, mouseY);
     }

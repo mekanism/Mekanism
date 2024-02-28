@@ -1,5 +1,6 @@
 package mekanism.client.jei;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -36,14 +37,16 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
+public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventHandler implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
     private static final IProgressInfoHandler CONSTANT_PROGRESS = () -> 1;
     protected static final IBarInfoHandler FULL_BAR = () -> 1;
@@ -94,6 +97,27 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected <ELEMENT extends GuiTexturedElement> ELEMENT addElement(ELEMENT element) {
         guiElements.add(element);
         return element;
+    }
+
+    @NotNull
+    @Override
+    public List<GuiTexturedElement> children() {
+        return guiElements;
+    }
+
+    @Override
+    public boolean handleInput(RECIPE recipe, double mouseX, double mouseY, InputConstants.Key input) {
+        //TODO: Evaluate implementing isDragging, setDragging in some fashion or another
+        //TODO - 1.20.4: ?? Does clicking gauges with a dropper cause issues?? OR any other related things?
+        /*Predicate<GuiTexturedElement> predicate = switch (input.getType()) {
+            case KEYSYM -> child -> child.keyPressed(input.getValue(), -1, 0);
+            case SCANCODE -> child -> child.keyPressed(-1, input.getValue(), 0);
+            case MOUSE -> child -> child.mouseClicked(mouseX, mouseY, input.getValue());
+        };
+        GuiTexturedElement targetedChild = GuiUtils.findChild(children(), predicate);
+        setFocused(targetedChild);
+        return targetedChild != null;*/
+        return false;
     }
 
     /**

@@ -14,11 +14,11 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -34,6 +34,8 @@ public class GuiTextField extends GuiElement {
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
     private final EditBox textField;
+    private ContainerEventHandler parent;
+
     private Runnable enterHandler;
     private CharPredicate inputValidator;
     private CharUnaryOperator inputTransformer;
@@ -49,7 +51,12 @@ public class GuiTextField extends GuiElement {
     private MekanismImageButton checkmarkButton;
 
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
+        this(gui, gui, x, y, width, height);
+    }
+
+    public GuiTextField(IGuiWrapper gui, ContainerEventHandler parent, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
+        this.parent = parent;
 
         textField = new EditBox(getFont(), getX(), getY(), width, height, Component.empty());
         textField.setBordered(false);
@@ -61,16 +68,23 @@ public class GuiTextField extends GuiElement {
                 checkmarkButton.active = !textField.getValue().isEmpty();
             }
         });
-        gui().addFocusListener(this);
         updateTextField();
+    }
+
+    @Override
+    public void transferToNewGui(IGuiWrapper gui) {
+        boolean guiIsParent = parent == gui();
+        super.transferToNewGui(gui);
+        if (guiIsParent) {
+            parent = gui;
+        }
     }
 
     @Override
     public void resize(int prevLeft, int prevTop, int left, int top) {
         super.resize(prevLeft, prevTop, left, top);
         //Ensure we also update the positions of the text field
-        textField.setX(textField.getX() - prevLeft + left);
-        textField.setY(textField.getY() - prevTop + top);
+        textField.setPosition(textField.getX() - prevLeft + left, textField.getY() - prevTop + top);
     }
 
     public GuiTextField setScale(float textScale) {
@@ -142,7 +156,7 @@ public class GuiTextField extends GuiElement {
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
         checkmarkButton = addChild(type.getButton(this, () -> {
             callback.run();
-            setFocused(true);
+            parent.setFocused(this);
         }));
         checkmarkButton.active = false;
         updateTextField();
@@ -153,18 +167,11 @@ public class GuiTextField extends GuiElement {
         //width is scaled based on text scale
         int iconOffsetX = iconType == null ? 0 : iconType.getOffsetX();
         textField.setWidth(Math.round((width - (checkmarkButton == null ? 0 : textField.getHeight() + 2) - iconOffsetX) * (1 / textScale)));
-        textField.setX(getX() + textOffsetX + 2 + iconOffsetX);
-        textField.setY(getY() + textOffsetY + 1 + (int) ((height / 2F) - 4));
+        textField.setPosition(getX() + textOffsetX + 2 + iconOffsetX, getY() + textOffsetY + 1 + (int) ((height / 2F) - 4));
     }
 
     public boolean isTextFieldFocused() {
         return textField.isFocused();
-    }
-
-    @Override
-    public void onWindowClose() {
-        super.onWindowClose();
-        gui().removeFocusListener(this);
     }
 
     @Override
@@ -173,21 +180,14 @@ public class GuiTextField extends GuiElement {
         updateTextField();
     }
 
-    @Nullable
     @Override
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
-        boolean prevFocus = isTextFieldFocused();
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
             scaledX = Math.min(scaledX, textField.getX()) + (scaledX - textField.getX()) * (1F / textScale);
         }
-        boolean ret = textField.mouseClicked(scaledX, mouseY, button);
-        // detect if we're now focused
-        if (!prevFocus && isTextFieldFocused()) {
-            gui().focusChange(this);
-        }
-        return ret ? this : super.mouseClickedNested(mouseX, mouseY, button);
+        return textField.mouseClicked(scaledX, mouseY, button) || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -215,6 +215,11 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
+    protected boolean supportsTabNavigation() {
+        return true;
+    }
+
+    @Override
     public boolean hasPersistentData() {
         return true;
     }
@@ -223,23 +228,20 @@ public class GuiTextField extends GuiElement {
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         textField.setValue(((GuiTextField) element).getText());
-        setFocused(element.isFocused());
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_TAB) {
                 //Manually handle hitting escape to make the whole interface go away
+                // and allow using tab to switch focus
                 return false;
             } else if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
                     enterHandler.run();
                 }
-                return true;
-            } else if (keyCode == GLFW.GLFW_KEY_TAB && textField.canLoseFocus) {
-                gui().incrementFocus(this);
                 return true;
             } else if (Screen.isPaste(keyCode)) {
                 //Manual handling of textField#keyPressed for pasting so that we can filter things as needed
@@ -323,9 +325,6 @@ public class GuiTextField extends GuiElement {
         if (textField.canLoseFocus || focused) {
             super.setFocused(focused);
             textField.setFocused(focused);
-            if (focused) {
-                gui().focusChange(this);
-            }
         }
     }
 

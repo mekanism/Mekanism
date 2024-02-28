@@ -5,7 +5,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
@@ -193,19 +192,18 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         }
     }
 
-    @Nullable
     @Override
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= getX() + borderSize() && mouseY >= getY() + borderSize() && mouseX < getX() + width - borderSize() && mouseY < getY() + height - borderSize()) {
                 if (onClick.onClick(this, (int) mouseX, (int) mouseY)) {
                     playDownSound(minecraft.getSoundManager());
-                    return this;
+                    return true;
                 }
                 //If clicking the slot fails check super as maybe it has children that can handle clicks
             }
         }
-        return super.mouseClickedNested(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Nullable

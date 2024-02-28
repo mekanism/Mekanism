@@ -12,7 +12,6 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.MekanismLang;
@@ -97,19 +96,17 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         //Rendering is redirected in drawContentsChecked
     }
 
-    @Nullable
     @Override
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            boolean clicked = gasBar.mouseClicked(mouseX, mouseY, button) | infusionBar.mouseClicked(mouseX, mouseY, button) |
-                              pigmentBar.mouseClicked(mouseX, mouseY, button) | slurryBar.mouseClicked(mouseX, mouseY, button);
-            return clicked ? this : null;
+            return gasBar.mouseClicked(mouseX, mouseY, button) | infusionBar.mouseClicked(mouseX, mouseY, button) |
+                   pigmentBar.mouseClicked(mouseX, mouseY, button) | slurryBar.mouseClicked(mouseX, mouseY, button);
         }
         //Otherwise, just send the click event to the corresponding bar
-        return currentBar.mouseClickedNested(mouseX, mouseY, button);
+        return currentBar.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

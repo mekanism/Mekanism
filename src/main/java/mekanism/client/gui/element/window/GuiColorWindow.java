@@ -78,7 +78,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         int textOffset = this.handlesAlpha ? 6 : 0;
-        textField = addChild(new GuiTextField(gui, relativeX + 30 + textOffset, relativeY + height - 20, 63 + extraWidth - textOffset, 12));
+        textField = addChild(new GuiTextField(gui, this, relativeX + 30 + textOffset, relativeY + height - 20, 63 + extraWidth - textOffset, 12));
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','))
               //Transform paste to remove any spaces to allow pasting from sources that have a space after the comma
               .setPasteTransformer(text -> text.replace(" ", ""))
@@ -268,8 +268,6 @@ public class GuiColorWindow extends GuiWindow {
 
     private abstract static class GuiPicker extends GuiElement {
 
-        private boolean isDragging;
-
         public GuiPicker(IGuiWrapper gui, int x, int y, int width, int height) {
             super(gui, x, y, width, height);
         }
@@ -278,22 +276,17 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         public void onClick(double mouseX, double mouseY, int button) {
+            super.onClick(mouseX, mouseY, button);
             set(mouseX, mouseY);
-            isDragging = true;
+            setDragging(true);
         }
 
         @Override
         public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
             super.onDrag(mouseX, mouseY, deltaX, deltaY);
-            if (isDragging) {
+            if (isDragging()) {
                 set(mouseX, mouseY);
             }
-        }
-
-        @Override
-        public void onRelease(double mouseX, double mouseY) {
-            super.onRelease(mouseX, mouseY);
-            isDragging = false;
         }
     }
 

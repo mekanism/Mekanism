@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
@@ -33,9 +34,12 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +58,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected final LRU<GuiWindow> windows = new LRU<>();
-    protected final List<GuiElement> focusListeners = new ArrayList<>();
     public boolean switchingToJEI;
     @Nullable
     private IWarningTracker warningTracker;
@@ -158,29 +161,76 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
-    @Override
-    public void addFocusListener(GuiElement element) {
-        focusListeners.add(element);
-    }
-
-    @Override
-    public void removeFocusListener(GuiElement element) {
-        focusListeners.remove(element);
-    }
-
-    @Override
-    public void focusChange(GuiElement changed) {
-        focusListeners.stream().filter(e -> e != changed).forEach(e -> e.setFocused(false));
-    }
-
-    @Override
-    public void incrementFocus(GuiElement current) {
-        int index = focusListeners.indexOf(current);
-        if (index != -1) {
-            GuiElement next = focusListeners.get((index + 1) % focusListeners.size());
-            next.setFocused(true);
-            focusChange(next);
+    @Nullable
+    private ComponentPath handleNavigationWithWindows(Function<ContainerEventHandler, @Nullable ComponentPath> handleNavigation) {
+        GuiWindow topWindow = windows.iterator().next();
+        List<GuiEventListener> combinedChildren;
+        //Note: As allowContainer wise only allows interacting with slots, which we don't have navigation for, we check against allowAll.
+        // If we are allowed to interact with everything, we want to include all the windows and children in the navigation check,
+        // otherwise we only include the top window, as while it should already be focused, maybe it isn't, so we need to make sure
+        // to handle checking navigation on it
+        if (topWindow.getInteractionStrategy().allowAll()) {
+            combinedChildren = new ArrayList<>(windows);
+            combinedChildren.addAll(children());
+        } else {
+            combinedChildren = List.of(topWindow);
         }
+        ContainerEventHandler handlerWithWindows = new ContainerEventHandler() {
+            @NotNull
+            @Override
+            public List<? extends GuiEventListener> children() {
+                return combinedChildren;
+            }
+
+            @Override
+            public boolean isDragging() {
+                return GuiMekanism.this.isDragging();
+            }
+
+            @Override
+            public void setDragging(boolean dragging) {
+            }
+
+            @Nullable
+            @Override
+            public GuiEventListener getFocused() {
+                return GuiMekanism.this.getFocused();
+            }
+
+            @Override
+            public void setFocused(@Nullable GuiEventListener focused) {
+            }
+        };
+        ComponentPath componentPath = handleNavigation.apply(handlerWithWindows);
+        if (componentPath == null) {
+            return null;
+        } else if (componentPath instanceof ComponentPath.Path path) {
+            if (path.component() == handlerWithWindows) {
+                //Replace the root of the path with ourselves rather than our fake wrapper
+                return ComponentPath.path(this, path.childPath());
+            }
+        }
+        return componentPath;
+    }
+
+    @Nullable
+    @Override
+    public ComponentPath handleTabNavigation(@NotNull FocusNavigationEvent.TabNavigation navigation) {
+        //Note: We have to AT this method and the arrow navigation one, as Screen explicitly calls super.nextFocusPath,
+        // so we can't get away with just overriding getFocusPath
+        if (windows.isEmpty()) {
+            return super.handleTabNavigation(navigation);
+        }
+        return handleNavigationWithWindows(handlerWithWindows -> handlerWithWindows.handleTabNavigation(navigation));
+    }
+
+    @Nullable
+    @Override
+    public ComponentPath handleArrowNavigation(@NotNull FocusNavigationEvent.ArrowNavigation navigation) {
+        if (windows.isEmpty()) {
+            return super.handleArrowNavigation(navigation);
+        }
+        return handleNavigationWithWindows(handlerWithWindows -> handlerWithWindows.handleArrowNavigation(navigation));
     }
 
     @Override
@@ -202,17 +252,19 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     protected void rebuildWidgets() {
         //Gather any persistent data from existing elements
-        record PreviousElement(int index, GuiElement element) {
+        record PreviousElement(int index, GuiElement element, boolean wasFocus) {
         }
         List<PreviousElement> prevElements = new ArrayList<>();
+        GuiEventListener previousFocused = getFocused();
         for (int i = 0; i < children().size(); i++) {
             GuiEventListener widget = children().get(i);
-            if (widget instanceof GuiElement element && element.hasPersistentData()) {
-                prevElements.add(new PreviousElement(i, element));
+            if (widget instanceof GuiElement element) {
+                boolean wasPreviousFocus = element == previousFocused;
+                if (wasPreviousFocus || element.hasPersistentData()) {
+                    prevElements.add(new PreviousElement(i, element, wasPreviousFocus));
+                }
             }
         }
-        // flush the focus listeners list unless it's an overlay
-        focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = leftPos, prevTop = topPos;
         //Allow the elements to be cleared and reinitialized
         super.rebuildWidgets();
@@ -230,6 +282,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 // ensured by the class comparison, and the restrictions of what can go in prevElements
                 if (widget.getClass() == e.element().getClass()) {
                     ((GuiElement) widget).syncFrom(e.element());
+                    if (e.wasFocus()) {
+                        setFocused(widget);
+                    }
                 }
             }
         });
@@ -276,13 +331,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
-            for (int i = children().size() - 1; i >= 0; i--) {
-                GuiEventListener widget = children().get(i);
-                if (widget instanceof GuiElement element && element.isMouseOver(mouseX, mouseY)) {
-                    tooltipElement = element;
-                    break;
-                }
-            }
+            tooltipElement = (GuiElement) GuiUtils.findChild(children(), child -> child instanceof GuiElement && child.isMouseOver(mouseX, mouseY));
         }
 
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
@@ -342,13 +391,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
         for (GuiWindow overlay : windows) {
-            GuiElement focusedElement = overlay.mouseClickedNested(mouseX, mouseY, button);
-            if (focusedElement != null) {
+            if (overlay.mouseClicked(mouseX, mouseY, button)) {
                 if (windows.contains(overlay)) {
                     //Validate that the focused window is still one of our windows, as if it wasn't focused/on top, and
                     // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                     // run as we ran it when we pressed the button
-                    setFocused(focusedElement);
+                    setFocused(overlay);
                     if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                         setDragging(true);
                     }
@@ -362,22 +410,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 return true;
             }
         }
-        // otherwise, we send it to the current element (this is the same as super.super, but in reverse order)
-        for (int i = children().size() - 1; i >= 0; i--) {
-            GuiEventListener listener = children().get(i);
-            GuiEventListener focusedChild = null;
-            if (listener instanceof GuiElement element) {
-                focusedChild = element.mouseClickedNested(mouseX, mouseY, button);
-            } else if (listener.mouseClicked(mouseX, mouseY, button)) {
-                focusedChild = listener;
+        // otherwise, we send it to the current element (this is the same as super.super [ContainerEventHandler#mouseClicked], but in reverse order)
+        //TODO: Why do we do this in reverse order?
+        GuiEventListener clickedChild = GuiUtils.findChild(children(), child -> child.mouseClicked(mouseX, mouseY, button));
+        if (clickedChild != null) {
+            setFocused(clickedChild);
+            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                setDragging(true);
             }
-            if (focusedChild != null) {
-                setFocused(focusedChild);
-                if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                    setDragging(true);
-                }
-                return true;
-            }
+            return true;
+        } else {
+            //If we can't find a child, allow clearing whatever focus we currently have
+            clearFocus();
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }

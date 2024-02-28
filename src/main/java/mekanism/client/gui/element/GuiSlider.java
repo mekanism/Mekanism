@@ -16,7 +16,6 @@ public class GuiSlider extends GuiElement {
     private final DoubleConsumer callback;
 
     private double value;
-    private boolean isDragging;
 
     public GuiSlider(IGuiWrapper gui, int x, int y, int width, DoubleConsumer callback) {
         super(gui, x, y, width, 12);
@@ -40,22 +39,16 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
-        isDragging = false;
-    }
-
-    @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
         set(mouseX, mouseY);
-        isDragging = true;
+        setDragging(true);
     }
 
     @Override
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
-        if (isDragging) {
+        if (isDragging()) {
             set(mouseX, mouseY);
         }
     }

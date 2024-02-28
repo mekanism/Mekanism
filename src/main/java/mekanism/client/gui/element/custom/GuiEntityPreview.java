@@ -22,7 +22,6 @@ public class GuiEntityPreview extends GuiElement {
     private final float xOffset;
     private final float yOffset;
 
-    private boolean isDragging;
     private float rotation;
 
     public GuiEntityPreview(IGuiWrapper gui, int x, int y, int size, Supplier<LivingEntity> preview) {
@@ -62,19 +61,14 @@ public class GuiEntityPreview extends GuiElement {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        isDragging = true;
-    }
-
-    @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
-        isDragging = false;
+        super.onClick(mouseX, mouseY, button);
+        setDragging(true);
     }
 
     @Override
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
-        if (isDragging) {
+        if (isDragging()) {
             rotation = Mth.wrapDegrees(rotation - (float) (deltaX / 10));
         }
     }

@@ -20,7 +20,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
@@ -28,7 +27,6 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
     private final SelectedWindowData windowData;
-    private boolean dragging = false;
     private double dragX, dragY;
     private int prevDX, prevDY;
 
@@ -98,41 +96,37 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         return interactionStrategy;
     }
 
-    @Nullable
     @Override
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
-        GuiElement ret = super.mouseClickedNested(mouseX, mouseY, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean ret = super.mouseClicked(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
             if (mouseY < getY() + 18) {
-                dragging = true;
+                setDragging(true);
                 dragX = mouseX;
                 dragY = mouseY;
                 prevDX = 0;
                 prevDY = 0;
             }
-        } else if (ret == null && interactionStrategy.allowContainer()) {
+        } else if (!ret && interactionStrategy.allowContainer()) {
             if (gui() instanceof GuiMekanism<?> gui) {
                 AbstractContainerMenu c = gui.getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
-                        return null;
+                        return false;
                     }
                 }
             }
         }
-        if (ret == null) {
-            // always return true to prevent background clicking
-            return interactionStrategy.allowAll() ? null : this;
-        }
-        return ret;
+        //If we didn't interact, and we don't always allow interacting, pretend we did interact in order to prevent background clicking
+        return ret || !interactionStrategy.allowAll();
     }
 
     @Override
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
-        if (dragging) {
+        if (isDragging()) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
             int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - (getX() + width));
             int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - (getY() + height));
@@ -140,12 +134,6 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             prevDY = newDY;
             move(changeX, changeY);
         }
-    }
-
-    @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
-        dragging = false;
     }
 
     @Override
@@ -203,7 +191,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     public void close() {
         gui().removeWindow(this);
-        children.forEach(GuiElement::onWindowClose);
+        children().forEach(GuiElement::onWindowClose);
         if (closeListener != null) {
             closeListener.accept(this);
         }

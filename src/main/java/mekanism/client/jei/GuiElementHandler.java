@@ -16,6 +16,7 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
 
@@ -33,10 +34,10 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                     //If the element sticks out at all add it
                     areas.add(new Rect2i(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight()));
                 }
-                if (widget instanceof GuiElement element) {
+                if (widget instanceof ContainerEventHandler eventHandler) {
                     //Start by getting all the areas in the grandchild that stick outside the child in theory this should cut down
                     // on our checks a fair bit as most children will fully contain all their grandchildren
-                    for (Rect2i grandChildArea : getAreasFor(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), element.children())) {
+                    for (Rect2i grandChildArea : getAreasFor(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), eventHandler.children())) {
                         //Then check if that area that is sticking outside the child sticks outside the parent as well
                         if (areaSticksOut(grandChildArea.getX(), grandChildArea.getY(), grandChildArea.getWidth(), grandChildArea.getHeight(),
                               parentX, parentY, parentWidth, parentHeight)) {
@@ -82,10 +83,10 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                     //Skip this child if it isn't visible
                     continue;
                 }
-                if (widget instanceof GuiElement element) {
+                if (widget instanceof ContainerEventHandler eventHandler) {
                     //Start by checking if we have any grandchildren that have an element being hovered as if we do it is the one
                     // we want to take as the grandchildren in general should be a more "forward" facing layer
-                    Optional<IClickableIngredient<?>> underGrandChild = getIngredientUnderMouse(element.children(), mouseX, mouseY);
+                    Optional<IClickableIngredient<?>> underGrandChild = getIngredientUnderMouse(eventHandler.children(), mouseX, mouseY);
                     if (underGrandChild.isPresent()) {
                         //If we have a grandchild that was an ingredient helper, return its ingredient
                         return underGrandChild;
@@ -124,15 +125,15 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
     private Collection<IGuiClickableArea> getGuiClickableArea(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
         for (GuiEventListener child : children) {
-            if (child instanceof GuiElement element && element.visible) {
+            if (child instanceof ContainerEventHandler eventHandler) {
                 //Start by checking if any of the grandchildren are JEI clickable areas that can be used
                 // as we want to start with the "top" layer
-                Collection<IGuiClickableArea> clickableGrandChildAreas = getGuiClickableArea(element.children(), mouseX, mouseY);
+                Collection<IGuiClickableArea> clickableGrandChildAreas = getGuiClickableArea(eventHandler.children(), mouseX, mouseY);
                 if (!clickableGrandChildAreas.isEmpty()) {
                     return clickableGrandChildAreas;
                 }
                 //If we couldn't find any, then we need to continue on to checking this element itself
-                if (element instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isJEIAreaActive()) {
+                if (child instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isJEIAreaActive() && child instanceof GuiElement element && element.visible) {
                     MekanismJEIRecipeType<?>[] categories = recipeArea.getRecipeCategories();
                     //getRecipeCategories is a cheaper call than isMouseOver, so we perform it first
                     //Note: We do not need to check if there is a window over the child as if we are currently hovering any window

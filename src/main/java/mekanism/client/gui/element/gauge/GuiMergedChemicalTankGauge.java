@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
@@ -61,19 +60,17 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
         return getCurrentGauge().getGaugeColor();
     }
 
-    @Nullable
     @Override
-    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            boolean clicked = gasGauge.mouseClicked(mouseX, mouseY, button) | infusionGauge.mouseClicked(mouseX, mouseY, button) |
-                              pigmentGauge.mouseClicked(mouseX, mouseY, button) | slurryGauge.mouseClicked(mouseX, mouseY, button);
-            return clicked ? this : null;
+            return gasGauge.mouseClicked(mouseX, mouseY, button) | infusionGauge.mouseClicked(mouseX, mouseY, button) |
+                   pigmentGauge.mouseClicked(mouseX, mouseY, button) | slurryGauge.mouseClicked(mouseX, mouseY, button);
         }
         //Otherwise, just send the click event to the corresponding gauge
-        return currentGauge.mouseClickedNested(mouseX, mouseY, button);
+        return currentGauge.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
