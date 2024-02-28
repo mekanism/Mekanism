@@ -159,7 +159,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Hučení plynného generátoru",
   "sound_event.mekanismgenerators.tile.generator.heat": "Hučení tepelného generátoru",
   "sound_event.mekanismgenerators.tile.generator.solar": "Hučení solárního generátoru",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Hučení větrného generátoru",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Hučení štěpného reaktoru",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Hučení fúzního reaktoru",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Nedostatek Paliva",
