@@ -30,6 +30,7 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.ArrowNavigation;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.InitialFocus;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.TabNavigation;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -149,8 +150,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @NotNull
     @Override
+    public ScreenRectangle getRectangle() {
+        return super.getRectangle();
+    }
+
+    @NotNull
+    @Override
     public List<GuiElement> children() {
-        //TODO - 1.20.4: Override getRectangle?? At the very least for GuiMekanism so that elements that stick out are included
         return children;
     }
 

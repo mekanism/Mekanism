@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IItemProvider;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -62,7 +59,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, provider.getItemStack());
     }
 
-    private final List<GuiTexturedElement> guiElements = new ArrayList<>();
+    private final List<GuiElement> guiElements = new ArrayList<>();
     private final Component component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;
@@ -97,28 +94,31 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         this.background = new NOOPDrawable(width, height);
     }
 
-    protected <ELEMENT extends GuiTexturedElement> ELEMENT addElement(ELEMENT element) {
+    protected <ELEMENT extends GuiElement> ELEMENT addElement(ELEMENT element) {
         guiElements.add(element);
         return element;
     }
 
     @NotNull
     @Override
-    public List<GuiTexturedElement> children() {
+    public List<GuiElement> children() {
         return guiElements;
+    }
+
+    @NotNull
+    @Override
+    public ScreenRectangle getRectangle() {
+        return new ScreenRectangle(getGuiLeft(), getGuiTop(), getXSize(), getYSize());
     }
 
     @Override
     public boolean handleInput(RECIPE recipe, double mouseX, double mouseY, InputConstants.Key input) {
-        //TODO: Evaluate implementing isDragging, setDragging in some fashion or another
-        Predicate<GuiTexturedElement> predicate = switch (input.getType()) {
-            case KEYSYM -> child -> child.keyPressed(input.getValue(), -1, 0);
-            case SCANCODE -> child -> child.keyPressed(-1, input.getValue(), 0);
-            case MOUSE -> child -> child.mouseClicked(mouseX, mouseY, input.getValue());
+        return switch (input.getType()) {
+            case KEYSYM -> keyPressed(input.getValue(), -1, 0);
+            case SCANCODE -> keyPressed(-1, input.getValue(), 0);
+            //Shift by the offset as JEI doesn't realize we are actually starting at negatives
+            case MOUSE -> mouseClicked(mouseX, mouseY, input.getValue());
         };
-        GuiTexturedElement targetedChild = GuiUtils.findChild(children(), predicate);
-        setFocused(targetedChild);
-        return targetedChild != null;
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         //Note: We don't care that onRenderForeground updates the maxZOffset in the mekanism gui as that is just used for rendering windows
         // and as our categories don't support windows we don't need to worry about that
         int zOffset = 200;
-        for (GuiTexturedElement element : guiElements) {
+        for (GuiElement element : guiElements) {
             pose.pushPose();
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
             pose.popPose();

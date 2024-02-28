@@ -40,6 +40,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -205,6 +206,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
             @Override
             public void setFocused(@Nullable GuiEventListener focused) {
+            }
+
+            @NotNull
+            @Override
+            public ScreenRectangle getRectangle() {
+                return GuiMekanism.this.getRectangle();
             }
         };
         ComponentPath componentPath = handleNavigation.apply(handlerWithWindows);
