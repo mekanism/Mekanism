@@ -984,7 +984,6 @@
   "gui.mekanism.no_fluid": "Немає рідини",
   "gui.mekanism.no_recipe": "(Немає рецепту)",
   "gui.mekanism.none": "Нічого",
-  "gui.mekanism.opacity": "Прозорість",
   "gui.mekanism.pigment": "Барвник: %1$s",
   "gui.mekanism.process_rate": "Швидкість процесу: %1$s",
   "gui.mekanism.process_rate_mb": "Швидкість процесу: %1$s mB/т",
