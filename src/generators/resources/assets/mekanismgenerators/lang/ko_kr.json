@@ -159,7 +159,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "기체 연소 발전기가 웅웅거림",
   "sound_event.mekanismgenerators.tile.generator.heat": "지열 발전기가 웅웅거림",
   "sound_event.mekanismgenerators.tile.generator.solar": "태양광 발전기가 웅웅거림",
-  "sound_event.mekanismgenerators.tile.generator.wind": "풍력 발전기가 휙휙거림",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "원자로가 웅웅거림",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "핵융합로가 웅웅거림",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "연료 부족",
