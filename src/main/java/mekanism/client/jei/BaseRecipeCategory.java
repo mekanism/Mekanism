@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IItemProvider;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -38,6 +40,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -108,16 +111,14 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     @Override
     public boolean handleInput(RECIPE recipe, double mouseX, double mouseY, InputConstants.Key input) {
         //TODO: Evaluate implementing isDragging, setDragging in some fashion or another
-        //TODO - 1.20.4: ?? Does clicking gauges with a dropper cause issues?? OR any other related things?
-        /*Predicate<GuiTexturedElement> predicate = switch (input.getType()) {
+        Predicate<GuiTexturedElement> predicate = switch (input.getType()) {
             case KEYSYM -> child -> child.keyPressed(input.getValue(), -1, 0);
             case SCANCODE -> child -> child.keyPressed(-1, input.getValue(), 0);
             case MOUSE -> child -> child.mouseClicked(mouseX, mouseY, input.getValue());
         };
         GuiTexturedElement targetedChild = GuiUtils.findChild(children(), predicate);
         setFocused(targetedChild);
-        return targetedChild != null;*/
-        return false;
+        return targetedChild != null;
     }
 
     /**

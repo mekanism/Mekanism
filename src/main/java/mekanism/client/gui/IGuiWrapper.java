@@ -12,9 +12,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,12 +29,7 @@ public interface IGuiWrapper extends ContainerEventHandler {
 
     @NotNull
     default ItemStack getCarriedItem() {
-        if (this instanceof AbstractContainerScreen<?> screen) {
-            return screen.getMenu().getCarried();
-        }
-        //General fallback to just get it from the player's container menu
-        Player player = Minecraft.getInstance().player;
-        return player == null ? ItemStack.EMPTY : player.containerMenu.getCarried();
+        return ItemStack.EMPTY;
     }
 
     int getGuiLeft();

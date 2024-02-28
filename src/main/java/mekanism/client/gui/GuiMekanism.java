@@ -161,6 +161,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
+    @NotNull
+    @Override
+    public ItemStack getCarriedItem() {
+        return getMenu().getCarried();
+    }
+
     @Nullable
     private ComponentPath handleNavigationWithWindows(Function<ContainerEventHandler, @Nullable ComponentPath> handleNavigation) {
         GuiWindow topWindow = windows.iterator().next();
