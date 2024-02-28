@@ -161,7 +161,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Гул газового генератора",
   "sound_event.mekanismgenerators.tile.generator.heat": "Гул теплогенератора",
   "sound_event.mekanismgenerators.tile.generator.solar": "Гул солнечной панели",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Шум ветрогенератора",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Гул ядерного реактора",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Гул термоядерного реактора",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Недостаточно топлива",
