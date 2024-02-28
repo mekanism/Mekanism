@@ -984,7 +984,6 @@
   "gui.mekanism.no_fluid": "没有流体",
   "gui.mekanism.no_recipe": "(没有配方)",
   "gui.mekanism.none": "无",
-  "gui.mekanism.opacity": "不透明度",
   "gui.mekanism.pigment": "颜料：%1$s",
   "gui.mekanism.process_rate": "处理速率：%1$s",
   "gui.mekanism.process_rate_mb": "处理速率：%1$s mB/t",
