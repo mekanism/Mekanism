@@ -709,7 +709,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void readSustainedData(CompoundTag data) {
         if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
+            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = supportedOrNextType(type));
         }
     }
 
@@ -962,9 +962,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void setControlType(@NotNull RedstoneControl type) {
         if (supportsRedstone()) {
-            controlType = Objects.requireNonNull(type);
-            markForSave();
+            type = supportedOrNextType(type);
+            if (type != controlType) {
+                controlType = type;
+                markForSave();
+            }
         }
+    }
+
+    private RedstoneControl supportedOrNextType(@NotNull RedstoneControl type) {
+        Objects.requireNonNull(type);
+        if (!supportsMode(type)) {
+            //Validate we support the mode that is being set
+            type = type.getNext(this::supportsMode);
+        }
+        return type;
     }
 
     @Override
@@ -1412,8 +1424,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)
     void setRedstoneMode(RedstoneControl type) throws ComputerException {
         validateSecurityIsPublic();
-        if (type == RedstoneControl.PULSE && !canPulse()) {
-            throw new ComputerException("Unsupported redstone control mode: %s", RedstoneControl.PULSE);
+        if (!supportsMode(type)) {
+            throw new ComputerException("Unsupported redstone control mode: %s", type);
         }
         setControlType(type);
     }

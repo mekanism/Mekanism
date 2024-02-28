@@ -209,7 +209,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public boolean canPulse() {
+    public boolean supportsMode(RedstoneControl mode) {
         return true;
     }
 

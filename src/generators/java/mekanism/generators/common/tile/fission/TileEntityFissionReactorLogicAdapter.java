@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
@@ -82,7 +83,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         if (multiblock.isFormed()) {
             switch (logicType) {
                 case ACTIVATION -> {
-                    if (isPowered()) {
+                    if (MekanismUtils.canFunction(this)) {
                         return RedstoneStatus.POWERED;
                     }
                 }
@@ -120,13 +121,20 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
+    public boolean supportsMode(RedstoneControl mode) {
+        //Don't allow the mode to be disabled
+        return super.supportsMode(mode) && mode != RedstoneControl.DISABLED;
+    }
+
+
+    @Override
     public void onPowerChange() {
         super.onPowerChange();
         if (!isRemote()) {
             FissionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 if (logicType == FissionReactorLogic.ACTIVATION) {
-                    multiblock.setActive(isPowered());
+                    multiblock.setActive(MekanismUtils.canFunction(this));
                 }
             }
         }

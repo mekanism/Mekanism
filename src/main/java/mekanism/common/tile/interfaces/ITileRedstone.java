@@ -7,8 +7,8 @@ public interface ITileRedstone extends IRedstoneControl {
     }
 
     @Override
-    default boolean canPulse() {
-        return false;
+    default boolean supportsMode(RedstoneControl mode) {
+        return mode != RedstoneControl.PULSE;
     }
 
     default void onPowerChange() {

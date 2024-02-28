@@ -171,7 +171,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public boolean canPulse() {
+    public boolean supportsMode(RedstoneControl mode) {
         return true;
     }
 

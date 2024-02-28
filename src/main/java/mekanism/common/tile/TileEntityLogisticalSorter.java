@@ -230,7 +230,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public boolean canPulse() {
+    public boolean supportsMode(RedstoneControl mode) {
         return true;
     }
 

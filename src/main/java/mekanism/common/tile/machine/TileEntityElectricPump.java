@@ -346,7 +346,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public boolean canPulse() {
+    public boolean supportsMode(RedstoneControl mode) {
         return true;
     }
 

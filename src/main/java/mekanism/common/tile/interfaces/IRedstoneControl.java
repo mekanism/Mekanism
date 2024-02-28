@@ -37,9 +37,9 @@ public interface IRedstoneControl {
     boolean wasPowered();
 
     /**
-     * If the machine can be pulsed.
+     * If the machine supports the given redstone control mode.
      */
-    boolean canPulse();
+    boolean supportsMode(RedstoneControl mode);
 
     @NothingNullByDefault
     enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTextComponent {

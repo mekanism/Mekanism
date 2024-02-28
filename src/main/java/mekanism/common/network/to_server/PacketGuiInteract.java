@@ -20,7 +20,6 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.IUpgradeTile;
@@ -365,8 +364,8 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
                 hasMode.previousMode();
             }
         }),
-        NEXT_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getNext(mode -> mode != RedstoneControl.PULSE || tile.canPulse()))),
-        PREVIOUS_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getPrevious(mode -> mode != RedstoneControl.PULSE || tile.canPulse()))),
+        NEXT_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getNext(tile::supportsMode))),
+        PREVIOUS_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getPrevious(tile::supportsMode))),
         ENCODE_FORMULA((tile, player, extra) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
                 assemblicator.encodeFormula();

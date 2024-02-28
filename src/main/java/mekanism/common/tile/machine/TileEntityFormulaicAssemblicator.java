@@ -650,7 +650,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public boolean canPulse() {
+    public boolean supportsMode(RedstoneControl mode) {
         return true;
     }
 
