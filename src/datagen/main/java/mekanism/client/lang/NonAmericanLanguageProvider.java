@@ -46,7 +46,7 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
     }
 
     @Override
-    public void convert(String key, List<Component> splitEnglish) {
+    public void convert(String key, String raw, List<Component> splitEnglish) {
         StringBuilder builder = new StringBuilder();
         boolean foundMatch = false;
         for (Component component : splitEnglish) {

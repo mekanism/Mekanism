@@ -617,6 +617,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        add("_mekanism_force_utf8", "\ufeff");
         addJade();
         //Upgrades
         add(APILang.UPGRADE_SPEED, "Speed");

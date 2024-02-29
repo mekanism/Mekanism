@@ -11,7 +11,7 @@ public abstract class ConvertibleLanguageProvider extends LanguageProvider {
         super(output, modid, locale);
     }
 
-    public abstract void convert(String key, List<Component> splitEnglish);
+    public abstract void convert(String key, String raw, List<Component> splitEnglish);
 
     @Override
     protected void addTranslations() {

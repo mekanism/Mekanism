@@ -17,8 +17,11 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
     }
 
     @Override
-    public void convert(String key, List<Component> splitEnglish) {
-        add(key, convertComponents(splitEnglish));
+    public void convert(String key, String raw, List<Component> splitEnglish) {
+        String upsideDown = convertComponents(splitEnglish);
+        if (!raw.equals(upsideDown)) {
+            add(key, upsideDown);
+        }
     }
 
     private static final String normal = "abcdefghijklmnopqrstuvwxyz" +

@@ -109,7 +109,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         if (altProviders.length > 0) {
             List<Component> splitEnglish = FormatSplitter.split(value);
             for (ConvertibleLanguageProvider provider : altProviders) {
-                provider.convert(key, splitEnglish);
+                provider.convert(key, value, splitEnglish);
             }
         }
     }
