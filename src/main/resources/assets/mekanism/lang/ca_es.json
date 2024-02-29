@@ -1415,7 +1415,6 @@
   "qio.mekanism.sort_name": "Nom",
   "qio.mekanism.sort_name_desc": "Ordena els objectes per nom.",
   "qio.mekanism.stored_count": "Nombre emmagatzemat: %1$s",
-  "qio.mekanism.trigger_count": "Nombre de disparadors: %1$s",
   "qio.mekanism.types": "Tipus",
   "qio.mekanism.types_detail": "Tipus: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Potència d'Explosió",
