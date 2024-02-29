@@ -1415,7 +1415,6 @@
   "qio.mekanism.sort_name": "Nombre",
   "qio.mekanism.sort_name_desc": "Ordenar elementos por nombre.",
   "qio.mekanism.stored_count": "Cantidad almacenada: %1$s",
-  "qio.mekanism.trigger_count": "Cantidad de disparadores: %1$s",
   "qio.mekanism.types": "Tipos",
   "qio.mekanism.types_detail": "Tipos: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Potencia de Explosión",
