@@ -75,7 +75,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                 return InteractionResult.FAIL;
             }
             if (player.isShiftKeyDown()) {
-                WorldUtils.dismantleBlock(state, world, pos);
+                WorldUtils.dismantleBlock(state, world, pos, player);
                 return InteractionResult.SUCCESS;
             }
             Direction change = tile.getDirection().getClockWise();

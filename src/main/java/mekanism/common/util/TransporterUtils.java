@@ -70,13 +70,15 @@ public final class TransporterUtils {
     }
 
     public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
-        BlockPos blockPos = transporter.getBlockPos();
+        BlockPos blockPos;
         if (stack.hasPath()) {
             float[] pos = TransporterUtils.getStackPosition(transporter, stack, 0);
-            blockPos = blockPos.offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
+            blockPos = transporter.getBlockPos().offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
+        } else {
+            blockPos = transporter.getBlockPos();
         }
         TransporterManager.remove(transporter.getLevel(), stack);
-        Block.popResource(transporter.getLevel(), blockPos, stack.itemStack);
+        InventoryUtils.dropStack(stack.itemStack, item -> Block.popResource(transporter.getLevel(), blockPos, item));
     }
 
     public static float[] getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {

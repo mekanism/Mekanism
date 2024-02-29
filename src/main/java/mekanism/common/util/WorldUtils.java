@@ -9,10 +9,10 @@ import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -385,18 +385,15 @@ public class WorldUtils {
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, Level world, BlockPos pos) {
-        dismantleBlock(state, world, pos, getTileEntity(world, pos));
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable Entity entity) {
+        dismantleBlock(state, world, pos, getTileEntity(world, pos), entity);
     }
 
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile) {
-        if (world instanceof ServerLevel level) {//Copy of Block#dropResources but skipping the xp dropping
-            Block.getDrops(state, level, pos, tile).forEach(stack -> Block.popResource(world, pos, stack));
-            state.spawnAfterBreak(level, pos, ItemStack.EMPTY, false);
-        }
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity) {
+        Block.dropResources(state, world, pos, tile, entity, ItemStack.EMPTY, false);
         world.removeBlock(pos, false);
     }
 
