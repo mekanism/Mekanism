@@ -1420,7 +1420,6 @@
   "qio.mekanism.sort_name": "Назва",
   "qio.mekanism.sort_name_desc": "Сортувати предмети за назвою.",
   "qio.mekanism.stored_count": "Зберігається: %1$s",
-  "qio.mekanism.trigger_count": "Кількість для активації: %1$s",
   "qio.mekanism.types": "Типи",
   "qio.mekanism.types_detail": "Типи: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Вибухова сила",
