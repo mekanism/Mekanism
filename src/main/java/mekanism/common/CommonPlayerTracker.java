@@ -10,6 +10,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags.Items;
 import net.minecraft.ChatFormatting;
@@ -68,6 +69,15 @@ public class CommonPlayerTracker {
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player player && event.getEntity() instanceof ServerPlayer serverPlayer) {
             PacketUtils.sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoad(PlayerEvent.LoadFromFile event) {
+        Player player = event.getEntity();
+        if (player.getAbilities().flying) {
+            //Call getData to just set it at the default value as we only care about the presence of it
+            player.getData(MekanismAttachmentTypes.WAS_FLYING);
         }
     }
 

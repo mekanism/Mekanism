@@ -21,6 +21,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
@@ -262,7 +263,7 @@ public class PlayerState {
                 //If they did not have a flight item
                 if (!player.getAbilities().mayfly) {
                     //and they are not already allowed to fly, then enable it
-                    updateClientServerFlight(player, true);
+                    updateClientServerFlight(player, true, player.getAbilities().flying || player.hasData(MekanismAttachmentTypes.WAS_FLYING));
                 }
                 //and mark that they had a flight item
                 flightInfo.hadFlightItem = true;
@@ -308,7 +309,7 @@ public class PlayerState {
         } else {
             if (flightInfo.hadFlightItem) {
                 if (player.getAbilities().mayfly) {
-                    updateClientServerFlight(player, false);
+                    updateClientServerFlight(player, false, false);
                 }
                 flightInfo.hadFlightItem = false;
             }
@@ -316,10 +317,8 @@ public class PlayerState {
             flightInfo.wasFlying = player.getAbilities().flying;
             flightInfo.wasFlyingAllowed = player.getAbilities().mayfly;
         }
-    }
-
-    private void updateClientServerFlight(Player player, boolean allowFlying) {
-        updateClientServerFlight(player, allowFlying, allowFlying && player.getAbilities().flying);
+        //Remove our temporary cache of if the player was flying when loaded
+        player.removeData(MekanismAttachmentTypes.WAS_FLYING);
     }
 
     private void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
