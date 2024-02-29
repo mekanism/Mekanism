@@ -33,14 +33,14 @@ public class GeneratorsDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, GeneratorsLang.PACK_DESCRIPTION));
         //Client side data generators
-        MekanismDataGenerator.addProvider(gen, event.includeClient(), GeneratorsLangProvider::new);
+        gen.addProvider(event.includeClient(), new GeneratorsLangProvider(output));
         gen.addProvider(event.includeClient(), new GeneratorsSoundProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new GeneratorsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
-        MekanismDataGenerator.addProvider(gen, event.includeServer(), GeneratorsLootProvider::new);
+        gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output));
         gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, existingFileHelper));
     }

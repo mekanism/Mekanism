@@ -35,14 +35,14 @@ public class AdditionsDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, AdditionsLang.PACK_DESCRIPTION));
         //Client side data generators
-        MekanismDataGenerator.addProvider(gen, event.includeClient(), AdditionsLangProvider::new);
+        gen.addProvider(event.includeClient(), new AdditionsLangProvider(output));
         gen.addProvider(event.includeClient(), new AdditionsSoundProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new AdditionsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new AdditionsTagProvider(output, lookupProvider, existingFileHelper));
-        MekanismDataGenerator.addProvider(gen, event.includeServer(), AdditionsLootProvider::new);
+        gen.addProvider(event.includeServer(), new AdditionsLootProvider(output));
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new AdditionsDataMapsProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(output, existingFileHelper));

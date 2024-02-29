@@ -112,7 +112,7 @@ public class ComputerHelpProvider implements DataProvider {
             JekyllData jekyllData = new JekyllData(Mekanism.instance.versionNumber, methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
             Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(false, Mekanism.logger::error), Comparator.naturalOrder());
             MekanismDataGenerator.save(output, os -> {
-                try (Writer writer = new BufferedWriter(new OutputStreamWriter(os))) {
+                try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
                     writer.write("---\n");
                     YamlHelper.dump(writer, frontMatterNode, YAML_OPTIONS);
                     writer.write("---\n");

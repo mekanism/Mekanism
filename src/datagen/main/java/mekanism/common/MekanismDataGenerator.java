@@ -51,7 +51,7 @@ public class MekanismDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, MekanismLang.PACK_DESCRIPTION));
         //Client side data generators
-        addProvider(gen, event.includeClient(), MekanismLangProvider::new);
+        gen.addProvider(event.includeClient(), new MekanismLangProvider(output));
         gen.addProvider(event.includeClient(), new PrideRobitTextureProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new MekanismSoundProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new MekanismSpriteSourceProvider(output, existingFileHelper, lookupProvider));
@@ -59,7 +59,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeClient(), new MekanismBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new MekanismTagProvider(output, lookupProvider, existingFileHelper));
-        addProvider(gen, event.includeServer(), MekanismLootProvider::new);
+        gen.addProvider(event.includeServer(), new MekanismLootProvider(output));
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new MekanismDataMapsProvider(output, lookupProvider));
         MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, existingFileHelper);
@@ -69,10 +69,6 @@ public class MekanismDataGenerator {
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, recipeProvider.getDisabledCompats());
-    }
-
-    public static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {
-        gen.addProvider(run, factory);
     }
 
     /**

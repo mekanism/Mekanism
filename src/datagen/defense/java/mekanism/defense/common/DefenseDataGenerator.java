@@ -29,10 +29,10 @@ public class DefenseDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, DefenseLang.PACK_DESCRIPTION));
         //Client side data generators
-        MekanismDataGenerator.addProvider(gen, event.includeClient(), DefenseLangProvider::new);
+        gen.addProvider(event.includeClient(), new DefenseLangProvider(output));
         //Server side data generators
         gen.addProvider(event.includeServer(), new DefenseTagProvider(output, lookupProvider, existingFileHelper));
-        MekanismDataGenerator.addProvider(gen, event.includeServer(), DefenseLootProvider::new);
+        gen.addProvider(event.includeServer(), new DefenseLootProvider(output));
         gen.addProvider(event.includeServer(), new DefenseRecipeProvider(output, existingFileHelper));
     }
 }

@@ -31,7 +31,7 @@ public class ToolsDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
-        MekanismDataGenerator.addProvider(gen, event.includeClient(), ToolsLangProvider::new);
+        gen.addProvider(event.includeClient(), new ToolsLangProvider(output));
         gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
         //Server side data generators
