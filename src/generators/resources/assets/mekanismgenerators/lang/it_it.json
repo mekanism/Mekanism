@@ -163,6 +163,7 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Ronzio del Generatore a Gas",
   "sound_event.mekanismgenerators.tile.generator.heat": "Ronzio del Generatore Termico",
   "sound_event.mekanismgenerators.tile.generator.solar": "Ronzio del Generatore Solare",
+  "sound_event.mekanismgenerators.tile.generator.wind": "Sibilo della Turbina Eolica",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Ronzio del Reattore a Fissione",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Ronzio del Reattore a Fusione",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Carburante insufficiente",
