@@ -86,7 +86,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         }
         //Shift so that a wind generator at the min build height acts as if it was at a height of zero
         int minBuildHeight = level.getMinBuildHeight();
-        height += Math.abs(minBuildHeight);
+        height -= minBuildHeight;
         return SPEED * height / (level.getMaxBuildHeight() - minBuildHeight);
     }
 
