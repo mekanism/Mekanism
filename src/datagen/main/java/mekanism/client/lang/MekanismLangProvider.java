@@ -696,7 +696,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_TYPES_DETAIL, "Types: %1$s / %2$s");
         add(MekanismLang.QIO_ITEMS, "Items");
         add(MekanismLang.QIO_TYPES, "Types");
-        add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %1$s");
+        add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count:");
         add(MekanismLang.QIO_STORED_COUNT, "Stored count: %1$s");
         add(MekanismLang.QIO_FUZZY_MODE, "Ignoring NBT: %1$s");
         add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
@@ -765,10 +765,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_LIST, "- %1$s");
         add(MekanismLang.GENERIC_MINUTES, "%1$sm");
         add(MekanismLang.GENERIC_HOURS_MINUTES, "%1$sh %2$sm");
-        add(MekanismLang.GENERIC_GREATER_THAN, "> %1$s");
-        add(MekanismLang.GENERIC_GREATER_EQUAL, "≥ %1$s");
-        add(MekanismLang.GENERIC_LESS_THAN, "< %1$s");
-        add(MekanismLang.GENERIC_LESS_THAN_EQUAL, "≤ %1$s");
+        add(MekanismLang.GENERIC_GREATER_THAN, "%1$s > %2$s");
+        add(MekanismLang.GENERIC_GREATER_EQUAL, "%1$s ≥ %2$s");
+        add(MekanismLang.GENERIC_LESS_THAN, "%1$s < %2$s");
+        add(MekanismLang.GENERIC_LESS_THAN_EQUAL, "%1$s ≤ %2$s");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");

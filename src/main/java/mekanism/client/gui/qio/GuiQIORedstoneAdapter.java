@@ -68,7 +68,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             ItemStack itemType = tile.getItemType();
             list.add(itemType.isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : itemType.getHoverName());
             ILangEntry match = tile.isInverted() ? MekanismLang.GENERIC_LESS_THAN : MekanismLang.GENERIC_GREATER_EQUAL;
-            list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(match.translate(TextUtils.format(tile.getCount()))));
+            list.add(match.translate(MekanismLang.QIO_TRIGGER_COUNT, TextUtils.format(tile.getCount())));
             if (!itemType.isEmpty() && tile.getQIOFrequency() != null) {
                 list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));
             }
