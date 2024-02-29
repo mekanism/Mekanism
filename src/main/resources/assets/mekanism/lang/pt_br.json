@@ -1415,7 +1415,6 @@
   "qio.mekanism.sort_name": "Nome",
   "qio.mekanism.sort_name_desc": "Ordenar itens pelo nome.",
   "qio.mekanism.stored_count": "Contagem armazenada: %1$s",
-  "qio.mekanism.trigger_count": "Contagem de gatilhos: %1$s",
   "qio.mekanism.types": "Tipos",
   "qio.mekanism.types_detail": "Tipos: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Poder de Explosão",
