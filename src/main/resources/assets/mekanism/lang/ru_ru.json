@@ -1417,7 +1417,6 @@
   "qio.mekanism.sort_name": "Название",
   "qio.mekanism.sort_name_desc": "Сортировка по названию.",
   "qio.mekanism.stored_count": "Сохранено: %1$s",
-  "qio.mekanism.trigger_count": "Количество для активации: %1$s",
   "qio.mekanism.types": "Типы",
   "qio.mekanism.types_detail": "Типы: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Мощность взрыва",
