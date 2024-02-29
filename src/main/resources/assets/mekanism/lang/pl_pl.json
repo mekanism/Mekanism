@@ -1415,7 +1415,6 @@
   "qio.mekanism.sort_name": "Nazwa",
   "qio.mekanism.sort_name_desc": "Sortuj przedmioty według nazwy.",
   "qio.mekanism.stored_count": "Liczba przechowywanych: %1$s",
-  "qio.mekanism.trigger_count": "Liczba wyzwalacza: %1$s",
   "qio.mekanism.types": "Rodzaje",
   "qio.mekanism.types_detail": "Rodzaje: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Moc wybuchów",
