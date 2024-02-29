@@ -163,6 +163,7 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "ガス燃焼発電機がうなる",
   "sound_event.mekanismgenerators.tile.generator.heat": "熱発電機がうなる",
   "sound_event.mekanismgenerators.tile.generator.solar": "太陽光発電機がうなる",
+  "sound_event.mekanismgenerators.tile.generator.wind": "風力発電機がブーンと音を立てる",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "核分裂炉がうなる",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "核融合炉がうなる",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "燃料不足",
