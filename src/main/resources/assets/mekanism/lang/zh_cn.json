@@ -1420,7 +1420,6 @@
   "qio.mekanism.sort_name": "名称",
   "qio.mekanism.sort_name_desc": "按名称对物品排序。",
   "qio.mekanism.stored_count": "存储数量：%1$s",
-  "qio.mekanism.trigger_count": "触发次数：%1$s",
   "qio.mekanism.types": "类型",
   "qio.mekanism.types_detail": "类型：%1$s/%2$s",
   "radial.mekanism.blasting_power": "破掘强度",
