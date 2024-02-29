@@ -3906,10 +3906,22 @@ methods:
     returns:
       javaType: long
       type: Number (long)
+  - methodName: invertSignal
+    requiresPublicSecurity: true
+  - methodName: isInverted
+    returns:
+      javaType: boolean
+      type: boolean
   - methodName: setFuzzyMode
     params:
     - javaType: boolean
       name: fuzzy
+      type: boolean
+    requiresPublicSecurity: true
+  - methodName: setSignalInverted
+    params:
+    - javaType: boolean
+      name: inverted
       type: boolean
     requiresPublicSecurity: true
   - methodName: setTargetItem

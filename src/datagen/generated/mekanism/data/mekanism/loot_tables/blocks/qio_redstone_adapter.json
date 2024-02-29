@@ -38,6 +38,10 @@
                   "target": "mekanism:fuzzy"
                 },
                 {
+                  "source": "inverse",
+                  "target": "mekanism:inverse"
+                },
+                {
                   "source": "singleItem",
                   "target": "mekanism:item_target"
                 }

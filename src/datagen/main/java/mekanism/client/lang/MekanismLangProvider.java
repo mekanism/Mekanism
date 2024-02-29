@@ -712,6 +712,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT_DESCENDING_DESC, "Sort items in descending order.");
         add(MekanismLang.LIST_SEARCH, "Search:");
         add(MekanismLang.LIST_SORT, "Sort:");
+        //QIO Redstone Adapter
+        add(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL, "Toggle output signal inversion");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%1$s / %2$s mB");
         add(MekanismLang.JEI_INFO_HEAVY_WATER, "%1$s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
@@ -762,6 +764,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_LIST, "- %1$s");
         add(MekanismLang.GENERIC_MINUTES, "%1$sm");
         add(MekanismLang.GENERIC_HOURS_MINUTES, "%1$sh %2$sm");
+        add(MekanismLang.GENERIC_GREATER_THAN, "> %1$s");
+        add(MekanismLang.GENERIC_GREATER_EQUAL, "≥ %1$s");
+        add(MekanismLang.GENERIC_LESS_THAN, "< %1$s");
+        add(MekanismLang.GENERIC_LESS_THAN_EQUAL, "≤ %1$s");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");

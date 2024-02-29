@@ -31,6 +31,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Nullable
     private HashedItem itemType = null;
     private boolean fuzzy;
+    private boolean inverted;
     private long count = 0;
     private long clientStoredCount = 0;
 
@@ -76,11 +77,23 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }
     }
 
+    public void invertSignal() {
+        setSignalInverted(!inverted);
+    }
+
+    private void setSignalInverted(boolean inverted) {
+        if (this.inverted != inverted) {
+            this.inverted = inverted;
+            markForSave();
+        }
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         long stored = getFreqStored();
-        setActive(stored > 0 && stored >= count);
+        boolean hasStored = stored > 0 && stored >= count;
+        setActive(hasStored != inverted);
     }
 
     @Override
@@ -91,6 +104,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }
         dataMap.putLong(NBTConstants.AMOUNT, count);
         dataMap.putBoolean(NBTConstants.FUZZY_MODE, fuzzy);
+        dataMap.putBoolean(NBTConstants.INVERSE, inverted);
     }
 
     @Override
@@ -99,6 +113,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         NBTUtils.setItemStackIfPresent(dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, value -> inverted = value);
     }
 
     @Override
@@ -107,6 +122,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         remap.put(NBTConstants.SINGLE_ITEM, MekanismAttachmentTypes.ITEM_TARGET);
         remap.put(NBTConstants.AMOUNT, MekanismAttachmentTypes.LONG_AMOUNT);
         remap.put(NBTConstants.FUZZY_MODE, MekanismAttachmentTypes.FUZZY);
+        remap.put(NBTConstants.INVERSE, MekanismAttachmentTypes.INVERSE);
         return remap;
     }
 
@@ -118,6 +134,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }
         stack.setData(MekanismAttachmentTypes.LONG_AMOUNT, count);
         stack.setData(MekanismAttachmentTypes.FUZZY, fuzzy);
+        stack.setData(MekanismAttachmentTypes.INVERSE, inverted);
     }
 
     @Override
@@ -129,6 +146,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
               .orElse(null);
         count = stack.getData(MekanismAttachmentTypes.LONG_AMOUNT);
         fuzzy = stack.getData(MekanismAttachmentTypes.FUZZY);
+        inverted = stack.getData(MekanismAttachmentTypes.INVERSE);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")
@@ -144,6 +162,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @ComputerMethod
     public boolean getFuzzyMode() {
         return fuzzy;
+    }
+
+    @ComputerMethod
+    public boolean isInverted() {
+        return inverted;
     }
 
     public long getStoredCount() {
@@ -162,6 +185,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         }));
         container.track(SyncableLong.create(this::getCount, value -> count = value));
         container.track(SyncableBoolean.create(this::getFuzzyMode, value -> fuzzy = value));
+        container.track(SyncableBoolean.create(this::isInverted, value -> inverted = value));
         container.track(SyncableLong.create(this::getFreqStored, value -> clientStoredCount = value));
     }
 
@@ -201,6 +225,18 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
         validateSecurityIsPublic();
         setFuzzyMode(fuzzy);
+    }
+
+    @ComputerMethod(nameOverride = "invertSignal", requiresPublicSecurity = true)
+    void computerInvertSignal() throws ComputerException {
+        validateSecurityIsPublic();
+        invertSignal();
+    }
+
+    @ComputerMethod(nameOverride = "setSignalInverted", requiresPublicSecurity = true)
+    void computerSetSignalInverted(boolean inverted) throws ComputerException {
+        validateSecurityIsPublic();
+        setSignalInverted(inverted);
     }
     //End methods IComputerTile
 }

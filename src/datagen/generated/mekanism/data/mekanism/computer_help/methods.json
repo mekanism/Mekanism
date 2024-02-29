@@ -5788,12 +5788,34 @@
       }
     },
     {
+      "methodName": "invertSignal",
+      "requiresPublicSecurity": true
+    },
+    {
+      "methodName": "isInverted",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
       "methodName": "setFuzzyMode",
       "params": [
         {
           "type": "boolean",
           "javaType": "boolean",
           "name": "fuzzy"
+        }
+      ],
+      "requiresPublicSecurity": true
+    },
+    {
+      "methodName": "setSignalInverted",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "inverted"
         }
       ],
       "requiresPublicSecurity": true

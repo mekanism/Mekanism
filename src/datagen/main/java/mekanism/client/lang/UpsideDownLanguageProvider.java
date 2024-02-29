@@ -24,11 +24,11 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
     private static final String normal = "abcdefghijklmnopqrstuvwxyz" +
                                          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                                          "0123456789" +
-                                         ",.?!;\"'`&_^()[]{}<>";
+                                         ",.?!;\"'`&_^()[]{}<>≤≥";
     private static final char[] upside_down = ("ɐqɔpǝɟᵷɥᴉɾʞꞁɯuodbɹsʇnʌʍxʎz" +
                                                "ⱯᗺƆᗡƎℲ⅁HIՐꞰꞀWNOԀꝹᴚS⟘∩ΛMX⅄Z" +
                                                "0⥝ᘔƐ߈ϛ9ㄥ86" +
-                                               "'˙¿¡؛„,,⅋‾v)(][}{><").toCharArray();
+                                               "'˙¿¡؛„,,⅋‾v)(][}{><⪖⪕").toCharArray();
 
     private static char flip(char c) {
         int index = normal.indexOf(c);

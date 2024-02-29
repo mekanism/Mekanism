@@ -75,6 +75,8 @@ public enum MekanismLang implements ILangEntry {
     LIST_SORT_DESCENDING_DESC("qio", "sort_descending_desc"),
     LIST_SEARCH("qio", "list_search"),
     LIST_SORT("qio", "list_sort"),
+    //Adapter
+    REDSTONE_ADAPTER_TOGGLE_SIGNAL("redstone_adapter", "toggle_signal"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     JEI_INFO_HEAVY_WATER("info", "jei.heavy_water"),
@@ -128,6 +130,10 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_LIST("generic", "list"),
     GENERIC_MINUTES("generic", "minutes"),
     GENERIC_HOURS_MINUTES("generic", "hours_minutes"),
+    GENERIC_GREATER_THAN("generic", "greater_than"),
+    GENERIC_GREATER_EQUAL("generic", "greater_equal"),
+    GENERIC_LESS_THAN("generic", "less_than"),
+    GENERIC_LESS_THAN_EQUAL("generic", "less_than_equal"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),

@@ -2,9 +2,11 @@ package mekanism.client.gui.qio;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
@@ -55,6 +57,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             updateStack((ItemStack) ingredient);
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP, 1.0F));
         });
+        addRenderableWidget(new ToggleButton(this, 9, 64, 14, tile::isInverted,
+              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL)));
         addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
               () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, tile)), getOnHover(MekanismLang.FUZZY_MODE)));
         addRenderableWidget(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, GuiQIOFilterHandler.getFrequencyText(tile))
@@ -63,7 +67,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             List<Component> list = new ArrayList<>();
             ItemStack itemType = tile.getItemType();
             list.add(itemType.isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : itemType.getHoverName());
-            list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(TextUtils.format(tile.getCount())));
+            ILangEntry match = tile.isInverted() ? MekanismLang.GENERIC_LESS_THAN : MekanismLang.GENERIC_GREATER_EQUAL;
+            list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(match.translate(TextUtils.format(tile.getCount()))));
             if (!itemType.isEmpty() && tile.getQIOFrequency() != null) {
                 list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));
             }

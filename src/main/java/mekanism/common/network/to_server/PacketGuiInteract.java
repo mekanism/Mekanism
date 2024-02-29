@@ -257,6 +257,8 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
         INVERSE_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityDigitalMiner miner) {
                 miner.toggleInverse();
+            } else if (tile instanceof TileEntityQIORedstoneAdapter adapter) {
+                adapter.invertSignal();
             }
         }),
         INVERSE_REQUIRES_REPLACEMENT_BUTTON((tile, player, extra) -> {
