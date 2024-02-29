@@ -5,9 +5,11 @@ import mekanism.common.attachments.PortableQIODashboardInventory;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -51,6 +53,16 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory) {
             //Clear the level, this should only be called on close as recreating doesn't cause closeInventory to be called
             inventory.updateLevel(null);
+        }
+    }
+
+    @Override
+    protected void addInventorySlots(@NotNull Inventory inv) {
+        super.addInventorySlots(inv);
+        if (offhandSlots.isEmpty()) {
+            //If we don't have a slot relating to offhand data, add a syncable itemstack to track any changes that might happen to the stack
+            // as some of them may need to be reflected in the GUI https://github.com/mekanism/Mekanism/issues/7923
+            track(SyncableItemStack.create(inv.player::getOffhandItem, item -> inv.player.setItemSlot(EquipmentSlot.OFFHAND, item)));
         }
     }
 
