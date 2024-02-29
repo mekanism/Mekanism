@@ -108,6 +108,8 @@
   "fission.mekanismgenerators.stats": "원자로 상세 정보",
   "fission.mekanismgenerators.surface_area": "연료 표면 넒이: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "핵폐기물 탱크",
+  "fml.menu.mods.info.description.mekanismgenerators": "Mekanism의 발전기 모듈입니다.",
+  "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generators",
   "gas.mekanismgenerators.deuterium": "중수소",
   "gas.mekanismgenerators.fusion_fuel": "D-T 연료",
   "gas.mekanismgenerators.tritium": "삼중 수소",
