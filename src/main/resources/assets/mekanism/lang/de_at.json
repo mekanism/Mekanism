@@ -1420,7 +1420,6 @@
   "qio.mekanism.sort_name": "Name",
   "qio.mekanism.sort_name_desc": "Gegenstände nach Namen sortieren.",
   "qio.mekanism.stored_count": "Gespeicherte Anzahl: %1$s",
-  "qio.mekanism.trigger_count": "Anzahl Auslöser: %1$s",
   "qio.mekanism.types": "Typen",
   "qio.mekanism.types_detail": "Typen: %1$s / %2$s",
   "radial.mekanism.blasting_power": "Strahlkraft",
