@@ -1,4 +1,5 @@
 {
+  "_mekanism_force_utf8": "﻿",
   "advancements.mekanism.advanced_control_circuit.description": "Fabriquer un circuit de contrôle avancé",
   "advancements.mekanism.advanced_control_circuit.title": "Il est vraiment Avancé pour son âge",
   "advancements.mekanism.advanced_qio_drive.description": "Augmentez la bande passante de stockage de votre disque QIO",
@@ -1419,7 +1420,6 @@
   "qio.mekanism.sort_name": "Nom",
   "qio.mekanism.sort_name_desc": "Trier les objets par nom.",
   "qio.mekanism.stored_count": "Quantitée stockés : %1$s",
-  "qio.mekanism.trigger_count": "Nombre déclencheur : %1$s",
   "qio.mekanism.types": "Types",
   "qio.mekanism.types_detail": "Types : %1$s / %2$s",
   "radial.mekanism.blasting_power": "Puissance de l'explosion",
@@ -1438,6 +1438,7 @@
   "radial.mekanism.vein": "Excavation de veines",
   "radial.mekanism.vein.extended": "Excavation avancée",
   "radial.mekanism.vein.normal": "Veine",
+  "redstone_adapter.mekanism.toggle_signal": "Activer/désactiver l'inversion du signal de sortie",
   "redstone_control.mekanism.disabled": "Détection redstone: Ignorée",
   "redstone_control.mekanism.high": "Détection redstone: Normale",
   "redstone_control.mekanism.low": "Détection redstone: Inversée",
