@@ -984,6 +984,7 @@
   "gui.mekanism.max": "最大：%1$s",
   "gui.mekanism.max_output": "最大输出：%1$s/t",
   "gui.mekanism.min": "最小：%1$s",
+  "gui.mekanism.modification.remove.tooltip": "移除单个模块，按住 shift 键移除所有模块。",
   "gui.mekanism.move_down": "下移",
   "gui.mekanism.move_down.shift": "按住 Shift 键移动到底部",
   "gui.mekanism.move_up": "上移",
