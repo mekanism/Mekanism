@@ -17,6 +17,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -70,6 +71,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -126,7 +128,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    public static void alignPlayer(ServerPlayer player, BlockPos target, TileEntityTeleporter teleporter) {
+    public static void alignPlayer(ServerPlayer player, MekanismTeleportEvent.Teleporter event, TileEntityTeleporter teleporter) {
+        alignPlayer(player, BlockPos.containing(event.getTarget()), teleporter);
+    }
+
+    private static void alignPlayer(ServerPlayer player, BlockPos target, TileEntityTeleporter teleporter) {
         Direction side = null;
         if (teleporter.frameDirection != null && teleporter.frameDirection.getAxis().isHorizontal()) {
             //If the frame is horizontal always face towards the other portion of the frame
@@ -295,12 +301,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 //Calculate energy cost before teleporting the entity, as after teleporting it
                 // the cost will be negligible due to being on top of the destination
                 FloatingLong energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+
+                MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld.dimension(), energyCost);
+                if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                    //Skip the entity if the event was cancelled
+                    continue;
+                }
+
                 double oldX = entity.getX();
                 double oldY = entity.getY();
                 double oldZ = entity.getZ();
-                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
+                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, event);
                 if (teleportedEntity instanceof ServerPlayer player) {
-                    alignPlayer(player, teleporterTargetPos, teleporter);
+                    alignPlayer(player, event, teleporter);
                     MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
                 }
                 for (GlobalPos coords : activeCoords) {
@@ -335,9 +348,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    public static Entity teleportEntityTo(Entity entity, Level targetWorld, BlockPos target) {
-        if (entity.level().dimension() == targetWorld.dimension()) {
-            entity.teleportTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+    public static Entity teleportEntityTo(Entity entity, Level targetWorld, MekanismTeleportEvent.Teleporter event) {
+        Vec3 destination = event.getTarget();
+        if (!event.isTransDimensional()) {
+            entity.teleportTo(destination.x, destination.y, destination.z);
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
                 ((ServerChunkCache) entity.level().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
@@ -353,7 +367,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
             return entity;
         }
-        Vec3 destination = new Vec3(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
         //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
         List<Entity> passengers = entity.getPassengers();
         return entity.changeDimension((ServerLevel) targetWorld, new ITeleporter() {

@@ -19,6 +19,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -120,6 +121,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -374,15 +376,19 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (level().isClientSide() || homeLocation == null) {
             return;
         }
+        MekanismTeleportEvent.Robit event = new MekanismTeleportEvent.Robit(this);
+        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+            //Fail if the event was cancelled
+            return;
+        }
         setFollowing(false);
-        BlockPos homePos = homeLocation.pos();
-        if (level().dimension() == homeLocation.dimension()) {
+        if (!event.isTransDimensional()) {
             setDeltaMovement(0, 0, 0);
-            teleportTo(homePos.getX() + 0.5, homePos.getY() + 0.3, homePos.getZ() + 0.5);
+            teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
         } else {
-            ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(homeLocation.dimension());
+            ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(event.getTargetDimension());
             if (newWorld != null) {
-                Vec3 destination = new Vec3(homePos.getX() + 0.5, homePos.getY() + 0.3, homePos.getZ() + 0.5);
+                Vec3 destination = event.getTarget();
                 changeDimension(newWorld, new ITeleporter() {
                     @Override
                     public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
@@ -533,6 +539,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     public void setHome(GlobalPos home) {
         homeLocation = home;
+    }
+
+    @Nullable
+    @Override
+    public GlobalPos getHome() {
+        return homeLocation;
     }
 
     @Override

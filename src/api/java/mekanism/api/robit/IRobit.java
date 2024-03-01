@@ -2,6 +2,7 @@ package mekanism.api.robit;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -31,4 +32,14 @@ public interface IRobit extends ISecurityObject {
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
     boolean setSkin(ResourceKey<RobitSkin> skin, @Nullable Player player);
+
+    /**
+     * Gets the position of the chargepad that the Robit considers to be its home.
+     *
+     * @return Global position containing the dimension and block position.
+     *
+     * @since 10.5.2
+     */
+    @Nullable
+    GlobalPos getHome();
 }

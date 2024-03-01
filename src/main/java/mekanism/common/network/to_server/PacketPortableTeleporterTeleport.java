@@ -4,6 +4,7 @@ import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.content.teleporter.TeleporterFrequency;
@@ -26,6 +27,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -62,18 +64,31 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 Level teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
+                    FloatingLong energyCost;
+                    Runnable energyExtraction = null;
                     if (!player.isCreative()) {
-                        FloatingLong energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
+                        energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                         if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyCost)) {
                             return;
                         }
-                        energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
+                        energyExtraction = () -> energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
+                    } else {
+                        energyCost = FloatingLong.ZERO;
                     }
                     //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
                     try {
                         teleporter.didTeleport.add(player.getUUID());
                         teleporter.teleDelay = 5;
+                        BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
+                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, coords.dimension(), stack, energyCost);
+                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                            //Fail if the event was cancelled
+                            return;
+                        }
+                        if (energyExtraction != null) {
+                            energyExtraction.run();
+                        }
                         player.connection.aboveGroundTickCount = 0;
                         player.closeContainer();
                         PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
@@ -84,9 +99,8 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         double oldY = player.getY();
                         double oldZ = player.getZ();
                         Level oldWorld = player.level();
-                        BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporterTargetPos);
-                        TileEntityTeleporter.alignPlayer(player, teleporterTargetPos, teleporter);
+                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, event);
+                        TileEntityTeleporter.alignPlayer(player, event, teleporter);
                         if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                             //If the player teleported over 5 blocks, play the sound at both the destination and the source
                             oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
