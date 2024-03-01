@@ -110,6 +110,8 @@
   "fission.mekanismgenerators.stats": "核分裂反應爐統計資料",
   "fission.mekanismgenerators.surface_area": "燃料表面積：%1$s m²",
   "fission.mekanismgenerators.waste_tank": "廢料槽",
+  "fml.menu.mods.info.description.mekanismgenerators": "通用機械的發電機模組",
+  "fml.menu.mods.info.displayname.mekanismgenerators": "通用機械: 發電機",
   "gas.mekanismgenerators.deuterium": "氘",
   "gas.mekanismgenerators.fusion_fuel": "氘-氚燃料",
   "gas.mekanismgenerators.tritium": "氚",

@@ -109,7 +109,6 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Generator pe gaz murmură",
   "sound_event.mekanismgenerators.tile.generator.heat": "Generator termic murmură",
   "sound_event.mekanismgenerators.tile.generator.solar": "Generator solar murmură",
-  "sound_event.mekanismgenerators.tile.generator.wind": "Generator eolian șuieră",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Reactor fisiune murmură",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Reactor fuziune murmură",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Combustibil insuficient",
