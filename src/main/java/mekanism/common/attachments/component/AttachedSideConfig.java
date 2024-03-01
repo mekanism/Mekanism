@@ -39,7 +39,8 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
     @Nullable
     public static IPersistentConfigInfo getStoredConfigInfo(ItemStack stack, TransmissionType transmissionType) {
         return stack.getExistingData(MekanismAttachmentTypes.SIDE_CONFIG)
-              .map(config -> config.getConfig(transmissionType))
+              .map(config -> config.configInfo.get(transmissionType))
+              .filter(config -> !config.sideConfig.isEmpty())
               .orElse(null);
     }
 
