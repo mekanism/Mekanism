@@ -20,7 +20,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.item.block.ItemBlockColoredName;
+import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.EnumUtils;
@@ -37,35 +37,35 @@ public class AdditionsBlocks {
 
     public static final BlockRegistryObject<BlockObsidianTNT, BlockItem> OBSIDIAN_TNT = BLOCKS.register("obsidian_tnt", BlockObsidianTNT::new);
 
-    public static final Map<EnumColor, BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName>> GLOW_PANELS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> SLICK_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> PLASTIC_GLOW_BLOCKS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> REINFORCED_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName>> PLASTIC_ROADS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName>> TRANSPARENT_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName>> PLASTIC_STAIRS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName>> PLASTIC_SLABS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticFence, ItemBlockColoredName>> PLASTIC_FENCES = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName>> PLASTIC_FENCE_GATES = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName>> PLASTIC_GLOW_STAIRS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName>> PLASTIC_GLOW_SLABS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName>> TRANSPARENT_PLASTIC_STAIRS = new EnumMap<>(EnumColor.class);
-    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockColoredName>> TRANSPARENT_PLASTIC_SLABS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockGlowPanel, ItemBlockMekanism<BlockGlowPanel>>> GLOW_PANELS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>>> PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>>> SLICK_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>>> PLASTIC_GLOW_BLOCKS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>>> REINFORCED_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticRoad, ItemBlockMekanism<BlockPlasticRoad>>> PLASTIC_ROADS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparent, ItemBlockMekanism<BlockPlasticTransparent>>> TRANSPARENT_PLASTIC_BLOCKS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>>> PLASTIC_STAIRS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticSlab, ItemBlockMekanism<BlockPlasticSlab>>> PLASTIC_SLABS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticFence, ItemBlockMekanism<BlockPlasticFence>>> PLASTIC_FENCES = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticFenceGate, ItemBlockMekanism<BlockPlasticFenceGate>>> PLASTIC_FENCE_GATES = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>>> PLASTIC_GLOW_STAIRS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticSlab, ItemBlockMekanism<BlockPlasticSlab>>> PLASTIC_GLOW_SLABS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockMekanism<BlockPlasticTransparentStairs>>> TRANSPARENT_PLASTIC_STAIRS = new EnumMap<>(EnumColor.class);
+    public static final Map<EnumColor, BlockRegistryObject<BlockPlasticTransparentSlab, ItemBlockMekanism<BlockPlasticTransparentSlab>>> TRANSPARENT_PLASTIC_SLABS = new EnumMap<>(EnumColor.class);
 
     static {
         for (EnumColor color : EnumUtils.COLORS) {
             GLOW_PANELS.put(color, registerColoredBlock(BlockGlowPanel::new, "_glow_panel", color));
-            BlockRegistryObject<BlockPlastic, ItemBlockColoredName> plasticBlockRO = registerPlastic(color, "_plastic",
+            BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>> plasticBlockRO = registerPlastic(color, "_plastic",
                   properties -> properties.strength(5, 6));
             PLASTIC_BLOCKS.put(color, plasticBlockRO);
             SLICK_PLASTIC_BLOCKS.put(color, registerPlastic(color, "_slick_plastic", properties -> properties.strength(5, 6).friction(0.98F)));
-            BlockRegistryObject<BlockPlastic, ItemBlockColoredName> plasticGlowBlockRO = registerPlastic(color, "_plastic_glow",
+            BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>> plasticGlowBlockRO = registerPlastic(color, "_plastic_glow",
                   properties -> properties.strength(5, 6).lightLevel(state -> 10).emissiveRendering(BlockStateHelper.ALWAYS_PREDICATE));
             PLASTIC_GLOW_BLOCKS.put(color, plasticGlowBlockRO);
             REINFORCED_PLASTIC_BLOCKS.put(color, registerPlastic(color, "_reinforced_plastic", properties -> properties.strength(50, 1_200)));
             PLASTIC_ROADS.put(color, registerColoredBlock(BlockPlasticRoad::new, "_plastic_road", color));
-            BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> transparentPlasticRO = registerColoredBlock(BlockPlasticTransparent::new,
+            BlockRegistryObject<BlockPlasticTransparent, ItemBlockMekanism<BlockPlasticTransparent>> transparentPlasticRO = registerColoredBlock(BlockPlasticTransparent::new,
                   "_plastic_transparent", color);
             TRANSPARENT_PLASTIC_BLOCKS.put(color, transparentPlasticRO);
             PLASTIC_STAIRS.put(color, registerPlasticStairs(plasticBlockRO, color, "_plastic_stairs", UnaryOperator.identity()));
@@ -80,23 +80,23 @@ public class AdditionsBlocks {
         }
     }
 
-    private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerPlastic(EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>> registerPlastic(EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlastic(c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName> registerPlasticSlab(EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlasticSlab, ItemBlockMekanism<BlockPlasticSlab>> registerPlasticSlab(EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color, String blockTypeSuffix,
+    private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock, c, propertyModifier), blockTypeSuffix, color);
     }
 
-    private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockColoredName> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,
+    private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,
           String blockTypeSuffix, EnumColor color) {
-        return BLOCKS.register(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockColoredName::new);
+        return BLOCKS.registerDefaultProperties(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockMekanism::new);
     }
 }

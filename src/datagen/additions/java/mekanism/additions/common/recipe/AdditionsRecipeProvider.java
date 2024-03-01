@@ -12,7 +12,6 @@ import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBui
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -125,7 +124,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void registerGlowPanels(RecipeOutput consumer) {
-        for (BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
+        for (BlockRegistryObject<BlockGlowPanel, ?> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
             registerGlowPanel(consumer, glowPanel, "glow_panel/");
         }
     }

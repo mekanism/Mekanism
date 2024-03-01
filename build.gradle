@@ -329,6 +329,14 @@ runs {
             programArguments('--accessToken', (String) project.property('mc_accessToken'))
         }
     }
+    clientAlt {
+        configure("client")
+        if (!project.hasProperty('mc_username')) {
+            //If the property is missing (so the normal runClient task would use Dev as the name),
+            // change the name of the alt client type so that it doesn't conflict with the main dev one
+            programArguments('--username', 'AltDev')
+        }
+    }
     server {
         programArgument('--nogui')
     }

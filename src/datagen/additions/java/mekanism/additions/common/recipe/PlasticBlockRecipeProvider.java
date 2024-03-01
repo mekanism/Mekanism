@@ -13,7 +13,6 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -73,7 +72,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticBlocks(RecipeOutput consumer, String basePath) {
         basePath += "block/";
-        for (BlockRegistryObject<BlockPlastic, ItemBlockColoredName> blockRO : AdditionsBlocks.PLASTIC_BLOCKS.values()) {
+        for (BlockRegistryObject<BlockPlastic, ?> blockRO : AdditionsBlocks.PLASTIC_BLOCKS.values()) {
             registerPlasticBlock(consumer, blockRO, basePath);
         }
     }
@@ -94,7 +93,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticTransparent(RecipeOutput consumer, String basePath) {
         basePath += "transparent/";
-        for (BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> blockRO : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
+        for (BlockRegistryObject<BlockPlasticTransparent, ?> blockRO : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
             registerPlasticTransparent(consumer, blockRO, basePath);
         }
     }
@@ -115,7 +114,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticGlow(RecipeOutput consumer, String basePath) {
         basePath += "glow/";
-        for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_GLOW_BLOCKS.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.PLASTIC_GLOW_BLOCKS.entrySet()) {
             registerPlasticGlow(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
@@ -132,7 +131,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerReinforcedPlastic(RecipeOutput consumer, String basePath) {
         basePath += "reinforced/";
-        for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS.entrySet()) {
             registerReinforcedPlastic(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
@@ -150,7 +149,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticRoads(RecipeOutput consumer, String basePath) {
         basePath += "road/";
-        for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_ROADS.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticRoad, ?>> entry : AdditionsBlocks.PLASTIC_ROADS.entrySet()) {
             registerPlasticRoad(consumer, entry.getValue(), AdditionsBlocks.SLICK_PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
@@ -168,7 +167,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
 
     private void registerSlickPlastic(RecipeOutput consumer, String basePath) {
         basePath += "slick/";
-        for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.SLICK_PLASTIC_BLOCKS.entrySet()) {
+        for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlastic, ?>> entry : AdditionsBlocks.SLICK_PLASTIC_BLOCKS.entrySet()) {
             registerSlickPlastic(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }

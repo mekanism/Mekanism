@@ -8,7 +8,6 @@ import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.state.BaseBlockStateProvider;
-import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -49,7 +48,7 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
 
     private void glowPanels() {
         ModelFile model = models().getExistingFile(modLoc("block/glow_panel"));
-        for (BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
+        for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
             BlockGlowPanel glowPanel = blockRO.getBlock();
             directionalBlock(glowPanel, state -> model, 180, glowPanel.getFluidLoggedProperty());
         }

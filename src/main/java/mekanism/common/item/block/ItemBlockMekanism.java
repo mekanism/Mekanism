@@ -8,6 +8,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.api.tier.ITier;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
@@ -54,9 +55,15 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
         return null;
     }
 
-    public TextColor getTextColor(ItemStack stack) {
+    private TextColor getTextColor(ItemStack stack) {
         ITier tier = getTier();
-        return tier == null ? null : tier.getBaseTier().getColor();
+        if (tier == null) {
+            if (getBlock() instanceof IColoredBlock coloredBlock) {
+                return coloredBlock.getColor().getColor();
+            }
+            return null;
+        }
+        return tier.getBaseTier().getColor();
     }
 
     @NotNull
