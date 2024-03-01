@@ -984,6 +984,7 @@
   "gui.mekanism.max": "最大: %1$s",
   "gui.mekanism.max_output": "最大出力: %1$s/t",
   "gui.mekanism.min": "最小: %1$s",
+  "gui.mekanism.modification.remove.tooltip": "モジュールを一つ取り出します。Shiftキーを押しながらの操作で全て取り出します。",
   "gui.mekanism.move_down": "下に",
   "gui.mekanism.move_down.shift": "Shiftキーを押して下に移動",
   "gui.mekanism.move_up": "上に",
