@@ -33,7 +33,11 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntit
     protected void addStats(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         InductionCellTier tier = getTier();
         tooltip.add(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
-        tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(StorageUtils.getStoredEnergyFromAttachment(stack),
-              tier.getMaxEnergy())));
+        StorageUtils.addStoredEnergy(stack, tooltip, false);
+    }
+
+    @Override
+    protected boolean exposesEnergyCap() {
+        return false;
     }
 }

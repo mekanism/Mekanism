@@ -92,4 +92,11 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
               .map(inventory -> inventory.getInventorySlots(null))
               .orElse(Collections.emptyList());
     }
+
+    @Override
+    public int getScalar(ItemStack stack) {
+        //If for some reason a personal storage block is destroyed that has an inventory and is stacked
+        // we only want to drop one of the backing item
+        return 1;
+    }
 }

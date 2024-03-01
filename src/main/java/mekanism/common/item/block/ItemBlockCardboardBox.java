@@ -107,9 +107,4 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
         return InteractionResult.PASS;
     }
-
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) ? 1 : super.getMaxStackSize(stack);
-    }
 }

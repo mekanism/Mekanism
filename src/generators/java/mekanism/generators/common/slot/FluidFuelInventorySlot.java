@@ -29,6 +29,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
+        Predicate<ItemStack> fillPredicate = FluidInventorySlot.getFillPredicate(fluidTank);
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
             IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
             if (fluidHandlerItem != null) {
@@ -40,24 +41,10 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 }
                 //Only allow extraction if our item is out of fluid, but also verify there is no conversion for it
             }
-            //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
+            //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             return fuelValue.applyAsInt(stack) == 0;
-        }, stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
-            if (fluidHandlerItem != null) {
-                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                    FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
-                    if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
-                        //True if we can fill the tank with any of our contents
-                        // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
-                        return true;
-                    }
-                }
-            }
-            //Note: We recheck about this having a fuel value and that it is still valid as the fuel value might have changed, such as after a reload
-            return fuelValue.applyAsInt(stack) > 0;
-        }, listener, x, y);
+        }, fillPredicate.or(stack -> fuelValue.applyAsInt(stack) > 0), listener, x, y);
     }
 
     private final Int2ObjectFunction<@NotNull FluidStack> fuelCreator;
@@ -65,9 +52,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue, Int2ObjectFunction<@NotNull FluidStack> fuelCreator,
           Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(fluidTank, canExtract, canInsert, alwaysTrue, listener, x, y);
-        //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
-        // then we don't have it all of a sudden being invalid after it is emptied
+        super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelCreator = fuelCreator;
         this.fuelValue = fuelValue;
     }

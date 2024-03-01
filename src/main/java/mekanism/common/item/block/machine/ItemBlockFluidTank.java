@@ -113,6 +113,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
+        //Note: We don't need to check the stack size here, as we only want to allow placing it if it isn't in bucket mode
         return context.getPlayer() == null || getMode(context.getItemInHand()) ? InteractionResult.PASS : super.useOn(context);
     }
 
@@ -125,6 +126,9 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
+            } else if (stack.getCount() > 1) {
+                //Skip if the item is stacked
+                return InteractionResultHolder.pass(stack);
             }
             //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior
             BlockHitResult result = getPlayerPOVHitResult(world, player, player.isShiftKeyDown() ? ClipContext.Fluid.NONE : ClipContext.Fluid.SOURCE_ONLY);
@@ -267,7 +271,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         @NotNull
         @Override
         public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
+            if (stack.getCount() == 1 && stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
                 // act as a bucket that is emptying its contents or one that is picking up contents
@@ -388,7 +392,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         @Override
         public final InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
               @NotNull InteractionHand hand, @NotNull ItemStack stack) {
-            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
+            if (stack.getCount() == 1 && stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                 //Get the fluid tank for the stack

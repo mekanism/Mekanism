@@ -44,7 +44,12 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        // No bar for empty containers as bars are drawn on top of stack count number
+        // No bar for empty or stacked containers as bars are drawn on top of stack count number
+        if (stack.getCount() > 1) {
+            //Note: Technically this is handled by the below checks as the capability isn't exposed,
+            // but we may as well short circuit it here
+            return false;
+        }
         return ChemicalUtil.hasGas(stack) ||
                ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION.item()) ||
                ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT.item()) ||
@@ -53,6 +58,11 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
+        if (stack.getCount() > 1) {
+            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
+            // but we may as well short circuit it here
+            return 0;
+        }
         return StorageUtils.getBarWidth(stack);
     }
 

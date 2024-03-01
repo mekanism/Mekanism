@@ -8,6 +8,7 @@ import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
@@ -39,9 +40,11 @@ public final class InventoryUtils {
         if (!entity.level().isClientSide && !stack.isEmpty()) {
             Function<ItemStack, List<IInventorySlot>> droppedSlots = null;
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
+            int scalar = stack.getCount();
             if (stack.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(stack)) {
                     droppedSlots = inventory::getDroppedSlots;
+                    scalar = inventory.getScalar(stack);
                 }
             } else if (ContainerType.ITEM.supports(stack)) {
                 droppedSlots = ContainerType.ITEM::getAttachmentContainersIfPresent;
@@ -60,8 +63,23 @@ public final class InventoryUtils {
             if (shouldDrop) {
                 for (IInventorySlot slot : droppedSlots.apply(stack)) {
                     if (!slot.isEmpty()) {
+                        ItemStack stackToDrop = slot.getStack().copy();
+                        //Note: We increase the size of the stack we are dropping based on the size of the stack we are dropping,
+                        // this makes it so that if there are two items that are stacked because they have the same inventory that
+                        // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
+                        // drop items past their max stack size
+                        if (scalar > 1) {
+                            if (stackToDrop.getCount() > 64) {
+                                //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
+                                // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
+                                // much in the first place.
+                                stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.getCount()));
+                            } else {
+                                stackToDrop.setCount(scalar * stackToDrop.getCount());
+                            }
+                        }
                         //Copy the stack as the passed slot is likely to be the actual backing slot
-                        dropStack(slot.getStack().copy(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
+                        dropStack(stackToDrop, slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
             }

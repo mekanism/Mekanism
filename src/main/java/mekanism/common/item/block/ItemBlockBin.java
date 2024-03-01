@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
 
     public ItemBlockBin(BlockBin block) {
-        super(block, new Item.Properties().stacksTo(1));
+        super(block, new Item.Properties());
     }
 
     @Override

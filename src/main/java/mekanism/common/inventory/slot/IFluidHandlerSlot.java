@@ -37,11 +37,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 fillTank(outputSlot);
             } else if (editMode == ContainerEditMode.BOTH) {
                 ItemStack stack = getStack();
-                //If we have more than one item in the input, check against a single item of it
-                // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
-                // though we have special handling to only move one item at a time anyway
-                ItemStack stackToCheck = stack.getCount() > 1 ? stack.copyWithCount(1) : stack;
-                IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stackToCheck);
+                IFluidHandlerItem fluidHandlerItem = FluidInventorySlot.tryGetFluidHandlerUnstacked(stack);
                 if (fluidHandlerItem != null) {
                     boolean hasEmpty = false;
                     for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -116,6 +112,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      */
     default void drainTank(IInventorySlot outputSlot) {
         //Verify we have an item, we have tanks that may need to be drained, and that our item is a fluid handler
+        // This handles making sure it has a fluid handler currently, even if it may have one when it isn't stacked
         if (Capabilities.FLUID.hasCapability(getStack())) {
             FluidStack fluidInTank = getFluidTank().getFluid();
             if (!fluidInTank.isEmpty()) {
@@ -175,8 +172,13 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             //If we cannot actually fill our fluid handler then just exit early
             return false;
         }
-
-        ItemStack input = getStack().copyWithCount(1);
+        ItemStack stack = getStack();
+        if (Capabilities.FLUID.getCapability(stack) == null) {
+            //If the stack doesn't have a capability just exit. There may be cases like our fluid tank where it will have a capability
+            // if the stack size is one, but not when the stack size is greater
+            return false;
+        }
+        ItemStack input = stack.copyWithCount(1);
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(input);
         if (fluidHandlerItem == null) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit

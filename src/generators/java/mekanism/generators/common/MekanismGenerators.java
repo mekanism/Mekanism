@@ -11,6 +11,7 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.recipe.ClearConfigurationRecipe;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
@@ -110,6 +111,8 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
+
+            ClearConfigurationRecipe.addAttachments(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE, GeneratorsAttachmentTypes.FUSION_LOGIC_TYPE, GeneratorsAttachmentTypes.ACTIVE_COOLED);
         });
 
         //Finalization

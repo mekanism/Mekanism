@@ -51,6 +51,10 @@ public class StorageUtils {
 
     public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
+        if (energyHandlerItem == null) {
+            //Fall back to trying to look up the stored energy by the container type if the stack doesn't expose it
+            energyHandlerItem = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+        }
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < energyContainerCount; container++) {
@@ -74,13 +78,17 @@ public class StorageUtils {
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                   MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
-        }, Capabilities.GAS.item());
+        }, Capabilities.GAS.item(), ContainerType.GAS);
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
-          Function<STACK, Component> storedFunction, ItemCapability<HANDLER, Void> capability) {
-        HANDLER handler = stack.getCapability(capability);
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip,
+          boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry, Function<STACK, Component> storedFunction, ItemCapability<? extends IChemicalHandler<CHEMICAL, STACK>, Void> capability,
+          ContainerType<?, ? extends IChemicalHandler<CHEMICAL, STACK>, ?> containerType) {
+        IChemicalHandler<CHEMICAL, STACK> handler = stack.getCapability(capability);
+        if (handler == null) {
+            //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
+            handler = containerType.getAttachmentIfPresent(stack);
+        }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 STACK chemicalInTank = handler.getChemicalInTank(tank);
@@ -111,6 +119,10 @@ public class StorageUtils {
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
           Function<FluidStack, Component> storedFunction) {
         IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
+        if (handler == null) {
+            //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
+            handler = (IFluidHandlerItem) ContainerType.FLUID.getAttachmentIfPresent(stack);
+        }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 tooltip.add(storedFunction.apply(handler.getFluidInTank(tank)));

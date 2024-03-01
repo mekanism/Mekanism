@@ -1,9 +1,8 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
@@ -66,7 +65,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-                IFluidHandlerItem handler = mekanism.common.capabilities.Capabilities.FLUID.getCapability(stack);
+                IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
                 if (handler != null) {
                     handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(), FluidAction.EXECUTE);
                 }
@@ -88,15 +87,9 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     private FluidStack getFluid(ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = mekanism.common.capabilities.Capabilities.FLUID.getCapability(stack);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
-            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-                IExtendedFluidTank fluidTank = fluidHandler.getFluidTank(0, null);
-                if (fluidTank != null) {
-                    return fluidTank.getFluid();
-                }
-            }
-            return fluidHandlerItem.getFluidInTank(0);
+            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
         }
         return FluidStack.EMPTY;
     }

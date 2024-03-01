@@ -145,6 +145,8 @@ public class ItemSlotsBuilder {
 
     private <CONTAINER extends INBTSerializable<CompoundTag>> ItemSlotsBuilder addContainerInput(ContainerType<CONTAINER, ? extends AttachedContainers<CONTAINER>, ?> containerType,
           int containerIndex, ContainerBasedSlotCreator<CONTAINER> slotCreator) {
+        //Note: In theory this shouldn't cause problems as we don't allow interacting with the actual slots, and we don't expose an ItemHandler
+        // cap (currently ever), for stacked stacks
         AttachedContainers<CONTAINER> attachment = containerType.getAttachment(backingStack);
         if (attachment == null) {
             throw new IllegalStateException("Expected stack to have attached " + containerType.getAttachmentName() + " containers.");

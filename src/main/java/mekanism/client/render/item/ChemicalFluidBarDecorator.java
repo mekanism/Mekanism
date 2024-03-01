@@ -1,11 +1,12 @@
 package mekanism.client.render.item;
 
+import java.util.List;
 import java.util.function.Predicate;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
@@ -14,26 +15,24 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
-    private final ItemCapability<? extends IChemicalHandler<?, ?>, Void>[] chemicalCaps;
+    private final ContainerType<? extends IChemicalTank<?, ?>, ?, ?>[] chemicalContainerTypes;
     private final boolean showFluid;
     private final Predicate<ItemStack> visibleFor;
 
     /**
-     * @param showFluid    if the fluid capability should be checked for display, display above chemicalCaps if both are present
-     * @param visibleFor   checks if bars should be rendered for the given itemstack
-     * @param chemicalCaps the capabilities to be displayed in order, starting from the bottom
+     * @param showFluid              if the fluid capability should be checked for display, display above chemicalCaps if both are present
+     * @param visibleFor             checks if bars should be rendered for the given itemstack
+     * @param chemicalContainerTypes the container types to be displayed in order, starting from the bottom
      */
     @SafeVarargs
-    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ItemCapability<? extends IChemicalHandler<?, ?>, Void>... chemicalCaps) {
+    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ContainerType<? extends IChemicalTank<?, ?>, ?, ?>... chemicalContainerTypes) {
         this.showFluid = showFluid;
-        this.chemicalCaps = chemicalCaps;
+        this.chemicalContainerTypes = chemicalContainerTypes;
         this.visibleFor = visibleFor;
     }
 
@@ -43,29 +42,32 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         yOffset += 12;
-        for (ItemCapability<? extends IChemicalHandler<?, ?>, Void> chemicalCap : chemicalCaps) {
-            IChemicalHandler<?, ?> chemicalHandler = stack.getCapability(chemicalCap);
-            if (chemicalHandler != null) {
-                int tank = getDisplayTank(chemicalHandler.getTanks());
-                if (tank != -1) {
-                    ChemicalStack<?> chemicalInTank = chemicalHandler.getChemicalInTank(tank);
-                    renderBar(guiGraphics, xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank), chemicalInTank.getChemicalColorRepresentation());
-                    yOffset--;
-                }
+        for (ContainerType<? extends IChemicalTank<?, ?>, ?, ?> chemicalContainerType : chemicalContainerTypes) {
+            List<? extends IChemicalTank<?, ?>> tanks = chemicalContainerType.getAttachmentContainersIfPresent(stack);
+            int tank = getDisplayTank(tanks.size());
+            if (tank != -1) {
+                renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
+                yOffset--;
             }
         }
 
         if (showFluid) {
-            IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
-            if (fluidHandler != null) {
-                int tank = getDisplayTank(fluidHandler.getTanks());
-                if (tank != -1) {
-                    FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
-                    renderBar(guiGraphics, xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank), FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF));
-                }
+            List<IExtendedFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+            int tank = getDisplayTank(tanks.size());
+            if (tank != -1) {
+                renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
             }
         }
         return true;
+    }
+
+    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IChemicalTank<?, ?> tank) {
+        renderBar(guiGraphics, stackXPos, yPos, tank.getStored(), tank.getCapacity(), tank.getType().getColorRepresentation());
+    }
+
+    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IExtendedFluidTank tank) {
+        FluidStack fluid = tank.getFluid();
+        renderBar(guiGraphics, stackXPos, yPos, fluid.getAmount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid).orElse(0xFFFFFFFF));
     }
 
     protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
@@ -78,7 +80,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         return MathUtils.clampToInt(Math.round(13.0F * width));
     }
 
-    private int getDisplayTank(int tanks) {
+    static int getDisplayTank(int tanks) {
         if (tanks == 0) {
             return -1;
         } else if (tanks > 1 && Minecraft.getInstance().level != null) {

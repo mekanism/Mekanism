@@ -6,13 +6,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,11 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, InfusionStack> {
-
-    @Nullable
-    public static IInfusionHandler getCapability(ItemStack stack) {
-        return Capabilities.INFUSION.getCapability(stack);
-    }
 
     /**
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
@@ -41,27 +36,18 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
-        return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier),
-              getFillOrConvertInsertPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier), stack -> {
-            if (Capabilities.INFUSION.hasCapability(stack)) {
-                //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
-                return true;
-            }
-            //Allow infusion conversion of items that have an infusion that is valid
-            InfusionStack conversion = getPotentialConversion(worldSupplier.get(), stack);
-            return !conversion.isEmpty() && infusionTank.isValid(conversion);
-        }, listener, x, y);
+        return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, Capabilities.INFUSION, potentialConversionSupplier),
+              getFillOrConvertInsertPredicate(infusionTank, Capabilities.INFUSION, potentialConversionSupplier), listener, x, y);
     }
 
     private InfusionInventorySlot(IInfusionTank infusionTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
-          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
-        super(infusionTank, worldSupplier, canExtract, canInsert, validator, listener, x, y);
+          Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        super(infusionTank, worldSupplier, canExtract, canInsert, listener, x, y);
     }
 
-    @Nullable
     @Override
-    protected IChemicalHandler<InfuseType, InfusionStack> getCapability() {
-        return getCapability(current);
+    protected MultiTypeCapability<IInfusionHandler> getChemicalCapability() {
+        return Capabilities.INFUSION;
     }
 
     @Nullable

@@ -52,13 +52,6 @@ public class ItemCraftingFormula extends Item {
         return InteractionResultHolder.pass(stack);
     }
 
-    @Override
-    public int getMaxStackSize(@NotNull ItemStack stack) {
-        return FormulaAttachment.formula(stack)
-                     .filter(FormulaAttachment::hasItems)
-                     .isPresent() ? 1 : super.getMaxStackSize(stack);
-    }
-
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {

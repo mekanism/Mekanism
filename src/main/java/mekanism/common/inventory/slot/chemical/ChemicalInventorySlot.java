@@ -13,6 +13,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -36,10 +37,10 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillOrConvertExtractPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability,
           Function<ItemStack, STACK> potentialConversionSupplier) {
         return stack -> {
-            IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
+            IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getTanks(); tank++) {
                     if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
@@ -57,10 +58,10 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillOrConvertInsertPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction,
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability,
           Function<ItemStack, STACK> potentialConversionSupplier) {
         return stack -> {
-            if (fillInsertCheck(chemicalTank, handlerFunction.apply(stack))) {
+            if (fillInsertCheck(chemicalTank, chemicalCapability, stack)) {
                 return true;
             }
             STACK conversion = potentialConversionSupplier.apply(stack);
@@ -79,9 +80,9 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getFillExtractPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
         return stack -> {
-            IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
+            IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getTanks(); tank++) {
                     STACK storedChemical = handler.getChemicalInTank(tank);
@@ -98,7 +99,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean fillInsertCheck(IChemicalTank<CHEMICAL, STACK> chemicalTank,
-          @Nullable IChemicalHandler<CHEMICAL, STACK> handler) {
+          MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability, ItemStack stack) {
+        IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
         if (handler != null) {
             for (int tank = 0; tank < handler.getTanks(); tank++) {
                 STACK chemicalInTank = handler.getChemicalInTank(tank);
@@ -113,9 +115,9 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<@NotNull ItemStack> getDrainInsertPredicate(
-          IChemicalTank<CHEMICAL, STACK> chemicalTank, Function<@NotNull ItemStack, IChemicalHandler<CHEMICAL, STACK>> handlerFunction) {
+          IChemicalTank<CHEMICAL, STACK> chemicalTank, MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
         return stack -> {
-            IChemicalHandler<CHEMICAL, STACK> handler = handlerFunction.apply(stack);
+            IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
             if (handler != null) {
                 if (chemicalTank.isEmpty()) {
                     //If the chemical tank is empty, accept the chemical item as long as it is not full
@@ -138,6 +140,19 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     protected final IChemicalTank<CHEMICAL, STACK> chemicalTank;
 
     protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
+          Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        this(chemicalTank, worldSupplier, canExtract, canInsert, alwaysTrue, listener, x, y);
+        //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a chemical handler when an item isn't stacked
+        // then we don't crash and burn when it is stacked
+        //TODO: Eventually maybe we want to somehow enforce what the max stack size is for a given item and mark it as able to be accepted
+        // but only a single one of it so that we can provide the short circuit "is ever valid" check to mods querying our item handlers
+        // but at least for now given we fail fast, it shouldn't be *that* big a deal
+        // Similarly, this also means we don't currently allow inserting stacked items, which is probably correct, though if something tries to
+        // insert it stacked, and it would have a capability and be valid if they tried with only one item, we don't accept it
+        // (instead of only accepting a single item). This is the potentially more important reason why to address this comment
+    }
+
+    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
           Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
@@ -146,7 +161,11 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     @Nullable
-    protected abstract IChemicalHandler<CHEMICAL, STACK> getCapability();
+    protected IChemicalHandler<CHEMICAL, STACK> getCapability() {
+        return getChemicalCapability().getCapability(current);
+    }
+
+    protected abstract MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> getChemicalCapability();
 
     @Nullable
     protected ItemStackToChemicalRecipe<CHEMICAL, STACK> getConversionRecipe(@Nullable Level world, ItemStack stack) {

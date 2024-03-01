@@ -12,6 +12,10 @@ public interface IDroppableContents {
         return true;
     }
 
+    default int getScalar(ItemStack stack) {
+        return stack.getCount();
+    }
+
     /**
      * Helper to get the inventory slots that should have their contents dropped into the world
      *

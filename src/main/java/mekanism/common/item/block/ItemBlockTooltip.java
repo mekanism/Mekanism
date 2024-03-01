@@ -1,19 +1,35 @@
 package mekanism.common.item.block;
 
 import java.util.List;
+import java.util.function.Predicate;
+import mekanism.api.AutomationType;
+import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.IAttachmentAware;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -29,10 +45,13 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> {
+public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IAttachmentAware {
 
     private final boolean hasDetails;
 
@@ -41,7 +60,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     public ItemBlockTooltip(BLOCK block) {
-        this(block, true, new Item.Properties().stacksTo(1));
+        this(block, true, new Item.Properties());
     }
 
     protected ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
@@ -101,8 +120,96 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addTypeDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
-        if (exposesEnergyCap(stack)) {
+        if (exposesEnergyCap()) {
             StorageUtils.addStoredEnergy(stack, tooltip, false);
+        }
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(@NotNull ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
+        if (exposesEnergyCap()) {
+            //Ignore NBT for energized items causing re-equip animations
+            //TODO: Only ignore the energy attachment?
+            return slotChanged || oldStack.getItem() != newStack.getItem();
+        }
+        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(@NotNull ItemStack oldStack, @NotNull ItemStack newStack) {
+        if (exposesEnergyCap()) {
+            //Ignore NBT for energized items causing block break reset
+            //TODO: Only ignore the energy attachment?
+            return oldStack.getItem() != newStack.getItem();
+        }
+        return super.shouldCauseBlockBreakReset(oldStack, newStack);
+    }
+
+    protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
+        return BasicEnergyContainer.alwaysTrue;
+    }
+
+    protected boolean exposesEnergyCap() {
+        return Attribute.has(getBlock(), AttributeEnergy.class);
+    }
+
+    @Nullable
+    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
+        BLOCK block = getBlock();
+        AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
+        if (attributeEnergy == null) {
+            throw new IllegalStateException("Expected block " + RegistryUtils.getName(block) + " to have the energy attribute");
+        }
+        FloatingLongSupplier maxEnergy = attributeEnergy::getStorage;
+        if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+            //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
+            maxEnergy = new UpgradeBasedFloatingLongCache(stack, maxEnergy);
+        }
+        return RateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
+    }
+
+    @Override
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        if (Attribute.has(getBlock(), AttributeSecurity.class)) {
+            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
+        }
+    }
+
+    @Override
+    public void attachAttachments(IEventBus eventBus) {
+        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+            //Only expose the capability the required configs are loaded and the item wants to
+            IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
+            ContainerType.ENERGY.addDefaultContainer(energyEventBus, this, this::getDefaultEnergyContainer, MekanismConfig.storage, MekanismConfig.usage);
+        }
+    }
+
+    private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {
+
+        //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
+        // for how much energy a machine can store changes
+        private final FloatingLongSupplier baseStorage;
+        private final UpgradeAware upgradeAware;
+        private int lastInstalled;
+        private FloatingLong value;
+
+        private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
+            this.upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
+            this.lastInstalled = this.upgradeAware.getUpgradeCount(Upgrade.ENERGY);
+            this.baseStorage = baseStorage;
+            this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.get());
+        }
+
+        @NotNull
+        @Override
+        public FloatingLong get() {
+            int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
+            if (installed != lastInstalled) {
+                lastInstalled = installed;
+                value = MekanismUtils.getMaxEnergy(this.lastInstalled, baseStorage.get());
+            }
+            return value;
         }
     }
 }

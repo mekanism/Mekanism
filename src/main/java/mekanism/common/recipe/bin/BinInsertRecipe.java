@@ -39,8 +39,8 @@ public class BinInsertRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty()) {
-                        //If we already have a bin then this is not a bin recipe
+                    if (!binStack.isEmpty() || stackInSlot.getCount() > 1) {
+                        //If we already have a bin, or our first bin has a stack size greater than one then this is not a bin recipe
                         return false;
                     }
                     binStack = stackInSlot;
@@ -73,8 +73,8 @@ public class BinInsertRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty()) {
-                        //If we already have a bin then this is not a bin recipe
+                    if (!binStack.isEmpty() || stackInSlot.getCount() > 1) {
+                        //If we already have a bin, or our first bin has a stack size greater than one then this is not a bin recipe
                         return ItemStack.EMPTY;
                     }
                     binStack = stackInSlot;

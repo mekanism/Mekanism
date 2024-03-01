@@ -82,7 +82,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         if (containerCapabilities == null) {
             containerCapabilities = new ArrayList<>();
         }
-        containerCapabilities.add(event -> containerType.registerItemCapabilities(event, asItem(), requiredConfigs));
+        containerCapabilities.add(event -> containerType.registerItemCapabilities(event, asItem(), false, requiredConfigs));
         return this;
     }
 

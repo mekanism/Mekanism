@@ -74,6 +74,9 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         if (!tryClaimItem(level, player, stack)) {
             if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
+            } else if (stack.getCount() > 1) {
+                //If the item is currently stacked, don't allow opening the GUI
+                return InteractionResultHolder.pass(stack);
             } else if (!level.isClientSide) {
                 openGui.accept((ServerPlayer) player, hand, stack);
             }

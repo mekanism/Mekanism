@@ -33,6 +33,7 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedPigmentTanks;
@@ -49,6 +50,7 @@ import mekanism.common.tile.interfaces.chemical.IInfusionTile;
 import mekanism.common.tile.interfaces.chemical.IPigmentTile;
 import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -82,8 +84,8 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
           new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY, IMekanismStrictEnergyHandler::getEnergyContainers,
                 IMekanismStrictEnergyHandler::canHandleEnergy) {
               @Override
-              public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
-                  EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(requiredConfigs));
+              public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
+                  EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(exposeWhenStacked, requiredConfigs));
               }
 
               @Override
@@ -167,13 +169,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public void addDefaultContainers(@Nullable IEventBus eventBus, Item item, Function<ItemStack, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
         knownDefaultItemContainers.put(item, defaultCreators);
         if (eventBus != null && capability != null) {
-            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, requiredConfigs));
+            eventBus.addListener(RegisterCapabilitiesEvent.class, event -> registerItemCapabilities(event, item, false, requiredConfigs));
         }
     }
 
-    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, IMekanismConfig... requiredConfigs) {
+    public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
         if (capability != null) {
-            event.registerItem(capability.item(), getCapabilityProvider(requiredConfigs), item);
+            event.registerItem(capability.item(), getCapabilityProvider(exposeWhenStacked, requiredConfigs), item);
         }
     }
 
@@ -225,7 +227,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             return existingData.get();
         } else if (holder instanceof ItemStack stack) {
             if (knownDefaultItemContainers.containsKey(stack.getItem())) {
-                 return stack.getData(this.attachment);
+                return stack.getData(this.attachment);
             }
         } else if (holder instanceof Entity entity) {
             if (knownDefaultEntityContainers.containsKey(entity.getType())) {
@@ -279,22 +281,33 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return attachmentConstructor.apply(defaultContainers, null);
     }
 
-    protected <HOLDER extends IAttachmentHolder, CONTEXT, H extends HANDLER> ICapabilityProvider<HOLDER, CONTEXT, H> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
-        ICapabilityProvider<HOLDER, CONTEXT, ?> provider;
-        if (requiredConfigs.length == 0) {
-            provider = (stack, context) -> getAttachment(stack);
-        } else {
-            provider = (stack, context) -> {
-                //Only expose the capabilities if the required configs are loaded
-                for (IMekanismConfig requiredConfig : requiredConfigs) {
-                    if (!requiredConfig.isLoaded()) {
-                        return null;
-                    }
-                }
-                return getAttachment(stack);
-            };
+    @SuppressWarnings("unchecked")
+    protected <CONTEXT, H extends HANDLER> ICapabilityProvider<ItemStack, CONTEXT, H> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
+        if (exposeWhenStacked) {
+            return getCapabilityProvider(requiredConfigs);
+        } else if (requiredConfigs.length == 0) {
+            return (stack, context) -> stack.getCount() == 1 ? (H) getAttachment(stack) : null;
         }
-        return (ICapabilityProvider<HOLDER, CONTEXT, H>) provider;
+        //Only expose the capabilities if the required configs are loaded
+        return (stack, context) -> stack.getCount() == 1 && hasRequiredConfigs(requiredConfigs) ? (H) getAttachment(stack) : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <HOLDER extends IAttachmentHolder, CONTEXT, H extends HANDLER> ICapabilityProvider<HOLDER, CONTEXT, H> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
+        if (requiredConfigs.length == 0) {
+            return (stack, context) -> (H) getAttachment(stack);
+        }
+        //Only expose the capabilities if the required configs are loaded
+        return (stack, context) -> hasRequiredConfigs(requiredConfigs) ? (H) getAttachment(stack) : null;
+    }
+
+    private static boolean hasRequiredConfigs(IMekanismConfig... requiredConfigs) {
+        for (IMekanismConfig requiredConfig : requiredConfigs) {
+            if (!requiredConfig.isLoaded()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean supports(ItemStack stack) {
@@ -341,6 +354,9 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         ATTACHMENT attachment = getAttachment(stack);
         if (attachment != null) {
             attachment.deserializeNBT(save(containers));
+            if (stack.getCount() > 1) {
+                Mekanism.logger.error("Copied {} to a stack ({}) of {}. This might lead to duplication of data.", getAttachmentName(), stack.getCount(), RegistryUtils.getName(stack.getItem()));
+            }
         }
     }
 
