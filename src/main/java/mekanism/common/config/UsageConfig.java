@@ -95,7 +95,7 @@ public class UsageConfig extends BaseMekanismConfig {
         formulaicAssemblicator = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "formulaicAssemblicator",
               FloatingLong.createConst(100));
         modificationStation = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "modificationStation",
-              FloatingLong.createConst(100));
+              FloatingLong.createConst(400));
         isotopicCentrifuge = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "isotopicCentrifuge",
               FloatingLong.createConst(200));
         nutritionalLiquifier = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "nutritionalLiquifier",

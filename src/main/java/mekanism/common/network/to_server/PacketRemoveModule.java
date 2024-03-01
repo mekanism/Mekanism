@@ -12,12 +12,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType, boolean removeAll) implements IMekanismPacket<PlayPayloadContext> {
 
     public static final ResourceLocation ID = Mekanism.rl("remove_module");
 
     public PacketRemoveModule(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readById(MekanismAPI.MODULE_REGISTRY));
+        this(buffer.readBlockPos(), buffer.readById(MekanismAPI.MODULE_REGISTRY), buffer.readBoolean());
     }
 
     @NotNull
@@ -31,7 +31,7 @@ public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType) impleme
         context.player().ifPresent(player -> {
             TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level(), pos);
             if (tile != null) {
-                tile.removeModule(player, moduleType);
+                tile.removeModule(player, moduleType, removeAll);
             }
         });
     }

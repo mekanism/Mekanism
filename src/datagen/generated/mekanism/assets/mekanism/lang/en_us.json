@@ -984,6 +984,7 @@
   "gui.mekanism.max": "Max: %1$s",
   "gui.mekanism.max_output": "Max Output: %1$s/t",
   "gui.mekanism.min": "Min: %1$s",
+  "gui.mekanism.modification.remove.tooltip": "Removes a single module, hold shift to remove all.",
   "gui.mekanism.move_down": "Move Down",
   "gui.mekanism.move_down.shift": "Hold shift to move to bottom",
   "gui.mekanism.move_up": "Move Up",

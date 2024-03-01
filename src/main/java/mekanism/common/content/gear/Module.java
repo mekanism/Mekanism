@@ -346,27 +346,39 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     /**
-     * @return was first module.
+     * @param wasFirst  if this is the first set of modules being added.
+     * @param toInstall Number of modules to try and install.
+     *
+     * @return number installed
      */
-    boolean add(boolean wasFirst) {
+    int add(boolean wasFirst, int toInstall) {
+        toInstall = Math.min(toInstall, getData().getMaxStackSize());
         //Note: We don't have to save it and mutate the stack as attachments are auto saved
         disableOtherExclusives(false);
-        if (!wasFirst) {
-            //If we weren't the first module being added we need to reinitialize the config items on this module
-            // the first module can be skipped as the normal init process will have it in the correct state
+        if (!wasFirst || toInstall > 1) {
+            //If we weren't the first module being added (or we are adding many at once) we need to reinitialize the config items on this module
+            // the first module can be skipped when we are only installing a single item as the normal init process will have it in the correct state
             // We also need to increment the count if it wasn't the first module
-            installed++;
+            if (wasFirst) {
+                installed = toInstall;
+            } else {
+                //Clamp based on how many modules we have room to add
+                toInstall = Math.min(toInstall, getData().getMaxStackSize() - installed);
+                installed += toInstall;
+            }
             reInit();
         }
         customModule.onAdded(this, wasFirst);
-        return wasFirst;
+        return toInstall;
     }
 
     /**
      * @return was last module.
      */
-    boolean remove() {
-        installed--;
+    boolean remove(int toRemove) {
+        //Theoretically we are only calling this within the max stack size, but double check
+        toRemove = Math.min(toRemove, getData().getMaxStackSize());
+        installed -= toRemove;
         boolean wasLast = installed == 0;
         if (!wasLast) {
             //If we weren't the last module being removed we need to reinitialize the config items on this module

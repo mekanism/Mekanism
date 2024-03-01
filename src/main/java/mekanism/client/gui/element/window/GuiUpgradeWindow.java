@@ -44,8 +44,7 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
         addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, relativeX + 134, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, relativeX + 134, relativeY + 59));
-        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12,
-              MekanismLang.UPGRADE_UNINSTALL, () -> {
+        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, () -> {
             if (scrollList.hasSelection()) {
                 PacketUtils.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
                       this.tile, scrollList.getSelection().ordinal()));

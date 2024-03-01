@@ -115,6 +115,7 @@ public final class ModuleContainer implements IModuleContainer {
                 }
             }
         }
+        //TODO: Do we actually want to save the enchantments or just cache them and lazily recreate the map?
         if (modulesTag.contains(NBTConstants.EXTRA_DATA, Tag.TAG_COMPOUND)) {
             CompoundTag extraData = modulesTag.getCompound(NBTConstants.EXTRA_DATA);
             if (extraData.contains(NBTConstants.ENCHANTMENTS, Tag.TAG_LIST)) {
@@ -219,17 +220,17 @@ public final class ModuleContainer implements IModuleContainer {
         return false;
     }
 
-    public void removeModule(IModuleDataProvider<?> typeProvider) {
+    public void removeModule(IModuleDataProvider<?> typeProvider, int toRemove) {
         ModuleData<?> type = typeProvider.getModuleData();
         Module<?> module = modules.get(type);
-        if (module != null && module.remove()) {
+        if (module != null && module.remove(toRemove)) {
             modules.remove(type);
         }
     }
 
-    public void addModule(IModuleDataProvider<?> typeProvider) {
+    public int addModule(IModuleDataProvider<?> typeProvider, int toInstall) {
         boolean hadModule = has(typeProvider);
-        modules.computeIfAbsent(typeProvider.getModuleData(), type -> createNewModule(type, new CompoundTag())).add(!hadModule);
+        return modules.computeIfAbsent(typeProvider.getModuleData(), type -> createNewModule(type, new CompoundTag())).add(!hadModule, toInstall);
     }
 
     @Override

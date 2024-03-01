@@ -1451,6 +1451,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RADIAL_BLASTING_POWER_HIGH, "High");
         add(MekanismLang.RADIAL_BLASTING_POWER_EXTREME, "Extreme");
         // Modules
+        add(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP, "Removes a single module, hold shift to remove all.");
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
         add(MekanismLang.MODULE_DISABLED_LOWER, "disabled");

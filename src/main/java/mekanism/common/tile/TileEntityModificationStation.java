@@ -9,13 +9,13 @@ import mekanism.api.RelativeSide;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.gear.IModuleItem;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
-    private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
+    private static final int BASE_TICKS_REQUIRED = MekanismUtils.TICKS_PER_HALF_SECOND;
 
     public int ticksRequired = BASE_TICKS_REQUIRED;
     public int operatingTicks;
@@ -101,9 +100,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                     clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
                     if (operatingTicks == ticksRequired) {
                         operatingTicks = 0;
-                        moduleContainer.get().addModule(data);
-                        containerSlot.setStack(stack);
-                        MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(1, Action.EXECUTE), 1);
+                        int added = moduleContainer.get().addModule(data, moduleSlot.getCount());
+                        if (added > 0) {
+                            containerSlot.setStack(stack);
+                            MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
+                        }
                     }
                 }
             }
@@ -118,13 +119,17 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         return usedEnergy;
     }
 
-    public void removeModule(Player player, ModuleData<?> type) {
+    public void removeModule(Player player, ModuleData<?> type, boolean removeAll) {
         ItemStack stack = containerSlot.getStack();
         Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack)
               .filter(container -> container.has(type));
-        if (moduleContainer.isPresent() && player.getInventory().add(type.getItemProvider().getItemStack())) {
-            moduleContainer.get().removeModule(type);
-            containerSlot.setStack(stack);
+        if (moduleContainer.isPresent()) {
+            ModuleContainer container = moduleContainer.get();
+            int toRemove = removeAll ? container.installedCount(type) : 1;
+            if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))){
+                container.removeModule(type, toRemove);
+                containerSlot.setStack(stack);
+            }
         }
     }
 

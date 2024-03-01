@@ -198,6 +198,9 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @param module Module instance.
      * @param first  {@code true} if it is the first module of this type installed.
+     *
+     * @apiNote This method may be called when more than one module is added at once, so it is important to get the installed count from the module rather than assume it
+     * just went up by one.
      */
     default void onAdded(IModule<MODULE> module, boolean first) {
     }
@@ -207,6 +210,9 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @param module Module instance.
      * @param last   {@code true} if it was the last module of this type installed.
+     *
+     * @apiNote This method may be called when more than one module is removed at once, so it is important to get the installed count from the module rather than assume it
+     * just down up by one.
      */
     default void onRemoved(IModule<MODULE> module, boolean last) {
     }

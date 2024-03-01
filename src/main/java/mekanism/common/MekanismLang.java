@@ -804,6 +804,7 @@ public enum MekanismLang implements ILangEntry {
     RADIAL_BLASTING_POWER_EXTREME("radial", "blasting_power.extreme"),
 
     //Modules
+    REMOVE_ALL_MODULES_TOOLTIP("gui", "modification.remove.tooltip"),
     MODULE_ENABLED("module", "enabled"),
     MODULE_ENABLED_LOWER("module", "enabled_lower"),
     MODULE_DISABLED_LOWER("module", "disabled_lower"),
