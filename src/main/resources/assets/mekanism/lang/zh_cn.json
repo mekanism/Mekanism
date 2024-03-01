@@ -1,4 +1,5 @@
 {
+  "_mekanism_force_utf8": "",
   "advancements.mekanism.advanced_control_circuit.description": "合成一块高级控制电路",
   "advancements.mekanism.advanced_control_circuit.title": "在这个年龄段里它真的很优秀",
   "advancements.mekanism.advanced_qio_drive.description": "提高你的QIO驱动器的存储带宽",
@@ -448,6 +449,8 @@
   "cardboard_box.mekanism.block": "方块：%1$s",
   "cardboard_box.mekanism.block_data": "方块数据：%1$s",
   "cardboard_box.mekanism.block_entity": "方块实体：%1$s",
+  "cardboard_box.mekanism.block_entity.decoration": "装饰：",
+  "cardboard_box.mekanism.block_entity.spawn_type": "生成：%1$s",
   "chemical.mekanism.attribute.coolant.efficiency": " - 冷却剂效率：%1$s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - 热焓值：%1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - 燃烧时间：%1$s t",
