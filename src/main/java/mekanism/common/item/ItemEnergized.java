@@ -29,12 +29,12 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
     protected final Predicate<@NotNull AutomationType> canInsert;
 
     public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Properties properties) {
-        this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, properties);
+        this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, properties.stacksTo(1));
     }
 
     public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert, Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties);
         this.chargeRateSupplier = chargeRateSupplier;
         this.maxEnergySupplier = maxEnergySupplier;
         this.canExtract = canExtract;
@@ -43,7 +43,8 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        return true;
+        //If we are currently stacked, don't display the bar as it will overlap the stack count
+        return stack.getCount() == 1;
     }
 
     @Override

@@ -58,11 +58,6 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
-        if (stack.getCount() > 1) {
-            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
-            // but we may as well short circuit it here
-            return 0;
-        }
         return StorageUtils.getBarWidth(stack);
     }
 

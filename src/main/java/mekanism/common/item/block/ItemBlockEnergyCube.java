@@ -58,17 +58,12 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
-        //If We are currently stacked, don't display the bar as it will overlap the stack count
+        //If we are currently stacked, don't display the bar as it will overlap the stack count
         return stack.getCount() == 1;
     }
 
     @Override
     public int getBarWidth(@NotNull ItemStack stack) {
-        if (stack.getCount() > 1) {
-            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
-            // but we may as well short circuit it here
-            return 0;
-        }
         return StorageUtils.getEnergyBarWidth(stack);
     }
 

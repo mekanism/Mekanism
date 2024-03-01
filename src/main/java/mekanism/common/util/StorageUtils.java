@@ -356,6 +356,11 @@ public class StorageUtils {
     }
 
     public static int getBarWidth(ItemStack stack) {
+        if (stack.getCount() > 1) {
+            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
+            // but we may as well short circuit it here
+            return 0;
+        }
         return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
     }
 
@@ -375,6 +380,11 @@ public class StorageUtils {
     }
 
     public static int getEnergyBarWidth(ItemStack stack) {
+        if (stack.getCount() > 1) {
+            //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
+            // but we may as well short circuit it here
+            return 0;
+        }
         return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
     }
 
