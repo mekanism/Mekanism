@@ -20,16 +20,6 @@
             {
               "type": "mekanism:inventory_slots",
               "function": "mekanism:copy_containers"
-            },
-            {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "color",
-                  "target": "mekanism:color"
-                }
-              ],
-              "source": "block_entity"
             }
           ],
           "name": "mekanism:qio_dashboard"

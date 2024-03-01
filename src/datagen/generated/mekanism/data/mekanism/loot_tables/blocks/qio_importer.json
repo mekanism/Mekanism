@@ -36,10 +36,6 @@
                   "target": "mekanism:auto"
                 },
                 {
-                  "source": "color",
-                  "target": "mekanism:color"
-                },
-                {
                   "source": "controlType",
                   "target": "mekanism:redstone_control"
                 }

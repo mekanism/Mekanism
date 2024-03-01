@@ -124,7 +124,6 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneControl>> REDSTONE_CONTROL = ATTACHMENT_TYPES.register("redstone_control", RedstoneControl.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneOutput>> REDSTONE_OUTPUT = ATTACHMENT_TYPES.register("redstone_output", RedstoneOutput.class);
 
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> COLOR = ATTACHMENT_TYPES.registerOptional("color", EnumColor.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> TRANSPORTER_COLOR = ATTACHMENT_TYPES.register("transporter_color",
           () -> AttachmentType.<Optional<EnumColor>>builder(Optional::empty)
                 .serialize(new IAttachmentSerializer<IntTag, Optional<EnumColor>>() {
@@ -161,7 +160,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> SILK_TOUCH = ATTACHMENT_TYPES.registerBoolean("silk_touch", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE = ATTACHMENT_TYPES.registerBoolean("inverse", false);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE_REQUIRES_REPLACE = ATTACHMENT_TYPES.registerBoolean("inverse_replace", false);
-    //TODO: Re-evaluate the from_recipe data
+    //TODO: Re-evaluate the from_recipe data. For one thing maybe it can get away with being an attachment that is not serializable/able to be copied?
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> FROM_RECIPE = ATTACHMENT_TYPES.registerBoolean("from_recipe", false);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> RADIUS = ATTACHMENT_TYPES.registerNonNegativeInt("radius", TileEntityDigitalMiner.DEFAULT_RADIUS);

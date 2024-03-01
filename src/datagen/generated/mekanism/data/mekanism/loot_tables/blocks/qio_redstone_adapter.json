@@ -30,10 +30,6 @@
                   "target": "mekanism:long_amount"
                 },
                 {
-                  "source": "color",
-                  "target": "mekanism:color"
-                },
-                {
                   "source": "fuzzyMode",
                   "target": "mekanism:fuzzy"
                 },
