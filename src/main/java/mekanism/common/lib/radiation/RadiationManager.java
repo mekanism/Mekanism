@@ -152,6 +152,9 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double getRadiationLevel(Entity entity) {
+        if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
+            return BASELINE;
+        }
         return getRadiationLevel(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 
@@ -199,24 +202,49 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public double getRadiationLevel(GlobalPos pos) {
+        if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
+            return BASELINE;
+        }
         return getRadiationLevelAndMaxMagnitude(pos).level();
     }
 
     public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(Entity entity) {
+        if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
+            return LevelAndMaxMagnitude.BASELINE;
+        }
         return getRadiationLevelAndMaxMagnitude(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 
     public LevelAndMaxMagnitude getRadiationLevelAndMaxMagnitude(GlobalPos pos) {
+        if (radiationTable.isEmpty()) {//Short circuit when the radiation table is empty
+            return LevelAndMaxMagnitude.BASELINE;
+        }
         double level = BASELINE;
         double maxMagnitude = BASELINE;
+        Chunk3D center = new Chunk3D(pos);
+        int radius = MekanismConfig.general.radiationChunkCheckRadius.get();
         // we only compute exposure when within the MAX_RANGE bounds
-        double maxRange = Mth.square(MekanismConfig.general.radiationChunkCheckRadius.get() * 16);
-        for (Chunk3D chunk : new Chunk3D(pos).expand(MekanismConfig.general.radiationChunkCheckRadius.get())) {
-            for (Map.Entry<GlobalPos, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
-                if (entry.getKey().pos().distSqr(pos.pos()) <= maxRange) {
-                    RadiationSource source = entry.getValue();
-                    level += computeExposure(pos, source);
-                    maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
+        double maxRange = Mth.square(radius * 16);
+        int minX, maxX, minZ, maxZ;
+        if (radius == 1) {
+            maxX = minX = center.x;
+            maxZ = minZ = center.z;
+        } else {
+            minX = center.x - radius;
+            minZ = center.z - radius;
+            maxX = center.x + radius;
+            maxZ = center.z + radius;
+        }
+        //Note: We inline the logic from Chunk3D#expand to avoid allocating a new hash set each time
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minZ; j <= maxZ; j++) {
+                Chunk3D chunk = new Chunk3D(center.dimension, i, j);
+                for (Map.Entry<GlobalPos, RadiationSource> entry : radiationTable.row(chunk).entrySet()) {
+                    if (entry.getKey().pos().distSqr(pos.pos()) <= maxRange) {
+                        RadiationSource source = entry.getValue();
+                        level += computeExposure(pos, source);
+                        maxMagnitude = Math.max(maxMagnitude, source.getMagnitude());
+                    }
                 }
             }
         }
@@ -496,6 +524,8 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public record LevelAndMaxMagnitude(double level, double maxMagnitude) {
+
+        private static final LevelAndMaxMagnitude BASELINE = new LevelAndMaxMagnitude(RadiationManager.BASELINE, RadiationManager.BASELINE);
     }
 
     public enum RadiationScale {

@@ -41,10 +41,13 @@ public class RadiationEntity implements IRadiationEntity {
         if (!entity.isAlive() || entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return;
         }
-        entity.getData(MekanismAttachmentTypes.RADIATION);
+        double radiation = getRadiation();
+        if (radiation <= RadiationManager.BASELINE) {
+            //NO-OP, the entity isn't actually irradiated
+            return;
+        }
 
         RandomSource rand = entity.level().getRandom();
-        double radiation = getRadiation();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
