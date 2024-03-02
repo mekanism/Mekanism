@@ -979,6 +979,7 @@
   "gui.mekanism.max": "최대: %1$s",
   "gui.mekanism.max_output": "최대 출력: %1$s",
   "gui.mekanism.min": "최소: %1$s",
+  "gui.mekanism.modification.remove.tooltip": "모듈 하나를 제거합니다. Shift를 누르면 전체를 제거합니다.",
   "gui.mekanism.move_down": "아래로 이동",
   "gui.mekanism.move_down.shift": "아래로 움직이려면 Shift를 누르고 있으십시오",
   "gui.mekanism.move_up": "위로 이동",
