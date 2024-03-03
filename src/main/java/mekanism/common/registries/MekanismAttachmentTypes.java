@@ -166,7 +166,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> RADIUS = ATTACHMENT_TYPES.registerNonNegativeInt("radius", TileEntityDigitalMiner.DEFAULT_RADIUS);
     //TODO - 1.20.4: Better min and max for these?
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MIN_Y = ATTACHMENT_TYPES.registerInt("min_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MAX_Y = ATTACHMENT_TYPES.registerInt("max_y", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> MAX_Y = ATTACHMENT_TYPES.registerInt("max_y", TileEntityDigitalMiner.DEFAULT_HEIGHT_RANGE, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> DELAY = ATTACHMENT_TYPES.registerInt("delay", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
