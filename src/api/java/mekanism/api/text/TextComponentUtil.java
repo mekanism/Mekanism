@@ -193,7 +193,10 @@ public class TextComponentUtil {
                 continue;
             }
             MutableComponent current = null;
-            if (component instanceof IHasTextComponent hasTextComponent) {
+            if (component instanceof Component c) {
+                //Just append if a text component is being passed
+                current = c.copy();
+            } else if (component instanceof IHasTextComponent hasTextComponent) {
                 current = hasTextComponent.getTextComponent().copy();
             } else if (component instanceof IHasTranslationKey hasTranslationKey) {
                 current = translate(hasTranslationKey.getTranslationKey());
@@ -238,10 +241,7 @@ public class TextComponentUtil {
             } else if (!cachedStyle.isEmpty()) {
                 //Only bother attempting these checks if we have a cached format, because
                 // otherwise we are just going to want to use the raw text
-                if (component instanceof Component c) {
-                    //Just append if a text component is being passed
-                    current = c.copy();
-                } else if (component instanceof EnumColor color) {
+                if (component instanceof EnumColor color) {
                     //If we already have a color in our format allow using the EnumColor's name
                     current = color.getName();
                 } else {
