@@ -133,7 +133,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             if (roundRobin) {
                 return transporter.insertRR(this, request, filterColor, true, min);
             }
-            return transporter.insert(this, request, filterColor, true, min);
+            return transporter.insert(this, getBlockPos(), request, filterColor, true, min);
         }
         return request.addToInventory(level, frontPos, front, getDirection(), min);
     }

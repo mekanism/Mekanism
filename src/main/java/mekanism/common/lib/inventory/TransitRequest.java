@@ -66,11 +66,17 @@ public abstract class TransitRequest {
     @NotNull
     public TransitResponse eject(BlockEntity outputter, BlockPos targetPos, @Nullable BlockEntity target, Direction side, int min,
           Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
+        return eject(outputter, outputter.getBlockPos(), targetPos, target, side, min, outputColor);
+    }
+
+    @NotNull
+    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, BlockPos targetPos, @Nullable BlockEntity target, Direction side, int min,
+          Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
         if (isEmpty()) {//Short circuit if our request is empty
             return getEmptyResponse();
         }
         if (target instanceof TileEntityLogisticalTransporterBase transporter) {
-            return transporter.getTransmitter().insert(outputter, this, outputColor.apply(transporter), true, min);
+            return transporter.getTransmitter().insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
         }
         return addToInventory(outputter.getLevel(), targetPos, target, side, min);
     }

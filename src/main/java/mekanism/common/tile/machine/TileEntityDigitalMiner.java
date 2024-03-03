@@ -266,7 +266,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 if (!ejectMap.isEmpty()) {
                     BlockPos ejectInvPos = getBlockPos().above().relative(oppositeDirection, 2);
                     BlockEntity ejectInv = WorldUtils.getTileEntity(level, ejectInvPos);
-                    TransitResponse response = ejectMap.eject(this, ejectInvPos, ejectInv, oppositeDirection, 0, transporter -> transporter.getTransmitter().getColor());
+                    TransitResponse response = ejectMap.eject(this, ejectPos, ejectInvPos, ejectInv, oppositeDirection, 0, transporter -> transporter.getTransmitter().getColor());
                     if (!response.isEmpty()) {
                         response.useAll();
                     }
