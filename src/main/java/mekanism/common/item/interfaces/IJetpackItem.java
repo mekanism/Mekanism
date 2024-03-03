@@ -123,17 +123,19 @@ public interface IJetpackItem {
             Vec3 forward = player.getLookAngle();
             Vec3 drag = forward.scale(1.5).subtract(motion).scale(0.5);
             Vec3 delta = forward.scale(thrust).add(drag);
-            player.setDeltaMovement(motion.add(delta));
+            player.addDeltaMovement(delta);
             return false;
         } else if (mode == JetpackMode.NORMAL) {
-            player.setDeltaMovement(motion.x(), motion.y() + thrust * Math.min(1, Math.exp(-motion.y())), motion.z());
+            Vec3 delta = new Vec3(0, thrust * getVerticalCoefficient(motion.y()), 0);
+            player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.VECTOR) {
             Vec3 forward = player.getLookAngle();
-            float theta = player.getYRot() * ((float) Math.PI / 180F);
+            float theta = player.getYRot() * Mth.DEG_TO_RAD;
             Vec3 left = new Vec3(Mth.cos(theta), 0, Mth.sin(theta));
             Vec3 up = forward.cross(left);
             Vec3 thrustVec = up.scale(thrust);
-            player.setDeltaMovement(motion.add(new Vec3(thrustVec.x, thrustVec.y * Math.min(1, Math.exp(-motion.y())), thrustVec.z)));
+            Vec3 delta = new Vec3(thrustVec.x, thrustVec.y * getVerticalCoefficient(motion.y()), thrustVec.z);
+            player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.HOVER) {
             boolean ascending = ascendingSupplier.getAsBoolean();
             boolean descending = player.isDescending();
@@ -146,12 +148,16 @@ public interface IJetpackItem {
                     }
                 }
             } else if (ascending) {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 0.2D), motion.z());
+                player.setDeltaMovement(motion.x(), Math.min(motion.y() + thrust, 2 * thrust), motion.z());
             } else if (!CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
-                player.setDeltaMovement(motion.x(), Math.max(motion.y() - thrust, -0.2D), motion.z());
+                player.setDeltaMovement(motion.x(), Math.max(motion.y() - thrust, -2 * thrust), motion.z());
             }
         }
         return true;
+    }
+
+    private static double getVerticalCoefficient(double currentYVelocity) {
+        return Math.min(1, Math.exp(-currentYVelocity));
     }
 
     static JetpackMode getPlayerJetpackMode(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {

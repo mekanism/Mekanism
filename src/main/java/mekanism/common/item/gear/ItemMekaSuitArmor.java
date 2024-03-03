@@ -66,6 +66,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -373,7 +374,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void useJetpackFuel(ItemStack stack) {
-        useGas(stack, MekanismGases.HYDROGEN.get(), 1);
+        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null) {
+            useGas(stack, MekanismGases.HYDROGEN.get(), Mth.ceil(module.getCustomInstance().getThrustMultiplier()));
+        }
     }
 
     @NotNull
