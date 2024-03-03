@@ -2,6 +2,7 @@ package mekanism.api.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ClickEvent;
@@ -10,6 +11,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +20,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class TextComponentUtil {
+
+    private static final Component TEXT_NULL = getString("null");
 
     private TextComponentUtil() {
     }
@@ -73,15 +77,15 @@ public class TextComponentUtil {
             } else if (component instanceof HoverEvent event) {
                 cachedStyle = cachedStyle.withHoverEvent(event);
             } else if (component instanceof Block block) {
-                current = translate(block.getDescriptionId());
+                current = block.getName().copy();
             } else if (component instanceof Item item) {
-                current = translate(item.getDescriptionId());
+                current = item.getDescription().copy();
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
                 current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
-                current = translate(fluid.getFluidType().getDescriptionId());
+                current = fluid.getFluidType().getDescription().copy();
             } else if (component instanceof EntityType<?> entityType) {
                 current = entityType.getDescription().copy();
             } else if (component instanceof Direction direction) {
@@ -184,7 +188,7 @@ public class TextComponentUtil {
             if (component == null) {
                 //If the component doesn't exist add it anyway, because we may want to be replacing it
                 // with a literal null in the formatted text
-                args.add(null);
+                args.add(TEXT_NULL);
                 cachedStyle = Style.EMPTY;
                 continue;
             }
@@ -194,15 +198,15 @@ public class TextComponentUtil {
             } else if (component instanceof IHasTranslationKey hasTranslationKey) {
                 current = translate(hasTranslationKey.getTranslationKey());
             } else if (component instanceof Block block) {
-                current = translate(block.getDescriptionId());
+                current = block.getName().copy();
             } else if (component instanceof Item item) {
-                current = translate(item.getDescriptionId());
+                current = item.getDescription().copy();
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
                 current = stack.getDisplayName().copy();
             } else if (component instanceof Fluid fluid) {
-                current = translate(fluid.getFluidType().getDescriptionId());
+                current = fluid.getFluidType().getDescription().copy();
             } else if (component instanceof EntityType<?> entityType) {
                 current = entityType.getDescription().copy();
             } else if (component instanceof Direction direction) {
@@ -234,47 +238,51 @@ public class TextComponentUtil {
             } else if (!cachedStyle.isEmpty()) {
                 //Only bother attempting these checks if we have a cached format, because
                 // otherwise we are just going to want to use the raw text
-                if (component instanceof Component) {
+                if (component instanceof Component c) {
                     //Just append if a text component is being passed
-                    current = ((Component) component).copy();
-                } else if (component instanceof EnumColor) {
+                    current = c.copy();
+                } else if (component instanceof EnumColor color) {
                     //If we already have a color in our format allow using the EnumColor's name
-                    current = ((EnumColor) component).getName();
+                    current = color.getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
                     // this handles strings, numbers, and any type we don't necessarily know about
                     current = getString(component.toString());
                 }
-            } else if (component instanceof String) {
+            } else if (component instanceof String str) {
                 //If we didn't format it, and it is a string make sure we clean it up
-                component = cleanString((String) component);
+                component = cleanString(str);
+            } else if (!TranslatableContents.isAllowedPrimitiveArgument(component)) {
+                //Ensure that any types that aren't allowed for sync purposes get converted to their string representation while creating the component
+                current = getString(component.toString());
             }
             if (!cachedStyle.isEmpty()) {
                 //If we don't have a text component, then we have to just ignore the formatting and
                 // add it directly as an argument. (Note: This should never happen because of the fallback)
                 if (current == null) {
-                    args.add(component);
-                } else {
-                    //Otherwise, we apply the formatting and then add it
-                    args.add(current.setStyle(cachedStyle));
+                    current = getString(component.toString());
                 }
+                //Otherwise, we apply the formatting and then add it
+                args.add(current.setStyle(cachedStyle));
                 cachedStyle = Style.EMPTY;
-            } else if (current == null) {
-                //Add raw
-                args.add(component);
             } else {
-                //Add the text component variant of it
-                args.add(current);
+                args.add(Objects.requireNonNullElse(current, component));
             }
         }
         if (!cachedStyle.isEmpty()) {
             //Add trailing formatting as a color name or just directly
             //Note: We know that we have at least one element in the array, so we don't need to safety check here
             Object lastComponent = components[components.length - 1];
-            if (lastComponent instanceof EnumColor color) {
+            if (lastComponent == null) {
+                //Odds are this will never be true, as there is a style, but check it anyway
+                args.add(TEXT_NULL);
+            } else if (lastComponent instanceof EnumColor color) {
                 args.add(color.getName());
-            } else {
+            } else if (lastComponent instanceof Component || TranslatableContents.isAllowedPrimitiveArgument(lastComponent)) {
+                //Odds are this will never be true, but we check it to see if we can avoid having to convert it to a string
                 args.add(lastComponent);
+            } else {
+                args.add(getString(lastComponent.toString()));
             }
             //TODO: If we have multiple trailing formatting types such as a color and italics, we may want to eventually
             // handle how we add them to the arguments better?
