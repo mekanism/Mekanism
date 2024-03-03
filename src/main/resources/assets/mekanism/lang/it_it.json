@@ -984,6 +984,7 @@
   "gui.mekanism.max": "Max: %1$s",
   "gui.mekanism.max_output": "Uscita massima: %1$s/t",
   "gui.mekanism.min": "Min: %1$s",
+  "gui.mekanism.modification.remove.tooltip": "Rimuove un singolo modulo. Tieni premuto Maiusc per rimuoverli tutti.",
   "gui.mekanism.move_down": "Muovi Giù",
   "gui.mekanism.move_down.shift": "Tieni premuto il tasto shift per muoverlo in basso",
   "gui.mekanism.move_up": "Muovi Su",
