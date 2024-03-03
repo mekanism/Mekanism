@@ -81,6 +81,10 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
         // the cardboard box and will instead leave it how it was when the box was initially put on
         //Adjust the state based on neighboring blocks to ensure double chests properly become single chests again
         BlockState adjustedState = Block.updateFromNeighbourShapes(blockState, level, pos);
+        if (adjustedState.isAir()) {
+            //If the block cannot be unpacked in this position, don't allow it to be unpacked
+            return false;
+        }
 
         FluidState fluidState = adjustedState.getFluidState();
         FluidType fluidType = fluidState.getFluidType();
