@@ -319,9 +319,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     target.addHandler(handler);
                 }
             });
-            if (target.getHandlerCount() > 0) {
-                transferHandlers.add(() -> storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL));
-            }
+            transferHandlers.add(() -> {
+                if (target.getHandlerCount() > 0) {
+                    storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            });
         }
     }
 
@@ -335,9 +337,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     target.addHandler(handler);
                 }
             });
-            if (target.getHandlerCount() > 0) {
-                transferHandlers.add(() -> storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL));
-            }
+            transferHandlers.add(() -> {
+                if (target.getHandlerCount() > 0) {
+                    storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            });
         }
     }
 
@@ -353,9 +357,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     target.addHandler(handler);
                 }
             });
-            if (target.getHandlerCount() > 0) {
-                transferHandlers.add(() -> tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL));
-            }
+            transferHandlers.add(() -> {
+                if (target.getHandlerCount() > 0) {
+                    tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            });
         }
     }
 
