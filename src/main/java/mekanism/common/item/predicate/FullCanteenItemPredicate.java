@@ -1,6 +1,8 @@
 package mekanism.common.item.predicate;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.registries.MekanismFluids;
@@ -23,8 +25,8 @@ public class FullCanteenItemPredicate implements ICustomItemPredicate {
     @Override
     public boolean test(@NotNull ItemStack stack) {
         if (stack.getItem() instanceof ItemCanteen) {
-            return ContainerType.FLUID.getAttachmentContainersIfPresent(stack).stream()
-                  .allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
+            List<IExtendedFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+            return !tanks.isEmpty() && tanks.stream().allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
         }
         return false;
     }
