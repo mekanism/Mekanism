@@ -75,7 +75,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.entity.PartEntity;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -287,7 +286,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (teleportInfo.closest == null || level == null || teleportInfo.toTeleport.isEmpty()) {
             return;
         }
-        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        MinecraftServer currentServer = level.getServer();
+        if (currentServer == null) {
+            return;
+        }
         boolean sameDimension = level.dimension() == teleportInfo.closest.dimension();
         Level teleWorld = sameDimension ? level : currentServer.getLevel(teleportInfo.closest.dimension());
         BlockPos closestPos = teleportInfo.closest.pos();
@@ -449,7 +451,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      */
     @Nullable
     public static FloatingLong calculateEnergyCost(Entity entity, GlobalPos pos) {
-        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        MinecraftServer currentServer = entity.getServer();
         if (currentServer != null) {
             Level targetWorld = currentServer.getLevel(pos.dimension());
             if (targetWorld != null) {

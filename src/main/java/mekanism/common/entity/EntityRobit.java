@@ -89,6 +89,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -124,7 +125,6 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -291,6 +291,33 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
+    public void tick() {
+        Level level = level();
+        if (!level.isClientSide) {
+            if (homeLocation == null) {
+                discard();
+                return;
+            }
+            if (tickCount % SharedConstants.TICKS_PER_SECOND == 0) {
+                Level serverWorld;
+                if (level.dimension() == homeLocation.dimension()) {
+                    serverWorld = level;
+                } else {
+                    MinecraftServer server = getServer();
+                    serverWorld = server == null ? null : server.getLevel(homeLocation.dimension());
+                }
+                BlockPos homePos = homeLocation.pos();
+                if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
+                    drop();
+                    discard();
+                    return;
+                }
+            }
+        }
+        super.tick();
+    }
+
+    @Override
     public void baseTick() {
         if (!level().isClientSide) {
             if (getFollowing()) {
@@ -306,19 +333,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (!level().isClientSide) {
             if (getDropPickup()) {
                 collectItems();
-            }
-            if (homeLocation == null) {
-                discard();
-                return;
-            }
-
-            if (tickCount % SharedConstants.TICKS_PER_SECOND == 0) {
-                Level serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension());
-                BlockPos homePos = homeLocation.pos();
-                if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
-                    drop();
-                    discard();
-                }
             }
 
             if (energyContainer.isEmpty() && !isOnChargepad()) {

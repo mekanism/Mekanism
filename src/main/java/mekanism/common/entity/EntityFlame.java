@@ -17,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,6 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -56,8 +56,6 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
     public static final int LIFESPAN = 4 * SharedConstants.TICKS_PER_SECOND;
     private static final int DAMAGE = 10;
-
-    private FlamethrowerMode mode = FlamethrowerMode.COMBAT;
 
     public EntityFlame(EntityType<EntityFlame> type, Level world) {
         super(type, world);
@@ -84,7 +82,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         //Attempt to ray trace the area between the player and where the flame would actually start
         // if it hits a block instead just have the flame hit the block directly to avoid being able
         // to shoot a flamethrower through one thick walls.
-        BlockHitResult blockRayTrace = player.level().clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, flame));
+        BlockHitResult blockRayTrace = player.level().clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flame));
         if (blockRayTrace.getType() != Type.MISS) {
             flame.onHit(blockRayTrace);
         }
@@ -92,43 +90,35 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void baseTick() {
-        if (!isAlive()) {
-            return;
-        }
-        tickCount++;
-
-        xo = getX();
-        yo = getY();
-        zo = getZ();
-
-        xRotO = getXRot();
-        yRotO = getYRot();
-
-        Vec3 motion = getDeltaMovement();
-        setPosRaw(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
-
-        setPos(getX(), getY(), getZ());
-
-        calculateVector();
+    public void tick() {
+        super.tick();
         if (tickCount > LIFESPAN) {
             discard();
-        }
-    }
+        } else {
+            Vec3 localVec = position();
+            Vec3 motion = getDeltaMovement();
+            Vec3 motionVec = localVec.add(motion);
+            HitResult hitResult = level().clip(new ClipContext(localVec, motionVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
+            if (hitResult.getType() != Type.MISS) {
+                motionVec = hitResult.getLocation();
+            }
+            EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level(), this, localVec, motionVec,
+                  getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0), this::canHitEntity);
+            if (entityResult != null && entityResult.getType() == Type.ENTITY) {
+                if (entityResult.getEntity() instanceof Player target && getOwner() instanceof Player owner && !owner.canHarmPlayer(target)) {
+                    hitResult = null;
+                } else {
+                    hitResult = entityResult;
+                }
+            }
+            if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
+                if (!EventHooks.onProjectileImpact(this, hitResult)) {
+                    onHit(hitResult);
+                }
+            }
 
-    private void calculateVector() {
-        Vec3 localVec = new Vec3(getX(), getY(), getZ());
-        Vec3 motion = getDeltaMovement();
-        Vec3 motionVec = new Vec3(getX() + motion.x() * 2, getY() + motion.y() * 2, getZ() + motion.z() * 2);
-        BlockHitResult blockRayTrace = level().clip(new ClipContext(localVec, motionVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
-        localVec = new Vec3(getX(), getY(), getZ());
-        motionVec = new Vec3(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
-        if (blockRayTrace.getType() != Type.MISS) {
-            motionVec = blockRayTrace.getLocation();
+            setPos(motionVec.x, motionVec.y, motionVec.z);
         }
-        EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level(), this, localVec, motionVec,
-              getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D), EntitySelector.NO_SPECTATORS);
-        onHit(entityResult == null ? blockRayTrace : entityResult);
     }
 
     @Override

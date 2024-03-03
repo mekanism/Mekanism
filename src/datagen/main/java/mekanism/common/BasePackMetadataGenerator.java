@@ -2,10 +2,10 @@ package mekanism.common;
 
 import java.util.Optional;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.DetectedVersion;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.util.InclusiveRange;
@@ -22,7 +22,7 @@ public class BasePackMetadataGenerator extends PackMetadataGenerator {
             minVersion = Math.min(minVersion, version);
         }
         add(PackMetadataSection.TYPE, new PackMetadataSection(
-              Component.translatable(description.getTranslationKey()),
+              TextComponentUtil.build(description),
               maxVersion,
               Optional.of(new InclusiveRange<>(minVersion, maxVersion))
         ));
