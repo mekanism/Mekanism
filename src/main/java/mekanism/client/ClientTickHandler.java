@@ -15,12 +15,14 @@ import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.base.KeySync;
+import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
+import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
@@ -50,6 +52,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -377,7 +380,7 @@ public class ClientTickHandler {
                 armorStandModel.leftBodyStick.visible = showModel;
                 armorStandModel.shoulderStick.visible = showModel;
             }
-        } else if (chest.getItem() instanceof ItemHDPEElytra && entityModel instanceof PlayerModel<?> playerModel) {
+        } else if (itemHidesCape(chest.getItem()) && entityModel instanceof PlayerModel<?> playerModel) {
             //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
             playerModel.cloak.visible = showModel;
         }
@@ -389,6 +392,10 @@ public class ClientTickHandler {
                 playerModel.rightPants.visible = showModel;
             }
         }
+    }
+
+    private static boolean itemHidesCape(Item item) {
+        return item instanceof ItemHDPEElytra || item instanceof ItemJetpack || item instanceof ItemScubaTank;
     }
 
     private record TeleportData(InteractionHand hand, FrequencyIdentity identity, long teleportTime) {
