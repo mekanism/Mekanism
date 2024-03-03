@@ -225,16 +225,10 @@ public class RadiationManager implements IRadiationManager {
         int radius = MekanismConfig.general.radiationChunkCheckRadius.get();
         // we only compute exposure when within the MAX_RANGE bounds
         double maxRange = Mth.square(radius * 16);
-        int minX, maxX, minZ, maxZ;
-        if (radius == 1) {
-            maxX = minX = center.x;
-            maxZ = minZ = center.z;
-        } else {
-            minX = center.x - radius;
-            minZ = center.z - radius;
-            maxX = center.x + radius;
-            maxZ = center.z + radius;
-        }
+        int minX = center.x - radius;
+        int maxX = center.x + radius;
+        int minZ = center.z - radius;
+        int maxZ = center.z + radius;
         //Note: We inline the logic from Chunk3D#expand to avoid allocating a new hash set each time
         for (int i = minX; i <= maxX; i++) {
             for (int j = minZ; j <= maxZ; j++) {
@@ -464,8 +458,8 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void tickServer() {
-        // terminate early if we're disabled
-        if (!isRadiationEnabled()) {
+        // terminate early if we're disabled or there is no radiation spots
+        if (!isRadiationEnabled() || radiationTable.isEmpty()) {
             return;
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
