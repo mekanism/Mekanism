@@ -1,4 +1,4 @@
-// 1.20.4	2024-01-19T17:18:45.674345	Tags: mekanism
+// 1.20.4	2024-03-04T10:26:37.326104	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -225,6 +225,7 @@ c036eafcfc31cff6c2df053a9c90ff74b463767a data/mekanism/tags/items/shards/lead.js
 1bd000e6fef21cc20628ba17f7fa6d441588e779 data/mekanism/tags/items/shards/osmium.json
 d385588fbb59c814bc803c709606e764c8eb4264 data/mekanism/tags/items/shards/tin.json
 91b4bd91a1ad7cb40155bc4e041b556ec51bcc6b data/mekanism/tags/items/shards/uranium.json
+fb00c96a7ac4abdb16eea5ed0456a125cc9859bc data/mekanism/tags/items/stone_crafting_materials.json
 4855fe3f8bdf65c371fb4204cf9ab93833f1a3af data/mekanism/tags/mekanism/gas/waste_barrel_decay_blacklist.json
 8f1b80f33d49ac84b841d229d26f396ea176c2e0 data/mekanism/tags/mekanism/gas/water_vapor.json
 4352f2d5cbacccc1ad1e93fce7ce57b876242f92 data/mekanism/tags/mekanism/infuse_type/bio.json

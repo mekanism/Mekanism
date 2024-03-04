@@ -154,6 +154,7 @@ public class MekanismTags {
 
         public static final TagKey<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
         public static final TagKey<Item> MEKASUIT_HUD_RENDERER = tag("mekasuit_hud_renderer");
+        public static final TagKey<Item> STONE_CRAFTING_MATERIALS = tag("stone_crafting_materials");
 
         public static final TagKey<Item> COLORABLE_WOOL = tag("colorable/wool");
         public static final TagKey<Item> COLORABLE_CARPETS = tag("colorable/carpets");

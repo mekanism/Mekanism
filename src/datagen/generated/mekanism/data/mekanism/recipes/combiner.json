@@ -12,7 +12,7 @@
       "item": "mekanism:steel_casing"
     },
     "_": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "mekanism:stone_crafting_materials"
     }
   },
   "pattern": [

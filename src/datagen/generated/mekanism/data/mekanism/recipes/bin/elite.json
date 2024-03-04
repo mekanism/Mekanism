@@ -12,7 +12,7 @@
       "item": "mekanism:advanced_bin"
     },
     "_": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "mekanism:stone_crafting_materials"
     }
   },
   "pattern": [

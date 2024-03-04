@@ -108,6 +108,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
         addToTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, MekanismItems.MEKASUIT_HELMET);
+        getItemBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONE_NORMAL);
         addEntities();
         getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
         addHarvestRequirements();

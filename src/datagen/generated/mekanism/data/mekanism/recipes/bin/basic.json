@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "_": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "mekanism:stone_crafting_materials"
     }
   },
   "pattern": [
