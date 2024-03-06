@@ -2,16 +2,12 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
@@ -26,7 +22,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
@@ -41,7 +36,6 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,6 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -63,13 +58,13 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
+public class ItemConfigurator extends Item implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public static final Lazy<RadialData<ConfiguratorMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));
 
     public ItemConfigurator(Properties properties) {
-        super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
+        super(properties.rarity(Rarity.UNCOMMON));
     }
 
     @Override
@@ -108,14 +103,6 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                             return InteractionResult.FAIL;
                         } else {
-                            if (!player.isCreative()) {
-                                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                                FloatingLong energyPerConfigure = MekanismConfig.gear.configuratorEnergyPerConfigure.get();
-                                if (energyContainer == null || energyContainer.extract(energyPerConfigure, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerConfigure)) {
-                                    return InteractionResult.FAIL;
-                                }
-                                energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
-                            }
                             DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
                             if (dataType != old) {
@@ -152,20 +139,9 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         }
                         return InteractionResult.FAIL;
                     }
-                    IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
-                    if (!creative && energyContainer == null) {
-                        return InteractionResult.FAIL;
-                    }
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                    FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
                     for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
                         if (!inventorySlot.isEmpty()) {
-                            if (!creative) {
-                                if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
-                                    break;
-                                }
-                                energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
-                            }
                             InventoryUtils.dropStack(inventorySlot.getStack().copy(), slotStack -> Block.popResourceFromFace(world, pos, side, slotStack));
                             inventorySlot.setEmpty();
                         }

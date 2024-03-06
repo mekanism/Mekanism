@@ -49,11 +49,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedDoubleValue disassemblerAttackSpeed;
     public final CachedFloatingLongValue disassemblerMaxEnergy;
     public final CachedFloatingLongValue disassemblerChargeRate;
-    //Configurator
-    public final CachedFloatingLongValue configuratorMaxEnergy;
-    public final CachedFloatingLongValue configuratorChargeRate;
-    public final CachedFloatingLongValue configuratorEnergyPerConfigure;
-    public final CachedFloatingLongValue configuratorEnergyPerItem;
+    
     //Electric Bow
     public final CachedFloatingLongValue electricBowMaxEnergy;
     public final CachedFloatingLongValue electricBowChargeRate;
@@ -178,17 +174,6 @@ public class GearConfig extends BaseMekanismConfig {
               "maxEnergy", FloatingLong.createConst(1_000_000));
         disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
               "chargeRate", FloatingLong.createConst(5_000));
-        builder.pop();
-
-        builder.comment("Configurator Settings").push(CONFIGURATOR_CATEGORY);
-        configuratorMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Configurator can contain.",
-              "maxEnergy", FloatingLong.createConst(60_000));
-        configuratorChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Configurator can accept per tick.",
-              "chargeRate", FloatingLong.createConst(300));
-        configuratorEnergyPerConfigure = CachedFloatingLongValue.define(this, builder, "Energy usage in joules of using the configurator to configure machines.",
-              "energyPerConfigure", FloatingLong.createConst(400));
-        configuratorEnergyPerItem = CachedFloatingLongValue.define(this, builder, "Energy cost in joules for each item the configurator ejects from a machine on empty mode.",
-              "energyPerItem", FloatingLong.createConst(8));
         builder.pop();
 
         builder.comment("Electric Bow Settings").push(ELECTRIC_BOW_CATEGORY);
