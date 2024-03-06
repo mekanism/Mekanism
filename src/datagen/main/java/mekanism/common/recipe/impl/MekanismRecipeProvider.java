@@ -307,12 +307,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Configurator
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CONFIGURATOR)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
-                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.ALLOY, Pattern.EMPTY),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
-              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
-              .key(Pattern.INGOT, Tags.Items.GEMS_LAPIS)
+              )
+              .key(Pattern.ALLOY, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.CONSTANT, Tags.Items.RODS_WOODEN)
               .build(consumer);
         //Crafting formula

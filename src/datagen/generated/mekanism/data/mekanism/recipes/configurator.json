@@ -6,18 +6,15 @@
       "tag": "forge:rods/wooden"
     },
     "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
+      "tag": "forge:ingots/osmium"
     },
     "I": {
-      "tag": "forge:gems/lapis"
+      "tag": "forge:ingots/iron"
     }
   },
   "pattern": [
-    " I ",
-    "AEA",
+    "I I",
+    " A ",
     " # "
   ],
   "result": {
