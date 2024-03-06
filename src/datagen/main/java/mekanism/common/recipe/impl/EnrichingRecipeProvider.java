@@ -109,6 +109,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.GUNPOWDER)
         ).build(consumer, Mekanism.rl(basePath + "sulfur_to_gunpowder"));
         //Obsidian -> obsidian dust
+        //TODO - 1.20.5: Remove this recipe in favor of the crushing version
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Tags.Items.OBSIDIAN),
               MekanismItems.OBSIDIAN_DUST.getItemStack(4)

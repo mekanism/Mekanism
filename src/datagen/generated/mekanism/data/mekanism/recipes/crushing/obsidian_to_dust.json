@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:obsidian"
+    }
+  },
+  "output": {
+    "count": 4,
+    "item": "mekanism:dust_obsidian"
+  }
+}

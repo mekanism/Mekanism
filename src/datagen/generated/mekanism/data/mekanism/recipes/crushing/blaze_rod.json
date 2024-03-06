@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:rods/blaze"
+    }
+  },
+  "output": {
+    "count": 4,
+    "item": "minecraft:blaze_powder"
+  }
+}

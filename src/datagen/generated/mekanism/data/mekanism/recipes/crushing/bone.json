@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bone"
+    }
+  },
+  "output": {
+    "count": 6,
+    "item": "minecraft:bone_meal"
+  }
+}

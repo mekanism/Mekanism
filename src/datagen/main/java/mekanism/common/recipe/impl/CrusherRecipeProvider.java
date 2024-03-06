@@ -73,6 +73,21 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Items.MUSIC_DISC_5),
               new ItemStack(Items.DISC_FRAGMENT_5, 9)
         ).build(consumer, Mekanism.rl(basePath + "break_disc_5"));
+        //Obsidian -> obsidian dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIAN),
+              MekanismItems.OBSIDIAN_DUST.getItemStack(4)
+        ).build(consumer, Mekanism.rl(basePath + "obsidian_to_dust"));
+        //Blaze Rod -> blaze powder
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Tags.Items.RODS_BLAZE),
+              new ItemStack(Items.BLAZE_POWDER, 4)
+        ).build(consumer, Mekanism.rl(basePath + "blaze_rod"));
+        //Bone -> bone meal
+        ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Items.BONE),
+              new ItemStack(Items.BONE_MEAL, 6)
+        ).build(consumer, Mekanism.rl(basePath + "bone"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Blocks.RED_SANDSTONE,
