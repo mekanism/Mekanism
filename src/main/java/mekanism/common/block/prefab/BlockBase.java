@@ -9,6 +9,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
+import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -68,6 +69,9 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @NotNull
     @Override
     public MutableComponent getName() {
+        if (this instanceof IColoredBlock coloredBlock) {
+            return TextComponentUtil.build(coloredBlock.getColor(), super.getName());
+        }
         BaseTier baseTier = Attribute.getBaseTier(this);
         if (baseTier == null) {
             return super.getName();
