@@ -10,6 +10,8 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
@@ -38,6 +40,10 @@ public class MekanismContentsProcessor implements INBTProcessor {
         ItemStack stack = info.createStack();
         //Stored items
         currentEMC = addEmc(emcProxy, currentEMC, ContainerType.ITEM.getAttachmentContainersIfPresent(stack));
+        Optional<AbstractPersonalStorageItemInventory> personalStorage = PersonalStorageManager.getInventoryIfPresent(stack);
+        if (personalStorage.isPresent()) {//Items stored in a personal chest or barrel
+            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.get().getInventorySlots(null));
+        }
         Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
         if (existingUpgrades.isPresent()) {//Stored upgrades
             UpgradeAware upgradeAware = existingUpgrades.get();
