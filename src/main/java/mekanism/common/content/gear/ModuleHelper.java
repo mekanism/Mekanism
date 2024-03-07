@@ -23,13 +23,16 @@ import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
@@ -113,6 +116,11 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public ItemModule createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties) {
         return new ItemModule(moduleDataProvider, properties);
+    }
+
+    @Override
+    public void dropModuleContainerContents(ItemEntity entity, DamageSource source) {
+        InventoryUtils.dropItemContents(entity, source);
     }
 
     @Override

@@ -12,8 +12,10 @@ import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -48,6 +50,16 @@ public interface IModuleHelper {
      * have a {@code null} reference when using {@link DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need references of each other.
      */
     Item createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties);
+
+    /**
+     * Helper to drop any modules stored in a custom module container. Call this from {@link Item#onDestroyed(ItemEntity, DamageSource)}.
+     *
+     * @param entity Entity that is being destroyed.
+     * @param source Damage source that destroyed the entity.
+     *
+     * @since 10.5.3
+     */
+    void dropModuleContainerContents(ItemEntity entity, DamageSource source);
 
     /**
      * Gets all the module types a given item support.

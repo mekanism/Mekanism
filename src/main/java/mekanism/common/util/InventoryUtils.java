@@ -1,20 +1,26 @@
 package mekanism.common.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.gear.IModuleContainer;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,50 +44,69 @@ public final class InventoryUtils {
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
         if (!entity.level().isClientSide && !stack.isEmpty()) {
-            Function<ItemStack, List<IInventorySlot>> droppedSlots = null;
-            //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
-            int scalar = stack.getCount();
-            if (stack.getItem() instanceof IDroppableContents inventory) {
-                if (inventory.canContentsDrop(stack)) {
-                    droppedSlots = inventory::getDroppedSlots;
-                    scalar = inventory.getScalar(stack);
-                }
-            } else if (ContainerType.ITEM.supports(stack)) {
-                droppedSlots = ContainerType.ITEM::getAttachmentContainersIfPresent;
-            }
-            if (droppedSlots == null) {
-                return;
-            }
-            boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
-                shouldDrop = IItemSecurityUtils.INSTANCE.canAccess(player, stack);
-            } else {
+                if (!IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
+                    return;
+                }
+            } else if (!IItemSecurityUtils.INSTANCE.canAccess(null, stack, false)) {
                 // otherwise, just check against there being no known player
-                shouldDrop = IItemSecurityUtils.INSTANCE.canAccess(null, stack, false);
+                return;
             }
-            if (shouldDrop) {
-                for (IInventorySlot slot : droppedSlots.apply(stack)) {
-                    if (!slot.isEmpty()) {
-                        ItemStack stackToDrop = slot.getStack().copy();
-                        //Note: We increase the size of the stack we are dropping based on the size of the stack we are dropping,
-                        // this makes it so that if there are two items that are stacked because they have the same inventory that
-                        // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
-                        // drop items past their max stack size
-                        if (scalar > 1) {
-                            if (stackToDrop.getCount() > 64) {
-                                //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
-                                // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
-                                // much in the first place.
-                                stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.getCount()));
-                            } else {
-                                stackToDrop.setCount(scalar * stackToDrop.getCount());
-                            }
-                        }
-                        //Copy the stack as the passed slot is likely to be the actual backing slot
-                        dropStack(stackToDrop, slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
+            int scalar = stack.getCount();
+            Consumer<ItemStack> dropper = slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack));
+            //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
+            if (stack.getItem() instanceof IDroppableContents inventory) {
+                if (inventory.canContentsDrop(stack)) {
+                    scalar = inventory.getScalar(stack);
+                    dropItemContents(inventory.getDroppedSlots(stack), scalar, dropper);
+                } else {
+                    //Explicitly denying dropping items
+                    return;
+                }
+            } else if (ContainerType.ITEM.supports(stack)) {
+                dropItemContents(ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
+            }
+            Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
+            if (existingUpgrades.isPresent()) {
+                UpgradeAware upgradeAware = existingUpgrades.get();
+                dropItemContents(upgradeAware.getInventorySlots(null), scalar, dropper);
+                dropItemContents(upgradeAware.getUpgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+            }
+            Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
+            if (moduleContainer.isPresent()) {
+                dropItemContents(moduleContainer.get().modules(), scalar, dropper, module -> module.getData().getItemProvider().getItemStack(module.getInstalledCount()));
+            }
+        }
+    }
+
+    private static void dropItemContents(List<IInventorySlot> slots, int scalar, Consumer<ItemStack> dropper) {
+        dropItemContents(slots, scalar, dropper, slot -> slot.getStack().copy());
+    }
+
+    /**
+     * @param stackExtractor It is expected the stack returned by the stack extractor can be safely mutated
+     */
+    private static <T> void dropItemContents(Collection<T> toDrop, int scalar, Consumer<ItemStack> dropper, Function<T, ItemStack> stackExtractor) {
+        for (T drop : toDrop) {
+            ItemStack stackToDrop = stackExtractor.apply(drop);
+            if (!stackToDrop.isEmpty()) {
+                //Note: We increase the size of the stack we are dropping based on the size of the stack we are dropping,
+                // this makes it so that if there are two items that are stacked because they have the same inventory that
+                // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
+                // drop items past their max stack size
+                if (scalar > 1) {
+                    if (stackToDrop.getCount() > 64) {
+                        //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
+                        // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
+                        // much in the first place.
+                        stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.getCount()));
+                    } else {
+                        stackToDrop.setCount(scalar * stackToDrop.getCount());
                     }
                 }
+                //Copy the stack as the passed slot is likely to be the actual backing slot
+                dropStack(stackToDrop, dropper);
             }
         }
     }
