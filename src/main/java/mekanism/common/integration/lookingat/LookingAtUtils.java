@@ -29,6 +29,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.WorldUtils;
@@ -102,6 +103,9 @@ public class LookingAtUtils {
     }
 
     private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+        if (tile != null) {
+            tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(blockData ->  blockData.addToTooltip(info::addText));
+        }
         MultiblockData structure = getMultiblock(tile);
         IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (energyCapability != null) {

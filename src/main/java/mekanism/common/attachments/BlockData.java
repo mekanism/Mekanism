@@ -1,8 +1,8 @@
 package mekanism.common.attachments;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -20,7 +20,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -123,27 +122,27 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
         return true;
     }
 
-    public void addToTooltip(Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void addToTooltip(Consumer<Component> consumer) {
         Block block = blockState.getBlock();
-        tooltip.add(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
+        consumer.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
         if (blockEntityTag != null) {
             Optional<BlockEntityType<?>> blockEntityType = RegistryUtils.getById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE);
             Object beName = blockEntityType.isPresent() ? RegistryUtils.getName(blockEntityType.get()) : MekanismLang.UNKNOWN;
-            tooltip.add(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
+            consumer.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
             if (blockEntityTag != null) {
                 if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
                     String key = block instanceof SpawnerBlock ? NBTConstants.SPAWN_DATA_LEGACY : NBTConstants.SPAWN_DATA;
                     RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(NBTConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
                           .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
-                          .ifPresent(tooltip::add);
+                          .ifPresent(consumer);
                 } else if (block instanceof DecoratedPotBlock) {
                     DecoratedPotBlockEntity.Decorations decorations = DecoratedPotBlockEntity.Decorations.load(blockEntityTag);
                     //Copy from DecoratedPotBlock#appendHoverText
                     if (!decorations.equals(DecoratedPotBlockEntity.Decorations.EMPTY)) {
-                        tooltip.add(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
+                        consumer.accept(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
                         Stream.of(decorations.front(), decorations.left(), decorations.right(), decorations.back())
                               .map(decoration -> MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration))
-                              .forEach(tooltip::add);
+                              .forEach(consumer);
                     }
                 }
             }
