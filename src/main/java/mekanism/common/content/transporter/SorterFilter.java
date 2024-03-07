@@ -34,6 +34,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     protected SorterFilter(FILTER filter) {
+        super(filter);
         allowDefault = filter.allowDefault;
         color = filter.color;
         sizeMode = filter.sizeMode;

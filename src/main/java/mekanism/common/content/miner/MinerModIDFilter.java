@@ -15,10 +15,6 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     private String modID;
 
-    public MinerModIDFilter(String modID) {
-        this.modID = modID;
-    }
-
     public MinerModIDFilter() {
     }
 

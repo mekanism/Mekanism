@@ -12,6 +12,14 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
 
     private String tagName;
 
+    public QIOTagFilter() {
+    }
+
+    public QIOTagFilter(QIOTagFilter filter) {
+        super(filter);
+        this.tagName = filter.tagName;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.tag(tagName);
@@ -60,9 +68,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
 
     @Override
     public QIOTagFilter clone() {
-        QIOTagFilter filter = new QIOTagFilter();
-        filter.tagName = tagName;
-        return filter;
+        return new QIOTagFilter(this);
     }
 
     @Override

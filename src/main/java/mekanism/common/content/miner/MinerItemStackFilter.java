@@ -15,10 +15,6 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     private ItemStack itemType = ItemStack.EMPTY;
 
-    public MinerItemStackFilter(ItemStack item) {
-        itemType = item;
-    }
-
     public MinerItemStackFilter() {
     }
 

@@ -25,6 +25,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     }
 
     protected MinerFilter(FILTER filter) {
+        super(filter);
         replaceTarget = filter.replaceTarget;
         requiresReplacement = filter.requiresReplacement;
     }

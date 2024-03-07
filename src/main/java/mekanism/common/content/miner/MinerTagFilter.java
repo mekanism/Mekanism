@@ -14,10 +14,6 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     private String tagName;
 
-    public MinerTagFilter(String tagName) {
-        this.tagName = tagName;
-    }
-
     public MinerTagFilter() {
     }
 

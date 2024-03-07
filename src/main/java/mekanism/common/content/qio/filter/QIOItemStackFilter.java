@@ -17,11 +17,13 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     private ItemStack itemType = ItemStack.EMPTY;
     public boolean fuzzyMode;
 
-    public QIOItemStackFilter(ItemStack item) {
-        itemType = item;
+    public QIOItemStackFilter() {
     }
 
-    public QIOItemStackFilter() {
+    public QIOItemStackFilter(QIOItemStackFilter filter) {
+        super(filter);
+        this.itemType = filter.itemType.copy();
+        this.fuzzyMode = filter.fuzzyMode;
     }
 
     @Override
@@ -82,10 +84,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @Override
     public QIOItemStackFilter clone() {
-        QIOItemStackFilter filter = new QIOItemStackFilter();
-        filter.itemType = itemType.copy();
-        filter.fuzzyMode = fuzzyMode;
-        return filter;
+        return new QIOItemStackFilter(this);
     }
 
     @Override

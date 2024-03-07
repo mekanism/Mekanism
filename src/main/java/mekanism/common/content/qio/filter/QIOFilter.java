@@ -6,6 +6,13 @@ import mekanism.common.lib.inventory.Finder;
 
 public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFilter<FILTER> {
 
+    protected QIOFilter() {
+    }
+
+    protected QIOFilter(FILTER filter) {
+        super(filter);
+    }
+
     public abstract Finder getFinder();
 
     @Override

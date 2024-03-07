@@ -12,6 +12,14 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     private String modID;
 
+    public QIOModIDFilter() {
+    }
+
+    public QIOModIDFilter(QIOModIDFilter filter) {
+        super(filter);
+        this.modID = filter.modID;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.modID(modID);
@@ -60,9 +68,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     @Override
     public QIOModIDFilter clone() {
-        QIOModIDFilter filter = new QIOModIDFilter();
-        filter.modID = modID;
-        return filter;
+        return new QIOModIDFilter(this);
     }
 
     @Override

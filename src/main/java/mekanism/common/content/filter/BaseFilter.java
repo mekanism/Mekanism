@@ -23,6 +23,13 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     //Enabled by default
     private boolean enabled = true;
 
+    protected BaseFilter() {
+    }
+
+    protected BaseFilter(FILTER filter) {
+        this.enabled = filter.isEnabled();
+    }
+
     //Mark it as abstract, so it does not think clone is being implemented by Object
     @Override
     public abstract FILTER clone();

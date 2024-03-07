@@ -37,7 +37,10 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     protected OredictionificatorFilter() {
     }
 
-    protected OredictionificatorFilter(OredictionificatorFilter<TYPE, STACK, FILTER> filter) {
+    protected OredictionificatorFilter(FILTER other) {
+        super(other);
+        //Local variable needed so that it can reference the private fields on it
+        OredictionificatorFilter<TYPE, STACK, FILTER> filter = other;
         filterLocation = filter.filterLocation;
         filterTag = filter.filterTag;
         selectedOutput = filter.selectedOutput;
