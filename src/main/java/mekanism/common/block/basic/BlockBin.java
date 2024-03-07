@@ -43,29 +43,27 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 BlockHitResult mop = MekanismUtils.rayTrace(player);
                 if (mop.getType() != Type.MISS && mop.getDirection() == bin.getDirection()) {
                     BinInventorySlot binSlot = bin.getBinSlot();
-                    if (!binSlot.isEmpty()) {
+                    if (!binSlot.isEmpty() && bin.removeTicks == 0) {
+                        bin.removeTicks = 3;
                         ItemStack stack;
-                        if (bin.removeTicks == 0) {
-                            bin.removeTicks = 3;
-                            if (player.isShiftKeyDown()) {
-                                stack = binSlot.getStack().copyWithCount(1);
-                                MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
-                            } else {
-                                stack = binSlot.getBottomStack();
-                                if (!stack.isEmpty()) {
-                                    MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
-                                }
+                        if (player.isShiftKeyDown()) {
+                            stack = binSlot.getBottomStack();
+                            if (!stack.isEmpty()) {
+                                MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
                             }
-                            if (!player.getInventory().add(stack)) {
-                                BlockPos dropPos = pos.relative(bin.getDirection());
-                                Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                                Vec3 motion = item.getDeltaMovement();
-                                item.push(-motion.x(), -motion.y(), -motion.z());
-                                world.addFreshEntity(item);
-                            } else {
-                                world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
-                                      0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            }
+                        } else {
+                            stack = binSlot.getStack().copyWithCount(1);
+                            MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
+                        }
+                        if (!player.getInventory().add(stack)) {
+                            BlockPos dropPos = pos.relative(bin.getDirection());
+                            Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
+                            Vec3 motion = item.getDeltaMovement();
+                            item.push(-motion.x(), -motion.y(), -motion.z());
+                            world.addFreshEntity(item);
+                        } else {
+                            world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
+                                  0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         }
                     }
                 }
