@@ -1,4 +1,4 @@
-// 1.20.4	2024-02-29T19:28:33.5488725	Loot Tables
+// 1.20.4	2024-03-08T09:23:00.9393082	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 cd266e7b4a5bde833aa11e1caf17d86631197626 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 6829ad29ae722d1ef741fc103dfd5704c1874a66 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -125,8 +125,8 @@ c93f6d48138eea1ef6219fbe4a261e1219ca0b0c data/mekanism/loot_tables/blocks/nutrit
 9ac52f79889bd5d9d3bc48192c4f49157b1dba17 data/mekanism/loot_tables/blocks/osmium_compressor.json
 2db8c486d27400e86f06817187bd83ecb049e7ba data/mekanism/loot_tables/blocks/osmium_ore.json
 8bf155e872e0a7cbac72cd911889823197dd7966 data/mekanism/loot_tables/blocks/painting_machine.json
-1882c8a8a26b8e30d00fade36c2aa139fe1851db data/mekanism/loot_tables/blocks/personal_barrel.json
-38d9d4f6d90b4469ddfd4f07f0b3c69f7c2b2bbc data/mekanism/loot_tables/blocks/personal_chest.json
+46d28bc7b8e23ecba1b1c6493ec42d71c7c205f9 data/mekanism/loot_tables/blocks/personal_barrel.json
+069957f91aa72dc2177c704e1cee9c8a055b1f3a data/mekanism/loot_tables/blocks/personal_chest.json
 7cb81f1bfcb86b95380510985570676b3d3f8ec9 data/mekanism/loot_tables/blocks/pigment_extractor.json
 3990dec82cc10954199edfafb8ef09645acef2b2 data/mekanism/loot_tables/blocks/pigment_mixer.json
 58fae62dff3751a1b17fc59457b6cd8fe3bb55c4 data/mekanism/loot_tables/blocks/precision_sawmill.json

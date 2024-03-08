@@ -1,6 +1,6 @@
 package mekanism.common.block.attribute;
 
-import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.states.BlockStateHelper;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
-import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +54,7 @@ public class Attributes {
     public static class AttributeInventory<DelayedLootItemBuilder extends ConditionUserBuilder<DelayedLootItemBuilder> & FunctionUserBuilder<DelayedLootItemBuilder>> implements Attribute {
 
         @Nullable
-        private final BiFunction<DelayedLootItemBuilder, CopyNbtFunction.Builder, Boolean> customLootBuilder;
+        private final Predicate<DelayedLootItemBuilder> customLootBuilder;
 
         /**
          * Create an Inventory attribute with custom loot function handling
@@ -64,7 +63,7 @@ public class Attributes {
          *                          {@link mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)}
          */
         @SuppressWarnings("JavadocReference")
-        public AttributeInventory(@Nullable BiFunction<DelayedLootItemBuilder, CopyNbtFunction.Builder, @NotNull Boolean> customLootBuilder) {
+        public AttributeInventory(@Nullable Predicate<DelayedLootItemBuilder> customLootBuilder) {
             this.customLootBuilder = customLootBuilder;
         }
 
@@ -72,12 +71,8 @@ public class Attributes {
             this(null);
         }
 
-        public boolean hasCustomLoot() {
-            return this.customLootBuilder != null;
-        }
-
-        public boolean applyLoot(DelayedLootItemBuilder builder, CopyNbtFunction.Builder nbtBuilder) {
-            return this.customLootBuilder != null && this.customLootBuilder.apply(builder, nbtBuilder);
+        public boolean applyLoot(DelayedLootItemBuilder builder) {
+            return this.customLootBuilder != null && this.customLootBuilder.test(builder);
         }
     }
 

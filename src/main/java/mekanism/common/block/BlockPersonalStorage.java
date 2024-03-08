@@ -19,10 +19,10 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorage, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> {
 
-    public static final Attribute PERSONAL_STORAGE_INVENTORY = new AttributeInventory<>(((lootBuilder, nbtBuilder) -> {
+    public static final Attribute PERSONAL_STORAGE_INVENTORY = new AttributeInventory<>(lootBuilder -> {
         lootBuilder.apply(PersonalStorageContentsLootFunction.builder());
         return true;
-    }));
+    });
 
     public BlockPersonalStorage(BLOCK type, UnaryOperator<Properties> propertiesModifier) {
         super(type, propertiesModifier);

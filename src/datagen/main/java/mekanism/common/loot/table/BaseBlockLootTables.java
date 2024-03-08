@@ -19,12 +19,13 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.loot.CopyAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyContainersLootFunction;
-import mekanism.common.item.loot.CopyFrequencyLootFunction;
 import mekanism.common.item.loot.CopyFiltersLootFunction;
+import mekanism.common.item.loot.CopyFrequencyLootFunction;
 import mekanism.common.item.loot.CopySecurityLootFunction;
 import mekanism.common.item.loot.CopySideConfigLootFunction;
 import mekanism.common.item.loot.CopyToAttachmentsLootFunction;
@@ -172,7 +173,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
-            //delayed items until after NBT copy is added
+            //delayed items until after other copies are added, for cases like referencing the owner
             DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
             @Nullable
             BlockEntity tile = null;
@@ -242,6 +243,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (hasContainers) {
                     itemLootPool.apply(containerBuilder);
                 }
+            }
+            @SuppressWarnings("unchecked")
+            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
+            if (attributeInventory != null) {
+                hasContents |= attributeInventory.applyLoot(delayedPool);
             }
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
