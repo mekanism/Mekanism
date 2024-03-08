@@ -852,6 +852,7 @@ public final class MekanismUtils {
         GUI_GAUGE("gui/gauge"),
         GUI_HUD("gui/hud"),
         GUI_ICONS("gui/icons"),
+        GUI_MODE("gui/mode"),
         GUI_PROGRESS("gui/progress"),
         GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),

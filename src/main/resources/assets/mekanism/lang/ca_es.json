@@ -1221,6 +1221,7 @@
   "jetpack.mekanism.hover": "Flotar",
   "jetpack.mekanism.mode_change": "Mode de motxilla propulsora canviat a: %1$s",
   "jetpack.mekanism.normal": "Normal",
+  "jetpack.mekanism.vector": "Vector",
   "key.mekanism.chest_mode": "Interruptor de Mode de Cofre",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",

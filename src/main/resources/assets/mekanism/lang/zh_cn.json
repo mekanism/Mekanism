@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "悬浮",
   "jetpack.mekanism.mode_change": "喷气背包模式更改为：%1$s",
   "jetpack.mekanism.normal": "标准",
+  "jetpack.mekanism.vector": "向量",
   "key.mekanism.chest_mode": "胸甲模式开关",
   "key.mekanism.description": "显示描述",
   "key.mekanism.details": "显示详细信息",

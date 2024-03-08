@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Survoler",
   "jetpack.mekanism.mode_change": "Mode du Jetpack changé sur: %1$s",
   "jetpack.mekanism.normal": "Régulier",
+  "jetpack.mekanism.vector": "Vecteur",
   "key.mekanism.chest_mode": "Commutateur de mode du buste",
   "key.mekanism.description": "Afficher la description",
   "key.mekanism.details": "Afficher les détails",

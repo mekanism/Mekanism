@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Schweben",
   "jetpack.mekanism.mode_change": "Jetpack-Modus geändert zu: %1$s",
   "jetpack.mekanism.normal": "Regulär",
+  "jetpack.mekanism.vector": "Vektor",
   "key.mekanism.chest_mode": "Brust Modus wechseln",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",

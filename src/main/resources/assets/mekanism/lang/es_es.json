@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Flotar",
   "jetpack.mekanism.mode_change": "Modo del Jetpack cambiado a: %1$s",
   "jetpack.mekanism.normal": "Normal",
+  "jetpack.mekanism.vector": "Vector",
   "key.mekanism.chest_mode": "Interruptor de Modo Cofre",
   "key.mekanism.description": "Mostrar Descripción",
   "key.mekanism.details": "Mostrar Detalles",

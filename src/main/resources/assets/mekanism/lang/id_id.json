@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Melayang",
   "jetpack.mekanism.mode_change": "Mode jetpack dirubah menjadi: %1$s",
   "jetpack.mekanism.normal": "Reguler",
+  "jetpack.mekanism.vector": "Vektor",
   "key.mekanism.chest_mode": "Rubah Mode Dada",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",

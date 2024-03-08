@@ -387,6 +387,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
+    public double getJetpackThrust(ItemStack stack) {
+        //The control mekasuit thrust feature is not available at this time due to large code differences between branches.
+        return 0.15;
+    }
+
+    @Override
     public void useJetpackFuel(ItemStack stack) {
         useGas(stack, MekanismGases.HYDROGEN.get(), 1);
     }

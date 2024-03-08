@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Зависание",
   "jetpack.mekanism.mode_change": "Режим ранца изменён на: %1$s",
   "jetpack.mekanism.normal": "Обычный",
+  "jetpack.mekanism.vector": "Вектор",
   "key.mekanism.chest_mode": "Переключить режим ранца",
   "key.mekanism.description": "Показать описание",
   "key.mekanism.details": "Подробности",

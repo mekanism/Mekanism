@@ -1204,6 +1204,7 @@
   "jetpack.mekanism.hover": "비행 유지",
   "jetpack.mekanism.mode_change": "제트팩의 모드가 다음으로 변경됨: %1$s",
   "jetpack.mekanism.normal": "일반",
+  "jetpack.mekanism.vector": "벡터",
   "key.mekanism.chest_mode": "몸통 방어구 모드 전환",
   "key.mekanism.description": "설명 보기",
   "key.mekanism.details": "세부 정보 보기",

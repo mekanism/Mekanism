@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "懸浮",
   "jetpack.mekanism.mode_change": "噴射背包模式更改為: %1$s",
   "jetpack.mekanism.normal": "標準",
+  "jetpack.mekanism.vector": "向量",
   "key.mekanism.chest_mode": "胸甲模式切換",
   "key.mekanism.description": "顯示描述",
   "key.mekanism.details": "顯示詳情",

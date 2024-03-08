@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Hover",
   "jetpack.mekanism.mode_change": "Jetpack mode changed to: %1$s",
   "jetpack.mekanism.normal": "Regular",
+  "jetpack.mekanism.vector": "Vector",
   "key.mekanism.chest_mode": "Chest Mode Switch",
   "key.mekanism.description": "Show Description",
   "key.mekanism.details": "Show Details",

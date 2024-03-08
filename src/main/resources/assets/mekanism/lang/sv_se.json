@@ -1220,6 +1220,7 @@
   "jetpack.mekanism.hover": "Hovring",
   "jetpack.mekanism.mode_change": "Ryggraketens läge ändrades till: %1$s",
   "jetpack.mekanism.normal": "Vanlig",
+  "jetpack.mekanism.vector": "Vektor",
   "key.mekanism.chest_mode": "Byt läge för utrustning på kroppen",
   "key.mekanism.description": "Visa beskrivning",
   "key.mekanism.details": "Visa detaljer",
