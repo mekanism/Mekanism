@@ -3,6 +3,7 @@ package mekanism.common.capabilities.chemical.item;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
+import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.Chemical;
@@ -18,22 +19,40 @@ import org.jetbrains.annotations.Nullable;
 
 public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends GenericTankSpec<CHEMICAL> {
 
+    private static final LongSupplier EMPTY = () -> 0;
+
     private final LongSupplier rate;
     private final LongSupplier capacity;
     @Nullable
+    private final ToLongFunction<ItemStack> stackBasedCapacity;
+    @Nullable
     private final ChemicalAttributeValidator validator;
 
-    public ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+    private ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
           TriPredicate<@NotNull CHEMICAL, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull CHEMICAL> isValid,
           @Nullable ChemicalAttributeValidator validator, Predicate<@NotNull ItemStack> supportsStack) {
+        this(rate, capacity, null, canExtract, canInsert, isValid, validator, supportsStack);
+    }
+
+    private ChemicalTankSpec(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          TriPredicate<@NotNull CHEMICAL, @NotNull AutomationType, @NotNull ItemStack> canInsert, Predicate<@NotNull CHEMICAL> isValid,
+          @Nullable ChemicalAttributeValidator validator, Predicate<@NotNull ItemStack> supportsStack) {
+        this(rate, EMPTY, stackBasedCapacity, canExtract, canInsert, isValid, validator, supportsStack);
+    }
+
+    private ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, @Nullable ToLongFunction<ItemStack> stackBasedCapacity,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, TriPredicate<@NotNull CHEMICAL, @NotNull AutomationType, @NotNull ItemStack> canInsert,
+          Predicate<@NotNull CHEMICAL> isValid, @Nullable ChemicalAttributeValidator validator, Predicate<@NotNull ItemStack> supportsStack) {
         super(canExtract, canInsert, isValid, supportsStack);
         this.rate = rate;
         this.capacity = capacity;
+        this.stackBasedCapacity = stackBasedCapacity;
         this.validator = validator;
     }
 
     public <STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> TANK createTank(TankFromSpecCreator<CHEMICAL, STACK, TANK> tankCreator,
           ItemStack stack) {
+        LongSupplier capacity = stackBasedCapacity == null ? this.capacity : () -> stackBasedCapacity.applyAsLong(stack);
         return tankCreator.create(rate, capacity, canExtract, (chemical, automationType) -> canInsert.test(chemical, automationType, stack), isValid, validator, null);
     }
 
@@ -51,6 +70,12 @@ public class ChemicalTankSpec<CHEMICAL extends Chemical<CHEMICAL>> extends Gener
     public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, LongSupplier capacity,
           Predicate<@NotNull CHEMICAL> isValid, Predicate<@NotNull ItemStack> supportsStack) {
         return new ChemicalTankSpec<>(rate, capacity, ConstantPredicates.notExternal(), (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> ChemicalTankSpec<CHEMICAL> createFillOnly(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity,
+          Predicate<@NotNull CHEMICAL> isValid, Predicate<@NotNull ItemStack> supportsStack) {
+        return new ChemicalTankSpec<>(rate, stackBasedCapacity, ConstantPredicates.notExternal(),
+              (chemical, automation, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 
     @FunctionalInterface

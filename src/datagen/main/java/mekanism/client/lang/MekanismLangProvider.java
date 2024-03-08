@@ -1309,6 +1309,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %1$s");
         add(MekanismLang.JETPACK_NORMAL, "Regular");
         add(MekanismLang.JETPACK_HOVER, "Hover");
+        add(MekanismLang.JETPACK_VECTOR, "Vector");
         add(MekanismLang.JETPACK_DISABLED, "Disabled");
         //Disassembler Mode
         add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %1$s (%2$s)");
@@ -1487,6 +1488,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_EFFICIENCY, "Efficiency");
         add(MekanismLang.MODULE_MODE_CHANGE, "%1$s bumped to: %2$s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
+        add(MekanismLang.MODULE_JETPACK_MULT, "Thrust Multiplier");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
         add(MekanismLang.MODULE_MAGNETIC_ATTRACTION, "Magnetic Attraction");
         add(MekanismLang.MODULE_CHARGE_SUIT, "Charge Suit");

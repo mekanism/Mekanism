@@ -652,6 +652,7 @@ public enum MekanismLang implements ILangEntry {
     JETPACK_MODE_CHANGE("jetpack", "mode_change"),
     JETPACK_NORMAL("jetpack", "normal"),
     JETPACK_HOVER("jetpack", "hover"),
+    JETPACK_VECTOR("jetpack", "vector"),
     JETPACK_DISABLED("jetpack", "disabled"),
     //Disassembler Mode
     DISASSEMBLER_MODE_CHANGE("disassembler", "mode_change"),
@@ -840,6 +841,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_EFFICIENCY("module", "efficiency"),
     MODULE_BREATHING_HELD("module", "breathing.held"),
     MODULE_JETPACK_MODE("module", "jetpack_mode"),
+    MODULE_JETPACK_MULT("module", "jetpack_mult"),
     MODULE_GRAVITATIONAL_MODULATION("module", "gravitational_modulation"),
     MODULE_MAGNETIC_ATTRACTION("module", "magnetic_attraction"),
     MODULE_MODE_CHANGE("module", "mode_change"),

@@ -66,6 +66,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -122,8 +123,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 armorConfig = MekanismConfig.gear.mekaSuitHelmetArmor;
             }
             case CHESTPLATE -> {
-                gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
-                      gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
+                    //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
+                    return moduleContainer(stack)
+                          .map(container -> container.get(MekanismModules.JETPACK_UNIT))
+                          .map(moduleJetpackUnitIModule -> MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * moduleJetpackUnitIModule.getInstalledCount())
+                          .orElse(0L);
+                }, gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
@@ -295,15 +301,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return fluidTankSpecsView;
     }
 
-    @NotNull
-    public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
-        if (gasHandlerItem != null) {
-            return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
-        }
-        return GasStack.EMPTY;
-    }
-
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
@@ -323,7 +320,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
                 IModule<ModuleJetpackUnit> jetpack = moduleContainer.get().getIfEnabled(MekanismModules.JETPACK_UNIT);
                 return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
-                       StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
+                       StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN).isEmpty();
             }
         }
         return false;
@@ -369,8 +366,36 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
+    public double getJetpackThrust(ItemStack stack) {
+        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null) {
+            float thrustMultiplier = module.getCustomInstance().getThrustMultiplier();
+            int neededGas = Mth.ceil(thrustMultiplier);
+            //Note: We verified we have at least one mB of gas before we get to the point of getting the thrust,
+            // so we only need to do extra validation if we need more than a single mB of hydrogen
+            if (neededGas > 1) {
+                GasStack containedGas = StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN);
+                if (neededGas > containedGas.getAmount()) {
+                    //If we don't have enough gas stored to go at the set thrust, scale down the thrust
+                    // to be whatever gas we have remaining
+                    thrustMultiplier = containedGas.getAmount();
+                }
+            }
+            return 0.15 * thrustMultiplier;
+        }
+        return 0;
+    }
+
+    @Override
     public void useJetpackFuel(ItemStack stack) {
-        useGas(stack, MekanismGases.HYDROGEN.get(), 1);
+        IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
+        if (module != null) {
+            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+            if (gasHandlerItem != null) {
+                int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
+                gasHandlerItem.extractChemical(MekanismGases.HYDROGEN.getStack(amount), Action.EXECUTE);
+            }
+        }
     }
 
     @NotNull
@@ -471,14 +496,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
                     absorbRatio = source.typeHolder().unwrapKey()
-                            // Reference holders can query data map values
-                            .map(type -> source.typeHolder())
-                            // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
-                            // but just in case have the fallback to look up the name from the registry
-                            .or(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE).map(registry -> registry.wrapAsHolder(source.type())))
-                            .map(holder -> holder.getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
-                            .map(MekaSuitAbsorption::absorption)
-                            .orElseGet(MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio::get);
+                          // Reference holders can query data map values
+                          .map(type -> source.typeHolder())
+                          // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
+                          // but just in case have the fallback to look up the name from the registry
+                          .or(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE).map(registry -> registry.wrapAsHolder(source.type())))
+                          .map(holder -> holder.getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
+                          .map(MekaSuitAbsorption::absorption)
+                          .orElseGet(MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio::get);
                     if (absorbRatio == 0) {
                         //If the config or the data map specifies that the damage type shouldn't be blocked at all
                         // stop checking if the armor is able to

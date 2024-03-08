@@ -86,7 +86,7 @@ public class ClientTickHandler {
             boolean guiOpen = minecraft.screen != null;
             boolean ascending = minecraft.player.input.jumping;
             boolean rising = ascending && !guiOpen;
-            if (mode == JetpackMode.NORMAL) {
+            if (mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) {
                 return rising;
             } else if (mode == JetpackMode.HOVER) {
                 boolean descending = minecraft.player.input.shiftKeyDown;
@@ -202,7 +202,8 @@ public class ClientTickHandler {
                     JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
                     JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, () -> minecraft.player.input.jumping);
                     MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
-                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
+                    double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
+                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, () -> minecraft.player.input.jumping)) {
                         minecraft.player.resetFallDistance();
                     }
                 }

@@ -8,7 +8,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -21,6 +20,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -180,13 +180,13 @@ public class StorageUtils {
     }
 
     @NotNull
-    public static GasStack getContainedGas(ItemStack stack, Gas type) {
+    public static GasStack getContainedGas(ItemStack stack, IGasProvider type) {
         return getContainedGas(Capabilities.GAS.getCapability(stack), type);
     }
 
     @NotNull
-    public static GasStack getContainedGas(IGasHandler gasHandler, Gas type) {
-        return getContainedChemical(gasHandler, type).orElse(GasStack.EMPTY);
+    public static GasStack getContainedGas(IGasHandler gasHandler, IGasProvider type) {
+        return getContainedChemical(gasHandler, type.getChemical()).orElse(GasStack.EMPTY);
     }
 
     @NotNull
