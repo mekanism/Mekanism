@@ -26,7 +26,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -802,6 +801,7 @@ public final class MekanismUtils {
         GUI_GAUGE("gui/gauge"),
         GUI_HUD("gui/hud"),
         GUI_ICONS("gui/icons"),
+        GUI_MODE("gui/mode"),
         GUI_PROGRESS("gui/progress"),
         GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),

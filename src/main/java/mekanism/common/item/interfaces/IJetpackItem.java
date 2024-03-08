@@ -4,9 +4,9 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.gear.config.IHasModeIcon;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
@@ -34,21 +34,23 @@ public interface IJetpackItem {
     void useJetpackFuel(ItemStack stack);
 
     @NothingNullByDefault
-    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
-        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
-        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
-        VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_vector.png")),
-        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_off.png"));
+    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon {
+        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, "jetpack_normal.png"),
+        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, "jetpack_hover.png"),
+        VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, "jetpack_vector.png"),
+        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, "jetpack_off.png");
 
         private static final JetpackMode[] MODES = values();
         private final ILangEntry langEntry;
         private final EnumColor color;
         private final ResourceLocation hudIcon;
+        private final ResourceLocation modeIcon;
 
-        JetpackMode(ILangEntry langEntry, EnumColor color, ResourceLocation hudIcon) {
+        JetpackMode(ILangEntry langEntry, EnumColor color, String icon) {
             this.langEntry = langEntry;
             this.color = color;
-            this.hudIcon = hudIcon;
+            this.hudIcon = MekanismUtils.getResource(ResourceType.GUI_HUD, icon);
+            this.modeIcon = MekanismUtils.getResource(ResourceType.GUI_MODE, icon);
         }
 
         @Override
@@ -67,6 +69,11 @@ public interface IJetpackItem {
 
         public static JetpackMode byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
+        }
+
+        @Override
+        public ResourceLocation getModeIcon() {
+            return modeIcon;
         }
     }
 
