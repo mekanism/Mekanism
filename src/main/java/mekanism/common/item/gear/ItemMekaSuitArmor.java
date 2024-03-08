@@ -369,7 +369,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             // so we only need to do extra validation if we need more than a single mB of hydrogen
             if (neededGas > 1) {
                 GasStack containedGas = StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN);
-                if (neededGas < containedGas.getAmount()) {
+                if (neededGas > containedGas.getAmount()) {
                     //If we don't have enough gas stored to go at the set thrust, scale down the thrust
                     // to be whatever gas we have remaining
                     thrustMultiplier = containedGas.getAmount();
