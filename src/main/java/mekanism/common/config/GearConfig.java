@@ -18,7 +18,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class GearConfig extends BaseMekanismConfig {
 
     private static final String DISASSEMBLER_CATEGORY = "atomic_disassembler";
-    private static final String CONFIGURATOR_CATEGORY = "configurator";
     private static final String ELECTRIC_BOW_CATEGORY = "electric_bow";
     private static final String ENERGY_TABLET_CATEGORY = "energy_tablet";
     private static final String GAUGE_DROPPER_CATEGORY = "gauge_dropper";

@@ -2,20 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "forge:rods/wooden"
-    },
     "A": {
       "tag": "forge:ingots/osmium"
     },
     "I": {
       "tag": "forge:ingots/iron"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
     }
   },
   "pattern": [
-    "I I",
-    " A ",
-    " # "
+    "II",
+    " A",
+    " S"
   ],
   "result": {
     "item": "mekanism:configurator"
