@@ -16,7 +16,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -129,11 +128,7 @@ public interface IJetpackItem {
             Vec3 delta = new Vec3(0, thrust * getVerticalCoefficient(motion.y()), 0);
             player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.VECTOR) {
-            Vec3 forward = player.getLookAngle();
-            float theta = player.getYRot() * Mth.DEG_TO_RAD;
-            Vec3 left = new Vec3(Mth.cos(theta), 0, Mth.sin(theta));
-            Vec3 up = forward.cross(left);
-            Vec3 thrustVec = up.scale(thrust);
+            Vec3 thrustVec = player.getUpVector(1F).scale(thrust);
             Vec3 delta = new Vec3(thrustVec.x, thrustVec.y * getVerticalCoefficient(motion.y()), thrustVec.z);
             player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.HOVER) {

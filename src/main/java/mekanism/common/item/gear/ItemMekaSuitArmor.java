@@ -375,9 +375,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                     thrustMultiplier = containedGas.getAmount();
                 }
             }
-            return 0.1D * thrustMultiplier;
+            return 0.15 * thrustMultiplier;
         }
-        return 0D;
+        return 0;
     }
 
     @Override
