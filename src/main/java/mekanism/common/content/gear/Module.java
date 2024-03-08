@@ -380,7 +380,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public void displayModeChange(Player player, Component modeName, IHasTextComponent mode) {
-        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, mode)));
+        Component modeComponent = mode.getTextComponent();
+        if (modeComponent.getStyle().getColor() != null) {
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, modeComponent)));
+        } else {
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, modeComponent)));
+        }
     }
 
     @Override

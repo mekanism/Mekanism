@@ -88,8 +88,8 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
         HALF(.5f),
         NORMAL(1f),
         FAST(2f),
-        FASTER(4f),
-        FASTEST(8f);
+        FASTER(3f),
+        FASTEST(4f);
 
         private final float mult;
         private final Component label;
