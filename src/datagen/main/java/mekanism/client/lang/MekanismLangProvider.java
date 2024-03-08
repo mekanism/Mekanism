@@ -1425,6 +1425,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM, "Not just your everyday alarm... this is an 'industrial' alarm!");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
         add(MekanismLang.DESCRIPTION_CHEMICAL_TANK, "A portable tank that lets you carry chemicals wherever you please.");
+        add(MekanismLang.DESCRIPTION_CABLE, "A simple way of distributing energy throughout a transmitter network.");
+        add(MekanismLang.DESCRIPTION_PIPE, "A simple way of distributing fluids throughout a transmitter network.");
+        add(MekanismLang.DESCRIPTION_TUBE, "A simple way of distributing chemicals throughout a transmitter network.");
+        add(MekanismLang.DESCRIPTION_TRANSPORTER, "A simple way of transporting items along the transmitter network.");
+        add(MekanismLang.DESCRIPTION_CONDUCTOR, "A simple way of transferring heat from one location to another.");
         add(MekanismLang.DESCRIPTION_DIVERSION, "- Controllable by redstone");
         add(MekanismLang.DESCRIPTION_RESTRICTIVE, "- Only used if no other paths available");
         add(MekanismLang.DESCRIPTION_SPS_CASING, "Reinforced casing capable of resisting intense chemical and thermal effects from phase-shifting reactions.");

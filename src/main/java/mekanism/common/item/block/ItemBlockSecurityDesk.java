@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>> {
 
@@ -21,7 +22,7 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    protected void addDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Note: We manually override this as we don't want to display the security mode for the security desk as while it technically
         // has one in reality it is always private
         IItemSecurityUtils.INSTANCE.addOwnerTooltip(stack, tooltip);

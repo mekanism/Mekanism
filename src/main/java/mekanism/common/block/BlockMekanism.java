@@ -19,7 +19,6 @@ import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileRadioactive;
@@ -159,6 +158,9 @@ public abstract class BlockMekanism extends Block {
         TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
         if (tile != null) {
             tile.readFromStack(stack);
+            //Note: We call onAdded here rather than in onPlace so that we make sure we can run any client side code and that the
+            // tile is present
+            tile.onAdded();
             if (tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
                 //There was no stored owner that got set, use the placer's id
                 securityTile.setOwnerUUID(placer.getUUID());
@@ -201,18 +203,6 @@ public abstract class BlockMekanism extends Block {
     @Deprecated
     public BlockState mirror(@NotNull BlockState state, @NotNull Mirror mirror) {
         return AttributeStateFacing.mirror(state, mirror);
-    }
-
-    @Override
-    @Deprecated
-    public void onPlace(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState oldState, boolean isMoving) {
-        if (state.hasBlockEntity() && oldState.getBlock() != state.getBlock()) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null) {
-                tile.onAdded();
-            }
-        }
-        super.onPlace(state, world, pos, oldState, isMoving);
     }
 
     @Override

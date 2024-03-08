@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockFissionLogicAdapter extends ItemBlockTooltip<BlockBasicMultiblock<TileEntityFissionReactorLogicAdapter>> {
 
@@ -21,7 +22,7 @@ public class ItemBlockFissionLogicAdapter extends ItemBlockTooltip<BlockBasicMul
     }
 
     @Override
-    protected void addDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.addDetails(stack, world, tooltip, flag);
         FissionReactorLogic logicType = stack.getData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
         tooltip.add(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(logicType.getColor(), logicType));

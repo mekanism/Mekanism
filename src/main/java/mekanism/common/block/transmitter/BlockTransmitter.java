@@ -6,28 +6,21 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import mekanism.api.text.TextComponentUtil;
-import mekanism.api.tier.BaseTier;
-import mekanism.common.block.BlockMekanism;
-import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.block.attribute.AttributeTier;
+import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,60 +28,32 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
+public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> extends BlockBaseModel<BlockTypeTile<TILE>> implements IHasTileEntity<TILE> {
 
     //Max retained size if we used a HashMap with a key of record(Size, ConnectionType[6]) ~= 1,343,576B
     //Max retained size packing it like this 163,987B
     private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
-    protected BlockTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(propertiesModifier.apply(BlockBehaviour.Properties.of().strength(1, 6).pushReaction(PushReaction.BLOCK)));
+    protected BlockTransmitter(BlockTypeTile<TILE> type) {
+        this(type, properties -> {
+            AttributeTier<?> attributeTier = type.get(AttributeTier.class);
+            return attributeTier == null ? properties : properties.mapColor(attributeTier.tier().getBaseTier().getMapColor());
+        });
     }
 
-    @Nullable
-    protected BaseTier getBaseTier() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public MutableComponent getName() {
-        BaseTier baseTier = getBaseTier();
-        if (baseTier == null) {
-            return super.getName();
-        }
-        return TextComponentUtil.build(baseTier.getColor(), super.getName());
-    }
-
-    @NotNull
-    @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (MekanismUtils.canUseAsWrench(stack) && player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
-                WorldUtils.dismantleBlock(state, world, pos, player);
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+    protected BlockTransmitter(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+        super(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(1, 6).pushReaction(PushReaction.BLOCK)));
     }
 
     @Override
-    public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
-        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
-        if (tile != null) {
-            tile.onAdded();
-        }
+    public final TileEntityTypeRegistryObject<TILE> getTileType() {
+        return type.getTileType();
     }
 
     @Override
@@ -97,7 +62,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
-            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
+            Direction side = Direction.getNearestStable(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
         }
     }
@@ -160,7 +125,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             //If we failed to get the tile, just give the center shape
             return getCenter();
         }
-        Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
+        mekanism.common.content.network.transmitter.Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
         //Created a pack key as follows:
         // first four bits of a short are used to represent size (realistically first three are ignored and fourth represents small or large)
         // last 12 bits are separated into 6 sides each of 2 bits that represent the connection type

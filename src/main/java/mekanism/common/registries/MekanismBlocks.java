@@ -18,6 +18,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
@@ -42,13 +43,8 @@ import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactoryMachineModel;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.block.transmitter.BlockDiversionTransporter;
-import mekanism.common.block.transmitter.BlockLogisticalTransporter;
-import mekanism.common.block.transmitter.BlockMechanicalPipe;
-import mekanism.common.block.transmitter.BlockPressurizedTube;
-import mekanism.common.block.transmitter.BlockRestrictiveTransporter;
-import mekanism.common.block.transmitter.BlockThermodynamicConductor;
-import mekanism.common.block.transmitter.BlockUniversalCable;
+import mekanism.common.block.transmitter.BlockLargeTransmitter;
+import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.capabilities.chemical.variable.RateLimitInfusionTank;
 import mekanism.common.capabilities.chemical.variable.RateLimitPigmentTank;
@@ -99,12 +95,11 @@ import mekanism.common.item.block.machine.ItemBlockQIOComponent;
 import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
 import mekanism.common.item.block.machine.ItemBlockResistiveHeater;
 import mekanism.common.item.block.machine.ItemBlockTeleporter;
-import mekanism.common.item.block.transmitter.ItemBlockDiversionTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockLogisticalTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockMechanicalPipe;
 import mekanism.common.item.block.transmitter.ItemBlockPressurizedTube;
-import mekanism.common.item.block.transmitter.ItemBlockRestrictiveTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockThermodynamicConductor;
+import mekanism.common.item.block.transmitter.ItemBlockTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
@@ -119,13 +114,8 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.BinTier;
-import mekanism.common.tier.CableTier;
-import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
-import mekanism.common.tier.PipeTier;
-import mekanism.common.tier.TransporterTier;
-import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -194,6 +184,13 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.BlockItem;
@@ -777,33 +774,33 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ULTIMATE_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.ULTIMATE_ENERGY_CUBE);
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> CREATIVE_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.CREATIVE_ENERGY_CUBE);
 
-    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> BASIC_UNIVERSAL_CABLE = registerUniversalCable(CableTier.BASIC);
-    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ADVANCED_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ADVANCED);
-    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ELITE_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ELITE);
-    public static final BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> ULTIMATE_UNIVERSAL_CABLE = registerUniversalCable(CableTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityUniversalCable>, ItemBlockUniversalCable> BASIC_UNIVERSAL_CABLE = registerUniversalCable(MekanismBlockTypes.BASIC_UNIVERSAL_CABLE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityUniversalCable>, ItemBlockUniversalCable> ADVANCED_UNIVERSAL_CABLE = registerUniversalCable(MekanismBlockTypes.ADVANCED_UNIVERSAL_CABLE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityUniversalCable>, ItemBlockUniversalCable> ELITE_UNIVERSAL_CABLE = registerUniversalCable(MekanismBlockTypes.ELITE_UNIVERSAL_CABLE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityUniversalCable>, ItemBlockUniversalCable> ULTIMATE_UNIVERSAL_CABLE = registerUniversalCable(MekanismBlockTypes.ULTIMATE_UNIVERSAL_CABLE);
 
-    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> BASIC_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.BASIC);
-    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ADVANCED_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ADVANCED);
-    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ELITE_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ELITE);
-    public static final BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = registerMechanicalPipe(PipeTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityMechanicalPipe>, ItemBlockMechanicalPipe> BASIC_MECHANICAL_PIPE = registerMechanicalPipe(MekanismBlockTypes.BASIC_MECHANICAL_PIPE);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityMechanicalPipe>, ItemBlockMechanicalPipe> ADVANCED_MECHANICAL_PIPE = registerMechanicalPipe(MekanismBlockTypes.ADVANCED_MECHANICAL_PIPE);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityMechanicalPipe>, ItemBlockMechanicalPipe> ELITE_MECHANICAL_PIPE = registerMechanicalPipe(MekanismBlockTypes.ELITE_MECHANICAL_PIPE);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityMechanicalPipe>, ItemBlockMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = registerMechanicalPipe(MekanismBlockTypes.ULTIMATE_MECHANICAL_PIPE);
 
-    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> BASIC_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.BASIC);
-    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ADVANCED_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ADVANCED);
-    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ELITE_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ELITE);
-    public static final BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = registerPressurizedTube(TubeTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityPressurizedTube>, ItemBlockPressurizedTube> BASIC_PRESSURIZED_TUBE = registerPressurizedTube(MekanismBlockTypes.BASIC_PRESSURIZED_TUBE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityPressurizedTube>, ItemBlockPressurizedTube> ADVANCED_PRESSURIZED_TUBE = registerPressurizedTube(MekanismBlockTypes.ADVANCED_PRESSURIZED_TUBE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityPressurizedTube>, ItemBlockPressurizedTube> ELITE_PRESSURIZED_TUBE = registerPressurizedTube(MekanismBlockTypes.ELITE_PRESSURIZED_TUBE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityPressurizedTube>, ItemBlockPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = registerPressurizedTube(MekanismBlockTypes.ULTIMATE_PRESSURIZED_TUBE);
 
-    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> BASIC_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.BASIC);
-    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ADVANCED_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ADVANCED);
-    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ELITE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ELITE);
-    public static final BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> ULTIMATE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(TransporterTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityLogisticalTransporter>, ItemBlockLogisticalTransporter> BASIC_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(MekanismBlockTypes.BASIC_LOGISTICAL_TRANSPORTER);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityLogisticalTransporter>, ItemBlockLogisticalTransporter> ADVANCED_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(MekanismBlockTypes.ADVANCED_LOGISTICAL_TRANSPORTER);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityLogisticalTransporter>, ItemBlockLogisticalTransporter> ELITE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(MekanismBlockTypes.ELITE_LOGISTICAL_TRANSPORTER);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityLogisticalTransporter>, ItemBlockLogisticalTransporter> ULTIMATE_LOGISTICAL_TRANSPORTER = registerLogisticalTransporter(MekanismBlockTypes.ULTIMATE_LOGISTICAL_TRANSPORTER);
 
-    public static final BlockRegistryObject<BlockRestrictiveTransporter, ItemBlockRestrictiveTransporter> RESTRICTIVE_TRANSPORTER = BLOCKS.register("restrictive_transporter", BlockRestrictiveTransporter::new, ItemBlockRestrictiveTransporter::new);
-    public static final BlockRegistryObject<BlockDiversionTransporter, ItemBlockDiversionTransporter> DIVERSION_TRANSPORTER = BLOCKS.register("diversion_transporter", BlockDiversionTransporter::new, ItemBlockDiversionTransporter::new);
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityRestrictiveTransporter>, ItemBlockTransporter<TileEntityRestrictiveTransporter>> RESTRICTIVE_TRANSPORTER = BLOCKS.register("restrictive_transporter", () -> new BlockLargeTransmitter<>(MekanismBlockTypes.RESTRICTIVE_TRANSPORTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), block -> new ItemBlockTransporter<>(block, MekanismLang.DESCRIPTION_RESTRICTIVE));
+    public static final BlockRegistryObject<BlockLargeTransmitter<TileEntityDiversionTransporter>, ItemBlockTransporter<TileEntityDiversionTransporter>> DIVERSION_TRANSPORTER = BLOCKS.register("diversion_transporter", () -> new BlockLargeTransmitter<>(MekanismBlockTypes.DIVERSION_TRANSPORTER, properties -> properties.mapColor(MapColor.COLOR_ORANGE)), block -> new ItemBlockTransporter<>(block, MekanismLang.DESCRIPTION_DIVERSION));
 
-    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.BASIC);
-    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ADVANCED);
-    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ELITE);
-    public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ULTIMATE);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.BASIC_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.ELITE_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
 
     public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = BLOCKS.register("bounding_block", BlockBounding::new);
 
@@ -861,24 +858,29 @@ public class MekanismBlocks {
               ));
     }
 
-    private static BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> registerUniversalCable(CableTier tier) {
-        return registerTieredBlock(tier, "_universal_cable", () -> new BlockUniversalCable(tier), ItemBlockUniversalCable::new);
+    private static BlockRegistryObject<BlockSmallTransmitter<TileEntityUniversalCable>, ItemBlockUniversalCable> registerUniversalCable(
+          BlockTypeTile<TileEntityUniversalCable> type) {
+        return registerTieredBlock(type, "_universal_cable", () -> new BlockSmallTransmitter<>(type), ItemBlockUniversalCable::new);
     }
 
-    private static BlockRegistryObject<BlockMechanicalPipe, ItemBlockMechanicalPipe> registerMechanicalPipe(PipeTier tier) {
-        return registerTieredBlock(tier, "_mechanical_pipe", () -> new BlockMechanicalPipe(tier), ItemBlockMechanicalPipe::new);
+    private static BlockRegistryObject<BlockLargeTransmitter<TileEntityMechanicalPipe>, ItemBlockMechanicalPipe> registerMechanicalPipe(
+          BlockTypeTile<TileEntityMechanicalPipe> type) {
+        return registerTieredBlock(type, "_mechanical_pipe", () -> new BlockLargeTransmitter<>(type), ItemBlockMechanicalPipe::new);
     }
 
-    private static BlockRegistryObject<BlockPressurizedTube, ItemBlockPressurizedTube> registerPressurizedTube(TubeTier tier) {
-        return registerTieredBlock(tier, "_pressurized_tube", () -> new BlockPressurizedTube(tier), ItemBlockPressurizedTube::new);
+    private static BlockRegistryObject<BlockSmallTransmitter<TileEntityPressurizedTube>, ItemBlockPressurizedTube> registerPressurizedTube(
+          BlockTypeTile<TileEntityPressurizedTube> type) {
+        return registerTieredBlock(type, "_pressurized_tube", () -> new BlockSmallTransmitter<>(type), ItemBlockPressurizedTube::new);
     }
 
-    private static BlockRegistryObject<BlockLogisticalTransporter, ItemBlockLogisticalTransporter> registerLogisticalTransporter(TransporterTier tier) {
-        return registerTieredBlock(tier, "_logistical_transporter", () -> new BlockLogisticalTransporter(tier), ItemBlockLogisticalTransporter::new);
+    private static BlockRegistryObject<BlockLargeTransmitter<TileEntityLogisticalTransporter>, ItemBlockLogisticalTransporter> registerLogisticalTransporter(
+          BlockTypeTile<TileEntityLogisticalTransporter> type) {
+        return registerTieredBlock(type, "_logistical_transporter", () -> new BlockLargeTransmitter<>(type), ItemBlockLogisticalTransporter::new);
     }
 
-    private static BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> registerThermodynamicConductor(ConductorTier tier) {
-        return registerTieredBlock(tier, "_thermodynamic_conductor", () -> new BlockThermodynamicConductor(tier), ItemBlockThermodynamicConductor::new);
+    private static BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> registerThermodynamicConductor(
+          BlockTypeTile<TileEntityThermodynamicConductor> type) {
+        return registerTieredBlock(type, "_thermodynamic_conductor", () -> new BlockSmallTransmitter<>(type), ItemBlockThermodynamicConductor::new);
     }
 
     private static BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> registerChemicalTank(

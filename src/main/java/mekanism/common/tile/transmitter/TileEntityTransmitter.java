@@ -157,7 +157,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         getTransmitter().remove();
     }
 
+    @Override
     public void onAdded() {
+        super.onAdded();
         onWorldJoin(false);
         getTransmitter().refreshConnections();
     }

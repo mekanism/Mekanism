@@ -896,10 +896,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    /**
-     * Called when block is placed in world
-     */
+    @Override
     public void onAdded() {
+        super.onAdded();
         updatePower();
     }
 

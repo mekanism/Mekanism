@@ -7,10 +7,9 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.prefab.BlockBase;
-import mekanism.common.block.transmitter.BlockMechanicalPipe;
-import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
@@ -18,6 +17,7 @@ import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
+import mekanism.common.tier.TransporterTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -93,7 +93,7 @@ public class MekanismCreativeTabs {
         } else if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
             for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
                 Block block = blockProvider.value();
-                if (block instanceof BlockBase<?> base && base.getType() instanceof Machine || block instanceof BlockTransmitter) {
+                if (block instanceof BlockTransmitter || block instanceof BlockBase<?> base && base.getType() instanceof Machine) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
                 }
             }
@@ -105,8 +105,13 @@ public class MekanismCreativeTabs {
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.INDUSTRIAL_ALARM);
             for (Holder<Block> blockProvider : MekanismBlocks.BLOCKS.getPrimaryEntries()) {
                 Block block = blockProvider.value();
-                if (Attribute.has(block, AttributeComparator.class) || block instanceof BlockSmallTransmitter || block instanceof BlockMechanicalPipe) {
+                if (Attribute.has(block, AttributeComparator.class)) {
                     CreativeTabDeferredRegister.addToDisplay(event, block);
+                } else if (block instanceof BlockTransmitter) {
+                    AttributeTier<?> attribute = Attribute.get(block, AttributeTier.class);
+                    if (attribute != null && !(attribute.tier() instanceof TransporterTier)) {
+                        CreativeTabDeferredRegister.addToDisplay(event, block);
+                    }
                 }
             }
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.DIVERSION_TRANSPORTER);

@@ -1,19 +1,19 @@
 package mekanism.common.block.transmitter;
 
-import java.util.function.UnaryOperator;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class BlockSmallTransmitter extends BlockTransmitter {
+public class BlockSmallTransmitter<TILE extends TileEntityTransmitter> extends BlockTransmitter<TILE> {
 
     private static final VoxelShape[] SIDES = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PULL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PUSH = new VoxelShape[EnumUtils.DIRECTIONS.length];
-    public static final VoxelShape CENTER;
+    public static final VoxelShape CENTER = box(5, 5, 5, 11, 11, 11);
 
     static {
         VoxelShapeUtils.setShape(box(5, 0, 5, 11, 5, 11), SIDES, true);
@@ -27,7 +27,6 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
               box(6, 1, 6, 10, 3, 10),
               box(7, 0, 7, 9, 1, 9)
         ), SIDES_PUSH, true);
-        CENTER = box(5, 5, 5, 11, 11, 11);
     }
 
     public static VoxelShape getSideForType(ConnectionType type, Direction side) {
@@ -39,8 +38,8 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
         return SIDES[side.ordinal()];
     }
 
-    protected BlockSmallTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(propertiesModifier);
+    public BlockSmallTransmitter(BlockTypeTile<TILE> type) {
+        super(type);
     }
 
     @Override

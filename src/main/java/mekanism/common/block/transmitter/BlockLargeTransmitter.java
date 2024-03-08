@@ -1,19 +1,21 @@
 package mekanism.common.block.transmitter;
 
 import java.util.function.UnaryOperator;
+import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class BlockLargeTransmitter extends BlockTransmitter {
+public class BlockLargeTransmitter<TILE extends TileEntityTransmitter> extends BlockTransmitter<TILE> {
 
     private static final VoxelShape[] SIDES = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PULL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     private static final VoxelShape[] SIDES_PUSH = new VoxelShape[EnumUtils.DIRECTIONS.length];
-    public static final VoxelShape CENTER;
+    public static final VoxelShape CENTER = box(4, 4, 4, 12, 12, 12);
 
     static {
         VoxelShapeUtils.setShape(box(4, 0, 4, 12, 4, 12), SIDES, true);
@@ -27,7 +29,6 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
               box(5, 1, 5, 11, 3, 11),
               box(6, 0, 6, 10, 1, 10)
         ), SIDES_PUSH, true);
-        CENTER = box(4, 4, 4, 12, 12, 12);
     }
 
     public static VoxelShape getSideForType(ConnectionType type, Direction side) {
@@ -39,8 +40,12 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
         return SIDES[side.ordinal()];
     }
 
-    protected BlockLargeTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(propertiesModifier);
+    public BlockLargeTransmitter(BlockTypeTile<TILE> type) {
+        super(type);
+    }
+
+    public BlockLargeTransmitter(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+        super(type, propertiesModifier);
     }
 
     @Override

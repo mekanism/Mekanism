@@ -56,7 +56,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     @Override
-    public BlockType getType() {
+    public final BlockType getType() {
         return type == null ? cacheType : type;
     }
 

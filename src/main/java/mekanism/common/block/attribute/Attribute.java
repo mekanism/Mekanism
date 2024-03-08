@@ -8,7 +8,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface Attribute {
 
-    interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
+    interface TileAttribute<TILE extends TileEntityUpdateable> extends Attribute {}
 
     default void adjustProperties(BlockBehaviour.Properties props) {
     }

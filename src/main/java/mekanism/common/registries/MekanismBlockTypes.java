@@ -6,6 +6,8 @@ import java.util.EnumSet;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.ILangEntry;
+import mekanism.api.tier.ITier;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.block.attribute.Attribute;
@@ -45,12 +47,17 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ChemicalTankTier;
+import mekanism.common.tier.ConductorTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tier.InductionProviderTier;
+import mekanism.common.tier.PipeTier;
+import mekanism.common.tier.TransporterTier;
+import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalTank;
@@ -123,6 +130,14 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
+import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
+import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -803,6 +818,35 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_CHEMICAL_TANK, null);
     public static final Machine<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = createChemicalTank(ChemicalTankTier.CREATIVE, () -> MekanismTileEntityTypes.CREATIVE_CHEMICAL_TANK, null);
 
+    //Transmitters
+    public static final BlockTypeTile<TileEntityUniversalCable> BASIC_UNIVERSAL_CABLE = createCable(CableTier.BASIC, () -> MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE);
+    public static final BlockTypeTile<TileEntityUniversalCable> ADVANCED_UNIVERSAL_CABLE = createCable(CableTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE);
+    public static final BlockTypeTile<TileEntityUniversalCable> ELITE_UNIVERSAL_CABLE = createCable(CableTier.ELITE, () -> MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE);
+    public static final BlockTypeTile<TileEntityUniversalCable> ULTIMATE_UNIVERSAL_CABLE = createCable(CableTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE);
+
+    public static final BlockTypeTile<TileEntityMechanicalPipe> BASIC_MECHANICAL_PIPE = createPipe(PipeTier.BASIC, () -> MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE);
+    public static final BlockTypeTile<TileEntityMechanicalPipe> ADVANCED_MECHANICAL_PIPE = createPipe(PipeTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE);
+    public static final BlockTypeTile<TileEntityMechanicalPipe> ELITE_MECHANICAL_PIPE = createPipe(PipeTier.ELITE, () -> MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE);
+    public static final BlockTypeTile<TileEntityMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = createPipe(PipeTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE);
+
+    public static final BlockTypeTile<TileEntityPressurizedTube> BASIC_PRESSURIZED_TUBE = createTube(TubeTier.BASIC, () -> MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE);
+    public static final BlockTypeTile<TileEntityPressurizedTube> ADVANCED_PRESSURIZED_TUBE = createTube(TubeTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE);
+    public static final BlockTypeTile<TileEntityPressurizedTube> ELITE_PRESSURIZED_TUBE = createTube(TubeTier.ELITE, () -> MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE);
+    public static final BlockTypeTile<TileEntityPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = createTube(TubeTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE);
+
+    public static final BlockTypeTile<TileEntityLogisticalTransporter> BASIC_LOGISTICAL_TRANSPORTER = createTransporter(TransporterTier.BASIC, () -> MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER);
+    public static final BlockTypeTile<TileEntityLogisticalTransporter> ADVANCED_LOGISTICAL_TRANSPORTER = createTransporter(TransporterTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER);
+    public static final BlockTypeTile<TileEntityLogisticalTransporter> ELITE_LOGISTICAL_TRANSPORTER = createTransporter(TransporterTier.ELITE, () -> MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER);
+    public static final BlockTypeTile<TileEntityLogisticalTransporter> ULTIMATE_LOGISTICAL_TRANSPORTER = createTransporter(TransporterTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER);
+
+    public static final BlockTypeTile<TileEntityRestrictiveTransporter> RESTRICTIVE_TRANSPORTER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER, MekanismLang.DESCRIPTION_TRANSPORTER).build();
+    public static final BlockTypeTile<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.DIVERSION_TRANSPORTER, MekanismLang.DESCRIPTION_TRANSPORTER).build();
+
+    public static final BlockTypeTile<TileEntityThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = createConductor(ConductorTier.BASIC, () -> MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockTypeTile<TileEntityThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = createConductor(ConductorTier.ADVANCED, () -> MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockTypeTile<TileEntityThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = createConductor(ConductorTier.ELITE, () -> MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR);
+    public static final BlockTypeTile<TileEntityThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = createConductor(ConductorTier.ULTIMATE, () -> MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
+
     static {
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
             for (FactoryType type : EnumUtils.FACTORY_TYPES) {
@@ -867,6 +911,32 @@ public class MekanismBlockTypes {
               .withSideConfig(TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ITEM)
               .without(AttributeParticleFX.class, AttributeStateActive.class, AttributeUpgradeSupport.class)
               .withComputerSupport(tier, "ChemicalTank")
+              .build();
+    }
+
+    private static BlockTypeTile<TileEntityUniversalCable> createCable(CableTier tier, Supplier<TileEntityTypeRegistryObject<TileEntityUniversalCable>> tile) {
+        return createTransmitter(tier, tile, MekanismLang.DESCRIPTION_CABLE);
+    }
+
+    private static BlockTypeTile<TileEntityMechanicalPipe> createPipe(PipeTier tier, Supplier<TileEntityTypeRegistryObject<TileEntityMechanicalPipe>> tile) {
+        return createTransmitter(tier, tile, MekanismLang.DESCRIPTION_PIPE);
+    }
+
+    private static BlockTypeTile<TileEntityPressurizedTube> createTube(TubeTier tier, Supplier<TileEntityTypeRegistryObject<TileEntityPressurizedTube>> tile) {
+        return createTransmitter(tier, tile, MekanismLang.DESCRIPTION_TUBE);
+    }
+
+    private static BlockTypeTile<TileEntityLogisticalTransporter> createTransporter(TransporterTier tier, Supplier<TileEntityTypeRegistryObject<TileEntityLogisticalTransporter>> tile) {
+        return createTransmitter(tier, tile, MekanismLang.DESCRIPTION_TRANSPORTER);
+    }
+
+    private static BlockTypeTile<TileEntityThermodynamicConductor> createConductor(ConductorTier tier, Supplier<TileEntityTypeRegistryObject<TileEntityThermodynamicConductor>> tile) {
+        return createTransmitter(tier, tile, MekanismLang.DESCRIPTION_CONDUCTOR);
+    }
+
+    private static <TILE extends TileEntityTransmitter> BlockTypeTile<TILE> createTransmitter(ITier tier, Supplier<TileEntityTypeRegistryObject<TILE>> tile, ILangEntry description) {
+        return BlockTileBuilder.createBlock(tile, description)
+              .with(new AttributeTier<>(tier))
               .build();
     }
 }

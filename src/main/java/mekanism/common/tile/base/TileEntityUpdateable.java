@@ -62,6 +62,12 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     /**
+     * Called when block is placed in world
+     */
+    public void onAdded() {
+    }
+
+    /**
      * Call this for tiles that we may call {@link #getTileGlobalPos()} a fair amount on to cache the coord when position/world information changes.
      */
     protected void cacheCoord() {
