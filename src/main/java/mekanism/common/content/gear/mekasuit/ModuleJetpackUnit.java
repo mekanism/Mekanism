@@ -16,7 +16,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.StorageUtils;
@@ -40,8 +39,9 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     public void addHUDElements(IModule<ModuleJetpackUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             IGasHandler gasHandler = module.getContainer().getCapabilityFromStack(Capabilities.GAS.item());
-            GasStack stored = StorageUtils.getContainedGas(gasHandler, MekanismGases.HYDROGEN.get());
-            double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitJetpackMaxStorage.getAsLong());
+            GasStack stored = StorageUtils.getContainedGas(gasHandler, MekanismGases.HYDROGEN);
+            long capacity = gasHandler == null ? 0 : gasHandler.getTankCapacity(0);
+            double ratio = StorageUtils.getRatio(stored.getAmount(), capacity);
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(jetpackMode.get().getHUDIcon(), ratio));
         }
     }
@@ -54,6 +54,23 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
             jetpackMode.set(newMode);
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
+            }
+        }
+    }
+
+    @Override
+    public void onRemoved(IModule<ModuleJetpackUnit> module, boolean last) {
+        //Vent the excess hydrogen from the jetpack
+        IGasHandler gasHandler = module.getContainer().getCapabilityFromStack(Capabilities.GAS.item());
+        if (gasHandler != null) {
+            for (int tank = 0, tanks = gasHandler.getTanks(); tank < tanks; tank++) {
+                GasStack stored = gasHandler.getChemicalInTank(tank);
+                if (!stored.isEmpty()) {
+                    long capacity = gasHandler.getTankCapacity(tank);
+                    if (stored.getAmount() > capacity) {
+                        gasHandler.setChemicalInTank(tank, new GasStack(stored, capacity));
+                    }
+                }
             }
         }
     }

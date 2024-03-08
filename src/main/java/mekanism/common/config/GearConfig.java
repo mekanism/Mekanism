@@ -370,8 +370,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("nutritionalMaxStorage", 128_000, 1, Integer.MAX_VALUE));
         mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")
               .defineInRange("nutritionalTransferRate", 256, 1, Integer.MAX_VALUE));
-        mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Hydrogen storable in the jetpack unit.")
-              .defineInRange("jetpackMaxStorage", 48_000, 1, Long.MAX_VALUE));
+        mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, builder.comment("Maximum amount of Hydrogen storable per installed jetpack unit.")
+              .defineInRange("jetpackMaxStorage", 24_000, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
         mekaSuitHelmetArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Helmets.")
