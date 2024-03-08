@@ -331,16 +331,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     /**
-     * Should data related to the given type be persisted in this tile save
+     * Should data related to the given type be persisted in this tile save and transferred to the item
      */
     public boolean persists(ContainerType<?, ?, ?> type) {
         return type.canHandle(this);
     }
 
     /**
-     * Should data related to the given type be saved to the item and synced to the client in the GUI
+     * Should data related to the given type be synced to the client in the GUI
      */
-    public boolean handles(ContainerType<?, ?, ?> type) {
+    public boolean syncs(ContainerType<?, ?, ?> type) {
         return persists(type);
     }
 
@@ -755,7 +755,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             stack.getExistingData(MekanismAttachmentTypes.UPGRADES).ifPresent(storedUpgrades -> storedUpgrades.copyTo(getComponent()));
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (handles(type)) {
+            if (persists(type)) {
                 type.copyFrom(stack, this);
             }
         }
@@ -798,7 +798,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, controlType);
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (handles(type)) {
+            if (persists(type)) {
                 type.copyTo(this, stack);
             }
         }
@@ -816,37 +816,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         boolean isClient = isRemote();
-        if (canHandleGas() && handles(ContainerType.GAS)) {
+        if (canHandleGas() && syncs(ContainerType.GAS)) {
             List<IGasTank> gasTanks = getGasTanks(null);
             for (IGasTank gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank, isClient));
             }
         }
-        if (canHandleInfusion() && handles(ContainerType.INFUSION)) {
+        if (canHandleInfusion() && syncs(ContainerType.INFUSION)) {
             List<IInfusionTank> infusionTanks = getInfusionTanks(null);
             for (IInfusionTank infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank, isClient));
             }
         }
-        if (canHandlePigment() && handles(ContainerType.PIGMENT)) {
+        if (canHandlePigment() && syncs(ContainerType.PIGMENT)) {
             List<IPigmentTank> pigmentTanks = getPigmentTanks(null);
             for (IPigmentTank pigmentTank : pigmentTanks) {
                 container.track(SyncablePigmentStack.create(pigmentTank, isClient));
             }
         }
-        if (canHandleSlurry() && handles(ContainerType.SLURRY)) {
+        if (canHandleSlurry() && syncs(ContainerType.SLURRY)) {
             List<ISlurryTank> slurryTanks = getSlurryTanks(null);
             for (ISlurryTank slurryTank : slurryTanks) {
                 container.track(SyncableSlurryStack.create(slurryTank, isClient));
             }
         }
-        if (canHandleFluid() && handles(ContainerType.FLUID)) {
+        if (canHandleFluid() && syncs(ContainerType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank, isClient));
             }
         }
-        if (canHandleHeat() && handles(ContainerType.HEAT)) {
+        if (canHandleHeat() && syncs(ContainerType.HEAT)) {
             List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
@@ -855,8 +855,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        if (canHandleEnergy() && handles(ContainerType.ENERGY)) {
-            container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
+            trackLastEnergy(container);
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
@@ -868,6 +868,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
+    }
+
+    protected void trackLastEnergy(MekanismContainer container) {
+        container.track(SyncableFloatingLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
     }
 
     @NotNull

@@ -19,12 +19,14 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -45,6 +47,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -249,6 +252,17 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        //Note: We have to manually sync the energy container as we don't sync it in super and don't even always have one
+        trackLastEnergy(container);
+        container.track(SyncableFloatingLong.create(() -> {
+            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            return energyContainers.isEmpty() ? FloatingLong.ZERO : energyContainers.get(0).getEnergy();
+        }, energy -> {
+            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            if (!energyContainers.isEmpty()) {
+                energyContainers.get(0).setEnergy(energy);
+            }
+        }));
     }
 
     //Methods relating to IComputerTile
