@@ -4,8 +4,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.PackOutput;
@@ -84,5 +88,17 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     public static Ingredient difference(TagKey<Item> base, ItemLike subtracted) {
         return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted));
+    }
+
+    public static TagKey<Item> osmiumIngot() {
+        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+    }
+
+    public static TagKey<Item> leadIngot() {
+        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD));
+    }
+
+    public static TagKey<Item> tinIngot() {
+        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN));
     }
 }
