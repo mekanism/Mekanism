@@ -2,8 +2,8 @@ package mekanism.common.inventory.container.item;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.common.attachments.FrequencyAware;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency;
@@ -13,12 +13,14 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class FrequencyItemContainer<FREQ extends Frequency> extends MekanismItemContainer {
 
     private List<FREQ> publicCache = Collections.emptyList();
     private List<FREQ> privateCache = Collections.emptyList();
     private List<FREQ> trustedCache = Collections.emptyList();
+    private FrequencyAware<FREQ> frequencyAware;
 
     protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(type, id, inv, hand, stack);
@@ -28,12 +30,10 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         return hand;
     }
 
+    @Nullable
     public FREQ getFrequency() {
-        return getFrequencyAware().getFrequency();
-    }
-
-    private FrequencyAware<FREQ> getFrequencyAware() {
-        return (FrequencyAware<FREQ>) stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
+        //Should not be null, but if it is, don't crash
+        return frequencyAware == null ? null : frequencyAware.getFrequency();
     }
 
     public List<FREQ> getPublicCache() {
@@ -51,7 +51,7 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
-        FrequencyAware<FREQ> frequencyAware = getFrequencyAware();
+        frequencyAware = (FrequencyAware<FREQ>) stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
         FrequencyType<FREQ> frequencyType = frequencyAware.getFrequencyType();
         track(SyncableFrequency.create(frequencyAware));
         if (isRemote()) {
