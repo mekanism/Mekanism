@@ -62,6 +62,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     private final Transmitter<?, ?, ?> transmitter;
     private boolean forceUpdate = true;
     private boolean loaded = false;
+    private boolean markJoined = false;
 
     public TileEntityTransmitter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType(), pos, state);
@@ -90,6 +91,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public abstract TransmitterType getTransmitterType();
 
     protected void onUpdateServer() {
+        if (markJoined) {
+            onWorldJoin(false);
+            markJoined = false;
+        }
         if (forceUpdate) {
             getTransmitter().refreshConnections();
             forceUpdate = false;
@@ -138,7 +143,11 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        onWorldJoin(false);
+        if (isRemote()) {
+            onWorldJoin(false);
+        } else {
+            markJoined = true;
+        }
     }
 
     @Override
