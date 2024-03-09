@@ -89,8 +89,8 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -241,7 +241,7 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void tickEnd(RenderTickEvent event) {
+    public void tickEnd(ClientTickEvent event) {
         if (event.phase == Phase.END) {
             //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
             // as our data may be out of date or invalid. For example configs could unload while it is still unloading
@@ -261,9 +261,9 @@ public class RenderTickHandler {
                             xRot = 20;
                             playerPos = playerPos.translate(0, 0.125, 0);
                         } else {
-                            float f = p.getSwimAmount(event.renderTickTime);
+                            float f = p.getSwimAmount(minecraft.getPartialTick());
                             if (p.isFallFlying()) {
-                                float f1 = (float) p.getFallFlyingTicks() + event.renderTickTime;
+                                float f1 = (float) p.getFallFlyingTicks() + minecraft.getPartialTick();
                                 float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                                 xRot = f2 * (-90.0F - p.getXRot());
                             } else {
@@ -310,7 +310,7 @@ public class RenderTickHandler {
                                 boolean rightHanded = p.getMainArm() == HumanoidArm.RIGHT;
                                 if (player == p && minecraft.options.getCameraType().isFirstPerson()) {
                                     flameVec = new Pos3D(1, 1, 1)
-                                          .multiply(p.getViewVector(event.renderTickTime))
+                                          .multiply(p.getViewVector(minecraft.getPartialTick()))
                                           .yRot(rightHanded ? 15 : -15)
                                           .translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
