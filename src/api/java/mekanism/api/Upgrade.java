@@ -23,7 +23,7 @@ public enum Upgrade implements IHasTranslationKey {
     ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
     FILTER("filter", APILang.UPGRADE_FILTER, APILang.UPGRADE_FILTER_DESCRIPTION, 1, EnumColor.DARK_AQUA),
     GAS("gas", APILang.UPGRADE_GAS, APILang.UPGRADE_GAS_DESCRIPTION, 8, EnumColor.YELLOW),
-    MUFFLING("muffling", APILang.UPGRADE_MUFFLING, APILang.UPGRADE_MUFFLING_DESCRIPTION, 4, EnumColor.INDIGO),
+    MUFFLING("muffling", APILang.UPGRADE_MUFFLING, APILang.UPGRADE_MUFFLING_DESCRIPTION, 1, EnumColor.INDIGO),
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN),
     STONE_GENERATOR("stone_generator", APILang.UPGRADE_STONE_GENERATOR, APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, 1, EnumColor.ORANGE);
 
@@ -60,7 +60,7 @@ public enum Upgrade implements IHasTranslationKey {
                 CompoundTag compound = list.getCompound(tagCount);
                 Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
                 //Validate the nbt isn't malformed with a negative or zero amount
-                int installed = Mth.clamp(compound.getInt(NBTConstants.AMOUNT), 0, upgrade.maxStack);
+                int installed = Math.max(compound.getInt(NBTConstants.AMOUNT), 0);
                 if (installed > 0) {
                     if (upgrades == null) {
                         upgrades = new EnumMap<>(Upgrade.class);
