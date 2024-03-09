@@ -38,6 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
@@ -55,23 +56,20 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (MekanismUtils.canFunction(this)) {
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(frequency);
+        if (frequency != null && MekanismUtils.canFunction(this)) {
             if (delay > 0) {
                 delay--;
-                return;
+            } else {
+                tryEject(frequency);
+                delay = MAX_DELAY;
             }
-            tryEject();
-            delay = MAX_DELAY;
         }
+        return needsUpdate;
     }
 
-    private void tryEject() {
-        QIOFrequency freq = getQIOFrequency();
-        if (freq == null) {
-            return;
-        }
+    private void tryEject(QIOFrequency freq) {
         Direction direction = getDirection();
         IItemHandler backHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(direction.getOpposite()), direction);
         //TODO - 1.20.4: Optimize exporting into transporters

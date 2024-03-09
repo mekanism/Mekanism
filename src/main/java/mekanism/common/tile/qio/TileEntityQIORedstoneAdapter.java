@@ -2,6 +2,7 @@ package mekanism.common.tile.qio;
 
 import java.util.Map;
 import mekanism.api.NBTConstants;
+import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -24,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
@@ -34,18 +37,21 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     private boolean inverted;
     private long count = 0;
     private long clientStoredCount = 0;
+    private boolean isEmitting;
 
     public TileEntityQIORedstoneAdapter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
-        delaySupplier = NO_DELAY;
     }
 
     public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && getActive() ? 15 : 0;
+        return side != getOppositeDirection() && getActive() && isEmitting ? 15 : 0;
     }
 
     private long getFreqStored() {
-        QIOFrequency freq = getQIOFrequency();
+        return getStored(getQIOFrequency());
+    }
+
+    private long getStored(@Nullable QIOFrequency freq) {
         if (freq == null || itemType == null) {
             return 0;
         } else if (fuzzy) {
@@ -89,11 +95,16 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        long stored = getFreqStored();
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(frequency);
+        long stored = getStored(frequency);
         boolean hasStored = stored > 0 && stored >= count;
-        setActive(hasStored != inverted);
+        boolean shouldEmit = hasStored != inverted;
+        if (isEmitting != shouldEmit) {
+            isEmitting = shouldEmit;
+            needsUpdate = true;
+        }
+        return needsUpdate;
     }
 
     @Override
@@ -114,6 +125,33 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, value -> inverted = value);
+    }
+
+    @NotNull
+    @Override
+    public ModelData getModelData() {
+        if (isEmitting) {
+            return ModelData.builder().with(DataBasedModelLoader.EMITTING, null).build();
+        }
+        return super.getModelData();
+    }
+
+    @NotNull
+    @Override
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
+        updateTag.putBoolean(NBTConstants.EMITTING, isEmitting);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        boolean emitting = tag.getBoolean(NBTConstants.EMITTING);
+        if (isEmitting != emitting) {
+            isEmitting = emitting;
+            updateModelData();
+        }
     }
 
     @Override

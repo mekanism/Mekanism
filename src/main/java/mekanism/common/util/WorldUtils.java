@@ -396,9 +396,9 @@ public class WorldUtils {
      */
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity) {
         if (entity instanceof Player player) {
-            if (world instanceof ServerLevel) {
-                Block.getDrops(state, (ServerLevel) world, pos, tile, entity, ItemStack.EMPTY).forEach(dropStack -> {
-                    if (player.getInventory().add(dropStack)) {
+            if (world instanceof ServerLevel level) {
+                Block.getDrops(state, level, pos, tile, entity, ItemStack.EMPTY).forEach(dropStack -> {
+                    if (player.addItem(dropStack)) {
                         world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.random.nextFloat() - world.random.nextFloat()) * 1.4F + 2.0F);
                     } else {
                         player.drop(dropStack, false);

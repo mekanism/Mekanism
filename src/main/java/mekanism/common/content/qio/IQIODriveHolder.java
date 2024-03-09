@@ -1,15 +1,15 @@
 package mekanism.common.content.qio;
 
 import java.util.List;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.world.item.ItemStack;
 
 public interface IQIODriveHolder extends IQIOFrequencyHolder {
 
-    List<IInventorySlot> getDriveSlots();
+    List<QIODriveSlot> getDriveSlots();
 
     void onDataUpdate();
 

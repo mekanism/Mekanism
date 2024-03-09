@@ -286,7 +286,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     public Set<HashedItem> getTypesForItem(Item item) {
-        return Collections.unmodifiableSet(fuzzyItemLookupMap.getOrDefault(item, Collections.emptySet()));
+        return fuzzyItemLookupMap.getOrDefault(item, Collections.emptySet());
     }
 
     public Object2LongMap<HashedItem> getStacksByItem(Item item) {

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -26,13 +25,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIODriveArray extends TileEntityQIOComponent implements IQIODriveHolder {
 
     public static final ModelProperty<byte[]> DRIVE_STATUS_PROPERTY = new ModelProperty<>();
     public static final int DRIVE_SLOTS = 12;
 
-    private List<IInventorySlot> driveSlots;
+    private List<QIODriveSlot> driveSlots;
     private byte[] driveStatus = new byte[DRIVE_SLOTS];
     private int prevDriveHash = -1;
 
@@ -57,12 +57,11 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(frequency);
         if (level.getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-            QIOFrequency frequency = getQIOFrequency();
             for (int i = 0; i < DRIVE_SLOTS; i++) {
-                QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);
+                QIODriveSlot slot = driveSlots.get(i);
                 QIODriveData data = frequency == null ? null : frequency.getDriveData(slot.getKey());
                 if (frequency == null || data == null) {
                     setDriveStatus(i, slot.isEmpty() ? DriveStatus.NONE : DriveStatus.OFFLINE);
@@ -82,10 +81,11 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
             int newHash = Arrays.hashCode(driveStatus);
             if (newHash != prevDriveHash) {
-                sendUpdatePacket();
+                needsUpdate = true;
                 prevDriveHash = newHash;
             }
         }
+        return needsUpdate;
     }
 
     private void setDriveStatus(int slot, DriveStatus status) {
@@ -132,7 +132,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public List<IInventorySlot> getDriveSlots() {
+    public List<QIODriveSlot> getDriveSlots() {
         return driveSlots;
     }
 

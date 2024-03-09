@@ -105,6 +105,10 @@ public final class NBTConstants {
      */
     public static final String EXTRA_DATA = "extraData";
     /**
+     * @since 10.5.5
+     */
+    public static final String EMITTING = "emitting";
+    /**
      * @since 10.3.6
      */
     public static final String ENABLED = "enabled";

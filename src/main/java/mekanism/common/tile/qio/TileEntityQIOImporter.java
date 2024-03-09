@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
@@ -40,23 +41,20 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        if (MekanismUtils.canFunction(this)) {
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(frequency);
+        if (frequency != null && MekanismUtils.canFunction(this)) {
             if (delay > 0) {
                 delay--;
-                return;
+            } else {
+                tryImport(frequency);
+                delay = MAX_DELAY;
             }
-            tryImport();
-            delay = MAX_DELAY;
         }
+        return needsUpdate;
     }
 
-    private void tryImport() {
-        QIOFrequency freq = getQIOFrequency();
-        if (freq == null) {
-            return;
-        }
+    private void tryImport(QIOFrequency freq) {
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
         IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, direction);

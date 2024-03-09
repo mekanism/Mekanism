@@ -38,17 +38,21 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    protected void onUpdateServer() {
+    protected final void onUpdateServer() {
         super.onUpdateServer();
-        EnumColor prev = lastColor;
-        QIOFrequency frequency = getQIOFrequency();
-        lastColor = frequency == null ? null : frequency.getColor();
-        if (prev != lastColor) {
+        if (onUpdateServer(getQIOFrequency())) {
             sendUpdatePacket();
         }
+    }
+
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        EnumColor prev = lastColor;
+        lastColor = frequency == null ? null : frequency.getColor();
+        boolean needsUpdate = prev != lastColor;
         if (level.getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             setActive(frequency != null);
         }
+        return needsUpdate;
     }
 
     @Override
@@ -62,10 +66,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         super.readSustainedData(dataMap);
-        EnumColor color = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(dataMap.getInt(NBTConstants.COLOR)) : null;
-        if (lastColor != color) {
-            lastColor = color;
-        }
+        lastColor = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(dataMap.getInt(NBTConstants.COLOR)) : null;
     }
 
     @NotNull

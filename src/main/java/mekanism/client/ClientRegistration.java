@@ -92,6 +92,7 @@ import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
+import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.client.model.energycube.EnergyCubeModelLoader;
 import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
@@ -453,8 +454,9 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(RegisterGeometryLoaders event) {
-        event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
+        event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
         event.register(Mekanism.rl("energy_cube"), EnergyCubeModelLoader.INSTANCE);
+        event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
         event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
 

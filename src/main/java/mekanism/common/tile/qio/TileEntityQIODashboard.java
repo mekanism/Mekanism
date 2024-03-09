@@ -56,8 +56,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
+        boolean needsUpdate = super.onUpdateServer(frequency);
         if (CommonWorldTickHandler.flushTagAndRecipeCaches || !recipesChecked) {
             //If we need to update the recipes because of a reload or if we just haven't checked the recipes yet
             // after loading, as there was no world set yet, refresh the recipes
@@ -66,6 +66,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 craftingWindow.invalidateRecipe();
             }
         }
+        return needsUpdate;
     }
 
     @Override
