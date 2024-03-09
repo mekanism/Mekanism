@@ -3,19 +3,16 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:dusts/steel"
+      "tag": "minecraft:wool"
     },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "G": {
-      "tag": "forge:glass/silica"
+    "I": {
+      "tag": "forge:ingots"
     }
   },
   "pattern": [
-    " G ",
-    "A#A",
-    " G "
+    " # ",
+    "#I#",
+    " # "
   ],
   "result": {
     "item": "mekanism:upgrade_muffling"

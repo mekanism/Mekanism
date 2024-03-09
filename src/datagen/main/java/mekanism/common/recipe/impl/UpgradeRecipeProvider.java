@@ -13,6 +13,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -32,7 +33,14 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
         addUpgradeRecipe(consumer, MekanismItems.ENERGY_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), basePath);
         addUpgradeRecipe(consumer, MekanismItems.FILTER_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN), basePath);
         addUpgradeRecipe(consumer, MekanismItems.GAS_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON), basePath);
-        addUpgradeRecipe(consumer, MekanismItems.MUFFLING_UPGRADE, MekanismTags.Items.DUSTS_STEEL, basePath);
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MUFFLING_UPGRADE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.INGOT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
+              .key(Pattern.CONSTANT, ItemTags.WOOL)
+              .key(Pattern.INGOT, Tags.Items.INGOTS)
+              .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.MUFFLING_UPGRADE)));
         addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STONE_GENERATOR_UPGRADE)
               .pattern(RecipePattern.createPattern(
