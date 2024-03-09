@@ -103,6 +103,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         if (isEmitting != shouldEmit) {
             isEmitting = shouldEmit;
             needsUpdate = true;
+            //Update redstone on sides except the back
+            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockType(), getOppositeDirection());
         }
         return needsUpdate;
     }
