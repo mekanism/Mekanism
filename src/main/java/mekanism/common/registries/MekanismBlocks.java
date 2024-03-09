@@ -27,6 +27,7 @@ import mekanism.common.block.BlockIndustrialAlarm;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.BlockPersonalChest;
+import mekanism.common.block.BlockQIOComponent;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
@@ -753,20 +754,20 @@ public class MekanismBlocks {
           BLOCKS.register("dimensional_stabilizer", () -> new BlockTile<>(MekanismBlockTypes.DIMENSIONAL_STABILIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addEnergy().build()));
 
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockQIOComponent> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DRIVE_ARRAY, properties -> properties.mapColor(MapColor.METAL)), ItemBlockQIOComponent::new)
+    public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockQIOComponent> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DRIVE_ARRAY, properties -> properties.mapColor(MapColor.METAL)), ItemBlockQIOComponent::new)
           .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                 //Note: As we don't have to update the presence of a drive or remove it from the frequency we can make do with just using a basic slot
                 //TODO - 1.20.4: Evaluate if copy the notExternal is correct or do we want this to have some other checks
                 .addSlots(2 * 6, (listener, x, y) -> BasicInventorySlot.at(BasicInventorySlot.notExternal, BasicInventorySlot.notExternal, QIODriveSlot.IS_QIO_ITEM, listener, x, y))
                 .build()
           ));
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockQIOComponent> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DASHBOARD, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new)
+    public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockQIOComponent> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DASHBOARD, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new)
           //Note: While the attachment is mainly used for the portable dashboard, it is a convenient way to also handle window construction
           // and setting up the proper predicates for the actual dashboard block
           .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).getSlots()));
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockQIOComponent> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_IMPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockQIOComponent> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_EXPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockQIOComponent> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockQIOComponent> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_IMPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockQIOComponent> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_EXPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockQIOComponent> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ADVANCED_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.ADVANCED_ENERGY_CUBE);
