@@ -55,7 +55,7 @@ import org.jetbrains.annotations.Nullable;
 public class CommonPlayerTickHandler {
 
     public static boolean isOnGroundOrSleeping(Player player) {
-        return player.onGround() || player.isSleeping();
+        return player.onGround() || player.isSleeping() || player.getAbilities().flying;
     }
 
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
