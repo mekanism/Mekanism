@@ -125,6 +125,10 @@ public interface IJetpackItem {
      */
     static boolean handleJetpackMotion(Player player, JetpackMode mode, double thrust, BooleanSupplier ascendingSupplier) {
         Vec3 motion = player.getDeltaMovement();
+        if (mode == JetpackMode.VECTOR && player.isShiftKeyDown()) {
+            //TODO: Do we want to expand holding shift to some sort of secondary behavior
+            mode = JetpackMode.NORMAL;
+        }
         if ((mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) && player.isFallFlying()) {
             Vec3 forward = player.getLookAngle();
             Vec3 drag = forward.scale(1.5).subtract(motion).scale(0.5);
