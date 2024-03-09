@@ -1024,7 +1024,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
                     TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
-              .key(Pattern.CONSTANT, Tags.Items.GEMS_DIAMOND)
+              .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.PREVIOUS, MekanismItems.BASE_QIO_DRIVE)
               .build(consumer);
         //Time-Dilating QIO Drive
@@ -1034,7 +1034,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.PREVIOUS, Pattern.CONSTANT, Pattern.PREVIOUS),
                     TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PELLETS_POLONIUM)
-              .key(Pattern.CONSTANT, Tags.Items.GEMS_EMERALD)
+              .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.PREVIOUS, MekanismItems.HYPER_DENSE_QIO_DRIVE)
               .build(consumer);
         //Supermassive QIO Drive
