@@ -55,6 +55,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         set.add(MekanismAttachmentTypes.ITEM_TARGET);
         set.add(MekanismAttachmentTypes.STABILIZER_CHUNKS);
         set.add(MekanismAttachmentTypes.FILTER_AWARE);
+
+        set.add(MekanismAttachmentTypes.HEAT_CAPACITORS);
         //TODO: Do we want to clear frequencies?
         //set.add(MekanismAttachmentTypes.FREQUENCY_AWARE);
         //set.add(MekanismAttachmentTypes.FREQUENCY_COMPONENT);
