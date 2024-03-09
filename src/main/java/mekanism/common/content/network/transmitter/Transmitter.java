@@ -444,12 +444,16 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public void read(@NotNull CompoundTag nbtTags) {
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
+        NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
+        NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(nbtTags, NBTConstants.CONNECTION);
     }
 
     @NotNull
     public CompoundTag write(@NotNull CompoundTag nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
+        nbtTags.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        nbtTags.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         nbtTags.putIntArray(NBTConstants.CONNECTION, getRawConnections());
         return nbtTags;
     }
