@@ -77,6 +77,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
     }
 
+    @Nullable
     public EnumColor getColor() {
         return null;
     }

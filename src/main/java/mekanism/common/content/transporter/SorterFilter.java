@@ -55,7 +55,9 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.ALLOW_DEFAULT, allowDefault);
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        if (color != null) {
+            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
+        }
         nbtTags.putBoolean(NBTConstants.SIZE_MODE, sizeMode);
         nbtTags.putInt(NBTConstants.MIN, min);
         nbtTags.putInt(NBTConstants.MAX, max);
@@ -66,7 +68,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     public void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ALLOW_DEFAULT, value -> allowDefault = value);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        this.color = NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SIZE_MODE, value -> sizeMode = value);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, value -> min = value);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, value -> max = value);

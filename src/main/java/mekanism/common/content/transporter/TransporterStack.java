@@ -93,7 +93,9 @@ public class TransporterStack {
     }
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, CompoundTag updateTag) {
-        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        if (color != null) {
+            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
+        }
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
         NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, pathType);
@@ -106,7 +108,7 @@ public class TransporterStack {
     }
 
     public void readFromUpdateTag(CompoundTag updateTag) {
-        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        this.color = NBTUtils.getEnum(updateTag, NBTConstants.COLOR, TransporterUtils::readColor);
         progress = updateTag.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
@@ -116,7 +118,9 @@ public class TransporterStack {
     }
 
     public void write(CompoundTag nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        if (color != null) {
+            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
+        }
 
         nbtTags.putInt(NBTConstants.PROGRESS, progress);
         nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
@@ -132,7 +136,7 @@ public class TransporterStack {
     }
 
     public void read(CompoundTag nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        this.color = NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);

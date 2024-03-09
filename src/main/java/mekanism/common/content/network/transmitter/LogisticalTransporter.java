@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LogisticalTransporter extends LogisticalTransporterBase implements IUpgradeableTransmitter<LogisticalTransporterUpgradeData> {
 
+    @Nullable
     private EnumColor color;
 
     public LogisticalTransporter(IBlockProvider blockProvider, TileEntityTransmitter tile) {
@@ -32,18 +33,19 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         return tier;
     }
 
+    @Nullable
     @Override
     public EnumColor getColor() {
         return color;
     }
 
-    public void setColor(EnumColor c) {
+    public void setColor(@Nullable EnumColor c) {
         color = c;
     }
 
     @Override
     public InteractionResult onConfigure(Player player, Direction side) {
-        TransporterUtils.incrementColor(this);
+        setColor(TransporterUtils.increment(getColor()));
         PathfinderCache.onChanged(getTransmitterNetwork());
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
@@ -84,26 +86,30 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     protected void readFromNBT(CompoundTag nbtTags) {
         super.readFromNBT(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
+        setColor(NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor));
     }
 
     @Override
     public void writeToNBT(CompoundTag nbtTags) {
         super.writeToNBT(nbtTags);
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        if (getColor() != null) {
+            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, getColor());
+        }
     }
 
     @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(updateTag);
-        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        if (getColor() != null) {
+            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, getColor());
+        }
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setEnumIfPresent(tag, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
+        setColor(NBTUtils.getEnum(tag, NBTConstants.COLOR, TransporterUtils::readColor));
     }
 }

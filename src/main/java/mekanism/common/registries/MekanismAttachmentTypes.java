@@ -71,7 +71,6 @@ import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
@@ -124,22 +123,19 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneControl>> REDSTONE_CONTROL = ATTACHMENT_TYPES.register("redstone_control", RedstoneControl.class);
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<RedstoneOutput>> REDSTONE_OUTPUT = ATTACHMENT_TYPES.register("redstone_output", RedstoneOutput.class);
 
+    //TODO - 1.20.5: Can we replace this with COLORABLE?
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Optional<EnumColor>>> TRANSPORTER_COLOR = ATTACHMENT_TYPES.register("transporter_color",
           () -> AttachmentType.<Optional<EnumColor>>builder(Optional::empty)
                 .serialize(new IAttachmentSerializer<IntTag, Optional<EnumColor>>() {
                     @Nullable
                     @Override
                     public IntTag write(Optional<EnumColor> value) {
-                        if (value.isEmpty()) {
-                            return null;
-                        }
-                        int index = TransporterUtils.getColorIndex(value.get());
-                        return index == -1 ? null : IntTag.valueOf(index);
+                        return value.map(color -> IntTag.valueOf(color.ordinal())).orElse(null);
                     }
 
                     @Override
                     public Optional<EnumColor> read(IAttachmentHolder holder, IntTag tag) {
-                        return Optional.ofNullable(TransporterUtils.readColor(tag.getAsInt()));
+                        return Optional.of(EnumColor.byIndexStatic(tag.getAsInt()));
                     }
                 }).copyHandler(AttachmentTypeDeferredRegister.optionalCopier((holder, attachment) -> attachment))
                 .comparator(AttachmentTypeDeferredRegister.optionalComparator(Objects::equals))

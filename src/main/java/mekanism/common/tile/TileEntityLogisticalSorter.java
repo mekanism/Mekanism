@@ -237,7 +237,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
         super.writeSustainedData(dataMap);
-        dataMap.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        if (color != null) {
+            NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, color);
+        }
         dataMap.putBoolean(NBTConstants.EJECT, autoEject);
         dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         dataMap.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
@@ -247,7 +249,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         super.readSustainedData(dataMap);
-        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        this.color = NBTUtils.getEnum(dataMap, NBTConstants.COLOR, TransporterUtils::readColor);
         autoEject = dataMap.getBoolean(NBTConstants.EJECT);
         roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
@@ -361,9 +363,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @ComputerMethod(requiresPublicSecurity = true)
     void setDefaultColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
-        if (!TransporterUtils.colors.contains(color)) {
-            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
-        }
         changeColor(color);
     }
 

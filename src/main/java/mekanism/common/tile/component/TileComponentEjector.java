@@ -323,7 +323,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, true);
         }
         if (outputColor != null) {
-            ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
+            NBTUtils.writeEnum(ejectorNBT, NBTConstants.COLOR, outputColor);
         }
         //Input colors
         int[] colors = new int[inputColors.length];
@@ -395,9 +395,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
-        if (!TransporterUtils.colors.contains(color)) {
-            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
-        }
         setInputColor(side, color);
     }
 
@@ -424,9 +421,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @ComputerMethod(nameOverride = "setOutputColor", requiresPublicSecurity = true)
     void computerSetOutputColor(EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
-        if (!TransporterUtils.colors.contains(color)) {
-            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
-        }
         setOutputColor(color);
     }
     //End computer related methods

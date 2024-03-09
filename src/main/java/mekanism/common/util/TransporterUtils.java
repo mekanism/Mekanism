@@ -1,10 +1,8 @@
 package mekanism.common.util;
 
-import java.util.List;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
@@ -27,19 +25,18 @@ public final class TransporterUtils {
     private TransporterUtils() {
     }
 
-    public static final List<EnumColor> colors = List.of(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
-          EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
-
     @Nullable
     public static EnumColor readColor(int inputColor) {
-        if (inputColor < 0 || inputColor >= colors.size()) {
+        //TODO - 1.20.5: Replace this and getColorIndex by just not having the color present in nbt when it is null
+        // rather than having a negative index
+        if (inputColor < 0) {
             return null;
         }
-        return colors.get(inputColor);
+        return EnumColor.byIndexStatic(inputColor);
     }
 
     public static int getColorIndex(@Nullable EnumColor color) {
-        return color == null ? -1 : colors.indexOf(color);
+        return color == null ? -1 : color.ordinal();
     }
 
     public static boolean isValidAcceptorOnSide(Level level, BlockPos pos, Direction side) {
@@ -53,20 +50,20 @@ public final class TransporterUtils {
         return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
     }
 
-    public static EnumColor increment(EnumColor color) {
+    public static EnumColor increment(@Nullable EnumColor color) {
         if (color == null) {
-            return colors.get(0);
+            return EnumUtils.COLORS[0];
+        } else if (color.ordinal() == EnumUtils.COLORS.length - 1) {
+            return null;
         }
-        int index = colors.indexOf(color);
-        return index == colors.size() - 1 ? null : colors.get(index + 1);
+        return color.getNext();
     }
 
-    public static EnumColor decrement(EnumColor color) {
+    public static EnumColor decrement(@Nullable EnumColor color) {
         if (color == null) {
-            return colors.get(colors.size() - 1);
+            return EnumUtils.COLORS[EnumUtils.COLORS.length - 1];
         }
-        int index = colors.indexOf(color);
-        return index == 0 ? null : colors.get(index - 1);
+        return color.ordinal() == 0 ? null : color.getPrevious();
     }
 
     public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
@@ -85,20 +82,6 @@ public final class TransporterUtils {
         Direction side = stack.getSide(transporter);
         float progress = ((stack.progress + partial) / 100F) - 0.5F;
         return new float[]{0.5F + side.getStepX() * progress, 0.25F + side.getStepY() * progress, 0.5F + side.getStepZ() * progress};
-    }
-
-    public static void incrementColor(LogisticalTransporter tile) {
-        EnumColor color = tile.getColor();
-        if (color == null) {
-            tile.setColor(colors.get(0));
-        } else {
-            int index = colors.indexOf(color);
-            if (index == colors.size() - 1) {
-                tile.setColor(null);
-            } else {
-                tile.setColor(colors.get(index + 1));
-            }
-        }
     }
 
     public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
