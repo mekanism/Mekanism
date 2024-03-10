@@ -68,7 +68,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
                     .setSideRender(side -> side.getAxis().isHorizontal())
                     .prepFlowing(fluid)
                     .xBounds(0.3225F, 0.6775F)
-                    .yBounds(0.0625F + 0.875F * (stage / (float) stages), 0.9375F)
+                    .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
                     .zBounds(0.3225F, 0.6775F)
               );
     }
@@ -80,7 +80,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
                     .setSideRender(Direction.DOWN, false)
                     .setSideRender(Direction.UP, stage < stages)
                     .xBounds(0.135F, 0.865F)
-                    .yBounds(0.0625F, 0.0625F + 0.875F * (stage / (float) stages))
+                    .yBounds(0.12375F, 0.12375F + 0.7525F * (stage / (float) stages))
                     .zBounds(0.135F, 0.865F)
               );
     }
