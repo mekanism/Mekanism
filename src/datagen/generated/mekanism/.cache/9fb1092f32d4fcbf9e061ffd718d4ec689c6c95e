@@ -1,4 +1,4 @@
-// Recipes	2024-03-09T15:45:41.7311398	Recipes
+// Recipes	2024-03-10T14:58:02.0291607	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 2f33c48a639876d68a3a712c24540c3f78c5e86f data/mekanism/recipes/bin/advanced.json
@@ -4180,9 +4180,9 @@ b378a1bcdc8438911648afbd02a7441513a47529 data/mekanism/recipes/processing/uraniu
 1d1573287b370b742f3f508bfec3fd48f4a66485 data/mekanism/recipes/qio_dashboard.json
 9738e0a9ec17a4a22eea973b5cb2a6f7302d7820 data/mekanism/recipes/qio_drive_array.json
 79c89b40bbf891514a44150c3083eabf30839ae8 data/mekanism/recipes/qio_drive_base.json
-d5af2ee2d8ded40f90c3a8073a81781eb893e5aa data/mekanism/recipes/qio_drive_hyper_dense.json
+b67aee93ac4239a7b1dab9d85063233c888f9f0d data/mekanism/recipes/qio_drive_hyper_dense.json
 92e8c34e9f510e5936f18b45b37fe782dcc6546c data/mekanism/recipes/qio_drive_supermassive.json
-5282d066e6af909a9766e8075dfb31a1715c88c8 data/mekanism/recipes/qio_drive_time_dilating.json
+5faa1cbed8ad9ae5bf35bcd742508dafe06eb671 data/mekanism/recipes/qio_drive_time_dilating.json
 ec712e49b79a73a21afd8162ac4af2a4ddbba936 data/mekanism/recipes/qio_exporter.json
 035085a0b37b2174596b2498539e316384b85a90 data/mekanism/recipes/qio_importer.json
 6c4b9c0327845ed7395e2f2cb1d92232002705a0 data/mekanism/recipes/qio_redstone_adapter.json
