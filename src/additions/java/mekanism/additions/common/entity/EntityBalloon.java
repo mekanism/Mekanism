@@ -92,7 +92,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             return null;
         }
         balloon.latchedEntity = entity;
-        float height = balloon.latchedEntity.getDimensions(balloon.latchedEntity.getPose()).height;
+        float height = balloon.latchedEntity.getBbHeight();
         balloon.setPos(balloon.latchedEntity.getX(), balloon.latchedEntity.getY() + height + 1.7F, balloon.latchedEntity.getZ());
 
         balloon.xo = balloon.getX();
@@ -229,7 +229,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     public double getAddedHeight() {
-        return latchedEntity.getDimensions(latchedEntity.getPose()).height + 0.8;
+        return latchedEntity.getBbHeight() + 0.8;
     }
 
     private int getFloor(LivingEntity entity) {
