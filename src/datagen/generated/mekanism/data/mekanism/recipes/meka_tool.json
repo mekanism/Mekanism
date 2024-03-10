@@ -6,7 +6,7 @@
       "item": "mekanism:atomic_disassembler"
     },
     "A": {
-      "item": "mekanism:pellet_polonium"
+      "tag": "forge:pellets/polonium"
     },
     "C": {
       "tag": "forge:circuits/ultimate"

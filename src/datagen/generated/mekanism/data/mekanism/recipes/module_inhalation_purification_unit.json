@@ -9,7 +9,7 @@
       "tag": "forge:alloys/elite"
     },
     "H": {
-      "item": "mekanism:pellet_polonium"
+      "tag": "forge:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

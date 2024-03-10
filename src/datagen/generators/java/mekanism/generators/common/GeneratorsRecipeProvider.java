@@ -251,7 +251,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.HEAT_GENERATOR)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Solar Recharging Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_SOLAR_RECHARGING)
@@ -259,7 +259,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
     }
 

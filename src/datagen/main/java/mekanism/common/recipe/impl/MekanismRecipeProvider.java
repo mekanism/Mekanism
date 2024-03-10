@@ -1127,7 +1127,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.ATOMIC_DISASSEMBLER)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Helmet
@@ -1140,7 +1140,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Items.NETHERITE_HELMET)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Bodyarmor
@@ -1153,7 +1153,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Items.NETHERITE_CHESTPLATE)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Pants
@@ -1166,7 +1166,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Items.NETHERITE_LEGGINGS)
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Boots
@@ -1210,7 +1210,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key('c', Tags.Items.INGOTS_COPPER)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Nutritional Liquifier
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER)
@@ -1491,7 +1491,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.EMERALD)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Inhalation Purification Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_INHALATION_PURIFICATION)
@@ -1502,7 +1502,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.HAZMAT_MASK)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .key('o', MekanismItems.SCUBA_MASK)
               .build(consumer);
         //Magnetic Attraction Unit
@@ -1515,7 +1515,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Blocks.IRON_BARS)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Frost Walker Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_FROST_WALKER)
@@ -1526,7 +1526,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismFluids.HYDROGEN.getBucket())
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Soul Speed Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SOUL_SURFER)
@@ -1538,7 +1538,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.BLOCK, ItemTags.SOUL_FIRE_BASE_BLOCKS)
               .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Locomotive Boosting Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING)
@@ -1550,7 +1550,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.DIAMOND_LEGGINGS)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Hydraulic Propulsion Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_HYDRAULIC_PROPULSION)
@@ -1562,7 +1562,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.FREE_RUNNERS)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Gyroscopic Stabilization Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GYROSCOPIC_STABILIZATION)
@@ -1573,7 +1573,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.OBSIDIAN)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Hydrostatic Repulsion Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_HYDROSTATIC_REPULSOR)
@@ -1581,7 +1581,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Items.LIGHTNING_ROD)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Motorized Servo Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_MOTORIZED_SERVO)
@@ -1593,7 +1593,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.CONSTANT, Blocks.BLUE_ICE)
-              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
               .build(consumer);
         //Gravitational Modulating Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_GRAVITATIONAL_MODULATING)
@@ -1605,7 +1605,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, Tags.Items.NETHER_STARS)
               .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
-              .key(Pattern.HDPE_CHAR, MekanismItems.ANTIMATTER_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_ANTIMATTER)
               .build(consumer);
         //Elytra Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ELYTRA)
@@ -1617,7 +1617,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismItems.HDPE_REINFORCED_ELYTRA)
               .key(Pattern.HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
-              .key(Pattern.NUGGET, MekanismItems.ANTIMATTER_PELLET)
+              .key(Pattern.NUGGET, MekanismTags.Items.PELLETS_ANTIMATTER)
               .build(consumer);
     }
 

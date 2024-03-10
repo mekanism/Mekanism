@@ -12,7 +12,7 @@
       "item": "mekanism:energy_tablet"
     },
     "H": {
-      "item": "mekanism:pellet_polonium"
+      "tag": "forge:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

@@ -1,4 +1,4 @@
-// 1.20.4	2023-12-09T13:00:15.112805	Recipes
+// 1.20.4	2024-03-10T14:30:13.3591144	Recipes
 0d2fec7f38f694728a3fb6de67610ba154b1899d data/mekanismgenerators/recipes/activating/tritium.json
 685b1c780cb7df144f61bd9a3f678463e661b3cf data/mekanismgenerators/recipes/chemical_infusing/fusion_fuel.json
 2db509e674b9f96259675cd9de29b8b61564ad05 data/mekanismgenerators/recipes/electromagnetic_coil.json
@@ -15,8 +15,8 @@ d13858b376c1b7af71da55a541f6f712bfb540c1 data/mekanismgenerators/recipes/generat
 fb63fb69083dea0cbfbe88fcf0550d8e49c04c50 data/mekanismgenerators/recipes/generator/wind.json
 0bd12c9f2f953ca956ca6c5c3fc2af635ed8b13f data/mekanismgenerators/recipes/hohlraum.json
 25595d4e567a22fe1f144153123974f20228668f data/mekanismgenerators/recipes/laser_focus_matrix.json
-b7e780aef6f5847760146b9c284213a2db7e704f data/mekanismgenerators/recipes/module_geothermal_generator_unit.json
-da942fe7f5511963b1487e918091356fc199d661 data/mekanismgenerators/recipes/module_solar_recharging_unit.json
+8a99279553528e960c5da250b0423da476cb419c data/mekanismgenerators/recipes/module_geothermal_generator_unit.json
+dcc9fe05a841a74047c614fa174832c9087b8680 data/mekanismgenerators/recipes/module_solar_recharging_unit.json
 ac7422bfed63c05bd58c946321a4f9cd5e3cf83d data/mekanismgenerators/recipes/reactor/controller.json
 ac175ff24701451b374c9ad11517189f77808933 data/mekanismgenerators/recipes/reactor/frame.json
 21e7525264bffff098617a9c0fe5e5088aeb7dc9 data/mekanismgenerators/recipes/reactor/glass.json

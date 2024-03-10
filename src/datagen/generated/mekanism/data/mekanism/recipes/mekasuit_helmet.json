@@ -6,7 +6,7 @@
       "item": "minecraft:netherite_helmet"
     },
     "A": {
-      "item": "mekanism:pellet_polonium"
+      "tag": "forge:pellets/polonium"
     },
     "C": {
       "tag": "forge:circuits/ultimate"

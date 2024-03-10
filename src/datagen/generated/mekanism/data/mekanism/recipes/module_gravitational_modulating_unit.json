@@ -12,7 +12,7 @@
       "item": "mekanism:ultimate_induction_provider"
     },
     "H": {
-      "item": "mekanism:pellet_antimatter"
+      "tag": "forge:pellets/antimatter"
     },
     "P": {
       "item": "mekanism:module_base"
