@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -22,15 +24,17 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.network.to_server.configuration_update.PacketConfigurationClearAll;
+import mekanism.common.network.to_server.configuration_update.PacketBatchConfiguration;
 import mekanism.common.network.to_server.configuration_update.PacketEjectConfiguration;
 import mekanism.common.network.to_server.configuration_update.PacketSideData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
@@ -71,9 +75,20 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
               () -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType)),
               getOnHover(MekanismLang.AUTO_EJECT)));
-        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
-              () -> PacketUtils.sendToServer(new PacketConfigurationClearAll(this.tile.getBlockPos(), currentType)),
-              getOnHover(MekanismLang.SIDE_CONFIG_CLEAR)));
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"), () -> {
+            DataType targetType = getTargetType(DataType::getNext);
+            PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
+        }, () -> {
+            DataType targetType = getTargetType(DataType::getPrevious);
+            PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
+        }, (onHover, guiGraphics, mouseX, mouseY) -> {
+            DataType targetType = getTargetType(DataType::getNext);
+            if (targetType == DataType.NONE) {
+                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate());
+            } else {
+                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_INCREMENT.translate());
+            }
+        }));
         addSideDataButton(RelativeSide.BOTTOM, 68, 92);
         addSideDataButton(RelativeSide.TOP, 68, 46);
         addSideDataButton(RelativeSide.FRONT, 68, 69);
@@ -83,6 +98,30 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         updateTabs();
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.SIDE_CONFIG_WINDOW, this.tile.getConfig());
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
+    }
+
+    private DataType getTargetType(BiFunction<DataType, Predicate<DataType>, DataType> shift) {
+        if (Screen.hasShiftDown()) {
+            return DataType.NONE;
+        }
+        ConfigInfo info = tile.getConfig().getConfig(currentType);
+        if (info != null) {
+            DataType commonType = null;
+            for (RelativeSide side : EnumUtils.SIDES) {
+                if (info.isSideEnabled(side)) {
+                    DataType current = info.getDataType(side);
+                    if (commonType == null) {
+                        commonType = current;
+                    } else if (commonType != current) {
+                        return DataType.NONE;
+                    }
+                }
+            }
+            if (commonType != null) {
+                return shift.apply(commonType, info::supports);
+            }
+        }
+        return DataType.NONE;
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {

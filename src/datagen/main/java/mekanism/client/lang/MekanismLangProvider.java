@@ -943,6 +943,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");
         add(MekanismLang.SIDE_CONFIG_CLEAR, "Clear Side Config (sets all sides to none)");
+        add(MekanismLang.SIDE_CONFIG_CLEAR_ALL, "Hold Shift to clear sides of all substance types at once");
+        add(MekanismLang.SIDE_CONFIG_INCREMENT, "Increment Side Config (changes all sides to the next, or previous, configuration type)");
         add(MekanismLang.STRICT_INPUT, "Strict Input");
         add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%1$s)");
         add(MekanismLang.CONFIG_TYPE, "%1$s Config");

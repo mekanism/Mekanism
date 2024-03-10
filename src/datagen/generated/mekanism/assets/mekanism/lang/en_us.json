@@ -519,6 +519,8 @@
   "configuration.mekanism.no_eject.tooltip": "Auto-eject is not supported, manual extraction may still be possible.",
   "configuration.mekanism.side": "Side Config",
   "configuration.mekanism.side.clear": "Clear Side Config (sets all sides to none)",
+  "configuration.mekanism.side.clear.all": "Hold Shift to clear sides of all substance types at once",
+  "configuration.mekanism.side.increment": "Increment Side Config (changes all sides to the next, or previous, configuration type)",
   "configuration.mekanism.slots": "Slots",
   "configuration.mekanism.strict_input": "Strict Input",
   "configuration.mekanism.strict_input.enabled": "Strict Input (%1$s)",

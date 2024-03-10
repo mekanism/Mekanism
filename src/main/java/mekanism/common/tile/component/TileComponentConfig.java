@@ -432,7 +432,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
         ConfigInfo config = configInfo.get(type);
-        if (!config.getSupportedDataTypes().contains(mode)) {
+        if (!config.supports(mode)) {
             throw new ComputerException("This machine does not support mode '%s' for transmission type '%s'.", mode, type);
         }
         DataType currentMode = config.getDataType(side);

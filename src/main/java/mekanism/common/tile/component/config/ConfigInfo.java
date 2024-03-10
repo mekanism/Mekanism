@@ -101,6 +101,10 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return dataTypes;
     }
 
+    public boolean supports(DataType type) {
+        return type == DataType.NONE || slotInfo.containsKey(type);
+    }
+
     public void fill(@NotNull DataType dataType) {
         for (RelativeSide side : EnumUtils.SIDES) {
             setDataType(dataType, side);
@@ -189,8 +193,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     public DataType incrementDataType(@NotNull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
-            Set<DataType> supportedDataTypes = getSupportedDataTypes();
-            DataType newType = current.getNext(supportedDataTypes::contains);
+            DataType newType = current.getNext(this::supports);
             sideConfig.put(relativeSide, newType);
             return newType;
         }
@@ -204,8 +207,7 @@ public class ConfigInfo implements IPersistentConfigInfo {
     public DataType decrementDataType(@NotNull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
-            Set<DataType> supportedDataTypes = getSupportedDataTypes();
-            DataType newType = current.getPrevious(supportedDataTypes::contains);
+            DataType newType = current.getPrevious(this::supports);
             sideConfig.put(relativeSide, newType);
             return newType;
         }

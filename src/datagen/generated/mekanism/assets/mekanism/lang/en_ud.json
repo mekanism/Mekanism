@@ -518,6 +518,8 @@
   "configuration.mekanism.no_eject.tooltip": "˙ǝꞁqᴉssod ǝq ꞁꞁᴉʇs ʎɐɯ uoᴉʇɔɐɹʇxǝ ꞁɐnuɐɯ 'pǝʇɹoddns ʇou sᴉ ʇɔǝɾǝ-oʇnⱯ",
   "configuration.mekanism.side": "ᵷᴉɟuoƆ ǝpᴉS",
   "configuration.mekanism.side.clear": "(ǝuou oʇ sǝpᴉs ꞁꞁɐ sʇǝs) ᵷᴉɟuoƆ ǝpᴉS ɹɐǝꞁƆ",
+  "configuration.mekanism.side.clear.all": "ǝɔuo ʇɐ sǝdʎʇ ǝɔuɐʇsqns ꞁꞁɐ ɟo sǝpᴉs ɹɐǝꞁɔ oʇ ʇɟᴉɥS pꞁoH",
+  "configuration.mekanism.side.increment": "(ǝdʎʇ uoᴉʇɐɹnᵷᴉɟuoɔ 'snoᴉʌǝɹd ɹo 'ʇxǝu ǝɥʇ oʇ sǝpᴉs ꞁꞁɐ sǝᵷuɐɥɔ) ᵷᴉɟuoƆ ǝpᴉS ʇuǝɯǝɹɔuI",
   "configuration.mekanism.slots": "sʇoꞁS",
   "configuration.mekanism.strict_input": "ʇnduI ʇɔᴉɹʇS",
   "configuration.mekanism.strict_input.enabled": "(%s) ʇnduI ʇɔᴉɹʇS",

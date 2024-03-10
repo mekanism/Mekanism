@@ -42,7 +42,7 @@ import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress;
 import mekanism.common.network.to_server.button.PacketItemButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
-import mekanism.common.network.to_server.configuration_update.PacketConfigurationClearAll;
+import mekanism.common.network.to_server.configuration_update.PacketBatchConfiguration;
 import mekanism.common.network.to_server.configuration_update.PacketEjectColor;
 import mekanism.common.network.to_server.configuration_update.PacketEjectConfiguration;
 import mekanism.common.network.to_server.configuration_update.PacketInputColor;
@@ -144,7 +144,7 @@ public class PacketHandler extends BasePacketHandler {
         }));
 
         //Configuration update packets
-        registrar.play(PacketConfigurationClearAll.ID, PacketConfigurationClearAll::new);
+        registrar.play(PacketBatchConfiguration.ID, PacketBatchConfiguration::new);
         registrar.play(PacketEjectColor.ID, PacketEjectColor::new);
         registrar.play(PacketEjectConfiguration.ID, PacketEjectConfiguration::new);
         registrar.play(PacketInputColor.ID, PacketInputColor::new);
