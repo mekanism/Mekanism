@@ -1,10 +1,12 @@
 package mekanism.client.gui.element.tab.window;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +23,11 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        GuiWindow window = createWindow();
+        openWindow(getNextWindowData());
+    }
+
+    private void openWindow(SelectedWindowData windowData) {
+        GuiWindow window = createWindow(windowData);
         window.setTabListeners(getCloseListener(), getReAttachListener());
         disableTab();
         gui().addWindow(window);
@@ -50,5 +56,21 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
         return window -> elementSupplier.get().disableTab();
     }
 
-    protected abstract GuiWindow createWindow();
+    protected abstract GuiWindow createWindow(SelectedWindowData windowData);
+
+    protected abstract SelectedWindowData getNextWindowData();
+
+    protected List<SelectedWindowData> getValidWindows() {
+        return List.of(getNextWindowData());
+    }
+
+    @Override
+    public void openPinnedWindows() {
+        super.openPinnedWindows();
+        for (SelectedWindowData windowData : getValidWindows()) {
+            if (windowData.wasPinned()) {
+                openWindow(windowData);
+            }
+        }
+    }
 }

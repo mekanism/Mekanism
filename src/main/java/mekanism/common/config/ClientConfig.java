@@ -116,7 +116,8 @@ public class ClientConfig extends BaseMekanismConfig {
                 builder.push(savePath);
                 lastWindowPositions.put(savePath, new CachedWindowPosition(
                       CachedIntValue.wrap(this, builder.define("x", Integer.MAX_VALUE)),
-                      CachedIntValue.wrap(this, builder.define("y", Integer.MAX_VALUE))
+                      CachedIntValue.wrap(this, builder.define("y", Integer.MAX_VALUE)),
+                      windowType.canPin() ? CachedBooleanValue.wrap(this, builder.define("pinned", false)) : null
                 ));
                 builder.pop();
             }

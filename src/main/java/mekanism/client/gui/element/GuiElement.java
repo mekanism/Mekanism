@@ -264,6 +264,10 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     }
 
+    public void openPinnedWindows() {
+        children.forEach(GuiElement::openPinnedWindows);
+    }
+
     //TODO - 1.20: Evaluate new tooltip system and maybe make use of it??
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))

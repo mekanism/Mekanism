@@ -14,6 +14,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.MekClickType;
@@ -34,8 +35,11 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
 
     private final TILE tile;
 
-    public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 119, WindowType.TRANSPORTER_CONFIG);
+    public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile, SelectedWindowData windowData) {
+        super(gui, x, y, 156, 119, windowData);
+        if (windowData.type != WindowType.TRANSPORTER_CONFIG) {
+            throw new IllegalArgumentException("Transporter configs must have a transporter config window type");
+        }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,

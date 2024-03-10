@@ -247,6 +247,8 @@ public enum MekanismLang implements ILangEntry {
     TRUE("gui", "true"),
     FALSE("gui", "false"),
     CLOSE("gui", "close"),
+    PIN("gui", "pin"),
+    UNPIN("gui", "unpin"),
     RADIATION_DOSE("gui", "radiation_dose"),
     RADIATION_EXPOSURE("gui", "radiation_exposure"),
     RADIATION_EXPOSURE_ENTITY("gui", "radiation_exposure.entity"),

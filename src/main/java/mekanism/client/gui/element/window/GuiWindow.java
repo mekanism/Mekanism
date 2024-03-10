@@ -9,6 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.GuiCloseButton;
+import mekanism.client.gui.element.button.GuiPinButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.IGUIWindow;
@@ -29,6 +30,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     private final SelectedWindowData windowData;
     private double dragX, dragY;
     private int prevDX, prevDY;
+    private boolean pinned;
 
     private Consumer<GuiWindow> closeListener;
     private Consumer<GuiWindow> reattachListener;
@@ -59,7 +61,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
                 lastY = minecraft.getWindow().getGuiScaledHeight() - guiTop - height;
             }
         }
-        return new WindowPosition(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
+        return new WindowPosition(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY, lastPosition.pinned());
     }
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, WindowType windowType) {
@@ -74,10 +76,15 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     private GuiWindow(IGuiWrapper gui, WindowPosition calculatedPosition, int width, int height, SelectedWindowData windowData) {
         super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
         this.windowData = windowData;
+        this.pinned = calculatedPosition.pinned();
         isOverlay = true;
         active = true;
         if (!isFocusOverlay()) {
             addCloseButton();
+            if (this.windowData.type.canPin()) {
+                //TODO - 1.20.4: Positioning?
+                addChild(new GuiPinButton(gui(), relativeX + 16, relativeY + 6, this));
+            }
         }
     }
 
@@ -155,7 +162,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE && !isPinned()) {
             close();
             return true;
         }
@@ -189,6 +196,14 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         RenderSystem.enableDepthTest();
     }
 
+    public void togglePinned() {
+        pinned = !pinned;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
     public void close() {
         gui().removeWindow(this);
         children().forEach(GuiElement::onWindowClose);
@@ -196,7 +211,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             closeListener.accept(this);
         }
         //Only save new position when we are finally closing a specific window
-        windowData.updateLastPosition(relativeX, relativeY);
+        windowData.updateLastPosition(relativeX, relativeY, pinned);
     }
 
     protected boolean isFocusOverlay() {
@@ -223,6 +238,9 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
      * @apiNote Only used if not a {@link #isFocusOverlay()}
      */
     protected int getTitlePadStart() {
+        if (windowData.type.canPin()) {
+            return 14 + GuiPinButton.WIDTH;
+        }
         return 12;
     }
 

@@ -16,6 +16,7 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
@@ -35,8 +36,11 @@ public class GuiUpgradeWindow extends GuiWindow {
     private final MekanismButton removeButton;
     private final GuiUpgradeScrollList scrollList;
 
-    public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
-        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), WindowType.UPGRADE);
+    public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile, SelectedWindowData windowData) {
+        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), windowData);
+        if (windowData.type != WindowType.UPGRADE) {
+            throw new IllegalArgumentException("Upgrade windows must have an upgrade window type");
+        }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 66, 50, tile.getComponent(), this::updateEnabledButtons));

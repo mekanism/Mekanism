@@ -19,6 +19,7 @@ import mekanism.client.gui.element.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.PacketUtils;
@@ -45,8 +46,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     private final TILE tile;
     private TransmissionType currentType;
 
-    public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 135, WindowType.SIDE_CONFIG);
+    public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TILE tile, SelectedWindowData windowData) {
+        super(gui, x, y, 156, 135, windowData);
+        if (windowData.type != WindowType.SIDE_CONFIG) {
+            throw new IllegalArgumentException("Side configs must have a side config window type");
+        }
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();

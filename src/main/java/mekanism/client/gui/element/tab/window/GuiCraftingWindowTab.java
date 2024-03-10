@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab.window;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.SpecialColors;
@@ -10,12 +12,23 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
+
+    private static final List<SelectedWindowData> VALID_WINDOWS = Util.make(() -> {
+        List<SelectedWindowData> valid = new ArrayList<>(IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS);
+        for (byte i = 0; i < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; i++) {
+            valid.add(new SelectedWindowData(WindowType.CRAFTING, i));
+        }
+        return List.copyOf(valid);
+    });
 
     private final boolean[] openWindows = new boolean[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
     private final QIOItemViewerContainer container;
@@ -72,7 +85,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     }
 
     @Override
-    protected GuiWindow createWindow() {
+    protected SelectedWindowData getNextWindowData() {
         byte index = 0;
         for (int i = 0; i < openWindows.length; i++) {
             if (!openWindows[i]) {
@@ -81,7 +94,17 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
                 break;
             }
         }
-        openWindows[index] = true;
-        return new GuiCraftingWindow(gui(), getGuiWidth() / 2 - 156 / 2, 15, container, index);
+        return new SelectedWindowData(WindowType.CRAFTING, index);
+    }
+
+    @Override
+    protected List<SelectedWindowData> getValidWindows() {
+        return VALID_WINDOWS;
+    }
+
+    @Override
+    protected GuiWindow createWindow(SelectedWindowData windowData) {
+        openWindows[windowData.extraData] = true;
+        return new GuiCraftingWindow(gui(), getGuiWidth() / 2 - 156 / 2, 15, container, windowData);
     }
 }

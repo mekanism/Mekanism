@@ -893,6 +893,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.TRUE_LOWER, "true");
         add(APILang.FALSE_LOWER, "false");
         add(MekanismLang.CLOSE, "Close");
+        add(MekanismLang.PIN, "Pin this window so that it automatically opens with the GUI");
+        add(MekanismLang.UNPIN, "Unpin this window");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE_ENTITY, "Entity Radiation Exposure: %1$s");

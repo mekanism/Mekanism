@@ -26,7 +26,12 @@ public class ToggleButton extends MekanismImageButton {
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation toggle, ResourceLocation flipped, BooleanSupplier toggled,
           @NotNull Runnable onPress, @Nullable IHoverable onHover) {
-        super(gui, x, y, size, textureSize, toggle, onPress, onHover);
+        this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, onHover);
+    }
+
+    public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation toggle, ResourceLocation flipped,
+          BooleanSupplier toggled, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
+        super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress, onHover);
         this.toggled = toggled;
         this.flipped = flipped;
     }

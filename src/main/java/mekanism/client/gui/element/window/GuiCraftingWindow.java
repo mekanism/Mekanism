@@ -8,6 +8,7 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
@@ -22,9 +23,14 @@ public class GuiCraftingWindow extends GuiWindow {
     private final byte index;
     private QIOItemViewerContainer container;
 
-    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, QIOItemViewerContainer container, byte index) {
-        super(gui, x, y, 118, 80, new SelectedWindowData(WindowType.CRAFTING, index));
-        this.index = index;
+    public GuiCraftingWindow(IGuiWrapper gui, int x, int y, QIOItemViewerContainer container, SelectedWindowData windowData) {
+        super(gui, x, y, 124, 80, windowData);
+        if (windowData.type != WindowType.CRAFTING) {
+            throw new IllegalArgumentException("Crafting windows must have a crafting window type");
+        } else if (windowData.extraData >= IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
+            throw new IllegalArgumentException("Crafting window index is too high");
+        }
+        this.index = windowData.extraData;
         this.container = container;
         interactionStrategy = InteractionStrategy.ALL;
         slots = new ArrayList<>();
@@ -34,8 +40,8 @@ public class GuiCraftingWindow extends GuiWindow {
                       this.container.getCraftingWindowSlot(this.index, row * 3 + column))));
             }
         }
-        addChild(new GuiRightArrow(gui, relativeX + 66, relativeY + 38).jeiCrafting());
-        slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 92, relativeY + 36,
+        addChild(new GuiRightArrow(gui, relativeX + 70, relativeY + 38).jeiCrafting());
+        slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
               () -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, Screen.hasShiftDown())), getOnHover(MekanismLang.CRAFTING_WINDOW_CLEAR)));
