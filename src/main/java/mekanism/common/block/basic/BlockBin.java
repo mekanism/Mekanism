@@ -87,7 +87,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return bin.toggleLock() ? InteractionResult.sidedSuccess(world.isClientSide) : InteractionResult.FAIL;
         } else if (!world.isClientSide) {
             BinInventorySlot binSlot = bin.getBinSlot();
-            int binMaxSize = binSlot.getLimit(binSlot.getStack());
+            ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();
+            int binMaxSize = binSlot.getLimit(storedStack);
             if (binSlot.getCount() < binMaxSize) {
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
