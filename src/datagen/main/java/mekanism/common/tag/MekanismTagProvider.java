@@ -109,6 +109,14 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
         addToTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, MekanismItems.MEKASUIT_HELMET);
         getItemBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONE_NORMAL);
+        getItemBuilder(MekanismTags.Items.MUFFLING_CENTER).add(
+              Tags.Items.INGOTS_BRICK,
+              Tags.Items.INGOTS_IRON,
+              Tags.Items.INGOTS_GOLD,
+              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
+              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
+              MekanismTags.Items.GEMS_FLUORITE
+        );
         addEntities();
         getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
         addHarvestRequirements();

@@ -6,7 +6,7 @@
       "tag": "minecraft:wool"
     },
     "I": {
-      "tag": "forge:ingots"
+      "tag": "mekanism:muffling_center"
     }
   },
   "pattern": [

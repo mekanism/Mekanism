@@ -39,7 +39,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.INGOT, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
               .key(Pattern.CONSTANT, ItemTags.WOOL)
-              .key(Pattern.INGOT, Tags.Items.INGOTS)
+              .key(Pattern.INGOT, MekanismTags.Items.MUFFLING_CENTER)
               .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.MUFFLING_UPGRADE)));
         addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STONE_GENERATOR_UPGRADE)
