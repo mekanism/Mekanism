@@ -136,7 +136,8 @@ public interface IJetpackItem {
             player.addDeltaMovement(delta);
             return false;
         } else if (mode == JetpackMode.NORMAL) {
-            Vec3 delta = new Vec3(0, thrust * getVerticalCoefficient(motion.y()), 0);
+            Vec3 thrustVec = motion.scale(thrust * .75);
+            Vec3 delta = new Vec3(thrustVec.x, thrust * getVerticalCoefficient(motion.y()), thrustVec.z);
             player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.VECTOR) {
             Vec3 thrustVec = player.getUpVector(1F).scale(thrust);
