@@ -115,6 +115,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               Tags.Items.INGOTS_GOLD,
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
+              MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
               MekanismTags.Items.GEMS_FLUORITE
         );
         addEntities();
