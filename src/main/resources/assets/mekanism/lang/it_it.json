@@ -519,6 +519,8 @@
   "configuration.mekanism.no_eject.tooltip": "L'espulsione automatica non è supportata, ma è possibile l'estrazione manuale.",
   "configuration.mekanism.side": "Configurazione dei Lati",
   "configuration.mekanism.side.clear": "Reimposta le Configurazioni dei Lati (imposta tutti i lati su nullo)",
+  "configuration.mekanism.side.clear.all": "Tieni premuto MAIUSC per rimuovere tutti i tipi di sostanze ai lati contemporaneamente",
+  "configuration.mekanism.side.increment": "Incrementa la configurazione laterale (cambia tutti i lati al tipo di configurazione precedente o successivo)",
   "configuration.mekanism.slots": "Slot",
   "configuration.mekanism.strict_input": "Entrata limitata",
   "configuration.mekanism.strict_input.enabled": "Entrata limitata (%1$s)",
