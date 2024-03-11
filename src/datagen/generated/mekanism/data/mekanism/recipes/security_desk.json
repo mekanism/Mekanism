@@ -2,6 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "#": {
+      "item": "mekanism:network_reader"
+    },
     "C": {
       "tag": "forge:circuits/elite"
     },
@@ -11,9 +14,6 @@
     "S": {
       "tag": "forge:ingots/steel"
     },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    },
     "X": {
       "item": "mekanism:steel_casing"
     }
@@ -21,7 +21,7 @@
   "pattern": [
     "SGS",
     "CXC",
-    "STS"
+    "S#S"
   ],
   "result": {
     "item": "mekanism:security_desk"

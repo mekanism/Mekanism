@@ -12,16 +12,16 @@
       "tag": "forge:glass_panes"
     },
     "I": {
-      "tag": "forge:pellets/polonium"
+      "tag": "forge:ender_pearls"
     },
     "T": {
       "item": "mekanism:teleportation_core"
     }
   },
   "pattern": [
-    "IGI",
+    "TGT",
     "C#C",
-    "ITI"
+    "TIT"
   ],
   "result": {
     "item": "mekanism:qio_drive_array"
