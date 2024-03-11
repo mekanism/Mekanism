@@ -36,6 +36,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
@@ -148,10 +149,13 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
-                    displayTooltips(guiGraphics, mouseX, mouseY,
-                          TextComponentUtil.translate(side.getTranslationKey()),
-                          TextComponentUtil.build(dataType.getColor(), dataType)
-                    );
+                    List<Component> tooltipLines = new ArrayList<>(3);
+                    tooltipLines.add(TextComponentUtil.translate(side.getTranslationKey()));
+                    tooltipLines.add(TextComponentUtil.build(dataType.getColor(), dataType));
+                    if (!button.otherBlockItem.isEmpty()) {
+                        tooltipLines.add(button.otherBlockItem.getHoverName());
+                    }
+                    displayTooltips(guiGraphics, mouseX, mouseY, tooltipLines);
                 }
             }
         };

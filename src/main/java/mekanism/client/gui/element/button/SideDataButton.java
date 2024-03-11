@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class SideDataButton extends BasicColorButton {
 
     private final Supplier<DataType> dataTypeSupplier;
-    private final ItemStack otherBlockItem;
+    public final ItemStack otherBlockItem;
 
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntityMekanism tile, SideDataPacketCreator packetCreator, @Nullable IHoverable onHover) {
