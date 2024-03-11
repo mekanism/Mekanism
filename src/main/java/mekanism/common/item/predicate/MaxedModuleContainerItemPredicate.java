@@ -2,8 +2,10 @@ package mekanism.common.item.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import java.util.Optional;
 import java.util.Set;
 import mekanism.api.JsonConstants;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,10 +27,9 @@ public class MaxedModuleContainerItemPredicate implements ICustomItemPredicate {
     @Override
     public boolean test(@NotNull ItemStack stack) {
         if (stack.is(item)) {
-            return IModuleHelper.INSTANCE.getModuleContainer(stack)
-                  .filter(container -> container.moduleTypes().containsAll(supportedModules))
-                  .stream()
-                  .flatMap(container -> container.modules().stream())
+            Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack)
+                  .filter(container -> container.moduleTypes().containsAll(supportedModules));
+            return moduleContainer.isPresent() && moduleContainer.get().modules().stream()
                   .allMatch(module -> module.getInstalledCount() == module.getData().getMaxStackSize());
         }
         return false;
