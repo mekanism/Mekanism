@@ -40,5 +40,6 @@ public record PacketRemoveModule(BlockPos pos, ModuleData<?> moduleType, boolean
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
+        buffer.writeBoolean(removeAll);
     }
 }
