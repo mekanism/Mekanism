@@ -238,6 +238,20 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .displayAndCriterion(MekanismItems.POLONIUM_PELLET, AdvancementType.TASK, true)
               .save(consumer);
 
+        advancement(MekanismAdvancements.TELEPORTATION_CORE)
+              .displayAndCriterion(MekanismItems.TELEPORTATION_CORE, AdvancementType.TASK, false)
+              .save(consumer);
+        advancement(MekanismAdvancements.QUANTUM_ENTANGLOPORTER)
+              .displayAndCriterion(MekanismBlocks.QUANTUM_ENTANGLOPORTER, AdvancementType.TASK, true)
+              .save(consumer);
+        advancement(MekanismAdvancements.TELEPORTER)
+              .displayAndCriterion(MekanismBlocks.TELEPORTER, AdvancementType.TASK, true)
+              .addCriterion("teleport", MekanismCriteriaTriggers.TELEPORT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
+              .save(consumer);
+        advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
+              .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, AdvancementType.TASK, true)
+              .save(consumer);
+
         advancement(MekanismAdvancements.QIO_DRIVE_ARRAY)
               .displayAndCriterion(MekanismBlocks.QIO_DRIVE_ARRAY, AdvancementType.TASK, true)
               .save(consumer);
@@ -267,20 +281,6 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ULTIMATE_QIO_DRIVE)
               .displayAndCriterion(MekanismItems.SUPERMASSIVE_QIO_DRIVE, AdvancementType.CHALLENGE, true)
-              .save(consumer);
-
-        advancement(MekanismAdvancements.TELEPORTATION_CORE)
-              .displayAndCriterion(MekanismItems.TELEPORTATION_CORE, AdvancementType.TASK, false)
-              .save(consumer);
-        advancement(MekanismAdvancements.QUANTUM_ENTANGLOPORTER)
-              .displayAndCriterion(MekanismBlocks.QUANTUM_ENTANGLOPORTER, AdvancementType.TASK, true)
-              .save(consumer);
-        advancement(MekanismAdvancements.TELEPORTER)
-              .displayAndCriterion(MekanismBlocks.TELEPORTER, AdvancementType.TASK, true)
-              .addCriterion("teleport", MekanismCriteriaTriggers.TELEPORT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
-              .save(consumer);
-        advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
-              .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, AdvancementType.TASK, true)
               .save(consumer);
 
         advancement(MekanismAdvancements.ROBIT)

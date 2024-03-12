@@ -1,5 +1,5 @@
 {
-  "parent": "mekanism:polonium",
+  "parent": "mekanism:teleportation_core",
   "criteria": {
     "qio_drive_array": {
       "conditions": {

@@ -71,7 +71,12 @@ public class MekanismAdvancements {
 
     public static final MekanismAdvancement POLONIUM = advancement(WASTE_REMOVAL, "polonium");
 
-    public static final MekanismAdvancement QIO_DRIVE_ARRAY = advancement(POLONIUM, "qio_drive_array");
+    public static final MekanismAdvancement TELEPORTATION_CORE = advancement(ATOMIC_ALLOY, "teleportation_core");
+    public static final MekanismAdvancement QUANTUM_ENTANGLOPORTER = advancement(TELEPORTATION_CORE, "quantum_entangloporter");
+    public static final MekanismAdvancement TELEPORTER = advancement(TELEPORTATION_CORE, "teleporter");
+    public static final MekanismAdvancement PORTABLE_TELEPORTER = advancement(TELEPORTER, "portable_teleporter");
+
+    public static final MekanismAdvancement QIO_DRIVE_ARRAY = advancement(TELEPORTATION_CORE, "qio_drive_array");
     public static final MekanismAdvancement QIO_EXPORTER = advancement(QIO_DRIVE_ARRAY, "qio_exporter");
     public static final MekanismAdvancement QIO_IMPORTER = advancement(QIO_DRIVE_ARRAY, "qio_importer");
     public static final MekanismAdvancement QIO_REDSTONE_ADAPTER = advancement(QIO_DRIVE_ARRAY, "qio_redstone_adapter");
@@ -81,11 +86,6 @@ public class MekanismAdvancements {
     public static final MekanismAdvancement ADVANCED_QIO_DRIVE = advancement(BASIC_QIO_DRIVE, "advanced_qio_drive");
     public static final MekanismAdvancement ELITE_QIO_DRIVE = advancement(ADVANCED_QIO_DRIVE, "elite_qio_drive");
     public static final MekanismAdvancement ULTIMATE_QIO_DRIVE = advancement(ELITE_QIO_DRIVE, "ultimate_qio_drive");
-
-    public static final MekanismAdvancement TELEPORTATION_CORE = advancement(ATOMIC_ALLOY, "teleportation_core");
-    public static final MekanismAdvancement QUANTUM_ENTANGLOPORTER = advancement(TELEPORTATION_CORE, "quantum_entangloporter");
-    public static final MekanismAdvancement TELEPORTER = advancement(TELEPORTATION_CORE, "teleporter");
-    public static final MekanismAdvancement PORTABLE_TELEPORTER = advancement(TELEPORTER, "portable_teleporter");
 
     public static final MekanismAdvancement ROBIT = advancement(ATOMIC_ALLOY, "robit");
     public static final MekanismAdvancement ROBIT_AESTHETICS = advancement(ROBIT, "robit_aesthetics");
