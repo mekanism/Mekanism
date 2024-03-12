@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.slot;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -74,6 +75,10 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         return slot.isItemValidForInsertion(stack, AutomationType.MANUAL);
     }
 
+    protected boolean allowPartialRemoval() {
+        return true;
+    }
+
     @NotNull
     @Override
     public ItemStack getItem() {
@@ -138,5 +143,26 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     @Nullable
     public SlotOverlay getSlotOverlay() {
         return slotOverlay;
+    }
+
+    @NotNull
+    @Override
+    public Optional<ItemStack> tryRemove(int count, int decrement, @NotNull Player player) {
+        if (allowPartialRemoval()) {
+            if (!mayPickup(player)) {
+                return Optional.empty();
+            }
+            //Skip super check about if we can't place the stack back, as we know our remove method supports just removing part of it
+            count = Math.min(count, decrement);
+            ItemStack itemstack = remove(count);
+            if (itemstack.isEmpty()) {
+                return Optional.empty();
+            } else if (getItem().isEmpty()) {
+                setByPlayer(ItemStack.EMPTY, itemstack);
+            }
+            return Optional.of(itemstack);
+        }
+        //Super logic for if we don't allow removing part of the stack
+        return super.tryRemove(count, decrement, player);
     }
 }

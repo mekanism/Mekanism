@@ -41,6 +41,11 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return false;
     }
 
+    @Override
+    protected boolean allowPartialRemoval() {
+        return false;
+    }
+
     @NotNull
     @Override
     public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
