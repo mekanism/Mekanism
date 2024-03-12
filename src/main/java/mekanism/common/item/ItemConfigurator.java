@@ -155,11 +155,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
                     } else if (Attribute.matches(tileMekanism.getBlockType(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
-                        if (!player.isShiftKeyDown()) {
-                            tileMekanism.setFacing(side);
-                        } else if (player.isShiftKeyDown()) {
-                            tileMekanism.setFacing(side.getOpposite());
-                        }
+                        tileMekanism.setFacing(player.isShiftKeyDown() ? side.getOpposite() : side);
                     }
                 }
                 return InteractionResult.SUCCESS;

@@ -92,11 +92,15 @@ public class ItemTierInstaller extends Item {
                             return InteractionResult.FAIL;
                         } else {
                             if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
-                                upgradedTile.setFacing(directional.getDirection());
+                                upgradedTile.setFacing(directional.getDirection(), false);
                             }
                             upgradedTile.parseUpgradeData(upgradeData);
                             upgradedTile.sendUpdatePacket();
                             upgradedTile.setChanged();
+                            //Notify the level that the caps at the position are no longer valid
+                            // In general replacing the tile likely will have caused this to be invalidated
+                            // but mark it just to be safe
+                            upgradedTile.invalidateCapabilities();
                             if (!player.isCreative()) {
                                 context.getItemInHand().shrink(1);
                             }

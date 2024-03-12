@@ -958,11 +958,19 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void setFacing(@NotNull Direction direction) {
+        setFacing(direction, true);
+    }
+
+    public void setFacing(@NotNull Direction direction, boolean notifyCaps) {
         if (isDirectional() && direction != cachedDirection && level != null) {
             cachedDirection = direction;
             BlockState state = Attribute.setFacing(getBlockState(), direction);
             if (state != null) {
                 level.setBlockAndUpdate(worldPosition, state);
+                if (notifyCaps) {
+                    //Clear cached capabilities as it is possible it changed on one of the sides
+                    invalidateCapabilitiesFull();
+                }
             }
         }
     }
