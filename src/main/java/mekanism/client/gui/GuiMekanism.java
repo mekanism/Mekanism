@@ -460,12 +460,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(children(), child -> child.keyPressed(keyCode, scanCode, modifiers)) || super.keyPressed(keyCode, scanCode, modifiers);
+               GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.keyPressed(keyCode, scanCode, modifiers)) ||
+               super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) || GuiUtils.checkChildren(children(), child -> child.charTyped(c, keyCode)) ||
+        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
+               GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.charTyped(c, keyCode)) ||
                super.charTyped(c, keyCode);
     }
 
