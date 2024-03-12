@@ -58,13 +58,6 @@ jobs:
           distribution: 'temurin'
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: Clean Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          arguments: clean
-          gradle-version: wrapper
-          cache-read-only: false
-
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v3
         with:
