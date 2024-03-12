@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -33,7 +34,7 @@ public class GuiTextField extends GuiElement {
     public static final IntSupplier SCREEN_COLOR = SpecialColors.TEXT_SCREEN::argb;
     public static final IntSupplier DARK_SCREEN_COLOR = () -> Color.argb(SCREEN_COLOR.getAsInt()).darken(0.4).argb();
 
-    private final EditBox textField;
+    private final ClearingEditBox textField;
     private ContainerEventHandler parent;
 
     private Runnable enterHandler;
@@ -58,7 +59,7 @@ public class GuiTextField extends GuiElement {
         super(gui, x, y, width, height);
         this.parent = parent;
 
-        textField = new EditBox(getFont(), getX(), getY(), width, height, Component.empty());
+        textField = new ClearingEditBox(getFont(), getX(), getY(), width, height, Component.empty());
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -181,13 +182,21 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
+    protected boolean isValidClickButton(int button) {
+        return super.isValidClickButton(button) || textField.isValidClickButton(button);
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
             scaledX = Math.min(scaledX, textField.getX()) + (scaledX - textField.getX()) * (1F / textScale);
         }
-        return textField.mouseClicked(scaledX, mouseY, button) || super.mouseClicked(mouseX, mouseY, button);
+        if (textField.mouseClicked(scaledX, mouseY, button)) {
+            return true;
+        }
+        return super.isValidClickButton(button) && super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -338,5 +347,27 @@ public class GuiTextField extends GuiElement {
 
     public void setResponder(Consumer<String> responder) {
         this.responder = responder;
+    }
+
+    private static class ClearingEditBox extends EditBox {
+
+        public ClearingEditBox(Font font, int x, int y, int width, int height, Component message) {
+            super(font, x, y, width, height, message);
+        }
+
+        @Override
+        public boolean isValidClickButton(int button) {
+            return super.isValidClickButton(button) || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        }
+
+        @Override
+        public void onClick(double mouseX, double mouseY, int button) {
+            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                //Allow clearing on right click
+                setValue("");
+            } else {
+                super.onClick(mouseX, mouseY, button);
+            }
+        }
     }
 }
