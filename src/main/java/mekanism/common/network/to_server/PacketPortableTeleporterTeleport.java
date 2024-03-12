@@ -100,7 +100,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         double oldY = player.getY();
                         double oldZ = player.getZ();
                         Level oldWorld = player.level();
-                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, event);
+                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, event, false);
                         TileEntityTeleporter.alignPlayer(player, event, teleporter);
                         if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                             //If the player teleported over 5 blocks, play the sound at both the destination and the source

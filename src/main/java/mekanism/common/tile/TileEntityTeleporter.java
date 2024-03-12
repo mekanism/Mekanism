@@ -42,6 +42,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
+import mekanism.common.network.to_client.PacketSetDeltaMovement;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -313,7 +314,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 double oldX = entity.getX();
                 double oldY = entity.getY();
                 double oldZ = entity.getZ();
-                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, event);
+                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, event, true);
                 if (teleportedEntity instanceof ServerPlayer player) {
                     alignPlayer(player, event, teleporter);
                     MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
@@ -350,9 +351,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    public static Entity teleportEntityTo(Entity entity, Level targetWorld, MekanismTeleportEvent.Teleporter event) {
+    public static Entity teleportEntityTo(Entity entity, Level targetWorld, MekanismTeleportEvent.Teleporter event, boolean persistMovement) {
         Vec3 destination = event.getTarget();
         if (!event.isTransDimensional()) {
+            Vec3 deltaMovement = entity.getDeltaMovement();
             entity.teleportTo(destination.x, destination.y, destination.z);
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
@@ -366,6 +368,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                         player.connection.send(new ClientboundMoveVehiclePacket(entity));
                     }
                 }
+            }
+            if (persistMovement && entity instanceof ServerPlayer player && !(player instanceof FakePlayer)) {
+                player.setDeltaMovement(deltaMovement);
+                //Force sync the delta movement to the client so that they don't stop moving due to the teleport and movement being client sided
+                PacketUtils.sendTo(new PacketSetDeltaMovement(deltaMovement), player);
             }
             return entity;
         }
