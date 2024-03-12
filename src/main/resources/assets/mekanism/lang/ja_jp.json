@@ -450,7 +450,7 @@
   "cardboard_box.mekanism.block_data": "ブロックデータ: %1$s",
   "cardboard_box.mekanism.block_entity": "ブロックエンティティ: %1$s",
   "cardboard_box.mekanism.block_entity.decoration": "装飾：",
-  "cardboard_box.mekanism.block_entity.spawn_type": "スポーン数： %1$s",
+  "cardboard_box.mekanism.block_entity.spawn_type": "スポーン数: %1$s",
   "chemical.mekanism.attribute.coolant.efficiency": " - 冷媒効率： %1$s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - 熱エンタルピー: %1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - 燃焼時間： %1$s t",
