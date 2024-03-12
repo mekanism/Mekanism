@@ -501,6 +501,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
+                if (IRadiationManager.INSTANCE.isRadiationEnabled() && getRadiationScale() > 0) {
+                    //Don't allow dismantling radioactive blocks
+                    return WrenchResult.RADIOACTIVE;
+                }
                 WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player);
                 return WrenchResult.DISMANTLED;
             }

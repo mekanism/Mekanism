@@ -2,7 +2,6 @@ package mekanism.generators.common.block.turbine;
 
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.item.ItemTurbineBlade;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
@@ -34,9 +33,11 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand);
-        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return InteractionResult.SUCCESS;
+            return genericClientActivated(player, hand, tile);
+        }
+        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
+            return wrenchResult;
         }
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {

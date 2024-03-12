@@ -13,7 +13,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,9 +54,11 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand);
-        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return InteractionResult.SUCCESS;
+            return genericClientActivated(player, hand, tile);
+        }
+        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
+            return wrenchResult;
         }
         return type.has(AttributeGui.class) ? tile.openGui(player) : InteractionResult.PASS;
     }

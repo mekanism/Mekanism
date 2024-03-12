@@ -276,8 +276,13 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    protected InteractionResult genericClientActivated(@NotNull Player player, @NotNull InteractionHand hand) {
-        if (Attribute.has(this, AttributeGui.class) || MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+    protected InteractionResult genericClientActivated(@NotNull Player player, @NotNull InteractionHand hand, BlockEntity blockEntity) {
+        if (Attribute.has(this, AttributeGui.class)) {
+            return InteractionResult.SUCCESS;
+        } else if (MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+            if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
+                return InteractionResult.FAIL;
+            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

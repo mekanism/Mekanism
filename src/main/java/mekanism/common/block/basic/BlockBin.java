@@ -7,7 +7,6 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -79,8 +78,10 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return InteractionResult.PASS;
-        } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return InteractionResult.SUCCESS;
+        }
+        InteractionResult wrenchResult = bin.tryWrench(state, player, hand, hit).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
+            return wrenchResult;
         }
         ItemStack stack = player.getItemInHand(hand);
         if (stack.isEmpty() && player.isShiftKeyDown() && hit.getDirection() == bin.getDirection()) {
