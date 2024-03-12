@@ -255,6 +255,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public ATTACHMENT getDefault(IAttachmentHolder holder) {
         ATTACHMENT attachment = getDefaultInternal(holder);
         if (attachment == null) {
+            if (holder instanceof ItemStack stack) {
+                throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object (" + RegistryUtils.getName(stack.getItem()) +
+                                                   ") that doesn't have containers of that type.");
+            } else if (holder instanceof Entity entity) {
+                throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object (" + RegistryUtils.getName(entity.getType()) +
+                                                   ") that doesn't have containers of that type.");
+            }
             throw new IllegalArgumentException("Attempted to attach a " + getAttachmentName() + " container to an object that doesn't have containers of that type.");
         }
         return attachment;

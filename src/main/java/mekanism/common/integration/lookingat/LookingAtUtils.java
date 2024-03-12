@@ -14,6 +14,7 @@ import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -30,6 +31,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.WorldUtils;
@@ -104,7 +106,10 @@ public class LookingAtUtils {
 
     private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile != null) {
-            tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(blockData ->  blockData.addToTooltip(info::addText));
+            tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(blockData -> blockData.addToTooltip(info::addText));
+            if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
+                info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));
+            }
         }
         MultiblockData structure = getMultiblock(tile);
         IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
