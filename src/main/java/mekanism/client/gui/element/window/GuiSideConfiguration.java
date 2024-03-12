@@ -150,7 +150,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     List<Component> tooltipLines = new ArrayList<>(3);
-                    tooltipLines.add(TextComponentUtil.translate(side.getTranslationKey()));
+                    tooltipLines.add(TextComponentUtil.build(side));
                     tooltipLines.add(TextComponentUtil.build(dataType.getColor(), dataType));
                     if (!button.otherBlockItem.isEmpty()) {
                         tooltipLines.add(button.otherBlockItem.getHoverName());

@@ -181,6 +181,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nullable
     private Component customName;
+    @Nullable
+    private String containerDescription;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -456,9 +458,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @SuppressWarnings("ConstantConditions")
     public Component getDisplayName() {
         if (isNameable()) {
-            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockTypeRegistryName()));
+            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(getContainerDescription());
         }
         return TextComponentUtil.build(getBlockType());
+    }
+
+    private String getContainerDescription() {
+        if (containerDescription == null) {
+            containerDescription = Util.makeDescriptionId("container", getBlockTypeRegistryName());
+        }
+        return containerDescription;
     }
 
     @Nullable

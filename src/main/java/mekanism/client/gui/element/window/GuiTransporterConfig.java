@@ -82,10 +82,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltips(guiGraphics, mouseX, mouseY,
-                          TextComponentUtil.translate(side.getTranslationKey()),
-                          colorComponent
-                    );
+                    displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(side), colorComponent);
                 }
             }
         };
