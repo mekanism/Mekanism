@@ -43,6 +43,8 @@ public class MekaSuitBarDecorator implements IItemDecorator {
             int tank = getDisplayTank(fluidTankSpecs, stack, tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
+            } else if (tanks.isEmpty()) {
+                ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
             }
         }
         return true;
@@ -50,13 +52,15 @@ public class MekaSuitBarDecorator implements IItemDecorator {
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> boolean tryRender(
           GuiGraphics guiGraphics, ItemStack stack, ContainerType<TANK, ?, ?> containerType, int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
-        if (!chemicalTankSpecs.isEmpty() && chemicalTankSpecs.stream().anyMatch(spec -> spec.supportsStack(stack))) {
+        if (!chemicalTankSpecs.isEmpty()) {
             List<TANK> tanks = containerType.getAttachmentContainersIfPresent(stack);
             int tank = getDisplayTank(chemicalTankSpecs, stack, tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
-                return true;
+            } else if (tanks.isEmpty()) {
+                ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
             }
+            return true;
         }
         return false;
     }

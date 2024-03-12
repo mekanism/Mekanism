@@ -48,6 +48,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
                 yOffset--;
+            } else if (tanks.isEmpty()) {
+                renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
             }
         }
 
@@ -56,6 +58,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             int tank = getDisplayTank(tanks.size());
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
+            } else if (tanks.isEmpty()) {
+                renderBar(guiGraphics, xOffset, yOffset, 0, 1, 0xFFFFFFFF);
             }
         }
         return true;
