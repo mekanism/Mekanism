@@ -195,7 +195,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Gauge Dropper Settings").push(GAUGE_DROPPER_CATEGORY);
         gaugeDroppedTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which a gauge dropper can be filled or emptied.")
-              .defineInRange("transferRate", 256, 1, Integer.MAX_VALUE));
+              .defineInRange("transferRate", 250, 1, Integer.MAX_VALUE));
         gaugeDropperCapacity = CachedIntValue.wrap(this, builder.comment("Capacity of gauge droppers.")
               .defineInRange("capacity", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         builder.pop();
