@@ -98,7 +98,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     //Note: We set the add ticks regardless so that we can allow double right-clicking to insert items from the player's inventory
                     // without requiring them to first be holding the same item
                     bin.addTicks = 5;
-                } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
+                } else if (bin.addTicks > 0 && !storedStack.isEmpty()) {
                     NonNullList<ItemStack> inv = player.getInventory().items;
                     for (int i = 0; i < inv.size(); i++) {
                         if (binSlot.getCount() == binMaxSize) {
