@@ -1627,7 +1627,6 @@
   "tooltip.mekanism.stored": "Immagazinato %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Lanciafiamme: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energia delle Protesi Performanti: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Carburante del jetpack: %1$s",
   "tooltip.mekanism.stored_energy": "Energia immagazzinata: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Immagazzinato %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Sconosciuto",
