@@ -373,49 +373,49 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return isFormed() ? inventorySlots : Collections.emptyList();
+        return isFormed() || isRemote() ? inventorySlots : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return isFormed() ? fluidTanks : Collections.emptyList();
+        return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return isFormed() ? gasTanks : Collections.emptyList();
+        return isFormed() || isRemote() ? gasTanks : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return isFormed() ? infusionTanks : Collections.emptyList();
+        return isFormed() || isRemote() ? infusionTanks : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return isFormed() ? pigmentTanks : Collections.emptyList();
+        return isFormed() || isRemote() ? pigmentTanks : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return isFormed() ? slurryTanks : Collections.emptyList();
+        return isFormed() || isRemote() ? slurryTanks : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return isFormed() ? energyContainers : Collections.emptyList();
+        return isFormed() || isRemote() ? energyContainers : Collections.emptyList();
     }
 
     @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
-        return isFormed() ? heatCapacitors : Collections.emptyList();
+        return isFormed() || isRemote() ? heatCapacitors : Collections.emptyList();
     }
 
     public Set<Direction> getDirectionsToEmit(BlockPos pos) {

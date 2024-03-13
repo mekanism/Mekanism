@@ -279,7 +279,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         super.attachCapabilities(event);
-        //Note: The all our providers only expose the capabilities (both those via attachmenst and those here) if the required configs for initializing that capability are loaded
+        //Note: The all our providers only expose the capabilities (both those via attachments and those here) if the required configs for initializing that capability are loaded
         event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
