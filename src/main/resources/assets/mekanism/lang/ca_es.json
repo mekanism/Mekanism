@@ -1599,7 +1599,6 @@
   "tooltip.mekanism.stored": "%1$s emmagatzemat: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Llançaflames: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energia dels Corredors: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Combustible de la Motxilla Propulsora: %1$s",
   "tooltip.mekanism.stored_energy": "Energia emmagatzemada: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "%1$s emmagatzemat: %2$s mB (%3$s)",
   "transmission.mekanism.energy": "Energia",
