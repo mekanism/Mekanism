@@ -3,7 +3,7 @@
 # Mekanism for Minecraft 1.20 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
-armor, and weapons. You can find more detail on the features on the [**Official Website**](http://aidancbrady.com/mekanism/).
+armor, and weapons. You can find more detail on the features on the [**Official Wiki**](https://wiki.aidancbrady.com/wiki/Mekanism).
 With features ranging from jetpacks and balloons to factories and energy cubes, the mod does not have a single unifying goal.
 Nevertheless, these features combine coherently to create a rich gameplay experience that players will enjoy.
 
