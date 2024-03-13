@@ -1613,7 +1613,6 @@
   "tooltip.mekanism.stored": "%1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Eldkastare: %1$s",
   "tooltip.mekanism.stored.free_runners": "Springenergi: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Ryggraketsbränsle: %1$s",
   "tooltip.mekanism.stored_energy": "Lagrad energi: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "%1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Okänd",
