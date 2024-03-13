@@ -1608,7 +1608,6 @@
   "tooltip.mekanism.stored": "저장된 %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "화염 방사기: %1$s",
   "tooltip.mekanism.stored.free_runners": "러너 에너지: %1$s",
-  "tooltip.mekanism.stored.jetpack": "제트팩 연료: %1$s",
   "tooltip.mekanism.stored_energy": "저장된 에너지: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "저장된 %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "알 수 없음",
