@@ -1617,7 +1617,6 @@
   "tooltip.mekanism.stored": "Armazenado %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Lança-chamas: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energia dos Corredores: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Combustível da mochila a jato: %1$s",
   "tooltip.mekanism.stored_energy": "Energia Armazenada: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Armazenado %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Desconhecido",
