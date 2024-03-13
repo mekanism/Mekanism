@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import java.util.function.Consumer;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -13,26 +12,25 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiResizeControls extends GuiSideHolder {
 
     private final MekanismImageButton expandButton, shrinkButton;
-    private final Consumer<ResizeType> resizeHandler;
 
     private int tooltipTicks;
 
     private static final ResourceLocation MINUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "minus.png");
     private static final ResourceLocation PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
 
-    public GuiResizeControls(IGuiWrapper gui, int y, Consumer<ResizeType> resizeHandler) {
+    public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
         super(gui, -26, y, 39, true, false);
-        this.resizeHandler = resizeHandler;
         expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
-              () -> handleResize(ResizeType.EXPAND_Y)));
+              () -> handleResize(ResizeType.EXPAND_Y, Screen.hasShiftDown())));
         shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 25, 19, 9, 19, 9, MINUS,
-              () -> handleResize(ResizeType.SHRINK_Y)));
+              () -> handleResize(ResizeType.SHRINK_Y, Screen.hasShiftDown())));
         updateButtonState();
         active = true;
     }
@@ -70,9 +68,12 @@ public class GuiResizeControls extends GuiSideHolder {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_RESIZE_CONTROLS);
     }
 
-    private void handleResize(ResizeType type) {
-        resizeHandler.accept(type);
-        updateButtonState();
+    private void handleResize(ResizeType type, boolean adjustMax) {
+        //Validate something didn't change and it still is actually a controller
+        if (gui() instanceof ResizeController resizeHandler) {
+            resizeHandler.resize(type, adjustMax);
+            updateButtonState();
+        }
     }
 
     private void updateButtonState() {
@@ -90,5 +91,11 @@ public class GuiResizeControls extends GuiSideHolder {
         EXPAND_Y,
         SHRINK_X,
         SHRINK_Y;
+    }
+
+    @FunctionalInterface
+    public interface ResizeController {
+
+        void resize(ResizeType type, boolean adjustMax);
     }
 }

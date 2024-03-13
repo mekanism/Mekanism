@@ -4,12 +4,14 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.IntSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
 import mekanism.client.gui.element.GuiDropdown;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.custom.GuiResizeControls;
+import mekanism.client.gui.element.custom.GuiResizeControls.ResizeController;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
 import mekanism.client.gui.element.tab.GuiTargetDirectionTab;
@@ -29,10 +31,11 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
+public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> implements ResizeController {
 
     private static final Set<Character> ALLOWED_SPECIAL_CHARS = Util.make(
           Sets.newHashSet('_', ' ', '-', '/', '.', '\"', '\'', '|', '(', ')', ':'),
@@ -92,7 +95,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
         addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
-        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos, this::resize));
+        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
@@ -126,23 +129,23 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     public abstract FrequencyIdentity getFrequency();
 
-    private void resize(ResizeType type) {
-        int sizeX = MekanismConfig.client.qioItemViewerSlotsX.get(), sizeY = MekanismConfig.client.qioItemViewerSlotsY.get();
-        boolean changed = false;
-        if (type == ResizeType.EXPAND_X && sizeX < QIOItemViewerContainer.SLOTS_X_MAX) {
-            MekanismConfig.client.qioItemViewerSlotsX.set(sizeX + 1);
-            changed = true;
-        } else if (type == ResizeType.EXPAND_Y && sizeY < QIOItemViewerContainer.getSlotsYMax()) {
-            MekanismConfig.client.qioItemViewerSlotsY.set(sizeY + 1);
-            changed = true;
-        } else if (type == ResizeType.SHRINK_X && sizeX > QIOItemViewerContainer.SLOTS_X_MIN) {
-            MekanismConfig.client.qioItemViewerSlotsX.set(sizeX - 1);
-            changed = true;
-        } else if (type == ResizeType.SHRINK_Y && sizeY > QIOItemViewerContainer.SLOTS_Y_MIN) {
-            MekanismConfig.client.qioItemViewerSlotsY.set(sizeY - 1);
-            changed = true;
+    @Override
+    public void resize(ResizeType type, boolean adjustMax) {
+        IntSupplier changeX = null;
+        IntSupplier changeY = null;
+        switch (type) {
+            case EXPAND_X -> changeX = adjustMax ? () -> QIOItemViewerContainer.SLOTS_X_MAX : () -> MekanismConfig.client.qioItemViewerSlotsX.get() + 1;
+            case SHRINK_X -> changeX = adjustMax ? () -> QIOItemViewerContainer.SLOTS_X_MIN : () -> MekanismConfig.client.qioItemViewerSlotsX.get() - 1;
+            case EXPAND_Y -> changeY = adjustMax ? QIOItemViewerContainer::getSlotsYMax : () -> MekanismConfig.client.qioItemViewerSlotsY.get() + 1;
+            case SHRINK_Y -> changeY = adjustMax ? () -> QIOItemViewerContainer.SLOTS_Y_MIN : () -> MekanismConfig.client.qioItemViewerSlotsY.get() - 1;
         }
-        if (changed) {
+        if (changeX != null || changeY != null) {
+            if (changeX != null) {
+                MekanismConfig.client.qioItemViewerSlotsX.set(Mth.clamp(changeX.getAsInt(), QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
+            }
+            if (changeY != null) {
+                MekanismConfig.client.qioItemViewerSlotsY.set(Mth.clamp(changeY.getAsInt(), QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.getSlotsYMax()));
+            }
             // save the updated config info
             MekanismConfig.client.save();
             // And recreate the viewer
