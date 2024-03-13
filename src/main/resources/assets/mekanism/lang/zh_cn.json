@@ -1629,7 +1629,6 @@
   "tooltip.mekanism.stored": "已储存%1$s：%2$s",
   "tooltip.mekanism.stored.flamethrower": "火焰喷射器模式：%1$s",
   "tooltip.mekanism.stored.free_runners": "自由助跑器能量：%1$s",
-  "tooltip.mekanism.stored.jetpack": "喷气背包燃料：%1$s",
   "tooltip.mekanism.stored_energy": "已储能：%1$s",
   "tooltip.mekanism.stored_mb_percentage": "已储存%1$s：%2$s mB（%3$s）",
   "tooltip.mekanism.unknown": "未知",
