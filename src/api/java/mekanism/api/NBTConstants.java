@@ -150,6 +150,10 @@ public final class NBTConstants {
      * @since 10.5.0
      */
     public static final String INPUT_COLOR = "inputColor";
+    /**
+     * @since 10.5.7
+     */
+    public static final String INSERT_INTO_FREQUENCY = "insert_into_frequency";
     public static final String INVALID = "invalid";
     public static final String INVERSE = "inverse";
     public static final String INVERSE_REQUIRES_REPLACE = "inverseReplace";

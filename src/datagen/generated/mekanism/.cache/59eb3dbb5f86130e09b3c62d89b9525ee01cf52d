@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-08T09:23:00.9393082	Loot Tables
+// 1.20.4	2024-03-13T13:47:48.8694059	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 cd266e7b4a5bde833aa11e1caf17d86631197626 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 6829ad29ae722d1ef741fc103dfd5704c1874a66 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -133,7 +133,7 @@ c93f6d48138eea1ef6219fbe4a261e1219ca0b0c data/mekanism/loot_tables/blocks/nutrit
 28aa6ead6f5f68b2b036a3c6f6f1d1361f611883 data/mekanism/loot_tables/blocks/pressure_disperser.json
 0fc3d3a1c2311db010484950f8ca47044f5748dc data/mekanism/loot_tables/blocks/pressurized_reaction_chamber.json
 8264c1d2b3ac806201a2e22573779d0954d6ae84 data/mekanism/loot_tables/blocks/purification_chamber.json
-353c31ce8f86e5787310821aa82a4bc50662c7c8 data/mekanism/loot_tables/blocks/qio_dashboard.json
+4b9a5c6c9fe76acc35845a7c717f8386652707e3 data/mekanism/loot_tables/blocks/qio_dashboard.json
 d03909e03fcdcbfeb73e47ade1d18da374efc628 data/mekanism/loot_tables/blocks/qio_drive_array.json
 3753c4dc0ede114e1e828e2fe6984bd77055b7ac data/mekanism/loot_tables/blocks/qio_exporter.json
 d26c883389d1ac6139397f6c6ad5dc231bd8b2d3 data/mekanism/loot_tables/blocks/qio_importer.json

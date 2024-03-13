@@ -1443,6 +1443,8 @@
   "qio.mekanism.sort_name": "Name",
   "qio.mekanism.sort_name_desc": "Sort items by name.",
   "qio.mekanism.stored_count": "Stored count: %1$s",
+  "qio.mekanism.transfer.to_frequency": "Prioritize moving items to the frequency when holding shift",
+  "qio.mekanism.transfer.to_window": "Prioritize moving items to the crafting window when holding shift",
   "qio.mekanism.trigger_count": "Trigger count:",
   "qio.mekanism.types": "Types",
   "qio.mekanism.types_detail": "Types: %1$s / %2$s",

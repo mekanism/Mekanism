@@ -41,7 +41,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
             // as some of them may need to be reflected in the GUI https://github.com/mekanism/Mekanism/issues/7923
             track(SyncableItemStack.create(inv.player::getOffhandItem, item -> {
                 inv.player.setItemSlot(EquipmentSlot.OFFHAND, item);
-                if (hand == InteractionHand.OFF_HAND) {
+                if (hand == InteractionHand.OFF_HAND && stack.is(item.getItem())) {
                     stack = item;
                 }
             }));

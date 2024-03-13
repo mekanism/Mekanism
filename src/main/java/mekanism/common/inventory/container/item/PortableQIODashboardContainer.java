@@ -6,6 +6,9 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.PacketItemGuiInteract;
+import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     protected final InteractionHand hand;
-    protected final ItemStack stack;
+    protected ItemStack stack;
 
     private PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote, IQIOCraftingWindowHolder craftingWindowHolder) {
         super(MekanismContainerTypes.PORTABLE_QIO_DASHBOARD, id, inv, remote, craftingWindowHolder);
@@ -62,7 +65,12 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (offhandSlots.isEmpty()) {
             //If we don't have a slot relating to offhand data, add a syncable itemstack to track any changes that might happen to the stack
             // as some of them may need to be reflected in the GUI https://github.com/mekanism/Mekanism/issues/7923
-            track(SyncableItemStack.create(inv.player::getOffhandItem, item -> inv.player.setItemSlot(EquipmentSlot.OFFHAND, item)));
+            track(SyncableItemStack.create(inv.player::getOffhandItem, item -> {
+                inv.player.setItemSlot(EquipmentSlot.OFFHAND, item);
+                if (hand == InteractionHand.OFF_HAND && stack.is(item.getItem())) {
+                    stack = item;
+                }
+            }));
         }
     }
 
@@ -74,6 +82,15 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
                 @Override
                 public boolean mayPickup(@NotNull Player player) {
                     return false;
+                }
+
+                @Override
+                public void set(@NotNull ItemStack item) {
+                    super.set(item);
+                    if (stack.is(item.getItem())) {
+                        //Track changes to the main hand's slot
+                        stack = item;
+                    }
                 }
             };
         }
@@ -104,5 +121,18 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     @Override
     public boolean stillValid(@NotNull Player player) {
         return !this.stack.isEmpty() && player.getItemInHand(this.hand).is(this.stack.getItem());
+    }
+
+    @Override
+    public boolean shiftClickIntoFrequency() {
+        //Shouldn't be empty but validate it
+        return !this.stack.isEmpty() && stack.getData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
+    }
+
+    @Override
+    public void toggleTargetDirection() {
+        //Change the data client side so that it is reflected in the gui as we don't handle updating client side data
+        PacketUtils.sendToServer(new PacketItemGuiInteract(ItemGuiInteraction.TARGET_DIRECTION_BUTTON, this.hand));
+        //stack.setData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY, !stack.getData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY));
     }
 }

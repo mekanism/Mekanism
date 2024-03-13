@@ -20,6 +20,16 @@
             {
               "type": "mekanism:inventory_slots",
               "function": "mekanism:copy_containers"
+            },
+            {
+              "function": "mekanism:copy_to_attachments",
+              "ops": [
+                {
+                  "source": "insert_into_frequency",
+                  "target": "mekanism:insert_into_frequency"
+                }
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:qio_dashboard"

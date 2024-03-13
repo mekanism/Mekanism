@@ -703,6 +703,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
         add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");
         add(MekanismLang.QIO_COMPENSATE_TOOLTIP, "What are you trying to compensate for?");
+        add(MekanismLang.QIO_TRANSFER_TO_FREQUENCY, "Prioritize moving items to the frequency when holding shift");
+        add(MekanismLang.QIO_TRANSFER_TO_WINDOW, "Prioritize moving items to the crafting window when holding shift");
         add(MekanismLang.LIST_SORT_COUNT, "Count");
         add(MekanismLang.LIST_SORT_NAME, "Name");
         add(MekanismLang.LIST_SORT_MOD, "Mod");

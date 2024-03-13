@@ -27,6 +27,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
+import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
@@ -229,6 +230,11 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
         AUTO_SORT_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityFactory<?> factory) {
                 factory.toggleSorting();
+            }
+        }),
+        TARGET_DIRECTION_BUTTON((tile, player, extra) -> {
+            if (tile instanceof TileEntityQIODashboard dashboard) {
+                dashboard.toggleShiftClickDirection();
             }
         }),
         DUMP_BUTTON((tile, player, extra) -> {

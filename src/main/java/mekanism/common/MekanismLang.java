@@ -65,6 +65,8 @@ public enum MekanismLang implements ILangEntry {
     QIO_IMPORT_WITHOUT_FILTER("qio", "import_without_filter"),
     QIO_EXPORT_WITHOUT_FILTER("qio", "export_without_filter"),
     QIO_COMPENSATE_TOOLTIP("qio", "compensate_tooltip"),
+    QIO_TRANSFER_TO_FREQUENCY("qio", "transfer.to_frequency"),
+    QIO_TRANSFER_TO_WINDOW("qio", "transfer.to_window"),
     LIST_SORT_COUNT("qio", "sort_count"),
     LIST_SORT_NAME("qio", "sort_name"),
     LIST_SORT_MOD("qio", "sort_mod"),

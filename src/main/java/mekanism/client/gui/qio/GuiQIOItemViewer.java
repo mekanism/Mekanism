@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
+import mekanism.client.gui.element.tab.GuiTargetDirectionTab;
 import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -42,6 +43,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected final Inventory inv;
     private GuiTextField searchField;
     private GuiCraftingWindowTab craftingWindowTab;
+    private boolean loadPinned = true;
 
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -89,7 +91,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
               41, ListSortType.class, menu::getSortType, menu::setSortType));
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
-        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - 20 - topPos, this::resize));
+        addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
+        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos, this::resize));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
@@ -152,6 +155,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         @SuppressWarnings("unchecked")
         CONTAINER c = (CONTAINER) menu.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
+        //Skip loading pinned windows for now on the new viewer as we will transfer any open windows manually (pinned or not)
+        s.loadPinned = false;
         getMinecraft().screen = null;
         getMinecraft().player.containerMenu = s.getMenu();
         getMinecraft().setScreen(s);
@@ -159,6 +164,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         c.updateSearch(searchField.getText());
         //Transfer all the windows to the new GUI
         s.transferWindows(windows);
+    }
+
+    @Override
+    protected void initPinnedWindows() {
+        if (loadPinned) {
+            super.initPinnedWindows();
+        }
     }
 
     protected void transferWindows(Collection<GuiWindow> windows) {

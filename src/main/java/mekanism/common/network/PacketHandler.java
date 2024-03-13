@@ -30,6 +30,7 @@ import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiSetEnergy;
+import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketModeChangeCurios;
@@ -37,7 +38,6 @@ import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.network.to_server.PacketRemoveModule;
-import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress;
@@ -102,6 +102,7 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketEditFilter.ID, PacketEditFilter::decode);
         registrar.play(PacketGearStateUpdate.ID, PacketGearStateUpdate::new);
         registrar.play(PacketGuiInteract.ID, PacketGuiInteract::decode);
+        registrar.play(PacketItemGuiInteract.ID, PacketItemGuiInteract::new);
         registrar.play(PacketGuiSetEnergy.ID, PacketGuiSetEnergy::new);
         registrar.play(PacketKey.ID, PacketKey::new);
         registrar.play(PacketModeChange.ID, PacketModeChange::new);
@@ -111,7 +112,6 @@ public class PacketHandler extends BasePacketHandler {
         registrar.play(PacketPortableTeleporterTeleport.ID, PacketPortableTeleporterTeleport::new);
         registrar.play(PacketRadialModeChange.ID, PacketRadialModeChange::new);
         registrar.play(PacketRemoveModule.ID, PacketRemoveModule::new);
-        registrar.play(PacketSecurityMode.ID, PacketSecurityMode::new);
         registrar.play(PacketUpdateModuleSettings.ID, PacketUpdateModuleSettings::decode);
         registrar.play(PacketWindowSelect.ID, PacketWindowSelect::decode);
 

@@ -2,6 +2,9 @@ package mekanism.common.inventory.container.tile;
 
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.PacketGuiInteract;
+import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
@@ -48,6 +51,16 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
 
     public TileEntityQIODashboard getTileEntity() {
         return tile;
+    }
+
+    @Override
+    public boolean shiftClickIntoFrequency() {
+        return tile.shiftClickIntoFrequency();
+    }
+
+    @Override
+    public void toggleTargetDirection() {
+        PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TARGET_DIRECTION_BUTTON, tile));
     }
 
     @Override

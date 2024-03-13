@@ -23,7 +23,8 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
-import mekanism.common.network.to_server.PacketSecurityMode;
+import mekanism.common.network.to_server.PacketItemGuiInteract;
+import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
@@ -106,7 +107,8 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
         ISecurityObject security = dataSource.securityObject();
         if (security != null && security.ownerMatches(minecraft.player)) {
             if (currentHand != null) {
-                PacketUtils.sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
+                PacketUtils.sendToServer(new PacketItemGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? ItemGuiInteraction.NEXT_SECURITY_MODE
+                                                                                                         : ItemGuiInteraction.PREVIOUS_SECURITY_MODE, currentHand));
             } else {
                 Object provider = dataSource.objectSupplier.get();
                 if (provider instanceof BlockEntity tile) {

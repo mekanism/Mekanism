@@ -106,6 +106,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             //If we have a warning tracker add it as a button, we do so via a method in case any of the sub GUIs need to reposition where it ends up
             addWarningTab(warningTracker);
         }
+        initPinnedWindows();
+    }
+
+    protected void initPinnedWindows() {
         if (this.windows.isEmpty()) {
             //TODO: Improve support for this if we have windows that are opened from other windows
             for (GuiEventListener child : children()) {

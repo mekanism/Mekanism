@@ -1,6 +1,8 @@
 package mekanism.common.tile.qio;
 
+import java.util.Map;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -9,10 +11,17 @@ import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +31,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
      * @apiNote This is only not final for purposes of being able to assign it in presetVariables so that we can use it in getInitialInventory.
      */
     private QIOCraftingWindow[] craftingWindows;
+    private boolean insertIntoFrequency = true;
     private boolean recipesChecked = false;
 
     public TileEntityQIODashboard(BlockPos pos, BlockState state) {
@@ -78,6 +88,52 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     public QIOFrequency getFrequency() {
         return getQIOFrequency();
+    }
+
+    @Override
+    public void writeSustainedData(CompoundTag dataMap) {
+        super.writeSustainedData(dataMap);
+        dataMap.putBoolean(NBTConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
+    }
+
+    @Override
+    public void readSustainedData(CompoundTag dataMap) {
+        super.readSustainedData(dataMap);
+        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INSERT_INTO_FREQUENCY, value -> insertIntoFrequency = value);
+    }
+
+    @Override
+    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
+        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
+        remap.put(NBTConstants.INSERT_INTO_FREQUENCY, MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
+        return remap;
+    }
+
+    @Override
+    public void writeToStack(ItemStack stack) {
+        super.writeToStack(stack);
+        stack.setData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY, insertIntoFrequency);
+    }
+
+    @Override
+    public void readFromStack(ItemStack stack) {
+        super.readFromStack(stack);
+        insertIntoFrequency = stack.getData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
+    }
+
+    public boolean shiftClickIntoFrequency() {
+        return insertIntoFrequency;
+    }
+
+    public void toggleShiftClickDirection() {
+        this.insertIntoFrequency = !insertIntoFrequency;
+        markForSave();
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(this::shiftClickIntoFrequency, value -> insertIntoFrequency = value));
     }
 
     //Methods relating to IComputerTile

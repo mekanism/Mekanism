@@ -158,6 +158,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INVERSE_REQUIRES_REPLACE = ATTACHMENT_TYPES.registerBoolean("inverse_replace", false);
     //TODO: Re-evaluate the from_recipe data. For one thing maybe it can get away with being an attachment that is not serializable/able to be copied?
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> FROM_RECIPE = ATTACHMENT_TYPES.registerBoolean("from_recipe", false);
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> INSERT_INTO_FREQUENCY = ATTACHMENT_TYPES.registerBoolean("insert_into_frequency", true);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Integer>> RADIUS = ATTACHMENT_TYPES.registerNonNegativeInt("radius", TileEntityDigitalMiner.DEFAULT_RADIUS);
     //TODO - 1.20.4: Better min and max for these?
