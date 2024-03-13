@@ -1599,7 +1599,6 @@
   "tooltip.mekanism.stored": "Przechowuje %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Miotacz ognia: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energia butów swobody: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Paliwo plecaka odrzutowego: %1$s",
   "tooltip.mekanism.stored_energy": "Przechowywana energia: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Przechowuje %1$s: %2$s mB (%3$s)",
   "transmission.mekanism.energy": "Energia",
