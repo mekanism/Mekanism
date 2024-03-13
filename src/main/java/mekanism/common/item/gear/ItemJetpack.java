@@ -103,11 +103,13 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
             GasStack stored = GasStack.EMPTY;
+            long capacity = 1;
             IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
             if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
+                capacity = gasHandlerItem.getTankCapacity(0);
             }
-            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount(), String.format("%.0f", 100.0 * stored.getAmount() / capacity)));
         }
     }
 

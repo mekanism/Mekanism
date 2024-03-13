@@ -840,7 +840,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %1$s");
         add(MekanismLang.FREE_RUNNERS_STORED, "Runners Energy: %1$s");
         add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %1$s");
-        add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %1$s");
+        add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %1$s (%2$s%%)");
         add(MekanismLang.PROGRESS, "Progress: %1$s");
         add(MekanismLang.PROCESS_RATE, "Process Rate: %1$s");
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %1$s mB/t");

@@ -1626,7 +1626,7 @@
   "tooltip.mekanism.stored": "%2$s :%1$s pǝɹoʇS",
   "tooltip.mekanism.stored.flamethrower": "%s :ɹǝʍoɹɥʇǝɯɐꞁℲ",
   "tooltip.mekanism.stored.free_runners": "%s :ʎᵷɹǝuƎ sɹǝuunᴚ",
-  "tooltip.mekanism.stored.jetpack": "%s :ꞁǝnℲ ʞɔɐdʇǝՐ",
+  "tooltip.mekanism.stored.jetpack": "(%%%2$s) %1$s :ꞁǝnℲ ʞɔɐdʇǝՐ",
   "tooltip.mekanism.stored_energy": "%s :ʎᵷɹǝuǝ pǝɹoʇS",
   "tooltip.mekanism.stored_mb_percentage": "(%3$s) ᗺɯ %s :%1$s pǝɹoʇS",
   "tooltip.mekanism.unknown": "uʍouʞu∩",

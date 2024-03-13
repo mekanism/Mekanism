@@ -1629,7 +1629,7 @@
   "tooltip.mekanism.stored": "Stored %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Flamethrower: %1$s",
   "tooltip.mekanism.stored.free_runners": "Runners Energy: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %1$s",
+  "tooltip.mekanism.stored.jetpack": "Jetpack Fuel: %1$s (%2$s%%)",
   "tooltip.mekanism.stored_energy": "Stored energy: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Stored %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Unknown",
