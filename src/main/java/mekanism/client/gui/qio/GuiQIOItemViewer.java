@@ -14,6 +14,7 @@ import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeController;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
+import mekanism.client.gui.element.tab.GuiRecipeViewerRejectsDirectionTab;
 import mekanism.client.gui.element.tab.GuiTargetDirectionTab;
 import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.text.BackgroundType;
@@ -95,6 +96,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
         addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
+        addRenderableWidget(new GuiRecipeViewerRejectsDirectionTab(this, imageHeight - 35));
         addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }

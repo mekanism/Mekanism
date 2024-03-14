@@ -38,6 +38,7 @@ public class SpecialColors {
     public static final ColorRegistryObject TAB_CRAFTING_WINDOW = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_ARMOR_SLOTS = GUI_OBJECTS.register();
     public static final ColorRegistryObject TAB_TARGET_DIRECTION = GUI_OBJECTS.register();
+    public static final ColorRegistryObject TAB_JEI_REJECTS_TARGET = GUI_OBJECTS.register();
 
     public static final ColorRegistryObject TEXT_TITLE = GUI_TEXT.register(0xFF404040);
     public static final ColorRegistryObject TEXT_HEADING = GUI_TEXT.register(0xFF202020);
