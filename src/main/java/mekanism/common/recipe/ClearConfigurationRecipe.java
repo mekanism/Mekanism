@@ -42,6 +42,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         set.add(MekanismAttachmentTypes.SILK_TOUCH);
         set.add(MekanismAttachmentTypes.INVERSE);
         set.add(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
+        set.add(MekanismAttachmentTypes.FROM_RECIPE);
+        set.add(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
         set.add(MekanismAttachmentTypes.RADIUS);
         set.add(MekanismAttachmentTypes.MIN_Y);
         set.add(MekanismAttachmentTypes.MAX_Y);
