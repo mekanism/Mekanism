@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -41,16 +42,10 @@ public class PacketUtils {
     private PacketUtils() {
     }
 
-    //Constant to make it more clear what is going on and make it easier to change in case Mojang ever ups the max name length
-    public static final int USERNAME_LENGTH = 16;
     //Note: This might be longer as if the name can't be found we have two characters plus an uuid (36)
-    public static final int LAST_USERNAME_LENGTH = Math.max(USERNAME_LENGTH, 38);
+    public static final int LAST_USERNAME_LENGTH = Math.max(Player.MAX_NAME_LENGTH, 38);
 
     private static final PacketDistributor<DynamicBufferedNetwork<?, ?, ?, ?>> TRACKING_NETWORK = new PacketDistributor<>(PacketUtils::trackingNetwork, PacketFlow.CLIENTBOUND);
-
-    public static boolean validateNameLength(int length) {
-        return length >= 3 && length <= USERNAME_LENGTH;
-    }
 
     public static void log(String logFormat, Object... params) {
         //TODO: Add more logging for packets using this

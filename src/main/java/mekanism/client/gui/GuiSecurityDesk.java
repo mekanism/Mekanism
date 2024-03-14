@@ -31,6 +31,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +82,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             }
         }));
         trustedField = addRenderableWidget(new GuiTextField(this, 35, 68, 99, 11));
-        trustedField.setMaxLength(PacketUtils.USERNAME_LENGTH);
+        trustedField.setMaxLength(Player.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
         trustedField.setInputValidator(InputValidator.USERNAME);
@@ -120,14 +121,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void setTrusted() {
         if (isOwner(tile.getFreq())) {
-            addTrusted(trustedField.getText());
+            addTrusted(trustedField.getText().trim());
             trustedField.setText("");
             updateButtons();
         }
     }
 
     private void addTrusted(String trusted) {
-        if (PacketUtils.validateNameLength(trusted.length())) {
+        if (Player.isValidUsername(trusted)) {
             PacketUtils.sendToServer(new PacketAddTrusted(tile.getBlockPos(), trusted));
         }
     }
