@@ -10,6 +10,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
@@ -42,6 +43,11 @@ public class LaserParticle extends TextureSheetParticle {
     }
 
     @Override
+    protected int getLightColor(float partialTick) {
+        return LightTexture.FULL_BRIGHT;
+    }
+
+    @Override
     public void render(@NotNull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
         Vec3 view = renderInfo.getPosition();
         float newX = (float) (Mth.lerp(partialTicks, xo, x) - view.x());
@@ -51,15 +57,17 @@ public class LaserParticle extends TextureSheetParticle {
         float uMax = getU1();
         float vMin = getV0();
         float vMax = getV1();
+        int light = getLightColor(partialTicks);
+        float quadSize = getQuadSize(partialTicks);
         Quaternionf quaternion = direction.getRotation();
         quaternion.mul(Axis.YP.rotation(RADIAN_45));
-        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
         Quaternionf quaternion2 = new Quaternionf(quaternion);
         quaternion2.mul(Axis.YP.rotation(RADIAN_90));
-        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
     }
 
-    private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ) {
+    private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ, float quadSize) {
         Vector3f[] resultVector = {
               new Vector3f(-quadSize, -halfLength, 0),
               new Vector3f(-quadSize, halfLength, 0),
@@ -73,20 +81,20 @@ public class LaserParticle extends TextureSheetParticle {
         return resultVector;
     }
 
-    private void drawComponent(VertexConsumer vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
-        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
-        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
-        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
+    private void drawComponent(VertexConsumer vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax, int light) {
+        addVertex(vertexBuilder, resultVector[0], uMax, vMax, light);
+        addVertex(vertexBuilder, resultVector[1], uMax, vMin, light);
+        addVertex(vertexBuilder, resultVector[2], uMin, vMin, light);
+        addVertex(vertexBuilder, resultVector[3], uMin, vMax, light);
         //Draw back faces
-        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
-        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
-        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
-        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
+        addVertex(vertexBuilder, resultVector[1], uMax, vMin, light);
+        addVertex(vertexBuilder, resultVector[0], uMax, vMax, light);
+        addVertex(vertexBuilder, resultVector[3], uMin, vMax, light);
+        addVertex(vertexBuilder, resultVector[2], uMin, vMin, light);
     }
 
-    private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v) {
-        vertexBuilder.vertex(pos.x(), pos.y(), pos.z()).uv(u, v).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+    private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v, int light) {
+        vertexBuilder.vertex(pos.x(), pos.y(), pos.z()).uv(u, v).color(rCol, gCol, bCol, alpha).uv2(light).endVertex();
     }
 
     @NotNull
