@@ -68,7 +68,7 @@ public class ItemConfigurationCard extends Item {
                     data.putString(NBTConstants.DATA_NAME, translationKey);
                     NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
                     stack.setData(MekanismAttachmentTypes.CONFIGURATION_DATA, data);
-                    player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
+                    player.displayClientMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)), true);
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
                 }
             } else {
@@ -81,11 +81,11 @@ public class ItemConfigurationCard extends Item {
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(player, data);
                         configCardAccess.configurationDataSet();
-                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
-                              getConfigCardName(data))));
+                        player.displayClientMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
+                              getConfigCardName(data)), true);
                         MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, false);
                     } else {
-                        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL));
+                        player.displayClientMessage(MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED), true);
                     }
                 }
             }
