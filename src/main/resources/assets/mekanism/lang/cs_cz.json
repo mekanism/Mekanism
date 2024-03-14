@@ -947,7 +947,6 @@
   "tooltip.mekanism.stored": "Uloženo %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Plamenomet: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energie běžek: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Palivo Jetpacku: %1$s",
   "tooltip.mekanism.stored_energy": "Uložená energie: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Uloženo %1$s: %2$s mB (%3$s)",
   "transmission.mekanism.energy": "Energie",

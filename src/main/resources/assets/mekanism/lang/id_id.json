@@ -1599,7 +1599,6 @@
   "tooltip.mekanism.stored": "%1$s Tersimpan: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Pelontar api: %1$s",
   "tooltip.mekanism.stored.free_runners": "Energi Pelari: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Bahan Bakar Jetpack: %1$s",
   "tooltip.mekanism.stored_energy": "Energi tersimpan: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "%1$s Tersimpan: %2$s mB (%3$s)",
   "transmission.mekanism.energy": "Energi",

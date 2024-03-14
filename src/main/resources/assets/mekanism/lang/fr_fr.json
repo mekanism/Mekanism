@@ -1605,7 +1605,6 @@
   "tooltip.mekanism.stored": "Stocké %1$s : %2$s",
   "tooltip.mekanism.stored.flamethrower": "Lance-flammes: %1$s",
   "tooltip.mekanism.stored.free_runners": "Énergie des coureuses: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Carburant Jetpack: %1$s",
   "tooltip.mekanism.stored_energy": "Énergie stockée : %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Stocké %1$s: %2$s mB (%3$s)",
   "transmission.mekanism.energy": "Énergie",

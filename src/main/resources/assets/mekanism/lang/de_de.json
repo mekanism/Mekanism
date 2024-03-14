@@ -1604,7 +1604,6 @@
   "tooltip.mekanism.stored": "Gespeichert %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Flammenwerfer: %1$s",
   "tooltip.mekanism.stored.free_runners": "Läuferenergie: %1$s",
-  "tooltip.mekanism.stored.jetpack": "Jetpack Treibstoff: %1$s",
   "tooltip.mekanism.stored_energy": "Gespeicherte Energie: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Hält %1$s: %2$s mB (%3$s)",
   "tooltip.mekanism.unknown": "Unbekannt",
