@@ -1441,6 +1441,8 @@
   "qio.mekanism.sort_name": "Nome",
   "qio.mekanism.sort_name_desc": "Ordina gli oggetti per nome.",
   "qio.mekanism.stored_count": "Quantità immagazzinata: %1$s",
+  "qio.mekanism.transfer.to_frequency": "Dai priorità allo spostamento degli oggetti nella frequenza tenendo premuto Maiusc",
+  "qio.mekanism.transfer.to_window": "Dai priorità allo spostamento degli oggetti nella griglia di fabbricazione tenendo premuto Maiusc",
   "qio.mekanism.trigger_count": "Numero di attivazioni:",
   "qio.mekanism.types": "Tipi",
   "qio.mekanism.types_detail": "Tipi: %1$s / %2$s",
