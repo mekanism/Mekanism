@@ -196,7 +196,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 needsPacket = true;
             }
             valve = SharedConstants.TICKS_PER_SECOND;
-            valveFluid = new FluidStack(stack, 1);
+            valveFluid = stack.copyWithAmount(1);
         }
         return remainder;
     }

@@ -26,7 +26,7 @@ public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NotNull 
 
     @Override
     protected void acceptAmount(IFluidHandler handler, SplitInfo<Integer> splitInfo, Integer amount) {
-        splitInfo.send(handler.fill(new FluidStack(extra, amount), FluidAction.EXECUTE));
+        splitInfo.send(handler.fill(extra.copyWithAmount(amount), FluidAction.EXECUTE));
     }
 
     @Override

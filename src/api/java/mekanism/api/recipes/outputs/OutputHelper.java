@@ -218,7 +218,7 @@ public class OutputHelper {
             //This should not happen
             return;
         }
-        fluidTank.insert(new FluidStack(toOutput, toOutput.getAmount() * operations), Action.EXECUTE, AutomationType.INTERNAL);
+        fluidTank.insert(toOutput.copyWithAmount(toOutput.getAmount() * operations), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(IInventorySlot inventorySlot, ItemStack toOutput, int operations) {
@@ -268,7 +268,7 @@ public class OutputHelper {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
             //Copy the stack and make it be max size
-            FluidStack maxOutput = new FluidStack(toOutput, Integer.MAX_VALUE);
+            FluidStack maxOutput = toOutput.copyWithAmount(Integer.MAX_VALUE);
             //Then simulate filling the fluid tank, so we can see how much actually can fit
             FluidStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
             int amountUsed = maxOutput.getAmount() - remainder.getAmount();

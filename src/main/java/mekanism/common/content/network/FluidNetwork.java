@@ -239,7 +239,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         if (!lastFluid.isFluidEqual(type)) {
             //If the fluid type does not match update it, and mark that we need an update
             if (!type.isEmpty()) {
-                lastFluid = new FluidStack(type, 1);
+                lastFluid = type.copyWithAmount(1);
             }
             needsUpdate = true;
         }
@@ -250,7 +250,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
             fluidTank.setEmpty();
         } else {
             lastFluid = fluid;
-            fluidTank.setStack(new FluidStack(fluid, 1));
+            fluidTank.setStack(fluid.copyWithAmount(1));
         }
     }
 

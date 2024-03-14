@@ -186,7 +186,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         }
         //Drain the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
         // and it does not actually matter that we are directly executing on the item
-        FluidStack drained = fluidHandlerItem.drain(new FluidStack(fluidToTransfer, toTransfer - remainder), FluidAction.EXECUTE);
+        FluidStack drained = fluidHandlerItem.drain(fluidToTransfer.copyWithAmount(toTransfer - remainder), FluidAction.EXECUTE);
         if (drained.isEmpty()) {
             //If we cannot actually drain from the item then just exit early
             return false;
@@ -325,7 +325,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             int drained = simulatedDrain.getAmount();
             if (remainder < drained) {
                 //Drain the handler to drain, filling the handler to fill while we are at it
-                handlerToFill.insert(handlerToDrain.drain(new FluidStack(fluid, drained - remainder), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
+                handlerToFill.insert(handlerToDrain.drain(fluid.copyWithAmount(drained - remainder), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                 return true;
             }
         }

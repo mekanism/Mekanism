@@ -77,10 +77,10 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
                     // Note: this also will mark that the contents changed
-                    setStack(new FluidStack(stack, toAdd));
+                    setStack(stack.copyWithAmount(toAdd));
                 }
             }
-            return new FluidStack(stack, stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.getAmount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -107,7 +107,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
         if (isEmpty() || amount < 1) {
             return FluidStack.EMPTY;
         }
-        FluidStack ret = new FluidStack(getFluid(), Math.min(getFluidAmount(), amount));
+        FluidStack ret = getFluid().copyWithAmount(Math.min(getFluidAmount(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.getAmount(), action);
@@ -146,7 +146,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(new FluidStack(getFluid(), amount));
+        setStack(getFluid().copyWithAmount(amount));
         return amount;
     }
 

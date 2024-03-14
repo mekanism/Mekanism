@@ -45,7 +45,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         protected void acceptAmount(SplitInfo<Integer> splitInfo, Integer amount) {
             amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
             if (currentStored.isEmpty()) {
-                currentStored = new FluidStack(extra, amount);
+                currentStored = extra.copyWithAmount(amount);
             } else {
                 currentStored.grow(amount);
             }

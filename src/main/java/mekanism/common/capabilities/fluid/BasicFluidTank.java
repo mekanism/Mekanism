@@ -166,7 +166,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             }
             stored = FluidStack.EMPTY;
         } else if (!validateStack || isFluidValid(stack)) {
-            stored = new FluidStack(stack, stack.getAmount());
+            stored = stack.copy();
         } else {
             //Throws a RuntimeException as specified is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
@@ -199,10 +199,10 @@ public class BasicFluidTank implements IExtendedFluidTank {
                     //If we are not the same type then we have to copy the stack and set it
                     // Just set it unchecked as we have already validated it
                     // Note: this also will mark that the contents changed
-                    setStackUnchecked(new FluidStack(stack, toAdd));
+                    setStackUnchecked(stack.copyWithAmount(toAdd));
                 }
             }
-            return new FluidStack(stack, stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.getAmount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -217,10 +217,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
         int size = Math.min(Math.min(getRate(automationType), getFluidAmount()), amount);
-        if (size == 0) {
-            return FluidStack.EMPTY;
-        }
-        FluidStack ret = new FluidStack(stored, size);
+        FluidStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             stored.shrink(ret.getAmount());

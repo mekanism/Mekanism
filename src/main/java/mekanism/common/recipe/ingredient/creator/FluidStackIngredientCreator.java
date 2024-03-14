@@ -243,7 +243,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public FluidStack getMatchingInstance(FluidStack fluidStack) {
             if (test(fluidStack)) {
                 //Our fluid is in the tag, so we make a new stack with the given amount
-                return new FluidStack(fluidStack, amount);
+                return fluidStack.copyWithAmount(amount);
             }
             return FluidStack.EMPTY;
         }

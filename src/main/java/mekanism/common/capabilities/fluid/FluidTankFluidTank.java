@@ -46,7 +46,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
             remainder = super.insert(stack, Action.SIMULATE, automationType);
             if (remainder.isEmpty()) {
                 //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(new FluidStack(stack, getCapacity()));
+                setStackUnchecked(stack.copyWithAmount(getCapacity()));
             }
         } else {
             remainder = super.insert(stack, action.combine(!isCreative), automationType);
@@ -73,7 +73,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
                 if (tileAbove != null) {
                     int leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
-                    FluidStack remainder = tileAbove.fluidTank.insert(new FluidStack(stored, leftOverToInsert), action, AutomationType.EXTERNAL);
+                    FluidStack remainder = tileAbove.fluidTank.insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
                     grownAmount += leftOverToInsert - remainder.getAmount();
                 }
             }

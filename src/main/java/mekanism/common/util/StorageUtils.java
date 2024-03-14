@@ -426,17 +426,17 @@ public class StorageUtils {
                     if (mergeStack.getAmount() <= capacity) {
                         tank.setStack(mergeStack);
                     } else {
-                        tank.setStack(new FluidStack(mergeStack, capacity));
+                        tank.setStack(mergeStack.copyWithAmount(capacity));
                         int remaining = mergeStack.getAmount() - capacity;
                         if (remaining > 0) {
-                            rejects.add(new FluidStack(mergeStack, remaining));
+                            rejects.add(mergeStack.copyWithAmount(remaining));
                         }
                     }
                 } else if (tank.isFluidEqual(mergeStack)) {
                     int amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
                     int remaining = mergeStack.getAmount() - amount;
                     if (remaining > 0) {
-                        rejects.add(new FluidStack(mergeStack, remaining));
+                        rejects.add(mergeStack.copyWithAmount(remaining));
                     }
                 } else {
                     rejects.add(mergeStack);

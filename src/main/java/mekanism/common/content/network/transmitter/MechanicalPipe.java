@@ -85,7 +85,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
                     //Otherwise, try draining the same type of fluid we have stored requesting up to as much as we are able to pull
                     // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                     // second tank but just asking to drain a specific amount
-                    received = connectedAcceptor.drain(new FluidStack(bufferWithFallback, getAvailablePull()), FluidAction.SIMULATE);
+                    received = connectedAcceptor.drain(bufferWithFallback.copyWithAmount(getAvailablePull()), FluidAction.SIMULATE);
                 }
                 if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
                     //If we received some fluid and are able to insert it all, then actually extract it and insert it into our thing.
