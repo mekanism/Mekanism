@@ -42,15 +42,6 @@ public class MekanismRenderType extends RenderType {
                 .createCompositeState(false)
     );
 
-    //Copy of GUI except with a greater depth test instead of lequal
-    public static final RenderType MEK_GUI_FADE = create("mek_gui_fade", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
-          false, false, RenderType.CompositeState.builder()
-                .setShaderState(RENDERTYPE_GUI_SHADER)
-                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-                .setDepthTestState(GREATER_DEPTH_TEST)
-                .createCompositeState(false)
-    );
-
     public static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));
     public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
