@@ -24,6 +24,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -164,7 +165,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
             maxEnergy = new UpgradeBasedFloatingLongCache(stack, maxEnergy);
+            return NoClampRateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
         }
+        //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
         return RateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
     }
 

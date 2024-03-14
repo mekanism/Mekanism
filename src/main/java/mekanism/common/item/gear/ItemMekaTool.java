@@ -27,7 +27,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IRadialModuleContainerItem;
@@ -44,7 +44,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -446,7 +445,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
-        return RateLimitEnergyContainer.create(
+        return NoClampRateLimitEnergyContainer.create(
               () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
               () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get()),
               canExtract, canInsert
