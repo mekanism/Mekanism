@@ -25,6 +25,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOCraftingTransferHelper;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.HashedItemSource;
@@ -336,7 +337,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHolder.id(), maxTransfer, sources));
+                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHolder.id(), maxTransfer, MekanismConfig.client.qioRejectsToInventory.get(), sources));
             }
         }
         return null;
@@ -350,6 +351,9 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
 
     /**
      * Loosely based on how {@link mekanism.common.content.qio.QIOServerCraftingTransferHandler}'s hasRoomToShuffle method works.
+     *
+     * @implNote As it simplifies the logic (and is what we had initially written), this simulates if we can shuffle with the player inventory before checking the
+     * frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
      */
     private static boolean hasRoomToShuffle(QIOCraftingTransferHelper qioTransferHelper, @Nullable QIOFrequency frequency, QIOCraftingWindow craftingWindow,
           List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, Map<HashedItemSource, List<List<SingularHashedItemSource>>> shuffleLookup) {

@@ -54,6 +54,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedEnumValue<SortDirection> qioItemViewerSortDirection;
     public final CachedIntValue qioItemViewerSlotsX;
     public final CachedIntValue qioItemViewerSlotsY;
+    public final CachedBooleanValue qioRejectsToInventory;
 
     ClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -133,6 +134,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .defineInRange("itemViewerSlotsX", 8, QIOItemViewerContainer.SLOTS_X_MIN, QIOItemViewerContainer.SLOTS_X_MAX));
         qioItemViewerSlotsY = CachedIntValue.wrap(this, builder.comment("Number of slots to view vertically on a QIO Item Viewer.")
               .defineInRange("itemViewerSlotsY", 4, QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.SLOTS_Y_MAX));
+        qioRejectsToInventory = CachedBooleanValue.wrap(this, builder.comment("Determines if items in a QIO crafting window should be moved to the player's inventory or frequency first when replacing the items with a recipe viewer.")
+              .define("rejectsToInventory", false));
         builder.pop();
 
         builder.pop();

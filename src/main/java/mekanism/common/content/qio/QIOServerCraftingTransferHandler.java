@@ -53,6 +53,7 @@ public class QIOServerCraftingTransferHandler {
     private final Player player;
     @Nullable
     private final QIOFrequency frequency;
+    private final boolean rejectToInventory;
     private final List<HotBarSlot> hotBarSlots;
     private final List<MainInventorySlot> mainInventorySlots;
 
@@ -60,16 +61,17 @@ public class QIOServerCraftingTransferHandler {
     private final Map<UUID, FrequencySlotData> frequencyAvailableItems = new HashMap<>();
     private final NonNullList<ItemStack> recipeToTest = NonNullList.withSize(9, ItemStack.EMPTY);
 
-    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, Player player, ResourceLocation recipeID,
+    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, ResourceLocation recipeID,
           CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
-        QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, player, recipeID);
+        QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, rejectToInventory, player, recipeID);
         transferHandler.tryTransfer(recipe, sources);
     }
 
-    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, Player player, ResourceLocation recipeID) {
+    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, ResourceLocation recipeID) {
         this.player = player;
         this.recipeID = recipeID;
         this.frequency = container.getFrequency();
+        this.rejectToInventory = rejectToInventory;
         this.craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         this.hotBarSlots = container.getHotBarSlots();
         this.mainInventorySlots = container.getMainInventorySlots();
@@ -281,6 +283,10 @@ public class QIOServerCraftingTransferHandler {
         return used;
     }
 
+    /**
+     * @implNote As it simplifies the logic (and is what we had initially written), this simulates if we can shuffle with the player inventory before checking the
+     * frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
+     */
     private boolean hasRoomToShuffle() {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down
         // on how many times we have to check if things can stack
@@ -524,8 +530,11 @@ public class QIOServerCraftingTransferHandler {
         }
         //Put the items that were in the crafting window in the player's inventory
         for (Byte2ObjectMap.Entry<ItemStack> entry : remainingCraftingGridContents.byte2ObjectEntrySet()) {
-            //Insert into player's inventory
-            ItemStack stack = returnItemToInventory(entry.getValue(), windowData);
+            ItemStack stack = entry.getValue();
+            if (rejectToInventory) {
+                //If we prioritize inserting back into the player's inventory, start by doing so
+                stack = returnItemToInventory(stack, windowData);
+            }
             if (!stack.isEmpty()) {
                 //If we couldn't insert it all, try recombining with the slots they were in the crafting window
                 // (only if the type matches though)
@@ -538,14 +547,19 @@ public class QIOServerCraftingTransferHandler {
                     if (frequency != null) {
                         stack = frequency.addItem(stack);
                     }
+                    if (!rejectToInventory) {
+                        //If we didn't already try to insert it into the player's inventory, then try to do so
+                        stack = returnItemToInventory(stack, windowData);
+                    }
                     if (!stack.isEmpty()) {
                         //If we couldn't insert it all, either because there was no frequency or it didn't have room for it all
                         // drop it as the player, and print a warning as ideally we should never have been able to get to this
                         // point as our simulation should have marked it as invalid
                         // Note: In theory we should never get to this point due to having accurate simulations ahead of time
                         player.drop(stack, false);
-                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, and was unable to fit all contents that were in the crafting window "
-                                             + "into the player's inventory/QIO system; dropping items by player.", player, recipeID);
+                        Mekanism.logger.warn("Received transfer request from: {}, for: {}, initially targeting the player's inventory: {}, and was unable to fit "
+                                             + "all contents that were in the crafting window into the player's inventory/QIO system; dropping items by player.",
+                              player, recipeID, rejectToInventory);
                     }
                 }
             }

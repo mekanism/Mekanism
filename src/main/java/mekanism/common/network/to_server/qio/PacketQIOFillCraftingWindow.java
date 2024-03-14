@@ -26,18 +26,16 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
 
     private final Byte2ObjectMap<List<SingularHashedItemSource>> sources;
     private final ResourceLocation recipeID;
+    private final boolean rejectToInventory;
     private final boolean maxTransfer;
 
     //Note: While our logic is not dependent on knowing about maxTransfer, we make use of it for encoding and decoding
     // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
-    public PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean maxTransfer, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
-        //TODO - 1.20.4: SP: Test this after JEI updates, I believe this is fine even in single player as the map we create on the client
-        // for purposes of the packet so we can just directly pass it over (especially as we don't seem to mutate it on the server)
-        // and while the logic for serialization and deserialization is complex, it is just so that we can reduce the packet size
-        // and we still manage to transfer all the data we would have regardless
+    public PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean maxTransfer, boolean rejectToInventory, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         this.recipeID = recipeID;
         this.sources = sources;
         this.maxTransfer = maxTransfer;
+        this.rejectToInventory = rejectToInventory;
     }
 
     @NotNull
@@ -58,7 +56,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
                     if (optionalRecipe.isPresent()) {
                         Recipe<?> recipe = optionalRecipe.get().value();
                         if (recipe instanceof CraftingRecipe craftingRecipe) {
-                            QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, craftingRecipe, sources);
+                            QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID, craftingRecipe, sources);
                         } else {
                             Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                                   player, recipe.getClass());
@@ -75,6 +73,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(recipeID);
         buffer.writeBoolean(maxTransfer);
+        buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
         buffer.writeByte((byte) sources.size());
         for (Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry : sources.byte2ObjectEntrySet()) {
@@ -114,6 +113,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
     public static PacketQIOFillCraftingWindow decode(FriendlyByteBuf buffer) {
         ResourceLocation recipeID = buffer.readResourceLocation();
         boolean maxTransfer = buffer.readBoolean();
+        boolean rejectToInventory = buffer.readBoolean();
         byte slotCount = buffer.readByte();
         Byte2ObjectMap<List<SingularHashedItemSource>> sources = new Byte2ObjectArrayMap<>(slotCount);
         for (byte slot = 0; slot < slotCount; slot++) {
@@ -131,6 +131,6 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
                 }
             }
         }
-        return new PacketQIOFillCraftingWindow(recipeID, maxTransfer, sources);
+        return new PacketQIOFillCraftingWindow(recipeID, maxTransfer, rejectToInventory, sources);
     }
 }
