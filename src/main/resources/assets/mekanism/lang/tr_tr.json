@@ -1443,6 +1443,8 @@
   "qio.mekanism.sort_name": "Ad",
   "qio.mekanism.sort_name_desc": "Eşyaları isme göre sırala.",
   "qio.mekanism.stored_count": "Depolanan sayı: %1$s",
+  "qio.mekanism.transfer.to_frequency": "Shift tuşu basılıyken eşyaları frekansa göndermeye öncelik ver",
+  "qio.mekanism.transfer.to_window": "Shift tuşu basılıyken eşyaları üretim penceresine göndermeye öncelik ver",
   "qio.mekanism.trigger_count": "Tetikleme sayısı:",
   "qio.mekanism.types": "Türler",
   "qio.mekanism.types_detail": "Türler: %1$s / %2$s",
