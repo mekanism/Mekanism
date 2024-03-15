@@ -1433,6 +1433,8 @@
   "qio.mekanism.list_search": "搜索：",
   "qio.mekanism.list_sort": "排序：",
   "qio.mekanism.qio_frequency_select": "QIO频率选择",
+  "qio.mekanism.recipe_viewer.to_frequency": "在使用配方书时，优先将合成格中剩余的物品转移到频率中",
+  "qio.mekanism.recipe_viewer.to_inventory": "在使用配方书时，优先将合成格中剩余的物品转移到玩家的背包",
   "qio.mekanism.set_frequency": "设定频率",
   "qio.mekanism.sort_ascending_desc": "按升序排列物品。",
   "qio.mekanism.sort_count": "数量",
