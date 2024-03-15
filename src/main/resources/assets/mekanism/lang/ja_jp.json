@@ -1433,6 +1433,8 @@
   "qio.mekanism.list_search": "検索:",
   "qio.mekanism.list_sort": "ソート:",
   "qio.mekanism.qio_frequency_select": "QIO周波数の選択",
+  "qio.mekanism.recipe_viewer.to_frequency": "レシピ表示の上書きを、クラフトグリッドに残っているアイテムの移動先を周波数を優先するようにする",
+  "qio.mekanism.recipe_viewer.to_inventory": "レシピ表示の上書きを、クラフトグリッドに残っているアイテムの移動先をプレイヤーのインベントリを優先するようにする",
   "qio.mekanism.set_frequency": "周波数設定",
   "qio.mekanism.sort_ascending_desc": "昇順にアイテムをソート",
   "qio.mekanism.sort_count": "個数",
