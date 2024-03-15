@@ -32,7 +32,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,6 +39,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,11 +48,17 @@ import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
+
+    /**
+     * From {@link LivingEntity#calculateFallDamage(float, float)}, distance above this amount causes fall damage
+     */
+    private static final float MIN_FALL_HURT = 3.0F;
 
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
@@ -205,15 +211,6 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
-        //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
-        // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-        if (event.getSource().is(DamageTypeTags.IS_FALL)) {
-            //Free runner checks
-            FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-            if (info != null && tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost)) {
-                return;
-            }
-        }
         if (entity instanceof Player player) {
             if (ItemMekaSuitArmor.tryAbsorbAll(player, event.getSource(), event.getAmount())) {
                 event.setCanceled(true);
@@ -236,12 +233,6 @@ public class CommonPlayerTickHandler {
             // other mods may not be firing the event manually even when the entity is dead
             return;
         }
-        if (event.getSource().is(DamageTypeTags.IS_FALL)) {
-            FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-            if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
-                return;
-            }
-        }
         if (entity instanceof Player player) {
             float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, event.getSource(), event.getAmount());
             if (ratioAbsorbed > 0) {
@@ -255,24 +246,39 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    private boolean tryAbsorbAll(LivingAttackEvent event, @Nullable IEnergyContainer energyContainer, FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
-        if (energyContainer != null && absorptionRatio.getAsFloat() == 1) {
-            FloatingLong energyRequirement = energyCost.get().multiply(event.getAmount());
-            if (energyRequirement.isZero()) {
-                //No energy is actually needed to absorb the damage, either because of the config
-                // or how small the amount to absorb is
-                event.setCanceled(true);
-                return true;
-            }
-            FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
-            if (simulatedExtract.equals(energyRequirement)) {
-                //If we could fully negate the damage cancel the event and extract it
-                energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
-                event.setCanceled(true);
-                return true;
+    @SubscribeEvent
+    public void livingFall(LivingFallEvent event) {
+        float fallDamage = Math.max(event.getDistance() - MIN_FALL_HURT, 0);
+        if (fallDamage <= 0) {
+            return;
+        }
+        LivingEntity entity = event.getEntity();
+        FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
+        if (info != null) {
+            if (info.container != null) {
+                float absorption = info.damageRatio.getAsFloat();
+                float amount = fallDamage * absorption;
+                FloatingLong energyRequirement = info.energyCost.get().multiply(amount);
+                float ratioAbsorbed;
+                if (energyRequirement.isZero()) {
+                    //No energy is actually needed to absorb the damage, either because of the config
+                    // or how small the amount to absorb is
+                    ratioAbsorbed = absorption;
+                } else {
+                    ratioAbsorbed = absorption * info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
+                }
+                if (ratioAbsorbed > 0) {
+                    float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
+                    if (damageRemaining <= 0) {
+                        event.setCanceled(true);
+                        SoundType soundtype = entity.getBlockStateOn().getSoundType(entity.level(), entity.getOnPos(), entity);
+                        entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    } else {
+                        event.setDistance(damageRemaining + MIN_FALL_HURT);
+                    }
+                }
             }
         }
-        return false;
     }
 
     private boolean handleDamage(LivingHurtEvent event, @Nullable IEnergyContainer energyContainer, FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
