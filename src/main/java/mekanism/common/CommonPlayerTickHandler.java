@@ -281,32 +281,6 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    private boolean handleDamage(LivingHurtEvent event, @Nullable IEnergyContainer energyContainer, FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
-        if (energyContainer != null) {
-            float absorption = absorptionRatio.getAsFloat();
-            float amount = event.getAmount() * absorption;
-            FloatingLong energyRequirement = energyCost.get().multiply(amount);
-            float ratioAbsorbed;
-            if (energyRequirement.isZero()) {
-                //No energy is actually needed to absorb the damage, either because of the config
-                // or how small the amount to absorb is
-                ratioAbsorbed = absorption;
-            } else {
-                ratioAbsorbed = absorption * energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
-            }
-            if (ratioAbsorbed > 0) {
-                float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
-                if (damageRemaining <= 0) {
-                    event.setCanceled(true);
-                    return true;
-                } else {
-                    event.setAmount(damageRemaining);
-                }
-            }
-        }
-        return false;
-    }
-
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntity() instanceof Player player) {
