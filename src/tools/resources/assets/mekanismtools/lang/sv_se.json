@@ -13,6 +13,7 @@
   "advancements.mekanismtools.paxel.title": "Multiverktyg",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Resurser som används för Mekanism: Tools",
+  "fml.menu.mods.info.description.mekanismtools": "Verktygsmodul för Mekanism",
   "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Bronsyxa",
   "item.mekanismtools.bronze_boots": "Bronsstövlar",
