@@ -1421,6 +1421,8 @@
   "qio.mekanism.list_search": "검색:",
   "qio.mekanism.list_sort": "정렬:",
   "qio.mekanism.qio_frequency_select": "QIO 주파수 선택",
+  "qio.mekanism.recipe_viewer.to_frequency": "제작법 미리보기로 덮어쓸때 제작 그리드의 아이템을 주파수로 먼저 옮기기",
+  "qio.mekanism.recipe_viewer.to_inventory": "제작법 미리보기로 덮어쓸때 제작 그리드의 아이템을 플레이어의 인벤토리로 먼저 옮기기",
   "qio.mekanism.set_frequency": "주파수 설정",
   "qio.mekanism.sort_ascending_desc": "아이템을 오른차순으로 정렬합니다.",
   "qio.mekanism.sort_count": "개수",
