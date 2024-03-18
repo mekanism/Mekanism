@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "터빈 밸브",
   "block.mekanismgenerators.turbine_vent": "증기 배출구",
   "block.mekanismgenerators.wind_generator": "풍력 발전기",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Mekanism: Generators에서 사용되는 리소스",
   "container.mekanismgenerators.advanced_solar_generator": "고급 태양열 발전기",
   "container.mekanismgenerators.bio_generator": "바이오연료 발전기",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "원자로 논리 어댑터",
@@ -161,6 +163,7 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "기체 연소 발전기가 웅웅거림",
   "sound_event.mekanismgenerators.tile.generator.heat": "지열 발전기가 웅웅거림",
   "sound_event.mekanismgenerators.tile.generator.solar": "태양광 발전기가 웅웅거림",
+  "sound_event.mekanismgenerators.tile.generator.wind": "풍력 발전기가 쉭쉭거림",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "원자로가 웅웅거림",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "핵융합로가 웅웅거림",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "연료 부족",
@@ -195,7 +198,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "탱크의 용량: %1$s",
   "turbine.mekanismgenerators.stats.vents": "증기 배출구: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "증기 투입량: %1$s mB/t",
-  "turbine.mekanismgenerators.tooltip.steamdump_excess": "초과 증기 배출",
+  "turbine.mekanismgenerators.tooltip.steamdump": "증기 배출",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "물이 재활용되지 않을 것입니다",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "초과되는 증기 배출",
   "wind_generator.mekanismgenerators.no_wind": "바람 없음",
   "wind_generator.mekanismgenerators.sky_blocked": "하늘이 보이지 않음"
 }
