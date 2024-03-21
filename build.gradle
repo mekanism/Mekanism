@@ -386,6 +386,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup 'mezz.jei'
         filter.includeGroup 'org.openzen.zencode'
     })
+    exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
@@ -415,7 +416,10 @@ dependencies {
 
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")

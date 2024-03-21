@@ -229,7 +229,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                 ItemStack toUse = TransporterManager.getToUse(origInsert, toInsert);
                 if (!toUse.isEmpty()) {
                     amountRemoved += toUse.getCount();
-                    removed.merge(type, toUse.getCount(), Integer::sum);
+                    removed.mergeInt(type, toUse.getCount(), Integer::sum);
                 }
             }
             // actually remove the items from the QIO frequency

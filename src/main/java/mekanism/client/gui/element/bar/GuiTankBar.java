@@ -7,7 +7,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiTankBar.TankInfoProvider;
-import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketUtils;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IJEIIngredientHelper {
+public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IRecipeViewerIngredientHelper {
 
     public GuiTankBar(IGuiWrapper gui, TankInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(TextureAtlas.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);

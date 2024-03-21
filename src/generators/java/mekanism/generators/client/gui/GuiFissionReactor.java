@@ -24,7 +24,7 @@ import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab.FissionReactorTab;
-import mekanism.generators.client.jei.GeneratorsJEIRecipeType;
+import mekanism.generators.client.recipe_viewer.GeneratorsRVRecipeType;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
@@ -65,7 +65,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                   MekanismLang.TEMPERATURE.translate(tile.getTempColor(), MekanismUtils.getTemperatureDisplay(multiblock.heatCapacitor.getTemperature(), TemperatureUnit.KELVIN, true)),
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );
-        }).spacing(2).jeiCategories(GeneratorsJEIRecipeType.FISSION));
+        }).spacing(2).recipeViewerCategories(GeneratorsRVRecipeType.FISSION));
         addRenderableWidget(new GuiHybridGauge(() -> tile.getMultiblock().gasCoolantTank, () -> tile.getMultiblock().getGasTanks(null),
               () -> tile.getMultiblock().fluidCoolantTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13)
               .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));

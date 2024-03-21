@@ -177,27 +177,44 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         return inputCache;
     }
 
-    @NotNull
-    @Override
-    public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
-        if (world == null) {
+    @Nullable
+    private Level getLevel(@Nullable Level level) {
+        if (level == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
             if (FMLEnvironment.dist.isClient()) {
-                world = MekanismClient.tryGetClientWorld();
-            } else {
-                world = ServerLifecycleHooks.getCurrentServer().overworld();
+                return MekanismClient.tryGetClientWorld();
             }
-            if (world == null) {
-                //If we failed, then return no recipes
-                return Collections.emptyList();
-            }
+            return ServerLifecycleHooks.getCurrentServer().overworld();
         }
+        return level;
+    }
+
+    @NotNull
+    @Override
+    public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
+        world = getLevel(world);
+        if (world == null) {
+            //If we failed, then return no recipes
+            return Collections.emptyList();
+        }
+        return getRecipes(world.getRecipeManager(), world);
+    }
+
+    @NotNull
+    @Override
+    public List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager, @Nullable Level world) {
         if (cachedRecipes.isEmpty()) {
-            RecipeManager recipeManager = world.getRecipeManager();
-            //Note: This is a fresh mutable list that gets returned
+            //Note: This is a fresh immutable list that gets returned
             List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
             if (this == SMELTING.get()) {
+                world = getLevel(world);
+                if (world == null) {
+                    //If we failed, then only return the recipes that are for the base type
+                    return recipes.stream()
+                          .filter(recipe -> !recipe.value().isIncomplete())
+                          .toList();
+                }
                 //Ensure the recipes can be modified
                 recipes = new ArrayList<>(recipes);
                 for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
@@ -213,7 +230,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                             IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
                             input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
+                        recipes.add(new RecipeHolder<>(smeltingRecipe.id().withPrefix("mekanism_generated/"), castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
                     }
                 }
             }

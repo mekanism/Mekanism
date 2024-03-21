@@ -40,7 +40,7 @@ public class GuiCraftingWindow extends GuiWindow {
                       this.container.getCraftingWindowSlot(this.index, row * 3 + column))));
             }
         }
-        addChild(new GuiRightArrow(gui, relativeX + 70, relativeY + 38).jeiCrafting());
+        addChild(new GuiRightArrow(gui, relativeX + 70, relativeY + 38).recipeViewerCrafting());
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),

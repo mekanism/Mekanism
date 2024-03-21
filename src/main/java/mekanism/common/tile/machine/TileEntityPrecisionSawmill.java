@@ -13,6 +13,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -53,6 +55,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
           NOT_ENOUGH_SPACE_SECONDARY_OUTPUT_ERROR,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
+    public static final int BASE_TICKS_REQUIRED = 200;
 
     private final IOutputHandler<@NotNull ChanceOutput> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
@@ -68,7 +71,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     EnergyInventorySlot energySlot;
 
     public TileEntityPrecisionSawmill(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PRECISION_SAWMILL, pos, state, TRACKED_ERROR_TYPES, 200);
+        super(MekanismBlocks.PRECISION_SAWMILL, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(Collections.singletonList(inputSlot), List.of(outputSlot, secondaryOutputSlot), energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -110,6 +113,11 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @NotNull
     public IMekanismRecipeTypeProvider<SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<SawmillRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.SAWING;
     }
 
     @Nullable

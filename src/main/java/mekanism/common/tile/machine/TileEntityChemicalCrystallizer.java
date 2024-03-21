@@ -26,6 +26,8 @@ import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
 import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -66,6 +68,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final long MAX_CHEMICAL = 10_000;
+    public static final int BASE_TICKS_REQUIRED = 200;
 
     public MergedChemicalTank inputTank;
 
@@ -81,7 +84,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalCrystallizer(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, pos, state, TRACKED_ERROR_TYPES, 200);
+        super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         configComponent.setupInputConfig(TransmissionType.GAS, inputTank.getGasTank());
@@ -171,6 +174,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     @Override
     public IMekanismRecipeTypeProvider<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ChemicalCrystallizerRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.CRYSTALLIZING;
     }
 
     @Nullable

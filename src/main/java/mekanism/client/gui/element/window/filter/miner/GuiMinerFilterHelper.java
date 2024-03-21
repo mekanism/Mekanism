@@ -8,7 +8,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.filter.GuiFilter;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
-import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;

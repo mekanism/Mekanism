@@ -16,6 +16,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -211,6 +213,11 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public IMekanismRecipeTypeProvider<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<FluidToFluidRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.EVAPORATING;
     }
 
     @Nullable

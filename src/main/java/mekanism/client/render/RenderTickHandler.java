@@ -121,14 +121,29 @@ public class RenderTickHandler {
         boltRenderer.update(renderer, bolt, MekanismRenderer.getPartialTick());
     }
 
-    //Note: This listener is only registered if JEI is loaded
+    //Note: This listener is only registered if a recipe viewer is loaded
     public static void guiOpening(ScreenEvent.Opening event) {
         if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
-            //If JEI is loaded and our current screen is a mekanism gui,
-            // check if the new screen is a JEI recipe screen
-            if (event.getNewScreen() instanceof IRecipesGui) {
-                //If it is mark on our current screen that we are switching to JEI
-                screen.switchingToJEI = true;
+            if (Mekanism.hooks.JEILoaded) {
+                //If JEI is loaded and our current screen is a mekanism gui,
+                // check if the new screen is a JEI recipe screen
+                if (event.getNewScreen() instanceof IRecipesGui) {
+                    //If it is mark on our current screen that we are switching to JEI
+                    screen.switchingToRecipeViewer = true;
+                }
+            }
+            if (Mekanism.hooks.EmiLoaded) {
+                //If JEI is loaded and our current screen is a mekanism gui,
+                // check if the new screen is a JEI recipe screen
+                /*if (event.getNewScreen() instanceof IRecipesGui) {
+                    //If it is mark on our current screen that we are switching to JEI
+                    screen.switchingToRecipeViewer = true;
+                }*/
+                //TODO - 1.20.4: Open an issue requesting that Emi maybe adds a marker interface to her things, or something
+                if (event.getNewScreen() != null && event.getNewScreen().getClass().getPackageName().startsWith("dev.emi.emi")) {
+                    //If it is mark on our current screen that we are switching to EMI
+                    screen.switchingToRecipeViewer = true;
+                }
             }
         }
     }

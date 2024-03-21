@@ -18,7 +18,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiRightArrow(this, 90, 35).jeiCrafting());
+        addRenderableWidget(new GuiRightArrow(this, 90, 35).recipeViewerCrafting());
     }
 
     @Override

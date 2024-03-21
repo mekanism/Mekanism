@@ -3,6 +3,7 @@ package mekanism.common.recipe.lookup;
 import mekanism.api.IContentsListener;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.level.Level;
@@ -22,6 +23,11 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      */
     @NotNull
     IMekanismRecipeTypeProvider<RECIPE, ?> getRecipeType();
+
+    @Nullable
+    default IRecipeViewerRecipeType<RECIPE> recipeViewerType() {
+        return null;
+    }
 
     /**
      * Returns how many operating ticks were saved for purposes of persisting through saves how far a cached recipe is through processing.

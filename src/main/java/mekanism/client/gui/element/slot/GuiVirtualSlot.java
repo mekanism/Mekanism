@@ -3,7 +3,7 @@ package mekanism.client.gui.element.slot;
 import java.util.Optional;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
-import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
+public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHelper {
 
     private IVirtualSlot virtualSlot;
 

@@ -45,6 +45,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
+    public static final int BASE_TICKS_REQUIRED = 200;
 
     protected final IInputHandler<@NotNull ItemStack> inputHandler;
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;

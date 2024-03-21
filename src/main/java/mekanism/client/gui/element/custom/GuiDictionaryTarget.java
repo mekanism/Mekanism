@@ -20,7 +20,7 @@ import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
-import mekanism.client.jei.interfaces.IJEIGhostTarget;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
@@ -49,7 +49,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
+public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhostTarget {
 
     private final Map<DictionaryTagType, List<String>> tags = new EnumMap<>(DictionaryTagType.class);
     private final Consumer<Set<DictionaryTagType>> tagSetter;
@@ -239,16 +239,17 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     @Override
     public IGhostIngredientConsumer getGhostHandler() {
         return new IGhostIngredientConsumer() {
+            @Nullable
             @Override
-            public boolean supportsIngredient(Object ingredient) {
+            public Object supportedTarget(Object ingredient) {
                 if (ingredient instanceof ItemStack stack) {
-                    return !stack.isEmpty();
+                    return stack.isEmpty() ? null : stack;
                 } else if (ingredient instanceof FluidStack stack) {
-                    return !stack.isEmpty();
+                    return stack.isEmpty() ? null : stack;
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
-                    return !stack.isEmpty();
+                    return stack.isEmpty() ? null : stack;
                 }
-                return false;
+                return null;
             }
 
             @Override

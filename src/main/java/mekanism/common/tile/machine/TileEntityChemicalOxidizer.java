@@ -16,6 +16,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -57,6 +59,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final long MAX_GAS = 10_000;
+    public static final int BASE_TICKS_REQUIRED = 100;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "output tank")
@@ -74,7 +77,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalOxidizer(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.CHEMICAL_OXIDIZER, pos, state, TRACKED_ERROR_TYPES, 100);
+        super(MekanismBlocks.CHEMICAL_OXIDIZER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -126,6 +129,11 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackToGasRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.OXIDIZING;
     }
 
     @Nullable

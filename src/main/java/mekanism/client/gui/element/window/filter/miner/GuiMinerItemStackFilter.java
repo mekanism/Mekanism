@@ -2,7 +2,7 @@ package mekanism.client.gui.element.window.filter.miner;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
-import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostItemConsumer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -38,10 +38,11 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
     @Override
     protected IGhostItemConsumer getGhostHandler() {
         return new IGhostItemConsumer() {
+            @Nullable
             @Override
-            public boolean supportsIngredient(Object ingredient) {
+            public ItemStack supportedTarget(Object ingredient) {
                 //Note: The miner requires the player to actually get targets, unless configured server side to be "easy"
-                return MekanismConfig.general.easyMinerFilters.get() && IGhostItemConsumer.super.supportsIngredient(ingredient);
+                return MekanismConfig.general.easyMinerFilters.get() ? IGhostItemConsumer.super.supportedTarget(ingredient) : null;
             }
 
             @Override

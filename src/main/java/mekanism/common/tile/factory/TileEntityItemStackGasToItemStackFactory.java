@@ -21,6 +21,8 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedReci
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -189,6 +191,16 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             case PURIFYING -> MekanismRecipeType.PURIFYING;
             //TODO: Make it so that it throws an error if it is not one of the three types
             default -> MekanismRecipeType.COMPRESSING;
+        };
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackGasToItemStackRecipe> recipeViewerType() {
+        return switch (type) {
+            case INJECTING -> RecipeViewerRecipeType.INJECTING;
+            case PURIFYING -> RecipeViewerRecipeType.PURIFYING;
+            //TODO: Make it so that it throws an error if it is not one of the three types
+            default -> RecipeViewerRecipeType.COMPRESSING;
         };
     }
 

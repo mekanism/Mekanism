@@ -27,14 +27,14 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
     private final Byte2ObjectMap<List<SingularHashedItemSource>> sources;
     private final ResourceLocation recipeID;
     private final boolean rejectToInventory;
-    private final boolean maxTransfer;
+    private final boolean transferMultiple;
 
-    //Note: While our logic is not dependent on knowing about maxTransfer, we make use of it for encoding and decoding
+    //Note: While our logic is not dependent on knowing about transferMultiple, we make use of it for encoding and decoding
     // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
-    public PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean maxTransfer, boolean rejectToInventory, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
+    public PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean transferMultiple, boolean rejectToInventory, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         this.recipeID = recipeID;
         this.sources = sources;
-        this.maxTransfer = maxTransfer;
+        this.transferMultiple = transferMultiple;
         this.rejectToInventory = rejectToInventory;
     }
 
@@ -72,7 +72,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
     @Override
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(recipeID);
-        buffer.writeBoolean(maxTransfer);
+        buffer.writeBoolean(transferMultiple);
         buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
         buffer.writeByte((byte) sources.size());
@@ -81,7 +81,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
             buffer.writeByte(entry.getByteKey());
             //Source slot
             List<SingularHashedItemSource> slotSources = entry.getValue();
-            if (maxTransfer) {
+            if (transferMultiple) {
                 //We "cheat" by only writing the list size if we are transferring as many items as possible as
                 // the list will always be of size one
                 buffer.writeVarInt(slotSources.size());
@@ -92,7 +92,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
                 // as then we can use the not a valid value as indication that we have a UUID following for QIO source, and otherwise we
                 // get away with not having to write some sort of identifier for which type of data we are transferring
                 buffer.writeByte(sourceSlot);
-                if (maxTransfer) {
+                if (transferMultiple) {
                     //We "cheat" by only writing the amount used if we are transferring as many items as possible as
                     // this will always just be one
                     buffer.writeVarInt(source.getUsed());
@@ -112,18 +112,18 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
 
     public static PacketQIOFillCraftingWindow decode(FriendlyByteBuf buffer) {
         ResourceLocation recipeID = buffer.readResourceLocation();
-        boolean maxTransfer = buffer.readBoolean();
+        boolean transferMultiple = buffer.readBoolean();
         boolean rejectToInventory = buffer.readBoolean();
         byte slotCount = buffer.readByte();
         Byte2ObjectMap<List<SingularHashedItemSource>> sources = new Byte2ObjectArrayMap<>(slotCount);
         for (byte slot = 0; slot < slotCount; slot++) {
             byte targetSlot = buffer.readByte();
-            int subSourceCount = maxTransfer ? buffer.readVarInt() : 1;
+            int subSourceCount = transferMultiple ? buffer.readVarInt() : 1;
             List<SingularHashedItemSource> slotSources = new ArrayList<>(subSourceCount);
             sources.put(targetSlot, slotSources);
             for (int i = 0; i < subSourceCount; i++) {
                 byte sourceSlot = buffer.readByte();
-                int count = maxTransfer ? buffer.readVarInt() : 1;
+                int count = transferMultiple ? buffer.readVarInt() : 1;
                 if (sourceSlot == -1) {
                     slotSources.add(new SingularHashedItemSource(buffer.readUUID(), count));
                 } else {
@@ -131,6 +131,6 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
                 }
             }
         }
-        return new PacketQIOFillCraftingWindow(recipeID, maxTransfer, rejectToInventory, sources);
+        return new PacketQIOFillCraftingWindow(recipeID, transferMultiple, rejectToInventory, sources);
     }
 }

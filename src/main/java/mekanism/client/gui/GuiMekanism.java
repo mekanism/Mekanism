@@ -59,7 +59,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected final LRU<GuiWindow> windows = new LRU<>();
-    public boolean switchingToJEI;
+    public boolean switchingToRecipeViewer;
     @Nullable
     private IWarningTracker warningTracker;
 
@@ -82,7 +82,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public void removed() {
-        if (!switchingToJEI) {
+        if (!switchingToRecipeViewer) {
             //If we are not switching to JEI then run the super close method
             // which will exit the container. We don't want to mark the
             // container as exited if it will be revived when leaving JEI
@@ -270,7 +270,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // as it will never potentially have init() with no params be the call path
         // Additionally, as the screen is not actively being used we shouldn't have cases this is called from resize while we are not present
         // and setting this to false when it is already false does nothing
-        switchingToJEI = false;
+        switchingToRecipeViewer = false;
         super.repositionElements();
     }
 

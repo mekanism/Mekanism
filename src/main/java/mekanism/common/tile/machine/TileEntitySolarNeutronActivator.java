@@ -16,6 +16,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -156,6 +158,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Override
     public IMekanismRecipeTypeProvider<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<GasToGasRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.ACTIVATING;
     }
 
     @Nullable
