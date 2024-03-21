@@ -9,6 +9,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.integration.emi.IMekanismEmiHelper;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
@@ -17,6 +18,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
+import mekanism.client.recipe_viewer.emi.MekanismEmiHelper;
 import mekanism.client.recipe_viewer.jei.MekanismJEIHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
@@ -37,6 +39,14 @@ public class MekanismAccess implements IMekanismAccess {
             return MekanismJEIHelper.INSTANCE;
         }
         throw new IllegalStateException("JEI is not loaded.");
+    }
+
+    @Override
+    public IMekanismEmiHelper emiHelper() {
+        if (Mekanism.hooks.EmiLoaded) {
+            return MekanismEmiHelper.INSTANCE;
+        }
+        throw new IllegalStateException("EMI is not loaded.");
     }
 
     @Override

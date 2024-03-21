@@ -77,10 +77,6 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         }
     }
 
-    private GuiProgress addProgress(GuiProgress progressBar) {
-        return addRenderableWidget(progressBar.recipeViewerCategory(tile));
-    }
-
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);

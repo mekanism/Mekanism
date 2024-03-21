@@ -9,6 +9,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.integration.emi.IMekanismEmiHelper;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
@@ -36,6 +37,15 @@ public interface IMekanismAccess {
      * @throws IllegalStateException if JEI is not loaded.
      */
     IMekanismJEIHelper jeiHelper();
+
+    /**
+     * Gets a helper to interact with some of Mekanism's EMI integration internals. This should only be called if EMI is loaded.
+     *
+     * @throws IllegalStateException if EMI is not loaded.
+     *
+     * @since 10.5.9
+     */
+    IMekanismEmiHelper emiHelper();
 
     /**
      * Gets the item stack ingredient creator.
