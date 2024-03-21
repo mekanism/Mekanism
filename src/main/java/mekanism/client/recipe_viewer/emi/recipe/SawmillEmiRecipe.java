@@ -20,7 +20,7 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
         addItemOutputDefinition(recipe.getMainOutputDefinition());
-        //TODO - 1.20.4: Improve how we display the chance for this
+        //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/484
         addOutputDefinition(recipe.getSecondaryOutputDefinition().stream().map(EmiStack::of).map(stack -> stack.setChance((float) recipe.getSecondaryChance())).toList());
     }
 
@@ -34,10 +34,5 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         initItem(widgetHolder, output.getX() + 20, output.getY() + 4, output(1));
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(widgetHolder, ProgressType.BAR, 78, 38, TileEntityPrecisionSawmill.BASE_TICKS_REQUIRED);
-
-        /*double secondaryChance = recipe.getSecondaryChance();
-        if (secondaryChance > 0) {
-            guiGraphics.drawString(getFont(), TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb(), false);
-        }*/
     }
 }

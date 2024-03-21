@@ -125,21 +125,15 @@ public class RenderTickHandler {
     public static void guiOpening(ScreenEvent.Opening event) {
         if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
             if (Mekanism.hooks.JEILoaded) {
-                //If JEI is loaded and our current screen is a mekanism gui,
-                // check if the new screen is a JEI recipe screen
+                //If JEI is loaded and our current screen is a mekanism gui, check if the new screen is a JEI recipe screen
                 if (event.getNewScreen() instanceof IRecipesGui) {
                     //If it is mark on our current screen that we are switching to JEI
                     screen.switchingToRecipeViewer = true;
                 }
             }
             if (Mekanism.hooks.EmiLoaded) {
-                //If JEI is loaded and our current screen is a mekanism gui,
-                // check if the new screen is a JEI recipe screen
-                /*if (event.getNewScreen() instanceof IRecipesGui) {
-                    //If it is mark on our current screen that we are switching to JEI
-                    screen.switchingToRecipeViewer = true;
-                }*/
-                //TODO - 1.20.4: Open an issue requesting that Emi maybe adds a marker interface to her things, or something
+                //If Emi is loaded and our current screen is a mekanism gui, check if the new screen is an Emi recipe screen
+                //TODO - 1.20.4: Figure out a better way to handle this https://github.com/emilyploszaj/emi/issues/481
                 if (event.getNewScreen() != null && event.getNewScreen().getClass().getPackageName().startsWith("dev.emi.emi")) {
                     //If it is mark on our current screen that we are switching to EMI
                     screen.switchingToRecipeViewer = true;

@@ -50,7 +50,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
         List<EmiStack> stacks = ingredient.getEmiStacks();
         //TODO - 1.20.4: Open an issue suggesting to use the index for native emi tank widgets
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);
-        if (!stack.isEmpty()) {
+        if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;
             if (stack.getKey() instanceof Chemical<?> chemical) {
                 MekanismRenderer.color(graphics, chemical);

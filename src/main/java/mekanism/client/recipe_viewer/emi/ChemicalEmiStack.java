@@ -14,8 +14,11 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -110,9 +113,9 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
         List<ClientTooltipComponent> list = getTooltipText().stream()
               .map(EmiTooltipComponents::of)
               .collect(Collectors.toList());
-        if (this.amount > 1L) {
-            //TODO - 1.20.4: Include the mB in the amount
-            list.add(EmiTooltipComponents.getAmount(this));
+        if (amount > 1) {
+            //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/482
+            list.add(EmiTooltipComponents.of(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(amount))));
         }
 
         //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/470

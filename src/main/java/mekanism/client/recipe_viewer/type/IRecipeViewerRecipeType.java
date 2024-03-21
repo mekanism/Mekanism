@@ -20,9 +20,14 @@ public interface IRecipeViewerRecipeType<RECIPE> extends IHasTextComponent {
     @Nullable
     ResourceLocation icon();
 
-    //TODO - 1.20.4: Docs how these are to get the thing back into the same frame of reference as the GUI so that we can copy gui elements more directly
+    /**
+     * Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
+     */
     int xOffset();
 
+    /**
+     * Offset to return the recipe viewer screen to a 0, 0 based coordinates compared to the normal mekanism gui. This number is almost always negative
+     */
     int yOffset();
 
     int width();

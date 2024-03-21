@@ -5,7 +5,6 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.recipe_viewer.GhostIngredientHandler;
@@ -16,6 +15,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 public class EmiGhostIngredientHandler implements EmiDragDropHandler<Screen> {
@@ -51,7 +51,7 @@ public class EmiGhostIngredientHandler implements EmiDragDropHandler<Screen> {
             if (emiStack.getKey() instanceof Item) {
                 raw = emiStack.getItemStack();
             } else if (emiStack.getKey() instanceof Fluid fluid) {
-                raw = new FluidStack(fluid, MathUtils.clampToInt(emiStack.getAmount()), emiStack.getNbt());
+                raw = new FluidStack(fluid, FluidType.BUCKET_VOLUME, emiStack.getNbt());
             } else if (emiStack.getKey() instanceof Chemical<?> chemical) {
                 raw = chemical.getStack(emiStack.getAmount());
             }

@@ -203,7 +203,7 @@ public class MekanismEmi implements EmiPlugin {
         registry.addIngredientSerializer(InfusionEmiStack.class, INFUSION_SERIALIZER);
         registry.addIngredientSerializer(PigmentEmiStack.class, PIGMENT_SERIALIZER);
         registry.addIngredientSerializer(SlurryEmiStack.class, SLURRY_SERIALIZER);
-        //TODO - 1.20.4: Add a support for tag ingredients?
+        //TODO - 1.20.4: Add a support for tag ingredients https://github.com/emilyploszaj/emi/issues/483
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>> void addEmiStacks(EmiRegistry emiRegistry, ChemicalEmiIngredientSerializer<CHEMICAL, ?> serializer) {
@@ -216,8 +216,7 @@ public class MekanismEmi implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        //TODO - 1.20.4: Tooltips in EMI in mekanism screens render behind the items rendered in EMI
-        // this is presumably because we are shifting backwards
+        //TODO - 1.20.4: Tooltips in EMI in mekanism screens render behind the items rendered in EMI https://github.com/emilyploszaj/emi/issues/480
         addEmiStacks(registry, GAS_SERIALIZER);
         addEmiStacks(registry, INFUSION_SERIALIZER);
         addEmiStacks(registry, PIGMENT_SERIALIZER);
