@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
@@ -57,6 +60,14 @@ public class GuiElementHandler {
 
     public static <INGREDIENT> Optional<INGREDIENT> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY,
           BiFunction<IRecipeViewerIngredientHelper, Object, INGREDIENT> ingredientWrapper) {
+        GuiEventListener focused = gui.getFocused();
+        if (focused instanceof GuiTextField || focused instanceof EditBox) {
+            //Don't mark ingredients as clickable if a text box is focused
+            return Optional.empty();
+        } else if (focused instanceof GuiElement element && element.getFocused() instanceof GuiTextField) {
+            //Don't mark ingredients as clickable if a text box is focused
+            return Optional.empty();
+        }
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
         //If no window is being hovered, then check the elements in general; otherwise, check the elements of the window
         return getIngredientUnderMouse(guiWindow == null ? gui.children() : guiWindow.children(), mouseX, mouseY, ingredientWrapper);
