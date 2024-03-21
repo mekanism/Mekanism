@@ -28,7 +28,7 @@ public class ItemStackGasToItemStackEmiRecipe extends MekanismEmiHolderRecipe<It
     public void addWidgets(WidgetHolder widgetHolder) {
         addSlot(widgetHolder, SlotType.INPUT, 64, 17, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 64, 53, catalyst(0)).catalyst(true);
-        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.POWER, 39, 35).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 16));
         initTank(widgetHolder, new GuiEmptyBar(this, 68, 36, 6, 12), input(1));

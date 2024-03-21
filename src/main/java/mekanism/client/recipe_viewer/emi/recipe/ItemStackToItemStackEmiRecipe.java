@@ -28,7 +28,7 @@ public class ItemStackToItemStackEmiRecipe extends MekanismEmiHolderRecipe<ItemS
         addElement(widgetHolder, new GuiUpArrow(this, 68, 38));
 
         addSlot(widgetHolder, SlotType.INPUT, 64, 17, input(0));
-        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);
 
         addSlot(widgetHolder, SlotType.POWER, 64, 53).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 16));

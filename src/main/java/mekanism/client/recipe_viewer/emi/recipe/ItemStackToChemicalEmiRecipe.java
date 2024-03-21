@@ -29,7 +29,7 @@ public abstract class ItemStackToChemicalEmiRecipe<CHEMICAL extends Chemical<CHE
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13), output(0));
+        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13), output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.INPUT, 26, 36, input(0));
         addProgressBar(widgetHolder, ProgressType.LARGE_RIGHT, 64, 40);
     }

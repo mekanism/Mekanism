@@ -24,7 +24,7 @@ public class GasToGasEmiRecipe extends MekanismEmiHolderRecipe<GasToGasRecipe> {
         addSlot(widgetHolder, SlotType.INPUT, 5, 56).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 155, 56).with(SlotOverlay.PLUS);
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13), input(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13), output(0));
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13), output(0)).recipeContext(this);
         addConstantProgress(widgetHolder, ProgressType.LARGE_RIGHT, 64, 39);
     }
 }

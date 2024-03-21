@@ -41,7 +41,6 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
         )));
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 6, 13).setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)), input(1));
         initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 26, 13).setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)), input(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 148, 13).setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY)), output(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 168, 13).setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)), output(1));
-    }
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 148, 13).setLabel(MekanismLang.BOILER_STEAM_TANK.translateColored(EnumColor.GRAY)), output(0)).recipeContext(this);
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 168, 13).setLabel(MekanismLang.BOILER_COOLANT_TANK.translateColored(EnumColor.AQUA)), output(1)).recipeContext(this);    }
 }

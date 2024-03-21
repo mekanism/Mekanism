@@ -26,7 +26,7 @@ public class MetallurgicInfuserEmiRecipe extends MekanismEmiHolderRecipe<Metallu
     public void addWidgets(WidgetHolder widgetHolder) {
         addSlot(widgetHolder, SlotType.EXTRA, 17, 35, catalyst(0)).catalyst(true);
         addSlot(widgetHolder, SlotType.INPUT, 51, 43, input(0));
-        addSlot(widgetHolder, SlotType.OUTPUT, 109, 43, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 109, 43, output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.POWER, 143, 35).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(widgetHolder, ProgressType.RIGHT, 72, 47, TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED);

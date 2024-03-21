@@ -41,6 +41,6 @@ public class FluidToFluidEmiRecipe extends MekanismEmiHolderRecipe<FluidToFluidR
         addSlot(widgetHolder, SlotType.INPUT, 132, 20);
         addSlot(widgetHolder, SlotType.OUTPUT, 132, 51);
         initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13), input(0));
-        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 152, 13), output(0));
+        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 152, 13), output(0)).recipeContext(this);
     }
 }

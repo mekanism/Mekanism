@@ -59,7 +59,7 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
     public void addWidgets(WidgetHolder widgetHolder) {
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4), input(0));
         addSlot(widgetHolder, SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
-        addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 129, 57, output(0)).recipeContext(this);
         addSimpleProgress(widgetHolder, ProgressType.LARGE_RIGHT, 53, 61, TileEntityChemicalCrystallizer.BASE_TICKS_REQUIRED);
         addElement(widgetHolder, new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
         GuiSlot slurryOreSlot = addElement(widgetHolder, new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());

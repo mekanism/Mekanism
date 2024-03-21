@@ -41,7 +41,7 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
     public void addWidgets(WidgetHolder widgetHolder) {
         addSlot(widgetHolder, SlotType.INPUT, 26, 40, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 6, 69, catalyst(0)).catalyst(true);
-        addSlot(widgetHolder, SlotType.OUTPUT, 152, 40, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 152, 40, output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.POWER, 173, 69).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiInnerScreen(this, 45, 18, 104, 68));
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL_MED.with(DataType.INPUT), this, 5, 18), input(1));

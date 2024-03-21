@@ -23,7 +23,7 @@ public class ItemStackToFluidEmiRecipe extends MekanismEmiRecipe<ItemStackToFlui
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0));
+        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.INPUT, 26, 36, input(0));
         if (processTime == 0) {
             addConstantProgress(widgetHolder, ProgressType.LARGE_RIGHT, 64, 40);

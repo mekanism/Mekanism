@@ -35,7 +35,7 @@ public abstract class ChemicalChemicalToChemicalEmiRecipe<CHEMICAL extends Chemi
         widgetHolder.addTexture(EmiTexture.SHAPELESS, 152, 2);
 
         initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.INPUT_1), 25, 13), input(0));
-        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 79, 4), output(0));
+        initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 79, 4), output(0)).recipeContext(this);
         initTank(widgetHolder, getGauge(GaugeType.STANDARD.with(DataType.INPUT_2), 133, 13), input(1));
         addSlot(widgetHolder, SlotType.INPUT, 6, 56).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.INPUT_2, 154, 56).with(SlotOverlay.MINUS);

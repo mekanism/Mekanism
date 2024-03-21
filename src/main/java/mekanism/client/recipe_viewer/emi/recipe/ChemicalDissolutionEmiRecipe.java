@@ -28,7 +28,7 @@ public class ChemicalDissolutionEmiRecipe extends MekanismEmiHolderRecipe<Chemic
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4), input(1));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0));
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13), output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.INPUT, 28, 36, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 8, 65).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 152, 55).with(SlotOverlay.PLUS);

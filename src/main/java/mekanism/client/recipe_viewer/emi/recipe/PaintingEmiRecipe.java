@@ -33,7 +33,7 @@ public class PaintingEmiRecipe extends MekanismEmiHolderRecipe<PaintingRecipe> {
     public void addWidgets(WidgetHolder widgetHolder) {
         addSlot(widgetHolder, SlotType.INPUT, 45, 35, input(0));
         addSlot(widgetHolder, SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
-        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         initTank(widgetHolder, GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13), input(1));
         PaintingColorDetails paintingColorDetails = new PaintingColorDetails();

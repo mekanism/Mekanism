@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
@@ -47,8 +48,13 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
         addElement(widgetHolder, new GuiDownArrow(this, 159, 44));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13), condensentrating ? input(0) : output(0));
-        initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13), condensentrating ? output(0) : input(0));
+        SlotWidget leftWidget = initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13), condensentrating ? input(0) : output(0));
+        SlotWidget rightWidget = initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13), condensentrating ? output(0) : input(0));
+        if (condensentrating) {
+            rightWidget.recipeContext(this);
+        } else {
+            leftWidget.recipeContext(this);
+        }
         addSlot(widgetHolder, SlotType.INPUT, 5, 25).with(SlotOverlay.PLUS);
         addSlot(widgetHolder, SlotType.OUTPUT, 5, 56).with(SlotOverlay.MINUS);
         addSlot(widgetHolder, SlotType.INPUT, 155, 25);

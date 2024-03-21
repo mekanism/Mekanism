@@ -38,7 +38,7 @@ public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
             return list;
         }));
         initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 6, 13), input(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 150, 13), output(0));
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.STANDARD, this, 150, 13), output(0)).recipeContext(this);
         addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(SharedConstants.TICKS_PER_SECOND), 6, 75, 160,
               ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }

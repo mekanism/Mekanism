@@ -36,8 +36,8 @@ public class ElectrolysisEmiRecipe extends MekanismEmiHolderRecipe<ElectrolysisR
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
         initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10), input(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_1), this, 58, 18), output(0));
-        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_2), this, 100, 18), output(1));
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_1), this, 58, 18), output(0)).recipeContext(this);
+        initTank(widgetHolder, GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT_2), this, 100, 18), output(1)).recipeContext(this);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSlot(widgetHolder, SlotType.INPUT, 26, 35);
         addSlot(widgetHolder, SlotType.OUTPUT, 59, 52);

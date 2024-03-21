@@ -20,7 +20,6 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
         addItemOutputDefinition(recipe.getMainOutputDefinition());
-        //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/484
         addOutputDefinition(recipe.getSecondaryOutputDefinition().stream().map(EmiStack::of).map(stack -> stack.setChance((float) recipe.getSecondaryChance())).toList());
     }
 
@@ -30,8 +29,8 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         addSlot(widgetHolder, SlotType.INPUT, 56, 17, input(0));
         addSlot(widgetHolder, SlotType.POWER, 56, 53).with(SlotOverlay.POWER);
         GuiSlot output = addSlot(widgetHolder, SlotType.OUTPUT_WIDE, 112, 31);
-        initItem(widgetHolder, output.getX() + 4, output.getY() + 4, output(0));
-        initItem(widgetHolder, output.getX() + 20, output.getY() + 4, output(1));
+        initItem(widgetHolder, output.getX() + 4, output.getY() + 4, output(0)).recipeContext(this);
+        initItem(widgetHolder, output.getX() + 20, output.getY() + 4, output(1)).recipeContext(this);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(widgetHolder, ProgressType.BAR, 78, 38, TileEntityPrecisionSawmill.BASE_TICKS_REQUIRED);
     }

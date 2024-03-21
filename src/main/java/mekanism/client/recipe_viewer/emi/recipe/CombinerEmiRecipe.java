@@ -26,7 +26,7 @@ public class CombinerEmiRecipe extends MekanismEmiHolderRecipe<CombinerRecipe> {
         addElement(widgetHolder, new GuiUpArrow(this, 68, 38));
         addSlot(widgetHolder, SlotType.INPUT, 64, 17, input(0));
         addSlot(widgetHolder, SlotType.EXTRA, 64, 53, input(1));
-        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0));
+        addSlot(widgetHolder, SlotType.OUTPUT, 116, 35, output(0)).recipeContext(this);
         addSlot(widgetHolder, SlotType.POWER, 39, 35).with(SlotOverlay.POWER);
         addElement(widgetHolder, new GuiVerticalPowerBar(this, RecipeViewerUtils.FULL_BAR, 164, 15));
         addSimpleProgress(widgetHolder, ProgressType.BAR, 86, 38, TileEntityCombiner.BASE_TICKS_REQUIRED);
