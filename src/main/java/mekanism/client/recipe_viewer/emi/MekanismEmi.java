@@ -217,6 +217,7 @@ public class MekanismEmi implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         //TODO - 1.20.4: Tooltips in EMI in mekanism screens render behind the items rendered in EMI https://github.com/emilyploszaj/emi/issues/480
+        // Actually seems like it may be on our side??
         addEmiStacks(registry, GAS_SERIALIZER);
         addEmiStacks(registry, INFUSION_SERIALIZER);
         addEmiStacks(registry, PIGMENT_SERIALIZER);

@@ -12,15 +12,14 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 @NothingNullByDefault
 public class MekanismEmiWidget extends Widget {
 
+    private final boolean forwardClicks;
     private final GuiElement element;
     private final Bounds bounds;
 
-    public MekanismEmiWidget(GuiElement element) {
+    public MekanismEmiWidget(GuiElement element, boolean forwardClicks) {
         this.element = element;
-        //TODO - 1.20.4: Do we have any that stick out??
-        ///List<Rect2i> extraAreas = GuiElementHandler.getGuiExtraAreas(element.children());
-        //TODO - 1.20.4: Should this be relative or absolute??
-        this.bounds = new Bounds(element.getRelativeX(), element.getRelativeY(), element.getWidth(), element.getHeight());
+        this.forwardClicks = forwardClicks;
+        this.bounds = new Bounds(element.getX(), element.getY(), element.getWidth(), element.getHeight());
     }
 
     @Override
@@ -55,7 +54,7 @@ public class MekanismEmiWidget extends Widget {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int button) {
-        return element.mouseClicked(mouseX, mouseY, button);
+        return forwardClicks && element.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.emi;
 
 import dev.emi.emi.api.EmiStackProvider;
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import mekanism.api.chemical.ChemicalStack;
@@ -20,7 +21,7 @@ public class EmiStackUnderMouseProvider implements EmiStackProvider<Screen> {
                 if (ingredient instanceof ItemStack stack) {
                     emiStack = EmiStack.of(stack);
                 } else if (ingredient instanceof FluidStack stack) {
-                    emiStack = EmiStack.of(stack.getFluid(), stack.getTag(), stack.getAmount());
+                    emiStack = NeoForgeEmiStack.of(stack);
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
                     emiStack = ChemicalEmiStack.create(stack);
                 } else {

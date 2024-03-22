@@ -9,7 +9,7 @@ import mekanism.api.chemical.ChemicalStack;
  * Helper for interacting with Mekanism's internals related to EMI. Get an instance via {@link mekanism.api.IMekanismAccess#emiHelper()} after ensuring that EMI is
  * loaded.
  *
- * @since 10.5.9
+ * @since 10.5.10
  */
 public interface IMekanismEmiHelper {
 

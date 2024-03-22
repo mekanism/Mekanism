@@ -43,7 +43,7 @@ public interface IMekanismAccess {
      *
      * @throws IllegalStateException if EMI is not loaded.
      *
-     * @since 10.5.9
+     * @since 10.5.10
      */
     IMekanismEmiHelper emiHelper();
 

@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import dev.emi.emi.api.neoforge.NeoForgeEmiStack;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -106,7 +107,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected void addFluidOutputDefinition(List<FluidStack> definition) {
-        addOutputDefinition(definition.stream().map(stack -> EmiStack.of(stack.getFluid(), stack.getTag(), stack.getAmount())).toList());
+        addOutputDefinition(definition.stream().map(NeoForgeEmiStack::of).toList());
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalOutputDefinition(List<STACK> definition) {
@@ -230,7 +231,11 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addElement(WidgetHolder widgetHolder, ELEMENT element) {
-        widgetHolder.add(new MekanismEmiWidget(element));
+        return addElement(widgetHolder, element, false);
+    }
+
+    protected <ELEMENT extends GuiElement> ELEMENT addElement(WidgetHolder widgetHolder, ELEMENT element, boolean forwardClicks) {
+        widgetHolder.add(new MekanismEmiWidget(element, forwardClicks));
         return element;
     }
 
@@ -243,7 +248,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected EmiIngredient fluidIngredient(FluidStackIngredient ingredient) {
-        return EmiIngredient.of(ingredient.getRepresentations().stream().map(stack -> EmiStack.of(stack.getFluid(), stack.getTag(), stack.getAmount())).toList());
+        return EmiIngredient.of(ingredient.getRepresentations().stream().map(NeoForgeEmiStack::of).toList());
     }
 
     protected EmiIngredient chemicalIngredient(ChemicalStackIngredient<?, ?> ingredient) {
