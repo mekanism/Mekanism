@@ -27,7 +27,6 @@ public class MekanismTankEmiWidget extends SlotWidget {
     @Nullable
     private final GuiGauge<?> gauge;
 
-    //TODO - 1.20.4: Allow clicking to view of components to get recipe information for them?
     public MekanismTankEmiWidget(EmiIngredient stack, GuiElement element, long capacity) {
         super(stack, element.getX(), element.getY());
         this.bounds = new Bounds(element.getX(), element.getY(), element.getWidth(), element.getHeight());
@@ -48,7 +47,6 @@ public class MekanismTankEmiWidget extends SlotWidget {
     public void drawStack(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         EmiIngredient ingredient = getStack();
         List<EmiStack> stacks = ingredient.getEmiStacks();
-        //TODO - 1.20.4: Open an issue suggesting to use the index for native emi tank widgets
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);
         if (!stack.isEmpty() && ingredient.getAmount() > 0) {
             TextureAtlasSprite sprite;

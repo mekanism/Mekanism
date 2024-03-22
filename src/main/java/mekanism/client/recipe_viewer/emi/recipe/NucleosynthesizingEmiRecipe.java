@@ -1,6 +1,8 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.widget.WidgetHolder;
+import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -12,6 +14,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.Color.ColorFunction;
@@ -27,15 +30,6 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
         addItemOutputDefinition(recipe.getOutputDefinition());
         addCatalsyst(recipe.getChemicalInput());
     }
-
-    //TODO - 1.20.4: Figure out rendering the tooltips
-    /*@Override
-    public List<Component> getTooltipStrings(RecipeHolder<NucleosynthesizingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
-        if (rateBar.isMouseOver(mouseX, mouseY)) {
-            return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()));
-        }
-        return Collections.emptyList();
-    }*/
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
@@ -56,7 +50,8 @@ public class NucleosynthesizingEmiRecipe extends MekanismEmiHolderRecipe<Nucleos
                 return FloatingLong.ONE;
             }
         }, GaugeType.SMALL_MED, this, 172, 18));
-        addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(recipe.getDuration()),
+        GuiDynamicHorizontalRateBar rateBar = addElement(widgetHolder, new GuiDynamicHorizontalRateBar(this, RecipeViewerUtils.barProgressHandler(recipe.getDuration()),
               5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+        widgetHolder.addTooltip(List.of(EmiTooltipComponents.of(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()))), rateBar.getX(), rateBar.getY(), rateBar.getWidth(), rateBar.getHeight());
     }
 }

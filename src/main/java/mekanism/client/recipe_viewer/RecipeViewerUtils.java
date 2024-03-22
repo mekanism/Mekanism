@@ -20,6 +20,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
@@ -28,9 +29,11 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.TimeUtil;
@@ -58,9 +61,17 @@ public class RecipeViewerUtils {
 
     public static IBarInfoHandler barProgressHandler(int processTime) {
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
-        return () -> {
-            double subTime = System.currentTimeMillis() % (long) time;
-            return subTime / time;
+        return new IBarInfoHandler() {
+            @Override
+            public Component getTooltip() {
+                return MekanismLang.PROGRESS.translate(TextUtils.getPercent(getLevel()));
+            }
+
+            @Override
+            public double getLevel() {
+                double subTime = System.currentTimeMillis() % (long) time;
+                return subTime / time;
+            }
         };
     }
 

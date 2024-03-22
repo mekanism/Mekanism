@@ -45,10 +45,10 @@ public class MekanismEmiWidget extends Widget {
 
     @Override
     public List<ClientTooltipComponent> getTooltip(int mouseX, int mouseY) {
-        if (element.isMouseOver(mouseX, mouseY)) {
-            //TODO - 1.20.4: Figure out how to properly proxy the tooltips
-            //element.renderToolTip(guiGraphics, mouseX, mouseY);
-        }
+        //TODO - 1.20.4: Figure out how to properly proxy the tooltips and then remove our manual cases where we use widgetHolder.addTooltip
+        /*if (element.isMouseOver(mouseX, mouseY)) {
+            element.renderToolTip(guiGraphics, mouseX, mouseY);
+        }*/
         return List.of();
     }
 

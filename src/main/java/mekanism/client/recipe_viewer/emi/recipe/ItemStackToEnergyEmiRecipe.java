@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
@@ -12,6 +13,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStackToEnergyRecipe> {
@@ -23,8 +25,10 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
 
     @Override
     public void addWidgets(WidgetHolder widgetHolder) {
-        //TODO - 1.20.4: Implement displaying the tooltip for the energy gauge
-        addElement(widgetHolder, new GuiEnergyGauge(getEnergyInfoHandler(), GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13));
+        IEnergyInfoHandler energyInfoHandler = getEnergyInfoHandler();
+        GuiEnergyGauge gauge = addElement(widgetHolder, new GuiEnergyGauge(energyInfoHandler, GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13));
+        widgetHolder.addTooltip((x, y) -> List.of(EmiTooltipComponents.of(EnergyDisplay.of(energyInfoHandler.getEnergy()).getTextComponent())),
+              gauge.getX(), gauge.getY(), gauge.getWidth(), gauge.getHeight());
         addSlot(widgetHolder, SlotType.INPUT, 26, 36, input(0));
         addConstantProgress(widgetHolder, ProgressType.LARGE_RIGHT, 64, 40);
     }
