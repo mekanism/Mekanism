@@ -240,30 +240,28 @@ public class PlayerState {
             return; //don't process creative/spectator players
         }
         boolean hasGravitationalModulator = CommonPlayerTickHandler.isGravitationalModulationReady(player);
-        if (hasGravitationalModulator) {
-            if (player.getAbilities().flying) {
-                //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
-                Optional<IModule<ModuleGravitationalModulatingUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
-                      .map(container -> container.get(MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
-                if (module.isPresent()) {//Should not be null but double check
-                    IModule<ModuleGravitationalModulatingUnit> gravUnit = module.get();
-                    FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                    Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
-                    if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
-                        FloatingLong boostUsage = usage.multiply(4);
-                        if (gravUnit.canUseEnergy(player, boostUsage, false)) {
-                            float boost = gravUnit.getCustomInstance().getBoost();
-                            if (boost > 0) {
-                                player.moveRelative(boost, ModuleGravitationalModulatingUnit.BOOST_VEC);
-                                usage = boostUsage;
-                                gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
-                            }
+        if (hasGravitationalModulator && player.getAbilities().flying) {
+            //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
+            Optional<IModule<ModuleGravitationalModulatingUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
+                  .map(container -> container.get(MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
+            if (module.isPresent()) {//Should not be null but double check
+                IModule<ModuleGravitationalModulatingUnit> gravUnit = module.get();
+                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
+                if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+                    FloatingLong boostUsage = usage.multiply(4);
+                    if (gravUnit.canUseEnergy(player, boostUsage, false)) {
+                        float boost = gravUnit.getCustomInstance().getBoost();
+                        if (boost > 0) {
+                            player.moveRelative(boost, ModuleGravitationalModulatingUnit.BOOST_VEC);
+                            usage = boostUsage;
+                            gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
                         }
                     }
-                    gravUnit.useEnergy(player, usage);
-                    if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-                        player.gameEvent(gameEvent.value());
-                    }
+                }
+                gravUnit.useEnergy(player, usage);
+                if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
+                    player.gameEvent(gameEvent.value());
                 }
             }
         }
