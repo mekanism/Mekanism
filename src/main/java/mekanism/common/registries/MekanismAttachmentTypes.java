@@ -361,7 +361,6 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     //Non-serializable attachments for use in persisting a backing object between multiple capabilities
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<PortableQIODashboardInventory>> QIO_DASHBOARD = ATTACHMENT_TYPES.register("qio_dashboard",
           () -> AttachmentType.builder(PortableQIODashboardInventory::create).build());
-    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<Unit>> WAS_FLYING = ATTACHMENT_TYPES.register("was_flying", () -> AttachmentType.builder(() -> Unit.INSTANCE).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CHEMICAL_TANK_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("chemical_tank_contents_handler",
           () -> AttachmentType.builder(holder -> {
               if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof ItemBlockChemicalTank tank) {

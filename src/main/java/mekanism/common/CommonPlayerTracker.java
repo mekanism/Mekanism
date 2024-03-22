@@ -53,14 +53,12 @@ public class CommonPlayerTracker {
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
         Player player = event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
-        Mekanism.playerState.clearPlayerServerSideOnly(player.getUUID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
-        Mekanism.playerState.reapplyServerSideOnly(player);
         PacketUtils.sendTo(new PacketPlayerRadiationData(player), player);
         RadiationManager.get().updateClientRadiation(player);
     }
@@ -69,15 +67,6 @@ public class CommonPlayerTracker {
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player player && event.getEntity() instanceof ServerPlayer serverPlayer) {
             PacketUtils.sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerLoad(PlayerEvent.LoadFromFile event) {
-        Player player = event.getEntity();
-        if (player.getAbilities().flying) {
-            //Call getData to just set it at the default value as we only care about the presence of it
-            player.getData(MekanismAttachmentTypes.WAS_FLYING);
         }
     }
 

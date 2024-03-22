@@ -175,12 +175,21 @@ public class CommonPlayerTickHandler {
     public static boolean isGravitationalModulationReady(Player player) {
         if (MekanismUtils.isPlayingMode(player)) {
             return IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
-                  .filter(container -> !container.isContainerOnCooldown(player))
+                  //todo not compatible with attributes
+                  //.filter(container -> !container.isContainerOnCooldown(player))
                   .map(container -> container.getIfEnabled(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
                   .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation))
                   .isPresent();
         }
         return false;
+    }
+
+    public static boolean isGravitationalModulationReady(ItemStack stack) {
+        return IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.getIfEnabled(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
+              .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation))
+              .isPresent();
+
     }
 
     public static boolean isGravitationalModulationOn(Player player) {

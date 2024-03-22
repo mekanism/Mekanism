@@ -47,7 +47,6 @@ public class PlayerState {
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
     private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
-    private final Map<UUID, FlightInfo> flightInfoMap = new Object2ObjectOpenHashMap<>();
 
     private LevelAccessor world;
 
@@ -58,8 +57,6 @@ public class PlayerState {
         activeFlamethrowers.clear();
         if (isRemote) {
             SoundHandler.clearPlayerSounds();
-        } else {
-            flightInfoMap.clear();
         }
     }
 
@@ -77,21 +74,6 @@ public class PlayerState {
         RadiationManager.get().resetPlayer(uuid);
         if (!isRemote) {
             PacketUtils.sendToAll(new PacketResetPlayerClient(uuid));
-        }
-    }
-
-    public void clearPlayerServerSideOnly(UUID uuid) {
-        flightInfoMap.remove(uuid);
-    }
-
-    public void reapplyServerSideOnly(Player player) {
-        //For when the dimension changes/we need to reapply the flight info values to the client
-        UUID uuid = player.getUUID();
-        FlightInfo flightInfo = flightInfoMap.get(uuid);
-        if (flightInfo != null) {
-            if (flightInfo.wasFlyingAllowed || flightInfo.wasFlying) {
-                updateClientServerFlight(player, flightInfo.wasFlyingAllowed, flightInfo.wasFlying);
-            }
         }
     }
 
@@ -254,34 +236,12 @@ public class PlayerState {
     }
 
     public void updateFlightInfo(Player player) {
-        boolean isFlyingGameMode = !MekanismUtils.isPlayingMode(player);
+        if (!MekanismUtils.isPlayingMode(player)) {
+            return; //don't process creative/spectator players
+        }
         boolean hasGravitationalModulator = CommonPlayerTickHandler.isGravitationalModulationReady(player);
-        FlightInfo flightInfo = flightInfoMap.computeIfAbsent(player.getUUID(), uuid -> new FlightInfo());
-        if (isFlyingGameMode || hasGravitationalModulator) {
-            //The player can fly
-            if (!flightInfo.hadFlightItem) {
-                //If they did not have a flight item
-                if (!player.getAbilities().mayfly) {
-                    //and they are not already allowed to fly, then enable it
-                    updateClientServerFlight(player, true, player.getAbilities().flying || player.hasData(MekanismAttachmentTypes.WAS_FLYING));
-                }
-                //and mark that they had a flight item
-                flightInfo.hadFlightItem = true;
-            } else if (flightInfo.wasFlyingGameMode && !isFlyingGameMode) {
-                //The player was in a game mode that allowed flight, but no longer is, though they still are allowed to fly
-                //Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
-                //and are still allowed to the game mode change doesn't force them out of it
-                updateClientServerFlight(player, true, flightInfo.wasFlying);
-            } else if (flightInfo.wasFlyingAllowed && !player.getAbilities().mayfly) {
-                //If we were allowed to fly but something changed that state (such as another mod)
-                // Re-enable flying and set the player back into flying if they were flying
-                updateClientServerFlight(player, true, flightInfo.wasFlying);
-            }
-            //Update flight info states
-            flightInfo.wasFlyingGameMode = isFlyingGameMode;
-            flightInfo.wasFlying = player.getAbilities().flying;
-            flightInfo.wasFlyingAllowed = player.getAbilities().mayfly;
-            if (player.getAbilities().flying && hasGravitationalModulator) {
+        if (hasGravitationalModulator) {
+            if (player.getAbilities().flying) {
                 //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
                 Optional<IModule<ModuleGravitationalModulatingUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
                       .map(container -> container.get(MekanismModules.GRAVITATIONAL_MODULATING_UNIT));
@@ -306,26 +266,6 @@ public class PlayerState {
                     }
                 }
             }
-        } else {
-            if (flightInfo.hadFlightItem) {
-                if (player.getAbilities().mayfly) {
-                    updateClientServerFlight(player, false, false);
-                }
-                flightInfo.hadFlightItem = false;
-            }
-            flightInfo.wasFlyingGameMode = false;
-            flightInfo.wasFlying = player.getAbilities().flying;
-            flightInfo.wasFlyingAllowed = player.getAbilities().mayfly;
-        }
-        //Remove our temporary cache of if the player was flying when loaded
-        player.removeData(MekanismAttachmentTypes.WAS_FLYING);
-    }
-
-    private void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
-        player.getAbilities().mayfly = allowFlying;
-        player.getAbilities().flying = isFlying;
-        if (player instanceof ServerPlayer) {
-            player.onUpdateAbilities();
         }
     }
 
