@@ -38,7 +38,8 @@ idea {
 }
 
 ext {
-    versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range]
+    versionProperties = ["version"    : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range,
+                         "emi_version": emi_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -638,7 +639,7 @@ publishing {
                     NodeList allDeps = dependencies.'*'
 
                     //As we don't actually have any hard deps, just mark everything as optional so other people don't have to inherit them
-                    allDeps.<Node>each { Node el -> el.appendNode('optional', true) }
+                    allDeps.<Node> each { Node el -> el.appendNode('optional', true) }
                 }
             }
         }

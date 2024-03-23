@@ -110,18 +110,17 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
 
     @Override
     public List<ClientTooltipComponent> getTooltip() {
-        List<ClientTooltipComponent> list = getTooltipText().stream()
+        List<ClientTooltipComponent> tooltips = getTooltipText().stream()
               .map(EmiTooltipComponents::of)
               .collect(Collectors.toList());
         if (amount > 1) {
             //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/482
-            list.add(EmiTooltipComponents.of(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(amount))));
+            tooltips.add(EmiTooltipComponents.of(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(amount))));
         }
 
-        //TODO - 1.20.4: https://github.com/emilyploszaj/emi/issues/470
-
-        list.addAll(super.getTooltip());
-        return list;
+        EmiTooltipComponents.appendModName(tooltips, getId().getNamespace());
+        tooltips.addAll(super.getTooltip());
+        return tooltips;
     }
 
     @Override

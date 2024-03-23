@@ -275,8 +275,8 @@ public class MekanismEmi implements EmiPlugin {
                 if (recipe.hasFluidToGas()) {
                     //Note: If the recipe is bidirectional, we prefix the recipe id so that they don't clash as duplicates
                     // as we return the proper recipe holder regardless
-                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id().withPrefix("condensentrating/"), recipeHolder, true));
-                    registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id().withPrefix("decondensentrating/"), recipeHolder, false));
+                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
+                    registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "decondensentrating"), recipeHolder, false));
                 } else {
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id(), recipeHolder, true));
                 }

@@ -1,8 +1,8 @@
 package mekanism.client.recipe_viewer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,6 +75,14 @@ public class RecipeViewerUtils {
         };
     }
 
+    public static ResourceLocation synthetic(ResourceLocation id, String prefix, String namespace) {
+        return synthetic(new ResourceLocation(namespace, id.toString().replace(':', '_')), prefix);
+    }
+
+    public static ResourceLocation synthetic(ResourceLocation id, String prefix) {
+        return id.withPrefix("/" + prefix + "/");
+    }
+
     public static <T> T getCurrent(List<T> elements) {
         return elements.get(getIndex(elements));
     }
@@ -118,7 +126,7 @@ public class RecipeViewerUtils {
     }
 
     public static Map<ResourceLocation, ItemStackToFluidRecipe> getLiquificationRecipes() {
-        Map<ResourceLocation, ItemStackToFluidRecipe> liquification = new LinkedHashMap<>();
+        Map<ResourceLocation, ItemStackToFluidRecipe> liquification = new HashMap<>();
         for (Item item : BuiltInRegistries.ITEM) {
             if (item.isEdible()) {
                 ItemStack stack = new ItemStack(item);
@@ -126,8 +134,8 @@ public class RecipeViewerUtils {
                 FoodProperties food = stack.getFoodProperties(null);
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
-                    liquification.put(Mekanism.rl("generated_liquification/" + RegistryUtils.getName(stack.getItem()).toString().replace(':', '_')),
-                          new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
+                    ResourceLocation id = RecipeViewerUtils.synthetic(RegistryUtils.getName(stack.getItem()), "liquification", Mekanism.MODID);
+                    liquification.put(id, new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
                 }
             }
         }

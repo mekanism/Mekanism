@@ -45,13 +45,13 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe.getCategory() == VanillaEmiRecipeCategories.CRAFTING && recipe.supportsRecipeTree();
-    }
-
-    @Override
-    public boolean alwaysDisplaySupport(EmiRecipe recipe) {
-        //TODO - 1.20.4: ??
-        return EmiRecipeHandler.super.alwaysDisplaySupport(recipe);
+        if (recipe.getCategory() == VanillaEmiRecipeCategories.CRAFTING && recipe.supportsRecipeTree()) {
+            RecipeHolder<?> backingRecipe = recipe.getBackingRecipe();
+            //TODO - 1.20.4: Can we expand upon this to support others as long as their category is crafting like we return in supports recipe??
+            // For example for special recipes like shulker box coloring https://github.com/emilyploszaj/emi/issues/487
+            return backingRecipe != null && backingRecipe.value() instanceof CraftingRecipe;
+        }
+        return false;
     }
 
     @Override
@@ -85,7 +85,6 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
 
     @Override
     public void render(EmiRecipe recipe, EmiCraftContext<CONTAINER> context, List<Widget> widgets, GuiGraphics graphics) {
-        //TODO - 1.20.4: ??
         //Based on StandardRecipeHandler#renderMissing, except with our own logic for determining what ingredients are missing
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {
@@ -127,8 +126,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
             //TODO - 1.20.4: Support the context's destination thing?
             RecipeHolder<?> backingRecipe = recipe.getBackingRecipe();
             if (backingRecipe == null || !(backingRecipe.value() instanceof CraftingRecipe)) {
-                //TODO - 1.20.4: Can we expand upon this to support others as long as their category is crafting like we return in supports recipe??
-                // Also should this check instead be in supportsRecipe?
+                //Note: Theoretically this is always true as we checked it in supportsRecipe, but validate it here just in case
                 return null;
             }
             return new EmiRecipeInfo(context, (RecipeHolder<CraftingRecipe>) backingRecipe, recipe.getInputs().stream().map(EmiRecipeSlot::new).toList());
