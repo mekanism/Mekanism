@@ -62,6 +62,7 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_INVALID_TOO_NARROW("turbine", "invalid_too_narrow"),
     TURBINE_INVALID_VENT_BELOW_COMPLEX("turbine", "invalid_vent_below_complex"),
     TURBINE_INVALID_MISSING_COILS("turbine", "invalid_missing_coils"),
+    TURBINE_INVALID_MISSING_DISPERSERS("turbine", "invalid_missing_dispersers"),
 
     TURBINE("turbine", "industrial_turbine"),
     TURBINE_FLOW_RATE("turbine", "flow_rate"),

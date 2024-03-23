@@ -34,7 +34,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
     public static final int MAX_BLADES = 28;
 
     public TurbineValidator() {
-        super(new VoxelCuboid(3, 3, 3), new VoxelCuboid(17, 18, 17));
+        super(new VoxelCuboid(5, 3, 5), new VoxelCuboid(17, 18, 17));
     }
 
     @Override
@@ -110,6 +110,10 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         //Terminate if coils don't exist
         if (coils.isEmpty()) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COILS);
+        }
+        //Terminate if dispersers don't exist
+        if (dispersers.isEmpty()) {
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_DISPERSERS);
         }
 
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();

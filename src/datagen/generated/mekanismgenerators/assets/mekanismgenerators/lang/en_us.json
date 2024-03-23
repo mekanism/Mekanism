@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "Couldn't form, no Electromagnetic Coils present.",
   "turbine.mekanismgenerators.invalid_missing_complex": "Couldn't form, no Rotational Complex present.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "Couldn't form, expected but didn't find Pressure Disperser at %1$s.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "Couldn't form, no Pressure Dispersers present.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "Couldn't form, rotors are invalid (non-contiguous).",
   "turbine.mekanismgenerators.invalid_too_narrow": "Couldn't form, structure is too narrow to support turbine size.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Couldn't form, found a Turbine Vent below Pressure Disperser layer. Vents must be at or above vertical position of disperser layer.",
