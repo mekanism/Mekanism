@@ -52,7 +52,9 @@ public class ChemicalElement extends LookingAtElement {
     @Override
     public Component getText() {
         long amount = stored.getAmount();
-        if (amount == Long.MAX_VALUE) {
+        if (stored.isEmpty()) {
+            return MekanismLang.EMPTY.translate();
+        } else if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);
         }
         return MekanismLang.GENERIC_STORED_MB.translate(stored.getType(), TextUtils.format(amount));

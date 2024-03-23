@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
@@ -24,6 +25,7 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
+import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -34,10 +36,15 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
+import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
+import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.WorldUtils;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -110,6 +117,15 @@ public class LookingAtUtils {
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
                 info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));
             }
+            if (tile instanceof TileEntityQIORedstoneAdapter adapter) {
+                ItemStack itemType = adapter.getItemType();
+                if (!itemType.isEmpty()) {
+                    info.addText(itemType.getHoverName());
+                    ILangEntry match = adapter.isInverted() ? MekanismLang.GENERIC_LESS_THAN : MekanismLang.GENERIC_GREATER_EQUAL;
+                    info.addText(match.translate(MekanismLang.QIO_TRIGGER_COUNT, TextUtils.format(adapter.getCount())));
+                    info.addText(MekanismLang.QIO_FUZZY_MODE.translate(adapter.getFuzzyMode()));
+                }
+            }
         }
         MultiblockData structure = getMultiblock(tile);
         IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
@@ -124,10 +140,14 @@ public class LookingAtUtils {
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
                 IFluidHandler fluidCapability = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, tile, null);
                 if (fluidCapability != null) {
-                    displayFluid(info, fluidCapability);
+                    FluidStack fallback = FluidStack.EMPTY;
+                    if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
+                        fallback = pipe.getTransmitter().getTransmitterNetwork().lastFluid;
+                    }
+                    displayFluid(info, fluidCapability, fallback);
                 } else if (structure != null && structure.isFormed()) {
                     //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
-                    displayFluid(info, structure);
+                    displayFluid(info, structure, FluidStack.EMPTY);
                 }
             }
             //Chemicals
@@ -138,7 +158,7 @@ public class LookingAtUtils {
         }
     }
 
-    private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler) {
+    private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler, FluidStack fallback) {
         if (fluidHandler instanceof IMekanismFluidHandler mekFluidHandler) {
             for (IExtendedFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
                 if (fluidTank instanceof FluidTankWrapper wrapper) {
@@ -149,19 +169,21 @@ public class LookingAtUtils {
                         continue;
                     }
                 }
-                addFluidInfo(info, fluidTank.getFluid(), fluidTank.getCapacity());
+                addFluidInfo(info, fluidTank.getFluid(), fluidTank.getCapacity(), fallback);
             }
         } else {
             //Fallback handling if it is not our fluid handler (probably never gets used)
             for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
-                addFluidInfo(info, fluidHandler.getFluidInTank(tank), fluidHandler.getTankCapacity(tank));
+                addFluidInfo(info, fluidHandler.getFluidInTank(tank), fluidHandler.getTankCapacity(tank), fallback);
             }
         }
     }
 
-    private static void addFluidInfo(LookingAtHelper info, FluidStack fluidInTank, int capacity) {
+    private static void addFluidInfo(LookingAtHelper info, FluidStack fluidInTank, int capacity, FluidStack fallback) {
         if (!fluidInTank.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fluidInTank));
+        } else if (!fallback.isEmpty()) {
+            info.addText(MekanismLang.LIQUID.translate(fallback));
         }
         info.addFluidElement(fluidInTank, capacity);
     }
@@ -180,12 +202,19 @@ public class LookingAtUtils {
           ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
         HANDLER handler = capability.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
+            CHEMICAL fallback = handler.getEmptyStack().getType();
+            if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
+                BoxedChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
+                if (!network.lastChemical.isEmpty() && network.lastChemical.getChemicalType() == ChemicalType.getTypeFor(handler)) {
+                    fallback = (CHEMICAL) network.lastChemical.getChemical();
+                }
+            }
             if (handler instanceof ProxyChemicalHandler) {
                 List<TANK> tanks = ((ProxyChemicalHandler<CHEMICAL, STACK, ?>) handler).getTanksIfMekanism();
                 if (!tanks.isEmpty()) {
                     //If there are any tanks add them and then exit, otherwise continue on assuming it is not a mekanism handler that is wrapped
                     for (TANK tank : tanks) {
-                        addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType);
+                        addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, fallback);
                     }
                     return;
                 }
@@ -193,24 +222,24 @@ public class LookingAtUtils {
             if (handler instanceof IMekanismChemicalHandler) {
                 IMekanismChemicalHandler<CHEMICAL, STACK, TANK> mekHandler = (IMekanismChemicalHandler<CHEMICAL, STACK, TANK>) handler;
                 for (TANK tank : mekHandler.getChemicalTanks(null)) {
-                    addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType);
+                    addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, fallback);
                 }
             } else {
                 for (int i = 0; i < handler.getTanks(); i++) {
-                    addChemicalInfo(info, langEntry, handler.getChemicalInTank(i), handler.getTankCapacity(i));
+                    addChemicalInfo(info, langEntry, handler.getChemicalInTank(i), handler.getTankCapacity(i), fallback);
                 }
             }
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
             for (TANK tank : multiBlockToTanks.apply(structure)) {
-                addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType);
+                addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, tank.getEmptyStack().getType());
             }
         }
     }
 
     @SuppressWarnings("unchecked")
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void addChemicalTankInfo(
-          LookingAtHelper info, ILangEntry langEntry, TANK chemicalTank, Current matchingCurrent, CurrentType matchingCurrentType) {
+          LookingAtHelper info, ILangEntry langEntry, TANK chemicalTank, Current matchingCurrent, CurrentType matchingCurrentType, CHEMICAL fallback) {
         if (chemicalTank instanceof ChemicalTankWrapper) {
             MergedChemicalTank mergedTank = ((ChemicalTankWrapper<CHEMICAL, STACK>) chemicalTank).getMergedTank();
             if (mergedTank instanceof MergedTank tank) {
@@ -232,13 +261,15 @@ public class LookingAtUtils {
                 }
             }
         }
-        addChemicalInfo(info, langEntry, chemicalTank.getStack(), chemicalTank.getCapacity());
+        addChemicalInfo(info, langEntry, chemicalTank.getStack(), chemicalTank.getCapacity(), fallback);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalInfo(LookingAtHelper info, ILangEntry langEntry,
-          STACK chemicalInTank, long capacity) {
+          STACK chemicalInTank, long capacity, CHEMICAL fallback) {
         if (!chemicalInTank.isEmpty()) {
             info.addText(langEntry.translate(chemicalInTank.getType()));
+        } else if (!fallback.isEmptyType()) {
+            info.addText(langEntry.translate(fallback));
         }
         info.addChemicalElement(chemicalInTank, capacity);
     }

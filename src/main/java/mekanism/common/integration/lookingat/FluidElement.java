@@ -48,7 +48,9 @@ public class FluidElement extends LookingAtElement {
     @Override
     public Component getText() {
         int amount = stored.getAmount();
-        if (amount == Integer.MAX_VALUE) {
+        if (stored.isEmpty()) {
+            return MekanismLang.EMPTY.translate();
+        } else if (amount == Integer.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored, MekanismLang.INFINITE);
         }
         return MekanismLang.GENERIC_STORED_MB.translate(stored, TextUtils.format(amount));
