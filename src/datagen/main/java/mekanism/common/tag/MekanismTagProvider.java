@@ -113,6 +113,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               Tags.Items.INGOTS_BRICK,
               Tags.Items.INGOTS_IRON,
               Tags.Items.INGOTS_GOLD,
+              Tags.Items.INGOTS_COPPER,
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
