@@ -17,12 +17,12 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.96'//https://projects.neoforged.net/neoforged/neogradle
+    id 'net.neoforged.gradle.userdev' version '7.0.100'//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.6'
+    gradleVersion = '8.7'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -213,11 +213,11 @@ def setupTasks(SourceSet sourceSet) {
         }
     })
     //Set the various variables/settings for the different process resources tasks
-    tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure {
+    tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure { ProcessResources process ->
         setGroup("process resources")
-        duplicatesStrategy(DuplicatesStrategy.FAIL)
-        exclude('META-INF/mods.toml')
-        from("${projectDir}") { include 'logo.png' }
+        process.duplicatesStrategy(DuplicatesStrategy.FAIL)
+        process.exclude('META-INF/mods.toml')
+        process.from("${projectDir}") { include 'logo.png' }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
         finalizedBy(replaceResourceTask)
@@ -239,10 +239,10 @@ def setupTasks(SourceSet sourceSet) {
     //Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
     tasks.named(sourceSet.getClassesTaskName()).configure { dependsOn(replaceResourceTask) }
     //Configure specific compile tasks to have the proper annotation processor info
-    compileTask.configure {
+    compileTask.configure { JavaCompile task ->
         setGroup("compile")
-        options.annotationProcessorPath = configurations.annotationProcessor
-        options.compilerArgs.addAll([
+        task.options.annotationProcessorPath = configurations.annotationProcessor
+        task.options.compilerArgs.addAll([
                 "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}",//annotation processor param
                 "-parameters"
         ])
@@ -252,7 +252,7 @@ def setupTasks(SourceSet sourceSet) {
 group = "mekanism"
 def basicVersion = "${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 version = "${minecraft_version}-${basicVersion}"
-archivesBaseName = "Mekanism"
+project.base.archivesName = "Mekanism"
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of("${java_version}"))
@@ -493,19 +493,19 @@ def getManifestAttributes(String title) {
     ]
 }
 
-tasks.named('jar', Jar).configure {
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
-    from([sourceSets.api.output, sourceSets.main.output])
-    exclude('crafttweaker_parameter_names.json')
-    manifest.attributes(getManifestAttributes("Mekanism"))
+tasks.named('jar', Jar).configure { Jar jar ->
+    jar.duplicatesStrategy(DuplicatesStrategy.FAIL)
+    jar.from([sourceSets.api.output, sourceSets.main.output])
+    jar.exclude('crafttweaker_parameter_names.json')
+    jar.manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
-tasks.named('sourcesJar', Jar).configure {
+tasks.named('sourcesJar', Jar).configure { Jar jar ->
     dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
-    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    jar.duplicatesStrategy(DuplicatesStrategy.FAIL)
     //Note: Already contains main source set's sources by default
-    from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
-    manifest.attributes(getManifestAttributes("Mekanism"))
+    jar.from(sourceSets.api.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
+    jar.manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
 def secondaryJar(SourceSet sourceSet, String title) {
@@ -619,7 +619,7 @@ publishing {
             publication.from((SoftwareComponent) components.java)
             publication.groupId = project.group
             publication.version = project.version
-            publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.archivesBaseName
+            publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.base.archivesName
             publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
             publication.pom {
                 name.set("Mekanism")
