@@ -68,7 +68,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
             return 0;
         }
         double scale = tank.getStored() / (double) tank.getCapacity();
-        return MathUtils.clampToInt(Math.round(scale * (height - 2)));
+        return MathUtils.clampToInt(Math.max(1, Math.round(scale * (height - 2))));
     }
 
     @Nullable
