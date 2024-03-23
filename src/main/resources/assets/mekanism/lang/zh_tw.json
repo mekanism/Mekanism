@@ -1629,6 +1629,7 @@
   "tooltip.mekanism.mode.scuba_tank": "潛水罐: %1$s",
   "tooltip.mekanism.no_fluid": "沒有流體儲存.",
   "tooltip.mekanism.no_gas": "沒有氣體儲存.",
+  "tooltip.mekanism.recipe_viewer.inventory_full": "物品欄中沒有足夠的空間.",
   "tooltip.mekanism.security": "安全性: %1$s",
   "tooltip.mekanism.stored": "已儲存 %1$s：%2$s",
   "tooltip.mekanism.stored.flamethrower": "火焰噴射器: %1$s",
