@@ -1,4 +1,4 @@
-// Recipes	2024-03-10T19:34:57.6309729	Recipes
+// Recipes	2024-03-23T18:34:20.2857427	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 2f33c48a639876d68a3a712c24540c3f78c5e86f data/mekanism/recipes/bin/advanced.json
@@ -227,27 +227,40 @@ e32eb3267d7055fe99fa9f7e323c49cbdb934864 data/mekanism/recipes/compat/biomesople
 ffe01058916f673001e71ca1f874642b4cd3d400 data/mekanism/recipes/compat/biomesoplenty/dye/cyan.json
 50d9e2f5aacc6ec7e61e235dcc4336f62968bd10 data/mekanism/recipes/compat/biomesoplenty/dye/gray.json
 17b351ae2b2df2fe2beda1696a7257b7cca37107 data/mekanism/recipes/compat/biomesoplenty/dye/green.json
+a8c1d1dcaf714fad1f3641f70b0da1b2c09811f8 data/mekanism/recipes/compat/biomesoplenty/dye/large_brown.json
+1a2a843a14c82dfbc3ce5a17e191569660674ec4 data/mekanism/recipes/compat/biomesoplenty/dye/large_light_blue.json
+3bc88285e9f4ac62a2f29d376736e90a2e5d8d19 data/mekanism/recipes/compat/biomesoplenty/dye/large_purple.json
+f3a81d7ae5da13b902780523c35a9d5be8bc13c9 data/mekanism/recipes/compat/biomesoplenty/dye/large_white.json
 c407032efb590c913b256500f7a4fafbe664f280 data/mekanism/recipes/compat/biomesoplenty/dye/light_blue.json
+4a006bf8fa987623707d79e7bef11a689c364c73 data/mekanism/recipes/compat/biomesoplenty/dye/light_gray.json
 32273e16a33ae11becbe12100b530b28a34fbbdd data/mekanism/recipes/compat/biomesoplenty/dye/magenta.json
 c3aa154fb64059ea1f15f27119585183156583a2 data/mekanism/recipes/compat/biomesoplenty/dye/orange.json
 7811cb017c130f266a8d71510a4a78b731212239 data/mekanism/recipes/compat/biomesoplenty/dye/pink.json
 9aa3699cc32e826b8d3402ff9c11ec1f5613744a data/mekanism/recipes/compat/biomesoplenty/dye/purple.json
 6656f77667b921d53a79ac8908a235067d1a47a7 data/mekanism/recipes/compat/biomesoplenty/dye/red.json
+13d034932b92ea8bd757961285e32f8ca07efbc8 data/mekanism/recipes/compat/biomesoplenty/dye/white.json
 95aa3f36e1ad5278faa321b7b1b0fdefe16626ab data/mekanism/recipes/compat/biomesoplenty/dye/yellow.json
 ef971be2b44208c8ccf59428bb155c95ec75174f data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/cyan.json
 9d0c9fa48da504ad384202a8442381ae294cf070 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/gray.json
 343ddf70022eb9d0496d8bfbc8dd0a883da31813 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/green.json
+b02a6bb6c21e10d354a48b0678cceb8b83716722 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/large_brown.json
+b7ab7b1c25f7da259170ca6dc0f0ac43c3c43741 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/large_light_blue.json
+ca534f9a5d235cab0a9bba49b89fa387276cc2a7 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/large_purple.json
+3114f5e15c5ffa8e8806a187e8dc6faf84723ead data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/large_white.json
 fb20fa3ab75dd23efd44d456fb4a6d49235a4a53 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/light_blue.json
+f246f633c46b804231329db5e63fee854492160d data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/light_gray.json
 6713324b53a37be7a3a9f2590434d3dfa404439a data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/magenta.json
 ab2f9748bb08331afa1f27ef9f0fd1f08c0e723b data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/orange.json
 ff3223798915d7f0f4004e225adeebc94dd4be00 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/pink.json
 02f8d5ba96730541072812b16983887893dca955 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/purple.json
 47115f2de3f56495d63dba40485fc345519c9f43 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/red.json
+dea886d95b762ceb650e51ddd8a309fbcb6f72e3 data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/white.json
 2c3342bcad1607089f76e65c13759c355af7677d data/mekanism/recipes/compat/biomesoplenty/pigment_extracting/yellow.json
 5b81ade762bf0e0622de3630980a1b6a955e222e data/mekanism/recipes/compat/biomesoplenty/sandstone_to_sand/black.json
 3aaa07f38b0f31d10311a39c1b6ef4c67ba53568 data/mekanism/recipes/compat/biomesoplenty/sandstone_to_sand/orange.json
 650333026be02fdcc210757bfdf463bf226394b9 data/mekanism/recipes/compat/biomesoplenty/sandstone_to_sand/white.json
 2d3ca49cd52536afcaa7e05f688be052d02ed2af data/mekanism/recipes/compat/biomesoplenty/sawing/boat/dead.json
+95b6ab371814028491acbfbe980be29776f9a267 data/mekanism/recipes/compat/biomesoplenty/sawing/boat/empyreal.json
 1b65f361cb5dc1033d7b3f81f48d00e88d4d125c data/mekanism/recipes/compat/biomesoplenty/sawing/boat/fir.json
 ad1688011111f356ba5d01f5b5cdf23c03078674 data/mekanism/recipes/compat/biomesoplenty/sawing/boat/hellbark.json
 472608608e76b58433856df918d2eb16996f8f12 data/mekanism/recipes/compat/biomesoplenty/sawing/boat/jacaranda.json
@@ -260,6 +273,7 @@ b216d842d983b2750ab42770056fdbc87509b9fe data/mekanism/recipes/compat/biomesople
 b968c20e65f6208662fd7fc05c71c0fcf5b2638c data/mekanism/recipes/compat/biomesoplenty/sawing/boat/umbran.json
 20a6386f8985850bd263e09f2b255585b16354b2 data/mekanism/recipes/compat/biomesoplenty/sawing/boat/willow.json
 6678021ffc78f2b6d9402b45e700ce8eb9948cbe data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/dead.json
+ac001e16633f322ea2856351b5f7364e606fc455 data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/empyreal.json
 c8295922eafe122a490e394291a1a50235d04304 data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/fir.json
 d6a7001a9d7ee10c79d56d8540e7ecb89fb50d08 data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/hellbark.json
 25101efb1f4e089b8da931249ec3d11280aee761 data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/jacaranda.json
@@ -272,6 +286,7 @@ fa764240db93e4b293956628d5f3eb14e9cb9c29 data/mekanism/recipes/compat/biomesople
 93465bbd3f06395c2abd83f28ed66c9a6fcf2f9a data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/umbran.json
 d1b63bfef240ab371ebd0c88694127978bfb83f4 data/mekanism/recipes/compat/biomesoplenty/sawing/chest_boat/willow.json
 f47b245a03dcc8e7737a9a62cdb1e26cf96bf396 data/mekanism/recipes/compat/biomesoplenty/sawing/door/dead.json
+92e2e954980f478e7be1f7ce1de53cff78b1d44d data/mekanism/recipes/compat/biomesoplenty/sawing/door/empyreal.json
 40bbf64234c628d8064a0fc30c9a0719157093bf data/mekanism/recipes/compat/biomesoplenty/sawing/door/fir.json
 d2f2b40297677f976feb87ed1c93bf69d5fd7ab3 data/mekanism/recipes/compat/biomesoplenty/sawing/door/hellbark.json
 51b9b697510d1ae21898f5be4f359d4170ed24ea data/mekanism/recipes/compat/biomesoplenty/sawing/door/jacaranda.json
@@ -284,6 +299,7 @@ e6273ceaab9b85cb9e539472ae849590164cb9d0 data/mekanism/recipes/compat/biomesople
 fd311d7cc019ba472c18ef8b42e3877d63d41202 data/mekanism/recipes/compat/biomesoplenty/sawing/door/umbran.json
 4a546cdbe9c13eed3e53854765e4ce518b02bab9 data/mekanism/recipes/compat/biomesoplenty/sawing/door/willow.json
 8c5412b6428a52771bbb3cb81bbd84e203864ec7 data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/dead.json
+03ac42dffbeaf1d45d9d6be07a23071fd8e110da data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/empyreal.json
 7000f888bc97bd8591c8d57d3b2ff8c130a07b23 data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/fir.json
 2768cf84efe6aa00c441a27f9a888282a5124845 data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/hellbark.json
 526b4a507ef987ae21c52cc89de59ce24e7fc1cc data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/jacaranda.json
@@ -296,6 +312,7 @@ b648ab1309c7dbbedc21ee354dad6cfdcafeccaa data/mekanism/recipes/compat/biomesople
 1af975b16b5533ad272762f09ca64fc76170c1b8 data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/umbran.json
 0f4a837e162ff12858326746bfafdfd88c75131a data/mekanism/recipes/compat/biomesoplenty/sawing/fence_gate/willow.json
 fea2489527e5aa3167822fa75d96b27424db337f data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/dead.json
+3e63b13dded3ba33a342775cd95a63132d97b6e3 data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/empyreal.json
 714966587e0368d2ac52174651734a53ae06acda data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/fir.json
 ab83b6e034d903a4ea613105bbbec390b2d9eba8 data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/hellbark.json
 1065f1e1afa79d79cce7aad43e58386f61491af8 data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/jacaranda.json
@@ -308,6 +325,7 @@ ad542e8fd45f8667162f2dcd1cf1839b6073eea4 data/mekanism/recipes/compat/biomesople
 3c30c9051c2a7a7969fa5f25204a69d5903647ae data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/umbran.json
 eb546fd9b47e3f4389ff14a53d93609d77116062 data/mekanism/recipes/compat/biomesoplenty/sawing/hanging_sign/willow.json
 d503657eb24483977413b9c34c1dcb66ba24b92a data/mekanism/recipes/compat/biomesoplenty/sawing/log/dead.json
+daafeddb89bb441e568d449a0cd047d0c4e5b86c data/mekanism/recipes/compat/biomesoplenty/sawing/log/empyreal.json
 e9a5f8e5f19191717b1e8cb635c2e63aa1aca298 data/mekanism/recipes/compat/biomesoplenty/sawing/log/fir.json
 bc7fb3cc9ed33dc2dd43403d36f990d0b0d6aec2 data/mekanism/recipes/compat/biomesoplenty/sawing/log/hellbark.json
 03aa7ccd7541ebfdbea075589ab3b242b709a2bc data/mekanism/recipes/compat/biomesoplenty/sawing/log/jacaranda.json
@@ -320,6 +338,7 @@ b8b5b7738da77aa1074d158f60520246fe817a7d data/mekanism/recipes/compat/biomesople
 18b11ab7e495bf96ff8446bbdcabf6a46931ad1b data/mekanism/recipes/compat/biomesoplenty/sawing/log/umbran.json
 8527d3c9a53b7a406ff08ff03d451cade0273068 data/mekanism/recipes/compat/biomesoplenty/sawing/log/willow.json
 6bce9d798a30b19eb286818261492b9efb99f4c3 data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/dead.json
+bcfbdc628bbc83e7e2ea2c9395db99d01090b0bd data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/empyreal.json
 b137e1b0432166ddb7f96db04704e00555e4ba79 data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/fir.json
 fd4cb23a5019cb2895e6d759245970b5dd5e93c0 data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/hellbark.json
 e791be254ac16117ad593a2049f18ba17f6e33fc data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/jacaranda.json
@@ -332,6 +351,7 @@ b6c772b0771c852133b56e78cb26309cc5f50be3 data/mekanism/recipes/compat/biomesople
 292781e2f23cddbd5377efe93d6c3e02808e3085 data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/umbran.json
 409f7e7e488c9d8fdd4be35ee1a5c243485db5af data/mekanism/recipes/compat/biomesoplenty/sawing/pressure_plate/willow.json
 f0d675615b082ab1db4a4660b749d03f936e3db8 data/mekanism/recipes/compat/biomesoplenty/sawing/trapdoor/dead.json
+b898ba74d855923d2849a72bae6c1c7606a7859f data/mekanism/recipes/compat/biomesoplenty/sawing/trapdoor/empyreal.json
 38e2edf13922958706d69b8631b38f637c263300 data/mekanism/recipes/compat/biomesoplenty/sawing/trapdoor/fir.json
 c8bdfbdcd881a02ed7b115a5c6e3312e7e8035b8 data/mekanism/recipes/compat/biomesoplenty/sawing/trapdoor/hellbark.json
 eb9e1cdc5ff531e36bf1877baa37d3857081c3c8 data/mekanism/recipes/compat/biomesoplenty/sawing/trapdoor/jacaranda.json

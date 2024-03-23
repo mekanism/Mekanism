@@ -37,6 +37,8 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPItems.DEAD_BOAT, BOPItems.DEAD_CHEST_BOAT, BOPBlocks.DEAD_DOOR,
               BOPBlocks.DEAD_FENCE_GATE, BOPBlocks.DEAD_PRESSURE_PLATE, BOPBlocks.DEAD_TRAPDOOR, BOPBlocks.DEAD_HANGING_SIGN, "dead");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.EMPYREAL_PLANKS, BOPItems.EMPYREAL_BOAT, BOPItems.EMPYREAL_CHEST_BOAT, BOPBlocks.EMPYREAL_DOOR,
+              BOPBlocks.EMPYREAL_FENCE_GATE, BOPBlocks.EMPYREAL_PRESSURE_PLATE, BOPBlocks.EMPYREAL_TRAPDOOR, BOPBlocks.EMPYREAL_HANGING_SIGN, "empyreal");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPItems.FIR_BOAT, BOPItems.FIR_CHEST_BOAT, BOPBlocks.FIR_DOOR,
               BOPBlocks.FIR_FENCE_GATE, BOPBlocks.FIR_PRESSURE_PLATE, BOPBlocks.FIR_TRAPDOOR, BOPBlocks.FIR_HANGING_SIGN, "fir");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.PINE_PLANKS, BOPItems.PINE_BOAT, BOPItems.PINE_CHEST_BOAT, BOPBlocks.PINE_DOOR,
@@ -84,12 +86,15 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
+        //Brown
+        largeDye(consumer, basePath, Items.BROWN_DYE, EnumColor.BROWN, BOPBlocks.CATTAIL);
         //Red
         dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPBlocks.ROSE, BOPBlocks.WATERLILY);
-        //Red
+        //Green
         dye(consumer, basePath, Items.GREEN_DYE, EnumColor.DARK_GREEN, BOPBlocks.TINY_CACTUS);
         //Purple
         dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPBlocks.VIOLET, BOPBlocks.LAVENDER);
+        largeDye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPBlocks.TALL_LAVENDER);
         //Magenta
         dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPBlocks.WILDFLOWER);
         //Orange
@@ -102,6 +107,12 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         dye(consumer, basePath, Items.GRAY_DYE, EnumColor.DARK_GRAY, BOPBlocks.WILTED_LILY);
         //Light Blue
         dye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPBlocks.BLUE_HYDRANGEA);
+        largeDye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPBlocks.ICY_IRIS);
+        //Light Gray
+        dye(consumer, basePath, Items.LIGHT_GRAY_DYE, EnumColor.GRAY, BOPBlocks.ENDBLOOM);
+        //White
+        dye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPBlocks.WHITE_LAVENDER, BOPBlocks.WHITE_PETALS);
+        largeDye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPBlocks.TALL_WHITE_LAVENDER);
         //Yellow
         dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPBlocks.GOLDENROD);
     }
@@ -120,5 +131,21 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(flowerRate)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
+    }
+
+    private void largeDye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(inputs));
+        ItemStackToItemStackRecipeBuilder.enriching(
+                    inputIngredient,
+                    new ItemStack(output, 4)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
+        //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
+        long largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
+        ItemStackToChemicalRecipeBuilder.pigmentExtracting(
+                    inputIngredient,
+                    MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color).getStack(largeFlowerRate)
+              ).addCondition(modLoaded)
+              .build(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
     }
 }

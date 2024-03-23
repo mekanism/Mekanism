@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "biomesoplenty:empyreal_chest_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "biomesoplenty:empyreal_boat"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:chest"
+  }
+}
