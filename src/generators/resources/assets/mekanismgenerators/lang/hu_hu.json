@@ -1,6 +1,6 @@
 {
   "constants.mekanismgenerators.mod_name": "Mekanism: Generátorok",
-  "constants.mekanismgenerators.pack_description": "Mekanism: Generátorok hoz felhasznált források",
+  "constants.mekanismgenerators.pack_description": "Mekanism: Generátorok-hoz felhasznált források",
   "description.mekanismgenerators.laser_focus_matrix": "A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
@@ -10,7 +10,7 @@
   "fission.mekanismgenerators.activate": "Aktiválás",
   "fission.mekanismgenerators.fuel_tank": "Üzemanyag tank",
   "reactor.mekanismgenerators.logic.activation": "Aktiválás",
-  "turbine.mekanismgenerators.tooltip.steamdump": "Gőz lerakása",
-  "turbine.mekanismgenerators.tooltip.steamdump.warning": "A víz nem lesz újrahasznosítva",
-  "turbine.mekanismgenerators.tooltip.steamdump_excess": "A plusz gőz lerakása"
+  "turbine.mekanismgenerators.tooltip.steamdump": "Gőz leeresztése",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "A víz NEM lesz újrahasznosítva",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "A plusz gőz leeresztése"
 }
