@@ -917,6 +917,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void onAdded() {
         super.onAdded();
         updatePower();
+        if (getClientActive()) {
+            currentActive = true;
+        }
     }
 
     @Override
