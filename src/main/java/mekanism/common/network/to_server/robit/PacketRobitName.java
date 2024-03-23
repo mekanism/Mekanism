@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record PacketRobitName(int entityId, String name) implements IMekanismPacket<PlayPayloadContext> {
 
+    public static final int MAX_NAME_LENGTH = 50;
     public static final ResourceLocation ID = Mekanism.rl("robit_name");
 
     private static final Map<String, List<ResourceKey<RobitSkin>>> EASTER_EGGS = Map.of(
@@ -34,7 +35,7 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
     }
 
     public PacketRobitName(FriendlyByteBuf buffer) {
-        this(buffer.readVarInt(), buffer.readUtf());
+        this(buffer.readVarInt(), buffer.readUtf(MAX_NAME_LENGTH));
     }
 
     public PacketRobitName(EntityRobit robit, String name) {
@@ -76,6 +77,6 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
     @Override
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeVarInt(entityId);
-        buffer.writeUtf(name);
+        buffer.writeUtf(name, MAX_NAME_LENGTH);
     }
 }
