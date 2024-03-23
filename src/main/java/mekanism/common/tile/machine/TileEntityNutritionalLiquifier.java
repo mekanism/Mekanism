@@ -16,6 +16,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -64,6 +66,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final int MAX_FLUID = 10_000;
+    public static final int BASE_TICKS_REQUIRED = 100;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
@@ -171,6 +174,11 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     public MekanismRecipeType<ItemStackToFluidRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
         return null;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackToFluidRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION;
     }
 
     @Nullable

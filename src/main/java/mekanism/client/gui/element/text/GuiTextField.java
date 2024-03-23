@@ -167,7 +167,7 @@ public class GuiTextField extends GuiElement {
     private void updateTextField() {
         //width is scaled based on text scale
         int iconOffsetX = iconType == null ? 0 : iconType.getOffsetX();
-        textField.setWidth(Math.round((width - (checkmarkButton == null ? 0 : textField.getHeight() + 2) - iconOffsetX) * (1 / textScale)));
+        textField.setWidth(Math.round((width - (checkmarkButton == null ? 0 : textField.getHeight() + 2) - iconOffsetX) / textScale));
         textField.setPosition(getX() + textOffsetX + 2 + iconOffsetX, getY() + textOffsetY + 1 + (int) ((height / 2F) - 4));
     }
 
@@ -191,7 +191,7 @@ public class GuiTextField extends GuiElement {
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
-            scaledX = Math.min(scaledX, textField.getX()) + (scaledX - textField.getX()) * (1F / textScale);
+            scaledX = textField.getX() + (scaledX - textField.getX()) / textScale;
         }
         if (textField.mouseClicked(scaledX, mouseY, button)) {
             return true;
@@ -214,7 +214,7 @@ public class GuiTextField extends GuiElement {
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
             pose.scale(textScale, textScale, textScale);
-            pose.translate(textField.getX() * reverse, textField.getY() * reverse + yAdd * (1 / textScale), 0);
+            pose.translate(textField.getX() * reverse, textField.getY() * reverse + yAdd / textScale, 0);
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         pose.popPose();

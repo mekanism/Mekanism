@@ -9,7 +9,6 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
-import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
@@ -71,25 +70,11 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         int baseXMult = tile.tier == FactoryTier.BASIC ? 38 : tile.tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tile.tier.processes; i++) {
             int cacheIndex = i;
-            addProgress(new GuiProgress(() -> tile.getScaledProgress(1, cacheIndex), ProgressType.DOWN, this, 4 + baseX + (i * baseXMult), 33))
+            addRenderableWidget(new GuiProgress(() -> tile.getScaledProgress(1, cacheIndex), ProgressType.DOWN, this, 4 + baseX + (i * baseXMult), 33))
+                  .recipeViewerCategory(tile)
                   //Only can happen if recipes change because inputs are sanitized in the factory based on the output
                   .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, cacheIndex));
         }
-    }
-
-    private GuiProgress addProgress(GuiProgress progressBar) {
-        MekanismJEIRecipeType<?> jeiType = switch (tile.getFactoryType()) {
-            case SMELTING -> MekanismJEIRecipeType.SMELTING;
-            case ENRICHING -> MekanismJEIRecipeType.ENRICHING;
-            case CRUSHING -> MekanismJEIRecipeType.CRUSHING;
-            case COMPRESSING -> MekanismJEIRecipeType.COMPRESSING;
-            case COMBINING -> MekanismJEIRecipeType.COMBINING;
-            case PURIFYING -> MekanismJEIRecipeType.PURIFYING;
-            case INJECTING -> MekanismJEIRecipeType.INJECTING;
-            case INFUSING -> MekanismJEIRecipeType.METALLURGIC_INFUSING;
-            case SAWING -> MekanismJEIRecipeType.SAWING;
-        };
-        return addRenderableWidget(progressBar.jeiCategories(jeiType));
     }
 
     @Override

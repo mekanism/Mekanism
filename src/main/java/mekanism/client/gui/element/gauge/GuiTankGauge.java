@@ -2,7 +2,7 @@ package mekanism.client.gui.element.gauge;
 
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketDropperUse;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEIIngredientHelper {
+public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IRecipeViewerIngredientHelper {
 
     private final ITankInfoHandler<TANK> infoHandler;
     private final TankType tankType;

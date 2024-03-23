@@ -19,6 +19,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.PRCEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -195,6 +197,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     public IMekanismRecipeTypeProvider<PressurizedReactionRecipe, ItemFluidChemical<Gas, GasStack, PressurizedReactionRecipe>> getRecipeType() {
         return MekanismRecipeType.REACTION;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<PressurizedReactionRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.REACTION;
     }
 
     @Nullable

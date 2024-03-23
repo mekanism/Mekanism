@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiGauge<Void>
-      implements IJEIIngredientHelper {
+      implements IRecipeViewerIngredientHelper {
 
     private final Supplier<MergedChemicalTank> mergedTankSupplier;
     private final Supplier<HANDLER> handlerSupplier;

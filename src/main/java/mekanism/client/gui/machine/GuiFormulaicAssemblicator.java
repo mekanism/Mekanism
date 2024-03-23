@@ -15,6 +15,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
@@ -29,7 +30,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFormulaicAssemblicator, MekanismTileContainer<TileEntityFormulaicAssemblicator>> {
+public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFormulaicAssemblicator, FormulaicAssemblicatorContainer> {
 
     private MekanismButton encodeFormulaButton;
     private MekanismButton stockControlButton;
@@ -38,7 +39,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     private MekanismButton craftAvailableButton;
     private MekanismButton autoModeButton;
 
-    public GuiFormulaicAssemblicator(MekanismTileContainer<TileEntityFormulaicAssemblicator> container, Inventory inv, Component title) {
+    public GuiFormulaicAssemblicator(FormulaicAssemblicatorContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 64;
         inventoryLabelY = imageHeight - 94;
@@ -57,7 +58,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         });
         //Overwrite the output slots with a "combined" slot
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
-        addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
+        addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         encodeFormulaButton = addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));

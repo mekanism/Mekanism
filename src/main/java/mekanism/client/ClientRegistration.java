@@ -227,7 +227,7 @@ public class ClientRegistration {
         NeoForge.EVENT_BUS.register(new ClientTickHandler());
         NeoForge.EVENT_BUS.register(new RenderTickHandler());
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SoundHandler::onTilePlaySound);
-        if (Mekanism.hooks.JEILoaded) {
+        if (Mekanism.hooks.recipeViewerCompatEnabled()) {
             NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
         IModuleHelper moduleHelper = IModuleHelper.INSTANCE;

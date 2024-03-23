@@ -7,7 +7,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.jei.MekanismJEIRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -45,7 +45,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
                 list.add(MekanismLang.PROCESS_RATE_MB.translate(multiblock.getProcessRate()));
             }
             return list;
-        }).jeiCategories(MekanismJEIRecipeType.SPS));
+        }).recipeViewerCategories(RecipeViewerRecipeType.SPS));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public Component getTooltip() {

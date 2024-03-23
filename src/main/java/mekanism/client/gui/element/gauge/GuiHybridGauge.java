@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.interfaces.IJEIIngredientHelper;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelper {
+public class GuiHybridGauge extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
 
     private final Supplier<IGasTank> gasTankSupplier;
 

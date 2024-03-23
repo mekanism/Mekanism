@@ -37,6 +37,8 @@ import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -669,6 +671,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.SMELTING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.SMELTING;
     }
 
     @Nullable

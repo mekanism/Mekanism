@@ -16,6 +16,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -63,6 +65,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final long MAX_INFUSE = 1_000;
+    public static final int BASE_TICKS_REQUIRED = 200;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
                                                                                         "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
@@ -83,7 +86,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, TRACKED_ERROR_TYPES, 200);
+        super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, infusionSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
@@ -138,6 +141,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Override
     public IMekanismRecipeTypeProvider<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<MetallurgicInfuserRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable

@@ -11,6 +11,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -51,6 +53,8 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
+    public static final int BASE_TICKS_REQUIRED = 200;
+
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
     private final IInputHandler<@NotNull ItemStack> extraInputHandler;
@@ -66,7 +70,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     EnergyInventorySlot energySlot;
 
     public TileEntityCombiner(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.COMBINER, pos, state, TRACKED_ERROR_TYPES, 200);
+        super(MekanismBlocks.COMBINER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(mainInputSlot, outputSlot, extraInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -114,6 +118,11 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Override
     public IMekanismRecipeTypeProvider<CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<CombinerRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.COMBINING;
     }
 
     @Nullable

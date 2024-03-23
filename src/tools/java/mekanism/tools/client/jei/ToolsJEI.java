@@ -1,6 +1,6 @@
 package mekanism.tools.client.jei;
 
-import mekanism.client.jei.RecipeRegistryHelper;
+import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;

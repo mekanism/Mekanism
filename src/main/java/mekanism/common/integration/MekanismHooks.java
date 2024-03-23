@@ -33,6 +33,7 @@ public final class MekanismHooks {
     public static final String DARK_MODE_EVERYWHERE_MODID = "darkmodeeverywhere";
     public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
     public static final String JEI_MOD_ID = "jei";
+    public static final String EMI_MOD_ID = "emi";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String JSON_THINGS_MOD_ID = "jsonthings";
     public static final String OC2_MOD_ID = "oc2";
@@ -45,6 +46,7 @@ public final class MekanismHooks {
     public final boolean CraftTweakerLoaded;
     public final boolean CuriosLoaded;
     public final boolean DMELoaded;
+    public final boolean EmiLoaded;
     public final boolean FluxNetworksLoaded;
     public final boolean JEILoaded;
     public final boolean JsonThingsLoaded;
@@ -62,6 +64,7 @@ public final class MekanismHooks {
         CraftTweakerLoaded = loadedCheck.test(CRAFTTWEAKER_MOD_ID);
         CuriosLoaded = loadedCheck.test(CURIOS_MODID);
         DMELoaded = loadedCheck.test(DARK_MODE_EVERYWHERE_MODID);
+        EmiLoaded = loadedCheck.test(EMI_MOD_ID);
         FluxNetworksLoaded = loadedCheck.test(FLUX_NETWORKS_MOD_ID);
         JEILoaded = loadedCheck.test(JEI_MOD_ID);
         JsonThingsLoaded = loadedCheck.test(JSON_THINGS_MOD_ID);
@@ -127,6 +130,10 @@ public final class MekanismHooks {
 
     public boolean computerCompatEnabled() {
         return CCLoaded || OC2Loaded;
+    }
+
+    public boolean recipeViewerCompatEnabled() {
+        return EmiLoaded || JEILoaded;
     }
 
     /**

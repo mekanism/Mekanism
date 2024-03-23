@@ -15,6 +15,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -59,6 +61,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     );
 
     public static final long MAX_PIGMENT = 15_000;
+    public static final int BASE_TICKS_REQUIRED = 200;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
                                                                                         "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")
@@ -79,7 +82,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     EnergyInventorySlot energySlot;
 
     public TileEntityPaintingMachine(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PAINTING_MACHINE, pos, state, TRACKED_ERROR_TYPES, 200);
+        super(MekanismBlocks.PAINTING_MACHINE, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, pigmentInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.PIGMENT, pigmentTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -135,6 +138,11 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     public IMekanismRecipeTypeProvider<PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<PaintingRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.PAINTING;
     }
 
     @Nullable

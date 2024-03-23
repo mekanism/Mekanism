@@ -1629,6 +1629,7 @@
   "tooltip.mekanism.mode.scuba_tank": "Scuba Tank: %1$s",
   "tooltip.mekanism.no_fluid": "No fluid stored.",
   "tooltip.mekanism.no_gas": "No gas stored.",
+  "tooltip.mekanism.recipe_viewer.inventory_full": "Not enough room in inventory.",
   "tooltip.mekanism.security": "Security: %1$s",
   "tooltip.mekanism.stored": "Stored %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "Flamethrower: %1$s",

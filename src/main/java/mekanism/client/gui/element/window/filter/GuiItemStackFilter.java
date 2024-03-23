@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostItemConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tile.base.TileEntityMekanism;

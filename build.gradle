@@ -38,7 +38,8 @@ idea {
 }
 
 ext {
-    versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range]
+    versionProperties = ["version"    : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range,
+                         "emi_version": emi_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -386,6 +387,7 @@ repositories { RepositoryHandler handler ->
         filter.includeGroup 'mezz.jei'
         filter.includeGroup 'org.openzen.zencode'
     })
+    exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
@@ -415,7 +417,15 @@ dependencies {
 
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    if (recipe_viewer == "jei" || recipe_viewer == "hybrid") {
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    }
+
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+
+    if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
+        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+    }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -634,7 +644,7 @@ publishing {
                     NodeList allDeps = dependencies.'*'
 
                     //As we don't actually have any hard deps, just mark everything as optional so other people don't have to inherit them
-                    allDeps.<Node>each { Node el -> el.appendNode('optional', true) }
+                    allDeps.<Node> each { Node el -> el.appendNode('optional', true) }
                 }
             }
         }
@@ -736,6 +746,8 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     'cc-tweaked', 'oc2',
                     //Looking at mods
                     'jade', 'the-one-probe', 'wthit-forge',
+                    //Recipe viewers
+                    'emi', 'jei',
                     //Tweakers
                     'crafttweaker', 'jeitweaker',
                     //World gen
@@ -744,7 +756,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     'i-like-wood', 'i-like-wood-biomes-o-plenty-plugin', 'i-like-wood-oh-the-biomes-youll-go-plugin',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
-                    'jei', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 
@@ -813,8 +825,10 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
                 new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
                 new ModDependency("Xg35A4rS", "optional"),//CraftTweaker
                 new ModDependency("vvuO3ImH", "optional"),//Curios
+                new ModDependency("fRiHVvU7", "optional"),//EMI
                 new ModDependency("R2OftAxM", "optional"),//Farmer's Delight
                 new ModDependency("nvQzSEkH", "optional"),//Jade
+                new ModDependency("u6dRKJwZ", "optional"),//JEI
                 new ModDependency("EiEOyeoL", "optional"),//JEI Tweaker
                 new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
                 new ModDependency("qXkLFB0L", "optional"),//Recipe Stages

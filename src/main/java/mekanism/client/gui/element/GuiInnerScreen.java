@@ -3,8 +3,8 @@ package mekanism.client.gui.element;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.jei.MekanismJEIRecipeType;
-import mekanism.client.jei.interfaces.IJEIRecipeArea;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
+public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerRecipeArea<GuiInnerScreen> {
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
     public static int SCREEN_SIZE = 32;
@@ -21,7 +21,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     private Supplier<List<Component>> renderStrings;
     private Supplier<List<Component>> tooltipStrings;
 
-    private MekanismJEIRecipeType<?>[] recipeCategories;
+    private IRecipeViewerRecipeType<?>[] recipeCategories;
     private boolean centerY;
     private int spacing = 1;
     private int padding = 3;
@@ -107,19 +107,19 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     @NotNull
     @Override
-    public GuiInnerScreen jeiCategories(@NotNull MekanismJEIRecipeType<?>... recipeCategories) {
+    public GuiInnerScreen recipeViewerCategories(@NotNull IRecipeViewerRecipeType<?>... recipeCategories) {
         this.recipeCategories = recipeCategories;
         return this;
     }
 
     @Nullable
     @Override
-    public MekanismJEIRecipeType<?>[] getRecipeCategories() {
+    public IRecipeViewerRecipeType<?>[] getRecipeCategories() {
         return recipeCategories;
     }
 
     @Override
-    public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
+    public boolean isMouseOverRecipeViewerArea(double mouseX, double mouseY) {
         //Override as active is occasionally false here so isMouseOver would return false
         return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getRight() && mouseY < getBottom();
     }

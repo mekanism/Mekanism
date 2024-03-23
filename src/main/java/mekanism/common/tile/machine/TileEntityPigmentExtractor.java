@@ -17,6 +17,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -59,6 +61,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     );
 
     public static final long MAX_PIGMENT = 20_000;
+    public static final int BASE_TICKS_REQUIRED = 100;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                         "getOutputFilledPercentage"}, docPlaceholder = "pigment tank")
@@ -76,7 +79,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     EnergyInventorySlot energySlot;
 
     public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, 100);
+        super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.PIGMENT, pigmentTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -132,6 +135,11 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToPigmentRecipe, SingleItem<ItemStackToPigmentRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_EXTRACTING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackToPigmentRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.PIGMENT_EXTRACTING;
     }
 
     @Nullable

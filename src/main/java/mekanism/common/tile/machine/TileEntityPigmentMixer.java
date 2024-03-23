@@ -17,6 +17,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -193,6 +195,11 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Override
     public IMekanismRecipeTypeProvider<PigmentMixingRecipe, EitherSideChemical<Pigment, PigmentStack, PigmentMixingRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_MIXING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<PigmentMixingRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.PIGMENT_MIXING;
     }
 
     @Nullable

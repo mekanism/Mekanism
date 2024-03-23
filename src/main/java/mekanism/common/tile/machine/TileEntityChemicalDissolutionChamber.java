@@ -29,6 +29,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -198,6 +200,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IMekanismRecipeTypeProvider<ChemicalDissolutionRecipe, ItemChemical<Gas, GasStack, ChemicalDissolutionRecipe>> getRecipeType() {
         return MekanismRecipeType.DISSOLUTION;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ChemicalDissolutionRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.DISSOLUTION;
     }
 
     @Nullable

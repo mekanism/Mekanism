@@ -3,6 +3,8 @@ package mekanism.common.tile.machine;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
@@ -22,5 +24,10 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
     @Override
     public IMekanismRecipeTypeProvider<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
         return MekanismRecipeType.COMPRESSING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackGasToItemStackRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.COMPRESSING;
     }
 }

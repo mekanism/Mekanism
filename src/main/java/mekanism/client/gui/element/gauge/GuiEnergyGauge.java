@@ -41,7 +41,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
     }
 
     public static GuiEnergyGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
-        GuiEnergyGauge gauge = new GuiEnergyGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
+        GuiEnergyGauge gauge = new GuiEnergyGauge((IEnergyInfoHandler) null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;
     }

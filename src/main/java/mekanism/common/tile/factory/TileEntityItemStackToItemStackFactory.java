@@ -9,6 +9,8 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
@@ -69,6 +71,16 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
             case CRUSHING -> MekanismRecipeType.CRUSHING;
             //TODO: Make it so that it throws an error if it is not one of the three types
             default -> MekanismRecipeType.SMELTING;
+        };
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<ItemStackToItemStackRecipe> recipeViewerType() {
+        return switch (type) {
+            case ENRICHING -> RecipeViewerRecipeType.ENRICHING;
+            case CRUSHING -> RecipeViewerRecipeType.CRUSHING;
+            //TODO: Make it so that it throws an error if it is not one of the three types
+            default -> RecipeViewerRecipeType.SMELTING;
         };
     }
 

@@ -15,6 +15,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
@@ -120,6 +122,11 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     @Override
     public IMekanismRecipeTypeProvider<SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
+    }
+
+    @Override
+    public IRecipeViewerRecipeType<SawmillRecipe> recipeViewerType() {
+        return RecipeViewerRecipeType.SAWING;
     }
 
     @Nullable

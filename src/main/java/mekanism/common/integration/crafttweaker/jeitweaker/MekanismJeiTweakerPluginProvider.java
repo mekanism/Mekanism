@@ -11,7 +11,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.client.jei.MekanismJEI;
+import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
