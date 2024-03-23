@@ -1,8 +1,6 @@
 package mekanism.common.base;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -21,13 +19,11 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -239,8 +235,7 @@ public class PlayerState {
         if (!MekanismUtils.isPlayingMode(player)) {
             return; //don't process creative/spectator players
         }
-        boolean hasGravitationalModulator = CommonPlayerTickHandler.isGravitationalModulationReady(player);
-        if (hasGravitationalModulator && player.getAbilities().flying) {
+        if (CommonPlayerTickHandler.isGravitationalModulationReady(player) && player.getAbilities().flying) {
             //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
             Optional<IModule<ModuleGravitationalModulatingUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
                   .map(container -> container.get(MekanismModules.GRAVITATIONAL_MODULATING_UNIT));

@@ -173,15 +173,7 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isGravitationalModulationReady(Player player) {
-        if (MekanismUtils.isPlayingMode(player)) {
-            return IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.CHEST)
-                  //todo not compatible with attributes
-                  //.filter(container -> !container.isContainerOnCooldown(player))
-                  .map(container -> container.getIfEnabled(MekanismModules.GRAVITATIONAL_MODULATING_UNIT))
-                  .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation))
-                  .isPresent();
-        }
-        return false;
+        return MekanismUtils.isPlayingMode(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
     }
 
     public static boolean isGravitationalModulationReady(ItemStack stack) {
@@ -258,33 +250,31 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void livingFall(LivingFallEvent event) {
         float fallDamage = Math.max(event.getDistance() - MIN_FALL_HURT, 0);
-        if (fallDamage <= 0) {
+        if (fallDamage <= Mth.EPSILON) {
             return;
         }
         LivingEntity entity = event.getEntity();
         FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-        if (info != null) {
-            if (info.container != null) {
-                float absorption = info.damageRatio.getAsFloat();
-                float amount = fallDamage * absorption;
-                FloatingLong energyRequirement = info.energyCost.get().multiply(amount);
-                float ratioAbsorbed;
-                if (energyRequirement.isZero()) {
-                    //No energy is actually needed to absorb the damage, either because of the config
-                    // or how small the amount to absorb is
-                    ratioAbsorbed = absorption;
+        if (info != null && info.container != null) {
+            float absorption = info.damageRatio.getAsFloat();
+            float amount = fallDamage * absorption;
+            FloatingLong energyRequirement = info.energyCost.get().multiply(amount);
+            float ratioAbsorbed;
+            if (energyRequirement.isZero()) {
+                //No energy is actually needed to absorb the damage, either because of the config
+                // or how small the amount to absorb is
+                ratioAbsorbed = absorption;
+            } else {
+                ratioAbsorbed = absorption * info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
+            }
+            if (ratioAbsorbed > 0) {
+                float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
+                if (damageRemaining <= Mth.EPSILON) {
+                    event.setCanceled(true);
+                    SoundType soundtype = entity.getBlockStateOn().getSoundType(entity.level(), entity.getOnPos(), entity);
+                    entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
                 } else {
-                    ratioAbsorbed = absorption * info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
-                }
-                if (ratioAbsorbed > 0) {
-                    float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
-                    if (damageRemaining <= 0) {
-                        event.setCanceled(true);
-                        SoundType soundtype = entity.getBlockStateOn().getSoundType(entity.level(), entity.getOnPos(), entity);
-                        entity.playSound(soundtype.getStepSound(), soundtype.getVolume() * 0.15F, soundtype.getPitch());
-                    } else {
-                        event.setDistance(damageRemaining + MIN_FALL_HURT);
-                    }
+                    event.setDistance(damageRemaining + MIN_FALL_HURT);
                 }
             }
         }
