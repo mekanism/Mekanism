@@ -5,6 +5,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +48,13 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         itemNameField.setEditable(false);
         menu.removeSlotListener(this);
         menu.addSlotListener(this);
+    }
+
+    @Override
+    protected void setInitialFocus(@NotNull GuiEventListener listener) {
+        //Always capture even when leaving JEI
+        initialFocusSet = false;
+        super.setInitialFocus(listener);
     }
 
     private void onNameChanged(String newText) {

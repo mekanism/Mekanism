@@ -58,6 +58,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
+    protected boolean initialFocusSet;
     protected final LRU<GuiWindow> windows = new LRU<>();
     public boolean switchingToRecipeViewer;
     @Nullable
@@ -131,6 +132,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void addGuiElements() {
         if (dynamicSlots) {
             addSlots();
+        }
+    }
+
+    @Override
+    protected void setInitialFocus(@NotNull GuiEventListener listener) {
+        if (!initialFocusSet) {
+            super.setInitialFocus(listener);
+            initialFocusSet = true;
         }
     }
 
