@@ -28,11 +28,13 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
 
     private IModuleConfigItem<JetpackMode> jetpackMode;
     private IModuleConfigItem<ThrustMultiplier> thrustMultiplier;
+    private IModuleConfigItem<ThrustMultiplier> hoverThrustMultiplier;
 
     @Override
     public void init(IModule<ModuleJetpackUnit> module, ModuleConfigItemCreator configItemCreator) {
         jetpackMode = configItemCreator.createConfigItem("jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new ModuleEnumData<>(JetpackMode.NORMAL));
         thrustMultiplier = configItemCreator.createConfigItem("jetpack_mult", MekanismLang.MODULE_JETPACK_MULT, new ModuleEnumData<>(ThrustMultiplier.NORMAL, module.getInstalledCount() + 1));
+        hoverThrustMultiplier = configItemCreator.createConfigItem("jetpack_hover_mult", MekanismLang.MODULE_JETPACK_HOVER_MULT, new ModuleEnumData<>(ThrustMultiplier.NORMAL, module.getInstalledCount() + 1));
     }
 
     @Override
@@ -80,6 +82,9 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     }
 
     public float getThrustMultiplier() {
+        if (getMode() == JetpackMode.HOVER) {
+            return hoverThrustMultiplier.get().getMultiplier();
+        }
         return thrustMultiplier.get().getMultiplier();
     }
 

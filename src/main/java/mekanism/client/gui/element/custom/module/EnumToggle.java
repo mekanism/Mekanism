@@ -5,6 +5,7 @@ import mekanism.api.gear.config.IHasModeIcon;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.util.MekanismUtils;
@@ -58,7 +59,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
         if (usesIcons) {
             description = MekanismLang.GENERIC_STORED.translate(description, getData().get());
         }
-        parent.drawTextWithScale(guiGraphics, description, getRelativeX() + 3, getRelativeY(), textColor, usesIcons ? 0.75F : 0.8F);
+        parent.drawScaledTextScaledBound(guiGraphics, description, getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
         List<TYPE> options = getData().getEnums();
         for (int i = 0, count = options.size(); i < count; i++) {
             int center = optionDistance * i;

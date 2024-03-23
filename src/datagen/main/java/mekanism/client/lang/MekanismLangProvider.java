@@ -1499,6 +1499,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_MODE_CHANGE, "%1$s bumped to: %2$s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
         add(MekanismLang.MODULE_JETPACK_MULT, "Thrust Multiplier");
+        add(MekanismLang.MODULE_JETPACK_HOVER_MULT, "Hover Thrust Multiplier");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
         add(MekanismLang.MODULE_MAGNETIC_ATTRACTION, "Magnetic Attraction");
         add(MekanismLang.MODULE_CHARGE_SUIT, "Charge Suit");

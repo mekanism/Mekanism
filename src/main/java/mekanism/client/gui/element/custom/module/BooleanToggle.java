@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.custom.module;
 
 import mekanism.client.gui.element.button.RadioButton;
+import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.registries.MekanismSounds;
@@ -42,7 +43,7 @@ class BooleanToggle extends MiniElement {
     @Override
     protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawTextWithScale(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+        parent.drawScaledTextScaledBound(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
         parent.drawTextWithScale(guiGraphics, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, textColor, 0.8F);
         parent.drawTextWithScale(guiGraphics, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, textColor, 0.8F);
     }

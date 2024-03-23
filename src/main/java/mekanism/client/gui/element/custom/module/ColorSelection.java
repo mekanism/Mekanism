@@ -7,6 +7,7 @@ import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleColorData;
 import mekanism.client.gui.GuiModuleTweaker;
 import mekanism.client.gui.GuiUtils;
+import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiColorWindow;
 import mekanism.common.MekanismLang;
@@ -64,7 +65,7 @@ class ColorSelection extends MiniElement {
     @Override
     protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawTextWithScale(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+        parent.drawScaledTextScaledBound(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, this.parent.getScreenWidth() - 3 - GuiScrollList.TEXTURE_WIDTH, 0.8F);
         String hex;
         if (handlesAlpha) {
             hex = TextUtils.hex(false, 4, data.get());
