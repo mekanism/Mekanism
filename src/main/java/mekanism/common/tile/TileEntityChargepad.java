@@ -55,22 +55,28 @@ public class TileEntityChargepad extends TileEntityMekanism {
     protected void onUpdateServer() {
         super.onUpdateServer();
         boolean active = false;
-        //Use 0.4 for y to catch entities that are partially standing on the back pane
-        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
-              worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
-        for (LivingEntity entity : entities) {
-            active = !energyContainer.isEmpty();
-            if (!active) {
-                //If we run out of energy, stop checking the remaining entities
-                break;
-            } else if (entity instanceof Player) {
-                IItemHandler itemHandler = Capabilities.ITEM.getCapability(entity);
-                if (!chargeHandler(itemHandler) && Mekanism.hooks.CuriosLoaded) {
-                    //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
-                    chargeHandler(CuriosIntegration.getCuriosInventory(entity));
+        if (!energyContainer.isEmpty()) {
+            //Use 0.4 for y to catch entities that are partially standing on the back pane
+            List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
+                  worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
+            for (LivingEntity entity : entities) {
+                if (energyContainer.isEmpty()) {
+                    //If we run out of energy, stop checking the remaining entities
+                    break;
+                } else if (entity instanceof Player) {
+                    IItemHandler itemHandler = Capabilities.ITEM.getCapability(entity);
+                    if (chargeHandler(itemHandler)) {
+                        active = true;
+                    } else if (Mekanism.hooks.CuriosLoaded) {
+                        //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
+                        if (chargeHandler(CuriosIntegration.getCuriosInventory(entity))) {
+                            active = true;
+                        }
+                    }
+                } else if (provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(entity))) {
+                    //Note: Robits are handled by this path
+                    active = true;
                 }
-            } else {//Note: Robits are handled by this path
-                provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(entity));
             }
         }
         if (active != getActive()) {
