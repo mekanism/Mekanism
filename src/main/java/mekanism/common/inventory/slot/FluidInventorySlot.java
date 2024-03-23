@@ -15,6 +15,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,12 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                     //we return if there is at least one empty tank in the item so that we can then drain into it
                     return hasEmpty;
                 }
-                return fluidHandlerItem.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0;
+                FluidStack fluid = fluidTank.getFluid();
+                if (fluid.getAmount() < FluidType.BUCKET_VOLUME) {
+                    //Workaround for buckets not being able to be filled until we have enough of our volume
+                    fluid = fluid.copyWithAmount(FluidType.BUCKET_VOLUME);
+                }
+                return fluidHandlerItem.fill(fluid, FluidAction.SIMULATE) > 0;
             }
             return false;
         };
