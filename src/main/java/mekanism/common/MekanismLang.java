@@ -81,6 +81,8 @@ public enum MekanismLang implements ILangEntry {
     LIST_SORT("qio", "list_sort"),
     //Adapter
     REDSTONE_ADAPTER_TOGGLE_SIGNAL("redstone_adapter", "toggle_signal"),
+    //Recipe viewer
+    RECIPE_VIEWER_INVENTORY_FULL("tooltip", "recipe_viewer.inventory_full"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
     RECIPE_VIEWER_INFO_HEAVY_WATER("info", "jei.heavy_water"),

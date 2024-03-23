@@ -149,8 +149,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
 
         @Override
         public TransferResult createNoRoomError() {
-            //TODO - 1.20.4: Fix this as the translation is provided by JEI so when just EMI is present there is no message here
-            return new TransferResult(MekanismLang.JEI_INVENTORY_FULL.translate(), null);
+            return new TransferResult(MekanismLang.RECIPE_VIEWER_INVENTORY_FULL.translate(), null);
         }
 
         @Override

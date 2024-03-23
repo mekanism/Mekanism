@@ -417,10 +417,15 @@ dependencies {
 
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    if (recipe_viewer == "jei" || recipe_viewer == "hybrid") {
+        runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    }
 
     compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-    runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+
+    if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
+        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+    }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
