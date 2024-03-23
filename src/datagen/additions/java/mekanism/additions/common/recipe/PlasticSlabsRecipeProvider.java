@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
 
     private static final RecipePattern PLASTIC_SLAB = RecipePattern.createPattern(TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
+    private static final RecipePattern PLASTIC_RECOMBINATION = RecipePattern.createPattern(Pattern.CONSTANT, Pattern.CONSTANT);
 
     @Override
     public void addRecipes(RecipeOutput consumer) {
@@ -38,17 +39,21 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, IItemProvider result, IItemProvider plastic,
-          TagKey<Item> blockType, boolean transparent, String basePath) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, IItemProvider slab, IItemProvider plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
+        ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         if (transparent) {
-            PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, result, blockType, color, basePath);
+            PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, slab, blockType, color, basePath);
         } else {
-            PlasticBlockRecipeProvider.registerRecolor(consumer, result, blockType, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(consumer, slab, blockType, color, basePath);
         }
+        ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
+              .pattern(PLASTIC_RECOMBINATION)
+              .key(Pattern.CONSTANT, slab)
+              .category(RecipeCategory.BUILDING_BLOCKS)
+              .build(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
     }
 }
