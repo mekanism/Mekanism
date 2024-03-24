@@ -32,7 +32,7 @@ body:
     attributes:
       label: NeoForge version
       description: What version of NeoForge are you using?
-      placeholder: e.g. 20.4.177
+      placeholder: e.g. 20.4.209
     validations:
       required: true
   - type: dropdown
@@ -41,11 +41,11 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.5.8 (Latest)
+        - 10.5.10 (Latest)
+        - 10.5.9
+        - 10.5.8
         - 10.5.7
         - 10.5.6
-        - 10.5.5
-        - 10.5.4
         - Older
         - Current Dev Branch (Manually Compiled, specify git commit hash)
     validations:
