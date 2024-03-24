@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "forge:fuels/block/bio"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "mekanism:bio_fuel"
+  }
+}

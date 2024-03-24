@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-13T13:47:48.8694059	Loot Tables
+// 1.20.4	2024-03-23T19:45:40.1108075	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 cd266e7b4a5bde833aa11e1caf17d86631197626 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 6829ad29ae722d1ef741fc103dfd5704c1874a66 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -40,6 +40,7 @@ efcd093a17385e3be363df62e96c8925d5cee86d data/mekanism/loot_tables/blocks/basic_
 c7d4039818a32ca91b54153621a389f4e12e235f data/mekanism/loot_tables/blocks/basic_smelting_factory.json
 a04531633e1188362a43ac480f729fcb4606b27b data/mekanism/loot_tables/blocks/basic_thermodynamic_conductor.json
 4e2e5d9c76942705c65ff53221828b0e2a7bf33c data/mekanism/loot_tables/blocks/basic_universal_cable.json
+f0deba8657ed5cddbb4f9c6d0f80187c36692996 data/mekanism/loot_tables/blocks/block_bio_fuel.json
 252a31d1d6b964c395400fee9348f9665704dbb3 data/mekanism/loot_tables/blocks/block_bronze.json
 231d33357ee49e6a24e8049e7ac53d8fc5a7dc37 data/mekanism/loot_tables/blocks/block_charcoal.json
 c8fdfd6245dcb9760e92e9b8fac591de4c00e2d0 data/mekanism/loot_tables/blocks/block_fluorite.json

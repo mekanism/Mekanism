@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:fuels/block/bio"
+    }
+  },
+  "output": {
+    "amount": 45,
+    "infuse_type": "mekanism:bio"
+  }
+}

@@ -36,6 +36,11 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(MekanismTags.Items.FUELS_BIO),
               MekanismInfuseTypes.BIO.getStack(5)
         ).build(consumer, Mekanism.rl(basePath + "from_bio_fuel"));
+        //Bio fuel block
+        ItemStackToChemicalRecipeBuilder.infusionConversion(
+              IngredientCreatorAccess.item().from(MekanismTags.Items.FUELS_BLOCK_BIO),
+              MekanismInfuseTypes.BIO.getStack(5 * 9)
+        ).build(consumer, Mekanism.rl(basePath + "from_bio_fuel_block"));
     }
 
     private void addInfusionConversionCarbonRecipes(RecipeOutput consumer, String basePath) {

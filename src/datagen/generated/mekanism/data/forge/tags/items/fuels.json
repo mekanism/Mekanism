@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:fuels/bio"
+    "#forge:fuels/bio",
+    "#forge:fuels/block/bio"
   ]
 }

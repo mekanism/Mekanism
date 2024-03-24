@@ -292,7 +292,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addFuels() {
         addToTag(MekanismTags.Items.FUELS_BIO, MekanismItems.BIO_FUEL);
-        getItemBuilder(MekanismTags.Items.FUELS).add(MekanismTags.Items.FUELS_BIO);
+        addToTag(MekanismTags.Items.FUELS_BLOCK_BIO, MekanismBlocks.BIO_FUEL_BLOCK);
+        getItemBuilder(MekanismTags.Items.FUELS).add(MekanismTags.Items.FUELS_BIO, MekanismTags.Items.FUELS_BLOCK_BIO);
     }
 
     private void addAlloys() {

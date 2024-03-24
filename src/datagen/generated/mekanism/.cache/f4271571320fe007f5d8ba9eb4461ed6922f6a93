@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-23T16:18:31.2798928	Tags: mekanism
+// 1.20.4	2024-03-23T19:45:40.1198058	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -96,8 +96,9 @@ f09f641cd8d7897936c3df8d0269f8178ea7ee54 data/forge/tags/items/dusts/salt.json
 7d1ba66491289b16a23f5517a1e7696a06c2eb56 data/forge/tags/items/dusts/uranium.json
 cf032535340cd8c011b73228231d74f7951e7d57 data/forge/tags/items/dusts/wood.json
 5bd9cdb26188130934be80a2860d4ad598f5673d data/forge/tags/items/dyes/yellow.json
-d8b0b8cf3884b3469950e31c56071b10a4a77dcd data/forge/tags/items/fuels.json
+6d3811be191a8cbc015bbdeed12474e166ec8674 data/forge/tags/items/fuels.json
 279ef9cfc842ada584f2d209b4a198c7bd4c09d5 data/forge/tags/items/fuels/bio.json
+005c266ac9c8bd11f736340e7b55c5e23afc4a09 data/forge/tags/items/fuels/block/bio.json
 17388920390358e177b4071f3a31ae0dad748d04 data/forge/tags/items/gems.json
 c201ba994e34f2edeb519e4b9d851f0607612d26 data/forge/tags/items/gems/fluorite.json
 1f7f7c5e9d4ac60efebc6244d8bb8a6b966b9725 data/forge/tags/items/ingots.json

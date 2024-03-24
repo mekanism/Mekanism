@@ -256,6 +256,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.NUTRITIONAL_LIQUIFIER, "Nutritional Liquifier");
         add(MekanismBlocks.ROTARY_CONDENSENTRATOR, "Rotary Condensentrator");
         add(MekanismBlocks.SALT_BLOCK, "Salt Block");
+        add(MekanismBlocks.BIO_FUEL_BLOCK, "Block of Bio Fuel");
         add(MekanismBlocks.SECURITY_DESK, "Security Desk");
         add(MekanismBlocks.SEISMIC_VIBRATOR, "Seismic Vibrator");
         add(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, "Solar Neutron Activator");

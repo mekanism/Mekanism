@@ -79,6 +79,7 @@ public class MekanismTags {
 
         public static final TagKey<Item> FUELS = forgeTag("fuels");
         public static final TagKey<Item> FUELS_BIO = forgeTag("fuels/bio");
+        public static final TagKey<Item> FUELS_BLOCK_BIO = forgeTag("fuels/block/bio");
 
         public static final TagKey<Item> SALT = forgeTag("salt");
         public static final TagKey<Item> SAWDUST = forgeTag("sawdust");

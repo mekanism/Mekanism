@@ -1,4 +1,4 @@
-// Recipes	2024-03-23T18:34:20.2857427	Recipes
+// Recipes	2024-03-24T11:35:07.3423616	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 2f33c48a639876d68a3a712c24540c3f78c5e86f data/mekanism/recipes/bin/advanced.json
@@ -7,6 +7,7 @@ bfd1005012e0a28e36dd9e34ca4cc4298be079ce data/mekanism/recipes/bin/elite.json
 117804f934a9cdd156077dea74a4fad99213650b data/mekanism/recipes/bin/ultimate.json
 f1430515192505aa517f8e7ff913f4c79633f19e data/mekanism/recipes/bin_extract.json
 7223cdcec796931e71970271a81a9fbd7d8ee834 data/mekanism/recipes/bin_insert.json
+5da5dd3a499266218d61661e6573dace8f1a26e3 data/mekanism/recipes/bio_fuel.json
 60482d00c07fe46422bf5ccf3116062906090756 data/mekanism/recipes/boiler_casing.json
 0e52cb87a5eca7843be87a41faba345e6b27e916 data/mekanism/recipes/boiler_valve.json
 cf7360d7abe3c91b7a1a160fe11df130dadd9fe7 data/mekanism/recipes/canteen.json
@@ -3362,6 +3363,7 @@ a702ec5bc684b20ab8ea86df44836ee706ec93bf data/mekanism/recipes/induction/casing.
 6f8b24f725b0907874e9cca27a3b344765a6e259 data/mekanism/recipes/induction/provider/ultimate.json
 644f5350583afb3631a167969538573dc3164524 data/mekanism/recipes/industrial_alarm.json
 329a95d02632ffafe75e0be33445e369cb5d7ee1 data/mekanism/recipes/infusion_conversion/bio/from_bio_fuel.json
+91093926aa82dfe974bc17499ede2ec4e6cdbe86 data/mekanism/recipes/infusion_conversion/bio/from_bio_fuel_block.json
 5a74b450e259893e60209e06b689c1c98a689f20 data/mekanism/recipes/infusion_conversion/carbon/from_charcoal.json
 af65d0a342a633b960575d366057f2069484f8d5 data/mekanism/recipes/infusion_conversion/carbon/from_charcoal_block.json
 17b940081a2284bbcc164f0b568e5bf2f27e8d56 data/mekanism/recipes/infusion_conversion/carbon/from_coal.json
@@ -4376,6 +4378,7 @@ f18ec7b81fb7787540ce08ec304f20b02d84b2af data/mekanism/recipes/separator/water.j
 4744ba179d92cacad9fcb13ffad95251f8033464 data/mekanism/recipes/sps_casing.json
 48edd6c9187cc5c92bdc616f8160d510996ecb66 data/mekanism/recipes/sps_port.json
 0524a8bb5a5dd26a8d8f3cb261362f6d93cb2a40 data/mekanism/recipes/steel_casing.json
+096a0f415bc5211ddd3da1770974bfa10354a1d1 data/mekanism/recipes/storage_blocks/bio_fuel.json
 e5f89fab0effc210b51eccc1d0b42cfbbd0457bf data/mekanism/recipes/storage_blocks/bronze.json
 026d1dae90b1447d7327a638fddeed6628ba4d8d data/mekanism/recipes/storage_blocks/charcoal.json
 898fa120d2ffb43077c88febba055d9afb4880ae data/mekanism/recipes/storage_blocks/fluorite.json

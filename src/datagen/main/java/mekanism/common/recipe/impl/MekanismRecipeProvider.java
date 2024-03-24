@@ -203,6 +203,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
               .build(consumer);
+        //Bio Fuel
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
+              .addIngredient(MekanismTags.Items.FUELS_BLOCK_BIO)
+              .build(consumer, Mekanism.rl("bio_fuel"));
         //Charcoal
         ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.CHARCOAL, 9)
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL)

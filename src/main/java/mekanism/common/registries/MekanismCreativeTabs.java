@@ -146,7 +146,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.BASIC_CONTROL_CIRCUIT, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismItems.ELITE_CONTROL_CIRCUIT, MekanismItems.ULTIMATE_CONTROL_CIRCUIT,
                   MekanismItems.ENRICHED_CARBON, MekanismItems.ENRICHED_REDSTONE, MekanismItems.ENRICHED_DIAMOND, MekanismItems.ENRICHED_OBSIDIAN,
                   MekanismItems.ENRICHED_GOLD, MekanismItems.ENRICHED_TIN,
-                  MekanismItems.BIO_FUEL, MekanismItems.SUBSTRATE, MekanismItems.HDPE_PELLET, MekanismItems.HDPE_ROD, MekanismItems.HDPE_SHEET,
+                  MekanismItems.BIO_FUEL, MekanismBlocks.BIO_FUEL_BLOCK, MekanismItems.SUBSTRATE, MekanismItems.HDPE_PELLET, MekanismItems.HDPE_ROD, MekanismItems.HDPE_SHEET,
                   MekanismItems.ANTIMATTER_PELLET, MekanismItems.PLUTONIUM_PELLET, MekanismItems.POLONIUM_PELLET, MekanismItems.REPROCESSED_FISSILE_FRAGMENT,
                   MekanismItems.ELECTROLYTIC_CORE, MekanismItems.TELEPORTATION_CORE, MekanismItems.ENRICHED_IRON, MekanismItems.SAWDUST, MekanismItems.SALT,
                   MekanismItems.DYE_BASE, MekanismItems.FLUORITE_GEM, MekanismItems.FLUORITE_DUST, MekanismItems.YELLOW_CAKE_URANIUM, MekanismItems.DIRTY_NETHERITE_SCRAP,

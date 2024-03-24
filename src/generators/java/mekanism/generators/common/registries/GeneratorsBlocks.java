@@ -106,7 +106,7 @@ public class GeneratorsBlocks {
                             BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
                             fluidStack -> fluidStack.is(GeneratorTags.Fluids.BIOETHANOL)
                       )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addFluidSlot(0, (tank, listener, x, y) -> FluidFuelInventorySlot.forFuel(tank, s -> s.is(MekanismTags.Items.FUELS_BIO) ? 200 : 0,
+                            .addFluidSlot(0, (tank, listener, x, y) -> FluidFuelInventorySlot.forFuel(tank, s -> s.is(MekanismTags.Items.FUELS_BIO) ? 200 : s.is(MekanismTags.Items.FUELS_BLOCK_BIO) ? 200 * 9 : 0,
                                   GeneratorsFluids.BIOETHANOL::getFluidStack,
                                   listener, x, y)
                             ).addEnergy()

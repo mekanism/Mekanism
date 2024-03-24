@@ -48,6 +48,8 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismItems.REFINED_OBSIDIAN_INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.STEEL_BLOCK, MekanismItems.STEEL_INGOT, MekanismTags.Items.INGOTS_STEEL, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.FLUORITE_BLOCK, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, basePath);
+        //Bio Fuel
+        addStorageBlockRecipe(consumer, MekanismBlocks.BIO_FUEL_BLOCK, MekanismItems.BIO_FUEL, MekanismTags.Items.FUELS_BIO, basePath, "bio_fuel");
         //Charcoal
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
@@ -64,10 +66,15 @@ class StorageRecipeProvider implements ISubRecipeProvider {
 
     private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<BlockResource, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
           String basePath) {
+        addStorageBlockRecipe(consumer, block, ingot, ingotTag, basePath, block.getBlock().getResourceInfo().getRegistrySuffix());
+    }
+
+    private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<?, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
+          String basePath, String suffix) {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, ingot)
               .key(Pattern.CONSTANT, ingotTag)
-              .build(consumer, Mekanism.rl(basePath + block.getBlock().getResourceInfo().getRegistrySuffix()));
+              .build(consumer, Mekanism.rl(basePath + suffix));
     }
 }
