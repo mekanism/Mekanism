@@ -619,7 +619,7 @@ publishing {
             publication.from((SoftwareComponent) components.java)
             publication.groupId = project.group
             publication.version = project.version
-            publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.base.archivesName
+            publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.base.archivesName.get()
             publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
             publication.pom {
                 name.set("Mekanism")
