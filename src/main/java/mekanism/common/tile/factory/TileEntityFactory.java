@@ -330,6 +330,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected void handleSecondaryFuel() {
     }
 
+    public abstract boolean isItemValidForSlot(@NotNull ItemStack stack);
+
     /**
      * Like isItemValidForSlot makes no assumptions about current stored types
      */

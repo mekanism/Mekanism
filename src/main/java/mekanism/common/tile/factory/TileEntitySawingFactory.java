@@ -85,6 +85,12 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
+    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+        //contains recipe in general already validated by isValidInputItem
+        return true;
+    }
+
+    @Override
     public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipe(stack);
     }

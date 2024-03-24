@@ -150,6 +150,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
+    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+        return containsRecipeAB(stack, gasTank.getStack());
+    }
+
+    @Override
     public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipeA(stack);
     }

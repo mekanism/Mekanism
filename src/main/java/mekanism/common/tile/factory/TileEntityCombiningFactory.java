@@ -72,6 +72,11 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
+    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+        return containsRecipeAB(stack, extraSlot.getStack());
+    }
+
+    @Override
     public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipeA(stack);
     }

@@ -105,6 +105,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
+    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+        return containsRecipeAB(stack, infusionTank.getStack());
+    }
+
+    @Override
     public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipeA(stack);
     }
