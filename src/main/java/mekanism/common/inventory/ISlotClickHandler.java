@@ -2,6 +2,7 @@ package mekanism.common.inventory;
 
 import java.util.UUID;
 import java.util.function.Supplier;
+import mekanism.common.annotations.GLFWMouseButtons;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ISlotClickHandler {
 
-    void onClick(Supplier<@Nullable IScrollableSlot> slotProvider, int button, boolean hasShiftDown, ItemStack heldItem);
+    void onClick(Supplier<@Nullable IScrollableSlot> slotProvider, @GLFWMouseButtons int button, boolean hasShiftDown, ItemStack heldItem);
 
     interface IScrollableSlot {
 

@@ -13,6 +13,7 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.MekanismLang;
+import mekanism.common.annotations.GLFWMouseButtons;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.lib.inventory.HashedItem;
@@ -100,7 +101,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(double mouseX, double mouseY, @GLFWMouseButtons int button) {
         if (gui().currentlyQuickCrafting()) {
             //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
             return super.mouseReleased(mouseX, mouseY, button);

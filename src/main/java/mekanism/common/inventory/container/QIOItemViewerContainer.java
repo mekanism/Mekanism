@@ -54,6 +54,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -517,19 +518,19 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (slot != null) {
                 PacketUtils.sendToServer(new PacketQIOItemViewerSlotShiftTake(slot.itemUUID()));
             }
-        } else if (button == 0 || button == 1) {
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null) {
                     //Left click -> as much as possible, right click -> half of available
-                    long baseExtract = button == 0 ? slot.count() : slot.count() / 2;
+                    long baseExtract = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? slot.count() : slot.count() / 2;
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
                     int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.item().getMaxStackSize());
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), toTake));
                 }
             } else {
                 //Left click -> all held, right click -> single item
-                int toAdd = button == 0 ? heldItem.getCount() : 1;
+                int toAdd = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
                 PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
             }
         }
