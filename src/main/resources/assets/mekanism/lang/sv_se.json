@@ -450,6 +450,7 @@
   "cardboard_box.mekanism.block_data": "Blockdata: %1$s",
   "cardboard_box.mekanism.block_entity": "Blockentitet: %1$s",
   "cardboard_box.mekanism.block_entity.decoration": "Dekoration:",
+  "cardboard_box.mekanism.block_entity.spawn_type": "Skapar: %1$s",
   "chemical.mekanism.attribute.coolant.efficiency": " - Kylningseffektivitet: %1$s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Termisk entalpi: %1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Brinntid: %1$s t",

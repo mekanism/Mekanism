@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "構成に失敗しました。電磁コイルが存在しません。",
   "turbine.mekanismgenerators.invalid_missing_complex": "構成に失敗しました。回転機構がありません。",
   "turbine.mekanismgenerators.invalid_missing_disperser": "構成に失敗しました。必要な圧力分散機が%1$sに存在しません。",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "構成に失敗しました。圧力分散機が存在しません。",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "構成に失敗しました。不適当なタービンローターです(連続していません)。",
   "turbine.mekanismgenerators.invalid_too_narrow": "構成に失敗しました。タービンの格納には狭すぎる構造です。",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "構成に失敗しました。圧力分散器の下に蒸気排出口が存在します。蒸気排出口を圧力分散器の垂直方向に上に配置してください。",
