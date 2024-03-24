@@ -1628,6 +1628,7 @@
   "tooltip.mekanism.mode.scuba_tank": "잠수 탱크: %1$s",
   "tooltip.mekanism.no_fluid": "저장된 액체 없음.",
   "tooltip.mekanism.no_gas": "저장된 기체가 없습니다.",
+  "tooltip.mekanism.recipe_viewer.inventory_full": "인벤토리에 충분한 공간이 없습니다.",
   "tooltip.mekanism.security": "보안: %1$s",
   "tooltip.mekanism.stored": "저장된 %1$s: %2$s",
   "tooltip.mekanism.stored.flamethrower": "화염 방사기: %1$s",
