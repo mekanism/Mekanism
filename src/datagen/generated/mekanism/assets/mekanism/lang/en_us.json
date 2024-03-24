@@ -1437,6 +1437,8 @@
   "qio.mekanism.qio_frequency_select": "QIO Frequency Select",
   "qio.mekanism.recipe_viewer.to_frequency": "Prioritize moving items left in the crafting grid to the frequency when overriding with a recipe viewer",
   "qio.mekanism.recipe_viewer.to_inventory": "Prioritize moving items left in the crafting grid to the player's inventory when overriding with a recipe viewer",
+  "qio.mekanism.search.focus.auto": "Auto focus the QIO search bar when opening a dashboard.",
+  "qio.mekanism.search.focus.manual": "Don't automatically focus the QIO search bar when opening a dashboard.",
   "qio.mekanism.set_frequency": "Set Frequency",
   "qio.mekanism.sort_ascending_desc": "Sort items in ascending order.",
   "qio.mekanism.sort_count": "Count",

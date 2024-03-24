@@ -55,6 +55,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue qioItemViewerSlotsX;
     public final CachedIntValue qioItemViewerSlotsY;
     public final CachedBooleanValue qioRejectsToInventory;
+    public final CachedBooleanValue qioAutoFocusSearchBar;
 
     ClientConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -136,6 +137,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .defineInRange("itemViewerSlotsY", 4, QIOItemViewerContainer.SLOTS_Y_MIN, QIOItemViewerContainer.SLOTS_Y_MAX));
         qioRejectsToInventory = CachedBooleanValue.wrap(this, builder.comment("Determines if items in a QIO crafting window should be moved to the player's inventory or frequency first when replacing the items with a recipe viewer.")
               .define("rejectsToInventory", false));
+        qioAutoFocusSearchBar = CachedBooleanValue.wrap(this, builder.comment("Determines whether the search bar is automatically focused when a QIO Dashboard is opened.")
+              .define("autoFocusSearchBar", true));
         builder.pop();
 
         builder.pop();

@@ -14,8 +14,8 @@ import mekanism.client.gui.element.custom.GuiResizeControls;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeController;
 import mekanism.client.gui.element.custom.GuiResizeControls.ResizeType;
 import mekanism.client.gui.element.scroll.GuiSlotScroll;
-import mekanism.client.gui.element.tab.GuiRecipeViewerRejectsDirectionTab;
 import mekanism.client.gui.element.tab.GuiTargetDirectionTab;
+import mekanism.client.gui.element.tab.GuiToggleClientConfigTab;
 import mekanism.client.gui.element.tab.window.GuiCraftingWindowTab;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -88,7 +88,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setMaxLength(50);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
-        setInitialFocus(searchField);
+        if (MekanismConfig.client.qioAutoFocusSearchBar.get()) {
+            setInitialFocus(searchField);
+        }
         addRenderableWidget(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               menu::getQIOItemList, menu));
         addRenderableWidget(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
@@ -96,7 +98,12 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
         addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
-        addRenderableWidget(new GuiRecipeViewerRejectsDirectionTab(this, imageHeight - 35));
+        addRenderableWidget(new GuiToggleClientConfigTab(this, imageHeight - 35, true, getButtonLocation("recipe_viewer_frequency"), getButtonLocation("recipe_viewer_inventory"),
+              //Note: This is backwards as it describes what the button will be doing
+              MekanismConfig.client.qioRejectsToInventory, val -> val ? MekanismLang.QIO_REJECTS_TO_INVENTORY : MekanismLang.QIO_REJECTS_TO_FREQUENCY));
+        addRenderableWidget(new GuiToggleClientConfigTab(this, 6, false, getButtonLocation("searchbar_autofocus_on"), getButtonLocation("searchbar_autofocus_off"),
+              //Note: This is backwards as it describes what the button will be doing
+              MekanismConfig.client.qioAutoFocusSearchBar, val -> val ? MekanismLang.QIO_SEARCH_MANUAL_FOCUS : MekanismLang.QIO_SEARCH_AUTO_FOCUS));
         addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }

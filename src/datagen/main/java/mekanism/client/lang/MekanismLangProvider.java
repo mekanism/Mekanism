@@ -708,6 +708,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_TRANSFER_TO_WINDOW, "Prioritize moving items to the crafting window when holding shift");
         add(MekanismLang.QIO_REJECTS_TO_FREQUENCY, "Prioritize moving items left in the crafting grid to the frequency when overriding with a recipe viewer");
         add(MekanismLang.QIO_REJECTS_TO_INVENTORY, "Prioritize moving items left in the crafting grid to the player's inventory when overriding with a recipe viewer");
+        add(MekanismLang.QIO_SEARCH_AUTO_FOCUS, "Auto focus the QIO search bar when opening a dashboard.");
+        add(MekanismLang.QIO_SEARCH_MANUAL_FOCUS, "Don't automatically focus the QIO search bar when opening a dashboard.");
         add(MekanismLang.LIST_SORT_COUNT, "Count");
         add(MekanismLang.LIST_SORT_NAME, "Name");
         add(MekanismLang.LIST_SORT_MOD, "Mod");
