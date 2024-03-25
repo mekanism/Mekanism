@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "구성할 수 없습니다. 전자기 코일이 없습니다.",
   "turbine.mekanismgenerators.invalid_missing_complex": "회전 기구가 없어 구성될 수 없습니다.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "%1$s에 압력 분산기가 필요하지만 없어 구성될 수 없습니다.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "압력 분산기 층이 발견되지 않아 구성될 수 없습니다.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "로터가 존재하지 않거나 인접하지 않아 구성될 수 없습니다.",
   "turbine.mekanismgenerators.invalid_too_narrow": "터빈이 너무 작아 구성될 수 없습니다.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "압력 분산기 층 아래에 증기 배출구가 발견되어 구성될 수 없습니다. 증기 배출구는 반드시 압력 분산기 층 위에 배치되어야 합니다.",
