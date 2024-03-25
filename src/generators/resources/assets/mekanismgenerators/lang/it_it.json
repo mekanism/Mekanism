@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "Costruzione fallita, Bobine Elettromagnetiche assenti.",
   "turbine.mekanismgenerators.invalid_missing_complex": "Costruzione fallita, Complesso Rotativo assente.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "Costruzione fallita, Dispersore di Pressione in %1$s non rilevato.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "Costruzione fallita, Dispersori di Pressione assenti.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "Costruzione fallita, disposizione dei Rotori non valida (non contigui).",
   "turbine.mekanismgenerators.invalid_too_narrow": "Costruzione fallita, struttura troppo stretta per supportare le dimensioni della Turbina.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Costruzione fallita, presenza di una Ventola della Turbina sotto il livello di Dispersori di Pressione. Le Ventole devono stare allo stesso livello o direttamente sopra dei Dispersori.",
