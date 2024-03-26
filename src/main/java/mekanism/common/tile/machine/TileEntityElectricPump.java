@@ -17,6 +17,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -53,6 +54,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -66,10 +68,13 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidBlock;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable {
 
@@ -100,6 +105,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * The nodes that have full sources near them or in them
      */
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
+    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerAbove = List.of();
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -170,7 +176,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         }
         usedEnergy = !clientEnergyUsed.isZero();
         if (!fluidTank.isEmpty()) {
-            FluidUtils.emit(Collections.singleton(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
+            if (fluidHandlerAbove.isEmpty()) {
+                fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
+            }
+            FluidUtils.emit(fluidHandlerAbove, fluidTank, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
     }
 

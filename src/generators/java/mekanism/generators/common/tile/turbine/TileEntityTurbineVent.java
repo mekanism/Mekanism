@@ -1,9 +1,14 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.util.FluidUtils;
@@ -11,12 +16,17 @@ import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IMultiblockEjector {
 
-    private Set<Direction> outputDirections = Collections.emptySet();
+    private final Map<Direction, BlockCapabilityCache<IFluidHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
+    private final List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> outputTargets = new ArrayList<>();
 
     public TileEntityTurbineVent(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.TURBINE_VENT, pos, state);
@@ -35,7 +45,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IM
     protected boolean onUpdateServer(TurbineMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            FluidUtils.emit(outputDirections, multiblock.ventTank, this);
+            FluidUtils.emit(outputTargets, multiblock.ventTank);
         }
         return needsPacket;
     }
@@ -51,6 +61,9 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IM
 
     @Override
     public void setEjectSides(Set<Direction> sides) {
-        outputDirections = sides;
+        outputTargets.clear();
+        for (Direction side : sides) {
+            outputTargets.add(capabilityCaches.computeIfAbsent(side, s -> Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
+        }
     }
 }

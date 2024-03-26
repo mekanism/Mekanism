@@ -1,8 +1,7 @@
 package mekanism.common.util;
 
-import java.util.EnumSet;
+import java.util.Collection;
 import java.util.OptionalInt;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -11,21 +10,20 @@ import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class FluidUtils {
 
@@ -63,40 +61,33 @@ public final class FluidUtils {
         return OptionalInt.empty();
     }
 
-    public static void emit(IExtendedFluidTank tank, BlockEntity from) {
-        emit(EnumSet.allOf(Direction.class), tank, from);
+    public static void emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, IExtendedFluidTank tank) {
+        emit(targets, tank, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, BlockEntity from) {
-        emit(outputSides, tank, from, tank.getCapacity());
-    }
-
-    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, BlockEntity from, int maxOutput) {
+    public static void emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, IExtendedFluidTank tank, int maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
+            tank.extract(emit(targets, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
     /**
      * Emits fluid from a central block by splitting the received stack among the sides given.
      *
-     * @param sides - the list of sides to output from
-     * @param stack - the stack to output
-     * @param from  - the TileEntity to output from
+     * @param targets - the list of capabilities to output to
+     * @param stack   - the stack to output
      *
      * @return the amount of fluid emitted
      */
-    public static int emit(Set<Direction> sides, @NotNull FluidStack stack, BlockEntity from) {
-        if (stack.isEmpty() || sides.isEmpty()) {
+    public static int emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, @NotNull FluidStack stack) {
+        if (stack.isEmpty() || targets.isEmpty()) {
             return 0;
         }
         FluidStack toSend = stack.copy();
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
-        Level level = from.getLevel();
-        BlockPos center = from.getBlockPos();
-        for (Direction side : sides) {
+        for (BlockCapabilityCache<IFluidHandler, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IFluidHandler handler = Capabilities.FLUID.getCapabilityIfLoaded(level, center.relative(side), side.getOpposite());
+            IFluidHandler handler = capability.getCapability();
             if (handler != null && canFill(handler, toSend)) {
                 target.addHandler(handler);
             }

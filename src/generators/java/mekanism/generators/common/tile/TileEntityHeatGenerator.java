@@ -39,10 +39,12 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +72,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
+    @Nullable
+    private BlockCapabilityCache<IHeatHandler, @Nullable Direction> adjacentHeatCap;
 
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "generator")
     BasicHeatCapacitor heatCapacitor;
@@ -188,7 +192,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (side == Direction.DOWN) {
-            return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
+            if (adjacentHeatCap == null) {
+                adjacentHeatCap = BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            }
+            return adjacentHeatCap.getCapability();
         }
         return null;
     }

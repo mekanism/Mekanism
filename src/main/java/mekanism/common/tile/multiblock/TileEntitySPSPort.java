@@ -1,16 +1,21 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -23,15 +28,19 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultiblockEjector {
 
+    private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
+    private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalTargets = new ArrayList<>();
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
-    private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SPS_PORT, pos, state);
@@ -43,7 +52,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             if (getActive()) {
-                ChemicalUtil.emit(outputDirections, multiblock.outputTank, this);
+                ChemicalUtil.emit(chemicalTargets, multiblock.outputTank);
             }
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
@@ -77,7 +86,10 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
 
     @Override
     public void setEjectSides(Set<Direction> sides) {
-        outputDirections = sides;
+        chemicalTargets.clear();
+        for (Direction side : sides) {
+            chemicalTargets.add(chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
+        }
     }
 
     @Override

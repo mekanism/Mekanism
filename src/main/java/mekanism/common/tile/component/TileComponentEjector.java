@@ -14,12 +14,16 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -51,7 +55,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,6 +67,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+
+    private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
+
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
@@ -179,17 +189,38 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
         if (outputData != null && !outputData.isEmpty()) {
+            ServerLevel level = (ServerLevel) tile.getLevel();
+            BlockPos pos = tile.getBlockPos();
+            Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = capabilityCaches.computeIfAbsent(type, t -> new EnumMap<>(Direction.class));
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
+                Set<Direction> sides = entry.getValue();
                 if (type.isChemical()) {
-                    ChemicalUtil.emit(entry.getValue(), (IChemicalTank<?, ?>) entry.getKey(), tile, chemicalEjectRate.getAsLong());
+                    emit(level, pos, typeCapabilityCaches, sides, (IChemicalTank<?, ?>) entry.getKey());
                 } else if (type == TransmissionType.FLUID) {
-                    FluidUtils.emit(entry.getValue(), (IExtendedFluidTank) entry.getKey(), tile, fluidEjectRate.getAsInt());
+                    List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
+                    FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
                 } else if (type == TransmissionType.ENERGY) {
                     IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                    CableUtils.emit(entry.getValue(), container, tile, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
+                    CableUtils.emit(sides, container, tile, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
                 }
             }
         }
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit( ServerLevel level, BlockPos pos,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IChemicalTank<CHEMICAL, STACK> tank) {
+        List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, ChemicalUtil.getCapabilityForChemical(tank));
+        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <HANDLER> List<BlockCapabilityCache<HANDLER, @Nullable Direction>> getCapabilityCaches(ServerLevel level, BlockPos pos, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches,
+          Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
+        List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = new ArrayList<>(sides.size());
+        for (Direction side : sides) {
+            caches.add((BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.computeIfAbsent(side, s -> capability.createCache(level, pos.relative(s), s.getOpposite())));
+        }
+        return caches;
     }
 
     /**

@@ -24,15 +24,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
+
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
     private int delay = 0;
     private boolean importWithoutFilter = true;
 
@@ -54,10 +59,18 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         return needsUpdate;
     }
 
+    @Override
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        super.invalidateDirectionCaches(newDirection);
+        backInventory = null;
+    }
+
     private void tryImport(QIOFrequency freq) {
-        Direction direction = getDirection();
-        BlockPos pos = worldPosition.relative(direction.getOpposite());
-        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, direction);
+        if (backInventory == null) {
+            Direction direction = getDirection();
+            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+        }
+        IItemHandler inventory = backInventory.getCapability();
         if (inventory == null) {//Not an IItemHandler
             return;
         }
@@ -98,7 +111,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             ItemStack ret = inventory.extractItem(i, used.getCount(), false);
             if (!InventoryUtils.areItemsStackable(used, ret) || used.getCount() != ret.getCount()) {
                 Mekanism.logger.error("QIO insertion error: item handler at {} in {} returned {} during simulated extraction, but returned {} during execution. This is wrong!",
-                      pos, level.dimension().location(), stack, ret);
+                      worldPosition.relative(getOppositeDirection()), level.dimension().location(), stack, ret);
             }
             typesAdded.add(type);
             countAdded += used.getCount();

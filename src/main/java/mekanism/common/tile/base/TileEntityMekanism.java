@@ -3,6 +3,7 @@ package mekanism.common.tile.base;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -144,6 +146,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -244,6 +247,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
+    protected final Map<Direction, BlockCapabilityCache<IHeatHandler, @Nullable Direction>> adjacentHeatCaps;
     protected final CachedAmbientTemperature ambientTemperature;
     protected final HeatHandlerManager heatHandlerManager;
     //End variables for IMekanismHeatHandler
@@ -287,7 +291,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener)), this));
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
         capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature), this));
-        this.ambientTemperature = canHandleHeat() ? ambientTemperature : null;
+        if (canHandleHeat()) {
+            adjacentHeatCaps = new EnumMap<>(Direction.class);
+            this.ambientTemperature = ambientTemperature;
+        } else {
+            adjacentHeatCaps = Map.of();
+            this.ambientTemperature = null;
+        }
         addCapabilityResolvers(capabilityHandlerManagers);
         frequencyComponent = new TileComponentFrequency(this);
         if (supportsUpgrades()) {
@@ -655,8 +665,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void setBlockState(@NotNull BlockState newState) {
         super.setBlockState(newState);
         if (isDirectional()) {
-            //Clear the cached direction so that we can lazily get it when we need it again
-            cachedDirection = null;
+            //Note: We get the new cached direction from the state as hopefully the state is not changing super often
+            // and that way we can properly clear things that only should happen when the direction actually changes and not when we go from active to inactive
+            Direction newDirection = Attribute.getFacing(newState);
+            if (cachedDirection != newDirection) {
+                invalidateDirectionCaches(newDirection);
+            }
         }
     }
 
@@ -959,6 +973,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return Direction.NORTH;
     }
 
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        cachedDirection = newDirection;
+    }
+
     @Override
     public void setFacing(@NotNull Direction direction) {
         setFacing(direction, true);
@@ -966,7 +984,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void setFacing(@NotNull Direction direction, boolean notifyCaps) {
         if (isDirectional() && direction != cachedDirection && level != null) {
-            cachedDirection = direction;
+            invalidateDirectionCaches(direction);
             BlockState state = Attribute.setFacing(getBlockState(), direction);
             if (state != null) {
                 level.setBlockAndUpdate(worldPosition, state);
@@ -1234,7 +1252,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
+            return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s),
+                  s.getOpposite())).getCapability();
         }
         return null;
     }

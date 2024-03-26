@@ -1,10 +1,15 @@
 package mekanism.generators.common.tile.fusion;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
@@ -27,14 +32,18 @@ import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IMultiblockEjector {
 
+    private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
+    private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalTargets = new ArrayList<>();
     private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
@@ -84,13 +93,17 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Override
     public void setEjectSides(Set<Direction> sides) {
         outputDirections = sides;
+        chemicalTargets.clear();
+        for (Direction side : sides) {
+            chemicalTargets.add(chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
+        }
     }
 
     @Override
     protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
-            ChemicalUtil.emit(outputDirections, multiblock.steamTank, this);
+            ChemicalUtil.emit(chemicalTargets, multiblock.steamTank);
             CableUtils.emit(outputDirections, multiblock.energyContainer, this);
         }
         return needsPacket;

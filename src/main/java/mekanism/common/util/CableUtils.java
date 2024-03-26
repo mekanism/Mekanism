@@ -21,6 +21,7 @@ public final class CableUtils {
     private CableUtils() {
     }
 
+    //TODO: Move these emit methods to using capability caches. Will require a custom cache that interacts with EnergyCompatUtils
     public static void emit(IEnergyContainer energyContainer, BlockEntity from) {
         emit(EnumSet.allOf(Direction.class), energyContainer, from);
     }

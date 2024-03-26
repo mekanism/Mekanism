@@ -33,16 +33,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
+
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
     private int delay = 0;
     private boolean exportWithoutFilter;
 
@@ -69,10 +74,19 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         return needsUpdate;
     }
 
+    @Override
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        super.invalidateDirectionCaches(newDirection);
+        backInventory = null;
+    }
+
     private void tryEject(QIOFrequency freq) {
-        Direction direction = getDirection();
-        IItemHandler backHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(direction.getOpposite()), direction);
-        //TODO - 1.20.4: Optimize exporting into transporters
+        if (backInventory == null) {
+            Direction direction = getDirection();
+            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+        }
+        IItemHandler backHandler = backInventory.getCapability();
+        //TODO - 1.20.4: Optimize exporting into transporters, maybe by checking if it is a cursed transporter handler??
         if (backHandler == null) {
             return;
         }

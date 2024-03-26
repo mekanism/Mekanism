@@ -58,6 +58,10 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
         return WorldUtils.getCapability(level, block(), pos, state, blockEntity, side);
     }
 
+    default BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context) {
+        return BlockCapabilityCache.create(block(), level, pos, context);
+    }
+
     default BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
           Runnable invalidationListener) {
         return BlockCapabilityCache.create(block(), level, pos, context, isValid, invalidationListener);

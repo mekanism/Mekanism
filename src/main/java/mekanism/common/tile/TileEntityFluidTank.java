@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -40,6 +41,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -48,7 +50,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,6 +69,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public int valve;
     @NotNull
     public FluidStack valveFluid = FluidStack.EMPTY;
+    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerBelow = List.of();
 
     public float prevScale;
 
@@ -138,7 +143,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            FluidUtils.emit(Collections.singleton(Direction.DOWN), fluidTank, this, tier.getOutput());
+            if (fluidHandlerBelow.isEmpty()) {
+                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP));
+            }
+            FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
         }
         if (needsPacket) {
             sendUpdatePacket();

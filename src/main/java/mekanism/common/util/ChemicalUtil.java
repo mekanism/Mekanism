@@ -1,8 +1,7 @@
 package mekanism.common.util;
 
-import java.util.EnumSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -43,13 +42,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -284,40 +280,35 @@ public class ChemicalUtil {
         }
     }
 
-    public static void emit(IChemicalTank<?, ?> tank, BlockEntity from) {
-        emit(EnumSet.allOf(Direction.class), tank, from);
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(Collection<BlockCapabilityCache<HANDLER, @Nullable Direction>> targets,
+          IChemicalTank<CHEMICAL, STACK> tank) {
+        emit(targets, tank, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, BlockEntity from) {
-        emit(outputSides, tank, from, tank.getCapacity());
-    }
-
-    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, BlockEntity from, long maxOutput) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(Collection<BlockCapabilityCache<HANDLER, @Nullable Direction>> targets,
+          IChemicalTank<CHEMICAL, STACK> tank, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
+            tank.extract(emit(targets, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL)), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 
     /**
      * Emits chemical from a central block by splitting the received stack among the sides given.
      *
-     * @param sides - the list of sides to output from
-     * @param stack - the stack to output
-     * @param from  - the TileEntity to output from
+     * @param targets - the list of capabilities to output to
+     * @param stack   - the stack to output
      *
      * @return the amount of chemical emitted
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long emit(Set<Direction> sides, @NotNull STACK stack, BlockEntity from) {
-        if (stack.isEmpty() || sides.isEmpty()) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> long emit(
+          Collection<BlockCapabilityCache<HANDLER, @Nullable Direction>> targets, @NotNull STACK stack) {
+        if (stack.isEmpty() || targets.isEmpty()) {
             return 0;
         }
-        BlockCapability<IChemicalHandler<CHEMICAL, STACK>, @Nullable Direction> capability = getCapabilityForChemical(stack).block();
-        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, 6);
-        Level level = from.getLevel();
-        BlockPos center = from.getBlockPos();
-        for (Direction side : sides) {
+        ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> target = new ChemicalHandlerTarget<>(stack, 6);
+        for (BlockCapabilityCache<HANDLER, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IChemicalHandler<CHEMICAL, STACK> handler = WorldUtils.getCapability(level, capability, center.relative(side), side.getOpposite());
+            HANDLER handler = capability.getCapability();
             if (handler != null && canInsert(handler, stack)) {
                 target.addHandler(handler);
             }

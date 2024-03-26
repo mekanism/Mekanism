@@ -2,7 +2,9 @@ package mekanism.common.tile;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
@@ -28,6 +30,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterChemicalTankHolder;
@@ -45,6 +48,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -73,14 +77,18 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
+    private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
     private final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     private double lastTransferLoss;
@@ -217,10 +225,42 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
+                return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
             }
         }
         return null;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <HANDLER> HANDLER getCachedCapability(@NotNull Direction side, TransmissionType transmissionType) {
+        if (transmissionType == TransmissionType.HEAT) {
+            return (HANDLER) adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
+        } else if (transmissionType == TransmissionType.ENERGY) {
+            //Not currently cached
+            BlockPos pos = worldPosition.relative(side);
+            return WorldUtils.getBlockState(level, pos)
+                  .map(state -> {
+                      BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
+                      return (HANDLER) EnergyCompatUtils.getStrictEnergyHandler(level, pos, state, blockEntity, side.getOpposite());
+                  }).orElse(null);
+        } else if (transmissionType == TransmissionType.ITEM) {
+            //Not currently handled
+            return null;
+        }
+        BlockCapabilityCache<?, @Nullable Direction> cache = capabilityCaches.computeIfAbsent(transmissionType, type -> new EnumMap<>(Direction.class))
+              .computeIfAbsent(side, s -> {
+                  IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
+                      case FLUID -> Capabilities.FLUID;
+                      case GAS -> Capabilities.GAS;
+                      case INFUSION -> Capabilities.INFUSION;
+                      case PIGMENT -> Capabilities.PIGMENT;
+                      case SLURRY -> Capabilities.SLURRY;
+                      default -> null;
+                  };
+                  return capability == null ? null : capability.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite());
+              });
+        return cache == null ? null : (HANDLER) cache.getCapability();
     }
 
     @Override

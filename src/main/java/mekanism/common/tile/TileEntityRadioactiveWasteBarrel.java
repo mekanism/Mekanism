@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.Collections;
+import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -8,8 +8,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -25,13 +27,16 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
@@ -40,6 +45,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                                                                                         "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel gasTank;
     private int processTicks;
+    private List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> gasHandlerBelow = List.of();
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
@@ -66,7 +72,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 gasTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
             }
             if (getActive()) {
-                ChemicalUtil.emit(Collections.singleton(Direction.DOWN), gasTank, this);
+                if (gasHandlerBelow.isEmpty()) {
+                    gasHandlerBelow = List.of(BlockCapabilityCache.create(Capabilities.GAS.block(), (ServerLevel) level, worldPosition.below(), Direction.UP));
+                }
+                ChemicalUtil.emit(gasHandlerBelow, gasTank);
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
             // in TileentityMekanism after this method is called. And given radioactive waste barrels can only contain

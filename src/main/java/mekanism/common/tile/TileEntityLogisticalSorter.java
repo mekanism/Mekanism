@@ -41,10 +41,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +56,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
     private final Finder strictFinder = stack -> filterManager.getEnabledFilters().stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().test(stack));
+
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> homeInventory;
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> targetInventory;
 
     @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
@@ -88,14 +95,16 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         }
 
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-            Direction direction = getDirection();
-            BlockPos backPos = worldPosition.relative(direction.getOpposite());
-            IItemHandler back = Capabilities.ITEM.getCapabilityIfLoaded(level, backPos, direction);
+            IItemHandler back = getHomeInventory();
             //If there is no tile to pull from or the push to, skip doing any checks
             if (back != null) {
+                Direction direction = getDirection();
                 BlockPos frontPos = worldPosition.relative(direction);
                 BlockEntity front = WorldUtils.getTileEntity(getLevel(), frontPos);
-                IItemHandler frontCap = Capabilities.ITEM.getCapabilityIfLoaded(level, frontPos, null, front, direction.getOpposite());
+                if (targetInventory == null) {
+                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, frontPos, direction.getOpposite());
+                }
+                IItemHandler frontCap = targetInventory.getCapability();
                 if (front != null || frontCap != null) {
                     boolean sentItems = false;
                     for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
@@ -218,15 +227,30 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         return TransporterUtils.isValidAcceptorOnSide(getLevel(), worldPosition.relative(oppositeDirection), oppositeDirection);
     }
 
+    @Nullable
+    private IItemHandler getHomeInventory() {
+        if (homeInventory == null) {
+            Direction direction = getDirection();
+            BlockPos pos = worldPosition.relative(direction.getOpposite());
+            homeInventory = Capabilities.ITEM.createCache((ServerLevel) level, pos, direction);
+        }
+        return homeInventory.getCapability();
+    }
+
+    @Override
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        super.invalidateDirectionCaches(newDirection);
+        homeInventory = null;
+        targetInventory = null;
+    }
+
     @NotNull
     public TransitResponse sendHome(TransitRequest request) {
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
-        //TODO: Block cache for the source handler that we are pulling from and would be inserting
-        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, direction);
         //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another
         // and the only case would be if an inventory was replaced with another sorter connected to an inventory to proxy it back an extra spot
-        return request.addToInventory(getLevel(), pos, inventory, 0, false);
+        return request.addToInventory(getLevel(), pos, getHomeInventory(), 0, false);
     }
 
     @Override

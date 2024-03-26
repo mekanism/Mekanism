@@ -223,6 +223,9 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     public void setLevel(@NotNull Level world) {
         super.setLevel(world);
         updateCoord();
+        //TODO: Do we need to clear the BlockCapabilityCaches we are storing if the level changes?
+        // The level changing is not really an expected thing to have happen, but might be worth
+        // considering if we run into mods that the caches are causing problems for
     }
 
     private void updateCoord() {

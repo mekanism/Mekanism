@@ -102,6 +102,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -118,6 +119,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave);
     private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
+
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullInventory;
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> ejectInventory;
 
     private int radius;
     private boolean inverse;
@@ -260,7 +266,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (doEject && delayTicks == 0) {
             Direction oppositeDirection = getOppositeDirection();
             BlockPos ejectPos = getBlockPos().above().relative(oppositeDirection);
-            IItemHandler ejectHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, ejectPos, oppositeDirection);
+            if (ejectInventory == null) {
+                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos, oppositeDirection);
+            }
+            IItemHandler ejectHandler = ejectInventory.getCapability();
             if (ejectHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
@@ -590,7 +599,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //And finally source from the inventory on top if auto pull is enabled
         if (doPull) {
-            IItemHandler pullInv = getPullInv();
+            if (pullInventory == null) {
+                pullInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().above(2), Direction.DOWN);
+            }
+            IItemHandler pullInv = pullInventory.getCapability();
             if (pullInv != null) {
                 TransitRequest request = TransitRequest.definedItem(pullInv, 1, Finder.item(replaceTarget));
                 if (!request.isEmpty()) {
@@ -603,6 +615,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        super.invalidateDirectionCaches(newDirection);
+        //Note: We only need to invalidate the eject inventory on rotation as the center block stays in the same position
+        ejectInventory = null;
     }
 
     public boolean canInsert(List<ItemStack> toInsert) {
@@ -683,10 +702,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
         }
         return stack;
-    }
-
-    private IItemHandler getPullInv() {
-        return Capabilities.ITEM.getCapabilityIfLoaded(level, getBlockPos().above(2), Direction.DOWN);
     }
 
     private void add(List<ItemStack> stacks) {

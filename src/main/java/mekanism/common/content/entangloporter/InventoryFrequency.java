@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -31,7 +31,6 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -44,7 +43,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -56,16 +54,11 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -248,7 +241,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public void handleEject(long gameTime) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
-            Map<TransmissionType, CapabilityHandler> typesToEject = new EnumMap<>(TransmissionType.class);
+            Map<TransmissionType, Consumer<?>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
             List<Runnable> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
@@ -266,37 +259,14 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                         //Skip trying to eject for this QE if it can't function
                         continue;
                     }
-                    Map<Direction, CachedBlockInfo> adjacentBlocks = null;
-                    for (Map.Entry<TransmissionType, CapabilityHandler> entry : typesToEject.entrySet()) {
+                    for (Map.Entry<TransmissionType, Consumer<?>> entry : typesToEject.entrySet()) {
                         TransmissionType transmissionType = entry.getKey();
                         ConfigInfo config = qe.getConfig().getConfig(transmissionType);
                         //Validate the ejector for the config allows ejecting this transmission type. In theory, we already check all
                         // of this except config#isEjecting before we get here, but we do so anyway for consistency
                         if (config != null && qe.getEjector().isEjecting(config, transmissionType)) {
-                            Set<Direction> outputSides = config.getAllOutputtingSides();
-                            if (!outputSides.isEmpty()) {
-                                if (adjacentBlocks == null) {
-                                    //Lazy init the map of adjacent tiles
-                                    adjacentBlocks = new EnumMap<>(Direction.class);
-                                }
-                                Level level = qe.getLevel();
-                                for (Direction side : outputSides) {
-                                    CachedBlockInfo blockInfo;
-                                    if (adjacentBlocks.containsKey(side)) {
-                                        //Need to use contains because we allow for null values
-                                        blockInfo = adjacentBlocks.get(side);
-                                    } else {
-                                        //Get the block and tile and provide if not null and the block is loaded, prevents ghost chunk loading
-                                        BlockPos pos = qe.getBlockPos().relative(side);
-                                        blockInfo = WorldUtils.getBlockState(level, pos)
-                                              .map(state -> new CachedBlockInfo(pos, state, WorldUtils.getTileEntity(level, pos)))
-                                              .orElse(null);
-                                        adjacentBlocks.put(side, blockInfo);
-                                    }
-                                    if (blockInfo != null) {
-                                        entry.getValue().handle(level, blockInfo.pos(), blockInfo.state(), blockInfo.blockEntity(), side);
-                                    }
-                                }
+                            for (Direction side : config.getAllOutputtingSides()) {
+                                accept(entry.getValue(), qe, side, transmissionType);
                             }
                         }
                     }
@@ -309,16 +279,19 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private void addEnergyTransferHandler(Map<TransmissionType, CapabilityHandler> typesToEject, List<Runnable> transferHandlers, int expected) {
+    private static <TYPE> void accept(Consumer<TYPE> consumer, TileEntityQuantumEntangloporter qe, Direction side, TransmissionType transmissionType) {
+        TYPE cachedCapability = qe.getCachedCapability(side, transmissionType);
+        if (cachedCapability != null) {
+            consumer.accept(cachedCapability);
+        }
+    }
+
+    private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FloatingLong toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isZero()) {
             EnergyAcceptorTarget target = new EnergyAcceptorTarget(expected);
-            typesToEject.put(TransmissionType.ENERGY, (level, pos, state, blockEntity, side) -> {
-                IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, state, blockEntity, side.getOpposite());
-                if (handler != null) {
-                    target.addHandler(handler);
-                }
-            });
+            Consumer<IStrictEnergyHandler> capabilityHandler = target::addHandler;
+            typesToEject.put(TransmissionType.ENERGY, capabilityHandler);
             transferHandlers.add(() -> {
                 if (target.getHandlerCount() > 0) {
                     storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL);
@@ -327,16 +300,16 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private void addFluidTransferHandler(Map<TransmissionType, CapabilityHandler> typesToEject, List<Runnable> transferHandlers, int expected) {
+    private void addFluidTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FluidStack fluidToSend = storedFluid.extract(storedFluid.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!fluidToSend.isEmpty()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
-            typesToEject.put(TransmissionType.FLUID, (level, pos, state, blockEntity, side) -> {
-                IFluidHandler handler = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, blockEntity, side.getOpposite());
-                if (handler != null && FluidUtils.canFill(handler, fluidToSend)) {
+            Consumer<IFluidHandler> capabilityHandler = handler -> {
+                if (FluidUtils.canFill(handler, fluidToSend)) {
                     target.addHandler(handler);
                 }
-            });
+            };
+            typesToEject.put(TransmissionType.FLUID, capabilityHandler);
             transferHandlers.add(() -> {
                 if (target.getHandlerCount() > 0) {
                     storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL);
@@ -346,30 +319,21 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalTransferHandler(TransmissionType chemicalType,
-          IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, CapabilityHandler> typesToEject, List<Runnable> transferHandlers, int expected) {
+          IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         STACK toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
-            BlockCapability<IChemicalHandler<CHEMICAL, STACK>, @Nullable Direction> capability = ChemicalUtil.getCapabilityForChemical(toSend).block();
             ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(toSend, expected);
-            typesToEject.put(chemicalType, (level, pos, state, blockEntity, side) -> {
-                IChemicalHandler<CHEMICAL, STACK> handler = WorldUtils.getCapability(level, capability, pos, state, blockEntity, side.getOpposite());
-                if (handler != null && ChemicalUtil.canInsert(handler, toSend)) {
+            Consumer<IChemicalHandler<CHEMICAL, STACK>> capabilityHandler = handler -> {
+                if (ChemicalUtil.canInsert(handler, toSend)) {
                     target.addHandler(handler);
                 }
-            });
+            };
+            typesToEject.put(chemicalType, capabilityHandler);
             transferHandlers.add(() -> {
                 if (target.getHandlerCount() > 0) {
                     tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
                 }
             });
         }
-    }
-
-    private interface CapabilityHandler {
-
-        void handle(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction side);
-    }
-
-    private record CachedBlockInfo(BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
     }
 }
