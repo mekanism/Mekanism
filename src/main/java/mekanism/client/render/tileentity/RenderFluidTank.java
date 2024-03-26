@@ -80,7 +80,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
                     .setSideRender(Direction.DOWN, false)
                     .setSideRender(Direction.UP, stage < stages)
                     .xBounds(0.135F, 0.865F)
-                    .yBounds(0.12375F, 0.12375F + 0.7525F * (stage / (float) stages))
+                    .yBounds(0.12375F, 0.124F + 0.75225F * (stage / (float) stages))
                     .zBounds(0.135F, 0.865F)
               );
     }
