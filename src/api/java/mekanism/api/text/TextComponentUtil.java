@@ -160,6 +160,17 @@ public class TextComponentUtil {
      * Helper to call the constructor for translation text components in case we end up ever needing to do any extra processing.
      *
      * @param key  Translation Key.
+     *
+     * @return Translation Text Component.
+     */
+    public static MutableComponent translate(String key) {
+        return Component.translatable(key);
+    }
+
+    /**
+     * Helper to call the constructor for translation text components in case we end up ever needing to do any extra processing.
+     *
+     * @param key  Translation Key.
      * @param args Arguments.
      *
      * @return Translation Text Component.
