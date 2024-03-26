@@ -16,7 +16,6 @@ import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -91,11 +90,11 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     private void updateEnabledButtons() {
         encodeFormulaButton.active = !tile.getAutoMode() && tile.hasRecipe() && canEncode();
-        stockControlButton.active = tile.formula != null && tile.formula.isValidFormula();
+        stockControlButton.active = tile.hasValidFormula();
         fillEmptyButton.active = !tile.getAutoMode();
         craftSingleButton.active = !tile.getAutoMode() && tile.hasRecipe();
         craftAvailableButton.active = !tile.getAutoMode() && tile.hasRecipe();
-        autoModeButton.active = tile.formula != null && tile.formula.isValidFormula();
+        autoModeButton.active = tile.hasValidFormula();
     }
 
     @Override
@@ -108,7 +107,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     protected ItemStack checkValidity(int slotIndex) {
         int i = slotIndex - 21;
-        if (i >= 0 && tile.formula != null && tile.formula.isValidFormula()) {
+        if (i >= 0 && tile.hasValidFormula()) {
             ItemStack stack = tile.formula.input.get(i);
             if (!stack.isEmpty()) {
                 Slot slot = menu.slots.get(slotIndex);
@@ -131,7 +130,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private boolean canEncode() {
-        if (tile.formula != null && tile.formula.isValidFormula()) {
+        if (tile.hasValidFormula()) {
             return false;
         }
         return FormulaAttachment.formula(tile.getFormulaSlot().getStack())

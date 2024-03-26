@@ -1,7 +1,5 @@
 package mekanism.common.content.assemblicator;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
@@ -15,6 +13,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeFormula {
@@ -73,28 +72,48 @@ public class RecipeFormula {
     public boolean isIngredientInPos(Level world, ItemStack stack, int i) {
         if (recipe == null) {
             return false;
-        } else if (stack.isEmpty() && !input.get(i).isEmpty()) {
+        } else if (stack.isEmpty()) {
             //If the stack being checked is empty but the input isn't expected to be empty,
-            // mark it as not being correct for the position
-            return false;
+            // mark it as not being correct for the position, but if it is expected to be empty,
+            // mark it as being correct for the position
+            return input.get(i).isEmpty();
         }
+        ItemStack lastItem = input.get(i);
+        if (lastItem.isEmpty()) {
+            //We expect it to be empty, fail because it isn't
+            return false;
+        } else if (ItemHandlerHelper.canItemStacksStack(stack, lastItem)) {
+            //We are the same as the last item and the one we expect for that slot of the recipe
+            return true;
+        }
+
         resetToRecipe();
         dummy.setItem(i, stack);
         return recipe.value().matches(dummy, world);
     }
 
-    public IntList getIngredientIndices(Level world, ItemStack stack) {
-        IntList ret = new IntArrayList();
+    public boolean isValidIngredient(Level world, ItemStack stack) {
         if (recipe != null) {
-            for (int i = 0; i < 9; i++) {
-                dummy.setItem(i, stack);
-                if (recipe.value().matches(dummy, world)) {
-                    ret.add(i);
+            for (ItemStack inputItem : input) {
+                //Short circuit if it is one of the items we already know about
+                if (!inputItem.isEmpty() && ItemHandlerHelper.canItemStacksStack(inputItem, stack)) {
+                    return true;
                 }
-                dummy.setItem(i, input.get(i));
+            }
+            resetToRecipe();
+            for (int i = 0; i < 9; i++) {
+                ItemStack inputItem = input.get(i);
+                //Skip slots that aren't expected to be empty
+                if (!inputItem.isEmpty()) {
+                    dummy.setItem(i, stack);
+                    if (recipe.value().matches(dummy, world)) {
+                        return true;
+                    }
+                    dummy.setItem(i, inputItem);
+                }
             }
         }
-        return ret;
+        return false;
     }
 
     public boolean isValidFormula() {
