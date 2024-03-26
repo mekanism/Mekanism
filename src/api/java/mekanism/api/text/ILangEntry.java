@@ -19,10 +19,24 @@ public interface ILangEntry extends IHasTranslationKey {
     }
 
     /**
+     * Translates this {@link ILangEntry} using a "smart" replacement scheme to allow for automatic replacements, and coloring to take place.
+     */
+    default MutableComponent translate() {
+        return TextComponentUtil.translate(getTranslationKey());
+    }
+
+    /**
      * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} of the given {@link EnumColor} to the {@link Component}.
      */
     default MutableComponent translateColored(EnumColor color, Object... args) {
         return translateColored(color.getColor(), args);
+    }
+
+    /**
+     * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} of the given {@link EnumColor} to the {@link Component}.
+     */
+    default MutableComponent translateColored(EnumColor color) {
+        return translateColored(color.getColor());
     }
 
     /**
@@ -32,5 +46,14 @@ public interface ILangEntry extends IHasTranslationKey {
      */
     default MutableComponent translateColored(TextColor color, Object... args) {
         return TextComponentUtil.build(color, translate(args));
+    }
+
+    /**
+     * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} to the {@link Component}.
+     *
+     * @since 10.4.0
+     */
+    default MutableComponent translateColored(TextColor color) {
+        return TextComponentUtil.build(color, translate());
     }
 }
