@@ -88,6 +88,9 @@ public interface IJetpackItem {
      */
     @NotNull
     static ItemStack getActiveJetpack(LivingEntity entity) {
+        if (entity.isPassenger()) {
+            return ItemStack.EMPTY;
+        }
         return getJetpack(entity, stack -> {
             if (stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack)) {
                 return !(entity instanceof Player player) || !player.getCooldowns().isOnCooldown(stack.getItem());
