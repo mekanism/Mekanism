@@ -20,22 +20,26 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
-    private final List<BlockState> blockList = new ArrayList<>();
+    private final List<BlockInfo> blockList = new ArrayList<>();
     private final Reference2IntMap<Block> frequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     private MekanismButton upButton;
@@ -46,11 +50,16 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super(container, inv, title);
         imageWidth = 147;
         imageHeight = 182;
-        this.minHeight = inv.player.level().getMinBuildHeight();
-        BlockPos pos = inv.player.blockPosition();
+        Player player = inv.player;
+        Level level = player.level();
+        this.minHeight = level.getMinBuildHeight();
+        BlockPos pos = player.blockPosition();
         //Calculate all the blocks in the column
         for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), minHeight, pos.getZ()), pos)) {
-            blockList.add(inv.player.level().getBlockState(p));
+            BlockState state = level.getBlockState(p);
+            //Try to get the clone item stack as maybe it has one, though it might not have a corresponding block
+            ItemStack stack = state.getCloneItemStack(new BlockHitResult(p.getCenter().relative(Direction.UP, 0.5), Direction.UP, p, false), level, p, player);
+            blockList.add(new BlockInfo(state, stack));
         }
     }
 
@@ -63,7 +72,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         addRenderableWidget(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
-                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getName();
+                return blockList.get(blockList.size() - 1 - currentLayer).block().getName();
             }
             return null;
         }));
@@ -97,10 +106,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         for (int i = 0; i < 9; i++) {
             int layer = currentLayer + (i - 4);
             if (0 <= layer && layer < blockList.size()) {
-                BlockState state = blockList.get(layer);
-                ItemStack stack = new ItemStack(state.getBlock());
+                BlockInfo info = blockList.get(layer);
                 RenderTarget renderTarget;
-                if (stack.isEmpty()) {
+                if (info.stackRepresentation().isEmpty()) {
+                    BlockState state = info.state();
                     Fluid fluid = Fluids.EMPTY;
                     if (state.getBlock() instanceof LiquidBlock liquidBlock) {
                         fluid = liquidBlock.getFluid();
@@ -120,7 +129,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                         MekanismRenderer.resetColor(guiGraphics);
                     };
                 } else {
-                    renderTarget = (graphics, x, y) -> renderItem(graphics, stack, x, y);
+                    renderTarget = (graphics, x, y) -> renderItem(graphics, info.stackRepresentation(), x, y);
                 }
                 int renderX = 92;
                 int renderY = 146 - 16 * i;
@@ -144,10 +153,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         int frequency = 0;
         // Get the name from the stack and render it
         if (currentLayer >= 0) {
-            Block block = blockList.get(currentLayer).getBlock();
+            Block block = blockList.get(currentLayer).block();
             Component displayName = block.getName();
             drawTextScaledBound(guiGraphics, displayName, 10, 16, screenTextColor(), 57);
-            frequency = frequencies.computeIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
+            frequency = frequencies.computeIfAbsent(block, (Block b) -> (int) blockList.stream().filter(info -> info.state().is(b)).count());
         }
         drawTextScaledBound(guiGraphics, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
@@ -156,6 +165,13 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
         return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
+    }
+
+    private record BlockInfo(BlockState state, ItemStack stackRepresentation) {
+
+        public Block block() {
+            return state.getBlock();
+        }
     }
 
     @FunctionalInterface
