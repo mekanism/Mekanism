@@ -66,6 +66,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
@@ -316,6 +317,7 @@ public class RenderTickHandler {
                             ItemStack currentItem = p.getMainHandItem();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
+                                Entity vehicle = p.getVehicle();
                                 boolean rightHanded = p.getMainArm() == HumanoidArm.RIGHT;
                                 if (player == p && minecraft.options.getCameraType().isFirstPerson()) {
                                     flameVec = new Pos3D(1, 1, 1)
@@ -329,11 +331,13 @@ public class RenderTickHandler {
                                     if (p.isCrouching()) {
                                         flameYCoord -= 0.65;
                                         flameZCoord -= 0.15;
+                                    } else if (vehicle != null) {
+                                        flameYCoord -= p.getMyRidingOffset(vehicle) + 0.1;
                                     }
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(p.yBodyRot);
                                 }
-                                Vec3 motion = p.getDeltaMovement();
-                                Vec3 flameMotion = new Vec3(motion.x(), p.onGround() ? 0 : motion.y(), motion.z());
+                                Vec3 motion = vehicle == null ? p.getDeltaMovement() : vehicle.getDeltaMovement();
+                                Vec3 flameMotion = new Vec3(motion.x(), p.onGround() || vehicle != null ? 0 : motion.y(), motion.z());
                                 Vec3 mergedVec = p.position().add(flameVec);
                                 world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x,
                                       flameMotion.y, flameMotion.z);
@@ -532,7 +536,6 @@ public class RenderTickHandler {
     private interface StageRenderer {
 
         /**
-         *
          * @param camera Camera position, in general rendering will have to be translated by the inverse position of the client viewing camera to get back to 0, 0, 0
          */
         void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
