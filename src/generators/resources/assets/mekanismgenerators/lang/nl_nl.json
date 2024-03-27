@@ -57,6 +57,7 @@
   "fission.mekanismgenerators.heat_statistics": "Warmte statistieken",
   "fission.mekanismgenerators.heated_coolant_tank": "Verwarmde Koelvloeistoftank",
   "fission.mekanismgenerators.heating_rate": "Verwarmingsratio: %1$s mB/t",
+  "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generatoren",
   "gas.mekanismgenerators.fusion_fuel": "D-T brandstof",
   "item.mekanismgenerators.deuterium_bucket": "Vloeistof Deuterium Emmer",
   "item.mekanismgenerators.fusion_fuel_bucket": "Vloeibare D-T Brandstofemmer",
