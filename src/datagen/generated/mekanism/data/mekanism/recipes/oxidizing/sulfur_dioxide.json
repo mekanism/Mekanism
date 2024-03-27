@@ -1,12 +1,13 @@
 {
   "type": "mekanism:oxidizing",
-  "input": {
+  "itemInput": {
     "ingredient": {
       "tag": "forge:dusts/sulfur"
     }
   },
   "output": {
     "amount": 100,
+    "chemicalType": "gas",
     "gas": "mekanism:sulfur_dioxide"
   }
 }

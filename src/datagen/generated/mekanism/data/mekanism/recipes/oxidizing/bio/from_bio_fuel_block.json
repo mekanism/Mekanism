@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:oxidizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:fuels/block/bio"
+    }
+  },
+  "output": {
+    "amount": 45,
+    "chemicalType": "infuse_type",
+    "infuse_type": "mekanism:bio"
+  }
+}

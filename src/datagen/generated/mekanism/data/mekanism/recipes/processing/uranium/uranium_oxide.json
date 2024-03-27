@@ -1,12 +1,13 @@
 {
   "type": "mekanism:oxidizing",
-  "input": {
+  "itemInput": {
     "ingredient": {
       "tag": "forge:yellow_cake_uranium"
     }
   },
   "output": {
     "amount": 250,
+    "chemicalType": "gas",
     "gas": "mekanism:uranium_oxide"
   }
 }

@@ -1,12 +1,13 @@
 {
   "type": "mekanism:oxidizing",
-  "input": {
+  "itemInput": {
     "ingredient": {
       "tag": "forge:dusts/salt"
     }
   },
   "output": {
     "amount": 15,
+    "chemicalType": "gas",
     "gas": "mekanism:brine"
   }
 }
