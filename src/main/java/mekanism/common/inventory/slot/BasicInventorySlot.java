@@ -41,8 +41,15 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+        return at(validator, listener, x, y, DEFAULT_LIMIT);
+    }
+
+    public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y, int limit) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
-        return new BasicInventorySlot(alwaysTrueBi, alwaysTrueBi, validator, listener, x, y);
+        if (limit < 1) {
+            throw new IllegalArgumentException("Slots with a custom limit must allow at least one item");
+        }
+        return new BasicInventorySlot(limit, alwaysTrueBi, alwaysTrueBi, validator, listener, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {

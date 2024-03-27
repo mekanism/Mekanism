@@ -153,7 +153,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //If the formula slot changes we want to make sure to recheck the recipe
-        builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26))
+        builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26, 1))
               .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
