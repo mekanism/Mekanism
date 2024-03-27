@@ -886,13 +886,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             trackLastEnergy(container);
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
-                container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
                         container.track(SyncableFloatingLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
                         container.track(SyncableFloatingLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
+                //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
+                container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
             }
         }
     }
