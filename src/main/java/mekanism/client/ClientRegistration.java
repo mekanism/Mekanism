@@ -245,12 +245,12 @@ public class ClientRegistration {
                   (stack, world, entity, seed) -> stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) ->
-                  FormulaAttachment.formula(stack)
+                  FormulaAttachment.existingFormula(stack)
                         .filter(attachment -> attachment.hasItems() && attachment.isInvalid())
                         .isPresent() ? 1 : 0
             );
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) ->
-                  FormulaAttachment.formula(stack)
+                  FormulaAttachment.existingFormula(stack)
                         .filter(attachment -> attachment.hasItems() && attachment.isValid())
                         .isPresent() ? 1 : 0
             );
