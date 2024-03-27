@@ -1,12 +1,13 @@
 {
   "type": "mekanism:oxidizing",
-  "input": {
+  "itemInput": {
     "ingredient": {
       "tag": "forge:pellets/antimatter"
     }
   },
   "output": {
     "amount": 1000,
+    "chemicalType": "gas",
     "gas": "mekanism:antimatter"
   }
 }

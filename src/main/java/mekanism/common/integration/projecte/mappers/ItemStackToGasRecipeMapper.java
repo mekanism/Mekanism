@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToGasRecipe> {
 
     public ItemStackToGasRecipeMapper() {
-        super(ItemStackToGasRecipe.class, MekanismRecipeType.GAS_CONVERSION, MekanismRecipeType.OXIDIZING);
+        super(ItemStackToGasRecipe.class, MekanismRecipeType.GAS_CONVERSION);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ItemStackToGasRecipeMapper extends TypedMekanismRecipeMapper<ItemSt
 
     @Override
     public String getDescription() {
-        return "Maps Mekanism item stack to gas recipes. (Gas conversion, Oxidizing)";
+        return "Maps Mekanism item stack to gas recipes.";
     }
 
     @Override

@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:oxidizing",
+  "itemInput": {
+    "ingredient": [
+      {
+        "tag": "forge:mushrooms"
+      },
+      {
+        "item": "minecraft:warped_fungus"
+      },
+      {
+        "item": "minecraft:crimson_fungus"
+      }
+    ]
+  },
+  "output": {
+    "amount": 10,
+    "chemicalType": "infuse_type",
+    "infuse_type": "mekanism:fungi"
+  }
+}

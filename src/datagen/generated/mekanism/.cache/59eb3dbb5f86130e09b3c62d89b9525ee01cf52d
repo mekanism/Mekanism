@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-23T19:45:40.1108075	Loot Tables
+// 1.20.4	2024-03-26T19:12:04.3335539	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 cd266e7b4a5bde833aa11e1caf17d86631197626 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 6829ad29ae722d1ef741fc103dfd5704c1874a66 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -64,7 +64,7 @@ a67dfa971f97563415f945444f0cdb0f5a8fcb54 data/mekanism/loot_tables/blocks/chemic
 b4885013c78e65a8e87725e0b99a0f494b279af1 data/mekanism/loot_tables/blocks/chemical_dissolution_chamber.json
 46eb23c8ab18638b26b39f5b8a9a7b0de6258035 data/mekanism/loot_tables/blocks/chemical_infuser.json
 d2124b988697c2d19f81a0b3b83826a0edcf7d91 data/mekanism/loot_tables/blocks/chemical_injection_chamber.json
-736a80b8df1258d16f8783e198dada1f11ce8727 data/mekanism/loot_tables/blocks/chemical_oxidizer.json
+a1298ebc39840870b0fbcc5d0ca728ca224ad21a data/mekanism/loot_tables/blocks/chemical_oxidizer.json
 f190624d7aa609ff840d297edac946c013cb7785 data/mekanism/loot_tables/blocks/chemical_washer.json
 e093e888f2b2f27db3769ee8c422c1888de31639 data/mekanism/loot_tables/blocks/combiner.json
 cf343776aa7bca13b95bd5db0fe831cb72cd560d data/mekanism/loot_tables/blocks/creative_bin.json

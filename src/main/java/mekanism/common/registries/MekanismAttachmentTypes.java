@@ -68,6 +68,7 @@ import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
+import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.ItemDataUtils;
@@ -79,7 +80,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -412,6 +412,27 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
               }
               throw new IllegalArgumentException("Attempted to attach a CDC_CONTENTS_HANDLER to an object other than a chemical dissolution chamber.");
           }).build());
+
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> OXIDIZER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("oxidizer_contents_handler",
+            () -> AttachmentType.builder(holder -> {
+                if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_OXIDIZER.asItem())) {
+                    return MergedChemicalTank.create(
+                            RateLimitGasTank.createBasicItem(TileEntityChemicalOxidizer.MAX_CHEMICAL,
+                                    ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
+                            ),
+                            RateLimitInfusionTank.createBasicItem(TileEntityChemicalOxidizer.MAX_CHEMICAL,
+                                    ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrue
+                            ),
+                            RateLimitPigmentTank.createBasicItem(TileEntityChemicalOxidizer.MAX_CHEMICAL,
+                                    ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue
+                            ),
+                            RateLimitSlurryTank.createBasicItem(TileEntityChemicalOxidizer.MAX_CHEMICAL,
+                                    ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue
+                            )
+                    );
+                }
+                throw new IllegalArgumentException("Attempted to attach an OXIDIZER_CONTENTS_HANDLER to an object other than a chemical oxidizer.");
+            }).build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<MergedChemicalTank>> CRYSTALLIZER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("crystallizer_contents_handler",
           () -> AttachmentType.builder(holder -> {
               if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_CRYSTALLIZER.asItem())) {
