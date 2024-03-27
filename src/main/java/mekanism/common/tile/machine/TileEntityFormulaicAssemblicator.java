@@ -269,7 +269,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private void checkFormula() {
         ItemStack formulaStack = formulaSlot.getStack();
-        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.formula(formulaStack)
+        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.existingFormula(formulaStack)
               .filter(FormulaAttachment::isValid);
         if (formulaAttachment.isPresent()) {
             if (formula == null || lastFormulaStack != formulaStack) {

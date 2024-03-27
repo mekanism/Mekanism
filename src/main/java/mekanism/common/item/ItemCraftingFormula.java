@@ -11,6 +11,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -29,7 +30,7 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        Map<HashedItem, Integer> stacks = FormulaAttachment.formula(itemStack)
+        Map<HashedItem, Integer> stacks = FormulaAttachment.existingFormula(itemStack)
               .stream().flatMap(attachment -> attachment.getItems().stream())
               .filter(slot -> !slot.isEmpty())
               .collect(Collectors.toMap(slot -> HashedItem.raw(slot.getStack()), IInventorySlot::getCount, Integer::sum, LinkedHashMap::new));
@@ -45,7 +46,7 @@ public class ItemCraftingFormula extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                FormulaAttachment.formula(stack).ifPresent(FormulaAttachment::clear);
+                stack.removeData(MekanismAttachmentTypes.FORMULA_HOLDER);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
@@ -55,7 +56,7 @@ public class ItemCraftingFormula extends Item {
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {
-        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.formula(stack)
+        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.existingFormula(stack)
               .filter(FormulaAttachment::hasItems);
         if (formulaAttachment.isPresent()) {
             FormulaAttachment attachment = formulaAttachment.get();

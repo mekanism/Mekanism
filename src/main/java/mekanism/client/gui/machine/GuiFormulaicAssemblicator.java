@@ -133,7 +133,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         if (tile.hasValidFormula()) {
             return false;
         }
-        return FormulaAttachment.formula(tile.getFormulaSlot().getStack())
+        return FormulaAttachment.existingFormula(tile.getFormulaSlot().getStack())
               .filter(FormulaAttachment::isEmpty)
               .isPresent();
     }

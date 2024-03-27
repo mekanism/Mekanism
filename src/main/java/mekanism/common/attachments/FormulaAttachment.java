@@ -36,6 +36,13 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
         return Optional.empty();
     }
 
+    public static Optional<FormulaAttachment> existingFormula(ItemStack stack) {
+        if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
+            return stack.getExistingData(MekanismAttachmentTypes.FORMULA_HOLDER);
+        }
+        return Optional.empty();
+    }
+
     private final List<IInventorySlot> inventory = Util.make(() -> {
         ImmutableList.Builder<IInventorySlot> builder = ImmutableList.builder();
         for (int i = 0; i < 9; i++) {
@@ -59,13 +66,6 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.ITEMS, (mekData, key) -> mekData)
               .ifPresent(mekData -> ContainerType.ITEM.readFrom(mekData, inventory));
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.INVALID, CompoundTag::getBoolean).ifPresent(invalid -> this.invalid = invalid);
-    }
-
-    public void clear() {
-        for (IInventorySlot slot : this.inventory) {
-            slot.setEmpty();
-        }
-        this.invalid = false;
     }
 
     public void setInvalid() {
