@@ -51,32 +51,43 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
      */
     private final UpgradeInventorySlot upgradeSlot;
     private final UpgradeInventorySlot upgradeOutputSlot;
+    private boolean canCheckUpgrades = true;
 
     public TileComponentUpgrade(TileEntityMekanism tile) {
         this.tile = tile;
         supported = EnumSet.copyOf(this.tile.getSupportedUpgrade());
-        upgradeSlot = UpgradeInventorySlot.input(this.tile, supported);
+        upgradeSlot = UpgradeInventorySlot.input(() -> {
+            tile.onContentsChanged();
+            canCheckUpgrades = true;
+        }, supported);
         upgradeOutputSlot = UpgradeInventorySlot.output(this.tile);
         this.tile.addComponent(this);
     }
 
     public void tickServer() {
-        ItemStack stack = upgradeSlot.getStack();
-        if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem upgradeItem) {
-            Upgrade type = upgradeItem.getUpgradeType(stack);
-            if (supports(type) && getUpgrades(type) < type.getMax()) {
-                if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
-                    upgradeTicks++;
-                    return;
-                } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                    int added = addUpgrades(type, upgradeSlot.getCount());
-                    if (added > 0) {
-                        MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
+        if (canCheckUpgrades) {
+            ItemStack stack = upgradeSlot.getStack();
+            if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem upgradeItem) {
+                Upgrade type = upgradeItem.getUpgradeType(stack);
+                if (supports(type)) {
+                    int upgrades = getUpgrades(type);
+                    if (upgrades < type.getMax()) {
+                        if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
+                            upgradeTicks++;
+                            return;
+                        } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
+                            int added = addUpgrades(type, upgrades, upgradeSlot.getCount());
+                            if (added > 0) {
+                                MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
+                            }
+                        }
                     }
                 }
             }
+            upgradeTicks = 0;
+            //We can skip checking for upgrades until the input upgrade slot changes
+            canCheckUpgrades = false;
         }
-        upgradeTicks = 0;
     }
 
     public UpgradeInventorySlot getUpgradeSlot() {
@@ -106,7 +117,10 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
      * @apiNote Call from the server
      */
     public int addUpgrades(Upgrade upgrade, int maxAvailable) {
-        int installed = getUpgrades(upgrade);
+        return addUpgrades(upgrade, getUpgrades(upgrade), maxAvailable);
+    }
+
+    private int addUpgrades(Upgrade upgrade, int installed, int maxAvailable) {
         if (installed < upgrade.getMax()) {
             int toAdd = Math.min(upgrade.getMax() - installed, maxAvailable);
             if (toAdd > 0) {
@@ -117,6 +131,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                     tile.sendUpdatePacket();
                 }
                 tile.markForSave();
+                //Note: We don't need to check if we can add upgrades if we get added to by interacting with the block
+                // as if we couldn't add from the slot then we already caught it, otherwise it was likely a different type
                 return toAdd;
             }
         }
@@ -139,6 +155,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                 }
                 tile.recalculateUpgrades(upgrade);
                 upgradeOutputSlot.insertItem(UpgradeUtils.getStack(upgrade, toRemove), Action.EXECUTE, AutomationType.INTERNAL);
+                //If we have some upgrades in the input slot, mark that we check if they can be transferred
+                canCheckUpgrades = !upgradeSlot.isEmpty();
             }
         }
     }
