@@ -391,6 +391,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return maxSteam;
     }
 
+    @ComputerMethod(methodDescription = "Checks if a reaction is occurring.")
     public boolean isBurning() {
         return burning;
     }

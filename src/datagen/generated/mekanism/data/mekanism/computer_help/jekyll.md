@@ -2565,6 +2565,11 @@ methods:
     returns:
       javaType: int
       type: Number (int)
+  - description: Checks if a reaction is occurring.
+    methodName: isBurning
+    returns:
+      javaType: boolean
+      type: boolean
   - methodName: setInjectionRate
     params:
     - javaType: int

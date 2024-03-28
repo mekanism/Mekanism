@@ -4,18 +4,29 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.ChemicalOxidizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
-import mekanism.api.recipes.cache.OneInputCachedRecipe;
+import mekanism.api.recipes.cache.ChemicalOxidizerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.outputs.IOutputHandler;
-import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -33,7 +44,7 @@ import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -50,7 +61,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> implements ItemRecipeLookupHandler<ItemStackToGasRecipe> {
+public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ChemicalOxidizerRecipe> implements ItemRecipeLookupHandler<ChemicalOxidizerRecipe>{
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -58,44 +69,84 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    public static final long MAX_GAS = 10_000;
+    public static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_TICKS_REQUIRED = 100;
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
-                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output tank")
-    public IGasTank gasTank;
+    public MergedChemicalTank outputTank;
 
-    private final IOutputHandler<@NotNull GasStack> outputHandler;
+    private final BoxedChemicalOutputHandler outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output item slot")
-    GasInventorySlot outputSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalOxidizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_OXIDIZER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
-        configComponent.setupOutputConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.GAS, outputTank.getGasTank(), RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.INFUSION, outputTank.getInfusionTank(), RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.PIGMENT, outputTank.getPigmentTank(), RelativeSide.RIGHT);
+        configComponent.setupOutputConfig(TransmissionType.SLURRY, outputTank.getSlurryTank(), RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.GAS);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
+                TransmissionType.SLURRY);
 
         inputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);
-        outputHandler = OutputHelper.getOutputHandler(gasTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+        outputHandler = new BoxedChemicalOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
+    }
+
+    @Override
+    protected void presetVariables() {
+        super.presetVariables();
+        //TODO: Come up with a better way to grab the listener for this
+        IContentsListener saveOnlyListener = this::markForSave;
+        outputTank = MergedChemicalTank.create(
+                ChemicalTankBuilder.GAS.output(MAX_CHEMICAL, getListener(ContainerType.GAS, saveOnlyListener)),
+                ChemicalTankBuilder.INFUSION.output(MAX_CHEMICAL, getListener(ContainerType.INFUSION, saveOnlyListener)),
+                ChemicalTankBuilder.PIGMENT.output(MAX_CHEMICAL, getListener(ContainerType.PIGMENT, saveOnlyListener)),
+                ChemicalTankBuilder.SLURRY.output(MAX_CHEMICAL, getListener(ContainerType.SLURRY, saveOnlyListener))
+        );
     }
 
     @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.output(MAX_GAS, listener));
+        builder.addTank(outputTank.getGasTank());
         return builder.build();
     }
+
+    @NotNull
+    @Override
+    public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
+        ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getInfusionTank());
+        return builder.build();
+    }
+
+    @NotNull
+    @Override
+    public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
+        ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getPigmentTank());
+        return builder.build();
+    }
+
+    @NotNull
+    @Override
+    public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
+        ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(outputTank.getSlurryTank());
+        return builder.build();
+    }
+
 
     @NotNull
     @Override
@@ -111,7 +162,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheListener, 26, 36))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, listener, 152, 55));
+        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, listener, 152, 55));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 14));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
@@ -121,31 +172,32 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        outputSlot.drainTank();
+        outputSlot.drainChemicalTanks();
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @NotNull
     @Override
-    public IMekanismRecipeTypeProvider<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> getRecipeType() {
+    public IMekanismRecipeTypeProvider<ChemicalOxidizerRecipe, SingleItem<ChemicalOxidizerRecipe>> getRecipeType() {
         return MekanismRecipeType.OXIDIZING;
     }
 
     @Override
-    public IRecipeViewerRecipeType<ItemStackToGasRecipe> recipeViewerType() {
+    public IRecipeViewerRecipeType<ChemicalOxidizerRecipe> recipeViewerType() {
         return RecipeViewerRecipeType.OXIDIZING;
     }
 
     @Nullable
     @Override
-    public ItemStackToGasRecipe getRecipe(int cacheIndex) {
-        return findFirstRecipe(inputHandler);
+    public ChemicalOxidizerRecipe getRecipe(int cacheIndex) {
+
+        return getRecipeType().getInputCache().findFirstRecipe(level, inputHandler.getInput());
     }
 
     @NotNull
     @Override
-    public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@NotNull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return OneInputCachedRecipe.itemToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
+    public CachedRecipe<ChemicalOxidizerRecipe> createNewCachedRecipe(@NotNull ChemicalOxidizerRecipe recipe, int cacheIndex) {
+        return new ChemicalOxidizerCachedRecipe(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
@@ -163,6 +215,13 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
+                                                                                        "getOutputFilledPercentage"}, docPlaceholder = "output tank")
+    IChemicalTank<?, ?> getOutputTank() {
+        MergedChemicalTank.Current current = outputTank.getCurrent();
+        return outputTank.getTankFromCurrent(current == MergedChemicalTank.Current.EMPTY ? MergedChemicalTank.Current.GAS : current);
     }
     //End methods IComputerTile
 }

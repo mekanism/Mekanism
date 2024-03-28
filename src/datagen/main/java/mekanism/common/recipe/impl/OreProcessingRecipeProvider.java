@@ -7,7 +7,7 @@ import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalOxidizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -590,7 +590,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismGases.HYDROFLUORIC_ACID.getStack(9_000)
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid_from_block"));
         //uranium oxide
-        ItemStackToChemicalRecipeBuilder.oxidizing(
+        ChemicalOxidizerRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.YELLOW_CAKE_URANIUM),
               MekanismGases.URANIUM_OXIDE.getStack(250)
         ).build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
@@ -612,7 +612,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.REPROCESSED_FISSILE_FRAGMENT.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "reprocessing/from_plutonium"));
         //fragment -> fuel
-        ItemStackToChemicalRecipeBuilder.oxidizing(
+        ChemicalOxidizerRecipeBuilder.oxidizing(
               IngredientCreatorAccess.item().from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
               MekanismGases.FISSILE_FUEL.getStack(2_000)
         ).build(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));

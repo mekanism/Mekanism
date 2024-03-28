@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
-import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicGasConversionRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -34,22 +33,6 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
         @Override
         protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
             return new BasicGasConversionRecipe(input, output);
-        }
-    }
-
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_OXIDIZING)
-    public static class ChemicalOxidizerRecipeManager extends ItemStackToGasRecipeManager {
-
-        public static final ChemicalOxidizerRecipeManager INSTANCE = new ChemicalOxidizerRecipeManager();
-
-        private ChemicalOxidizerRecipeManager() {
-            super(MekanismRecipeType.OXIDIZING);
-        }
-
-        @Override
-        protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
-            return new BasicChemicalOxidizerRecipe(input, output);
         }
     }
 }

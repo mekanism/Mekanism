@@ -10,7 +10,6 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicGasConversionRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
@@ -42,19 +41,6 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
             throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
         }
         return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicGasConversionRecipe::new);
-    }
-
-    /**
-     * Creates an Oxidizing recipe builder.
-     *
-     * @param input  Input.
-     * @param output Output.
-     */
-    public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> oxidizing(ItemStackIngredient input, GasStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
-        }
-        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicChemicalOxidizerRecipe::new);
     }
 
     /**

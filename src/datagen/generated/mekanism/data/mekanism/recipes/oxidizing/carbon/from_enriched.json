@@ -1,0 +1,13 @@
+{
+  "type": "mekanism:oxidizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "mekanism:enriched/carbon"
+    }
+  },
+  "output": {
+    "amount": 80,
+    "chemicalType": "infuse_type",
+    "infuse_type": "mekanism:carbon"
+  }
+}

@@ -285,7 +285,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
           .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
           .withEnergyConfig(MekanismConfig.usage.oxidationChamber, MekanismConfig.storage.oxidationChamber)
-          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY)
+          .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
           .withComputerSupport("chemicalOxidizer")
           .build();

@@ -34,6 +34,7 @@ import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.serializer.ChemicalCrystallizerRecipeSerializer;
 import mekanism.common.recipe.serializer.ChemicalDissolutionRecipeSerializer;
+import mekanism.common.recipe.serializer.ChemicalOxidizerRecipeSerializer;
 import mekanism.common.recipe.serializer.ChemicalInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.CombinerRecipeSerializer;
 import mekanism.common.recipe.serializer.ElectrolysisRecipeSerializer;
@@ -99,7 +100,7 @@ public class MekanismRecipeSerializersInternal {
         MekanismRecipeSerializers.ENERGY_CONVERSION = RECIPE_SERIALIZERS.register("energy_conversion", () -> new ItemStackToEnergyRecipeSerializer<>(BasicItemStackToEnergyRecipe::new));
 
         MekanismRecipeSerializers.GAS_CONVERSION = RECIPE_SERIALIZERS.register("gas_conversion", () -> new ItemStackToGasRecipeSerializer<>(BasicGasConversionRecipe::new));
-        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> new ItemStackToGasRecipeSerializer<>(BasicChemicalOxidizerRecipe::new));
+        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> new ChemicalOxidizerRecipeSerializer(BasicChemicalOxidizerRecipe::new));
 
         MekanismRecipeSerializers.INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> new ItemStackToInfuseTypeRecipeSerializer<>(BasicItemStackToInfuseTypeRecipe::new));
 

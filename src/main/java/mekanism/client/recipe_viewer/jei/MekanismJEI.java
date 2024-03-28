@@ -30,6 +30,7 @@ import mekanism.client.recipe_viewer.jei.ChemicalStackHelper.SlurryStackHelper;
 import mekanism.client.recipe_viewer.jei.machine.BoilerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalDissolutionRecipeCategory;
+import mekanism.client.recipe_viewer.jei.machine.ChemicalOxidizerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.CombinerRecipeCategory;
 import mekanism.client.recipe_viewer.jei.machine.ElectrolysisRecipeCategory;
@@ -297,7 +298,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING, false));
+        registry.addRecipeCategories(new ChemicalOxidizerRecipeCategory(guiHelper, RecipeViewerRecipeType.OXIDIZING));
         registry.addRecipeCategories(new ItemStackToFluidRecipeCategory(guiHelper, RecipeViewerRecipeType.NUTRITIONAL_LIQUIFICATION, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, RecipeViewerRecipeType.ACTIVATING));

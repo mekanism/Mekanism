@@ -1,12 +1,13 @@
 {
   "type": "mekanism:oxidizing",
-  "input": {
+  "itemInput": {
     "ingredient": {
       "item": "mekanism:reprocessed_fissile_fragment"
     }
   },
   "output": {
     "amount": 2000,
+    "chemicalType": "gas",
     "gas": "mekanism:fissile_fuel"
   }
 }

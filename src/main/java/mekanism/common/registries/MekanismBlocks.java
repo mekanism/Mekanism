@@ -417,11 +417,10 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalOxidizer, Machine<TileEntityChemicalOxidizer>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalOxidizer, Machine<TileEntityChemicalOxidizer>>>> CHEMICAL_OXIDIZER =
           BLOCKS.register("chemical_oxidizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_OXIDIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityChemicalOxidizer.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addMissingMergedTanks(MekanismAttachmentTypes.OXIDIZER_CONTENTS_HANDLER, false, false)
+                        .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                             .addInput(MekanismRecipeType.OXIDIZING, SingleInputRecipeCache::containsInput)
-                            .addGasSlot(0, GasInventorySlot::drain)
+                            .addContainerSlot(stack.getData(MekanismAttachmentTypes.OXIDIZER_CONTENTS_HANDLER), MergedChemicalInventorySlot::drain)
                             .addEnergy()
                             .build()
                       )

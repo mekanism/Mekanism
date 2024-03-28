@@ -15,6 +15,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.ChemicalOxidizerRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -109,7 +110,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
     public static final RecipeTypeRegistryObject<ItemStackToEnergyRecipe, SingleItem<ItemStackToEnergyRecipe>> ENERGY_CONVERSION = register(MekanismRecipeTypes.NAME_ENERGY_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToEnergyRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> GAS_CONVERSION = register(MekanismRecipeTypes.NAME_GAS_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
-    public static final RecipeTypeRegistryObject<ItemStackToGasRecipe, SingleItem<ItemStackToGasRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
+    public static final RecipeTypeRegistryObject<ChemicalOxidizerRecipe, SingleItem<ChemicalOxidizerRecipe>> OXIDIZING = register(MekanismRecipeTypes.NAME_OXIDIZING, recipeType -> new SingleItem<>(recipeType, ChemicalOxidizerRecipe::getInput));
 
     public static final RecipeTypeRegistryObject<ItemStackToInfuseTypeRecipe, SingleItem<ItemStackToInfuseTypeRecipe>> INFUSION_CONVERSION = register(MekanismRecipeTypes.NAME_INFUSION_CONVERSION, recipeType -> new SingleItem<>(recipeType, ItemStackToChemicalRecipe::getInput));
 

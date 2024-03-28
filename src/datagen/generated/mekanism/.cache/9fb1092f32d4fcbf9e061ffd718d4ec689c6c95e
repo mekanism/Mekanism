@@ -1,4 +1,4 @@
-// Recipes	2024-03-24T11:35:07.3423616	Recipes
+// Recipes	2024-03-27T15:28:08.6634877	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 2f33c48a639876d68a3a712c24540c3f78c5e86f data/mekanism/recipes/bin/advanced.json
@@ -3536,9 +3536,18 @@ cf6858d9cc44909e9f9c6a204729342eedcdb5d8 data/mekanism/recipes/nuggets/refined_o
 ba02f59d3e4825c3b11910f825630cea90ecf5df data/mekanism/recipes/nutritional_liquifier.json
 920959b73dd58bb6cbe7db80c02cf8184ffc25cc data/mekanism/recipes/oredictionificator.json
 a63ab90aa147e96d3df42bec8b640b1548425dc3 data/mekanism/recipes/osmium_compressor.json
-dee7b97c09110294eff61975e34b820e9d944155 data/mekanism/recipes/oxidizing/brine.json
-14abf5fadfc40dad756c4a3ec442d1e4dc03c039 data/mekanism/recipes/oxidizing/lithium.json
-bc1ea68dcac04c227d1cfd718242a1e397e90d89 data/mekanism/recipes/oxidizing/sulfur_dioxide.json
+acae15c183ddc91e3f19cef937e2e7a55b5ea66e data/mekanism/recipes/oxidizing/bio/from_bio_fuel.json
+9ffbb546f75c4adc9c951ae3095438665a9474ab data/mekanism/recipes/oxidizing/bio/from_bio_fuel_block.json
+487515010cab1bd30a0cb47267199f0a93125309 data/mekanism/recipes/oxidizing/brine.json
+5a1f8704d3d45caa3fb863450088ec5fb3da8550 data/mekanism/recipes/oxidizing/carbon/from_enriched.json
+bebad337e0236c18ad923929657656230915e42f data/mekanism/recipes/oxidizing/diamond/from_enriched.json
+5756653edc686ecb466a0f712b78bfefb918b407 data/mekanism/recipes/oxidizing/fungi/from_mushrooms.json
+aebe837e856865954fbd5c10366bb7933096c17c data/mekanism/recipes/oxidizing/gold/from_enriched.json
+eca4dfd3d46242e27ef0f15a08da51a292e9ff46 data/mekanism/recipes/oxidizing/lithium.json
+8575383bc2cd7a2ef765a6d5e20083f402375c5e data/mekanism/recipes/oxidizing/redstone/from_enriched.json
+5d4654bbf3c7171e773e2d0265a6ec419ac20b46 data/mekanism/recipes/oxidizing/refined_obsidian/from_enriched.json
+cfc6158ffe0b86a3399623942fc1e50cf484d281 data/mekanism/recipes/oxidizing/sulfur_dioxide.json
+cb3b0084295ad4195b40cca4088e24b16668fba0 data/mekanism/recipes/oxidizing/tin/from_enriched.json
 7c13c4948ad4f828f8db0208da7609b5d86d8a09 data/mekanism/recipes/painting/banner/black.json
 88d8f7a7f834430a1eec137172d8f620c802b792 data/mekanism/recipes/painting/banner/blue.json
 da93b1a85a144b28b61031cfc90ed5741bb4e75c data/mekanism/recipes/painting/banner/brown.json
@@ -4022,7 +4031,7 @@ be088687d5c1aa6340098446c1e8d98d3df812f0 data/mekanism/recipes/processing/lapis_
 ff741665bdf50838c656c45e120e32ee626f2526 data/mekanism/recipes/processing/lapis_lazuli/to_deepslate_ore.json
 1eae5797d7dc1d229f9c08a5291cc5129bedd790 data/mekanism/recipes/processing/lapis_lazuli/to_dust.json
 a129b6d4098508610286b1ef98177fcc04660fa3 data/mekanism/recipes/processing/lapis_lazuli/to_ore.json
-9c2921233ba6b54bf45f2a527b7531763ef88a11 data/mekanism/recipes/processing/lategame/antimatter/from_pellet.json
+c0a401b1b6b8a4200d5d9ffe51e1eec59c7c642d data/mekanism/recipes/processing/lategame/antimatter/from_pellet.json
 3278fe16b551af2968d80ebb955cc5f21af845d5 data/mekanism/recipes/processing/lategame/antimatter_pellet/from_gas.json
 2a67f7a4342cbcf1b48bc3e89e15b110ad716b51 data/mekanism/recipes/processing/lategame/plutonium.json
 5f7b57ad013f1557b1b553be77bec037965e7d78 data/mekanism/recipes/processing/lategame/plutonium_pellet/from_reaction.json
@@ -4185,7 +4194,7 @@ fc011473beac0dfd2e62172f0bf1a2e4575073e5 data/mekanism/recipes/processing/uraniu
 56e86e0a255d54901f075a5fb8f8640a53b0869e data/mekanism/recipes/processing/uranium/raw/from_raw_block.json
 2b3c6e89ea3080967ca8b2f6e2c6967490b102c9 data/mekanism/recipes/processing/uranium/raw_storage_blocks/from_raw.json
 8840aa19aef5b3c89297ec4cc755ac5996a58505 data/mekanism/recipes/processing/uranium/reprocessing/from_plutonium.json
-815e971cd44bad82a20c05940a5e555325328f4b data/mekanism/recipes/processing/uranium/reprocessing/to_fuel.json
+f34b4d3bad53cc96bd2c0f75145af5aac61d7a87 data/mekanism/recipes/processing/uranium/reprocessing/to_fuel.json
 a6d3253900102cb8c7163c4fba24322632e76a6e data/mekanism/recipes/processing/uranium/shard/from_crystal.json
 3f370a316917e018ecc867153842d133842e95ff data/mekanism/recipes/processing/uranium/shard/from_ore.json
 95bacf0e143d258d8912d267ffad152c722d4719 data/mekanism/recipes/processing/uranium/shard/from_raw_block.json
@@ -4196,7 +4205,7 @@ a6d3253900102cb8c7163c4fba24322632e76a6e data/mekanism/recipes/processing/uraniu
 0c3f812eb12928f2cafae7cd045743e0f969455e data/mekanism/recipes/processing/uranium/slurry/dirty/from_raw_ore.json
 3c2b64113f038870b467a1459cab0272f5754abf data/mekanism/recipes/processing/uranium/storage_blocks/from_ingots.json
 e5dbb9e7be3eed27bba25a52ad69fc60e3a2edc7 data/mekanism/recipes/processing/uranium/sulfuric_acid.json
-23c2261452d11592a47c7c22b40c125a4a82b6b8 data/mekanism/recipes/processing/uranium/uranium_oxide.json
+9940272b72af90d48a6ccdb211cb8e32521a0983 data/mekanism/recipes/processing/uranium/uranium_oxide.json
 b378a1bcdc8438911648afbd02a7441513a47529 data/mekanism/recipes/processing/uranium/yellow_cake_uranium.json
 4dba57ef96cf605173abf0dde67746e2bad4a357 data/mekanism/recipes/purification_chamber.json
 1d1573287b370b742f3f508bfec3fd48f4a66485 data/mekanism/recipes/qio_dashboard.json
