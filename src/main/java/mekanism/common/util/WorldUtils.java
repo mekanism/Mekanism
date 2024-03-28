@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
@@ -505,8 +506,9 @@ public class WorldUtils {
      */
     public static boolean isGettingPowered(Level world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
+            BlockPos.MutableBlockPos offset = new MutableBlockPos();
             for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = pos.relative(side);
+                offset.setWithOffset(pos, side);
                 if (isBlockLoaded(world, offset)) {
                     BlockState blockState = world.getBlockState(offset);
                     boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
@@ -528,12 +530,11 @@ public class WorldUtils {
      * @return if the block is directly getting powered
      */
     public static boolean isDirectlyGettingPowered(Level world, BlockPos pos) {
+        BlockPos.MutableBlockPos offset = new MutableBlockPos();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.relative(side);
-            if (isBlockLoaded(world, offset)) {
-                if (world.getSignal(pos, side) > 0) {
-                    return true;
-                }
+            offset.setWithOffset(pos, side);
+            if (isBlockLoaded(world, offset) && world.getSignal(pos, side) > 0) {
+                return true;
             }
         }
         return false;
@@ -590,15 +591,16 @@ public class WorldUtils {
      */
     public static void notifyLoadedNeighborsOfTileChange(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
+        BlockPos.MutableBlockPos offset = new MutableBlockPos();
         for (Direction dir : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.relative(dir);
+            offset.setWithOffset(pos, dir);
             if (isBlockLoaded(world, offset)) {
                 BlockState offsetState = world.getBlockState(offset);
                 offsetState.onNeighborChange(world, offset, pos);
                 offsetState.neighborChanged(world, offset, state.getBlock(), pos, false);
                 if (offsetState.isRedstoneConductor(world, offset)) {
                     //If redstone can be conducted through it, forward the change along an extra spot
-                    offset = offset.relative(dir);
+                    offset.move(dir);
                     if (isBlockLoaded(world, offset)) {
                         offsetState = world.getBlockState(offset);
                         if (offsetState.getWeakChanges(world, offset)) {
