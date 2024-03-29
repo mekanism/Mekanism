@@ -138,8 +138,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             //If the frame is horizontal always face towards the other portion of the frame
             side = teleporter.frameDirection;
         } else {
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
             for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
-                if (player.level().isEmptyBlock(target.relative(iterSide))) {
+                mutable.setWithOffset(target, iterSide);
+                if (player.level().isEmptyBlock(mutable)) {
                     side = iterSide;
                     break;
                 }

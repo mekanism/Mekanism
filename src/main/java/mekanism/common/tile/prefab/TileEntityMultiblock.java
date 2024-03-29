@@ -175,12 +175,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
             multiblock.notifyAllUpdateComparator(level);
         }
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+        BlockPos pos = getBlockPos();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos pos = getBlockPos().relative(side);
-            if (!multiblock.isFormed() || !multiblock.isKnownLocation(pos)) {
-                BlockEntity tile = WorldUtils.getTileEntity(level, pos);
-                if (!level.isEmptyBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                    WorldUtils.notifyNeighborOfChange(level, pos, getBlockPos());
+            mutable.setWithOffset(pos, side);
+            if (!multiblock.isFormed() || !multiblock.isKnownLocation(mutable)) {
+                BlockEntity tile = WorldUtils.getTileEntity(level, mutable);
+                if (!level.isEmptyBlock(mutable) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                    WorldUtils.notifyNeighborOfChange(level, mutable, pos);
                 }
             }
         }

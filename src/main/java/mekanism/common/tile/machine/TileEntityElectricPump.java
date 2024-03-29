@@ -198,15 +198,16 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         Collections.shuffle(tempPumpList);
         //Finally, go over the recurring list of nodes and see if there is a fluid block available to suck - if not, will iterate around the recurring block, attempt to suck,
         //and then add the adjacent block to the recurring list
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (BlockPos tempPumpPos : tempPumpList) {
             if (suck(tempPumpPos, hasFilter, false)) {
                 return true;
             }
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
-                BlockPos side = tempPumpPos.relative(orientation);
-                if (WorldUtils.distanceBetween(worldPosition, side) <= MekanismConfig.general.maxPumpRange.get()) {
-                    if (suck(side, hasFilter, true)) {
+                mutable.setWithOffset(tempPumpPos, orientation);
+                if (WorldUtils.distanceBetween(worldPosition, mutable) <= MekanismConfig.general.maxPumpRange.get()) {
+                    if (suck(mutable, hasFilter, true)) {
                         return true;
                     }
                 }
@@ -291,6 +292,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         //Size doesn't matter, but we do want to take the NBT into account
         activeType = fluidStack.copyWithAmount(1);
         if (addRecurring) {
+            pos = pos.immutable();
             recurringNodes.add(pos);
         }
         fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);

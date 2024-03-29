@@ -321,12 +321,13 @@ public class TransmitterNetworkRegistry {
                         transmitterValidator.isTransmitterCompatible(transmitter)) {
                         connectedTransmitters.add((TRANSMITTER) transmitter);
                         transmitter.setOrphan(false);
+                        BlockPos.MutableBlockPos directionPos = new BlockPos.MutableBlockPos();
                         for (Direction direction : EnumUtils.DIRECTIONS) {
-                            BlockPos directionPos = from.relative(direction);
+                            directionPos.setWithOffset(from, direction);
                             if (!iterated.contains(directionPos)) {
                                 TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, chunkMap, directionPos);
                                 if (tile != null && transmitter.isValidTransmitterBasic(tile, direction)) {
-                                    queue.addLast(directionPos);
+                                    queue.addLast(directionPos.immutable());
                                 }
                             }
                         }

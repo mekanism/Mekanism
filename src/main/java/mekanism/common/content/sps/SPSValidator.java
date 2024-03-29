@@ -77,11 +77,12 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     @Override
     public FormationResult postcheck(SPSMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
         Set<BlockPos> validCoils = new ObjectOpenHashSet<>();
+        BlockPos.MutableBlockPos valvePos = new BlockPos.MutableBlockPos();
         for (ValveData valve : structure.valves) {
-            BlockPos pos = valve.location.relative(valve.side.getOpposite());
-            if (structure.internalLocations.contains(pos)) {
+            valvePos.setWithOffset(valve.location, valve.side.getOpposite());
+            if (structure.internalLocations.contains(valvePos)) {
                 structure.addCoil(valve.location, valve.side.getOpposite());
-                validCoils.add(pos);
+                validCoils.add(valvePos.immutable());
             }
         }
         // fail if there's a coil not connected to a port

@@ -124,8 +124,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Reset delay to 3 ticks; if nothing is available to insert OR inserted, we'll try again in 3 ticks
                 delay = 3;
                 //Attempt to pull
+                BlockPos.MutableBlockPos inventoryPos = new BlockPos.MutableBlockPos();
+                BlockPos pos = getBlockPos();
                 for (Direction side : getConnections(ConnectionType.PULL)) {
-                    BlockPos inventoryPos = getBlockPos().relative(side);
+                    inventoryPos.setWithOffset(pos, side);
                     IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), inventoryPos, side.getOpposite());
                     if (inventory != null) {
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
@@ -398,7 +400,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
           Function<TransporterStack, TransitResponse> pathCalculator) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
-            TransporterStack stack = createInsertStack(outputterPos, color);
+            TransporterStack stack = createInsertStack(outputterPos.immutable(), color);
             if (stack.canInsertToTransporterNN(this, from, outputter)) {
                 return updateTransit(doEmit, stack, pathCalculator.apply(stack));
             }

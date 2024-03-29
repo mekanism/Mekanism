@@ -60,6 +60,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
         Set<BlockPos> fuelAssemblyCoords = new HashSet<>();
         int assemblyCount = 0, surfaceArea = 0;
 
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (BlockPos coord : structure.internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, coord);
             AssemblyPos pos = new AssemblyPos(coord.getX(), coord.getZ());
@@ -75,7 +76,8 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                 // compute surface area
                 surfaceArea += 6;
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (fuelAssemblyCoords.contains(coord.relative(side))) {
+                    mutable.setWithOffset(coord, side);
+                    if (fuelAssemblyCoords.contains(mutable)) {
                         surfaceArea -= 2;
                     }
                 }

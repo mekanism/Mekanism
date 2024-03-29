@@ -6,6 +6,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
@@ -78,9 +79,12 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
                 byte changedTransmitters = (byte) (allPossibleConnections ^ allCurrentConnections);
                 //Inform the neighboring tiles that they should refresh their connection on the side we changed
                 // This happens because we are no longer an orphan and want to tell the neighboring tiles about it
+                BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+                BlockPos pos = getBlockPos();
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(changedTransmitters, side)) {
-                        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
+                        mutable.setWithOffset(pos, side);
+                        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), mutable);
                         if (tile != null) {
                             tile.getTransmitter().refreshConnections(side.getOpposite());
                         }

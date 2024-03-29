@@ -264,8 +264,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+        BlockPos pos = getBlockPos();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
+            mutable.setWithOffset(pos, side);
+            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), mutable);
             if (tile != null && isValidTransmitter(tile, side)) {
                 connections |= (byte) (1 << side.ordinal());
             }
@@ -311,9 +314,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
+        BlockPos.MutableBlockPos offset = new BlockPos.MutableBlockPos();
+        BlockPos pos = getBlockPos();
         Level level = getLevel();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = getBlockPos().relative(side);
+            offset.setWithOffset(pos, side);
             BlockEntity tile = WorldUtils.getTileEntity(level, offset);
             if (canConnectMutual(side, tile)) {
                 if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
@@ -583,9 +588,12 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (!hasTransmitterNetwork()) {
             //If we don't have a transmitter network then recheck connection status both ways if the other tile is also a transmitter
             //This fixes pipes not reconnecting cross chunk
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+            BlockPos pos = getBlockPos();
             for (Direction side : EnumUtils.DIRECTIONS) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                    TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
+                    mutable.setWithOffset(pos, side);
+                    TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), mutable);
                     if (tile != null) {
                         tile.getTransmitter().refreshConnections(side.getOpposite());
                     }

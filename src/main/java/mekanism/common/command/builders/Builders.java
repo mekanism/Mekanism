@@ -112,6 +112,7 @@ public class Builders {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 5, Blocks.AIR);
+            BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
             for (int x = -2; x < 2; ++x) {
                 for (int y = -2; y < 2; ++y) {
                     for (int z = -2; z < 2; ++z) {
@@ -120,8 +121,8 @@ public class Builders {
                         if ((x == -1) == (y == -1) == (z == -1) == (x == 0) == (y == 0) != (z == 0)) {
                             // Check that not all three vars are 0 or -1.
                             if (!(x == -1 || x == 0) || !(y == -1 || y == 0) || !(z == -1 || z == 0)) {
-                                world.setBlockAndUpdate(start.offset(x < 0 ? sizeX + x : x, y < 0 ? sizeY + y : y,
-                                      z < 0 ? sizeZ + z : z), getCasing().defaultBlockState());
+                                mutablePos.setWithOffset(start, x < 0 ? sizeX + x : x, y < 0 ? sizeY + y : y, z < 0 ? sizeZ + z : z);
+                                world.setBlockAndUpdate(mutablePos, getCasing().defaultBlockState());
                             }
                         }
                     }

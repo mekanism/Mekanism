@@ -12,6 +12,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -234,7 +235,8 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     private int getFloor(LivingEntity entity) {
         BlockPos pos = BlockPos.containing(entity.position());
-        for (BlockPos posi = pos; posi.getY() > 0; posi = posi.below()) {
+        BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
+        for (; posi.getY() > 0; posi.move(Direction.DOWN)) {
             if (posi.getY() < level().getMaxBuildHeight() && !level().isEmptyBlock(posi)) {
                 return posi.getY() + 1 + (entity instanceof Player ? 1 : 0);
             }

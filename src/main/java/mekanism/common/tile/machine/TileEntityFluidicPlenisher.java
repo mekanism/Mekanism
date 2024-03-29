@@ -163,14 +163,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             finishedCalc = true;
             return;
         }
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         if (activeNodes.isEmpty()) {
             if (usedNodes.isEmpty()) {
-                BlockPos below = getBlockPos().below();
-                if (!canReplace(below, true, true)) {
+                mutable.setWithOffset(getBlockPos(), Direction.DOWN);
+                if (!canReplace(mutable, true, true)) {
                     finishedCalc = true;
                     return;
                 }
-                activeNodes.add(below);
+                activeNodes.add(mutable.immutable());
             } else {
                 finishedCalc = true;
                 return;
@@ -185,9 +186,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 for (Direction dir : dirs) {
-                    BlockPos sidePos = nodePos.relative(dir);
-                    if (WorldUtils.isBlockLoaded(level, sidePos) && canReplace(sidePos, true, true)) {
-                        activeNodes.add(sidePos);
+                    mutable.setWithOffset(nodePos, dir);
+                    if (WorldUtils.isBlockLoaded(level, mutable) && canReplace(mutable, true, true)) {
+                        activeNodes.add(mutable.immutable());
                     }
                 }
                 toRemove.add(nodePos);

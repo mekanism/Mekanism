@@ -52,8 +52,9 @@ public final class CableUtils {
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
         Level level = from.getLevel();
         BlockPos center = from.getBlockPos();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (Direction side : sides) {
-            BlockPos pos = center.relative(side);
+            pos.setWithOffset(center, side);
             //Insert to access side and collect the cap if it is present
             Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
             if (blockState.isPresent()) {

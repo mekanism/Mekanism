@@ -166,6 +166,7 @@ public class FormationProtocol<T extends MultiblockData> {
             return 0;
         }
 
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         Queue<BlockPos> openSet = new LinkedList<>();
         Set<BlockPos> traversed = new ObjectOpenHashSet<>();
         openSet.add(start);
@@ -177,8 +178,9 @@ public class FormationProtocol<T extends MultiblockData> {
                 return traversedSize;
             }
             for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = ptr.relative(side);
-                if (!traversed.contains(offset) && checker.test(offset)) {
+                mutable.setWithOffset(ptr, side);
+                if (!traversed.contains(mutable) && checker.test(mutable)) {
+                    BlockPos offset = mutable.immutable();
                     openSet.add(offset);
                     traversed.add(offset);
                 }

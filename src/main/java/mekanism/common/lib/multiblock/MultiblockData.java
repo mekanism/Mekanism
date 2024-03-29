@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -361,8 +360,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Direction getOutsideSide(@NotNull BlockPos pos) {
         if (isFormed()) {
             VoxelCuboid bounds = getBounds();
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                if (bounds.getRelativeLocation(pos.relative(direction)) == CuboidRelative.OUTSIDE) {
+                mutable.setWithOffset(pos, direction);
+                if (bounds.getRelativeLocation(mutable) == CuboidRelative.OUTSIDE) {
                     return direction;
                 }
             }
@@ -416,20 +417,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return isFormed() || isRemote() ? heatCapacitors : Collections.emptyList();
-    }
-
-    public Set<Direction> getDirectionsToEmit(BlockPos pos) {
-        Set<Direction> directionsToEmit = null;
-        for (Direction direction : EnumUtils.DIRECTIONS) {
-            BlockPos neighborPos = pos.relative(direction);
-            if (!isKnownLocation(neighborPos)) {
-                if (directionsToEmit == null) {
-                    directionsToEmit = EnumSet.noneOf(Direction.class);
-                }
-                directionsToEmit.add(direction);
-            }
-        }
-        return directionsToEmit == null ? Collections.emptySet() : directionsToEmit;
     }
 
     public boolean isKnownLocation(BlockPos pos) {

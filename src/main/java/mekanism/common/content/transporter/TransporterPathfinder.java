@@ -387,8 +387,9 @@ public final class TransporterPathfinder {
             fScore.put(start, totalDistance);
             boolean hasValidDirection = false;
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
+            BlockPos.MutableBlockPos neighbor = new BlockPos.MutableBlockPos();
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                BlockPos neighbor = start.relative(direction);
+                neighbor.setWithOffset(start, direction);
                 LogisticalTransporterBase neighborTransmitter = network.getTransmitter(neighbor);
                 if (transportStack.canInsertToTransporter(neighborTransmitter, direction, startTransmitter)) {
                     //If we can insert into the transporter, mark that we have a valid path we can take
@@ -430,7 +431,7 @@ public final class TransporterPathfinder {
                 LogisticalTransporterBase currentNodeTransmitter = network.getTransmitter(currentNode);
                 double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
-                    BlockPos neighbor = currentNode.relative(direction);
+                    neighbor.setWithOffset(currentNode, direction);
                     LogisticalTransporterBase neighborTransmitter = network.getTransmitter(neighbor);
                     if (transportStack.canInsertToTransporter(neighborTransmitter, direction, currentNodeTransmitter)) {
                         //If the neighbor is a transporter and the stack is valid for it
@@ -439,11 +440,12 @@ public final class TransporterPathfinder {
                             continue;
                         }
                         if (!openSet.contains(neighbor) || tentativeG < gScore.getDouble(neighbor)) {
-                            navMap.put(neighbor, currentNode);
-                            gScore.put(neighbor, tentativeG);
+                            BlockPos immutableNeighbor = neighbor.immutable();
+                            navMap.put(immutableNeighbor, currentNode);
+                            gScore.put(immutableNeighbor, tentativeG);
                             //Put the gScore plus estimate in the final score
-                            fScore.put(neighbor, tentativeG + WorldUtils.distanceBetween(neighbor, finalNode));
-                            openSet.add(neighbor);
+                            fScore.put(immutableNeighbor, tentativeG + WorldUtils.distanceBetween(immutableNeighbor, finalNode));
+                            openSet.add(immutableNeighbor);
                         }
                     } else if (isValidDestination(currentNode, currentNodeTransmitter, direction, neighbor, chunkMap)) {
                         //Else if the neighbor is the destination, and we can send to it

@@ -427,9 +427,11 @@ public class WorldUtils {
      * @return Direction representing the side the defined relative Coord4D is on to this
      */
     public static Direction sideDifference(BlockPos pos, BlockPos other) {
-        BlockPos diff = pos.subtract(other);
+        int xDiff = pos.getX() - other.getX();
+        int yDiff = pos.getY() - other.getY();
+        int zDiff = pos.getZ() - other.getZ();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (side.getStepX() == diff.getX() && side.getStepY() == diff.getY() && side.getStepZ() == diff.getZ()) {
+            if (side.getStepX() == xDiff && side.getStepY() == yDiff && side.getStepZ() == zDiff) {
                 return side;
             }
         }

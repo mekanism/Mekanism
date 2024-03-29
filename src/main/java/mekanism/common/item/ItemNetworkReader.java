@@ -114,8 +114,10 @@ public class ItemNetworkReader extends ItemEnergized {
 
     private void displayConnectedNetworks(Player player, Level world, BlockPos pos) {
         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos.relative(side));
+            mutable.setWithOffset(pos, side);
+            BlockEntity tile = WorldUtils.getTileEntity(world, mutable);
             if (tile instanceof TileEntityTransmitter transmitterTile) {
                 Transmitter<?, ?, ?> transmitter = transmitterTile.getTransmitter();
                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();

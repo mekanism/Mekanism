@@ -1,6 +1,7 @@
 package mekanism.additions.common.entity.baby;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,11 +22,18 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
 
     //Copy of stray spawn restrictions
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        BlockPos blockpos = pos;
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
         do {
-            blockpos = blockpos.above();
-        } while (world.getBlockState(blockpos).is(Blocks.POWDER_SNOW));
-        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == MobSpawnType.SPAWNER || world.canSeeSky(blockpos.below()));
+            mutable.move(Direction.UP);
+        } while (world.getBlockState(mutable).is(Blocks.POWDER_SNOW));
+        if (checkMonsterSpawnRules(type, world, reason, pos, random)) {
+            if (reason == MobSpawnType.SPAWNER) {
+                return true;
+            }
+            mutable.move(Direction.DOWN);
+            return world.canSeeSky(mutable);
+        }
+        return false;
     }
 
     public EntityBabyStray(EntityType<EntityBabyStray> type, Level world) {

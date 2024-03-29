@@ -68,13 +68,16 @@ public class GeneratorsBuilders {
             if (empty) {
                 buildInteriorLayers(world, start, 1, 16, Blocks.AIR);
             } else {
+                BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
                 for (int x = 1; x < sizeX - 1; x++) {
                     for (int z = 1; z < sizeZ - 1; z++) {
+                        mutablePos.set(x, 1, z);
                         if (x % 2 == z % 2) {
-                            buildColumn(world, start, new BlockPos(x, 1, z), 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
-                            world.setBlockAndUpdate(start.offset(x, sizeY - 2, z), GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().defaultBlockState());
+                            buildColumn(world, start, mutablePos, 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
+                            mutablePos.setWithOffset(start, x, sizeY - 2, z);
+                            world.setBlockAndUpdate(mutablePos, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().defaultBlockState());
                         } else {
-                            buildColumn(world, start, new BlockPos(x, 1, z), 16, Blocks.AIR);
+                            buildColumn(world, start, mutablePos, 16, Blocks.AIR);
                         }
                     }
                 }
