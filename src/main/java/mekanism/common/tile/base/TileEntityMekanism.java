@@ -574,7 +574,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
-        tile.frequencyComponent.tickServer();
+        tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
             tile.upgradeComponent.tickServer();
         }

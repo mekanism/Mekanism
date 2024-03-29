@@ -22,9 +22,11 @@ import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,13 +60,13 @@ public class TileComponentFrequency implements ITileComponent {
         return supportedFrequencies.keySet();
     }
 
-    public void tickServer() {
-        if (tile.getLevel().getServer().getTickCount() % 5 == 0) {
+    public void tickServer(Level level, BlockPos pos) {
+        if (level.getServer().getTickCount() % 5 == 0) {
             supportedFrequencies.forEach(this::updateFrequency);
         }
         if (needsNotify) {
             tile.invalidateCapabilitiesFull();
-            WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
+            WorldUtils.notifyLoadedNeighborsOfTileChange(level, pos);
             needsNotify = false;
         }
         if (needsSave) {
