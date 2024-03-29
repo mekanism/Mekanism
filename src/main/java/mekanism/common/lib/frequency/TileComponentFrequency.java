@@ -58,9 +58,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void tickServer() {
-        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
-            updateFrequency(entry.getKey(), entry.getValue());
-        }
+        supportedFrequencies.forEach(this::updateFrequency);
         if (needsNotify) {
             tile.invalidateCapabilitiesFull();
             WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
