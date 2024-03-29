@@ -114,7 +114,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
         guiGraphics.blit(ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         guiGraphics.blitSprite(this.menu.getSlot(0).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, this.leftPos + 59, this.topPos + 20, 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {
-            guiGraphics.blit(ERROR_SPRITE, leftPos + 99, topPos + 45, imageWidth, 0, 28, 21);
+            guiGraphics.blitSprite(ERROR_SPRITE, leftPos + 99, topPos + 45, 28, 21);
         }
     }
 
