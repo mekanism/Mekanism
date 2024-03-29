@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
@@ -58,7 +59,9 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void tickServer() {
-        supportedFrequencies.forEach(this::updateFrequency);
+        if (tile.getLevel().getServer().getTickCount() % 5 == 0) {
+            supportedFrequencies.forEach(this::updateFrequency);
+        }
         if (needsNotify) {
             tile.invalidateCapabilitiesFull();
             WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
@@ -174,6 +177,7 @@ public class TileComponentFrequency implements ITileComponent {
                     }
                 }
                 if (unsetFrequency) {
+                    Mekanism.logger.info("Unsetting frequency {} at {}", frequencyData.selectedFrequency.getKey(), tile.getTileGlobalPos());
                     FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
                     if (manager != null) {
                         manager.deactivate(frequencyData.selectedFrequency, tile);
@@ -183,6 +187,7 @@ public class TileComponentFrequency implements ITileComponent {
                 }
                 //Note: We don't need to update the frequency for this block as in cases when it isn't invalid we do it immediately
             } else {
+                Mekanism.logger.debug("Revalidating frequency {} at {}", frequencyData.selectedFrequency.getKey(), tile.getTileGlobalPos());
                 FREQ frequency = (FREQ) frequencyData.selectedFrequency;
                 FrequencyManager<FREQ> manager = type.getFrequencyManager(frequency);
                 if (manager == null) {
