@@ -1,5 +1,6 @@
 package mekanism.client.gui.machine;
 
+import java.util.Optional;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -17,9 +18,11 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
@@ -130,11 +133,16 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private boolean canEncode() {
-        if (tile.hasValidFormula()) {
-            return false;
+        if (!tile.hasValidFormula()) {
+            ItemStack stack = tile.getFormulaSlot().getStack();
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
+                Optional<FormulaAttachment> existingFormula = stack.getExistingData(MekanismAttachmentTypes.FORMULA_HOLDER);
+                if (existingFormula.isEmpty()) {
+                    return true;
+                }
+                return existingFormula.filter(FormulaAttachment::isEmpty).isPresent();
+            }
         }
-        return FormulaAttachment.existingFormula(tile.getFormulaSlot().getStack())
-              .filter(FormulaAttachment::isEmpty)
-              .isPresent();
+        return false;
     }
 }
