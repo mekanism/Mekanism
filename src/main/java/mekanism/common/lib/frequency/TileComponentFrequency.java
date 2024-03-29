@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
@@ -25,7 +26,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileComponentFrequency implements ITileComponent {
 
-    private static final RandomSource RAND = RandomSource.create();
+    private static final AtomicInteger OFFSET = new AtomicInteger(0);
 
     private final TileEntityMekanism tile;
 
@@ -47,7 +47,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     public TileComponentFrequency(TileEntityMekanism tile) {
         this.tile = tile;
-        this.tickOffset = RAND.nextInt(5);
+        this.tickOffset = OFFSET.getAndIncrement() % 5;
         tile.addComponent(this);
     }
 
