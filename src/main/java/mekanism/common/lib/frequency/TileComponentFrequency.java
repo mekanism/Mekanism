@@ -25,6 +25,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -32,17 +33,21 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileComponentFrequency implements ITileComponent {
 
+    private static final RandomSource RAND = RandomSource.create();
+
     private final TileEntityMekanism tile;
 
     private final Map<FrequencyType<?>, FrequencyData> supportedFrequencies = new LinkedHashMap<>();
 
     private final Map<SecurityMode, Map<FrequencyType<?>, List<? extends Frequency>>> frequencyCache = new EnumMap<>(SecurityMode.class);
+    private final int tickOffset;
 
     private boolean needsSave;
     private boolean needsNotify;
 
     public TileComponentFrequency(TileEntityMekanism tile) {
         this.tile = tile;
+        this.tickOffset = RAND.nextInt(5);
         tile.addComponent(this);
     }
 
@@ -61,7 +66,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void tickServer(Level level, BlockPos pos) {
-        if (level.getServer().getTickCount() % 5 == 0) {
+        if (level.getServer().getTickCount() % 5 == tickOffset) {
             supportedFrequencies.forEach(this::updateFrequency);
         }
         if (needsNotify) {
