@@ -89,7 +89,7 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(attachmentHolder);
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
                 SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
-                if (security != null && !security.getTrustedUUIDs().contains(ownerUUID)) {
+                if (security != null && !security.isTrusted(ownerUUID)) {
                     setFrequency(null);
                 }
             }

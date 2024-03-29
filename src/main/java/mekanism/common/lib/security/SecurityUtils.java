@@ -106,7 +106,7 @@ public final class SecurityUtils implements ISecurityUtils {
                 }
                 SecurityFrequency frequency = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(owner);
                 //If we have no frequency handle it as if it was private, otherwise check if the player is trusted
-                yield frequency != null && frequency.getTrustedUUIDs().contains(player);
+                yield frequency != null && frequency.isTrusted(player);
             }
         };
     }
@@ -204,7 +204,7 @@ public final class SecurityUtils implements ISecurityUtils {
     public boolean isTrusted(SecurityMode mode, @Nullable UUID ownerUUID, UUID playerUUID) {
         if (ownerUUID != null && mode == SecurityMode.TRUSTED) {
             SecurityFrequency frequency = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(ownerUUID);
-            return frequency != null && frequency.getTrustedUUIDs().contains(playerUUID);
+            return frequency != null && frequency.isTrusted(playerUUID);
         }
         return false;
     }

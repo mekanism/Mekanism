@@ -134,7 +134,7 @@ public class FrequencyManager<FREQ extends Frequency> {
                 if (!ownerUUID.equals(trustedManager.ownerUUID)) {
                     //Add any frequencies that the owner has access to because of being trusted by the other player
                     SecurityFrequency frequency = securityManager.getFrequency(trustedManager.ownerUUID);
-                    if (frequency != null && frequency.getTrustedUUIDs().contains(ownerUUID)) {
+                    if (frequency != null && frequency.isTrusted(ownerUUID)) {
                         trustedFrequencies.addAll(trustedManager.frequencies.values());
                     }
                 }

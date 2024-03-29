@@ -448,7 +448,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(getOwner());
             if (security != null) {
                 for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
-                    if (!ownerMatches(player.getUUID()) && !security.getTrustedUUIDs().contains(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {
+                    if (!ownerMatches(player.getUUID()) && !security.isTrusted(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {
                         player.closeContainer();
                         closeItemViewer(player);
                     }

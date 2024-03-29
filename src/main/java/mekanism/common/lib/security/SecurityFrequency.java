@@ -109,8 +109,8 @@ public class SecurityFrequency extends Frequency {
         return override;
     }
 
-    public List<UUID> getTrustedUUIDs() {
-        return trusted;
+    public boolean isTrusted(UUID subject) {
+        return trusted.contains(subject);
     }
 
     public List<String> getTrustedUsernameCache() {

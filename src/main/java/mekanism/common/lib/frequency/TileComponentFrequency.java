@@ -172,7 +172,7 @@ public class TileComponentFrequency implements ITileComponent {
                     UUID ownerUUID = tile.getOwnerUUID();
                     if (ownerUUID != null && !frequencyData.selectedFrequency.ownerMatches(ownerUUID)) {
                         SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
-                        unsetFrequency = security != null && !security.getTrustedUUIDs().contains(ownerUUID);
+                        unsetFrequency = security != null && !security.isTrusted(ownerUUID);
                     }
                 }
                 if (unsetFrequency) {
