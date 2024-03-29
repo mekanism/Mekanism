@@ -24,15 +24,11 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
@@ -45,10 +41,6 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.chemical.IGasTile;
-import mekanism.common.tile.interfaces.chemical.IInfusionTile;
-import mekanism.common.tile.interfaces.chemical.IPigmentTile;
-import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
@@ -81,8 +73,8 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
     public static final ContainerType<IEnergyContainer, AttachedEnergyContainers, IStrictEnergyHandler> ENERGY =
-          new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY, IMekanismStrictEnergyHandler::getEnergyContainers,
-                IMekanismStrictEnergyHandler::canHandleEnergy) {
+          new ContainerType<>(MekanismAttachmentTypes.ENERGY_CONTAINERS, NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, AttachedEnergyContainers::new, Capabilities.STRICT_ENERGY, TileEntityMekanism::getEnergyContainers,
+                TileEntityMekanism::canHandleEnergy) {
               @Override
               public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
                   EnergyCompatUtils.registerItemCapabilities(event, item, getCapabilityProvider(exposeWhenStacked, requiredConfigs));
@@ -93,13 +85,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
                   EnergyCompatUtils.registerEntityCapabilities(event, entityType, getCapabilityProvider(requiredConfigs));
               }
           };
-    public static final ContainerType<IInventorySlot, AttachedInventorySlots, IItemHandler> ITEM = new ContainerType<>(MekanismAttachmentTypes.INVENTORY_SLOTS, NBTConstants.ITEMS, NBTConstants.SLOT, AttachedInventorySlots::new, Capabilities.ITEM, IMekanismInventory::getInventorySlots, IMekanismInventory::hasInventory);
-    public static final ContainerType<IExtendedFluidTank, AttachedFluidTanks, IFluidHandler> FLUID = new ContainerType<>(MekanismAttachmentTypes.FLUID_TANKS, NBTConstants.FLUID_TANKS, NBTConstants.TANK, AttachedFluidTanks::new, AttachedItemFluidTanks::new, Capabilities.FLUID, IMekanismFluidHandler::getFluidTanks, IMekanismFluidHandler::canHandleFluid);
-    public static final ContainerType<IGasTank, AttachedGasTanks, IGasHandler> GAS = new ContainerType<>(MekanismAttachmentTypes.GAS_TANKS, NBTConstants.GAS_TANKS, NBTConstants.TANK, AttachedGasTanks::new, Capabilities.GAS, IGasTile::getGasTanks, IGasTile::canHandleGas);
-    public static final ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> INFUSION = new ContainerType<>(MekanismAttachmentTypes.INFUSION_TANKS, NBTConstants.INFUSION_TANKS, NBTConstants.TANK, AttachedInfusionTanks::new, Capabilities.INFUSION, IInfusionTile::getInfusionTanks, IInfusionTile::canHandleInfusion);
-    public static final ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> PIGMENT = new ContainerType<>(MekanismAttachmentTypes.PIGMENT_TANKS, NBTConstants.PIGMENT_TANKS, NBTConstants.TANK, AttachedPigmentTanks::new, Capabilities.PIGMENT, IPigmentTile::getPigmentTanks, IPigmentTile::canHandlePigment);
-    public static final ContainerType<ISlurryTank, AttachedSlurryTanks, ISlurryHandler> SLURRY = new ContainerType<>(MekanismAttachmentTypes.SLURRY_TANKS, NBTConstants.SLURRY_TANKS, NBTConstants.TANK, AttachedSlurryTanks::new, Capabilities.SLURRY, ISlurryTile::getSlurryTanks, ISlurryTile::canHandleSlurry);
-    public static final ContainerType<IHeatCapacitor, AttachedHeatCapacitors, IHeatHandler> HEAT = new ContainerType<>(MekanismAttachmentTypes.HEAT_CAPACITORS, NBTConstants.HEAT_CAPACITORS, NBTConstants.CONTAINER, AttachedHeatCapacitors::new, null, IMekanismHeatHandler::getHeatCapacitors, IMekanismHeatHandler::canHandleHeat);
+    public static final ContainerType<IInventorySlot, AttachedInventorySlots, IItemHandler> ITEM = new ContainerType<>(MekanismAttachmentTypes.INVENTORY_SLOTS, NBTConstants.ITEMS, NBTConstants.SLOT, AttachedInventorySlots::new, Capabilities.ITEM, TileEntityMekanism::getInventorySlots, TileEntityMekanism::hasInventory);
+    public static final ContainerType<IExtendedFluidTank, AttachedFluidTanks, IFluidHandler> FLUID = new ContainerType<>(MekanismAttachmentTypes.FLUID_TANKS, NBTConstants.FLUID_TANKS, NBTConstants.TANK, AttachedFluidTanks::new, AttachedItemFluidTanks::new, Capabilities.FLUID, TileEntityMekanism::getFluidTanks, TileEntityMekanism::canHandleFluid);
+    public static final ContainerType<IGasTank, AttachedGasTanks, IGasHandler> GAS = new ContainerType<>(MekanismAttachmentTypes.GAS_TANKS, NBTConstants.GAS_TANKS, NBTConstants.TANK, AttachedGasTanks::new, Capabilities.GAS, TileEntityMekanism::getGasTanks, TileEntityMekanism::canHandleGas);
+    public static final ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> INFUSION = new ContainerType<>(MekanismAttachmentTypes.INFUSION_TANKS, NBTConstants.INFUSION_TANKS, NBTConstants.TANK, AttachedInfusionTanks::new, Capabilities.INFUSION, TileEntityMekanism::getInfusionTanks, TileEntityMekanism::canHandleInfusion);
+    public static final ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> PIGMENT = new ContainerType<>(MekanismAttachmentTypes.PIGMENT_TANKS, NBTConstants.PIGMENT_TANKS, NBTConstants.TANK, AttachedPigmentTanks::new, Capabilities.PIGMENT, TileEntityMekanism::getPigmentTanks, TileEntityMekanism::canHandlePigment);
+    public static final ContainerType<ISlurryTank, AttachedSlurryTanks, ISlurryHandler> SLURRY = new ContainerType<>(MekanismAttachmentTypes.SLURRY_TANKS, NBTConstants.SLURRY_TANKS, NBTConstants.TANK, AttachedSlurryTanks::new, Capabilities.SLURRY, TileEntityMekanism::getSlurryTanks, TileEntityMekanism::canHandleSlurry);
+    public static final ContainerType<IHeatCapacitor, AttachedHeatCapacitors, IHeatHandler> HEAT = new ContainerType<>(MekanismAttachmentTypes.HEAT_CAPACITORS, NBTConstants.HEAT_CAPACITORS, NBTConstants.CONTAINER, AttachedHeatCapacitors::new, null, TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::canHandleHeat);
 
     public static final Codec<ContainerType<?, ?, ?>> CODEC = NeoForgeRegistries.ATTACHMENT_TYPES.byNameCodec().comapFlatMap(attachmentType -> {
         for (ContainerType<?, ?, ?> type : TYPES) {
