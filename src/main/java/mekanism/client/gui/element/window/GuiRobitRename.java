@@ -23,12 +23,13 @@ public class GuiRobitRename extends GuiWindow {
         nameChangeField.setMaxLength(PacketRobitName.MAX_NAME_LENGTH);
         nameChangeField.setCanLoseFocus(false);
         nameChangeField.setEnterHandler(this::changeName);
+        nameChangeField.allowColoredText();
         setFocused(nameChangeField);
     }
 
     private void changeName() {
         String name = nameChangeField.getText().trim();
-        if (!name.isEmpty()) {
+        if (PacketRobitName.hasContent(name)) {
             PacketUtils.sendToServer(new PacketRobitName(robit, name));
             close();
         }

@@ -55,6 +55,9 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
 
     @Override
     public void handle(PlayPayloadContext context) {
+        if (!hasContent(name)) {//Ensure the client sent a valid string
+            return;
+        }
         context.player().ifPresent(player -> {
             Entity entity = player.level().getEntity(entityId);
             //Validate the player can access the robit before changing the robit's name
@@ -78,5 +81,22 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
     public void write(@NotNull FriendlyByteBuf buffer) {
         buffer.writeVarInt(entityId);
         buffer.writeUtf(name, MAX_NAME_LENGTH);
+    }
+
+    public static boolean hasContent(String text) {
+        //TODO: Maybe improve on how we do color codes to allow further customization beyond the basic color codes?
+        if (!text.isEmpty()) {
+            boolean wasColorSymbol = false;
+            for (char c : text.toCharArray()) {
+                if (c == 167) {
+                    wasColorSymbol = true;
+                } else if (!wasColorSymbol) {
+                    return true;
+                } else {
+                    wasColorSymbol = false;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -11,6 +11,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.lib.Color;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -329,6 +330,10 @@ public class GuiTextField extends GuiElement {
         textField.setCanLoseFocus(canLoseFocus);
     }
 
+    public void allowColoredText() {
+        textField.allowColors = true;
+    }
+
     @Override
     public void setFocused(boolean focused) {
         if (textField.canLoseFocus || focused) {
@@ -351,6 +356,8 @@ public class GuiTextField extends GuiElement {
 
     private static class ClearingEditBox extends EditBox {
 
+        private boolean allowColors;
+
         public ClearingEditBox(Font font, int x, int y, int width, int height, Component message) {
             super(font, x, y, width, height, message);
         }
@@ -368,6 +375,45 @@ public class GuiTextField extends GuiElement {
             } else {
                 super.onClick(mouseX, mouseY, button);
             }
+        }
+
+        @Override
+        public void insertText(@NotNull String text) {
+            if (allowColors) {
+                //Copy of super, but modified to call a custom filter text that allows the section symbol to be used
+                // so that the player can enter color codes
+                int startIndex = Math.min(getCursorPosition(), this.highlightPos);
+                int highlightEndIndex = Math.max(getCursorPosition(), this.highlightPos);
+                String value = getValue();
+                int spaceLeft = this.maxLength - value.length() - (startIndex - highlightEndIndex);
+                if (spaceLeft > 0) {
+                    String filtered = filterText(text);
+                    int length = filtered.length();
+                    if (spaceLeft < length) {
+                        if (Character.isHighSurrogate(filtered.charAt(spaceLeft - 1))) {
+                            --spaceLeft;
+                        }
+                        filtered = filtered.substring(0, spaceLeft);
+                        length = spaceLeft;
+                    }
+
+                    setValue(new StringBuilder(value).replace(startIndex, highlightEndIndex, filtered).toString());
+                    setCursorPosition(startIndex + length);
+                    setHighlightPos(getCursorPosition());
+                }
+            } else {
+                super.insertText(text);
+            }
+        }
+
+        private static String filterText(String text) {
+            StringBuilder builder = new StringBuilder();
+            for (char c : text.toCharArray()) {
+                if (SharedConstants.isAllowedChatCharacter(c) || c == 167) {
+                    builder.append(c);
+                }
+            }
+            return builder.toString();
         }
     }
 }
