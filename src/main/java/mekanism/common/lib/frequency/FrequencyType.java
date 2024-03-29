@@ -163,4 +163,9 @@ public class FrequencyType<FREQ extends Frequency> {
     public String toString() {
         return name;
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
