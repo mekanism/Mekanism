@@ -3,15 +3,20 @@ package mekanism.additions.common;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.additions.common.block.plastic.BlockPlasticTransparent;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.common.item.block.ItemBlockMekanism;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tag.IntrinsicMekanismTagBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -26,6 +31,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class AdditionsTagProvider extends BaseTagProvider {
+
+    private static final TagKey<Block> FRAMEABLE = BlockTags.create(new ResourceLocation("framedblocks", "frameable"));
 
     public AdditionsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, MekanismAdditions.MODID, existingFileHelper);
@@ -124,6 +131,11 @@ public class AdditionsTagProvider extends BaseTagProvider {
         getBlockBuilder(AdditionsTags.Blocks.PLASTIC_BLOCKS).add(AdditionsTags.Blocks.PLASTIC_BLOCKS_GLOW, AdditionsTags.Blocks.PLASTIC_BLOCKS_PLASTIC,
               AdditionsTags.Blocks.PLASTIC_BLOCKS_REINFORCED, AdditionsTags.Blocks.PLASTIC_BLOCKS_ROAD, AdditionsTags.Blocks.PLASTIC_BLOCKS_SLICK,
               AdditionsTags.Blocks.PLASTIC_BLOCKS_TRANSPARENT);
+
+        IntrinsicMekanismTagBuilder<Block> frameable = getBlockBuilder(FRAMEABLE);
+        for (BlockRegistryObject<BlockPlasticTransparent, ItemBlockMekanism<BlockPlasticTransparent>> holder : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
+            frameable.add(holder.getBlock());
+        }
     }
 
     private void addHarvestRequirements() {
