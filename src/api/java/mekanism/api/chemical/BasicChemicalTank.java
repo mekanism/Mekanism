@@ -314,11 +314,26 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public STACK insertChemical(int tank, STACK stack, Action action) {
-        return tank == 0 ? insert(stack, action, AutomationType.EXTERNAL) : stack;
+        return tank == 0 ? insertChemical(stack, action) : stack;
+    }
+
+    @Override
+    public STACK insertChemical(STACK stack, Action action) {
+        return insert(stack, action, AutomationType.EXTERNAL);
     }
 
     @Override
     public STACK extractChemical(int tank, long amount, Action action) {
-        return tank == 0 ? extract(amount, action, AutomationType.EXTERNAL) : getEmptyStack();
+        return tank == 0 ? extractChemical(amount, action) : getEmptyStack();
+    }
+
+    @Override
+    public STACK extractChemical(long amount, Action action) {
+        return extract(amount, action, AutomationType.EXTERNAL);
+    }
+
+    @Override
+    public STACK extractChemical(STACK stack, Action action) {
+        return isTypeEqual(stack) ? extractChemical(stack.getAmount(), action) : getEmptyStack();
     }
 }

@@ -83,15 +83,43 @@ public interface IMekanismChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, S
         return chemicalTank != null && chemicalTank.isValid(stack);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Any overrides to this should also override {@link #insertChemical(ChemicalStack, Direction, Action)} as it bypasses calling this method in order to skip
+     * looking up the containers for every sub operation.
+     */
     @Override
     default STACK insertChemical(int tank, STACK stack, @Nullable Direction side, Action action) {
         TANK chemicalTank = getChemicalTank(tank, side);
-        return chemicalTank == null ? stack : chemicalTank.insert(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return chemicalTank == null ? stack : chemicalTank.insert(stack, action, AutomationType.handler(side));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Any overrides to this should also override {@link #extractChemical(long, Direction, Action)} and
+     * {@link #extractChemical(ChemicalStack, Direction, Action)} as they bypass calling this method in order to skip looking up the containers for every sub
+     * operation.
+     */
     @Override
     default STACK extractChemical(int tank, long amount, @Nullable Direction side, Action action) {
         TANK chemicalTank = getChemicalTank(tank, side);
-        return chemicalTank == null ? getEmptyStack() : chemicalTank.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return chemicalTank == null ? getEmptyStack() : chemicalTank.extract(amount, action, AutomationType.handler(side));
+    }
+
+    @Override
+    default STACK insertChemical(STACK stack, @Nullable Direction side, Action action) {
+        return ChemicalUtils.insert(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
+    }
+
+    @Override
+    default STACK extractChemical(long amount, @Nullable Direction side, Action action) {
+        return ChemicalUtils.extract(amount, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
+    }
+
+    @Override
+    default STACK extractChemical(STACK stack, @Nullable Direction side, Action action) {
+        return ChemicalUtils.extract(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
     }
 }

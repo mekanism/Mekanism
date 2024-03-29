@@ -5,8 +5,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
+import mekanism.common.capabilities.chemical.dynamic.SimpleDynamicChemicalHandler.SimpleDynamicPigmentHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,8 +22,7 @@ public interface IPigmentTile extends IPigmentTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default PigmentHandlerManager getInitialPigmentManager(IContentsListener listener) {
-        return new PigmentHandlerManager(getInitialPigmentTanks(listener), new DynamicPigmentHandler(this::getPigmentTanks, this::extractPigmentCheck,
-              this::insertPigmentCheck, listener));
+        return new PigmentHandlerManager(getInitialPigmentTanks(listener), new SimpleDynamicPigmentHandler(this::getPigmentTanks, listener));
     }
 
     /**
@@ -47,13 +46,5 @@ public interface IPigmentTile extends IPigmentTracker {
     @Override
     default List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return getPigmentManager().getContainers(side);
-    }
-
-    default boolean extractPigmentCheck(int tank, @Nullable Direction side) {
-        return true;
-    }
-
-    default boolean insertPigmentCheck(int tank, @Nullable Direction side) {
-        return true;
     }
 }

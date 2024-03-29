@@ -13,9 +13,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
@@ -39,6 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -68,6 +69,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
+    private final List<IGasTank> inputTanks;
+    private final List<IGasTank> outputWasteTanks;
+    private final List<IGasTank> outputCoolantTanks;
+
     @ContainerSync(setter = "setAssemblies")
     @SyntheticComputerMethod(getter = "getFuelAssemblies")
     private int fuelAssemblies = 0;
@@ -146,6 +151,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class), this);
         wasteTank = MultiblockChemicalTankBuilder.GAS.output(this, fuelCapacitySupplier,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
+        inputTanks = List.of(fuelTank, gasCoolantTank);
+        outputWasteTanks = List.of(wasteTank);
+        outputCoolantTanks = List.of(heatedCoolantTank);
         Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = VariableHeatCapacitor.create(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
               () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp, this);
@@ -195,6 +203,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             prevWasteScale = wasteScale;
         }
         return needsPacket;
+    }
+
+    public List<IGasTank> getGasTanks(FissionPortMode mode) {
+        return switch (mode) {
+            case INPUT -> inputTanks;
+            case OUTPUT_WASTE -> outputWasteTanks;
+            case OUTPUT_COOLANT -> outputCoolantTanks;
+        };
     }
 
     @Override
@@ -322,9 +338,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      */
     private double getWasteTankRadioactivity(boolean dump) {
         if (wasteTank.isEmpty()) {
-            return MekanismGases.NUCLEAR_WASTE.get().mapAttributeToDouble(GasAttributes.Radiation.class, attribute -> partialWaste * attribute.getRadioactivity());
+            return MekanismGases.NUCLEAR_WASTE.get().mapAttributeToDouble(Radiation.class, attribute -> partialWaste * attribute.getRadioactivity());
         }
-        return wasteTank.getStack().mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> {
+        return wasteTank.getStack().mapAttributeToDouble(Radiation.class, (stored, attribute) -> {
             if (dump) {
                 //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
                 wasteTank.setEmpty();
@@ -338,7 +354,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      */
     private double getTankRadioactivityAndDump(IGasTank tank) {
         if (!tank.isEmpty()) {
-            return tank.getStack().mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> {
+            return tank.getStack().mapAttributeToDouble(Radiation.class, (stored, attribute) -> {
                 //If we have a radioactive substance, then we need to set the tank to empty
                 tank.setEmpty();
                 return stored.getAmount() * attribute.getRadioactivity();
@@ -405,7 +421,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
-                wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
+                wasteToAdd.ifAttributePresent(Radiation.class, attribute ->
                       IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * attribute.getRadioactivity()));
             }
         }

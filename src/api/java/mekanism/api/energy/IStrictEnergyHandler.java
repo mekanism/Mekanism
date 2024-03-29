@@ -129,7 +129,8 @@ public interface IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion.
      */
     default FloatingLong insertEnergy(FloatingLong amount, Action action) {
-        return FloatingLongTransferUtils.insert(amount, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
+        return FloatingLongTransferUtils.insert(amount, null, action, side -> getEnergyContainerCount(), (container, side) -> getEnergy(container),
+              (container, amt, side, act) -> insertEnergy(container, amt, act));
     }
 
     /**
@@ -148,6 +149,6 @@ public interface IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction.
      */
     default FloatingLong extractEnergy(FloatingLong amount, Action action) {
-        return FloatingLongTransferUtils.extract(amount, action, this::getEnergyContainerCount, this::extractEnergy);
+        return FloatingLongTransferUtils.extract(amount, null, action, side -> getEnergyContainerCount(), (container, amt, side, act) -> extractEnergy(container, amt, act));
     }
 }

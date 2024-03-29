@@ -46,7 +46,12 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, @NotNull Action action) {
-        if (container == 0 && storage.canReceive()) {
+        return container == 0 ? insertEnergy(amount, action) : amount;
+    }
+
+    @Override
+    public FloatingLong insertEnergy(FloatingLong amount, Action action) {
+        if (storage.canReceive()) {
             int toInsert = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
             if (toInsert > 0) {
                 int inserted = storage.receiveEnergy(toInsert, action.simulate());
@@ -61,7 +66,12 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong extractEnergy(int container, FloatingLong amount, @NotNull Action action) {
-        if (container == 0 && storage.canExtract()) {
+        return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
+    }
+
+    @Override
+    public FloatingLong extractEnergy(FloatingLong amount, Action action) {
+        if (storage.canExtract()) {
             int toExtract = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
             if (toExtract > 0) {
                 int extracted = storage.extractEnergy(toExtract, action.simulate());

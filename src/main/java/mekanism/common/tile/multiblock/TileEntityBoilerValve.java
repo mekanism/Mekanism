@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,10 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
 
     private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> outputTargets = new ArrayList<>();
+    private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
+          Capabilities.GAS.block(),
+          Capabilities.FLUID.block()
+    );
 
     public TileEntityBoilerValve(BlockPos pos, BlockState state) {
         super(MekanismBlocks.BOILER_VALVE, pos, state);
@@ -47,13 +52,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
     @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
-        return side -> getMultiblock().getGasTanks(side);
+        return side -> getMultiblock().getGasTanks(getMode());
     }
 
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return side -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks(side) : List.of();
     }
 
     @Override
@@ -101,6 +106,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
     void setMode(BoilerValveMode mode) {
         if (mode != getMode()) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateBoilerValveMode.modeProperty, mode));
+            invalidateCapabilitiesAll(portCapabilities);
         }
     }
 
@@ -116,32 +122,21 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
 
     @NotNull
     @Override
+    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
+        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
+    }
+
+    @NotNull
+    @Override
     public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        FluidStack ret = super.insertFluid(stack, side, action);
-        if (ret.getAmount() < stack.getAmount() && action.execute()) {
+        return handleValves(stack, action, super.insertFluid(stack, side, action));
+    }
+
+    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
+        if (action.execute() && remainder.getAmount() < stack.getAmount()) {
             getMultiblock().triggerValveTransfer(this);
         }
-        return ret;
-    }
-
-    @Override
-    public boolean insertGasCheck(int tank, @Nullable Direction side) {
-        if (getMode() != BoilerValveMode.INPUT) {
-            //Don't allow inserting into the fuel tanks, if we are on output mode
-            return false;
-        }
-        return super.insertGasCheck(tank, side);
-    }
-
-    @Override
-    public boolean extractGasCheck(int tank, @Nullable Direction side) {
-        //TODO: Do this better so there is no magic numbers
-        BoilerValveMode mode = getMode();
-        if (mode == BoilerValveMode.INPUT || (tank == 2 && mode == BoilerValveMode.OUTPUT_STEAM) || (tank == 0 && mode == BoilerValveMode.OUTPUT_COOLANT)) {
-            // don't allow extraction from tanks based on mode
-            return false;
-        }
-        return super.extractGasCheck(tank, side);
+        return remainder;
     }
 
     //Methods relating to IComputerTile

@@ -119,7 +119,8 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the insertion.
      */
     default STACK insertChemical(STACK stack, Action action) {
-        return ChemicalUtils.insert(stack, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::insertChemical);
+        return ChemicalUtils.insert(stack, null , action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+              (tank, chemical, s, act) -> insertChemical(tank, chemical, act));
     }
 
     /**
@@ -139,7 +140,8 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default STACK extractChemical(long amount, Action action) {
-        return ChemicalUtils.extract(amount, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
+        return ChemicalUtils.extract(amount, null, action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+              (tank, amt, side, act) -> extractChemical(tank, amt, act));
     }
 
     /**
@@ -158,6 +160,7 @@ public interface IChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK ext
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default STACK extractChemical(STACK stack, Action action) {
-        return ChemicalUtils.extract(stack, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
+        return ChemicalUtils.extract(stack, null, action, getEmptyStack(), side -> getTanks(), (tank, side) -> getChemicalInTank(tank),
+              (tank, chemical, side, act) -> extractChemical(tank, chemical, act));
     }
 }

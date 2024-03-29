@@ -2,6 +2,7 @@ package mekanism.common.capabilities.chemical.dynamic;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -33,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       extends DynamicHandler<TANK> implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
-    protected DynamicChemicalHandler(Function<Direction, List<TANK>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert,
+    protected DynamicChemicalHandler(Function<Direction, List<TANK>> tankSupplier, Predicate<@Nullable Direction> canExtract, Predicate<@Nullable Direction> canInsert,
           @Nullable IContentsListener listener) {
         super(tankSupplier, canExtract, canInsert, listener);
     }
@@ -45,19 +46,37 @@ public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>
 
     @Override
     public STACK insertChemical(int tank, STACK stack, @Nullable Direction side, Action action) {
-        //If we can insert into the specific tank from that side, try to. Otherwise exit
-        return canInsert.test(tank, side) ? IMekanismChemicalHandler.super.insertChemical(tank, stack, side, action) : stack;
+        //If we can insert into the specific side, try to. Otherwise exit
+        return canInsert.test(side) ? IMekanismChemicalHandler.super.insertChemical(tank, stack, side, action) : stack;
     }
 
     @Override
     public STACK extractChemical(int tank, long amount, @Nullable Direction side, Action action) {
-        //If we can extract from a specific tank from a given side, try to. Otherwise exit
-        return canExtract.test(tank, side) ? IMekanismChemicalHandler.super.extractChemical(tank, amount, side, action) : getEmptyStack();
+        //If we can extract from a specific side, try to. Otherwise exit
+        return canExtract.test(side) ? IMekanismChemicalHandler.super.extractChemical(tank, amount, side, action) : getEmptyStack();
+    }
+
+    @Override
+    public STACK insertChemical(STACK stack, @Nullable Direction side, Action action) {
+        //If we can insert into the specific side, try to. Otherwise exit
+        return canInsert.test(side) ? IMekanismChemicalHandler.super.insertChemical(stack, side, action) : stack;
+    }
+
+    @Override
+    public STACK extractChemical(long amount, @Nullable Direction side, Action action) {
+        //If we can extract from a specific side, try to. Otherwise exit
+        return canExtract.test(side) ? IMekanismChemicalHandler.super.extractChemical(amount, side, action) : getEmptyStack();
+    }
+
+    @Override
+    public STACK extractChemical(STACK stack, @Nullable Direction side, Action action) {
+        //If we can extract from a specific side, try to. Otherwise exit
+        return canExtract.test(side) ? IMekanismChemicalHandler.super.extractChemical(stack, side, action) : getEmptyStack();
     }
 
     public static class DynamicGasHandler extends DynamicChemicalHandler<Gas, GasStack, IGasTank> implements IMekanismGasHandler {
 
-        public DynamicGasHandler(Function<Direction, List<IGasTank>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert,
+        public DynamicGasHandler(Function<Direction, List<IGasTank>> tankSupplier, Predicate<@Nullable Direction> canExtract, Predicate<@Nullable Direction> canInsert,
               @Nullable IContentsListener listener) {
             super(tankSupplier, canExtract, canInsert, listener);
         }
@@ -65,24 +84,24 @@ public abstract class DynamicChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>
 
     public static class DynamicInfusionHandler extends DynamicChemicalHandler<InfuseType, InfusionStack, IInfusionTank> implements IMekanismInfusionHandler {
 
-        public DynamicInfusionHandler(Function<Direction, List<IInfusionTank>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert,
-              @Nullable IContentsListener listener) {
+        public DynamicInfusionHandler(Function<Direction, List<IInfusionTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
+              Predicate<@Nullable Direction> canInsert, @Nullable IContentsListener listener) {
             super(tankSupplier, canExtract, canInsert, listener);
         }
     }
 
     public static class DynamicPigmentHandler extends DynamicChemicalHandler<Pigment, PigmentStack, IPigmentTank> implements IMekanismPigmentHandler {
 
-        public DynamicPigmentHandler(Function<Direction, List<IPigmentTank>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert,
-              @Nullable IContentsListener listener) {
+        public DynamicPigmentHandler(Function<Direction, List<IPigmentTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
+              Predicate<@Nullable Direction> canInsert, @Nullable IContentsListener listener) {
             super(tankSupplier, canExtract, canInsert, listener);
         }
     }
 
     public static class DynamicSlurryHandler extends DynamicChemicalHandler<Slurry, SlurryStack, ISlurryTank> implements IMekanismSlurryHandler {
 
-        public DynamicSlurryHandler(Function<Direction, List<ISlurryTank>> tankSupplier, InteractPredicate canExtract, InteractPredicate canInsert,
-              @Nullable IContentsListener listener) {
+        public DynamicSlurryHandler(Function<Direction, List<ISlurryTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
+              Predicate<@Nullable Direction> canInsert, @Nullable IContentsListener listener) {
             super(tankSupplier, canExtract, canInsert, listener);
         }
     }

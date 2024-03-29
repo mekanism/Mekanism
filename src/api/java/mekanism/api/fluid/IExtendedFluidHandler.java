@@ -69,7 +69,8 @@ public interface IExtendedFluidHandler extends IFluidHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IExtendedFluidHandler} ends up distributing the insertion.
      */
     default FluidStack insertFluid(FluidStack stack, Action action) {
-        return ExtendedFluidHandlerUtils.insert(stack, action, this::getTanks, this::getFluidInTank, this::insertFluid);
+        return ExtendedFluidHandlerUtils.insert(stack, null, action, side -> getTanks(), (tank, side) -> getFluidInTank(tank),
+              (tank, fluid, side, act) -> insertFluid(tank, fluid, act));
     }
 
     /**
@@ -89,7 +90,8 @@ public interface IExtendedFluidHandler extends IFluidHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IExtendedFluidHandler} ends up distributing the extraction.
      */
     default FluidStack extractFluid(int amount, Action action) {
-        return ExtendedFluidHandlerUtils.extract(amount, action, this::getTanks, this::getFluidInTank, this::extractFluid);
+        return ExtendedFluidHandlerUtils.extract(amount, null, action, side -> getTanks(), (tank, side) -> getFluidInTank(tank),
+              (tank, amt, side, act) -> extractFluid(tank, amt, act));
     }
 
     /**
@@ -108,7 +110,8 @@ public interface IExtendedFluidHandler extends IFluidHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IExtendedFluidHandler} ends up distributing the extraction.
      */
     default FluidStack extractFluid(FluidStack stack, Action action) {
-        return ExtendedFluidHandlerUtils.extract(stack, action, this::getTanks, this::getFluidInTank, this::extractFluid);
+        return ExtendedFluidHandlerUtils.extract(stack, null, action, side -> getTanks(), (tank, side) -> getFluidInTank(tank),
+              (tank, amount, side, act) -> extractFluid(tank, amount, act));
     }
 
     /**

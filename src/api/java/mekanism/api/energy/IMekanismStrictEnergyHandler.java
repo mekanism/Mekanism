@@ -6,6 +6,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongTransferUtils;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,15 +84,37 @@ public interface IMekanismStrictEnergyHandler extends ISidedStrictEnergyHandler,
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getNeeded();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Any overrides to this should also override {@link #insertEnergy(FloatingLong, Direction, Action)} as it bypasses calling this method in order to skip
+     * looking up the containers for every sub operation.
+     */
     @Override
     default FloatingLong insertEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? amount : energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return energyContainer == null ? amount : energyContainer.insert(amount, action, AutomationType.handler(side));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Any overrides to this should also override {@link #extractEnergy(FloatingLong, Direction, Action)} as it bypasses calling this method in order to skip
+     * looking up the containers for every sub operation.
+     */
     @Override
     default FloatingLong extractEnergy(int container, FloatingLong amount, @Nullable Direction side, Action action) {
         IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        return energyContainer == null ? FloatingLong.ZERO : energyContainer.extract(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return energyContainer == null ? FloatingLong.ZERO : energyContainer.extract(amount, action, AutomationType.handler(side));
+    }
+
+    @Override
+    default FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+        return FloatingLongTransferUtils.insert(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
+    }
+
+    @Override
+    default FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
+        return FloatingLongTransferUtils.extract(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
     }
 }

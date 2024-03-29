@@ -51,8 +51,6 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
 
     private FloatingLong insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, FloatingLong energy) {
         //Insert into the output using manual as the automation type
-        List<IEnergyContainer> energyContainers = outputHandler.getEnergyContainers(null);
-        return FloatingLongTransferUtils.insert(energy, Action.EXECUTE, energyContainers::size, container -> energyContainers.get(container).getEnergy(),
-              (container, amount, action) -> energyContainers.get(container).insert(amount, action, AutomationType.MANUAL));
+        return FloatingLongTransferUtils.insert(energy, null, outputHandler::getEnergyContainers, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

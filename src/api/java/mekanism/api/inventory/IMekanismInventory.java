@@ -77,7 +77,7 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
         if (inventorySlot == null) {
             return stack;
         }
-        return inventorySlot.insertItem(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return inventorySlot.insertItem(stack, action, AutomationType.handler(side));
     }
 
     @Override
@@ -86,7 +86,7 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
         if (inventorySlot == null) {
             return ItemStack.EMPTY;
         }
-        return inventorySlot.extractItem(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return inventorySlot.extractItem(amount, action, AutomationType.handler(side));
     }
 
     @Override

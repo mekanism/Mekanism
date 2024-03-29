@@ -46,7 +46,12 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, @NotNull Action action) {
-        if (container == 0 && storage.canReceive()) {
+        return container == 0 ? insertEnergy(amount, action) : amount;
+    }
+
+    @Override
+    public FloatingLong insertEnergy(FloatingLong amount, Action action) {
+        if (storage.canReceive()) {
             long toInsert = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
             if (toInsert > 0) {
                 long inserted = storage.receiveEnergyL(toInsert, action.simulate());
@@ -61,7 +66,12 @@ public class FNStrictEnergyHandler implements IStrictEnergyHandler {
 
     @Override
     public FloatingLong extractEnergy(int container, FloatingLong amount, @NotNull Action action) {
-        if (container == 0 && storage.canExtract()) {
+        return container == 0 ? extractEnergy(amount, action) : FloatingLong.ZERO;
+    }
+
+    @Override
+    public FloatingLong extractEnergy(FloatingLong amount, Action action) {
+        if (storage.canExtract()) {
             long toExtract = EnergyUnit.FORGE_ENERGY.convertToAsLong(amount);
             if (toExtract > 0) {
                 long extracted = storage.extractEnergyL(toExtract, action.simulate());

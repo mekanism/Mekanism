@@ -13,7 +13,6 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,7 +93,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapability(Capabilities.HEAT, EnumUtils.DIRECTIONS);
+            invalidateCapabilityAll(Capabilities.HEAT);
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

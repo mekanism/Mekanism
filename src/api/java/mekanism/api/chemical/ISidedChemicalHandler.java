@@ -193,8 +193,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the insertion.
      */
     default STACK insertChemical(STACK stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.insert(stack, action, getEmptyStack(), () -> getTanks(side), tank -> getChemicalInTank(tank, side),
-              (tank, s, a) -> insertChemical(tank, s, side, a));
+        return ChemicalUtils.insert(stack, side, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::insertChemical);
     }
 
     /**
@@ -217,8 +216,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default STACK extractChemical(long amount, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(amount, action, getEmptyStack(), () -> getTanks(side), tank -> getChemicalInTank(tank, side),
-              (tank, a, act) -> extractChemical(tank, a, side, act));
+        return ChemicalUtils.extract(amount, side, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
     }
 
     /**
@@ -240,7 +238,6 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IChemicalHandler} ends up distributing the extraction.
      */
     default STACK extractChemical(STACK stack, @Nullable Direction side, Action action) {
-        return ChemicalUtils.extract(stack, action, getEmptyStack(), () -> getTanks(side), tank -> getChemicalInTank(tank, side),
-              (tank, a, act) -> extractChemical(tank, a, side, act));
+        return ChemicalUtils.extract(stack, side, action, getEmptyStack(), this::getTanks, this::getChemicalInTank, this::extractChemical);
     }
 }

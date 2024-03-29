@@ -3,6 +3,7 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -13,6 +14,7 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
+import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
@@ -47,6 +49,10 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
     private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
+
+    private final List<IGasTank> inputTanks;
+    private final List<IGasTank> outputSteamTanks;
+    private final List<IGasTank> outputCoolantTanks;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
@@ -106,6 +112,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         fluidTanks.add(waterTank);
         steamTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> steamTankCapacity, gas -> gas == MekanismGases.STEAM.getChemical(), this);
         cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> cooledCoolantCapacity, gas -> gas.has(CooledCoolant.class), this);
+        inputTanks = List.of(superheatedCoolantTank);
+        outputSteamTanks = List.of(steamTank);
+        outputCoolantTanks = List.of(cooledCoolantTank);
         Collections.addAll(gasTanks, steamTank, superheatedCoolantTank, cooledCoolantTank);
         heatCapacitor = VariableHeatCapacitor.create(CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT, () -> CASING_INVERSE_INSULATION_COEFFICIENT,
               () -> biomeAmbientTemp, this);
@@ -181,6 +190,14 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             prevSteamScale = steamScale;
         }
         return needsPacket;
+    }
+
+    public List<IGasTank> getGasTanks(BoilerValveMode mode) {
+        return switch (mode) {
+            case INPUT -> inputTanks;
+            case OUTPUT_STEAM -> outputSteamTanks;
+            case OUTPUT_COOLANT -> outputCoolantTanks;
+        };
     }
 
     @Override

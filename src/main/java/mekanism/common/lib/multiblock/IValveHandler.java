@@ -41,8 +41,9 @@ public interface IValveHandler {
 
     default void triggerValveTransfer(IMultiblock<?> multiblock) {
         if (multiblock.getMultiblock().isFormed()) {
+            BlockPos pos = multiblock.getBlockPos();
             for (ValveData data : getValveData()) {
-                if (multiblock.getBlockPos().equals(data.location)) {
+                if (pos.equals(data.location)) {
                     data.onTransfer();
                     break;
                 }

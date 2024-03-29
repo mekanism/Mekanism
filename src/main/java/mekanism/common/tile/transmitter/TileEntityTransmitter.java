@@ -2,6 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -18,7 +19,6 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
@@ -411,8 +411,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void redstoneChanged(boolean powered) {
     }
 
-    protected InteractPredicate getExtractPredicate() {
-        return (tank, side) -> {
+    protected Predicate<@Nullable Direction> getExtractPredicate() {
+        return side -> {
             if (side == null) {
                 //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
                 return true;
@@ -423,8 +423,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         };
     }
 
-    protected InteractPredicate getInsertPredicate() {
-        return (tank, side) -> {
+    protected Predicate<@Nullable Direction> getInsertPredicate() {
+        return side -> {
             if (side == null) {
                 //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
                 return true;

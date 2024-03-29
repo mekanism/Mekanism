@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -178,7 +179,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     public void fillTankOrConvert() {
         if (!isEmpty() && chemicalTank.getNeeded() > 0) {
             //Fill the tank from the item
-            if (!fillTankFromItem()) {
+            if (!fillChemicalTankFromItem(this, chemicalTank, getCapability())) {
                 //If filling from item failed, try doing it by conversion
                 ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = getConversionRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
@@ -205,10 +206,6 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         fillChemicalTank(this, chemicalTank, getCapability());
     }
 
-    public boolean fillTankFromItem() {
-        return fillChemicalTankFromItem(this, chemicalTank, getCapability());
-    }
-
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void fillChemicalTank(IInventorySlot slot,
           IChemicalTank<CHEMICAL, STACK> chemicalTank, @Nullable IChemicalHandler<CHEMICAL, STACK> handler) {
         if (!slot.isEmpty() && chemicalTank.getNeeded() > 0) {
@@ -220,40 +217,32 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     /**
      * @implNote Does not pre-check if the current stack is empty or that the chemical tank needs chemical
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean fillChemicalTankFromItem(IInventorySlot slot,
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean fillChemicalTankFromItem(IInventorySlot slot,
           IChemicalTank<CHEMICAL, STACK> chemicalTank, @Nullable IChemicalHandler<CHEMICAL, STACK> handler) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
         if (handler != null) {
-            boolean didTransfer = false;
-            for (int tank = 0; tank < handler.getTanks(); tank++) {
-                STACK chemicalInItem = handler.getChemicalInTank(tank);
-                if (!chemicalInItem.isEmpty()) {
-                    //Simulate inserting chemical from each tank in the item into our tank
-                    STACK simulatedRemainder = chemicalTank.insert(chemicalInItem, Action.SIMULATE, AutomationType.INTERNAL);
-                    long chemicalInItemAmount = chemicalInItem.getAmount();
-                    long remainder = simulatedRemainder.getAmount();
-                    if (remainder < chemicalInItemAmount) {
-                        //If we were simulated that we could actually insert any, then
-                        // extract up to as much chemical as we were able to accept from the item
-                        STACK extractedChemical = handler.extractChemical(tank, chemicalInItemAmount - remainder, Action.EXECUTE);
-                        if (!extractedChemical.isEmpty()) {
-                            //If we were able to actually extract it from the item, then insert it into our chemical tank
-                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).getAmount(), 0);
-                            //and mark that we were able to transfer at least some of it
-                            didTransfer = true;
-                            if (chemicalTank.getNeeded() == 0) {
-                                //If our tank is full then exit early rather than continuing
-                                // to check about filling the tank from the item
-                                break;
-                            }
-                        }
+            STACK toExtract = chemicalTank.isEmpty() ?
+                                   //No known type, just extract to the tank's capacity of any type
+                                   handler.extractChemical(chemicalTank.getCapacity(), Action.SIMULATE) :
+                                   //We have a known type in the tank, try to extract the amount we need to fill the tank, using that type of chemical
+                                   handler.extractChemical(ChemicalUtil.copyWithAmount(chemicalTank.getStack(), chemicalTank.getNeeded()), Action.SIMULATE);
+            if (!toExtract.isEmpty()) {
+                //Simulate inserting chemical from each tank in the item into our tank
+                STACK simulatedRemainder = chemicalTank.insert(toExtract, Action.SIMULATE, AutomationType.INTERNAL);
+                toExtract.shrink(simulatedRemainder.getAmount());
+                if (!toExtract.isEmpty()) {
+                    //If we were simulated that we could actually insert any, then
+                    // extract up to as much chemical as we were able to accept from the item
+                    STACK extractedChemical = handler.extractChemical(toExtract, Action.EXECUTE);
+                    if (!extractedChemical.isEmpty()) {
+                        //If we were able to actually extract it from the item, then insert it into our chemical tank
+                        MekanismUtils.logMismatchedStackSize(chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).getAmount(), 0);
+                        //and mark that we were able to transfer at least some of it
+                        slot.onContentsChanged();
+                        return true;
                     }
                 }
-            }
-            if (didTransfer) {
-                slot.onContentsChanged();
-                return true;
             }
         }
         return false;

@@ -5,8 +5,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
+import mekanism.common.capabilities.chemical.dynamic.SimpleDynamicChemicalHandler.SimpleDynamicInfusionHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,8 +22,7 @@ public interface IInfusionTile extends IInfusionTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default InfusionHandlerManager getInitialInfusionManager(IContentsListener listener) {
-        return new InfusionHandlerManager(getInitialInfusionTanks(listener), new DynamicInfusionHandler(this::getInfusionTanks, this::extractInfusionCheck,
-              this::insertInfusionCheck, listener));
+        return new InfusionHandlerManager(getInitialInfusionTanks(listener), new SimpleDynamicInfusionHandler(this::getInfusionTanks, listener));
     }
 
     /**
@@ -47,13 +46,5 @@ public interface IInfusionTile extends IInfusionTracker {
     @Override
     default List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return getInfusionManager().getContainers(side);
-    }
-
-    default boolean extractInfusionCheck(int tank, @Nullable Direction side) {
-        return true;
-    }
-
-    default boolean insertInfusionCheck(int tank, @Nullable Direction side) {
-        return true;
     }
 }

@@ -204,8 +204,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion.
      */
     default FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.insert(amount, action, () -> getEnergyContainerCount(side), container -> getEnergy(container, side),
-              (container, a, act) -> insertEnergy(container, a, side, act));
+        return FloatingLongTransferUtils.insert(amount, side, action, this::getEnergyContainerCount, this::getEnergy, this::insertEnergy);
     }
 
     /**
@@ -227,6 +226,6 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction.
      */
     default FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        return FloatingLongTransferUtils.extract(amount, action, () -> getEnergyContainerCount(side), (container, a, act) -> extractEnergy(container, a, side, act));
+        return FloatingLongTransferUtils.extract(amount, side, action, this::getEnergyContainerCount, this::extractEnergy);
     }
 }

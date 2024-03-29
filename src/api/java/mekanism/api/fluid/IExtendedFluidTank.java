@@ -273,7 +273,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     @Override
     @Deprecated
     default FluidStack drain(FluidStack stack, FluidAction action) {
-        if (!isEmpty() && getFluid().isFluidEqual(stack)) {
+        if (!isEmpty() && isFluidEqual(stack)) {
             return extract(stack.getAmount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
         }
         return FluidStack.EMPTY;

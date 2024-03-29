@@ -49,12 +49,21 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
 
     @NotNull
     @Override
+    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
+        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
+    }
+
+    @NotNull
+    @Override
     public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        FluidStack ret = super.insertFluid(stack, side, action);
-        if (ret.getAmount() < stack.getAmount() && action.execute()) {
+        return handleValves(stack, action, super.insertFluid(stack, side, action));
+    }
+
+    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
+        if (action.execute() && remainder.getAmount() < stack.getAmount()) {
             getMultiblock().triggerValveTransfer(this);
         }
-        return ret;
+        return remainder;
     }
 
     @Override

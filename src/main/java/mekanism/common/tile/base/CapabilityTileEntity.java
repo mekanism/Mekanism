@@ -111,8 +111,8 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         invalidateCapabilities();
     }
 
-    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction... sides) {
-        capabilityCache.invalidateSides(capability, sides);
+    public final void invalidateCapabilityAll(@NotNull BlockCapability<?, @Nullable Direction> capability) {
+        capabilityCache.invalidateAll(capability);
         invalidateCapabilities();
     }
 
@@ -123,9 +123,9 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         invalidateCapabilities();
     }
 
-    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, Direction... sides) {
+    public final void invalidateCapabilitiesAll(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities) {
         for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
-            capabilityCache.invalidateSides(capability, sides);
+            capabilityCache.invalidateAll(capability);
         }
         invalidateCapabilities();
     }

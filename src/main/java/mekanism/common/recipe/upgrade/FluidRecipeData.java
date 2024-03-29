@@ -53,8 +53,6 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
 
     private FluidStack insertManualIntoOutputContainer(IMekanismFluidHandler outputHandler, FluidStack fluid) {
         //Insert into the output using manual as the automation type
-        List<IExtendedFluidTank> fluidTanks = outputHandler.getFluidTanks(null);
-        return ExtendedFluidHandlerUtils.insert(fluid, Action.EXECUTE, fluidTanks::size, container -> fluidTanks.get(container).getFluid(),
-              (container, amount, action) -> fluidTanks.get(container).insert(amount, action, AutomationType.MANUAL));
+        return ExtendedFluidHandlerUtils.insert(fluid, null, outputHandler::getFluidTanks, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

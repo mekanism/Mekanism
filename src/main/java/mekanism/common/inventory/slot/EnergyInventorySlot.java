@@ -161,33 +161,22 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(current);
         if (itemEnergyHandler != null) {
-            boolean didTransfer = false;
-            for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
-                FloatingLong energyInItem = itemEnergyHandler.getEnergy(container);
-                if (!energyInItem.isZero()) {
-                    //Simulate inserting energy from each container in the item into our container
-                    FloatingLong simulatedRemainder = energyContainer.insert(energyInItem, Action.SIMULATE, AutomationType.INTERNAL);
-                    if (simulatedRemainder.smallerThan(energyInItem)) {
-                        //If we were simulated that we could actually insert any, then
-                        // extract up to as much energy as we were able to accept from the item
-                        FloatingLong extractedEnergy = itemEnergyHandler.extractEnergy(container, energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
-                        if (!extractedEnergy.isZero()) {
-                            //If we were able to actually extract it from the item, then insert it into our energy container
-                            MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
-                            //and mark that we were able to transfer at least some of it
-                            didTransfer = true;
-                            if (energyContainer.getNeeded().isZero()) {
-                                //If our energy container is full then exit early rather than continuing
-                                // to check about filling the container from the item
-                                break;
-                            }
-                        }
+            FloatingLong energyInItem = itemEnergyHandler.extractEnergy(energyContainer.getNeeded(), Action.SIMULATE);
+            if (!energyInItem.isZero()) {
+                //Simulate inserting energy from each container in the item into our container
+                FloatingLong simulatedRemainder = energyContainer.insert(energyInItem, Action.SIMULATE, AutomationType.INTERNAL);
+                if (simulatedRemainder.smallerThan(energyInItem)) {
+                    //If we were simulated that we could actually insert any, then
+                    // extract up to as much energy as we were able to accept from the item
+                    FloatingLong extractedEnergy = itemEnergyHandler.extractEnergy(energyInItem.subtract(simulatedRemainder), Action.EXECUTE);
+                    if (!extractedEnergy.isZero()) {
+                        //If we were able to actually extract it from the item, then insert it into our energy container
+                        MekanismUtils.logExpectedZero(energyContainer.insert(extractedEnergy, Action.EXECUTE, AutomationType.INTERNAL));
+                        //and mark that we were able to transfer at least some of it
+                        onContentsChanged();
+                        return true;
                     }
                 }
-            }
-            if (didTransfer) {
-                onContentsChanged();
-                return true;
             }
         }
         return false;

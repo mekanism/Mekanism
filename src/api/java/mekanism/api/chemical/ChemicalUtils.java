@@ -4,10 +4,14 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.ToIntFunction;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
@@ -18,6 +22,10 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.container.ContainerInteraction;
+import mekanism.api.container.InContainerGetter;
+import mekanism.api.container.LongContainerInteraction;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -148,31 +156,57 @@ public class ChemicalUtils {
 
     /**
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @deprecated Please use {@link #insert(ChemicalStack, Direction, Action, ChemicalStack, ToIntFunction, InContainerGetter, ContainerInteraction)} to avoid capturing
+     * lambdas.
      */
+    @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, Action action, STACK empty,
           IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return empty;
         }
-        int tanks = tankCount.getAsInt();
-        if (tanks == 1) {
-            return insertChemical.insert(0, stack, action);
+        return insert(stack, null, action, empty, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank),
+              (tank, chemical, side, act) -> insertChemical.insert(tank, chemical, act));
+    }
+
+    /**
+     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, @Nullable Direction side, Action action,
+          STACK empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, ContainerInteraction<STACK> insertChemical) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return empty;
         }
-        IntList matchingTanks = new IntArrayList();
-        IntList emptyTanks = new IntArrayList();
-        for (int tank = 0; tank < tanks; tank++) {
-            STACK inTank = inTankGetter.get(tank);
-            if (inTank.isEmpty()) {
-                emptyTanks.add(tank);
-            } else if (inTank.isTypeEqual(stack)) {
-                matchingTanks.add(tank);
-            }
+        int tanks = tankCount.applyAsInt(side);
+        if (tanks == 0) {
+            return stack;
+        } else if (tanks == 1) {
+            return insertChemical.interact(0, stack, side, action);
         }
         STACK toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
-        for (int tank : matchingTanks) {
-            STACK remainder = insertChemical.insert(tank, toInsert, action);
+        IntList emptyTanks = new IntArrayList();
+        for (int tank = 0; tank < tanks; tank++) {
+            STACK inTank = inTankGetter.getStored(tank, side);
+            if (inTank.isEmpty()) {
+                emptyTanks.add(tank);
+            } else if (inTank.isTypeEqual(stack)) {
+                STACK remainder = insertChemical.interact(tank, toInsert, side, action);
+                if (remainder.isEmpty()) {
+                    //If we have no remaining chemical, return that we fit it all
+                    return empty;
+                }
+                //Update what we have left to insert, to be the amount we were unable to insert
+                toInsert = remainder;
+            }
+        }
+        for (int tank : emptyTanks) {
+            STACK remainder = insertChemical.interact(tank, toInsert, side, action);
             if (remainder.isEmpty()) {
                 //If we have no remaining chemical, return that we fit it all
                 return empty;
@@ -180,8 +214,44 @@ public class ChemicalUtils {
             //Update what we have left to insert, to be the amount we were unable to insert
             toInsert = remainder;
         }
-        for (int tank : emptyTanks) {
-            STACK remainder = insertChemical.insert(tank, toInsert, action);
+        return toInsert;
+    }
+
+    /**
+     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK insert(STACK stack,
+          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return empty;
+        }
+        List<TANK> chemicalContainers = tankSupplier.apply(side);
+        if (chemicalContainers.isEmpty()) {
+            return stack;
+        } else if (chemicalContainers.size() == 1) {
+            return chemicalContainers.get(0).insert(stack, action, automationType);
+        }
+        STACK toInsert = stack;
+        //Start by trying to insert into the tanks that have the same type
+        List<TANK> emptyTanks = new ArrayList<>();
+        for (TANK tank : chemicalContainers) {
+            if (tank.isEmpty()) {
+                emptyTanks.add(tank);
+            } else if (tank.isTypeEqual(stack)) {
+                STACK remainder = tank.insert(toInsert, action, automationType);
+                if (remainder.isEmpty()) {
+                    //If we have no remaining chemical, return that we fit it all
+                    return empty;
+                }
+                //Update what we have left to insert, to be the amount we were unable to insert
+                toInsert = remainder;
+            }
+        }
+        for (TANK tank : emptyTanks) {
+            STACK remainder = tank.insert(toInsert, action, automationType);
             if (remainder.isEmpty()) {
                 //If we have no remaining chemical, return that we fit it all
                 return empty;
@@ -194,19 +264,42 @@ public class ChemicalUtils {
 
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @deprecated Please use {@link #extract(long, Direction, Action, ChemicalStack, ToIntFunction, InContainerGetter, LongContainerInteraction)} to avoid capturing
+     * lambdas.
      */
+    @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, Action action, STACK empty,
           IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
-        int tanks = tankCount.getAsInt();
-        if (tanks == 1) {
-            return extractChemical.extract(0, amount, action);
+        if (amount == 0) {
+            return empty;
+        }
+        return extract(amount, null, action, empty, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank),
+              (tank, chemical, side, act) -> extractChemical.extract(tank, chemical, act));
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, @Nullable Direction side, Action action,
+          STACK empty, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, LongContainerInteraction<STACK> extractChemical) {
+        if (amount == 0) {
+            return empty;
+        }
+        int tanks = tankCount.applyAsInt(side);
+        if (tanks == 0) {
+            return empty;
+        } else if (tanks == 1) {
+            return extractChemical.interact(0, amount, side, action);
         }
         STACK extracted = empty;
         long toDrain = amount;
         for (int tank = 0; tank < tanks; tank++) {
-            if (extracted.isEmpty() || extracted.isTypeEqual(inTankGetter.get(tank))) {
+            if (extracted.isEmpty() || extracted.isTypeEqual(inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
-                STACK drained = extractChemical.extract(tank, toDrain, action);
+                STACK drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {
@@ -229,23 +322,88 @@ public class ChemicalUtils {
 
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
      */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(long amount,
+          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+        if (amount == 0) {
+            return empty;
+        }
+        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        if (chemicalTanks.isEmpty()) {
+            return empty;
+        } else if (chemicalTanks.size() == 1) {
+            return chemicalTanks.get(0).extract(amount, action, automationType);
+        }
+        STACK extracted = empty;
+        long toDrain = amount;
+        for (TANK tank : chemicalTanks) {
+            if (extracted.isEmpty() || tank.isTypeEqual(extracted)) {
+                //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
+                STACK drained = tank.extract(toDrain, action, automationType);
+                if (!drained.isEmpty()) {
+                    //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
+                    if (extracted.isEmpty()) {
+                        extracted = drained;
+                    } else {
+                        extracted.grow(drained.getAmount());
+                    }
+                    toDrain -= drained.getAmount();
+                    if (toDrain == 0) {
+                        //If we are done draining break and return the amount extracted
+                        break;
+                    }
+                    //Otherwise, keep looking and attempt to drain more from the handler, making sure that it is of
+                    // the same type as we have found
+                }
+            }
+        }
+        return extracted;
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @deprecated Please use {@link #extract(long, Direction, Action, ChemicalStack, ToIntFunction, InContainerGetter, LongContainerInteraction)} to avoid capturing
+     * lambdas.
+     */
+    @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, Action action, STACK empty,
           IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
-        int tanks = tankCount.getAsInt();
-        if (tanks == 1) {
-            STACK inTank = inTankGetter.get(0);
+        if (stack.isEmpty()) {
+            return empty;
+        }
+        return extract(stack, null, action, empty, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank),
+              (tank, chemical, side, act) -> extractChemical.extract(tank, chemical, act));
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, @Nullable Direction side, Action action, STACK empty,
+          ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<STACK> inTankGetter, LongContainerInteraction<STACK> extractChemical) {
+        if (stack.isEmpty()) {
+            return empty;
+        }
+        int tanks = tankCount.applyAsInt(side);
+        if (tanks == 0) {
+            return empty;
+        } else if (tanks == 1) {
+            STACK inTank = inTankGetter.getStored(0, side);
             if (inTank.isEmpty() || !inTank.isTypeEqual(stack)) {
                 return empty;
             }
-            return extractChemical.extract(0, stack.getAmount(), action);
+            return extractChemical.interact(0, stack.getAmount(), side, action);
         }
         STACK extracted = empty;
         long toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
-            if (stack.isTypeEqual(inTankGetter.get(tank))) {
+            if (stack.isTypeEqual(inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
-                STACK drained = extractChemical.extract(tank, toDrain, action);
+                STACK drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
                     if (extracted.isEmpty()) {
@@ -265,13 +423,66 @@ public class ChemicalUtils {
         return extracted;
     }
 
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.5.13
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(STACK stack,
+          @Nullable Direction side, Function<@Nullable Direction, List<TANK>> tankSupplier, Action action, AutomationType automationType, STACK empty) {
+        if (stack.isEmpty()) {
+            return empty;
+        }
+        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        if (chemicalTanks.isEmpty()) {
+            return empty;
+        } else if (chemicalTanks.size() == 1) {
+            TANK tank = chemicalTanks.get(0);
+            if (tank.isEmpty() || !tank.isTypeEqual(stack)) {
+                return empty;
+            }
+            return tank.extract(stack.getAmount(), action, automationType);
+        }
+        STACK extracted = empty;
+        long toDrain = stack.getAmount();
+        for (TANK tank : chemicalTanks) {
+            if (tank.isTypeEqual(stack)) {
+                //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
+                STACK drained = tank.extract(toDrain, action, automationType);
+                if (!drained.isEmpty()) {
+                    //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
+                    if (extracted.isEmpty()) {
+                        extracted = drained;
+                    } else {
+                        extracted.grow(drained.getAmount());
+                    }
+                    toDrain -= drained.getAmount();
+                    if (toDrain == 0) {
+                        //If we are done draining break and return the amount extracted
+                        break;
+                    }
+                    //Otherwise, keep looking and attempt to drain more from the handler
+                }
+            }
+        }
+        return extracted;
+    }
+
+    /**
+     * @deprecated See {@link mekanism.api.container.ContainerInteraction}
+     */
     @FunctionalInterface
+    @Deprecated(forRemoval = true, since = "10.5.13")
     public interface InsertChemical<STACK extends ChemicalStack<?>> {
 
         STACK insert(int tank, STACK stack, Action action);
     }
 
+    /**
+     * @deprecated See {@link mekanism.api.container.LongContainerInteraction}
+     */
     @FunctionalInterface
+    @Deprecated(forRemoval = true, since = "10.5.13")
     public interface ExtractChemical<STACK extends ChemicalStack<?>> {
 
         STACK extract(int tank, long amount, Action action);

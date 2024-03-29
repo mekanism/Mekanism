@@ -60,8 +60,6 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     private STACK insertManualIntoOutputContainer(IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler, STACK chemical) {
         //Insert into the output using manual as the automation type
-        List<TANK> chemicalTanks = outputHandler.getChemicalTanks(null);
-        return ChemicalUtils.insert(chemical, Action.EXECUTE, outputHandler.getEmptyStack(), chemicalTanks::size, container -> chemicalTanks.get(container).getStack(),
-              (container, amount, action) -> chemicalTanks.get(container).insert(amount, action, AutomationType.MANUAL));
+        return ChemicalUtils.insert(chemical, null, outputHandler::getChemicalTanks, Action.EXECUTE, AutomationType.MANUAL, outputHandler.getEmptyStack());
     }
 }

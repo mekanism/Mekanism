@@ -14,7 +14,6 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -1218,11 +1217,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public FloatingLong insertEnergy(int container, @NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
-        IEnergyContainer energyContainer = getEnergyContainer(container, side);
-        if (energyContainer == null) {
-            return amount;
-        }
-        FloatingLong remainder = energyContainer.insert(amount, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
+        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
+    }
+
+    @NotNull
+    @Override
+    public FloatingLong insertEnergy(@NotNull FloatingLong amount, @Nullable Direction side, @NotNull Action action) {
+        //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
+        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
+    }
+
+    private FloatingLong trackLastEnergy(@NotNull FloatingLong amount, @NotNull Action action, @NotNull FloatingLong remainder) {
         if (action.execute()) {
             //If for some reason we don't have a level fall back to zero
             lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount.subtract(remainder));

@@ -198,7 +198,16 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     public FluidStack insertFluid(int tank, @NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
-        FluidStack remainder = super.insertFluid(tank, stack, side, action);
+        return insertExcess(stack, side, action, super.insertFluid(tank, stack, side, action));
+    }
+
+    @NotNull
+    @Override
+    public FluidStack insertFluid(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
+        return insertExcess(stack, side, action, super.insertFluid(stack, side, action));
+    }
+
+    private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action, @NotNull FluidStack remainder) {
         if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !isRemote()) {
             if (valve == 0) {
                 needsPacket = true;

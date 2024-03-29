@@ -5,8 +5,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicSlurryHandler;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.capabilities.chemical.dynamic.SimpleDynamicChemicalHandler.SimpleDynamicSlurryHandler;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,7 +22,7 @@ public interface ISlurryTile extends ISlurryTracker {
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
     default SlurryHandlerManager getInitialSlurryManager(IContentsListener listener) {
-        return new SlurryHandlerManager(getInitialSlurryTanks(listener), new DynamicSlurryHandler(this::getSlurryTanks, this::extractSlurryCheck, this::insertSlurryCheck, listener));
+        return new SlurryHandlerManager(getInitialSlurryTanks(listener), new SimpleDynamicSlurryHandler(this::getSlurryTanks, listener));
     }
 
     /**
@@ -46,13 +46,5 @@ public interface ISlurryTile extends ISlurryTracker {
     @Override
     default List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return getSlurryManager().getContainers(side);
-    }
-
-    default boolean extractSlurryCheck(int tank, @Nullable Direction side) {
-        return true;
-    }
-
-    default boolean insertSlurryCheck(int tank, @Nullable Direction side) {
-        return true;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -21,7 +22,6 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicPigmentHandler;
@@ -63,8 +63,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        InteractPredicate canExtract = getExtractPredicate();
-        InteractPredicate canInsert = getInsertPredicate();
+        Predicate<@Nullable Direction> canExtract = getExtractPredicate();
+        Predicate<@Nullable Direction> canInsert = getInsertPredicate();
         addCapabilityResolver(gasHandlerManager = new GasHandlerManager(getHolder(BoxedPressurizedTube::getGasTanks),
               new DynamicGasHandler(this::getGasTanks, canExtract, canInsert, null)));
         addCapabilityResolver(infusionHandlerManager = new InfusionHandlerManager(getHolder(BoxedPressurizedTube::getInfusionTanks),
@@ -198,7 +198,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilities(CAPABILITIES, EnumUtils.DIRECTIONS);
+            invalidateCapabilitiesAll(CAPABILITIES);
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
