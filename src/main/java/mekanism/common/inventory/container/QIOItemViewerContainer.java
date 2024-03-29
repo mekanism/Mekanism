@@ -522,10 +522,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null) {
-                    //Left click -> as much as possible, right click -> half of available
-                    long baseExtract = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? slot.count() : slot.count() / 2;
+                    int maxStackSize = Math.min(MathUtils.clampToInt(slot.count()), slot.item().getMaxStackSize());
+                    //Left click -> as much as possible, right click -> half of a stack
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
-                    int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.item().getMaxStackSize());
+                    int toTake = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? maxStackSize : Math.max(1, maxStackSize / 2);
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), toTake));
                 }
             } else {
