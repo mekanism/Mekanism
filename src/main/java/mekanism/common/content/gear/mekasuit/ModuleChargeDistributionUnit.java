@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -14,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
+import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
@@ -38,49 +40,59 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
     public void tickServer(IModule<ModuleChargeDistributionUnit> module, Player player) {
         // charge inventory first
         if (chargeInventory.get()) {
-            chargeInventory(module, player);
+            IEnergyContainer energyContainer = module.getEnergyContainer();
+            if (energyContainer != null) {
+                chargeInventory(energyContainer, player);
+            }
         }
-        // distribute suit charge next
+        // distribute suit charge next, so that if we used power from the suit to charge an item, then we can balance across the suit properly
         if (chargeSuit.get()) {
             chargeSuit(player);
         }
     }
 
     private void chargeSuit(Player player) {
-        FloatingLong total = FloatingLong.ZERO;
-        EnergySaveTarget saveTarget = new EnergySaveTarget(4);
+        EnergySaveTarget<DelegateSaveHandler> saveTarget = new EnergySaveTarget<>(4);
         for (ItemStack stack : player.getArmorSlots()) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
-                saveTarget.addDelegate(energyContainer);
-                total = total.plusEqual(energyContainer.getEnergy());
+                saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
             }
         }
-        EmitUtils.sendToAcceptors(saveTarget, total);
-        saveTarget.save();
+        if (saveTarget.getHandlerCount() > 1) {
+            //If we only have one handler we can skip charging as it will all just go back into the chest piece
+            EmitUtils.sendToAcceptors(saveTarget, saveTarget.getStored());
+            saveTarget.save();
+        }
     }
 
-    private void chargeInventory(IModule<ModuleChargeDistributionUnit> module, Player player) {
-        FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
+    private void chargeInventory(IEnergyContainer energyContainer, Player player) {
+        //Only try to charge up to how much energy we actually have stored
+        FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get().min(energyContainer.getEnergy());
+        if (toCharge.isZero()) {
+            return;
+        }
         // first try to charge mainhand/offhand item
-        toCharge = charge(module, player, player.getMainHandItem(), toCharge);
-        toCharge = charge(module, player, player.getOffhandItem(), toCharge);
+        ItemStack mainHand = player.getMainHandItem();
+        ItemStack offHand = player.getOffhandItem();
+        toCharge = charge(energyContainer, mainHand, toCharge);
+        toCharge = charge(energyContainer, offHand, toCharge);
         if (!toCharge.isZero()) {
             for (ItemStack stack : player.getInventory().items) {
-                if (stack != player.getMainHandItem() && stack != player.getOffhandItem()) {
-                    toCharge = charge(module, player, stack, toCharge);
+                if (stack != mainHand && stack != offHand) {
+                    toCharge = charge(energyContainer, stack, toCharge);
                     if (toCharge.isZero()) {
-                        break;
+                        return;
                     }
                 }
             }
-            if (!toCharge.isZero() && Mekanism.hooks.CuriosLoaded) {
+            if (Mekanism.hooks.CuriosLoaded) {
                 IItemHandler handler = CuriosIntegration.getCuriosInventory(player);
                 if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
-                        toCharge = charge(module, player, handler.getStackInSlot(slot), toCharge);
+                        toCharge = charge(energyContainer, handler.getStackInSlot(slot), toCharge);
                         if (toCharge.isZero()) {
-                            break;
+                            return;
                         }
                     }
                 }
@@ -89,14 +101,17 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
     }
 
     /** return rejects */
-    private FloatingLong charge(IModule<ModuleChargeDistributionUnit> module, Player player, ItemStack stack, FloatingLong amount) {
+    private FloatingLong charge(IEnergyContainer energyContainer, ItemStack stack, FloatingLong amount) {
         if (!stack.isEmpty() && !amount.isZero()) {
             IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
             if (handler != null) {
                 FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
                 if (remaining.smallerThan(amount)) {
                     //If we can actually insert any energy into
-                    return handler.insertEnergy(module.useEnergy(player, amount.subtract(remaining), false), Action.EXECUTE).add(remaining);
+                    FloatingLong toExtract = amount.subtract(remaining);
+                    FloatingLong extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
+                    FloatingLong inserted = handler.insertEnergy(extracted, Action.EXECUTE);
+                    return inserted.plusEqual(remaining);
                 }
             }
         }

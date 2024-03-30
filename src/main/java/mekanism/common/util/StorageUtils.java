@@ -319,6 +319,10 @@ public class StorageUtils {
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
+        if (stack.isEmpty()) {
+            //While getCapability will return null for an empty stack, we just short circuit here
+            return null;
+        }
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             return energyHandler.getEnergyContainer(container, null);

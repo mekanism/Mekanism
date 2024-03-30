@@ -7,12 +7,12 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
-public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, FloatingLong, FloatingLong> {
+public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, FloatingLong, FloatingLong> {
 
     public EnergySaveTarget() {
     }
 
-    public EnergySaveTarget(Collection<EnergySaveTarget.SaveHandler> allHandlers) {
+    public EnergySaveTarget(Collection<HANDLER> allHandlers) {
         super(allHandlers);
     }
 
@@ -21,47 +21,84 @@ public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, Float
     }
 
     @Override
-    protected void acceptAmount(EnergySaveTarget.SaveHandler handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected FloatingLong simulate(EnergySaveTarget.SaveHandler handler, FloatingLong energyToSend) {
+    protected FloatingLong simulate(HANDLER handler, FloatingLong energyToSend) {
         return handler.simulate(energyToSend);
     }
 
     public void save() {
-        for (SaveHandler handler : handlers) {
+        for (HANDLER handler : handlers) {
             handler.save();
         }
     }
 
-    public void addDelegate(IEnergyContainer delegate) {
-        this.addHandler(new SaveHandler(delegate));
+    public FloatingLong getStored() {
+        FloatingLong total = FloatingLong.ZERO;
+        for (HANDLER handler : handlers) {
+            total = total.plusEqual(handler.getStored());
+        }
+        return total;
     }
 
     @NothingNullByDefault
-    public static class SaveHandler {
+    public abstract static class SaveHandler {
 
-        private final IEnergyContainer delegate;
-        private FloatingLong currentStored = FloatingLong.ZERO;
+        private final FloatingLong maxEnergy;
+        private FloatingLong neededEnergy;
 
-        public SaveHandler(IEnergyContainer delegate) {
-            this.delegate = delegate;
+        protected SaveHandler(FloatingLong maxEnergy) {
+            this.maxEnergy = maxEnergy;
+            this.neededEnergy = this.maxEnergy.copy();
         }
 
         protected void acceptAmount(SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
-            amount = amount.min(delegate.getMaxEnergy().subtract(currentStored));
-            currentStored = currentStored.plusEqual(amount);
-            splitInfo.send(amount);
+            if (neededEnergy.isZero()) {
+                splitInfo.send(FloatingLong.ZERO);
+            } else {
+                amount = amount.min(neededEnergy);
+                neededEnergy = neededEnergy.minusEqual(amount);
+                splitInfo.send(amount);
+            }
         }
 
         protected FloatingLong simulate(FloatingLong energyToSend) {
-            return energyToSend.copy().min(delegate.getMaxEnergy().subtract(currentStored));
+            if (neededEnergy.isZero()) {
+                return FloatingLong.ZERO;
+            }
+            return energyToSend.min(neededEnergy).copy();
         }
 
-        protected void save() {
+        protected final void save() {
+            save(maxEnergy.subtract(neededEnergy));
+        }
+
+        protected abstract void save(FloatingLong currentStored);
+
+        protected abstract FloatingLong getStored();
+    }
+
+    @NothingNullByDefault
+    public static class DelegateSaveHandler extends SaveHandler {
+
+        private final IEnergyContainer delegate;
+
+        public DelegateSaveHandler(IEnergyContainer delegate) {
+            super(delegate.getMaxEnergy());
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected void save(FloatingLong currentStored) {
             delegate.setEnergy(currentStored);
+        }
+
+        @Override
+        protected FloatingLong getStored() {
+            return delegate.getEnergy();
         }
     }
 }

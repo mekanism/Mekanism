@@ -122,7 +122,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
-            saveTarget.saveShare();
+            saveTarget.save();
         }
     }
 
