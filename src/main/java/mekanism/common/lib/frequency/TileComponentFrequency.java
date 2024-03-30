@@ -193,7 +193,6 @@ public class TileComponentFrequency implements ITileComponent {
                     }
                 }
                 if (unsetFrequency) {
-                    Mekanism.logger.info("Unsetting frequency {} at {}", frequencyData.selectedFrequency.getKey(), tile.getTileGlobalPos());
                     FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
                     if (manager != null) {
                         manager.deactivate(frequencyData.selectedFrequency, tile);
@@ -203,7 +202,6 @@ public class TileComponentFrequency implements ITileComponent {
                 }
                 //Note: We don't need to update the frequency for this block as in cases when it isn't invalid we do it immediately
             } else {
-                Mekanism.logger.debug("Revalidating frequency {} at {}", frequencyData.selectedFrequency.getKey(), tile.getTileGlobalPos());
                 FREQ frequency = (FREQ) frequencyData.selectedFrequency;
                 FrequencyManager<FREQ> manager = type.getFrequencyManager(frequency);
                 if (manager == null) {
