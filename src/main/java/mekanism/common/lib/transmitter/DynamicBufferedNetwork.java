@@ -170,7 +170,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void markDirty() {
         if (world != null && !world.isClientSide && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
-            chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, WorldUtils.getBlockPosFromChunkPos(chunk)));
+            chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, ChunkPos.getX(chunk), ChunkPos.getZ(chunk)));
         }
     }
 

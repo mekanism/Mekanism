@@ -380,8 +380,16 @@ public class WorldUtils {
      * Marks a chunk as dirty if it is currently loaded
      */
     public static void markChunkDirty(Level world, BlockPos pos) {
-        if (isBlockLoaded(world, pos)) {
-            world.getChunkAt(pos).setUnsaved(true);
+        markChunkDirty(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+    }
+
+    /**
+     * Marks a chunk as dirty if it is currently loaded
+     */
+    public static void markChunkDirty(Level world, int chunkX, int chunkZ) {
+        ChunkAccess chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+        if (chunk != null) {
+            chunk.setUnsaved(true);
         }
     }
 
