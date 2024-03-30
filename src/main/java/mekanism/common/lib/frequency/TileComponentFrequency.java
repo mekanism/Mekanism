@@ -2,6 +2,7 @@ package mekanism.common.lib.frequency;
 
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private final TileEntityMekanism tile;
 
-    private final Map<FrequencyType<?>, FrequencyData> supportedFrequencies = new LinkedHashMap<>();
+    private Map<FrequencyType<?>, FrequencyData> supportedFrequencies = Collections.emptyMap();
 
     private final Map<SecurityMode, Map<FrequencyType<?>, List<? extends Frequency>>> frequencyCache = new EnumMap<>(SecurityMode.class);
     private final int tickOffset;
@@ -84,7 +85,15 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void track(FrequencyType<?> type, boolean needsSync, boolean needsListCache, boolean notifyNeighbors) {
-        supportedFrequencies.put(type, new FrequencyData(needsSync, needsListCache, notifyNeighbors));
+        FrequencyData value = new FrequencyData(needsSync, needsListCache, notifyNeighbors);
+        if (supportedFrequencies.isEmpty()) {
+            supportedFrequencies = Collections.singletonMap(type, value);
+        } else if (supportedFrequencies.size() == 1) {
+            supportedFrequencies = new LinkedHashMap<>(supportedFrequencies);
+            supportedFrequencies.put(type, value);
+        } else {
+            supportedFrequencies.put(type, value);
+        }
     }
 
     @Nullable
