@@ -1,27 +1,19 @@
 package mekanism.common.integration.lookingat.jade;
 
-import mekanism.api.NBTConstants;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.ITooltip;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.Identifiers;
-import snownee.jade.api.TooltipPosition;
 import snownee.jade.api.WailaPlugin;
-import snownee.jade.api.config.IPluginConfig;
 
 @WailaPlugin
 public class MekanismJadePlugin implements IWailaPlugin {
@@ -42,27 +34,8 @@ public class MekanismJadePlugin implements IWailaPlugin {
         registration.addConfig(LookingAtUtils.SLURRY, true);
         registration.registerEntityComponent(JadeTooltipRenderer.INSTANCE, EntityRobit.class);
         registration.registerBlockComponent(JadeTooltipRenderer.INSTANCE, Block.class);
-        registration.registerBlockComponent(new IBlockComponentProvider() {
-            @Override
-            public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-                if (accessor.getServerData().contains(NBTConstants.MEK_DATA, Tag.TAG_LIST)) {
-                    tooltip.remove(Identifiers.UNIVERSAL_ENERGY_STORAGE);
-                    tooltip.remove(Identifiers.UNIVERSAL_FLUID_STORAGE);
-                }
-            }
-
-            @Override
-            public ResourceLocation getUid() {
-                return JadeConstants.REMOVE_BUILTIN;
-            }
-
-            @Override
-            public int getDefaultPriority() {
-                //Run in tail to ensure we are after the provider adding forge energy and fluid
-                // so that we can remove it if we are adding our own
-                return TooltipPosition.TAIL;
-            }
-        }, Block.class);
+        registration.registerEntityComponent(JadeBuiltinRemover.INSTANCE, EntityRobit.class);
+        registration.registerBlockComponent(JadeBuiltinRemover.INSTANCE, Block.class);
         registration.addRayTraceCallback((hitResult, accessor, originalAccessor) -> {
             //Redirect bounding blocks to the main tile for purposes of naming and the like
             if (accessor instanceof BlockAccessor target && target.getBlockState().getBlock() instanceof BlockBounding) {
