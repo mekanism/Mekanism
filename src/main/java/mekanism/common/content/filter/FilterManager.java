@@ -29,7 +29,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         this.markForSave = markForSave;
     }
 
-    public final List<FILTER> getFilters() {
+    public final HashList<FILTER> getFilters() {
         //TODO: Decide at some point if we want getFilters and getEnabledFilters to return an unmodifiable view
         return filters;
     }

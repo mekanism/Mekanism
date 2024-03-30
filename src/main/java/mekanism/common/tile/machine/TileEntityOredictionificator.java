@@ -1,5 +1,6 @@
 package mekanism.common.tile.machine;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -189,7 +190,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    List<OredictionificatorItemFilter> getFilters() {
+    Collection<OredictionificatorItemFilter> getFilters() {
         return filterManager.getFilters();
     }
 

@@ -1,6 +1,6 @@
 package mekanism.common.tile.qio;
 
-import java.util.List;
+import java.util.Collection;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.content.filter.SortableFilterManager;
@@ -57,7 +57,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    List<QIOFilter<?>> getFilters() {
+    Collection<QIOFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 

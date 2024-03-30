@@ -23,8 +23,8 @@ public class SecurityFrequency extends Frequency {
 
     private boolean override = false;
 
-    private final List<UUID> trusted = new HashList<>();
-    private List<String> trustedCache = new HashList<>();
+    private final HashList<UUID> trusted = new HashList<>();
+    private HashList<String> trustedCache = new HashList<>();
     private int trustedCacheHash;
 
     /**
@@ -80,7 +80,7 @@ public class SecurityFrequency extends Frequency {
     protected void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         override = dataStream.readBoolean();
-        trustedCache = dataStream.readList(buf -> buf.readUtf(PacketUtils.LAST_USERNAME_LENGTH));
+        trustedCache = dataStream.readCollection(HashList::new, buf -> buf.readUtf(PacketUtils.LAST_USERNAME_LENGTH));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class SecurityFrequency extends Frequency {
     }
 
     public List<String> getTrustedUsernameCache() {
-        return trustedCache;
+        return trustedCache.elements();
     }
 
     public void addTrusted(UUID uuid, String name) {

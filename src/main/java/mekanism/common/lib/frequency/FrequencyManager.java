@@ -192,7 +192,7 @@ public class FrequencyManager<FREQ extends Frequency> {
 
     public class FrequencyDataHandler extends MekanismSavedData {
 
-        public List<FREQ> loadedFrequencies;
+        public HashList<FREQ> loadedFrequencies;
         public UUID loadedOwner;
 
         public void syncManager() {

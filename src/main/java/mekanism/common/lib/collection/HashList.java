@@ -1,42 +1,79 @@
 package mekanism.common.lib.collection;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class HashList<T> extends AbstractList<T> {
 
-    private final List<T> list;
+/**
+ * Copied from org.antlr.v4.runtime.misc.OrderedHashSet. A HashMap that remembers the order that the elements were added. You can alter the ith element with set(i,value)
+ * too :) Unique list.
+ *
+ * @param <T> element type
+ */
+public class HashList<T> extends LinkedHashSet<T> {
 
-    public HashList(List<T> newList) {
-        list = newList;
-    }
+    @NotNull
+    protected List<T> list;
 
     public HashList() {
-        this(new ArrayList<>());
+        super();
+        list = new ArrayList<>();
+    }
+
+    public HashList(Collection<? extends T> toCopy) {
+        super(toCopy);
+        list = new ArrayList<>(toCopy);
     }
 
     public HashList(int initialCapacity) {
-        this(new ArrayList<>(initialCapacity));
+        super(initialCapacity);
+        list = new ArrayList<>(initialCapacity);
     }
 
+    /**
+     * Replace an existing value with a new value; updates the element list and the hash table, but not the key as that has not changed.
+     */
+    public T set(int i, T value) {
+        T oldElement = list.get(i);
+        list.set(i, value); // update list
+        super.remove(oldElement); // now update the set: remove/add
+        super.add(value);
+        return oldElement;
+    }
+
+    /**
+     * Add a value to list; keep in hashtable for consistency also; Key is object itself.  Good for say asking if a certain string is in a list of strings.
+     */
     @Override
-    public boolean contains(Object obj) {
-        return list.contains(obj);
+    public boolean add(T value) {
+        boolean result = super.add(value);
+        if (result) {  // only track if new element not in set
+            list.add(value);
+        }
+        return result;
+    }
+
+    public void add(int i, T value) {
+        boolean result = super.add(value);
+        if (result) {  // only track if new element not in set
+            list.add(i, value);
+        }
     }
 
     @Override
     public void clear() {
         list.clear();
+        super.clear();
     }
 
-    @Override
-    public T get(int index) {
-        return list.get(index);
+    public T get(int i) {
+        return list.get(i);
     }
 
     @Nullable
@@ -44,38 +81,29 @@ public class HashList<T> extends AbstractList<T> {
         return index >= 0 && index < size() ? get(index) : null;
     }
 
-    @Override
-    public boolean add(T obj) {
-        return !list.contains(obj) && list.add(obj);
+    /**
+     * Return the List holding list of table elements.  Note that you are NOT getting a copy so don't write to the list.
+     */
+    public List<T> elements() {
+        return list;
     }
 
     @Override
-    public void add(int index, T obj) {
-        if (!list.contains(obj)) {
-            if (index > size()) {
-                for (int i = size(); i <= index - 1; i++) {
-                    list.add(i, null);
-                }
-            }
-            list.add(index, obj);
-        }
+    public Object clone() {
+        @SuppressWarnings("unchecked") // safe (result of clone)
+        HashList<T> dup = (HashList<T>) super.clone();
+        dup.list = new ArrayList<T>(this.list);
+        return dup;
     }
 
     @Override
-    public boolean isEmpty() {
-        return list.isEmpty();
+    public Object @NotNull [] toArray() {
+        return list.toArray();
     }
 
     @Override
-    public T remove(int index) {
-        return list.remove(index);
-    }
-
-    public void replace(int index, T obj) {
-        if (getOrNull(index) != null) {
-            remove(index);
-        }
-        add(index, obj);
+    public String toString() {
+        return list.toString();
     }
 
     public boolean replace(T existing, @Nullable T replacement) {
@@ -91,32 +119,27 @@ public class HashList<T> extends AbstractList<T> {
                 remove(index);
             } else {
                 //Just directly replace the element with the new version
-                list.set(index, replacement);
+                set(index, replacement);
             }
             return true;
         }
         return false;
     }
 
-    @Override
-    public boolean remove(Object obj) {
-        return list.remove(obj);
+    public T remove(int i) {
+        T o = list.remove(i);
+        super.remove(o);
+        return o;
     }
 
     @Override
-    public int indexOf(Object obj) {
+    public boolean remove(Object o) {
+        list.remove(o);
+        return super.remove(o);
+    }
+
+    public int indexOf(T obj) {
         return list.indexOf(obj);
-    }
-
-    @Override
-    public int size() {
-        return list.size();
-    }
-
-    @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public HashList<T> clone() {
-        return new HashList<>(new ArrayList<>(list));
     }
 
     public void swap(int source, int target, BiConsumer<T, T> postSwap) {
@@ -129,10 +152,10 @@ public class HashList<T> extends AbstractList<T> {
             return;
         }
         // Perform swap
-        T sourceT = list.get(source);
-        T targetT = list.get(target);
-        list.set(source, targetT);
-        list.set(target, sourceT);
+        T sourceT = get(source);
+        T targetT = get(target);
+        set(source, targetT);
+        set(target, sourceT);
         postSwap.accept(sourceT, targetT);
     }
 
@@ -142,18 +165,16 @@ public class HashList<T> extends AbstractList<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj == this || obj instanceof List && list.equals(obj);
+    public boolean equals(Object o) {
+        if (!(o instanceof HashList<?>)) {
+            return false;
+        }
+        return list.equals(((HashList<?>) o).list);
     }
 
     @NotNull
     @Override
     public Iterator<T> iterator() {
         return list.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return list.toString();
     }
 }

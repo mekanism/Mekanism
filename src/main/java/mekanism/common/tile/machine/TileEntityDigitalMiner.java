@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -1420,7 +1421,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @ComputerMethod(methodDescription = "Get the current list of Miner Filters")
-    List<MinerFilter<?>> getFilters() {
+    Collection<MinerFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 

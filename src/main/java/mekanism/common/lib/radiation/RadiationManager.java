@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -628,7 +629,7 @@ public class RadiationManager implements IRadiationManager {
     public static class RadiationDataHandler extends MekanismSavedData {
 
         private Map<ResourceLocation, List<Meltdown>> savedMeltdowns = Collections.emptyMap();
-        public List<RadiationSource> loadedSources = Collections.emptyList();
+        public Set<RadiationSource> loadedSources = Collections.emptySet();
         @Nullable
         public RadiationManager manager;
 
@@ -649,7 +650,7 @@ public class RadiationManager implements IRadiationManager {
         public void clearCached() {
             //Clear cached sources and meltdowns after loading them to not keep pointers in our data handler
             // that are referencing objects that eventually will be removed
-            loadedSources = Collections.emptyList();
+            loadedSources = Collections.emptySet();
             savedMeltdowns = Collections.emptyMap();
         }
 
@@ -657,12 +658,12 @@ public class RadiationManager implements IRadiationManager {
         public void load(@NotNull CompoundTag nbtTags) {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
-                loadedSources = new HashList<>(list.size());
+                loadedSources = new HashList<>();
                 for (Tag nbt : list) {
                     RadiationSource.load((CompoundTag) nbt).ifPresent(loadedSources::add);
                 }
             } else {
-                loadedSources = Collections.emptyList();
+                loadedSources = Collections.emptySet();
             }
             if (nbtTags.contains(NBTConstants.MELTDOWNS, Tag.TAG_COMPOUND)) {
                 CompoundTag meltdownNBT = nbtTags.getCompound(NBTConstants.MELTDOWNS);

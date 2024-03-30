@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -391,7 +392,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @ComputerMethod
-    List<SorterFilter<?>> getFilters() {
+    Collection<SorterFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 
