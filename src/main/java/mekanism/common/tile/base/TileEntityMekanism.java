@@ -1230,7 +1230,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private FloatingLong trackLastEnergy(@NotNull FloatingLong amount, @NotNull Action action, @NotNull FloatingLong remainder) {
         if (action.execute()) {
             //If for some reason we don't have a level fall back to zero
-            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount.subtract(remainder));
+            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), remainder.isZero() ? amount : amount.subtract(remainder));
         }
         return remainder;
     }
