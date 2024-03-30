@@ -1143,7 +1143,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public boolean shouldDumpRadiation() {
-        return true;
+        return canHandleGas();
     }
 
     /**
