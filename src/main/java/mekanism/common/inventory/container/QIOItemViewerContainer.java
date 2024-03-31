@@ -518,20 +518,33 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (slot != null) {
                 PacketUtils.sendToServer(new PacketQIOItemViewerSlotShiftTake(slot.itemUUID()));
             }
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT || button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null) {
                     int maxStackSize = Math.min(MathUtils.clampToInt(slot.count()), slot.item().getMaxStackSize());
-                    //Left click -> as much as possible, right click -> half of a stack
+                    //Left click -> as much as possible, right click -> half of a stack, middle click -> 1
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
-                    int toTake = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? maxStackSize : Math.max(1, maxStackSize / 2);
+                    int toTake;
+                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                        toTake = maxStackSize;
+                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+                        toTake = 1;
+                    } else {
+                        toTake = Math.max(1, maxStackSize / 2);
+                    }
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), toTake));
                 }
             } else {
-                //Left click -> all held, right click -> single item
-                int toAdd = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
-                PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
+                //middle click -> add to current stack if over slot and stackable, else normal storage functionality
+                IScrollableSlot slot;
+                if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && (slot = slotProvider.get()) != null && InventoryUtils.areItemsStackable(heldItem, slot.item().getInternalStack())) {
+                    PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), 1));
+                } else {
+                    //Left click -> all held, right click -> single item
+                    int toAdd = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
+                    PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
+                }
             }
         }
     }
