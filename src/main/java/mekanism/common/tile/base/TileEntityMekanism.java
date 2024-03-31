@@ -175,6 +175,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean canBeUpgraded;
     private boolean isDirectional;
     private boolean isActivatable;
+    private AttributeStateActive activeAttribute;
     private boolean hasSecurity;
     private boolean hasSound;
     private boolean hasGui;
@@ -317,7 +318,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
-        isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
+        activeAttribute = Attribute.get(block, AttributeStateActive.class);
+        isActivatable = hasSound || activeAttribute != null;
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
         hasChunkloader = this instanceof IChunkLoader;
@@ -585,7 +587,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 tile.updateDelay--;
                 if (tile.updateDelay == 0 && tile.getClientActive() != tile.currentActive) {
                     //If it doesn't match, and we are done with the delay period, then update it
-                    level.setBlockAndUpdate(pos, Attribute.setActive(state, tile.currentActive));
+                    level.setBlockAndUpdate(pos, tile.activeAttribute.setActive(state, tile.currentActive));
                 }
             }
         }
@@ -1321,14 +1323,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     private boolean getClientActive() {
-        return isActivatable() && Attribute.isActive(getBlockState());
+        return activeAttribute != null && activeAttribute.isActive(getBlockState());
     }
 
     @Override
     public void setActive(boolean active) {
         if (isActivatable() && active != currentActive) {
             BlockState state = getBlockState();
-            AttributeStateActive activeAttribute = Attribute.get(state, AttributeStateActive.class);
             if (activeAttribute != null) {
                 currentActive = active;
                 if (getClientActive() != active) {
