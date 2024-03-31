@@ -10,7 +10,6 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -57,6 +56,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         set.add(MekanismAttachmentTypes.ITEM_TARGET);
         set.add(MekanismAttachmentTypes.STABILIZER_CHUNKS);
         set.add(MekanismAttachmentTypes.FILTER_AWARE);
+        set.add(MekanismAttachmentTypes.CONFIGURATION_DATA);
 
         set.add(MekanismAttachmentTypes.HEAT_CAPACITORS);
         //TODO: Do we want to clear frequencies?
@@ -110,7 +110,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         for (int i = 0, slots = container.getContainerSize(); i < slots; ++i) {
             ItemStack stackInSlot = container.getItem(i);
             if (!stackInSlot.isEmpty()) {
-                if (stackInSlot.getItem() instanceof BlockItem && stackInSlot.hasAttachments()) {
+                if (stackInSlot.hasAttachments()) {
                     if (!target.isEmpty()) {
                         //If we already have a stack, then this is not a valid recipe match
                         return ItemStack.EMPTY;
