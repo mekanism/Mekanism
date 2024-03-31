@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.lib.collection.HashList;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +25,8 @@ public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableColle
 
     @Override
     @SuppressWarnings("unchecked")
-    protected List<FILTER> deserializeList(FriendlyByteBuf buffer) {
-        return buffer.readList(buf -> (FILTER) BaseFilter.readFromPacket(buf));
+    protected Collection<FILTER> deserializeList(FriendlyByteBuf buffer) {
+        return buffer.readCollection(HashList::new, buf -> (FILTER) BaseFilter.readFromPacket(buf));
     }
 
     @Override

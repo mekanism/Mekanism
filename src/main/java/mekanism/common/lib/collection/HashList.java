@@ -27,8 +27,9 @@ public class HashList<T> extends LinkedHashSet<T> {
     }
 
     public HashList(Collection<? extends T> toCopy) {
-        super(toCopy);
-        list = new ArrayList<>(toCopy);
+        super();
+        list = new ArrayList<>();
+        addAll(toCopy);
     }
 
     public HashList(int initialCapacity) {
@@ -37,7 +38,7 @@ public class HashList<T> extends LinkedHashSet<T> {
     }
 
     /**
-     * Replace an existing value with a new value; updates the element list and the hash table, but not the key as that has not changed.
+     * Replace an existing value with a new value; updates the element list and the hash table.
      */
     public T set(int i, T value) {
         T oldElement = list.get(i);
@@ -139,7 +140,7 @@ public class HashList<T> extends LinkedHashSet<T> {
     }
 
     public int indexOf(T obj) {
-        return list.indexOf(obj);
+        return contains(obj) ? list.indexOf(obj) : -1;
     }
 
     public void swap(int source, int target, BiConsumer<T, T> postSwap) {
@@ -152,10 +153,10 @@ public class HashList<T> extends LinkedHashSet<T> {
             return;
         }
         // Perform swap
-        T sourceT = get(source);
-        T targetT = get(target);
-        set(source, targetT);
-        set(target, sourceT);
+        T sourceT = list.get(source);
+        T targetT = list.get(target);
+        list.set(source, targetT);
+        list.set(target, sourceT);
         postSwap.accept(sourceT, targetT);
     }
 
@@ -166,8 +167,11 @@ public class HashList<T> extends LinkedHashSet<T> {
 
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
         if (!(o instanceof HashList<?>)) {
-            return false;
+            return o instanceof List && list.equals(o);
         }
         return list.equals(((HashList<?>) o).list);
     }
@@ -176,5 +180,10 @@ public class HashList<T> extends LinkedHashSet<T> {
     @Override
     public Iterator<T> iterator() {
         return list.iterator();
+    }
+
+    @Override
+    public int size() {
+        return list.size();
     }
 }

@@ -46,6 +46,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.chemical.SyncablePigmentStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
+import mekanism.common.inventory.container.sync.list.SyncableCollection;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.PacketUpdateContainer;
@@ -643,6 +644,10 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             syncable.set(value);
         } else if (data instanceof SyncableList<?> syncable) {
             syncable.set(value);
+        } else if (data instanceof SyncableCollection<?> syncable) {
+            syncable.set(value);
+        } else {
+            Mekanism.logger.error("Unknown byte value type: {}, please report", data.getClass().getName());
         }
     }
 

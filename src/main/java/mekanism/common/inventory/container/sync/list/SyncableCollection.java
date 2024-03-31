@@ -44,7 +44,7 @@ public abstract class SyncableCollection<TYPE> implements ISyncableData {
         setter.accept(PacketUtils.read(rawData, this::deserializeList));
     }
 
-    protected abstract List<TYPE> deserializeList(FriendlyByteBuf buffer);
+    protected abstract Collection<TYPE> deserializeList(FriendlyByteBuf buffer);
 
     protected abstract void serializeListElement(FriendlyByteBuf buffer, TYPE element);
 
