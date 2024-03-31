@@ -17,7 +17,7 @@ public class LastEnergyTracker {
             // update what the current game time is and set the current energy to the amount we received
             lastEnergyReceived = currentEnergyReceived;
             currentGameTime = gameTime;
-            currentEnergyReceived = amount.copy();
+            currentEnergyReceived = amount != FloatingLong.ZERO ? amount.copy() : FloatingLong.ZERO;
         }
     }
 
