@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "duration": 500,
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:antimatter"
+  },
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:gems/amethyst"
+    }
+  },
+  "output": {
+    "item": "minecraft:echo_shard"
+  }
+}

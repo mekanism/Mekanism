@@ -127,6 +127,12 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Blocks.ENDER_CHEST),
               500
         ).build(consumer, Mekanism.rl(basePath + "ender_chest"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              IngredientCreatorAccess.item().from(Tags.Items.GEMS_AMETHYST),
+              IngredientCreatorAccess.gas().from(MekanismGases.ANTIMATTER, 2),
+              new ItemStack(Items.ECHO_SHARD),
+              500
+        ).build(consumer, Mekanism.rl(basePath + "echo_shard"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)),

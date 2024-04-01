@@ -1,4 +1,4 @@
-// Recipes	2024-03-24T11:35:07.3423616	Recipes
+// Recipes	2024-04-01T15:04:22.4003352	Recipes
 b574fccc069b2808af98aa53c8b809e72bcd053d data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 2f33c48a639876d68a3a712c24540c3f78c5e86f data/mekanism/recipes/bin/advanced.json
@@ -3514,6 +3514,7 @@ a2130cb4f6fbf4fd16b8d5214adaddd06ea93f4c data/mekanism/recipes/nucleosynthesizin
 8343829636b88ba1a0b1e2b83a629351a260d139 data/mekanism/recipes/nucleosynthesizing/crying_obsidian.json
 04ebe732d9941f860e6c62c5a8b170bd0685a3c2 data/mekanism/recipes/nucleosynthesizing/diamond.json
 b5e21cc2c49092c753677f69e77418dba838cfbc data/mekanism/recipes/nucleosynthesizing/dragon_egg.json
+5d57f28f3c8cd20d5cb272b133b9e60b71fab333 data/mekanism/recipes/nucleosynthesizing/echo_shard.json
 6ee3e338acdc419538241f460fad33e9607f3bb3 data/mekanism/recipes/nucleosynthesizing/emerald.json
 bb3ce471e61d79c168f262840500fa49d686912a data/mekanism/recipes/nucleosynthesizing/enchanted_golden_apple.json
 32323cc84582bea10de7c13412f758eb64e7328c data/mekanism/recipes/nucleosynthesizing/ender_chest.json
