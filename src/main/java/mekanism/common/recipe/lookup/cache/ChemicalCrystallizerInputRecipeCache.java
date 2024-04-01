@@ -61,7 +61,15 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
         }
         initCacheIfNeeded(world);
         ChemicalType type = input.getChemicalType();
-        return containsInput(type, input.getChemicalStack()) || typeBasedComplexRecipes.get(type).stream().anyMatch(recipe -> recipe.testType(input));
+        if (containsInput(type, input.getChemicalStack())) {
+            return true;
+        }
+        for (ChemicalCrystallizerRecipe recipe : typeBasedComplexRecipes.get(type)) {
+            if (recipe.testType(input)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -80,7 +88,15 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
         initCacheIfNeeded(world);
         ChemicalType type = ChemicalType.getTypeFor(input);
         STACK stack = ChemicalUtil.withAmount(input, 1);
-        return containsInput(type, stack) || typeBasedComplexRecipes.get(type).stream().anyMatch(recipe -> recipe.testType(stack));
+        if (containsInput(type, stack)) {
+            return true;
+        }
+        for (ChemicalCrystallizerRecipe recipe : typeBasedComplexRecipes.get(type)) {
+            if (recipe.testType(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")

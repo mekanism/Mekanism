@@ -190,9 +190,14 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
             return true;
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        return complexIngredients1.stream().anyMatch(recipe -> input1Extractor.apply(recipe).testType(input1) &&
-                                                               input2Extractor.apply(recipe).testType(input2) &&
-                                                               input3Extractor.apply(recipe).testType(input3));
+        for (RECIPE recipe : complexIngredients1) {
+            if (input1Extractor.apply(recipe).testType(input1) &&
+                input2Extractor.apply(recipe).testType(input2) &&
+                input3Extractor.apply(recipe).testType(input3)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

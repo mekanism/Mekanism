@@ -36,7 +36,14 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
     @Override
     public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
         Set<RECIPE> recipes = inputCache.get(createKey(input));
-        return recipes != null && recipes.stream().anyMatch(matchCriteria);
+        if (recipes != null) {
+            for (RECIPE recipe : recipes) {
+                if (matchCriteria.test(recipe)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Nullable
@@ -50,7 +57,14 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
      */
     @Nullable
     protected RECIPE findFirstRecipe(@Nullable Collection<RECIPE> recipes, Predicate<RECIPE> matchCriteria) {
-        return recipes == null ? null : recipes.stream().filter(matchCriteria).findFirst().orElse(null);
+        if (recipes != null) {
+            for (RECIPE recipe : recipes) {
+                if (matchCriteria.test(recipe)) {
+                    return recipe;
+                }
+            }
+        }
+        return null;
     }
 
     /**

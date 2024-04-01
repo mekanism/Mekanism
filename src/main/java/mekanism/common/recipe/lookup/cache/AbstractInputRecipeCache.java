@@ -53,7 +53,14 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
      */
     @Nullable
     protected RECIPE findFirstRecipe(@Nullable Collection<RECIPE> recipes, Predicate<RECIPE> matchCriteria) {
-        return recipes == null ? null : recipes.stream().filter(matchCriteria).findFirst().orElse(null);
+        if (recipes != null) {
+            for (RECIPE recipe : recipes) {
+                if (matchCriteria.test(recipe)) {
+                    return recipe;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -66,7 +73,15 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
             return false;
         }
         initCacheIfNeeded(world);
-        return cache.contains(input) || complexRecipes.stream().anyMatch(recipe -> inputExtractor.apply(recipe).testType(input));
+        if (cache.contains(input)) {
+            return true;
+        }
+        for (RECIPE recipe : complexRecipes) {
+            if (inputExtractor.apply(recipe).testType(input)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -94,6 +109,11 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
             return true;
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        return complexIngredients1.stream().anyMatch(recipe -> input1Extractor.apply(recipe).testType(input1) && input2Extractor.apply(recipe).testType(input2));
+        for (RECIPE recipe : complexIngredients1) {
+            if (input1Extractor.apply(recipe).testType(input1) && input2Extractor.apply(recipe).testType(input2)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

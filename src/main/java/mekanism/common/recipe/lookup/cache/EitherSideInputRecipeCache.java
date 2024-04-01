@@ -54,8 +54,15 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
             return false;
         }
         initCacheIfNeeded(world);
-        return cache.contains(input) || complexRecipes.stream().anyMatch(recipe -> inputAExtractor.apply(recipe).testType(input) ||
-                                                                                   inputBExtractor.apply(recipe).testType(input));
+        if (cache.contains(input)) {
+            return true;
+        }
+        for (RECIPE recipe : complexRecipes) {
+            if (inputAExtractor.apply(recipe).testType(input) || inputBExtractor.apply(recipe).testType(input)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -93,11 +100,14 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
             return true;
         }
         //Our quick lookup cache does not contain it, check any recipes where the ingredients are complex
-        return complexRecipes.stream().anyMatch(recipe -> {
-            INGREDIENT ingredientA = inputAExtractor.apply(recipe);
-            INGREDIENT ingredientB = inputBExtractor.apply(recipe);
-            return ingredientA.testType(inputA) && ingredientB.testType(inputB) || ingredientB.testType(inputA) && ingredientA.testType(inputB);
-        });
+        for (RECIPE complexRecipe : complexRecipes) {
+            INGREDIENT ingredientA = inputAExtractor.apply(complexRecipe);
+            INGREDIENT ingredientB = inputBExtractor.apply(complexRecipe);
+            if (ingredientA.testType(inputA) && ingredientB.testType(inputB) || ingredientB.testType(inputA) && ingredientA.testType(inputB)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -46,7 +46,14 @@ public abstract class NBTSensitiveInputCache<KEY, NBT_KEY, INPUT, INGREDIENT ext
     @Override
     public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
         Set<RECIPE> recipes = nbtInputCache.get(createNbtKey(input));
-        return recipes != null && recipes.stream().anyMatch(matchCriteria) || super.contains(input, matchCriteria);
+        if (recipes != null) {
+            for (RECIPE recipe : recipes) {
+                if (matchCriteria.test(recipe)) {
+                    return true;
+                }
+            }
+        }
+        return super.contains(input, matchCriteria);
     }
 
     /**
