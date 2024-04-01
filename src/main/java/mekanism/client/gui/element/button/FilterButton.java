@@ -9,10 +9,12 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
@@ -20,11 +22,14 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
+import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 public class FilterButton extends MekanismButton {
 
     private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "filter_holder.png");
-    protected static final int TEXTURE_WIDTH = 96;
+    protected static final int TEXTURE_WIDTH = 156;
     protected static final int TEXTURE_HEIGHT = 58;
 
     protected final FilterManager<?> filterManager;
@@ -68,7 +73,7 @@ public class FilterButton extends MekanismButton {
             IFilter<?> filter = getFilter();
             return filter != null && filter.isEnabled();
         };
-        toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + this.height - RadioButton.RADIO_SIZE - getToggleYShift(),
+        toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + (this.height / 2) - (RadioButton.RADIO_SIZE / 2),
               enabledCheck, () -> toggleButtonPress.accept(getActualIndex()), (element, guiGraphics, mouseX, mouseY) -> {
             if (enabledCheck.getAsBoolean()) {
                 displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER));
@@ -80,11 +85,7 @@ public class FilterButton extends MekanismButton {
     }
 
     protected int getToggleXShift() {
-        return 2;
-    }
-
-    protected int getToggleYShift() {
-        return 2;
+        return 4;
     }
 
     protected int getActualIndex() {
@@ -130,27 +131,45 @@ public class FilterButton extends MekanismButton {
             slotDisplay.updateStackList();
             prevFilter = filter;
         }
-        if (filter instanceof IItemStackFilter) {
-            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.ITEM_FILTER);
-        } else if (filter instanceof ITagFilter) {
-            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.TAG_FILTER);
-        } else if (filter instanceof IModIDFilter) {
-            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.MODID_FILTER);
+        Component filterDescriptor;
+        if (filter instanceof IItemStackFilter<?> item) {
+            filterDescriptor = item.getItemStack().getHoverName();
+        } else if (filter instanceof ITagFilter<?> tag) {
+            filterDescriptor = Component.literal(tag.getTagName());
+        } else if (filter instanceof IModIDFilter<?> modId) {
+            filterDescriptor = Component.literal(modId.getModID());
         } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
-            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.FILTER);
-            drawTextScaledBound(guiGraphics, oredictionificatorFilter.getFilterText(), relativeX + 22, relativeY + 11, titleTextColor(), getMaxLength());
+            filterDescriptor = Component.literal(oredictionificatorFilter.getFilterText());
+        } else {
+            filterDescriptor = Component.empty();
         }
+        drawFilterDescriptor(guiGraphics, filterDescriptor, relativeX, relativeY);
+
         if (filter instanceof SorterFilter<?> sorterFilter) {
-            drawTextScaledBound(guiGraphics, sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), relativeX + 22, relativeY + 11,
-                  titleTextColor(), getMaxLength());
+            int colorX = relativeX + 22;
+            int colorY = relativeY + 13;
+            GuiUtils.drawOutline(guiGraphics, colorX, colorY, 6, 6, 0xFF393939);
+            if (sorterFilter.color != null) {
+                guiGraphics.fill(colorX + 1, colorY + 1, colorX + 5, colorY + 5, MekanismRenderer.getColorARGB(sorterFilter.color, 1));
+            }
+
+            drawTextWithScale(guiGraphics, sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName(), relativeX + 22 + 8, relativeY + 12,
+                  titleTextColor(), 0.5f);
+        } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
+            drawTextWithScale(guiGraphics, oreDictFilter.getResult().getHoverName().copy().append(" (" + BuiltInRegistries.ITEM.getKey(oreDictFilter.getResultElement()).getNamespace() + ")"), relativeX + 22, relativeY + 12,
+                  titleTextColor(), 0.5f);
+        } else if (filter instanceof QIOItemStackFilter itemFilter) {
+            if (itemFilter.fuzzyMode) {
+                drawTextWithScale(guiGraphics, MekanismLang.FUZZY_MODE.translate(), relativeX + 22, relativeY + 12, titleTextColor(), 0.5f);
+            }
         }
+    }
+
+    private void drawFilterDescriptor(GuiGraphics guiGraphics, Component component, int x, int y) {
+        drawTextScaledBound(guiGraphics, component, x + 22, y + 3, titleTextColor(), getMaxLength());
     }
 
     protected int getMaxLength() {
-        return width - 22 - 2;
-    }
-
-    private void drawFilterType(GuiGraphics guiGraphics, int x, int y, ILangEntry langEntry) {
-        drawTextScaledBound(guiGraphics, langEntry.translate(), x + 22, y + 2, titleTextColor(), getMaxLength());
+        return width - 22 - RadioButton.RADIO_SIZE - 11;
     }
 }

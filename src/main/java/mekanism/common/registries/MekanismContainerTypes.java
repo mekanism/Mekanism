@@ -130,7 +130,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLaserAmplifier>> LASER_AMPLIFIER = CONTAINER_TYPES.register(MekanismBlocks.LASER_AMPLIFIER, TileEntityLaserAmplifier.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLaserTractorBeam>> LASER_TRACTOR_BEAM = CONTAINER_TYPES.register(MekanismBlocks.LASER_TRACTOR_BEAM, TileEntityLaserTractorBeam.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityMetallurgicInfuser>> METALLURGIC_INFUSER = CONTAINER_TYPES.register(MekanismBlocks.METALLURGIC_INFUSER, TileEntityMetallurgicInfuser.class);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityOredictionificator>> OREDICTIONIFICATOR = CONTAINER_TYPES.custom(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator.class).offset(0, 64).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityOredictionificator>> OREDICTIONIFICATOR = CONTAINER_TYPES.custom(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator.class).offset(30, 64).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityOsmiumCompressor>> OSMIUM_COMPRESSOR = CONTAINER_TYPES.register(MekanismBlocks.OSMIUM_COMPRESSOR, TileEntityOsmiumCompressor.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPrecisionSawmill>> PRECISION_SAWMILL = CONTAINER_TYPES.register(MekanismBlocks.PRECISION_SAWMILL, TileEntityPrecisionSawmill.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPressurizedReactionChamber>> PRESSURIZED_REACTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, TileEntityPressurizedReactionChamber.class);
@@ -152,8 +152,8 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPaintingMachine>> PAINTING_MACHINE = CONTAINER_TYPES.register(MekanismBlocks.PAINTING_MACHINE, TileEntityPaintingMachine.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIODriveArray>> QIO_DRIVE_ARRAY = CONTAINER_TYPES.custom(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray.class).offset(0, 40).build();
     public static final ContainerTypeRegistryObject<QIODashboardContainer> QIO_DASHBOARD = CONTAINER_TYPES.register(MekanismBlocks.QIO_DASHBOARD, () -> MekanismContainerType.tile(TileEntityQIODashboard.class, QIODashboardContainer::new));
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOImporter>> QIO_IMPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter.class).offset(0, 74).build();
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class).offset(0, 74).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOImporter>> QIO_IMPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter.class).offset(30, 74).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIOExporter>> QIO_EXPORTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter.class).offset(30, 74).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQIORedstoneAdapter>> QIO_REDSTONE_ADAPTER = CONTAINER_TYPES.custom(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter.class).offset(0, 26).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySPSCasing>> SPS = CONTAINER_TYPES.custom(MekanismBlocks.SPS_CASING, TileEntitySPSCasing.class).offset(0, 16).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDimensionalStabilizer>> DIMENSIONAL_STABILIZER = CONTAINER_TYPES.register(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer.class);
@@ -173,7 +173,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.registerEmpty("matrix_stats", TileEntityInductionCasing.class);
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", TileEntityDigitalMiner.class, DigitalMinerConfigContainer::new);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.custom(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class).offset(0, 86).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.custom(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class).offset(50, 88).build();
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static Class<TileEntityFactory<?>> factoryClass() {

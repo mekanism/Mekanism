@@ -211,6 +211,13 @@ public class GuiUtils {
         }
     }
 
+    public static void renderBorder(GuiGraphics guiGraphics, int x, int y, int boxWidth, int boxHeight, int color) {
+        guiGraphics.hLine(x, x + boxWidth, y, color);
+        guiGraphics.hLine(x, x + boxWidth, y + boxHeight, color);
+        guiGraphics.vLine(x, y, y + boxHeight, color);
+        guiGraphics.vLine(x + boxWidth, y, y + boxHeight, color);
+    }
+
     /**
      * Represents which direction our tiling is done when extending past the max size.
      */

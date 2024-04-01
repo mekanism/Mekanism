@@ -1307,7 +1307,7 @@ methods:
     returns:
       javaExtra:
       - mekanism.common.content.miner.MinerFilter
-      javaType: java.util.List
+      javaType: java.util.Collection
       type: List (Table (MinerFilter))
   - description: Whether Inverse Mode is enabled or not
     methodName: getInverseMode
@@ -2979,7 +2979,7 @@ methods:
     returns:
       javaExtra:
       - mekanism.common.content.transporter.SorterFilter
-      javaType: java.util.List
+      javaType: java.util.Collection
       type: List (Table (SorterFilter))
   - methodName: incrementDefaultColor
     requiresPublicSecurity: true
@@ -3404,7 +3404,7 @@ methods:
     returns:
       javaExtra:
       - mekanism.common.content.oredictionificator.OredictionificatorItemFilter
-      javaType: java.util.List
+      javaType: java.util.Collection
       type: List (Table (OredictionificatorItemFilter))
   - description: Get the contents of the input slot.
     methodName: getInputItem
@@ -3880,7 +3880,7 @@ methods:
     returns:
       javaExtra:
       - mekanism.common.content.qio.filter.QIOFilter
-      javaType: java.util.List
+      javaType: java.util.Collection
       type: List (Table (QIOFilter))
   - methodName: removeFilter
     params:

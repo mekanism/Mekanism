@@ -863,7 +863,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %1$s");
         add(MekanismLang.CRAFTING_WINDOW_CLEAR, "Empty Crafting Window contents into storage, hold shift to empty into player inventory instead.");
         add(MekanismLang.MIN, "Min: %1$s");
+        add(MekanismLang.MIN_DIGITAL_MINER, "Min Y level: %1$s");
         add(MekanismLang.MAX, "Max: %1$s");
+        add(MekanismLang.MAX_DIGITAL_MINER, "Max Y level: %1$s");
         add(MekanismLang.INFINITE, "Infinite");
         add(MekanismLang.NONE, "None");
         add(MekanismLang.EMPTY, "Empty");
@@ -922,6 +924,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
         add(MekanismLang.VISUALS, "Visuals: %1$s");
         add(MekanismLang.VISUALS_TOO_BIG, "Area too large to display visuals.");
+        add(MekanismLang.NO_COLOR, "No color");
         //GUI Issues
         add(MekanismLang.ISSUES, "Issues:");
         add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY, " - Not enough energy to operate");
@@ -1089,7 +1092,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Filter
         add(MekanismLang.CREATE_FILTER_TITLE, "Create New Filter");
         add(MekanismLang.FILTERS, "Filters:");
-        add(MekanismLang.FILTER_COUNT, "T: %1$s");
+        add(MekanismLang.FILTER_COUNT, "Filters: %1$s");
         add(MekanismLang.FILTER_ALLOW_DEFAULT, "Allow Default");
         add(MekanismLang.FILTER, "Filter");
         add(MekanismLang.FILTER_NEW, "New: %1$s");
@@ -1242,7 +1245,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_INVERSE, "Inverse mode");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %1$s");
         add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %1$s");
-        add(MekanismLang.MINER_RADIUS, "Radi: %1$s");
+        add(MekanismLang.MINER_RADIUS, "Block radius: %1$s");
         add(MekanismLang.MINER_IDLE, "Not ready");
         add(MekanismLang.MINER_SEARCHING, "Searching");
         add(MekanismLang.MINER_PAUSED, "Paused");
@@ -1295,10 +1298,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NETWORK_READER_CAPACITY, " *Capacity: %1$s");
         add(MekanismLang.NETWORK_READER_CONNECTED_SIDES, " *Connected sides: %1$s");
         //Sorter
-        add(MekanismLang.SORTER_DEFAULT, "Default:");
-        add(MekanismLang.SORTER_SINGLE_ITEM, "Single:");
-        add(MekanismLang.SORTER_ROUND_ROBIN, "RR:");
-        add(MekanismLang.SORTER_AUTO_EJECT, "Auto:");
+        add(MekanismLang.SORTER_DEFAULT, "Default color:");
+        add(MekanismLang.SORTER_SINGLE_ITEM, "Force single item:");
+        add(MekanismLang.SORTER_ROUND_ROBIN, "Round robin:");
+        add(MekanismLang.SORTER_AUTO_EJECT, "Eject unfiltered:");
         add(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION, "Sends a single item instead of a whole stack each time (overrides min and max set in ItemStack filters).");
         add(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION, "Cycles between all connected inventories when sending items.");
         add(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION, "Ejects unfiltered items automatically to connected inventories, using the default configuration.");

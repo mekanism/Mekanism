@@ -69,7 +69,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new TranslationButton(this, 56, 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addRenderableWidget(new TranslationButton(this, 96, 136, 156, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiMinerFilerSelect(this, tile))));
         addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
               () -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, tile)), getOnHover(MekanismLang.BACK)));
@@ -95,15 +95,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addRenderableWidget(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
               () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
               getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(tile.getInverseRequiresReplacement())))));
-        radiusField = addRenderableWidget(new GuiTextField(this, 13, 49, 38, 11));
+        radiusField = addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11));
         radiusField.setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(() -> setText(radiusField, GuiInteraction.SET_RADIUS));
-        minField = addRenderableWidget(new GuiTextField(this, 13, 74, 38, 11));
+        minField = addRenderableWidget(new GuiTextField(this, 13, 71, 38, 11));
         minField.setMaxLength(maxHeightLength);
         minField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         minField.configureDigitalBorderInput(() -> setText(minField, GuiInteraction.SET_MIN_Y));
-        maxField = addRenderableWidget(new GuiTextField(this, 13, 99, 38, 11));
+        maxField = addRenderableWidget(new GuiTextField(this, 13, 98, 38, 11));
         maxField.setMaxLength(maxHeightLength);
         maxField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
@@ -126,11 +126,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderTitleText(guiGraphics);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 31, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(guiGraphics, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 22, screenTextColor(), 76, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 35, screenTextColor(), 76, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MIN_DIGITAL_MINER.translate(tile.getMinY()), 14, 61, screenTextColor(), 76, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MAX_DIGITAL_MINER.translate(tile.getMaxY()), 14, 88, screenTextColor(), 76, 0.8F);
     }
 
     @Override

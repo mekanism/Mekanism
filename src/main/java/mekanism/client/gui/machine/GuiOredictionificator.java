@@ -37,6 +37,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         super(container, inv, title);
         imageHeight += 64;
         inventoryLabelY = imageHeight - 94;
+        imageWidth += 60;
+        inventoryLabelX += 30;
         dynamicSlots = true;
     }
 
@@ -44,17 +46,17 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     protected void addGuiElements() {
         super.addGuiElements();
         //Filter holder
-        addRenderableWidget(new GuiElementHolder(this, 9, 17, 144, 68));
+        addRenderableWidget(new GuiElementHolder(this, 9, 17, 204, 68));
         //new filter button border
-        addRenderableWidget(new GuiElementHolder(this, 9, 85, 144, 22));
+        addRenderableWidget(new GuiElementHolder(this, 9, 85, 204, 22));
         FilterManager<OredictionificatorItemFilter> filterManager = tile.getFilterManager();
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 90, filterManager::count, () -> FILTER_COUNT));
-        addRenderableWidget(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
-        addRenderableWidget(new TranslationButton(this, 10, 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 213, 17, 90, filterManager::count, () -> FILTER_COUNT));
+        addRenderableWidget(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 94, 119));
+        addRenderableWidget(new TranslationButton(this, 10, 86, 202, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, filterManager, this::onClick,
+            addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 202, 22, i, scrollBar::getCurrentSelection, filterManager, this::onClick,
                   index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
                     return Collections.singletonList(oredictionificatorFilter.getResult());

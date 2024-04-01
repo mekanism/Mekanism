@@ -1410,7 +1410,7 @@
         "javaExtra": [
           "mekanism.common.content.miner.MinerFilter"
         ],
-        "javaType": "java.util.List"
+        "javaType": "java.util.Collection"
       }
     },
     {
@@ -4234,7 +4234,7 @@
         "javaExtra": [
           "mekanism.common.content.transporter.SorterFilter"
         ],
-        "javaType": "java.util.List"
+        "javaType": "java.util.Collection"
       }
     },
     {
@@ -4962,7 +4962,7 @@
         "javaExtra": [
           "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
         ],
-        "javaType": "java.util.List"
+        "javaType": "java.util.Collection"
       }
     },
     {
@@ -5742,7 +5742,7 @@
         "javaExtra": [
           "mekanism.common.content.qio.filter.QIOFilter"
         ],
-        "javaType": "java.util.List"
+        "javaType": "java.util.Collection"
       }
     },
     {

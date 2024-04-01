@@ -33,21 +33,16 @@ public class MovableFilterButton extends FilterButton {
           IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
-        int arrowX = relativeX + width - 12;
-        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false, () -> upButtonPress.accept(getActualIndex()),
+        int arrowX = relativeX + width - 14;
+        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) - 8, false, () -> upButtonPress.accept(getActualIndex()),
               (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate())));
-        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + height - 8, true, () -> downButtonPress.accept(getActualIndex()),
+        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) + 1, true, () -> downButtonPress.accept(getActualIndex()),
               (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate())));
     }
 
     @Override
     protected int getToggleXShift() {
-        return 13;
-    }
-
-    @Override
-    protected int getToggleYShift() {
-        return 1;
+        return 17;
     }
 
     @Override
@@ -111,7 +106,7 @@ public class MovableFilterButton extends FilterButton {
             color = null;
         }
         if (color != null) {
-            GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), MekanismRenderer.getColorARGB(color, 0.5F));
+            GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), MekanismRenderer.getColorARGB(color, 0.3F));
         }
         updateButtonVisibility();
         //Render our sub buttons and our slot

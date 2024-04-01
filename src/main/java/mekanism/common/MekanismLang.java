@@ -218,7 +218,9 @@ public enum MekanismLang implements ILangEntry {
     PROCESS_RATE_MB("gui", "process_rate_mb"),
     TICKS_REQUIRED("gui", "ticks_required"),
     MIN("gui", "min"),
+    MIN_DIGITAL_MINER("gui", "digital_miner.min"),
     MAX("gui", "max"),
+    MAX_DIGITAL_MINER("gui", "digital_miner.max"),
     INFINITE("gui", "infinite"),
     NONE("gui", "none"),
     EMPTY("gui", "empty"),
@@ -275,6 +277,7 @@ public enum MekanismLang implements ILangEntry {
     RADIAL_SCREEN("gui", "radial_screen"),
     VISUALS("gui", "visuals"),
     VISUALS_TOO_BIG("gui", "visuals.too_big"),
+    NO_COLOR("gui", "no_color"),
     //GUI Issues
     ISSUES("gui", "issues"),
     ISSUE_NOT_ENOUGH_ENERGY("gui", "issues.no_energy"),

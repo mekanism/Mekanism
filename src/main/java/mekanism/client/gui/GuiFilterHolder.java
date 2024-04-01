@@ -35,24 +35,26 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     protected GuiFilterHolder(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
-        imageHeight += 86;
-        inventoryLabelY = imageHeight - 92;
+        imageHeight += 88;
+        imageWidth += 100;
+        inventoryLabelX += 50;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiInnerScreen(this, 9, 17, 46, 140));
+        addRenderableWidget(new GuiInnerScreen(this, 9, 17, 85, 140));
         //Filter holder
-        addRenderableWidget(new GuiElementHolder(this, 55, 17, 98, 118));
+        addRenderableWidget(new GuiElementHolder(this, 95, 17, 158, 118));
         //new filter button border
-        addRenderableWidget(new GuiElementHolder(this, 55, 135, 98, 22));
+        addRenderableWidget(new GuiElementHolder(this, 95, 135, 158, 22));
         FilterManager<FILTER> filterManager = getFilterManager();
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 140, filterManager::count, () -> FILTER_COUNT));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 253, 17, 140, filterManager::count, () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, index -> {
+            addFilterButton(new MovableFilterButton(this, 96, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, index -> {
                 if (index > 0) {
                     GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_TOP : GuiInteraction.MOVE_FILTER_UP;
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));

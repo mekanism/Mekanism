@@ -11,8 +11,13 @@ public class DigitalMinerConfigContainer extends MekanismTileContainer<TileEntit
     }
 
     @Override
+    protected int getInventoryXOffset() {
+        return super.getInventoryXOffset() + 50;
+    }
+
+    @Override
     protected int getInventoryYOffset() {
-        return super.getInventoryYOffset() + 86;
+        return super.getInventoryYOffset() + 88;
     }
 
     @Override
