@@ -2,9 +2,9 @@ package mekanism.generators.common.content.turbine;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -21,14 +21,19 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
+import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
+import mekanism.common.util.CableUtils;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,15 +42,20 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TurbineMultiblockData extends MultiblockData {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
+    private final List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidOutputTargets = new ArrayList<>();
+    private final List<BlockEnergyCapabilityCache> energyOutputTargets = new ArrayList<>();
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded",
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
@@ -103,13 +113,18 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     protected void updateEjectors(Level world) {
-        super.updateEjectors(world);
+        fluidOutputTargets.clear();
+        energyOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityTurbineValve tile = WorldUtils.getTileEntity(TileEntityTurbineValve.class, world, valve.location);
+            if (tile != null) {
+                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+            }
+        }
         for (VentData data : ventData) {
             TileEntityTurbineVent vent = WorldUtils.getTileEntity(TileEntityTurbineVent.class, world, data.location);
             if (vent != null) {
-                //Ensure we don't use create a bunch of identical collections potentially using up a bunch of memory
-                Set<Direction> sides = SIDE_REFERENCES.computeIfAbsent(data.side, Collections::singleton);
-                vent.setEjectSides(sides);
+                vent.addFluidTargetCapability(fluidOutputTargets, data.side);
             }
         }
     }
@@ -146,6 +161,11 @@ public class TurbineMultiblockData extends MultiblockData {
         } else {
             clientFlow = 0;
         }
+        if (!fluidOutputTargets.isEmpty() && !ventTank.isEmpty()) {
+            //Note: We know that the tank has whatever amount it has stored, we can the simulated extraction
+            ventTank.extract(FluidUtils.emit(fluidOutputTargets, ventTank.getFluid()), Action.EXECUTE, AutomationType.INTERNAL);
+        }
+        CableUtils.emit(energyOutputTargets, energyContainer);
 
         if (dumpMode != GasMode.IDLE && !gasTank.isEmpty()) {
             long amount = gasTank.getStored();

@@ -1,6 +1,7 @@
 package mekanism.generators.common.content.fission;
 
 import com.mojang.datafixers.util.Either;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -12,6 +13,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
@@ -34,15 +36,18 @@ import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UnitDisplayUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
@@ -68,6 +73,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
+    private final List<AdvancedCapabilityOutputTarget<IGasHandler, FissionPortMode>> gasOutputTargets = new ArrayList<>();
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     private final List<IGasTank> inputTanks;
     private final List<IGasTank> outputWasteTanks;
@@ -184,6 +190,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // handle coolant heating (water -> steam)
         handleCoolant();
+        if (!gasOutputTargets.isEmpty()) {
+            if (!heatedCoolantTank.isEmpty()) {
+                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank);
+            }
+            if (!wasteTank.isEmpty()) {
+                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, FissionPortMode.OUTPUT_WASTE), wasteTank);
+            }
+        }
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
         // update temperature
@@ -203,6 +217,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             prevWasteScale = wasteScale;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        gasOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, world, valve.location);
+            if (tile != null) {
+                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+            }
+        }
     }
 
     public List<IGasTank> getGasTanks(FissionPortMode mode) {

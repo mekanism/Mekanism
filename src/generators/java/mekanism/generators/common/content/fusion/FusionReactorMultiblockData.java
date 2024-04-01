@@ -1,6 +1,7 @@
 package mekanism.generators.common.content.fusion;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
@@ -32,6 +33,8 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.util.CableUtils;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -71,6 +74,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     //Heat transfer metrics
     private static final double plasmaCaseConductivity = 0.2;
 
+    private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<IGasHandler>> gasOutputTargets = new ArrayList<>();
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
@@ -233,6 +238,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
         updateHeatCapacitors(null);
         updateTemperatures();
 
+        if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
+            CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer);
+        }
+
+        if (!gasOutputTargets.isEmpty() && !steamTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), steamTank);
+        }
+
         if (isBurning()) {
             kill(world);
         }
@@ -243,6 +256,19 @@ public class FusionReactorMultiblockData extends MultiblockData {
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        energyOutputTargets.clear();
+        gasOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valve.location);
+            if (tile != null) {
+                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+            }
+        }
     }
 
     public void updateTemperatures() {

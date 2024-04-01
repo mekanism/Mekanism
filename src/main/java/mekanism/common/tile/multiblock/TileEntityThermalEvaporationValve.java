@@ -6,7 +6,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,12 +29,6 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
-    }
-
-    @NotNull
-    @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        return side -> getMultiblock().getInventorySlots(side);
     }
 
     @Override

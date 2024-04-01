@@ -2,6 +2,7 @@ package mekanism.common.content.boiler;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
@@ -30,9 +32,12 @@ import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityBoilerValve;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -50,6 +55,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
+    private final List<AdvancedCapabilityOutputTarget<IGasHandler, BoilerValveMode>> gasOutputTargets = new ArrayList<>();
     private final List<IGasTank> inputTanks;
     private final List<IGasTank> outputSteamTanks;
     private final List<IGasTank> outputCoolantTanks;
@@ -179,6 +185,14 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             lastBoilRate = 0;
             lastMaxBoil = 0;
         }
+        if (!gasOutputTargets.isEmpty()) {
+            if (!steamTank.isEmpty()) {
+                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, BoilerValveMode.OUTPUT_STEAM), steamTank);
+            }
+            if (!cooledCoolantTank.isEmpty()) {
+                ChemicalUtil.emit(getActiveOutputs(gasOutputTargets, BoilerValveMode.OUTPUT_COOLANT), cooledCoolantTank);
+            }
+        }
         float waterScale = MekanismUtils.getScale(prevWaterScale, waterTank);
         if (waterScale != prevWaterScale) {
             needsPacket = true;
@@ -190,6 +204,17 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             prevSteamScale = steamScale;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        gasOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, world, valve.location);
+            if (tile != null) {
+                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+            }
+        }
     }
 
     public List<IGasTank> getGasTanks(BoilerValveMode mode) {

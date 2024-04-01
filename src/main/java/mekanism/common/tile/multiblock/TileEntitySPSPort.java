@@ -1,10 +1,8 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -22,9 +20,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.lib.multiblock.IMultiblockEjector;
+import mekanism.common.lib.multiblock.MultiblockData.CapabilityOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,10 +33,9 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultiblockEjector {
+public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
-    private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalTargets = new ArrayList<>();
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
@@ -51,9 +47,6 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
     protected boolean onUpdateServer(SPSMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            if (getActive()) {
-                ChemicalUtil.emit(chemicalTargets, multiblock.outputTank);
-            }
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
@@ -84,12 +77,11 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
         return super.persists(type);
     }
 
-    @Override
-    public void setEjectSides(Set<Direction> sides) {
-        chemicalTargets.clear();
-        for (Direction side : sides) {
-            chemicalTargets.add(chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
-        }
+    public void addGasTargetCapability(List<CapabilityOutputTarget<IGasHandler>> outputTargets, Direction side) {
+        outputTargets.add(new CapabilityOutputTarget<>(
+              chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
+              this::getActive
+        ));
     }
 
     @Override

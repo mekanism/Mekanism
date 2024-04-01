@@ -1,5 +1,7 @@
 package mekanism.common.content.matrix;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -7,12 +9,16 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
+import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +26,7 @@ public class MatrixMultiblockData extends MultiblockData {
 
     public static final String STATS_TAB = "stats";
 
+    private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
     @NotNull
     private final MatrixEnergyContainer energyContainer;
 
@@ -94,6 +101,9 @@ public class MatrixMultiblockData extends MultiblockData {
         // rate limit of the structure being used up by the ports
         energyInputSlot.drainContainer();
         energyOutputSlot.fillContainerOrConvert();
+        if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
+            CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer());
+        }
         if (!getLastInput().isZero() || !getLastOutput().isZero()) {
             // If the stored energy changed, update the comparator
             markDirtyComparator(world);
@@ -105,6 +115,17 @@ public class MatrixMultiblockData extends MultiblockData {
     public void remove(Level world) {
         energyContainer.invalidate();
         super.remove(world);
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        energyOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, valve.location);
+            if (tile != null) {
+                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+            }
+        }
     }
 
     public FloatingLong getStorageCap() {

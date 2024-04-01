@@ -1,10 +1,8 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -19,11 +17,9 @@ import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValve
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.lib.multiblock.IMultiblockEjector;
+import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.ChemicalUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -36,10 +32,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMultiblockEjector {
+public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
-    private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> outputTargets = new ArrayList<>();
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
           Capabilities.GAS.block(),
           Capabilities.FLUID.block()
@@ -62,20 +57,6 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
     }
 
     @Override
-    protected boolean onUpdateServer(BoilerMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
-        if (multiblock.isFormed()) {
-            BoilerValveMode mode = getMode();
-            if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                ChemicalUtil.emit(outputTargets, multiblock.steamTank);
-            } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(outputTargets, multiblock.cooledCoolantTank);
-            }
-        }
-        return needsPacket;
-    }
-
-    @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle fluid or gas when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.FLUID || type == ContainerType.GAS) {
@@ -84,12 +65,11 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
         return super.persists(type);
     }
 
-    @Override
-    public void setEjectSides(Set<Direction> sides) {
-        outputTargets.clear();
-        for (Direction side : sides) {
-            outputTargets.add(capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
-        }
+    public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, BoilerValveMode>> outputTargets, Direction side) {
+        outputTargets.add(new AdvancedCapabilityOutputTarget<>(
+              capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
+              mode -> mode == getMode()
+        ));
     }
 
     @Override

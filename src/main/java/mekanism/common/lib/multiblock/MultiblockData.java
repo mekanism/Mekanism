@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -35,6 +34,7 @@ import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -52,13 +52,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
 
-    protected static final Map<Direction, Set<Direction>> SIDE_REFERENCES = new EnumMap<>(Direction.class);
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
      * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
@@ -239,14 +239,6 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     protected void updateEjectors(Level world) {
-        for (ValveData valve : valves) {
-            BlockEntity tile = WorldUtils.getTileEntity(world, valve.location);
-            if (tile instanceof IMultiblockEjector ejector) {//Check if this valve is an ejector as not all of them are
-                //Ensure we don't use create a bunch of identical collections potentially using up a bunch of memory
-                Set<Direction> sides = SIDE_REFERENCES.computeIfAbsent(valve.side, Collections::singleton);
-                ejector.setEjectSides(sides);
-            }
-        }
     }
 
     protected boolean isRemote() {
@@ -505,5 +497,51 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public int getCurrentRedstoneLevel() {
         return currentRedstoneLevel;
+    }
+
+    protected <CACHE> List<CACHE> getActiveOutputs(List<? extends OutputTarget<CACHE, Void>> outputs) {
+        return getActiveOutputs(outputs, null);
+    }
+
+    protected <CACHE, DATA> List<CACHE> getActiveOutputs(List<? extends OutputTarget<CACHE, DATA>> outputs, DATA data) {
+        //TODO: Try to somehow cache which ones can currently output?
+        List<CACHE> targets = new ArrayList<>(outputs.size());
+        for (OutputTarget<CACHE, DATA> target : outputs) {
+            if (target.canOutput(data)) {
+                targets.add(target.cache());
+            }
+        }
+        return targets;
+    }
+
+    public record EnergyOutputTarget(BlockEnergyCapabilityCache cache, BooleanSupplier isActive) implements OutputTarget<BlockEnergyCapabilityCache, Void> {
+
+        @Override
+        public boolean canOutput(Void unused) {
+            return isActive.getAsBoolean();
+        }
+    }
+
+    public record CapabilityOutputTarget<TYPE>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, BooleanSupplier isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, Void> {
+
+        @Override
+        public boolean canOutput(Void unused) {
+            return isActive.getAsBoolean();
+        }
+    }
+
+    public record AdvancedCapabilityOutputTarget<TYPE, DATA>(BlockCapabilityCache<TYPE, @Nullable Direction> cache, Predicate<DATA> isActive) implements OutputTarget<BlockCapabilityCache<TYPE, @Nullable Direction>, DATA> {
+
+        @Override
+        public boolean canOutput(DATA data) {
+            return isActive.test(data);
+        }
+    }
+
+    protected interface OutputTarget<CACHE, DATA> {
+
+        CACHE cache();
+
+        boolean canOutput(DATA data);
     }
 }

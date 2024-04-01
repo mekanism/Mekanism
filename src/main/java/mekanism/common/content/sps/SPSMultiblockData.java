@@ -1,6 +1,7 @@
 package mekanism.common.content.sps;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Action;
@@ -8,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
@@ -22,8 +24,10 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
+import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +51,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public IGasTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
+    private final List<CapabilityOutputTarget<IGasHandler>> gasOutputTargets = new ArrayList<>();
 
     @ContainerSync
     public double progress;
@@ -114,6 +119,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (!receivedEnergy.equals(lastReceivedEnergy) || processed != lastProcessed) {
             needsPacket = true;
         }
+        if (!gasOutputTargets.isEmpty() && !outputTank.isEmpty()) {
+            ChemicalUtil.emit(getActiveOutputs(gasOutputTargets), outputTank);
+        }
         lastReceivedEnergy = receivedEnergy;
         receivedEnergy = FloatingLong.ZERO;
         lastProcessed = processed;
@@ -122,6 +130,17 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
         needsPacket |= coilData.tick();
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        gasOutputTargets.clear();
+        for (ValveData valve : valves) {
+            TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, valve.location);
+            if (tile != null) {
+                tile.addGasTargetCapability(gasOutputTargets, valve.side);
+            }
+        }
     }
 
     @Override

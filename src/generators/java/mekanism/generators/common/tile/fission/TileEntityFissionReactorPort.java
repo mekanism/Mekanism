@@ -1,10 +1,8 @@
 package mekanism.generators.common.tile.fission;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -21,12 +19,10 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.lib.multiblock.IMultiblockEjector;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.lib.multiblock.MultiblockData.AdvancedCapabilityOutputTarget;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
-import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,10 +36,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IMultiblockEjector {
+public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
     private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
-    private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> outputTargets = new ArrayList<>();
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
           Capabilities.GAS.block(),
           Capabilities.FLUID.block()
@@ -53,30 +48,16 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
     }
 
-    @Override
-    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
-        if (multiblock.isFormed()) {
-            FissionPortMode mode = getMode();
-            if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(outputTargets, multiblock.heatedCoolantTank);
-            } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                ChemicalUtil.emit(outputTargets, multiblock.wasteTank);
-            }
-        }
-        return needsPacket;
-    }
-
     @Nullable
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            BlockPos pos = getBlockPos().relative(side);
-            return WorldUtils.getBlockState(level, pos)
-                  .filter(state -> !state.isAir() && state.getBlock() != GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock())
-                  //Note: We know the position is loaded already from the blockstate check
-                  .map(state -> level.getCapability(Capabilities.HEAT, pos, state, null, side.getOpposite()))
-                  .orElse(null);
+            if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
+                  .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock()))
+                  .isPresent()) {
+                return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s),
+                      s.getOpposite())).getCapability();
+            }
         }
         return null;
     }
@@ -107,12 +88,11 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return super.persists(type);
     }
 
-    @Override
-    public void setEjectSides(Set<Direction> sides) {
-        outputTargets.clear();
-        for (Direction side : sides) {
-            outputTargets.add(capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
-        }
+    public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, FissionPortMode>> outputTargets, Direction side) {
+        outputTargets.add(new AdvancedCapabilityOutputTarget<>(
+              capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
+              mode -> mode == getMode()
+        ));
     }
 
     @ComputerMethod

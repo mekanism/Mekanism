@@ -1,22 +1,18 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
-import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
-import mekanism.common.lib.multiblock.IMultiblockEjector;
+import mekanism.common.lib.multiblock.MultiblockData.EnergyOutputTarget;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,10 +22,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IMultiblockEjector {
+public class TileEntityInductionPort extends TileEntityInductionCasing {
 
     private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCaches = new EnumMap<>(Direction.class);
-    private final List<BlockEnergyCapabilityCache> energyTargets = new ArrayList<>();
 
     public TileEntityInductionPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.INDUCTION_PORT, pos, state);
@@ -44,15 +39,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    protected boolean onUpdateServer(MatrixMultiblockData multiblock) {
-        boolean needsPacket = super.onUpdateServer(multiblock);
-        if (multiblock.isFormed() && getActive()) {
-            CableUtils.emit(energyTargets, multiblock.getEnergyContainer());
-        }
-        return needsPacket;
-    }
-
-    @Override
     public boolean persists(ContainerType<?, ?, ?> type) {
         //Do not handle energy when it comes to syncing it/saving this tile to disk
         if (type == ContainerType.ENERGY) {
@@ -61,12 +47,11 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         return super.persists(type);
     }
 
-    @Override
-    public void setEjectSides(Set<Direction> sides) {
-        energyTargets.clear();
-        for (Direction side : sides) {
-            energyTargets.add(energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
-        }
+    public void addEnergyTargetCapability(List<EnergyOutputTarget> outputTargets, Direction side) {
+        outputTargets.add(new EnergyOutputTarget(
+              energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
+              this::getActive
+        ));
     }
 
     @Override
