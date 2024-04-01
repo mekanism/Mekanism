@@ -43,14 +43,15 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         SecurityFrequency frequency = getFreq();
         UUID ownerUUID = getOwnerUUID();
         if (ownerUUID != null && frequency != null) {
             unlockSlot.unlock(ownerUUID);
             lockSlot.lock(ownerUUID, frequency);
         }
+        return sendUpdatePacket;
     }
 
     /**

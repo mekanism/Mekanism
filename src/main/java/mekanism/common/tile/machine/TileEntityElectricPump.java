@@ -146,8 +146,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
         FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -181,6 +181,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             }
             FluidUtils.emit(fluidHandlerAbove, fluidTank, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
+        return sendUpdatePacket;
     }
 
     public int estimateIncrementAmount() {

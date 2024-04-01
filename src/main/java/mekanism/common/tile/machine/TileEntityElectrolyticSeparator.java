@@ -229,8 +229,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         fluidSlot.fillTank();
 
@@ -240,6 +240,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
         handleTank(leftTank, dumpLeft);
         handleTank(rightTank, dumpRight);
+        return sendUpdatePacket;
     }
 
     private void handleTank(IGasTank tank, GasMode mode) {

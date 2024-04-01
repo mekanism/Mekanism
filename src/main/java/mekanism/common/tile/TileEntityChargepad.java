@@ -52,8 +52,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         boolean active = false;
         if (!energyContainer.isEmpty()) {
             //Use 0.4 for y to catch entities that are partially standing on the back pane
@@ -82,6 +82,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (active != getActive()) {
             setActive(active);
         }
+        return sendUpdatePacket;
     }
 
     private boolean chargeHandler(@Nullable IItemHandler itemHandler) {

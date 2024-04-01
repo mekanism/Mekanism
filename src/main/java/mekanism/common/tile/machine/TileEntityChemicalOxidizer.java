@@ -118,11 +118,12 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         outputSlot.drainTank();
         recipeCacheLookupMonitor.updateAndProcess();
+        return sendUpdatePacket;
     }
 
     @NotNull

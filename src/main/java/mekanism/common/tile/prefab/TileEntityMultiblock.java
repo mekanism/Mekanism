@@ -105,9 +105,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
-        boolean needsPacket = false;
+    protected boolean onUpdateServer() {
+        boolean needsPacket = super.onUpdateServer();
         if (ticker >= 3) {
             structure.tick(this, ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0);
         }
@@ -142,9 +141,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             isMaster = false;
         }
         needsPacket |= onUpdateServer(multiblock);
-        if (needsPacket) {
-            sendUpdatePacket();
-        }
+        return needsPacket;
     }
 
     /**

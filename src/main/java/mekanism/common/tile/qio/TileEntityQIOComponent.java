@@ -38,11 +38,10 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    protected final void onUpdateServer() {
-        super.onUpdateServer();
-        if (onUpdateServer(getQIOFrequency())) {
-            sendUpdatePacket();
-        }
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
+        sendUpdatePacket |= onUpdateServer(getQIOFrequency());
+        return sendUpdatePacket;
     }
 
     protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {

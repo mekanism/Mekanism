@@ -64,8 +64,8 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (burnTime == 0) {
             maxBurnTime = burnTime = fuelSlot.burn();
         }
@@ -80,6 +80,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         HeatTransfer loss = simulate();
         lastEnvironmentLoss = loss.environmentTransfer();
         lastTransferLoss = loss.adjacentTransfer();
+        return sendUpdatePacket;
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss")

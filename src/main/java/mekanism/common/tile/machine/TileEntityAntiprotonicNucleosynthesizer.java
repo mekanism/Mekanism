@@ -155,11 +155,12 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        return sendUpdatePacket;
     }
 
     @Nullable

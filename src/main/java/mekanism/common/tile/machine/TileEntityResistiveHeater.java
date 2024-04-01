@@ -85,8 +85,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         FloatingLong toUse = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this)) {
@@ -104,8 +104,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
-            sendUpdatePacket();
+            sendUpdatePacket = true;
         }
+        return sendUpdatePacket;
     }
 
     @NotNull

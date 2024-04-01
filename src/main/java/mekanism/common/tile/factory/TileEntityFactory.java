@@ -210,8 +210,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
 
         handleSecondaryFuel();
@@ -255,6 +255,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         setActive(isActive);
         //If none of the recipes are actively processing don't bother with any subtraction
         lastUsage = isActive ? prev.minusEqual(energyContainer.getEnergy()) : FloatingLong.ZERO;
+        return sendUpdatePacket;
     }
 
     /**

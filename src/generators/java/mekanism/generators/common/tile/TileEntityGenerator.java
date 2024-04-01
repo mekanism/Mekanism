@@ -56,8 +56,8 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (MekanismUtils.canFunction(this)) {
             //TODO: Maybe even make some generators have a side config/ejector component and move this to the ejector component?
             if (outputCaches == null) {
@@ -71,6 +71,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
             }
             CableUtils.emit(outputCaches, energyContainer, getMaxOutput());
         }
+        return sendUpdatePacket;
     }
 
     @Override

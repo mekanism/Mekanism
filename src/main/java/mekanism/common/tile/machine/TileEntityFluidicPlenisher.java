@@ -123,8 +123,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank(outputSlot);
         FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -152,6 +152,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             }
         }
         usedEnergy = !clientEnergyUsed.isZero();
+        return sendUpdatePacket;
     }
 
     private boolean canExtractBucket() {

@@ -141,32 +141,29 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         containerFillSlot.drainTank(outputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
-        boolean needsPacket = false;
         float pasteScale = MekanismUtils.getScale(lastPasteScale, fluidTank);
         if (pasteScale != lastPasteScale) {
             lastPasteScale = pasteScale;
-            needsPacket = true;
+            sendUpdatePacket = true;
         }
         if (inputSlot.isEmpty()) {
             if (lastPasteItem != null) {
                 lastPasteItem = null;
-                needsPacket = true;
+                sendUpdatePacket = true;
             }
         } else {
             HashedItem item = HashedItem.raw(inputSlot.getStack());
             if (!item.equals(lastPasteItem)) {
                 lastPasteItem = item.recreate();
-                needsPacket = true;
+                sendUpdatePacket = true;
             }
         }
-        if (needsPacket) {
-            sendUpdatePacket();
-        }
+        return sendUpdatePacket;
     }
 
     @NotNull

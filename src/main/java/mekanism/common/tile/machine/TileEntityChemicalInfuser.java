@@ -170,13 +170,14 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        return sendUpdatePacket;
     }
 
     @NotNull

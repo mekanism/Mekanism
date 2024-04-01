@@ -127,11 +127,12 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         pigmentInputSlot.fillTankOrConvert();
         recipeCacheLookupMonitor.updateAndProcess();
+        return sendUpdatePacket;
     }
 
     @NotNull

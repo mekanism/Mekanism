@@ -144,8 +144,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         drainSlot.drainChemicalTanks();
         fillSlot.fillChemicalTanks();
         if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
@@ -164,6 +164,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 }
             }
         }
+        return sendUpdatePacket;
     }
 
     @Override

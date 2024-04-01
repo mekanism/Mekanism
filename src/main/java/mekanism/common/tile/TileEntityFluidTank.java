@@ -121,8 +121,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (valve > 0) {
             valve--;
             if (valve == 0) {
@@ -139,7 +139,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 WorldUtils.recheckLighting(level, worldPosition);
             }
             prevScale = scale;
-            needsPacket = true;
+            sendUpdatePacket = true;
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
@@ -149,9 +149,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
         }
         if (needsPacket) {
-            sendUpdatePacket();
+            sendUpdatePacket = true;
             needsPacket = false;
         }
+        return sendUpdatePacket;
     }
 
     @Override

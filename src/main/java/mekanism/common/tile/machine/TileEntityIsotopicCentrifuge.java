@@ -135,12 +135,13 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank();
         outputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        return sendUpdatePacket;
     }
 
     @NotNull

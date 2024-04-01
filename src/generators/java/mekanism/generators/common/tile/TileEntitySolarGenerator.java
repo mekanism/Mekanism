@@ -59,8 +59,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (solarCheck == null) {
             recheckSettings();
         }
@@ -77,6 +77,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             setActive(false);
             lastProductionAmount = FloatingLong.ZERO;
         }
+        return sendUpdatePacket;
     }
 
     protected void recheckSettings() {

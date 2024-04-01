@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.IContentsListener;
@@ -88,8 +87,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 6) {
             setActive(false);
@@ -135,6 +134,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             }
             delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
         }
+        return sendUpdatePacket;
     }
 
     private TransitResponse emitItemToTransporter(BlockPos frontPos, BlockEntity front, TransitRequest request, EnumColor filterColor, int min) {

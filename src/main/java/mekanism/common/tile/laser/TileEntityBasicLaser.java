@@ -87,14 +87,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     protected abstract void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener);
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         FloatingLong firing = energyContainer.extract(toFire(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!firing.isZero()) {
             if (!firing.equals(lastFired) || !getActive()) {
                 setActive(true);
                 lastFired = firing;
-                sendUpdatePacket();
+                sendUpdatePacket = true;
             }
 
             Direction direction = getDirection();
@@ -328,9 +328,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
             if (!lastFired.isZero()) {
                 lastFired = FloatingLong.ZERO;
-                sendUpdatePacket();
+                sendUpdatePacket = true;
             }
         }
+        return sendUpdatePacket;
     }
 
     /**

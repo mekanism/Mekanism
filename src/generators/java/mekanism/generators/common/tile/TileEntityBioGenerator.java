@@ -67,8 +67,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         if (MekanismUtils.canFunction(this) && !bioFuelTank.isEmpty() &&
@@ -79,11 +79,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
             float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
             if (fluidScale != lastFluidScale) {
                 lastFluidScale = fluidScale;
-                sendUpdatePacket();
+                sendUpdatePacket = true;
             }
         } else {
             setActive(false);
         }
+        return sendUpdatePacket;
     }
 
     @NotNull

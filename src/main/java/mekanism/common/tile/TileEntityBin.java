@@ -42,7 +42,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public int addTicks = 0;
     public int removeTicks = 0;
     private int delayTicks;
-
+    private boolean needsSync;
     private BinTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored", docPlaceholder = "bin")
@@ -79,8 +79,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         addTicks = Math.max(0, addTicks - 1);
         removeTicks = Math.max(0, removeTicks - 1);
         delayTicks = Math.max(0, delayTicks - 1);
@@ -102,6 +102,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         } else {
             delayTicks--;
         }
+        if (needsSync) {
+            sendUpdatePacket = true;
+            needsSync = false;
+        }
+        return sendUpdatePacket;
     }
 
     @Override
@@ -126,7 +131,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public boolean setLocked(boolean isLocked) {
         if (binSlot.setLocked(isLocked)) {
             if (getLevel() != null && !isRemote()) {
-                sendUpdatePacket();
+                needsSync = true;
                 markForSave();
                 getLevel().playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
             }
@@ -157,7 +162,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void onContentsChanged() {
         super.onContentsChanged();
         if (level != null && !isRemote()) {
-            sendUpdatePacket();
+            needsSync = tr  ;
         }
     }
 

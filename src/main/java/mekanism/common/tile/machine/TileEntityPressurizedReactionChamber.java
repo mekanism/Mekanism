@@ -183,10 +183,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         recipeCacheLookupMonitor.updateAndProcess();
+        return sendUpdatePacket;
     }
 
     public FloatingLong getRecipeEnergyRequired() {

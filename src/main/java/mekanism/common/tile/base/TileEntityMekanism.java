@@ -591,8 +591,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
         }
-        tile.onUpdateServer();
-        tile.updateRadiationScale();
+        boolean sendUpdatePacket = tile.onUpdateServer();
+        if (tile.updateRadiationScale()) {
+            sendUpdatePacket = true;
+        }
         //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
         if (tile.canHandleHeat()) {
             // update heat after server tick as we now have simulated changes
@@ -614,6 +616,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         tile.ticker++;
         if (tile.supportsRedstone()) {
             tile.redstoneLastTick = tile.redstone;
+        }
+        if (sendUpdatePacket) {
+            tile.sendUpdatePacket();
         }
     }
 
@@ -657,8 +662,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     /**
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
+     *
+     * @return {@code true} if an update packet needs to be sent to the client.
      */
-    protected void onUpdateServer() {
+    protected boolean onUpdateServer() {
+        return false;
     }
 
     @Override
@@ -1151,14 +1159,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * @apiNote Only call on server.
      */
-    private void updateRadiationScale() {
+    private boolean updateRadiationScale() {
         if (shouldDumpRadiation()) {
             float scale = ITileRadioactive.calculateRadiationScale(getGasTanks(null));
             if (Math.abs(scale - radiationScale) > 0.05F) {
                 radiationScale = scale;
-                sendUpdatePacket();
+                return true;
             }
         }
+        return false;
     }
 
     @Override

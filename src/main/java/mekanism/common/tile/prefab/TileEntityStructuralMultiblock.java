@@ -88,8 +88,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (ticker % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
             String activeMultiblock = null;
             if (!structures.isEmpty()) {
@@ -120,9 +120,10 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
             if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
                 clientActiveMultiblock = activeMultiblock;
-                sendUpdatePacket();
+                sendUpdatePacket = true;
             }
         }
+        return sendUpdatePacket;
     }
 
     @Override

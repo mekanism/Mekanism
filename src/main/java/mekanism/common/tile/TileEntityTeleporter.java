@@ -160,8 +160,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (teleportBounds == null && frameDirection != null) {
             resetBounds();
         }
@@ -183,12 +183,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
             WorldUtils.notifyLoadedNeighborsOfTileChange(level, getBlockPos());
-            sendUpdatePacket();
+            sendUpdatePacket = true;
         } else if (color != prevColor) {
-            sendUpdatePacket();
+            sendUpdatePacket = true;
         }
         teleDelay = Math.max(0, teleDelay - 1);
         energySlot.fillContainerOrConvert();
+        return sendUpdatePacket;
     }
 
     @Nullable

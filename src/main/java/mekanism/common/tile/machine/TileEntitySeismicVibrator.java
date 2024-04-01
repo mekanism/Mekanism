@@ -69,8 +69,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         if (MekanismUtils.canFunction(this)) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
@@ -87,6 +87,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
             setActive(false);
         }
         updateActiveVibrators();
+        return sendUpdatePacket;
     }
 
     private void updateActiveVibrators() {

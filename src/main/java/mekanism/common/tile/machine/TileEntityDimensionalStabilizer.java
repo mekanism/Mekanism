@@ -85,8 +85,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         //Only attempt to use power if chunk loading isn't disabled in the config
         if (MekanismConfig.general.allowChunkloading.get() && MekanismUtils.canFunction(this)) {
@@ -100,6 +100,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         } else {
             setActive(false);
         }
+        return sendUpdatePacket;
     }
 
     public boolean isChunkLoadingAt(int x, int z) {

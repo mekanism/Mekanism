@@ -53,12 +53,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         // If we're in a blacklisted dimension, there's nothing more to do
         if (isBlacklistDimension) {
-            return;
+            return sendUpdatePacket;
         }
         if (ticker % SharedConstants.TICKS_PER_SECOND == 0) {
             // Recalculate the current multiplier once a second
@@ -68,6 +68,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (!currentMultiplier.isZero() && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
         }
+        return sendUpdatePacket;
     }
 
     @Override

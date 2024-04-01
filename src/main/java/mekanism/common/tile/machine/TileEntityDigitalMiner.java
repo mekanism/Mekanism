@@ -217,8 +217,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         closeInvalidScreens();
         if (!initCalc) {
             //If it had finished searching, and we didn't initialize things yet,
@@ -286,6 +286,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         } else if (delayTicks > 0) {
             delayTicks--;
         }
+        return sendUpdatePacket;
     }
 
     public void updateFromSearch(Long2ObjectMap<BitSet> oresToMine, int found) {

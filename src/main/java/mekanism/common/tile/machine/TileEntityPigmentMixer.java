@@ -176,13 +176,14 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
+        return sendUpdatePacket;
     }
 
     @NotNull

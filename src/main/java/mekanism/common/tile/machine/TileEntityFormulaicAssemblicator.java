@@ -212,8 +212,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //Invalidate the cached recipe and recalculate
             cachedRecipe = null;
@@ -265,6 +265,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             operatingTicks = 0;
         }
         usedEnergy = !clientEnergyUsed.isZero();
+        return sendUpdatePacket;
     }
 
     private void checkFormula() {

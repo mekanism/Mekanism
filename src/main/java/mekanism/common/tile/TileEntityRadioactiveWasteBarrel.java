@@ -60,8 +60,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (level.getGameTime() > lastProcessTick) {
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = level.getGameTime();
@@ -82,6 +82,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             // radioactive substances the check for radiation scale also will work for syncing capacity for purposes
             // of when the client sneak right-clicks on the barrel
         }
+        return sendUpdatePacket;
     }
 
     public StackedWasteBarrel getGasTank() {

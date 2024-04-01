@@ -185,8 +185,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         InventoryFrequency freq = getFreq();
         if (freq != null && freq.isValid() && !freq.isRemoved()) {
             freq.handleEject(level.getGameTime());
@@ -198,6 +198,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             lastTransferLoss = 0;
             lastEnvironmentLoss = 0;
         }
+        return sendUpdatePacket;
     }
 
     @ComputerMethod

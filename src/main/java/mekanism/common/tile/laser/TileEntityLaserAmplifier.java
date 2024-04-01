@@ -52,17 +52,18 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void onUpdateServer() {
+    protected boolean onUpdateServer() {
         setEmittingRedstone(false);
         if (ticks < delay) {
             ticks++;
         } else {
             ticks = 0;
         }
-        super.onUpdateServer();
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
             setEmittingRedstone(false);
         }
+        return sendUpdatePacket;
     }
 
     @Override

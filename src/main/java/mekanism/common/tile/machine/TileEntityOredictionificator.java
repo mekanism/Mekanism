@@ -72,8 +72,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
             for (OredictionificatorFilter<?, ?, ?> filter : filterManager.getFilters()) {
                 filter.flushCachedTag();
@@ -95,6 +95,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 }
             }
         }
+        return sendUpdatePacket;
     }
 
     @Override

@@ -82,8 +82,8 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this)) {
@@ -113,6 +113,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             }
         }
         usedEnergy = !clientEnergyUsed.isZero();
+        return sendUpdatePacket;
     }
 
     public boolean usedEnergy() {

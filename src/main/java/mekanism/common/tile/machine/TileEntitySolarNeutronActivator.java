@@ -143,8 +143,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         if (!settingsChecked) {
             recheckSettings();
         }
@@ -152,6 +152,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         outputSlot.drainTank();
         productionRate = recalculateProductionRate();
         recipeCacheLookupMonitor.updateAndProcess();
+        return sendUpdatePacket;
     }
 
     @NotNull

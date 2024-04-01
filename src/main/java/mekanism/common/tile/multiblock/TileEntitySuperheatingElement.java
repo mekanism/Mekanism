@@ -14,9 +14,10 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         UUID multiblockUUID = getMultiblockUUID();
         setActive(multiblockUUID != null && BoilerMultiblockData.hotMap.getBoolean(multiblockUUID));
+        return sendUpdatePacket;
     }
 }

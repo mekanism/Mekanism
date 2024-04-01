@@ -117,8 +117,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     @Override
-    protected void onUpdateServer() {
-        super.onUpdateServer();
+    protected boolean onUpdateServer() {
+        boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy().copyAsConst();
@@ -139,6 +139,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         lastTransferLoss = loss.adjacentTransfer();
         lastEnvironmentLoss = loss.environmentTransfer();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
+        return sendUpdatePacket;
     }
 
     private FloatingLong getBoost() {
