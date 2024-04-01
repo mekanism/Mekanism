@@ -6,6 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
@@ -172,7 +173,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Override
     public double getInverseInsulation(int capacitor, @Nullable Direction side) {
-        return side == Direction.DOWN ? 0 : super.getInverseInsulation(capacitor, side);
+        return side == Direction.DOWN ? HeatAPI.DEFAULT_INVERSE_INSULATION : super.getInverseInsulation(capacitor, side);
+    }
+
+    @Override
+    public double getTotalInverseInsulation(@Nullable Direction side) {
+        return side == Direction.DOWN ? HeatAPI.DEFAULT_INVERSE_INSULATION : super.getTotalInverseInsulation(side);
     }
 
     @NotNull

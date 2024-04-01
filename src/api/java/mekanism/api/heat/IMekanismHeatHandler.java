@@ -101,15 +101,78 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
      * @return The total inverse insulation coefficient across all capacitors in this handler.
      */
     default double getTotalInverseInsulation(@Nullable Direction side) {
-        int heatCapacitorCount = getHeatCapacitorCount(side);
-        if (heatCapacitorCount == 1) {
-            return getInverseInsulation(0, side);
+        List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+        if (heatCapacitors.isEmpty()) {
+            return HeatAPI.DEFAULT_INVERSE_INSULATION;
+        } else if (heatCapacitors.size() == 1) {
+            return heatCapacitors.get(0).getInverseInsulation();
         }
         double sum = 0;
-        double totalCapacity = getTotalHeatCapacity(side);
-        for (int capacitor = 0; capacitor < heatCapacitorCount; capacitor++) {
-            sum += getInverseInsulation(capacitor, side) * (getHeatCapacity(capacitor, side) / totalCapacity);
+        double totalCapacity = getTotalHeatCapacity(heatCapacitors);
+        for (IHeatCapacitor capacitor : heatCapacitors) {
+            sum += capacitor.getInverseInsulation() * (capacitor.getHeatCapacity() / totalCapacity);
         }
         return sum;
+    }
+
+    @Override
+    default double getTotalTemperature(@Nullable Direction side) {
+        List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+        if (heatCapacitors.isEmpty()) {
+            return 0;
+        } else if (heatCapacitors.size() == 1) {
+            return heatCapacitors.get(0).getTemperature();
+        }
+        double sum = 0;
+        double totalCapacity = getTotalHeatCapacity(heatCapacitors);
+        for (IHeatCapacitor capacitor : heatCapacitors) {
+            sum += capacitor.getTemperature() * (capacitor.getHeatCapacity() / totalCapacity);
+        }
+        return sum;
+    }
+
+    @Override
+    default double getTotalInverseConductionCoefficient(@Nullable Direction side) {
+        List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+        if (heatCapacitors.isEmpty()) {
+            return HeatAPI.DEFAULT_INVERSE_CONDUCTION;
+        } else if (heatCapacitors.size() == 1) {
+            return heatCapacitors.get(0).getInverseConduction();
+        }
+        double sum = 0;
+        double totalCapacity = getTotalHeatCapacity(heatCapacitors);
+        for (IHeatCapacitor capacitor : heatCapacitors) {
+            sum += capacitor.getInverseConduction() * (capacitor.getHeatCapacity() / totalCapacity);
+        }
+        return sum;
+    }
+
+    @Override
+    default double getTotalHeatCapacity(@Nullable Direction side) {
+        return getTotalHeatCapacity(getHeatCapacitors(side));
+    }
+
+    private double getTotalHeatCapacity(List<IHeatCapacitor> capacitors) {
+        if (capacitors.size() == 1) {
+            return capacitors.get(0).getHeatCapacity();
+        }
+        double sum = 0;
+        for (IHeatCapacitor capacitor : capacitors) {
+            sum += capacitor.getHeatCapacity();
+        }
+        return sum;
+    }
+
+    @Override
+    default void handleHeat(double transfer, @Nullable Direction side) {
+        List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
+        if (heatCapacitors.size() == 1) {
+            heatCapacitors.get(0).handleHeat(transfer);
+        } else if (!heatCapacitors.isEmpty()) {
+            double totalHeatCapacity = getTotalHeatCapacity(heatCapacitors);
+            for (IHeatCapacitor heatCapacitor : heatCapacitors) {
+                heatCapacitor.handleHeat(transfer * (heatCapacitor.getHeatCapacity() / totalHeatCapacity));
+            }
+        }
     }
 }

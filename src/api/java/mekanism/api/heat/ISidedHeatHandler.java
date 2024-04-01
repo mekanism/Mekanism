@@ -130,6 +130,11 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return sum;
     }
 
+    @Override
+    default double getTotalTemperature() {
+        return getTotalTemperature(getHeatSideFor());
+    }
+
     /**
      * A sided variant of {@link IHeatHandler#getTotalInverseConduction()}, docs copied for convenience.
      * <p>
@@ -156,6 +161,11 @@ public interface ISidedHeatHandler extends IHeatHandler {
         return sum;
     }
 
+    @Override
+    default double getTotalInverseConduction() {
+        return getTotalInverseConductionCoefficient(getHeatSideFor());
+    }
+
     /**
      * A sided variant of {@link IHeatHandler#getTotalHeatCapacity()}, docs copied for convenience.
      * <p>
@@ -175,6 +185,11 @@ public interface ISidedHeatHandler extends IHeatHandler {
             sum += getHeatCapacity(capacitor, side);
         }
         return sum;
+    }
+
+    @Override
+    default double getTotalHeatCapacity() {
+        return getTotalHeatCapacity(getHeatSideFor());
     }
 
     /**
@@ -197,5 +212,10 @@ public interface ISidedHeatHandler extends IHeatHandler {
                 handleHeat(capacitor, transfer * (getHeatCapacity(capacitor, side) / totalHeatCapacity), side);
             }
         }
+    }
+
+    @Override
+    default void handleHeat(double transfer) {
+        handleHeat(transfer, getHeatSideFor());
     }
 }
