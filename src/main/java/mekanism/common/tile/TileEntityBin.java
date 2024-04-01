@@ -162,7 +162,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void onContentsChanged() {
         super.onContentsChanged();
         if (level != null && !isRemote()) {
-            needsSync = tr  ;
+            needsSync = true;
         }
     }
 
