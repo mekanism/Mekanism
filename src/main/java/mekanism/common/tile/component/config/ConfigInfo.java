@@ -34,7 +34,10 @@ public class ConfigInfo implements IPersistentConfigInfo {
     // used so slot & tank GUIs can quickly reference which color overlay to render
     private final Map<Object, List<DataType>> containerTypeMapping;
     //Not final so that it can be lazily initialized
+    @Nullable
     private Set<RelativeSide> disabledSides;
+    @Nullable
+    private Set<DataType> supportedDataTypes;
 
     public ConfigInfo(@NotNull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
@@ -96,9 +99,11 @@ public class ConfigInfo implements IPersistentConfigInfo {
 
     @NotNull
     public Set<DataType> getSupportedDataTypes() {
-        Set<DataType> dataTypes = EnumSet.of(DataType.NONE);
-        dataTypes.addAll(slotInfo.keySet());
-        return dataTypes;
+        if (supportedDataTypes == null) {
+            supportedDataTypes = EnumSet.of(DataType.NONE);
+            supportedDataTypes.addAll(slotInfo.keySet());
+        }
+        return supportedDataTypes;
     }
 
     public boolean supports(DataType type) {
@@ -123,6 +128,9 @@ public class ConfigInfo implements IPersistentConfigInfo {
 
     public void addSlotInfo(@NotNull DataType dataType, @NotNull ISlotInfo info) {
         slotInfo.put(dataType, info);
+        if (supportedDataTypes != null) {
+            supportedDataTypes.add(dataType);
+        }
         // set up mapping
         if (info instanceof ChemicalSlotInfo<?, ?, ?> slotInfo) {
             for (IChemicalTank<?, ?> tank : slotInfo.getTanks()) {
