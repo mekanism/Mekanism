@@ -28,7 +28,12 @@ public interface ChemicalAttributeValidator {
      * @since 10.2.3
      */
     default boolean process(Chemical<?> chemical) {
-        return chemical.getAttributes().stream().allMatch(this::validate);
+        for (ChemicalAttribute chemicalAttribute : chemical.getAttributes()) {
+            if (!validate(chemicalAttribute)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
