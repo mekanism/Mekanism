@@ -57,7 +57,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         this.tile = tile;
         supported = EnumSet.copyOf(this.tile.getSupportedUpgrade());
         upgradeSlot = UpgradeInventorySlot.input(() -> {
-            tile.onContentsChanged();
+            this.tile.onContentsChanged();
             canCheckUpgrades = true;
         }, supported);
         upgradeOutputSlot = UpgradeInventorySlot.output(this.tile);

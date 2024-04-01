@@ -1,7 +1,7 @@
 package mekanism.generators.common.tile;
 
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
@@ -12,6 +12,7 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -19,11 +20,15 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
+    @Nullable
+    private List<BlockEnergyCapabilityCache> outputCaches;
     /**
      * Output per tick this generator can transfer.
      */
@@ -54,14 +59,24 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (MekanismUtils.canFunction(this)) {
-            //TODO: Cache the directions or maybe even make some generators have a side config/ejector component and move this to the ejector component?
-            Set<Direction> emitDirections = EnumSet.noneOf(Direction.class);
-            Direction direction = getDirection();
-            for (RelativeSide energySide : getEnergySides()) {
-                emitDirections.add(energySide.getDirection(direction));
+            //TODO: Maybe even make some generators have a side config/ejector component and move this to the ejector component?
+            if (outputCaches == null) {
+                Direction direction = getDirection();
+                RelativeSide[] energySides = getEnergySides();
+                outputCaches = new ArrayList<>(energySides.length);
+                for (RelativeSide energySide : getEnergySides()) {
+                    Direction side = energySide.getDirection(direction);
+                    outputCaches.add(BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite()));
+                }
             }
-            CableUtils.emit(emitDirections, energyContainer, this, getMaxOutput());
+            CableUtils.emit(outputCaches, energyContainer, getMaxOutput());
         }
+    }
+
+    @Override
+    protected void invalidateDirectionCaches(Direction newDirection) {
+        super.invalidateDirectionCaches(newDirection);
+        outputCaches = null;
     }
 
     @ComputerMethod

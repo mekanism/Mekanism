@@ -27,6 +27,7 @@ import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -69,6 +70,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
+    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final LongSupplier chemicalEjectRate;
@@ -201,21 +203,25 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
                 } else if (type == TransmissionType.ENERGY) {
                     IEnergyContainer container = (IEnergyContainer) entry.getKey();
-                    CableUtils.emit(sides, container, tile, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
+                    List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
+                    for (Direction side : sides) {
+                        caches.add(energyCapabilityCache.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create(level, pos.relative(s), s.getOpposite())));
+                    }
+                    CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
                 }
             }
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit( ServerLevel level, BlockPos pos,
-          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IChemicalTank<CHEMICAL, STACK> tank) {
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void emit(ServerLevel level,
+          BlockPos pos, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IChemicalTank<CHEMICAL, STACK> tank) {
         List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, ChemicalUtil.getCapabilityForChemical(tank));
         ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
     }
 
     @SuppressWarnings("unchecked")
-    private static <HANDLER> List<BlockCapabilityCache<HANDLER, @Nullable Direction>> getCapabilityCaches(ServerLevel level, BlockPos pos, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches,
-          Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
+    private static <HANDLER> List<BlockCapabilityCache<HANDLER, @Nullable Direction>> getCapabilityCaches(ServerLevel level, BlockPos pos,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
         List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
             caches.add((BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.computeIfAbsent(side, s -> capability.createCache(level, pos.relative(s), s.getOpposite())));

@@ -84,7 +84,7 @@ public final class FluidUtils {
             return 0;
         }
         FluidStack toSend = stack.copy();
-        FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
+        FluidHandlerTarget target = new FluidHandlerTarget(stack, targets.size());
         for (BlockCapabilityCache<IFluidHandler, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             IFluidHandler handler = capability.getCapability();

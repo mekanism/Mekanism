@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.fusion;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
@@ -44,7 +44,8 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     private final Map<Direction, BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> chemicalTargets = new ArrayList<>();
-    private Set<Direction> outputDirections = Collections.emptySet();
+    private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCaches = new EnumMap<>(Direction.class);
+    private final List<BlockEnergyCapabilityCache> energyTargets = new ArrayList<>();
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
@@ -92,10 +93,11 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Override
     public void setEjectSides(Set<Direction> sides) {
-        outputDirections = sides;
         chemicalTargets.clear();
+        energyTargets.clear();
         for (Direction side : sides) {
             chemicalTargets.add(chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
+            energyTargets.add(energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
         }
     }
 
@@ -104,7 +106,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
             ChemicalUtil.emit(chemicalTargets, multiblock.steamTank);
-            CableUtils.emit(outputDirections, multiblock.energyContainer, this);
+            CableUtils.emit(energyTargets, multiblock.energyContainer);
         }
         return needsPacket;
     }

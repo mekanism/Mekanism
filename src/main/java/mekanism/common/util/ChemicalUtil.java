@@ -305,7 +305,7 @@ public class ChemicalUtil {
         if (stack.isEmpty() || targets.isEmpty()) {
             return 0;
         }
-        ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> target = new ChemicalHandlerTarget<>(stack, 6);
+        ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> target = new ChemicalHandlerTarget<>(stack, targets.size());
         for (BlockCapabilityCache<HANDLER, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             HANDLER handler = capability.getCapability();

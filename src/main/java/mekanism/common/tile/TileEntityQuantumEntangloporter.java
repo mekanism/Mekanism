@@ -48,7 +48,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -74,13 +74,11 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
@@ -89,6 +87,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
+    private final Map<Direction, BlockEnergyCapabilityCache> adjacentEnergyCaps = new EnumMap<>(Direction.class);
     private final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     private double lastTransferLoss;
@@ -237,13 +236,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (transmissionType == TransmissionType.HEAT) {
             return (HANDLER) adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
         } else if (transmissionType == TransmissionType.ENERGY) {
-            //Not currently cached
-            BlockPos pos = worldPosition.relative(side);
-            return WorldUtils.getBlockState(level, pos)
-                  .map(state -> {
-                      BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
-                      return (HANDLER) EnergyCompatUtils.getStrictEnergyHandler(level, pos, state, blockEntity, side.getOpposite());
-                  }).orElse(null);
+            return (HANDLER) adjacentEnergyCaps.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
         } else if (transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
