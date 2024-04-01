@@ -2,7 +2,6 @@ package mekanism.common.tile.component;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +54,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     public TileComponentUpgrade(TileEntityMekanism tile) {
         this.tile = tile;
-        supported = EnumSet.copyOf(this.tile.getSupportedUpgrade());
+        supported = this.tile.getSupportedUpgrade();
         upgradeSlot = UpgradeInventorySlot.input(() -> {
             this.tile.onContentsChanged();
             canCheckUpgrades = true;
@@ -158,18 +157,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                 //If we have some upgrades in the input slot, mark that we check if they can be transferred
                 canCheckUpgrades = !upgradeSlot.isEmpty();
             }
-        }
-    }
-
-    public void setSupported(Upgrade upgrade) {
-        setSupported(upgrade, true);
-    }
-
-    public void setSupported(Upgrade upgrade, boolean isSupported) {
-        if (isSupported) {
-            supported.add(upgrade);
-        } else {
-            supported.remove(upgrade);
         }
     }
 

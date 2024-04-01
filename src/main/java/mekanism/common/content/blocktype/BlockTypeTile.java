@@ -1,6 +1,5 @@
 package mekanism.common.content.blocktype;
 
-import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLongSupplier;
@@ -69,8 +68,8 @@ public class BlockTypeTile<TILE extends TileEntityUpdateable> extends BlockType 
             return self();
         }
 
-        public T withSupportedUpgrades(Set<Upgrade> upgrades) {
-            holder.add(new AttributeUpgradeSupport(upgrades));
+        public T withSupportedUpgrades(Upgrade... upgrades) {
+            holder.add(AttributeUpgradeSupport.create(upgrades));
             return self();
         }
     }

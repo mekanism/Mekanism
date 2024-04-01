@@ -1,6 +1,5 @@
 package mekanism.common.content.blocktype;
 
-import java.util.EnumSet;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.common.MekanismLang;
@@ -26,8 +25,8 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
         add(new AttributeParticleFX()
               .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52))
               .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, 0.52)));
-        add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR);
-        add(new AttributeUpgradeSupport(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING)));
+        add(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.INVENTORY, Attributes.SECURITY, Attributes.REDSTONE, Attributes.COMPARATOR,
+              AttributeUpgradeSupport.DEFAULT_MACHINE_UPGRADES);
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {

@@ -1,10 +1,9 @@
 package mekanism.generators.common.registries;
 
-import java.util.EnumSet;
-import mekanism.api.Upgrade;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
@@ -56,7 +55,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.heatGenerator)
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withComputerSupport("heatGenerator")
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
@@ -70,7 +69,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.bioGenerator)
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withComputerSupport("bioGenerator")
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
@@ -83,7 +82,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.solarGenerator)
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withComputerSupport("solarGenerator")
           .replace(Attributes.ACTIVE)
           .build();
@@ -95,7 +94,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.WIND_GENERATOR)
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding((pos, state, builder) -> {
               for (int i = 0; i < 4; i++) {
                   builder.add(pos.above(i + 1));
@@ -111,7 +110,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withComputerSupport("gasBurningGenerator")
           .replace(Attributes.ACTIVE_MELT_LIGHT)
           .build();
@@ -122,7 +121,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(MekanismGeneratorsConfig.storageConfig.advancedSolarGenerator)
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding((pos, state, builder) -> {
               builder.add(pos.above());
               for (int x = -1; x <= 1; x++) {
