@@ -34,11 +34,15 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -60,6 +64,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -108,6 +113,39 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     protected void addTypeDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(stack), true)));
         super.addTypeDetails(stack, world, tooltip, flag);
+    }
+
+    @NotNull
+    @Override
+    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
+        if (getMode(stack) && !entity.isBaby()) {
+            Level level = player.level();
+            if (ItemSecurityUtils.get().tryClaimItem(level, player, stack)) {
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+                return InteractionResult.FAIL;
+            } else if (stack.getCount() > 1) {
+                //Skip if the item is stacked
+                return InteractionResult.PASS;
+            }
+            if (entity instanceof Cow || entity instanceof Goat) {
+                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                //Get the fluid tank for the stack
+                if (fluidTank == null) {
+                    //If there isn't one then there is something wrong with the stack, treat it as a normal stack and skip
+                    return InteractionResult.PASS;
+                }
+                FluidStack milk = new FluidStack(NeoForgeMod.MILK.get(), FluidType.BUCKET_VOLUME);
+                //Try to insert the fluid
+                if (fluidTank.insert(milk, Action.EXECUTE, AutomationType.MANUAL).getAmount() < FluidType.BUCKET_VOLUME) {
+                    player.playSound(entity instanceof Cow ? SoundEvents.COW_MILK : SoundEvents.GOAT_MILK, 1.0F, 1.0F);
+                    return InteractionResult.sidedSuccess(level.isClientSide);
+                }
+                //Fail if we can't insert any
+                return InteractionResult.FAIL;
+            }
+        }
+        return InteractionResult.PASS;
     }
 
     @NotNull

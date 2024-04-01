@@ -117,6 +117,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -184,6 +185,7 @@ public class Mekanism {
         instance = this;
         MekanismConfig.registerConfigs(modContainer);
 
+        NeoForgeMod.enableMilkFluid();
         NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         NeoForge.EVENT_BUS.addListener(this::onChemicalTransferred);
         NeoForge.EVENT_BUS.addListener(this::onLiquidTransferred);
