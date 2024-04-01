@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerContainer> {
 
     public GuiTargetDirectionTab(IGuiWrapper gui, QIOItemViewerContainer holder, int y) {
-        super(gui, holder, -26, y, 26, 18, true, getButtonLocation("crafting_out"), getButtonLocation("crafting_in"), QIOItemViewerContainer::shiftClickIntoFrequency);
+        super(gui, holder, -26, y, 26, 18, true, getButtonLocation("crafting_in"), getButtonLocation("crafting_out"), QIOItemViewerContainer::shiftClickIntoFrequency);
     }
 
     @Override
