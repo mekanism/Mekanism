@@ -29,11 +29,6 @@ public class ItemModule extends Item implements IModuleItem {
     }
 
     @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return getModuleData().getMaxStackSize();
-    }
-
-    @Override
     public ModuleData<?> getModuleData() {
         return moduleData.getModuleData();
     }
