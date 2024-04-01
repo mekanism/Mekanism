@@ -1,6 +1,6 @@
 package mekanism.common.tile.prefab;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.HashSet;
 import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -95,7 +95,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!getMultiblock().isFormed()) {
             unformedTicks++;
             if (!playersUsing.isEmpty()) {
-                for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
+                for (Player player : new HashSet<>(playersUsing)) {
                     player.closeContainer();
                 }
             }

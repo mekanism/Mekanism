@@ -7,11 +7,11 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -202,7 +202,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
-            for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
+            for (Player player : new HashSet<>(playersUsing)) {
                 if (player.containerMenu instanceof DigitalMinerConfigContainer) {
                     player.closeContainer();
                 }
