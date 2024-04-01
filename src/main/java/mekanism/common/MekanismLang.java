@@ -544,6 +544,7 @@ public enum MekanismLang implements ILangEntry {
     CONFIG_CARD_SET("configuration_card", "set"),
     CONFIG_CARD_UNEQUAL("configuration_card", "unequal"),
     CONFIG_CARD_HAS_DATA("configuration_card", "has_data"),
+    CONFIG_CARD_CLEARED("configuration_card", "cleared"),
     //Connection Type
     CONNECTION_NORMAL("connection", "normal"),
     CONNECTION_PUSH("connection", "push"),

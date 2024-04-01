@@ -526,6 +526,7 @@
   "configuration.mekanism.strict_input": "Strict Input",
   "configuration.mekanism.strict_input.enabled": "Strict Input (%1$s)",
   "configuration.mekanism.transporter": "Transporter Config",
+  "configuration_card.mekanism.cleared": "Cleared Configuration Card",
   "configuration_card.mekanism.got": "Retrieved configuration data from %1$s",
   "configuration_card.mekanism.has_data": "Data: %1$s",
   "configuration_card.mekanism.set": "Injected configuration data of type %1$s",

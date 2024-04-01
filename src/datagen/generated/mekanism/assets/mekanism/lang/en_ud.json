@@ -525,6 +525,7 @@
   "configuration.mekanism.strict_input": "ʇnduI ʇɔᴉɹʇS",
   "configuration.mekanism.strict_input.enabled": "(%s) ʇnduI ʇɔᴉɹʇS",
   "configuration.mekanism.transporter": "ᵷᴉɟuoƆ ɹǝʇɹodsuɐɹ⟘",
+  "configuration_card.mekanism.cleared": "pɹɐƆ uoᴉʇɐɹnᵷᴉɟuoƆ pǝɹɐǝꞁƆ",
   "configuration_card.mekanism.got": "%s ɯoɹɟ ɐʇɐp uoᴉʇɐɹnᵷᴉɟuoɔ pǝʌǝᴉɹʇǝᴚ",
   "configuration_card.mekanism.has_data": "%s :ɐʇɐᗡ",
   "configuration_card.mekanism.set": "%s ǝdʎʇ ɟo ɐʇɐp uoᴉʇɐɹnᵷᴉɟuoɔ pǝʇɔǝɾuI",

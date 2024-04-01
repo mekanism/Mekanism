@@ -10,7 +10,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -91,7 +92,21 @@ public class ItemConfigurationCard extends Item {
             }
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    @NotNull
+    public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
+        if (player.isShiftKeyDown()) {
+            ItemStack configCard = player.getItemInHand(usedHand);
+            if (!level.isClientSide) {
+                configCard.removeData(MekanismAttachmentTypes.CONFIGURATION_DATA);
+                player.displayClientMessage(MekanismLang.CONFIG_CARD_CLEARED.translate(), true);
+            }
+            return InteractionResultHolder.sidedSuccess(configCard, level.isClientSide);
+        }
+        return super.use(level, player, usedHand);
     }
 
     @Nullable

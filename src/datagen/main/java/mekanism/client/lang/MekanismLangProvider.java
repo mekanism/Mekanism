@@ -1203,6 +1203,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CONFIG_CARD_SET, "Injected configuration data of type %1$s");
         add(MekanismLang.CONFIG_CARD_UNEQUAL, "Unequal configuration data formats.");
         add(MekanismLang.CONFIG_CARD_HAS_DATA, "Data: %1$s");
+        add(MekanismLang.CONFIG_CARD_CLEARED, "Cleared Configuration Card");
         //Connection Type
         add(MekanismLang.CONNECTION_NORMAL, "Normal");
         add(MekanismLang.CONNECTION_PUSH, "Push");
