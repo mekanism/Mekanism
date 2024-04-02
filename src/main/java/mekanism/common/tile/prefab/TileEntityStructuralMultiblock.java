@@ -208,7 +208,9 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void setRemoved() {
         super.setRemoved();
         if (!isRemote()) {
-            structures.values().forEach(s -> s.invalidate(level));
+            for (Structure s : structures.values()) {
+                s.invalidate(level);
+            }
         }
     }
 

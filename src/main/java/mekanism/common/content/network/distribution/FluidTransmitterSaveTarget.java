@@ -14,7 +14,9 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
     public FluidTransmitterSaveTarget(@NotNull FluidStack type, Collection<MechanicalPipe> transmitters) {
         super(transmitters.size());
         this.extra = type;
-        transmitters.forEach(transmitter -> addHandler(new SaveHandler(transmitter)));
+        for (MechanicalPipe transmitter : transmitters) {
+            addHandler(new SaveHandler(transmitter));
+        }
     }
 
     @Override

@@ -282,7 +282,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundTag()));
         writeValves(tag);
         ListTag list = new ListTag();
-        assemblies.forEach(assembly -> list.add(assembly.write()));
+        for (FormedAssembly assembly : assemblies) {
+            list.add(assembly.write());
+        }
         tag.put(NBTConstants.ASSEMBLIES, list);
     }
 

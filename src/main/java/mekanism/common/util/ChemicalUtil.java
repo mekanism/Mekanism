@@ -11,6 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.GasStack;
@@ -264,7 +265,9 @@ public class ChemicalUtil {
     }
 
     public static void addAttributeTooltips(List<Component> tooltips, Chemical<?> chemical) {
-        chemical.getAttributes().forEach(attr -> attr.addTooltipText(tooltips));
+        for (ChemicalAttribute attr : chemical.getAttributes()) {
+            attr.addTooltipText(tooltips);
+        }
     }
 
     public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical<?> chemical, boolean advanced) {

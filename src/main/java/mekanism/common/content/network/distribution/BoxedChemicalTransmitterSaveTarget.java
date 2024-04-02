@@ -17,7 +17,9 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
     public BoxedChemicalTransmitterSaveTarget(@NotNull STACK empty, @NotNull STACK type, Collection<BoxedPressurizedTube> transmitters) {
         super(transmitters.size());
         this.extra = type;
-        transmitters.forEach(transmitter -> addHandler(new SaveHandler(empty, transmitter)));
+        for (BoxedPressurizedTube transmitter : transmitters) {
+            addHandler(new SaveHandler(empty, transmitter));
+        }
     }
 
     @Override

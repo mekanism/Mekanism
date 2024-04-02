@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
@@ -32,6 +34,7 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -76,7 +79,7 @@ public class MekanismDataGenerator {
      * fake tiles.
      */
     public static void bootstrapConfigs(String modid) {
-        ConfigTracker.INSTANCE.configSets().forEach((type, configs) -> {
+        for (Set<ModConfig> configs : ConfigTracker.INSTANCE.configSets().values()) {
             for (ModConfig config : configs) {
                 if (config.getModId().equals(modid)) {
                     //Similar to how ConfigTracker#loadDefaultServerConfigs works for loading default server configs on the client
@@ -88,7 +91,7 @@ public class MekanismDataGenerator {
                     config.getSpec().acceptConfig(commentedConfig);
                 }
             }
-        });
+        }
     }
 
     /**

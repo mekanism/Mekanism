@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -85,7 +86,9 @@ public final class ModuleContainer implements IModuleContainer {
             return null;
         }
         CompoundTag modulesTag = new CompoundTag();
-        modules.forEach((type, module) -> modulesTag.put(type.getRegistryName().toString(), module.save()));
+        for (Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
+            modulesTag.put(entry.getKey().getRegistryName().toString(), entry.getValue().save());
+        }
         //Add any extra data we may be tracking that isn't specifically modules to module info
         CompoundTag extraData = new CompoundTag();
         if (!enchantments.isEmpty()) {

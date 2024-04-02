@@ -1,5 +1,6 @@
 package mekanism.common.lib.transmitter;
 
+import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.Collection;
@@ -170,7 +171,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public void markDirty() {
         if (world != null && !world.isClientSide && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
-            chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, ChunkPos.getX(chunk), ChunkPos.getZ(chunk)));
+            for (LongIterator iterator = chunks.iterator(); iterator.hasNext(); ) {
+                long chunk = iterator.nextLong();
+                WorldUtils.markChunkDirty(world, ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
+            }
         }
     }
 

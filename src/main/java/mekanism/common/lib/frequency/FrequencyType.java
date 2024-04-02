@@ -156,7 +156,9 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public static void clear() {
-        registryMap.values().forEach(type -> type.managerWrapper.clear());
+        for (FrequencyType<?> type : registryMap.values()) {
+            type.managerWrapper.clear();
+        }
     }
 
     @Override

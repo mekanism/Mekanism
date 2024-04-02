@@ -138,10 +138,11 @@ public class Structure {
             }
             //Merge nodes, and update their structure to point to our structure
             MultiblockManager<?> manager = getManager();
-            s.nodes.forEach((key, value) -> {
-                nodes.put(key, value);
-                value.setStructure(manager, this);
-            });
+            for (Entry<BlockPos, IMultiblockBase> e : s.nodes.entrySet()) {
+                IMultiblockBase v = e.getValue();
+                nodes.put(e.getKey(), v);
+                v.setStructure(manager, this);
+            }
             //Iterate through the over the other structure's minor plane map and merge
             // the minor planes into our structure.
             for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
@@ -178,7 +179,9 @@ public class Structure {
                 Axis axis = entry.getKey();
                 Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
-                entry.getValue().forEach((key, value) -> {
+                for (Entry<Integer, VoxelPlane> e : entry.getValue().entrySet()) {
+                    Integer key = e.getKey();
+                    VoxelPlane value = e.getValue();
                     VoxelPlane majorPlane = majorMap.get(key);
                     if (majorPlane == null) {
                         //If the major map doesn't have an entry, copy it
@@ -194,7 +197,7 @@ public class Structure {
                         //If the major map does have an entry, merge them
                         majorPlane.merge(value);
                     }
-                });
+                }
             }
         }
     }

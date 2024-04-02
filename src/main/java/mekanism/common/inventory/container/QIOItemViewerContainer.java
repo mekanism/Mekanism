@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -29,6 +30,7 @@ import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
@@ -221,18 +223,23 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void doDoubleClickTransfer(Player player) {
         QIOFrequency freq = getFrequency();
         if (freq != null) {
-            Consumer<InsertableSlot> slotConsumer = slot -> {
-                if (slot.hasItem() && slot.mayPickup(player)) {
-                    //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
-                    // can be extracted at once so even if they somehow have an oversized stack it will be fine
-                    ItemStack slotItem = slot.getItem();
-                    if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
-                        transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
-                    }
-                }
-            };
-            mainInventorySlots.forEach(slotConsumer);
-            hotBarSlots.forEach(slotConsumer);
+            for (InsertableSlot slot : mainInventorySlots) {
+                handleDoDoubleClickTransfer(player, slot, freq);
+            }
+            for (InsertableSlot slot : hotBarSlots) {
+                handleDoDoubleClickTransfer(player, slot, freq);
+            }
+        }
+    }
+
+    private void handleDoDoubleClickTransfer(Player player, InsertableSlot slot, QIOFrequency freq) {
+        if (slot.hasItem() && slot.mayPickup(player)) {
+            //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
+            // can be extracted at once so even if they somehow have an oversized stack it will be fine
+            ItemStack slotItem = slot.getItem();
+            if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
+                QIOItemViewerContainer.this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
+            }
         }
     }
 
@@ -381,10 +388,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         // the entries in the itemList that changed instead of creating a new ItemSlotData for each one that is the same,
         // this greatly increases the time complexity of doing so due to having to find the matching entry in the itemList
         // so is not worth doing so
-        cachedInventory.forEach((key, value) -> {
+        for (Entry<UUIDAwareHashedItem, Long> entry : cachedInventory.entrySet()) {
+            UUIDAwareHashedItem key = entry.getKey();
+            Long value = entry.getValue();
             itemList.add(new ItemSlotData(key, key.getUUID(), value));
             totalItems += value;
-        });
+        }
         sortItemList();
         if (!searchQuery.isEmpty()) {
             updateSearch(searchQuery);

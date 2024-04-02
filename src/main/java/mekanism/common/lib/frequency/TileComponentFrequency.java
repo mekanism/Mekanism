@@ -341,7 +341,9 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void invalidate() {
         if (!tile.isRemote()) {
-            nonSecurityFrequencies.forEach(this::deactivate);
+            for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+                deactivate(entry.getKey(), entry.getValue());
+            }
             if (securityFrequency != null) {
                 deactivate(FrequencyType.SECURITY, securityFrequency);
             }

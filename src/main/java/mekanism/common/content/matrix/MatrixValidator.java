@@ -57,8 +57,12 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
 
     @Override
     public FormationResult postcheck(MatrixMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
-        cells.forEach(structure::addCell);
-        providers.forEach(structure::addProvider);
+        for (TileEntityInductionCell cell : cells) {
+            structure.addCell(cell);
+        }
+        for (TileEntityInductionProvider provider : providers) {
+            structure.addProvider(provider);
+        }
         return FormationResult.SUCCESS;
     }
 }

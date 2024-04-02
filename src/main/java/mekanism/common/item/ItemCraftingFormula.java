@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.inventory.IInventorySlot;
@@ -36,7 +37,9 @@ public class ItemCraftingFormula extends Item {
               .collect(Collectors.toMap(slot -> HashedItem.raw(slot.getStack()), IInventorySlot::getCount, Integer::sum, LinkedHashMap::new));
         if (!stacks.isEmpty()) {
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
-            stacks.forEach((stack, count) -> tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, stack.getInternalStack(), count)));
+            for (Entry<HashedItem, Integer> entry : stacks.entrySet()) {
+                tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, entry.getKey().getInternalStack(), entry.getValue()));
+            }
         }
     }
 

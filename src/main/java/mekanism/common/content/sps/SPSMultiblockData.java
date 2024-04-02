@@ -246,10 +246,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         public int prevHash;
 
         private boolean tick() {
-            coilMap.values().forEach(data -> {
+            for (CoilData data : coilMap.values()) {
                 data.prevLevel = data.laserLevel;
                 data.laserLevel = 0;
-            });
+            }
 
             int newHash = coilMap.hashCode();
             boolean ret = newHash != prevHash;

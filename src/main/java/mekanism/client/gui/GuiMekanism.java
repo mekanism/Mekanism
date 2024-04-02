@@ -304,7 +304,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         super.rebuildWidgets();
 
         //Resize any windows as we can't easily just rebuild them
-        windows.forEach(window -> window.resize(prevLeft, prevTop, leftPos, topPos));
+        for (GuiWindow window : windows) {
+            window.resize(prevLeft, prevTop, leftPos, topPos);
+        }
 
         //And set any persistent data that we stored
         prevElements.forEach(e -> {
@@ -332,7 +334,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         PoseStack pose = guiGraphics.pose();
         //TODO - 1.20: Re-evaluate?? this always was against the pose but what is it for
         pose.translate(0, 0, 300);
-        children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick()));
+        for (GuiEventListener c : children()) {
+            if (c instanceof GuiElement element) {
+                element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
+            }
+        }
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         int zOffset = 200;

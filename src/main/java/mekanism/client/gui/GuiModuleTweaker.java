@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
@@ -220,7 +221,9 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 preview = new ArmorStand(EntityType.ARMOR_STAND, Minecraft.getInstance().level);
                 preview.setNoBasePlate(true);
                 //Copy the player's current armor when we first initialize this
-                lazyItems.forEach((slot, item) -> preview.setItemSlot(slot, item.get()));
+                for (Entry<EquipmentSlot, Supplier<ItemStack>> entry : lazyItems.entrySet()) {
+                    preview.setItemSlot(entry.getKey(), entry.getValue().get());
+                }
             }
             return preview;
         }

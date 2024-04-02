@@ -288,7 +288,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
-        configInfo.forEach((type, info) -> {
+        for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
+            TransmissionType type = entry.getKey();
+            IPersistentConfigInfo info = entry.getValue();
             NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
             String configKey = NBTConstants.CONFIG + type.ordinal();
             if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
@@ -310,7 +312,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                     }
                 });
             }
-        });
+        }
     }
 
     @Override

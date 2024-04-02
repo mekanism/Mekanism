@@ -203,7 +203,9 @@ public class PacketUtils {
         if (world instanceof ServerLevel level) {
             //If we have a ServerWorld just directly figure out the ChunkPos to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
-            level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+            for (ServerPlayer p : level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)) {
+                sendTo(message, p);
+            }
         } else {
             //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
             PacketDistributor.TRACKING_CHUNK.with(world.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))).send(message);

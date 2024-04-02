@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
@@ -249,7 +251,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     //Notify clients, so that we send the information before we start clearing our lists
                     PacketUtils.sendToAllTracking(new PacketTransporterBatch(getBlockPos(), deletes, needsSync), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
-                    deletes.forEach((IntConsumer) (this::deleteStack));
+                    OfInt ofInt = deletes.iterator();
+                    while (ofInt.hasNext()) {
+                        deleteStack(ofInt.nextInt());
+                    }
 
                     // Clear the pending sync packets
                     needsSync.clear();

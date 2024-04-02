@@ -201,7 +201,9 @@ public class FrequencyManager<FREQ extends Frequency> {
 
         public void syncManager() {
             if (loadedFrequencies != null) {
-                loadedFrequencies.forEach(freq -> frequencies.put(freq.getKey(), freq));
+                for (FREQ freq : loadedFrequencies) {
+                    frequencies.put(freq.getKey(), freq);
+                }
                 ownerUUID = loadedOwner;
             }
         }

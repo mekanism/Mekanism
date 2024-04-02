@@ -22,9 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
@@ -537,16 +540,18 @@ public class MekaSuitArmor implements ICustomArmor {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            IModuleHelper.INSTANCE.getModuleContainer(player, slotType)
-                  .filter(container -> container.isInstance(ItemMekaSuitArmor.class))
-                  .ifPresent(container -> {
-                      wornParts.add(slotType);
-                      moduleModelSpec.row(slotType).forEach((type, spec) -> {
-                          if (container.hasEnabled(type)) {
-                              modules.put(spec, spec.isActive(player));
-                          }
-                      });
-                  });
+            Optional<? extends IModuleContainer> optionalIModuleContainer = IModuleHelper.INSTANCE.getModuleContainer(player, slotType)
+                  .filter(container -> container.isInstance(ItemMekaSuitArmor.class));
+            if (optionalIModuleContainer.isPresent()) {
+                IModuleContainer container = optionalIModuleContainer.get();
+                wornParts.add(slotType);
+                for (Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
+                    if (container.hasEnabled(entry.getKey())) {
+                        ModuleModelSpec spec = entry.getValue();
+                        modules.put(spec, spec.isActive(player));
+                    }
+                }
+            }
         }
         return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts,
               MekanismUtils.getItemInHand(player, HumanoidArm.LEFT).getItem() instanceof ItemMekaTool,

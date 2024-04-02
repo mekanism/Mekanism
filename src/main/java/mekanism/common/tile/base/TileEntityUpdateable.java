@@ -2,7 +2,9 @@ package mekanism.common.tile.base;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.Chunk3D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
@@ -166,9 +168,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
                 serializedAttachments = new CompoundTag();
             }
             //Serialize our subset of attachments that we know need to be sync'd
-            syncableAttachmentTypes.forEach((type, name) -> getExistingData(type)
-                  .map(INBTSerializable::serializeNBT)
-                  .ifPresent(serialized -> serializedAttachments.put(name, serialized)));
+            for (Entry<AttachmentType<? extends INBTSerializable<?>>, String> entry : syncableAttachmentTypes.entrySet()) {
+                Optional<Tag> tag = getExistingData(entry.getKey()).map(INBTSerializable::serializeNBT);
+                //noinspection OptionalIsPresent : allocating lambda
+                if (tag.isPresent()) {
+                    serializedAttachments.put(entry.getValue(), tag.get());
+                }
+            }
             if (!serializedAttachments.isEmpty()) {
                 updateTag.put(ATTACHMENTS_NBT_KEY, serializedAttachments);
             }

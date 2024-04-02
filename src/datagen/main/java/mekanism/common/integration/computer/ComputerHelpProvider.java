@@ -161,7 +161,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private static Map<Class<?>, List<String>> getEnumValues(Map<Class<?>, List<MethodHelpData>> helpData) {
         Map<Class<?>, List<String>> enumToValues = new TreeMap<>(Comparator.comparing(Class::getSimpleName));
-        helpData.forEach((unused, methods) -> {
+        for (List<MethodHelpData> methods : helpData.values()) {
             for (MethodHelpData method : methods) {
                 if (method.returns().javaType().isEnum()) {
                     Class<?> jType = method.returns().javaType();
@@ -180,7 +180,7 @@ public class ComputerHelpProvider implements DataProvider {
                     }
                 }
             }
-        });
+        }
         return enumToValues;
     }
 

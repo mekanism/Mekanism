@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.ObjLongConsumer;
@@ -112,12 +113,16 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public void forAllStored(ObjLongConsumer<ItemStack> consumer) {
-        itemDataMap.forEach((type, data) -> consumer.accept(type.createStack(1), data.getCount()));
+        for (Entry<HashedItem, QIOItemTypeData> entry : itemDataMap.entrySet()) {
+            consumer.accept(entry.getKey().createStack(1), entry.getValue().getCount());
+        }
     }
 
     @Override
     public void forAllHashedStored(ObjLongConsumer<IHashedItem> consumer) {
-        itemDataMap.forEach((type, data) -> consumer.accept(type, data.getCount()));
+        for (Entry<HashedItem, QIOItemTypeData> entry : itemDataMap.entrySet()) {
+            consumer.accept(entry.getKey(), entry.getValue().getCount());
+        }
     }
 
     @Override
@@ -467,13 +472,13 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             // otherwise we can just skip looking up UUIDs and counts
             Lazy<PacketUpdateItemViewer> lazyPacket = Lazy.of(() -> {
                 Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
-                updatedItems.forEach(uuid -> {
+                for (UUID uuid : updatedItems) {
                     HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
                     if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
                         QIOItemTypeData data = itemDataMap.get(type);
                         map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
                     }
-                });
+                }
                 return new PacketUpdateItemViewer(totalCountCapacity, totalTypeCapacity, map);
             });
             for (Iterator<ServerPlayer> viewingIterator = playersViewingItems.iterator(); viewingIterator.hasNext(); ) {
@@ -540,7 +545,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
         keys.forEach(key -> removeDrive(key, false));
         driveMap.clear();
-        playersViewingItems.forEach(player -> Mekanism.packetHandler().killItemViewer(player));
+        for (ServerPlayer player : playersViewingItems) {
+            Mekanism.packetHandler().killItemViewer(player);
+        }
     }
 
     @Override
@@ -638,10 +645,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     public void saveAll() {
-        driveMap.forEach((key, value) -> {
+        for (Entry<QIODriveKey, QIODriveData> entry : driveMap.entrySet()) {
+            QIODriveKey key = entry.getKey();
+            QIODriveData value = entry.getValue();
             key.updateMetadata(value);
             key.save(value);
-        });
+        }
     }
 
     private void setNeedsUpdate(@Nullable HashedItem changedItem) {

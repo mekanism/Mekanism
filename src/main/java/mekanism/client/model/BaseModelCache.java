@@ -49,7 +49,9 @@ public class BaseModelCache {
     }
 
     public void onBake(BakingCompleted evt) {
-        modelMap.values().forEach(m -> m.reload(evt));
+        for (MekanismModelData m : modelMap.values()) {
+            m.reload(evt);
+        }
     }
 
     public void setup(RegisterAdditional event) {

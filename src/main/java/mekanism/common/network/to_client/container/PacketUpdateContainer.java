@@ -30,9 +30,18 @@ public record PacketUpdateContainer(short windowId, List<PropertyData> data) imp
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.container(context, MekanismContainer.class)//Ensure that the container is one of ours,
-              .filter(container -> container.containerId == windowId)// the window id is the same as we expect it to be
-              .ifPresent(container -> data.forEach(data -> data.handleWindowProperty(container)));// and if so handle the packet
+        //Ensure that the container is one of ours,
+        java.util.Optional<MekanismContainer> containered = PacketUtils.container(context, MekanismContainer.class);
+        if (containered.isPresent()) {
+            MekanismContainer container = containered.get();
+            // the window id is the same as we expect it to be
+            if (container.containerId == windowId) {
+                // and if so handle the packet
+                for (PropertyData datum : data) {
+                    datum.handleWindowProperty(container);
+                }
+            }
+        }
     }
 
     @Override

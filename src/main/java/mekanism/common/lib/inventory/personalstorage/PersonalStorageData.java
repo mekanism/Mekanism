@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -74,12 +75,12 @@ class PersonalStorageData extends MekanismSavedData {
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         ListTag entries = new ListTag();
-        inventoriesById.forEach((uuid, inv) -> {
+        for (Entry<UUID, PersonalStorageItemInventory> entry : inventoriesById.entrySet()) {
             CompoundTag nbtEntry = new CompoundTag();
-            nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, uuid);
-            ContainerType.ITEM.saveTo(nbtEntry, inv.getInventorySlots(null));
+            nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, entry.getKey());
+            ContainerType.ITEM.saveTo(nbtEntry, entry.getValue().getInventorySlots(null));
             entries.add(nbtEntry);
-        });
+        }
         compoundTag.put(NBTConstants.DATA, entries);
         return compoundTag;
     }

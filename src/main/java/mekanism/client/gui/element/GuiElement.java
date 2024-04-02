@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -193,8 +194,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         // positions changing when resizing, instead of moving where we are in relation to
         relativeX += changeX;
         relativeY += changeY;
-        children.forEach(child -> child.move(changeX, changeY));
-        positionOnlyChildren.forEach(child -> child.move(changeX, changeY));
+        for (List<GuiElement> guiElements : Arrays.asList(children, positionOnlyChildren)) {
+            guiElements.forEach(child -> child.move(changeX, changeY));
+        }
     }
 
     public void onWindowClose() {
@@ -243,17 +245,20 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             // render background overlay and children above everything else
             renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             // render children just above background overlay
-            children.forEach(child -> child.renderShifted(guiGraphics, mouseX, mouseY, 0));
-            children.forEach(child -> child.onDrawBackground(guiGraphics, mouseX, mouseY, 0));
+            for (GuiElement guiElement : children) {
+                guiElement.renderShifted(guiGraphics, mouseX, mouseY, 0);
+            }
+            for (GuiElement guiElement : children) {
+                guiElement.onDrawBackground(guiGraphics, mouseX, mouseY, 0);
+            }
             renderForeground(guiGraphics, mouseX, mouseY);
             // translate forward to render child foreground
-            children.forEach(child -> {
-                //Only apply the z shift to each child instead of having future children be translated by more as well
+            for (GuiElement child : children) {//Only apply the z shift to each child instead of having future children be translated by more as well
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
                 pose.pushPose();
                 child.onRenderForeground(guiGraphics, mouseX, mouseY, 50, totalOffset + 50);
                 pose.popPose();
-            });
+            }
         }
     }
 
@@ -270,8 +275,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     //TODO - 1.20: Evaluate new tooltip system and maybe make use of it??
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))
-              .forEach(child -> child.renderToolTip(guiGraphics, mouseX, mouseY));
+        for (GuiElement child : children) {
+            if (child.isMouseOver(mouseX, mouseY)) {
+                child.renderToolTip(guiGraphics, mouseX, mouseY);
+            }
+        }
     }
 
     public void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, Component... components) {
@@ -416,7 +424,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @Override
     public void onRelease(double mouseX, double mouseY) {
         setDragging(false);
-        children.forEach(element -> element.onRelease(mouseX, mouseY));
+        for (GuiElement element : children) {
+            element.onRelease(mouseX, mouseY);
+        }
         super.onRelease(mouseX, mouseY);
     }
 

@@ -168,9 +168,11 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
         IModuleHelper.INSTANCE.getModuleContainer(stack)
               .map(IModuleContainer::moduleBasedEnchantments)
-              .ifPresent(map -> map.forEach(
-                    (enchantment, level) -> enchantments.merge(enchantment, level, Math::max)
-              ));
+              .ifPresent(map -> {
+                  for (Entry<Enchantment, Integer> entry : map.entrySet()) {
+                      enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
+                  }
+              });
         return enchantments;
     }
 

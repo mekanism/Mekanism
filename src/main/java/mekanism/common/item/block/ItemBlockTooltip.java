@@ -1,6 +1,7 @@
 package mekanism.common.item.block;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
@@ -115,7 +116,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
-            stack.getData(MekanismAttachmentTypes.UPGRADES).getUpgrades().forEach((upgrade, level) -> tooltip.add(UpgradeDisplay.of(upgrade, level).getTextComponent()));
+            for (Entry<Upgrade, Integer> entry : stack.getData(MekanismAttachmentTypes.UPGRADES).getUpgrades().entrySet()) {
+                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+            }
         }
     }
 

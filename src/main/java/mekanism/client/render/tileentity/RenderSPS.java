@@ -100,7 +100,9 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             });
         }
 
-        tile.orbitEffects.forEach(effect -> BillboardingEffectRenderer.render(effect, ProfilerConstants.SPS_ORBIT));
+        for (SPSOrbitEffect effect : tile.orbitEffects) {
+            BillboardingEffectRenderer.render(effect, ProfilerConstants.SPS_ORBIT);
+        }
     }
 
     private static float getEnergyScale(double lastProcessed) {

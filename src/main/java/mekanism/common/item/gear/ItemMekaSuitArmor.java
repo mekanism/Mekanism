@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -242,9 +243,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
         IModuleHelper.INSTANCE.getModuleContainer(stack)
               .map(IModuleContainer::moduleBasedEnchantments)
-              .ifPresent(map -> map.forEach(
-                    (enchantment, level) -> enchantments.merge(enchantment, level, Math::max)
-              ));
+              .ifPresent(map -> {
+                  for (Entry<Enchantment, Integer> entry : map.entrySet()) {
+                      enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
+                  }
+              });
         return enchantments;
     }
 

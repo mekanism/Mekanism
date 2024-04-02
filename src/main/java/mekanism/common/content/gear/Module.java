@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Stream;
 import mekanism.api.Action;
@@ -236,7 +237,9 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     CompoundTag save() {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt(NBTConstants.AMOUNT, installed);
-        configItems.forEach((name, configItem) -> configItem.getData().write(name, nbt));
+        for (Entry<String, ModuleConfigItem<?>> entry : configItems.entrySet()) {
+            entry.getValue().getData().write(entry.getKey(), nbt);
+        }
         return nbt;
     }
 

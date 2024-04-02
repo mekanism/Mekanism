@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -104,7 +105,9 @@ public class ParamNameMapper extends AbstractProcessor {
             Filer filer = processingEnv.getFiler();
             //Note: We know allMethods is not empty, as we only add annotated data if we have a method to add
             // We also sort the methods to ensure the order is consistent when saved
-            annotatedData.forEach((scanner, allMethods) -> {
+            for (Entry<AnnotationParamScanner, Map<String, Map<String, Map<String, List<String>>>>> entry : annotatedData.entrySet()) {
+                AnnotationParamScanner scanner = entry.getKey();
+                Map<String, Map<String, Map<String, List<String>>>> allMethods = entry.getValue();
                 try {
                     FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", scanner.targetFile() + ".json", scanner.originatingElements().toArray(new Element[0]));
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resource.openOutputStream(), StandardCharsets.UTF_8))) {
@@ -113,7 +116,7 @@ public class ParamNameMapper extends AbstractProcessor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            });
+            }
         }
         //Don't mark the annotation as used to allow other processors to process them if we ever end up having any
         return false;

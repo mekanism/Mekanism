@@ -7,7 +7,9 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
@@ -58,16 +60,28 @@ public class BoltRenderer {
                 BoltOwnerData data = entry.getValue();
                 // tick our bolts based on the refresh rate, removing if they're now finished
                 if (refresh) {
-                    data.bolts.removeIf(bolt -> bolt.tick(timestamp));
+                    tickAndRemove(data, timestamp);
                 }
                 if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
                     data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp, random);
                 }
-                data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp, cameraPos));
+                for (BoltInstance bolt : data.bolts) {
+                    bolt.render(matrix, buffer, timestamp, cameraPos);
+                }
 
                 if (data.bolts.isEmpty() && timestamp.isPassed(data.lastUpdateTimestamp, MAX_OWNER_TRACK_TIME)) {
                     iter.remove();
                 }
+            }
+        }
+    }
+
+    private static void tickAndRemove(BoltOwnerData data, Timestamp timestamp) {
+        Iterator<BoltInstance> iterator = data.bolts.iterator();
+        //noinspection Java8CollectionRemoveIf: requires capture
+        while (iterator.hasNext()) {
+            if (iterator.next().tick(timestamp)) {
+                iterator.remove();
             }
         }
     }
