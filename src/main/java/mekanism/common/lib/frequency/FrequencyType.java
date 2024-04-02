@@ -168,4 +168,9 @@ public class FrequencyType<FREQ extends Frequency> {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) || (obj instanceof FrequencyType<?> other && Objects.equals(name, other.name));
+    }
 }
