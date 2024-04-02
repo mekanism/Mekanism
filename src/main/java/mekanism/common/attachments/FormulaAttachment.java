@@ -10,7 +10,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +23,7 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
 
     public static FormulaAttachment create(IAttachmentHolder attachmentHolder) {
         if (attachmentHolder instanceof ItemStack stack && stack.getItem() instanceof ItemCraftingFormula) {
-            return new FormulaAttachment(stack);
+            return new FormulaAttachment(false);
         }
         throw new IllegalArgumentException("Attempted to attach a formula to something other than a crafting formula item.");
     }
@@ -52,20 +51,8 @@ public class FormulaAttachment implements INBTSerializable<CompoundTag> {
     });
     private boolean invalid;
 
-    private FormulaAttachment(ItemStack stack) {
-        this(false);
-        loadLegacyData(stack);
-    }
-
     private FormulaAttachment(boolean invalid) {
         this.invalid = invalid;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.ITEMS, (mekData, key) -> mekData)
-              .ifPresent(mekData -> ContainerType.ITEM.readFrom(mekData, inventory));
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.INVALID, CompoundTag::getBoolean).ifPresent(invalid -> this.invalid = invalid);
     }
 
     public void setInvalid() {

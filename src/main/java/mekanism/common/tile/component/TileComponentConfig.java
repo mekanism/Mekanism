@@ -301,16 +301,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                         onChange.accept(type, side);
                     }
                 }
-            } else {//TODO - 1.21?: Remove this legacy way of reading it
-                NBTUtils.setCompoundIfPresent(configNBT, configKey, sideConfig -> {
-                    for (RelativeSide side : EnumUtils.SIDES) {
-                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
-                            if (info.setDataType(dataType, side)) {
-                                onChange.accept(type, side);
-                            }
-                        });
-                    }
-                });
             }
         }
     }

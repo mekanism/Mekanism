@@ -2,6 +2,7 @@ package mekanism.common.tile.component;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -371,11 +372,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             for (int i = 0; i < colors.length && i < inputColors.length; i++) {
                 inputColors[i] = TransporterUtils.readColor(colors[i]);
             }
-        } else {//TODO - 1.21?: Remove this legacy way of reading it, and use the commented line instead
-            //Arrays.fill(inputColors, null);
-            for (int i = 0; i < inputColors.length; i++) {
-                inputColors[i] = NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR + i, TransporterUtils::readColor);
-            }
+        } else {
+            Arrays.fill(inputColors, null);
         }
     }
 

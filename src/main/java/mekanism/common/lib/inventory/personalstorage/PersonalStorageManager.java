@@ -10,7 +10,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
@@ -18,9 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
@@ -84,14 +81,12 @@ public class PersonalStorageManager {
      */
     public static Optional<AbstractPersonalStorageItemInventory> getInventoryIfPresent(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-        convertLegacyToAttachment(stack);
         return owner != null && stack.hasData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID) ? getInventoryFor(stack) : Optional.empty();
     }
 
     public static void deleteInventory(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner != null) {
-            convertLegacyToAttachment(stack);
             UUID storageId = stack.removeData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
             if (storageId != null) {
                 //If there actually was an id stored then remove the corresponding inventory
@@ -102,7 +97,6 @@ public class PersonalStorageManager {
 
     @NotNull
     private static UUID getInventoryId(ItemStack stack) {
-        convertLegacyToAttachment(stack);
         Optional<UUID> existingData = stack.getExistingData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
         if (existingData.isPresent()) {
             return existingData.get();
@@ -123,11 +117,5 @@ public class PersonalStorageManager {
                 slotConsumer.accept(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));
             }
         }
-    }
-
-    @Deprecated//TODO - 1.21: Remove this
-    private static void convertLegacyToAttachment(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.PERSONAL_STORAGE_ID, CompoundTag::getUUID)
-              .ifPresent(legacyId -> stack.setData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID, legacyId));
     }
 }

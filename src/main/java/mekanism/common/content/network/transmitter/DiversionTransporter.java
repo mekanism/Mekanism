@@ -13,7 +13,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -83,11 +82,6 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             int[] modeIndices = tag.getIntArray(NBTConstants.MODE);
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
                 modes[i] = DiversionControl.byIndexStatic(modeIndices[i]);
-            }
-        } else {//TODO - 1.21?: Remove this legacy way of reading it
-            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-                int index = i;
-                NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
             }
         }
     }

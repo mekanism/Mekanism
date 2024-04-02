@@ -52,7 +52,7 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
     MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ATTACHMENT>> registerContainer(String name, Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
         return register(name, () -> {
             ContainerType<CONTAINER, ATTACHMENT, ?> containerType = typeSupplier.get();
-            return AttachmentType.serializable(containerType::getDefaultWithLegacy)
+            return AttachmentType.serializable(containerType::getDefault)
                   .copyHandler(containerType)
                   .comparator(AttachedContainers::isCompatible)
                   .build();

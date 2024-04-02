@@ -18,7 +18,6 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -39,7 +38,7 @@ public final class ModuleContainer implements IModuleContainer {
 
     public static ModuleContainer create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && IModuleHelper.INSTANCE.isModuleContainer(stack)) {
-            return new ModuleContainer(stack);
+            return new ModuleContainer(stack, new LinkedHashMap<>());
         }
         throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
     }
@@ -51,32 +50,10 @@ public final class ModuleContainer implements IModuleContainer {
 
     final ItemStack container;
 
-    private ModuleContainer(ItemStack container) {
-        this(container, new LinkedHashMap<>());
-        //Note: We only have to load legacy data if it is a new instance as if it is from copying then the legacy data should already have been handled and removed
-        loadLegacyData();
-    }
-
     private ModuleContainer(ItemStack container, Map<Enchantment, Integer> enchantments) {
         this.container = container;
         this.enchantments = enchantments;
         this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    private void loadLegacyData() {
-        //Load legacy modules
-        ItemDataUtils.getAndRemoveData(this.container, NBTConstants.MODULES, CompoundTag::getCompound).ifPresent(legacyModules -> {
-            CompoundTag extraData = new CompoundTag();
-            //Handle legacy enchantments from enchantment modules
-            ItemDataUtils.getAndRemoveData(this.container, NBTConstants.ENCHANTMENTS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND))
-                  .ifPresent(enchantmentTag -> extraData.put(NBTConstants.ENCHANTMENTS, enchantmentTag));
-            if (!extraData.isEmpty()) {
-                legacyModules = legacyModules.copy();
-                legacyModules.put(NBTConstants.EXTRA_DATA, extraData);
-            }
-            deserializeNBT(legacyModules);
-        });
     }
 
     @Nullable

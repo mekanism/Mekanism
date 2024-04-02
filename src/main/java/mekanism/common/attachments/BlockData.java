@@ -9,7 +9,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
@@ -19,7 +18,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,16 +38,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class BlockData implements INBTSerializable<CompoundTag> {
-
-    @Deprecated
-    public static BlockData createWithLegacy(IAttachmentHolder attachmentHolder) {
-        BlockData blockData = create();
-        //TODO - 1.21: Remove this legacy way of loading data
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.DATA, CompoundTag::getCompound).ifPresent(blockData::loadLegacyData);
-        }
-        return blockData;
-    }
 
     public static BlockData create(BlockState state, @Nullable BlockEntity blockEntity) {
         return new BlockData(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata());

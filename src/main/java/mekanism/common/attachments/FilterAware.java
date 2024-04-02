@@ -3,17 +3,13 @@ package mekanism.common.attachments;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
@@ -22,17 +18,6 @@ import org.jetbrains.annotations.Nullable;
 public final class FilterAware implements INBTSerializable<ListTag> {
 
     private final HashList<IFilter<?>> filters = new HashList<>();
-
-    public FilterAware(IAttachmentHolder attachmentHolder) {
-        loadLegacyData(attachmentHolder);
-    }
-
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.FILTERS, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(this::deserializeNBT);
-        }
-    }
 
     public void copyTo(FilterManager<?> filterManager) {
         //TODO - 1.20.4: Do we need to copy these or can we just pass the raw instance?
@@ -93,7 +78,7 @@ public final class FilterAware implements INBTSerializable<ListTag> {
         if (filters.isEmpty()) {
             return null;
         }
-        FilterAware copy = new FilterAware(holder);
+        FilterAware copy = new FilterAware();
         for (IFilter<?> filter : filters) {
             copy.filters.add(filter.clone());
         }

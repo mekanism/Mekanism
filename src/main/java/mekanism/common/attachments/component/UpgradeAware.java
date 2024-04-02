@@ -4,7 +4,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
@@ -14,7 +13,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.component.TileComponentUpgrade;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
@@ -51,12 +49,6 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
     private UpgradeAware(ItemStack stack, Set<Upgrade> supportedUpgrades) {
         this.supportedUpgrades = supportedUpgrades;
         this.upgradeSlots = List.of(UpgradeInventorySlot.input(null, this.supportedUpgrades), UpgradeInventorySlot.output(null));
-        loadLegacyData(stack);
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_UPGRADE, CompoundTag::getCompound).ifPresent(this::deserializeNBT);
     }
 
     public Set<Upgrade> getSupportedUpgrades() {

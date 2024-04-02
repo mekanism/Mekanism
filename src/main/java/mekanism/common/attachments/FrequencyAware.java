@@ -3,7 +3,6 @@ package mekanism.common.attachments;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -18,9 +17,7 @@ import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -46,7 +43,6 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
 
     private FrequencyAware(ItemStack stack, FrequencyType<FREQ> frequencyType) {
         this(stack, frequencyType, null, null);
-        loadLegacyData(stack);
     }
 
     private FrequencyAware(ItemStack attachmentHolder, FrequencyType<FREQ> frequencyType, @Nullable FrequencyIdentity identity, @Nullable FREQ frequency) {
@@ -54,22 +50,6 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
         this.frequencyType = frequencyType;
         this.frequency = frequency;
         this.identity = identity;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData(ItemStack stack) {
-        Optional<CompoundTag> optional = ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound);
-        if (optional.isEmpty()) {
-            //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
-            CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
-            if (mekData != null && mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-                CompoundTag frequencyComponent = mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-                if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                    optional = Optional.of(frequencyComponent.getCompound(frequencyType.getName()));
-                }
-            }
-        }
-        optional.ifPresent(this::deserializeNBT);
     }
 
     @Nullable

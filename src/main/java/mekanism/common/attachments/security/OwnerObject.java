@@ -2,17 +2,13 @@ package mekanism.common.attachments.security;
 
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IOwnerObject;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
@@ -26,19 +22,11 @@ public class OwnerObject implements IOwnerObject {
 
     public OwnerObject(IAttachmentHolder attachmentHolder) {
         this.attachmentHolder = attachmentHolder;
-        if (this.attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            loadLegacyData(stack);
-        }
     }
 
     protected OwnerObject(IAttachmentHolder attachmentHolder, @Nullable UUID ownerUUID) {
         this.attachmentHolder = attachmentHolder;
         this.ownerUUID = ownerUUID;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.OWNER_UUID, CompoundTag::getUUID).ifPresent(owner -> this.ownerUUID = owner);
     }
 
     @Nullable

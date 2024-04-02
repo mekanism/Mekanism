@@ -2,29 +2,16 @@ package mekanism.common.attachments.component;
 
 import java.util.Arrays;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class AttachedEjector implements IAttachedComponent<TileComponentEjector> {
-
-    @Deprecated
-    public static AttachedEjector createWithLegacy(IAttachmentHolder attachmentHolder) {
-        AttachedEjector ejector = create();
-        //TODO - 1.21: Remove this legacy way of loading data
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_EJECTOR, CompoundTag::getCompound).ifPresent(ejector::deserializeNBT);
-        }
-        return ejector;
-    }
 
     public static AttachedEjector create() {
         return new AttachedEjector(new EnumColor[EnumUtils.SIDES.length], false, null);

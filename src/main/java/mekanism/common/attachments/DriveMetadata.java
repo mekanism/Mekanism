@@ -10,9 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
@@ -20,18 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class DriveMetadata implements INBTSerializable<CompoundTag> {
-
-    @Deprecated
-    public static DriveMetadata createWithLegacy(IAttachmentHolder attachmentHolder) {
-        DriveMetadata metadata = create();
-        //TODO - 1.21: Remove this legacy way of loading data
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_COUNT, CompoundTag::getLong).ifPresent(count -> metadata.count = count);
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_META_TYPES, CompoundTag::getInt).ifPresent(types -> metadata.types = types);
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.QIO_ITEM_MAP, CompoundTag::getLongArray).ifPresent(metadata::readSerializedItemMap);
-        }
-        return metadata;
-    }
 
     public static DriveMetadata create() {
         return new DriveMetadata(0, 0, new Object2LongLinkedOpenHashMap<>());

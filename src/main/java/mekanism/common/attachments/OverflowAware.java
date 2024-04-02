@@ -6,10 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -17,16 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class OverflowAware implements INBTSerializable<ListTag> {
-
-    @Deprecated
-    public static OverflowAware createWithLegacy(IAttachmentHolder attachmentHolder) {
-        OverflowAware overflowAware = create();
-        //TODO - 1.21: Remove this legacy way of loading data
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.OVERFLOW, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(overflowAware::deserializeNBT);
-        }
-        return overflowAware;
-    }
 
     public static OverflowAware create() {
         return new OverflowAware(new Object2IntLinkedOpenHashMap<>());

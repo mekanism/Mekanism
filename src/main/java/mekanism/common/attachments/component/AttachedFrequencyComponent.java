@@ -2,13 +2,11 @@ package mekanism.common.attachments.component;
 
 import java.util.Objects;
 import java.util.Set;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +23,6 @@ public final class AttachedFrequencyComponent implements IAttachedComponent<Tile
 
     public AttachedFrequencyComponent(IAttachmentHolder attachmentHolder) {
         this(attachmentHolder, null);
-        loadLegacyData();
     }
 
     private AttachedFrequencyComponent(IAttachmentHolder attachmentHolder, @Nullable CompoundTag frequencyNBT) {
@@ -35,13 +32,6 @@ public final class AttachedFrequencyComponent implements IAttachedComponent<Tile
             this.stack = ItemStack.EMPTY;
         }
         this.frequencyNBT = frequencyNBT;
-    }
-
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData() {
-        if (!stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_FREQUENCY, CompoundTag::getCompound).ifPresent(this::deserializeNBT);
-        }
     }
 
     public boolean isCompatible(AttachedFrequencyComponent other) {

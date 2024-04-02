@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.merged.MergedChemicalTank;
@@ -70,7 +69,6 @@ import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +77,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -194,7 +191,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                 .comparator(SecurityObject::isCompatible)
                 .build());
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<AttachedEjector>> EJECTOR = ATTACHMENT_TYPES.register("ejector",
-          () -> AttachmentType.serializable(AttachedEjector::createWithLegacy)
+          () -> AttachmentType.serializable(AttachedEjector::create)
                 .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(AttachedEjector::isCompatible)
                 .build());
@@ -213,19 +210,19 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<OverflowAware>> OVERFLOW_AWARE = ATTACHMENT_TYPES.register("overflow",
-          () -> AttachmentType.serializable(OverflowAware::createWithLegacy)
+          () -> AttachmentType.serializable(OverflowAware::create)
                 .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(OverflowAware::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<DriveMetadata>> DRIVE_METADATA = ATTACHMENT_TYPES.register("drive_metadata",
-          () -> AttachmentType.serializable(DriveMetadata::createWithLegacy)
+          () -> AttachmentType.serializable(DriveMetadata::create)
                 .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(DriveMetadata::isCompatible)
                 .build());
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<BlockData>> BLOCK_DATA = ATTACHMENT_TYPES.register("block_data",
-          () -> AttachmentType.serializable(BlockData::createWithLegacy)
+          () -> AttachmentType.serializable(BlockData::create)
                 .copyHandler((holder, attachment) -> attachment.copy(holder))
                 .comparator(BlockData::isCompatible)
                 .build());
@@ -235,14 +232,7 @@ public class MekanismAttachmentTypes {//TODO - 1.20.4: Organize this class
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = ATTACHMENT_TYPES.registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> MekanismRobitSkins.BASE);
 
     public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<CompoundTag>> CONFIGURATION_DATA = ATTACHMENT_TYPES.register("configuration_data",
-          //TODO - 1.21: Remove legacy way of loading data and just return this
-          //() -> AttachmentType.builder(CompoundTag::new)
-          () -> AttachmentType.builder(attachmentHolder -> {
-                    if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty()) {
-                        return ItemDataUtils.getAndRemoveData(stack, NBTConstants.DATA, CompoundTag::getCompound).orElseGet(CompoundTag::new);
-                    }
-                    return new CompoundTag();
-                })
+          () -> AttachmentType.builder(CompoundTag::new)
                 .serialize(new IAttachmentSerializer<CompoundTag, CompoundTag>() {
                     @Nullable
                     @Override

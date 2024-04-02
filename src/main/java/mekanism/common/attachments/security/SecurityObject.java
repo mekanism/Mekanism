@@ -5,10 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
@@ -26,14 +24,6 @@ public class SecurityObject extends OwnerObject implements ISecurityObject, INBT
     private SecurityObject(IAttachmentHolder attachmentHolder, @Nullable UUID ownerUUID, SecurityMode securityMode) {
         super(attachmentHolder, ownerUUID);
         this.securityMode = securityMode;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    protected void loadLegacyData(ItemStack stack) {
-        super.loadLegacyData(stack);
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.SECURITY_MODE, CompoundTag::getInt)
-              .map(SecurityMode::byIndexStatic)
-              .ifPresent(mode -> this.securityMode = mode);
     }
 
     @Override

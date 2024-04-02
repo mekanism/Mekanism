@@ -419,7 +419,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
-        readRawConnections(tag, NBTConstants.SIDE);
+        readRawConnections(tag);
         //Transmitter
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.NETWORK, networkID -> {
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
@@ -451,7 +451,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
         NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
-        readRawConnections(nbtTags, NBTConstants.CONNECTION);
+        readRawConnections(nbtTags);
     }
 
     @NotNull
@@ -471,15 +471,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return raw;
     }
 
-    private void readRawConnections(CompoundTag tag, String legacyKey) {
+    private void readRawConnections(CompoundTag tag) {
         if (tag.contains(NBTConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
             int[] raw = tag.getIntArray(NBTConstants.CONNECTION);
             for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
                 setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.byIndexStatic(raw[i]));
-            }
-        } else {//TODO - 1.21?: Remove this legacy way of reading it and inline the passed key
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                NBTUtils.setEnumIfPresent(tag, legacyKey + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
             }
         }
     }

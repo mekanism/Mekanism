@@ -16,7 +16,6 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +30,7 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
             AttributeSideConfig sideConfig = Attribute.get(blockItem.getBlock(), AttributeSideConfig.class);
             if (sideConfig != null) {
-                return new AttachedSideConfig(stack, sideConfig.supportedTypes());
+                return new AttachedSideConfig(sideConfig.supportedTypes());
             }
         }
         throw new IllegalArgumentException("Attempted to attach side config awareness to an object that does not support having a side config.");
@@ -49,21 +48,15 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
 
     private final Map<TransmissionType, LightConfigInfo> configInfo;
 
-    private AttachedSideConfig(ItemStack stack, Set<TransmissionType> types) {
+    private AttachedSideConfig(Set<TransmissionType> types) {
         this(new EnumMap<>(TransmissionType.class));
         for (TransmissionType type : types) {
             configInfo.put(type, new LightConfigInfo());
         }
-        loadLegacyData(stack);
     }
 
     private AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
         this.configInfo = configInfo;
-    }
-
-    @Deprecated//TODO - 1.21: Remove this legacy way of loading data
-    private void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.COMPONENT_CONFIG, CompoundTag::getCompound).ifPresent(this::deserializeNBT);
     }
 
     public boolean isCompatible(AttachedSideConfig other) {

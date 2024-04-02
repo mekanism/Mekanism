@@ -41,7 +41,6 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -200,16 +199,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     public ATTACHMENT getAttachmentIfPresent(IAttachmentHolder holder) {
-        Optional<ATTACHMENT> existingData = holder.getExistingData(attachment);
-        if (existingData.isPresent()) {
-            return existingData.get();
-        }
-        if (holder instanceof ItemStack stack && hasLegacyData(stack)) {
-            //If the holder is an item that has legacy data then we want to have the attachment get attached which will cause the legacy data to be removed
-            // and converted to the new format
-            return holder.getData(attachment);
-        }
-        return null;
+        return holder.getExistingData(attachment).orElse(null);
     }
 
     @Nullable
@@ -227,25 +217,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             }
         }
         return null;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove all usages of this
-    private boolean hasLegacyData(ItemStack stack) {
-        if (!stack.isEmpty()) {
-            CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
-            return mekData != null && mekData.contains(containerTag, Tag.TAG_LIST);
-        }
-        return false;
-    }
-
-    @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
-    public ATTACHMENT getDefaultWithLegacy(IAttachmentHolder holder) {
-        ATTACHMENT attachment = getDefault(holder);
-        //If it is an itemstack try to load legacy data
-        if (holder instanceof ItemStack stack && !stack.isEmpty()) {
-            ItemDataUtils.getAndRemoveData(stack, containerTag, (c, k) -> c.getList(k, Tag.TAG_COMPOUND)).ifPresent(attachment::deserializeNBT);
-        }
-        return attachment;
     }
 
     public ATTACHMENT getDefault(IAttachmentHolder holder) {
@@ -314,10 +285,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     public boolean supports(ItemStack stack) {
-        if (stack.hasData(attachment) || hasLegacyData(stack)) {
-            return true;
-        }
-        return knownDefaultItemContainers.containsKey(stack.getItem());
+        return stack.hasData(attachment) || knownDefaultItemContainers.containsKey(stack.getItem());
     }
 
     ListTag save(List<CONTAINER> containers) {
