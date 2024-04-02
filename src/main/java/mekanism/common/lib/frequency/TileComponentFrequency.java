@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -68,7 +69,9 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void tickServer(Level level, BlockPos pos) {
         if (level.getServer().getTickCount() % 5 == tickOffset) {
-            supportedFrequencies.forEach(this::updateFrequency);
+            for (Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+                updateFrequency(entry.getKey(), entry.getValue());
+            }
         }
         if (needsNotify) {
             tile.invalidateCapabilitiesFull();
