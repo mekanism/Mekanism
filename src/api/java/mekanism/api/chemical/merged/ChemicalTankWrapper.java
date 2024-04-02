@@ -1,5 +1,6 @@
 package mekanism.api.chemical.merged;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -9,6 +10,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
@@ -18,13 +20,22 @@ import net.minecraft.nbt.CompoundTag;
 public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK> {
 
     private final IChemicalTank<CHEMICAL, STACK> internal;
+    private final List<IChemicalTank<?, ?>> otherTanks;
+    @Nullable
     private final BooleanSupplier insertCheck;
     private final MergedChemicalTank mergedTank;
 
+    @Deprecated(forRemoval = true, since = "10.5.14")
     protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
+        this(mergedTank, internal, List.of(), insertCheck);
+    }
+
+    protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, List<IChemicalTank<?, ?>> otherTanks,
+          @Nullable BooleanSupplier insertCheck) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
         this.mergedTank = mergedTank;
         this.internal = internal;
+        this.otherTanks = otherTanks;
         this.insertCheck = insertCheck;
     }
 
@@ -50,10 +61,22 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
         internal.setStackUnchecked(stack);
     }
 
+    private boolean canInsert() {
+        if (insertCheck == null || insertCheck.getAsBoolean()) {
+            for (IChemicalTank<?, ?> otherTank : otherTanks) {
+                if (!otherTank.isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public STACK insert(STACK stack, Action action, AutomationType automationType) {
         //Only allow inserting if we pass the check
-        return insertCheck.getAsBoolean() ? internal.insert(stack, action, automationType) : stack;
+        return canInsert() ? internal.insert(stack, action, automationType) : stack;
     }
 
     @Override

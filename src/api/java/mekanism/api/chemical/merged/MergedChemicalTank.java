@@ -65,13 +65,7 @@ public class MergedChemicalTank {
                 if (type.canHandle(tank)) {
                     //TODO: Improve this so it doesn't have to loop nearly as much?
                     List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).toList();
-                    BooleanSupplier insertionCheck;
-                    if (extraCheck == null) {
-                        insertionCheck = () -> otherTanks.stream().allMatch(IChemicalTank::isEmpty);
-                    } else {
-                        insertionCheck = () -> extraCheck.getAsBoolean() && otherTanks.stream().allMatch(IChemicalTank::isEmpty);
-                    }
-                    tankMap.put(type, type.createWrapper(this, tank, insertionCheck));
+                    tankMap.put(type, type.createWrapper(this, tank, otherTanks, extraCheck));
                     handled = true;
                     break;
                 }
@@ -177,7 +171,7 @@ public class MergedChemicalTank {
     @FunctionalInterface
     private interface IWrapperCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
-        TANK create(MergedChemicalTank mergedTank, TANK tank, BooleanSupplier insertCheck);
+        TANK create(MergedChemicalTank mergedTank, TANK tank, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck);
     }
 
     private record ChemicalTankType<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>(
@@ -200,9 +194,21 @@ public class MergedChemicalTank {
 
         /**
          * It is assumed that {@link #canHandle(IChemicalTank)} is called before this method
+         *
+         * @deprecated Use {@link #createWrapper(MergedChemicalTank, IChemicalTank, List, BooleanSupplier)}
          */
+        @Deprecated(forRemoval = true, since = "10.5.14")
         public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, BooleanSupplier insertCheck) {
-            return tankWrapper.create(mergedTank, (TANK) tank, insertCheck);
+            return createWrapper(mergedTank, tank, List.of(), insertCheck);
+        }
+
+        /**
+         * It is assumed that {@link #canHandle(IChemicalTank)} is called before this method
+         *
+         * @since 10.5.14
+         */
+        public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
+            return tankWrapper.create(mergedTank, (TANK) tank, otherTanks, insertCheck);
         }
 
         @Override
@@ -213,29 +219,49 @@ public class MergedChemicalTank {
 
     private static class GasTankWrapper extends ChemicalTankWrapper<Gas, GasStack> implements IGasTank {
 
+        @Deprecated(forRemoval = true, since = "10.5.14")
         public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, BooleanSupplier insertCheck) {
-            super(mergedTank, internal, insertCheck);
+            this(mergedTank, internal, List.of(), insertCheck);
+        }
+
+        public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
+            super(mergedTank, internal, otherTanks, insertCheck);
         }
     }
 
     private static class InfusionTankWrapper extends ChemicalTankWrapper<InfuseType, InfusionStack> implements IInfusionTank {
 
+        @Deprecated(forRemoval = true, since = "10.5.14")
         public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
+        }
+
+        public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
+            super(mergedTank, internal, otherTanks, insertCheck);
         }
     }
 
     private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack> implements IPigmentTank {
 
+        @Deprecated(forRemoval = true, since = "10.5.14")
         public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
+        }
+
+        public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
+            super(mergedTank, internal, otherTanks, insertCheck);
         }
     }
 
     private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack> implements ISlurryTank {
 
+        @Deprecated(forRemoval = true, since = "10.5.14")
         public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
+        }
+
+        public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
+            super(mergedTank, internal, otherTanks, insertCheck);
         }
     }
 }
