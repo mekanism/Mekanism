@@ -6,7 +6,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
@@ -17,6 +16,7 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tier.BinTier;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -87,7 +87,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (delayTicks == 0) {
             if (getActive()) {
                 //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
-                IItemHandler capability = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition, null, this, Direction.DOWN);
+                // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
+                IItemHandler capability = CapabilityTileEntity.ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 BlockPos below = getBlockPos().below();

@@ -36,6 +36,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -303,7 +304,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private IItemHandler getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
-        return Capabilities.ITEM.getCapabilityIfLoaded(tile.getLevel(), tile.getBlockPos(), null, tile, side);
+        // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
+        return CapabilityTileEntity.ITEM_HANDLER_PROVIDER.getCapability(tile, side);
     }
 
     @ComputerMethod
