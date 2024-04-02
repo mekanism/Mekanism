@@ -12,6 +12,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.common.util.EnumUtils;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.LightTexture;
@@ -59,28 +60,33 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     }
 
     private Model3D getModel(FluidStack fluid, Direction side, float fluidScale) {
-        return fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>())
-              .computeIfAbsent(ModelRenderer.getStage(fluid, stages, fluidScale), stage -> {
-                  Direction opposite = side.getOpposite();
-                  Model3D model = new Model3D()
-                        .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
-                        .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages))
-                        .setSideRender(dir -> dir == Direction.UP || dir == opposite);
-                  return switch (side) {
-                      case NORTH -> model
-                            .xBounds(0.188F, 0.821F)
-                            .zBounds(0.499F, 0.875F);
-                      case SOUTH -> model
-                            .xBounds(0.188F, 0.821F)
-                            .zBounds(0.125F, 0.499F);
-                      case WEST -> model
-                            .xBounds(0.499F, 0.875F)
-                            .zBounds(0.187F, 0.821F);
-                      case EAST -> model
-                            .xBounds(0.125F, 0.499F)
-                            .zBounds(0.186F, 0.821F);
-                      default -> model;
-                  };
-              });
+        Int2ObjectMap<Model3D> modelMap = fuelModels.computeIfAbsent(side, s -> new Int2ObjectOpenHashMap<>());
+        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
+        Model3D model = modelMap.get(stage);
+        if (model == null) {
+            model = new Model3D()
+                  .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
+                  .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages));
+            Direction opposite = side.getOpposite();
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                model.setSideRender(direction, direction == Direction.UP || direction == opposite);
+            }
+            switch (side) {
+                case NORTH -> model
+                      .xBounds(0.188F, 0.821F)
+                      .zBounds(0.499F, 0.875F);
+                case SOUTH -> model
+                      .xBounds(0.188F, 0.821F)
+                      .zBounds(0.125F, 0.499F);
+                case WEST -> model
+                      .xBounds(0.499F, 0.875F)
+                      .zBounds(0.187F, 0.821F);
+                case EAST -> model
+                      .xBounds(0.125F, 0.499F)
+                      .zBounds(0.186F, 0.821F);
+            }
+            modelMap.put(stage, model);
+        }
+        return model;
     }
 }

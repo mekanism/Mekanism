@@ -205,7 +205,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     IEnergyContainer container = (IEnergyContainer) entry.getKey();
                     List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
                     for (Direction side : sides) {
-                        caches.add(energyCapabilityCache.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create(level, pos.relative(s), s.getOpposite())));
+                        BlockEnergyCapabilityCache cache = energyCapabilityCache.get(side);
+                        if (cache == null) {
+                            cache = BlockEnergyCapabilityCache.create(level, pos.relative(side), side.getOpposite());
+                            energyCapabilityCache.put(side, cache);
+                        }
+                        caches.add(cache);
                     }
                     CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
                 }
@@ -224,7 +229,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
           Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
         List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            caches.add((BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.computeIfAbsent(side, s -> capability.createCache(level, pos.relative(s), s.getOpposite())));
+            BlockCapabilityCache<HANDLER, @Nullable Direction> cache = (BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.get(side);
+            if (cache == null) {
+                cache = capability.createCache(level, pos.relative(side), side.getOpposite());
+                typeCapabilityCaches.put(side, cache);
+            }
+            caches.add(cache);
         }
         return caches;
     }

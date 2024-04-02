@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -532,11 +531,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         // directions we might end up checking two different cross chunk directions which would end up at three
         Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectArrayMap<>(3);
         Object2BooleanMap<BlockPos> cachedIsFrame = new Object2BooleanOpenHashMap<>();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (hasFrame(chunkMap, cachedIsFrame, direction, false)) {
+            if (hasFrame(chunkMap, pos, cachedIsFrame, direction, false)) {
                 frameRotated = false;
                 return direction;
-            } else if (hasFrame(chunkMap, cachedIsFrame, direction, true)) {
+            } else if (hasFrame(chunkMap, pos, cachedIsFrame, direction, true)) {
                 frameRotated = true;
                 return direction;
             }
@@ -552,7 +552,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      *
      * @return whether the frame exists.
      */
-    private boolean hasFrame(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, Direction direction, boolean rotated) {
+    private boolean hasFrame(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos.MutableBlockPos pos, Object2BooleanMap<BlockPos> cachedIsFrame, Direction direction,
+          boolean rotated) {
         int alternatingX = 0;
         int alternatingY = 0;
         int alternatingZ = 0;
@@ -572,24 +573,29 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         int zComponent = direction.getStepZ();
 
         //Start by checking the two spots right next to the teleporter, and then checking the opposite corner, as those are the most likely to overlap
-        return isFramePair(chunkMap, cachedIsFrame, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
-               isFrame(chunkMap, cachedIsFrame, 3 * xComponent, 3 * yComponent, 3 * zComponent) &&
-               isFramePair(chunkMap, cachedIsFrame, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
-               isFramePair(chunkMap, cachedIsFrame, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&
-               isFramePair(chunkMap, cachedIsFrame, 3 * xComponent, alternatingX, 3 * yComponent, alternatingY, 3 * zComponent, alternatingZ);
+        return isFramePair(chunkMap, pos, cachedIsFrame, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
+               isFrame(chunkMap, pos, cachedIsFrame, 3 * xComponent, 3 * yComponent, 3 * zComponent) &&
+               isFramePair(chunkMap, pos, cachedIsFrame, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
+               isFramePair(chunkMap, pos, cachedIsFrame, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&
+               isFramePair(chunkMap, pos, cachedIsFrame, 3 * xComponent, alternatingX, 3 * yComponent, alternatingY, 3 * zComponent, alternatingZ);
     }
 
-    private boolean isFramePair(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset, int alternatingX, int yOffset,
-          int alternatingY, int zOffset, int alternatingZ) {
-        return isFrame(chunkMap, cachedIsFrame, xOffset - alternatingX, yOffset - alternatingY, zOffset - alternatingZ) &&
-               isFrame(chunkMap, cachedIsFrame, xOffset + alternatingX, yOffset + alternatingY, zOffset + alternatingZ);
+    private boolean isFramePair(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos.MutableBlockPos pos, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset,
+          int alternatingX, int yOffset, int alternatingY, int zOffset, int alternatingZ) {
+        return isFrame(chunkMap, pos, cachedIsFrame, xOffset - alternatingX, yOffset - alternatingY, zOffset - alternatingZ) &&
+               isFrame(chunkMap, pos, cachedIsFrame, xOffset + alternatingX, yOffset + alternatingY, zOffset + alternatingZ);
     }
 
-    private boolean isFrame(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset, int yOffset, int zOffset) {
-        return cachedIsFrame.computeIfAbsent(worldPosition.offset(xOffset, yOffset, zOffset), (BlockPos pos) -> {
-            Optional<BlockState> state = WorldUtils.getBlockState(level, chunkMap, pos);
-            return state.filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
-        });
+    private boolean isFrame(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos.MutableBlockPos pos, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset, int yOffset, int zOffset) {
+        pos.setWithOffset(worldPosition, xOffset, yOffset, zOffset);
+        if (cachedIsFrame.containsKey(pos)) {
+            return cachedIsFrame.getBoolean(pos);
+        }
+        boolean isFrame = WorldUtils.getBlockState(level, chunkMap, pos)
+              .filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock()))
+              .isPresent();
+        cachedIsFrame.put(pos.immutable(), isFrame);
+        return isFrame;
     }
 
     /**

@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.fission;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -43,6 +44,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
           Capabilities.GAS.block(),
           Capabilities.FLUID.block()
     );
+    private final Predicate<FissionPortMode> MODE_MATCHES = mode -> mode == getMode();
 
     public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
@@ -55,8 +57,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock()))
                   .isPresent()) {
-                return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s),
-                      s.getOpposite())).getCapability();
+                return getAdjacentUnchecked(side);
             }
         }
         return null;
@@ -89,10 +90,12 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, FissionPortMode>> outputTargets, Direction side) {
-        outputTargets.add(new AdvancedCapabilityOutputTarget<>(
-              capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              mode -> mode == getMode()
-        ));
+        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = capabilityCaches.get(side);
+        if (cache == null) {
+            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            capabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));
     }
 
     @ComputerMethod

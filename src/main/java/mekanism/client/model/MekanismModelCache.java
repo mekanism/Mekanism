@@ -69,14 +69,20 @@ public class MekanismModelCache extends BaseModelCache {
 
     @Nullable
     public BakedModel getRobitSkin(@NotNull SkinLookup skinLookup) {
-        JSONModelData data = ROBIT_SKINS.computeIfAbsent(skinLookup.location(), skinName -> {
+        ResourceLocation skinName = skinLookup.location();
+        JSONModelData data;
+        if (ROBIT_SKINS.containsKey(skinName)) {
+            data = ROBIT_SKINS.get(skinName);
+        } else {
             ResourceLocation customModel = skinLookup.skin().customModel();
             if (customModel != null) {
                 //If multiple skins make use of the same custom model, have them all point at the same model data object
-                return CUSTOM_ROBIT_MODELS.computeIfAbsent(customModel, this::registerJSONAndBake);
+                data = CUSTOM_ROBIT_MODELS.computeIfAbsent(customModel, this::registerJSONAndBake);
+            } else {
+                data = null;
             }
-            return null;
-        });
+            ROBIT_SKINS.put(skinName, data);
+        }
         return data == null ? BASE_ROBIT : data.getBakedModel();
     }
 

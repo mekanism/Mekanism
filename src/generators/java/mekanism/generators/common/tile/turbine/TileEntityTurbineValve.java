@@ -48,7 +48,12 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     }
 
     public void addEnergyTargetCapability(List<BlockEnergyCapabilityCache> outputTargets, Direction side) {
-        outputTargets.add(energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())));
+        BlockEnergyCapabilityCache cache = energyCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            energyCapabilityCaches.put(side, cache);
+        }
+        outputTargets.add(cache);
     }
 
     @Override

@@ -82,7 +82,12 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
      * Gets the listener that will refresh connections on a given side.
      */
     private RefreshListener getRefreshListener(@NotNull Direction side) {
-        return cachedListeners.computeIfAbsent(side, s -> new RefreshListener(transmitterTile, s));
+        RefreshListener listener = cachedListeners.get(side);
+        if (listener == null) {
+            listener = new RefreshListener(transmitterTile, side);
+            cachedListeners.put(side, listener);
+        }
+        return listener;
     }
 
     public static class RefreshListener implements Runnable, BooleanSupplier {

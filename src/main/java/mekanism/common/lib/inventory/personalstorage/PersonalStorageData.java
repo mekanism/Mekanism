@@ -26,15 +26,17 @@ class PersonalStorageData extends MekanismSavedData {
     }
 
     PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
-        return inventoriesById.computeIfAbsent(id, unused -> {
-            PersonalStorageItemInventory inventory = createInventory();
+        PersonalStorageItemInventory inventory = inventoriesById.get(id);
+        if (inventory == null) {
+            inventory = createInventory();
+            inventoriesById.put(id, inventory);
             List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
             for (int i = 0, slots = contents.size(); i < slots; i++) {
                 inventorySlots.get(i).deserializeNBT(contents.get(i).serializeNBT());
             }
             setDirty();
-            return inventory;
-        });
+        }
+        return inventory;
     }
 
     void removeInventory(UUID id) {

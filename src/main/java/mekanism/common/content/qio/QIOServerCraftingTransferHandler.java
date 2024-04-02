@@ -175,7 +175,7 @@ public class QIOServerCraftingTransferHandler {
             if (storedItem == null) {
                 return fail("Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
             }
-            long stored = frequency.getStored(storedItem);
+            long stored = frequency.getStoredByHash(storedItem);
             slotData = stored == 0 ? FrequencySlotData.EMPTY : new FrequencySlotData(storedItem, stored);
             frequencyAvailableItems.put(qioSource, slotData);
         }

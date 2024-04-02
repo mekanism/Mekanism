@@ -48,10 +48,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     }
 
     public void addEnergyTargetCapability(List<EnergyOutputTarget> outputTargets, Direction side) {
-        outputTargets.add(new EnergyOutputTarget(
-              energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              this::getActive
-        ));
+        BlockEnergyCapabilityCache cache = energyCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            energyCapabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new EnergyOutputTarget(cache, this::getActive));
     }
 
     @Override

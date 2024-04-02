@@ -229,8 +229,14 @@ public final class ModuleContainer implements IModuleContainer {
     }
 
     public int addModule(IModuleDataProvider<?> typeProvider, int toInstall) {
-        boolean hadModule = has(typeProvider);
-        return modules.computeIfAbsent(typeProvider.getModuleData(), type -> createNewModule(type, new CompoundTag())).add(!hadModule, toInstall);
+        ModuleData<?> moduleType = typeProvider.getModuleData();
+        boolean hadModule = has(moduleType);
+        Module<?> module = modules.get(moduleType);
+        if (module == null) {
+            module = createNewModule(moduleType, new CompoundTag());
+            modules.put(moduleType, module);
+        }
+        return module.add(!hadModule, toInstall);
     }
 
     @Override

@@ -63,25 +63,35 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     private Model3D getValveModel(@NotNull FluidStack fluid, float fluidScale) {
-        return cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>())
-              .computeIfAbsent(Math.min(stages - 1, (int) (fluidScale * (stages - 1))), stage -> new Model3D()
-                    .setSideRender(side -> side.getAxis().isHorizontal())
-                    .prepFlowing(fluid)
-                    .xBounds(0.3225F, 0.6775F)
-                    .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
-                    .zBounds(0.3225F, 0.6775F)
-              );
+        Int2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
+        int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
+        Model3D model = modelMap.get(stage);
+        if (model == null) {
+            model = new Model3D()
+                  .setSideRender(side -> side.getAxis().isHorizontal())
+                  .prepFlowing(fluid)
+                  .xBounds(0.3225F, 0.6775F)
+                  .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
+                  .zBounds(0.3225F, 0.6775F);
+            modelMap.put(stage, model);
+        }
+        return model;
     }
 
     public static Model3D getFluidModel(@NotNull FluidStack fluid, float fluidScale) {
-        return cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>())
-              .computeIfAbsent(ModelRenderer.getStage(fluid, stages, fluidScale), stage -> new Model3D()
-                    .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
-                    .setSideRender(Direction.DOWN, false)
-                    .setSideRender(Direction.UP, stage < stages)
-                    .xBounds(0.135F, 0.865F)
-                    .yBounds(0.12375F, 0.124F + 0.75225F * (stage / (float) stages))
-                    .zBounds(0.135F, 0.865F)
-              );
+        Int2ObjectMap<Model3D> modelMap = cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
+        int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
+        Model3D model = modelMap.get(stage);
+        if (model == null) {
+            model = new Model3D()
+                  .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
+                  .setSideRender(Direction.DOWN, false)
+                  .setSideRender(Direction.UP, stage < stages)
+                  .xBounds(0.135F, 0.865F)
+                  .yBounds(0.12375F, 0.124F + 0.75225F * (stage / (float) stages))
+                  .zBounds(0.135F, 0.865F);
+            modelMap.put(stage, model);
+        }
+        return model;
     }
 }

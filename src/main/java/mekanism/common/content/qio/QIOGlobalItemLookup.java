@@ -48,11 +48,15 @@ public class QIOGlobalItemLookup {
         //Note: Unlike for getUUIDForType we have to wrap the hashed item into a SerializedHashedItem here in case it isn't present
         // as we want to make sure only serialized hashed items are put into the map
         SerializedHashedItem serializable = new SerializedHashedItem(item);
-        return itemCache.inverse().computeIfAbsent(serializable, s -> {
+        BiMap<HashedItem, UUID> inverseCache = itemCache.inverse();
+        UUID uuid = inverseCache.get(serializable);
+        if (uuid == null) {
             //Calculate and return a new UUID and mark the save data as dirty
+            uuid = UUID.randomUUID();
+            itemCache.put(uuid, serializable);
             markDirty();
-            return UUID.randomUUID();
-        });
+        }
+        return uuid;
     }
 
     @Nullable

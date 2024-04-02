@@ -135,8 +135,10 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     public Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider) {
-        return conflictingModules.computeIfAbsent(typeProvider.getModuleData(), moduleType -> {
-            Set<ModuleData<?>> conflicting = new ReferenceOpenHashSet<>();
+        ModuleData<?> moduleType = typeProvider.getModuleData();
+        Set<ModuleData<?>> conflicting = conflictingModules.get(moduleType);
+        if (conflicting == null) {
+            conflicting = new ReferenceOpenHashSet<>();
             for (Item item : getSupported(moduleType)) {
                 for (ModuleData<?> other : getSupported(item)) {
                     if (moduleType != other && moduleType.isExclusive(other.getExclusiveFlags())) {
@@ -144,8 +146,10 @@ public class ModuleHelper implements IModuleHelper {
                     }
                 }
             }
-            return Collections.unmodifiableSet(conflicting);
-        });
+            conflicting = Collections.unmodifiableSet(conflicting);
+            conflictingModules.put(moduleType, conflicting);
+        }
+        return conflicting;
     }
 
     @Override

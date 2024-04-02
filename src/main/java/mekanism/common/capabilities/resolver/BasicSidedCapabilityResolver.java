@@ -62,7 +62,12 @@ public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER
             }
             return (T) readOnlyHandler;
         }
-        return (T) handlers.computeIfAbsent(side, s -> proxyCreator.create(baseHandler, s, getHolder()));
+        HANDLER handler = handlers.get(side);
+        if (handler == null) {
+            handler = proxyCreator.create(baseHandler, side, getHolder());
+            handlers.put(side, handler);
+        }
+        return (T) handler;
     }
 
     @Override

@@ -123,13 +123,16 @@ public class BaseModelCache {
         }
 
         public BakedModel bake(IGeometryBakingContext config) {
-            return bakedMap.computeIfAbsent(config, c -> {
+            BakedModel bakedModel = bakedMap.get(config);
+            if (bakedModel == null) {
                 ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
                       (modelLoc, material) -> material.sprite(),
                       rl
                 );
-                return model.bake(c, baker, Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl);
-            });
+                bakedModel = model.bake(config, baker, Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl);
+                bakedMap.put(config, bakedModel);
+            }
+            return bakedModel;
         }
 
         public IUnbakedGeometry<?> getModel() {

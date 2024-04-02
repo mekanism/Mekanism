@@ -81,7 +81,11 @@ public class GuiUpgradeWindow extends GuiWindow {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
             int textY = relativeY + 20;
-            WrappedTextRenderer textRenderer = upgradeTypeData.computeIfAbsent(selectedType, type -> new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(type)));
+            WrappedTextRenderer textRenderer = upgradeTypeData.get(selectedType);
+            if (textRenderer == null) {
+                textRenderer = new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(selectedType));
+                upgradeTypeData.put(selectedType, textRenderer);
+            }
             int lines = textRenderer.renderWithScale(guiGraphics, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
             textY += 6 * lines + 2;
             drawTextWithScale(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);

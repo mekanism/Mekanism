@@ -641,8 +641,12 @@ public class RadiationManager implements IRadiationManager {
                     manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }
                 for (Map.Entry<ResourceLocation, List<Meltdown>> entry : savedMeltdowns.entrySet()) {
-                    List<Meltdown> meltdowns = entry.getValue();
-                    manager.meltdowns.computeIfAbsent(entry.getKey(), id -> new ArrayList<>(meltdowns.size())).addAll(meltdowns);
+                    List<Meltdown> meltdowns = manager.meltdowns.get(entry.getKey());
+                    if (meltdowns == null) {
+                        manager.meltdowns.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+                    } else {
+                        meltdowns.addAll(entry.getValue());
+                    }
                 }
             }
         }

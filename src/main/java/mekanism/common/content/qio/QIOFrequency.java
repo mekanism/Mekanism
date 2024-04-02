@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IHashedItem;
@@ -154,18 +155,18 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             return stack;
         }
         HashedItem type = HashedItem.create(stack);
-        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
+        QIOItemTypeData data = itemDataMap.get(type);
+        if (data == null) {
             if (itemDataMap.size() == totalTypeCapacity) {
                 //Don't add any ghost item types if there is no room for new ones. We do this inside of a computeIfAbsent
                 // so that we don't have to check if the map contains it twice
-                return null;
+                //Failed to insert
+                return stack;
+            } else {
+                // at this point we're guaranteed at least part of the input stack will be inserted
+                data = createTypeDataForAbsent(type);
+                itemDataMap.put(type, data);
             }
-            // at this point we're guaranteed at least part of the input stack will be inserted
-            return createTypeDataForAbsent(t);
-        });
-        if (data == null) {
-            //Failed to insert
-            return stack;
         }
         return type.createStack(MathUtils.clampToInt(data.add(stack.getCount(), Action.EXECUTE)));
     }
@@ -182,13 +183,17 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 failedWildcardTags.clear();
             }
         }
-        modIDLookupMap.computeIfAbsent(MekanismUtils.getModId(stack), modID -> {
+        String modID = MekanismUtils.getModId(stack);
+        Set<HashedItem> modItems = modIDLookupMap.get(modID);
+        if (modItems == null) {
             //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
             // as our new modid may be valid for some of our wildcards
             modIDWildcardCache.clear();
             failedWildcardModIDs.clear();
-            return new HashSet<>();
-        }).add(type);
+            modItems = new HashSet<>();
+            modIDLookupMap.put(modID, modItems);
+        }
+        modItems.add(type);
         //Fuzzy item lookup has no wildcard cache related to it
         fuzzyItemLookupMap.computeIfAbsent(stack.getItem(), item -> new HashSet<>()).add(type);
         //Ensure we have a matching uuid for this item
@@ -307,7 +312,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
         Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
         for (HashedItem item : items) {
-            ret.put(item, getStored(item));
+            ret.put(item, getStoredByHash(item));
         }
         return ret;
     }
@@ -315,12 +320,13 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public Object2LongMap<HashedItem> getStacksByTagWildcard(String wildcard) {
         if (hasMatchingElements(tagWildcardCache, failedWildcardTags, wildcard, tagLookupMap::getAllKeys)) {
             Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
+            ToLongFunction<HashedItem> storedFunction = this::getStoredByHash;
             for (String match : tagWildcardCache.get(wildcard)) {
                 for (HashedItem item : tagLookupMap.getValues(match)) {
                     //If our return map doesn't already have the stored value in it, calculate it.
                     // The case where it may have the stored value in it is if an item has multiple
                     // tags that all match the wildcard
-                    ret.computeIfAbsent(item, (HashedItem type) -> getStored(type));
+                    ret.computeIfAbsent(item, storedFunction);
                 }
             }
             return ret;
@@ -336,7 +342,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                     //Note: Unlike in getStacksByTagWildcard, we don't use computeLongIfAbsent here because
                     // each stack only has one modid, so while we may have multiple modids that match our
                     // wildcard, the stacks that correspond to said modids will be unique
-                    ret.put(item, getStored(item));
+                    ret.put(item, getStoredByHash(item));
                 }
             }
             return ret;
@@ -416,16 +422,16 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public long getStored(ItemStack type) {
-        return type.isEmpty() ? 0 : getStored(HashedItem.raw(type));
+        return type.isEmpty() ? 0 : getStoredByHash(HashedItem.raw(type));
     }
 
-    public long getStored(HashedItem itemType) {
+    public long getStoredByHash(HashedItem itemType) {
         QIOItemTypeData data = itemDataMap.get(itemType);
         return data == null ? 0 : data.count;
     }
 
     public boolean isStoring(HashedItem itemType) {
-        return getStored(itemType) > 0;
+        return getStoredByHash(itemType) > 0;
     }
 
     public QIODriveData getDriveData(QIODriveKey key) {

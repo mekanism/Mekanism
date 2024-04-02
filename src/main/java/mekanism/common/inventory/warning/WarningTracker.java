@@ -17,8 +17,9 @@ public class WarningTracker implements IWarningTracker {
 
     @Override
     public BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {
-        warnings.computeIfAbsent(Objects.requireNonNull(type, "Warning type cannot be null."), t -> new ArrayList<>(type.expectedWarnings))
-              .add(Objects.requireNonNull(warningSupplier, "Warning check cannot be null."));
+        Objects.requireNonNull(type, "Warning type cannot be null.");
+        Objects.requireNonNull(warningSupplier, "Warning check cannot be null.");
+        warnings.computeIfAbsent(type, t -> new ArrayList<>(t.expectedWarnings)).add(warningSupplier);
         return warningSupplier;
     }
 

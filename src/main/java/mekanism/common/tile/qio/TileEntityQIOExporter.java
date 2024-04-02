@@ -109,7 +109,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                     map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));
                 } else {
                     HashedItem type = HashedItem.create(itemFilter.getItemStack());
-                    map.put(type, freq.getStored(type));
+                    map.put(type, freq.getStoredByHash(type));
                 }
             } else if (filter instanceof QIOTagFilter tagFilter) {
                 String tagName = tagFilter.getTagName();

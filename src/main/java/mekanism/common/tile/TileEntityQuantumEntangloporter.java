@@ -225,7 +225,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
+                return getAdjacentUnchecked(side);
             }
         }
         return null;
@@ -235,25 +235,34 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @SuppressWarnings("unchecked")
     public <HANDLER> HANDLER getCachedCapability(@NotNull Direction side, TransmissionType transmissionType) {
         if (transmissionType == TransmissionType.HEAT) {
-            return (HANDLER) adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
+            return (HANDLER) getAdjacentUnchecked(side);
         } else if (transmissionType == TransmissionType.ENERGY) {
-            return (HANDLER) adjacentEnergyCaps.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())).getCapability();
+            BlockEnergyCapabilityCache cache = adjacentEnergyCaps.get(side);
+            if (cache == null) {
+                cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+                adjacentEnergyCaps.put(side, cache);
+            }
+            return (HANDLER) cache.getCapability();
         } else if (transmissionType == TransmissionType.ITEM) {
             //Not currently handled
             return null;
         }
-        BlockCapabilityCache<?, @Nullable Direction> cache = capabilityCaches.computeIfAbsent(transmissionType, type -> new EnumMap<>(Direction.class))
-              .computeIfAbsent(side, s -> {
-                  IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
-                      case FLUID -> Capabilities.FLUID;
-                      case GAS -> Capabilities.GAS;
-                      case INFUSION -> Capabilities.INFUSION;
-                      case PIGMENT -> Capabilities.PIGMENT;
-                      case SLURRY -> Capabilities.SLURRY;
-                      default -> null;
-                  };
-                  return capability == null ? null : capability.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite());
-              });
+        Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> caches = capabilityCaches.computeIfAbsent(transmissionType, type -> new EnumMap<>(Direction.class));
+        BlockCapabilityCache<?, @Nullable Direction> cache = caches.get(side);
+        if (cache == null) {
+            IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
+                case FLUID -> Capabilities.FLUID;
+                case GAS -> Capabilities.GAS;
+                case INFUSION -> Capabilities.INFUSION;
+                case PIGMENT -> Capabilities.PIGMENT;
+                case SLURRY -> Capabilities.SLURRY;
+                default -> null;
+            };
+            if (capability != null) {
+                cache = capability.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+                caches.put(side, cache);
+            }
+        }
         return cache == null ? null : (HANDLER) cache.getCapability();
     }
 

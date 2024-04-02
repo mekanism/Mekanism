@@ -128,14 +128,19 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
     }
 
     private Model3D getPasteModel(FluidStack paste, float fluidScale) {
-        return cachedModels.computeIfAbsent(ModelRenderer.getStage(paste, stages, fluidScale), stage -> new Model3D()
-              .setTexture(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL))
-              .setSideRender(Direction.DOWN, false)
-              .setSideRender(Direction.UP, stage < stages)
-              .xBounds(0.001F, 0.999F)
-              .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
-              .zBounds(0.001F, 0.999F)
-        );
+        int stage = ModelRenderer.getStage(paste, stages, fluidScale);
+        Model3D model = cachedModels.get(stage);
+        if (model == null) {
+            model = new Model3D()
+                  .setTexture(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL))
+                  .setSideRender(Direction.DOWN, false)
+                  .setSideRender(Direction.UP, stage < stages)
+                  .xBounds(0.001F, 0.999F)
+                  .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
+                  .zBounds(0.001F, 0.999F);
+            cachedModels.put(stage, model);
+        }
+        return model;
     }
 
     private static class PseudoParticleData {

@@ -230,7 +230,13 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         if (overlayLookup == null) {
             overlayLookup = new EnumMap<>(GaugeOverlay.class);
         }
-        return overlayLookup.computeIfAbsent(gauge.getGaugeOverlay(), overlay -> createDrawable(guiHelper, overlay));
+        GaugeOverlay overlay = gauge.getGaugeOverlay();
+        IDrawable drawable = overlayLookup.get(overlay);
+        if (drawable == null) {
+            drawable = createDrawable(guiHelper, overlay);
+            overlayLookup.put(overlay, drawable);
+        }
+        return drawable;
     }
 
     private IDrawable createDrawable(IGuiHelper helper, GaugeOverlay gaugeOverlay) {

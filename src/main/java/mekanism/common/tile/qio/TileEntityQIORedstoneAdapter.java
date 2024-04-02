@@ -55,9 +55,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         if (freq == null || itemType == null) {
             return 0;
         } else if (fuzzy) {
-            return freq.getTypesForItem(itemType.getItem()).stream().mapToLong(freq::getStored).sum();
+            return freq.getTypesForItem(itemType.getItem()).stream().mapToLong(freq::getStoredByHash).sum();
         }
-        return freq.getStored(itemType);
+        return freq.getStoredByHash(itemType);
     }
 
     public void handleStackChange(ItemStack stack) {

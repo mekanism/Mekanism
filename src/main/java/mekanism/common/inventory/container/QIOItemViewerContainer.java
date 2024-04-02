@@ -499,16 +499,16 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return;
         }
         searchQuery = queryText;
-        searchList = searchCache.computeIfAbsent(queryText, text -> {
-            List<IScrollableSlot> list = new ArrayList<>();
-            ISearchQuery query = SearchQueryParser.parse(text);
+        searchList = searchCache.get(queryText);
+        if (searchList == null) {
+            searchList = new ArrayList<>();
+            ISearchQuery query = SearchQueryParser.parse(queryText);
             for (IScrollableSlot slot : itemList) {
                 if (query.test(slot.item().getInternalStack())) {
-                    list.add(slot);
+                    searchList.add(slot);
                 }
             }
-            return list;
-        });
+        }
     }
 
     @Override

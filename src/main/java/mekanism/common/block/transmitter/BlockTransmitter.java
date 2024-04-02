@@ -137,7 +137,9 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
             packedKey |= connectionType.ordinal() << (side.ordinal() * 2);
         }
         //We can cast this to a short as we don't use more bits than are in a short, we just use an int to simplify bit shifting
-        return cachedShapes.computeIfAbsent((short) packedKey, packed -> {
+        short packed = (short) packedKey;
+        VoxelShape shape = cachedShapes.get(packed);
+        if (shape == null) {
             //If we don't have a cached version of our shape, then we need to calculate it
             //size = Size.byIndexStatic(packed >> 12);
             List<VoxelShape> shapes = new ArrayList<>(EnumUtils.DIRECTIONS.length);
@@ -152,10 +154,13 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
             }
             VoxelShape center = getCenter();
             if (shapes.isEmpty()) {
-                return center;
+                shape = center;
+            } else {
+                //Call batchCombine directly rather than just combine so that we can skip a few checks
+                shape = VoxelShapeUtils.batchCombine(center, BooleanOp.OR, true, shapes);
             }
-            //Call batchCombine directly rather than just combine so that we can skip a few checks
-            return VoxelShapeUtils.batchCombine(center, BooleanOp.OR, true, shapes);
-        });
+            cachedShapes.put(packed, shape);
+        }
+        return shape;
     }
 }

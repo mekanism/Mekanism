@@ -52,11 +52,13 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             return null;
         }
 
-        return privateManagers.computeIfAbsent(ownerUUID, owner -> {
-            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner, SecurityMode.PRIVATE);
+        FrequencyManager<FREQ> manager = privateManagers.get(ownerUUID);
+        if (manager == null) {
+            manager = new FrequencyManager<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
             manager.createOrLoad();
-            return manager;
-        });
+            privateManagers.put(ownerUUID, manager);
+        }
+        return manager;
     }
 
     public FrequencyManager<FREQ> getTrustedManager(UUID ownerUUID) {
@@ -67,12 +69,13 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             Mekanism.logger.error("Attempted to access trusted frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
             return null;
         }
-
-        return trustedManagers.computeIfAbsent(ownerUUID, owner -> {
-            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner, SecurityMode.TRUSTED);
+        FrequencyManager<FREQ> manager = trustedManagers.get(ownerUUID);
+        if (manager == null) {
+            manager = new FrequencyManager<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
             manager.createOrLoad();
-            return manager;
-        });
+            trustedManagers.put(ownerUUID, manager);
+        }
+        return manager;
     }
 
     public Collection<FrequencyManager<FREQ>> getTrustedManagers() {

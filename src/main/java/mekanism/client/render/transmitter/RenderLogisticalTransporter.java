@@ -22,6 +22,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
@@ -146,10 +147,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     private Model3D getOverlayModel(DiversionTransporter transporter, Direction side) {
         //Get the model or set it up if needed
-        Model3D model = cachedOverlays.computeIfAbsent(side, face -> new Model3D()
-              .prepSingleFaceModelSize(face)
-              .setSideRender(direction -> direction == face)
-        );
+        Model3D model = cachedOverlays.computeIfAbsent(side, face -> {
+            Model3D model3D = new Model3D().prepSingleFaceModelSize(face);
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                model3D.setSideRender(direction, direction == face);
+            }
+            return model3D;
+        });
         //set the proper side to the texture we need to use
         return model.setTexture(side, switch (transporter.modes[side.ordinal()]) {
             case DISABLED -> gunpowderIcon;

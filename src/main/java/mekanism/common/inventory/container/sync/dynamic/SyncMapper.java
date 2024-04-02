@@ -179,7 +179,11 @@ public class SyncMapper extends BaseAnnotationScanner {
     }
 
     public void setup(MekanismContainer container, Class<?> holderClass, Supplier<Object> holderSupplier, String tag) {
-        PropertyDataClassCache cache = syncablePropertyMap.computeIfAbsent(holderClass, clazz -> getData(syncablePropertyMap, clazz, PropertyDataClassCache.EMPTY));
+        PropertyDataClassCache cache = syncablePropertyMap.get(holderClass);
+        if (cache == null) {
+            cache = getData(syncablePropertyMap, holderClass, PropertyDataClassCache.EMPTY);
+            syncablePropertyMap.put(holderClass, cache);
+        }
         for (PropertyField field : cache.propertyFieldMap.get(tag)) {
             for (TrackedFieldData data : field.trackedData) {
                 data.track(container, holderSupplier);

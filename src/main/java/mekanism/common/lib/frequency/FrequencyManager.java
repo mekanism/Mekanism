@@ -102,11 +102,13 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ validateAndUpdate(BlockEntity tile, FREQ freq) {
-        FREQ storedFreq = frequencies.computeIfAbsent(freq.getKey(), key -> {
+        FREQ storedFreq = frequencies.get(freq.getKey());
+        if (storedFreq == null) {
             freq.setValid(true);
             markDirty();
-            return freq;
-        });
+            frequencies.put(freq.getKey(), freq);
+            storedFreq = freq;
+        }
         if (storedFreq.update(tile)) {
             markDirty();
         }
@@ -149,12 +151,14 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
-        return frequencies.computeIfAbsent(identity.key(), key -> {
-            FREQ freq = frequencyType.create(key, ownerUUID);
+        FREQ freq = frequencies.get(identity.key());
+        if (freq == null) {
+            freq = frequencyType.create(identity.key(), ownerUUID);
             freq.setSecurityMode(identity.securityMode());
+            frequencies.put(identity.key(), freq);
             markDirty();
-            return freq;
-        });
+        }
+        return freq;
     }
 
     public void addFrequency(FREQ freq) {

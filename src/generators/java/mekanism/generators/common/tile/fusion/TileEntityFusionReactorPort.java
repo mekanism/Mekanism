@@ -79,17 +79,21 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     public void addGasTargetCapability(List<CapabilityOutputTarget<IGasHandler>> outputTargets, Direction side) {
-        outputTargets.add(new CapabilityOutputTarget<>(
-              chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              this::getActive
-        ));
+        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            chemicalCapabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
     public void addEnergyTargetCapability(List<EnergyOutputTarget> outputTargets, Direction side) {
-        outputTargets.add(new EnergyOutputTarget(
-              energyCapabilityCaches.computeIfAbsent(side, s -> BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              this::getActive
-        ));
+        BlockEnergyCapabilityCache cache = energyCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            energyCapabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new EnergyOutputTarget(cache, this::getActive));
     }
 
     @Nullable
@@ -99,8 +103,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
             if (WorldUtils.getBlockState(level, getBlockPos().relative(side))
                   .filter(state -> !state.is(GeneratorsBlocks.FUSION_REACTOR_PORT.getBlock()))
                   .isPresent()) {
-                return adjacentHeatCaps.computeIfAbsent(side, s -> BlockCapabilityCache.create(Capabilities.HEAT, (ServerLevel) level, worldPosition.relative(s),
-                      s.getOpposite())).getCapability();
+                return getAdjacentUnchecked(side);
             }
         }
         return null;

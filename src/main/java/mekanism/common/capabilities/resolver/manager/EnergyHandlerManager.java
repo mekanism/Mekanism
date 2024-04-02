@@ -75,22 +75,31 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
         }
         if (side == null) {
             //If we already contain a cached object for this instance then just use it, otherwise wrap it
-            return (T) cachedReadOnlyCapabilities.computeIfAbsent(capability, cap -> {
+            Object result = cachedReadOnlyCapabilities.get(capability);
+            if (result == null) {
                 if (readOnlyHandler == null) {
                     //We haven't initiated the backing handler yet, so we need to calculate it
                     readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
                 }
-                return EnergyCompatUtils.wrapStrictEnergyHandler(cap, readOnlyHandler);
-            });
+                result = EnergyCompatUtils.wrapStrictEnergyHandler(capability, readOnlyHandler);
+                cachedReadOnlyCapabilities.put(capability, result);
+            }
+            return (T) result;
         }
         //If we already contain a cached object for this instance then just use it, otherwise calculate the base handler and wrap it
-        return (T) cachedCapabilities
-              .computeIfAbsent(side, key -> new IdentityHashMap<>())
-              .computeIfAbsent(capability, cap -> {
-                  //If we haven't initiated the backing handler yet, calculate it
-                  IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
-                  return EnergyCompatUtils.wrapStrictEnergyHandler(cap, handler);
-              });
+        Map<BlockCapability<?, @Nullable Direction>, Object> cache = cachedCapabilities.computeIfAbsent(side, key -> new IdentityHashMap<>());
+        Object result = cache.get(capability);
+        if (result == null) {
+            //If we haven't initiated the backing handler yet, calculate it
+            IStrictEnergyHandler handler = handlers.get(side);
+            if (handler == null) {
+                handler = new ProxyStrictEnergyHandler(baseHandler, side, holder);
+                handlers.put(side, handler);
+            }
+            result = EnergyCompatUtils.wrapStrictEnergyHandler(capability, handler);
+            cache.put(capability, result);
+        }
+        return (T) result;
     }
 
     @Override

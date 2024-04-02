@@ -78,14 +78,19 @@ public class ThreadMinerSearch extends Thread {
             if (MekanismUtils.isLiquidBlock(info)) {//Skip liquids
                 continue;
             }
-            boolean accepted = acceptedItems.computeIfAbsent(info, (Block block) -> {
-                if (tile.isReplaceTarget(block.asItem())) {
+            boolean accepted;
+            if (acceptedItems.containsKey(info)) {
+                accepted = acceptedItems.getBoolean(info);
+            } else {
+                if (tile.isReplaceTarget(info.asItem())) {
                     //If it is a replace target just mark it as never being accepted
-                    return false;
+                    accepted = false;
+                } else {
+                    //Ensure that the inverse mode is the opposite of the filter match
+                    accepted = tile.getInverse() != tile.getFilterManager().anyEnabledMatch(filter -> filter.canFilter(state));
                 }
-                //Ensure that the inverse mode is the opposite of the filter match
-                return tile.getInverse() != tile.getFilterManager().anyEnabledMatch(filter -> filter.canFilter(state));
-            });
+                acceptedItems.put(info, accepted);
+            }
             if (accepted) {
                 long chunk = ChunkPos.asLong(testPos);
                 oresToMine.computeIfAbsent(chunk, k -> new BitSet()).set(i);

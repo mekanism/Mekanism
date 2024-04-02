@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -53,28 +54,32 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
             direction = Direction.UP;
         }
         Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
-        return cache.computeIfAbsent(direction, dir -> {
-            Axis renderAxis = dir.getAxis().isHorizontal() ? Axis.Y : rotated ? Axis.X : Axis.Z;
-            Model3D model = new Model3D()
-                  .setTexture(MekanismRenderer.teleporterPortal)
-                  .setSideRender(side -> side.getAxis() == renderAxis);
-            int min = dir.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
-            int max = dir.getAxisDirection() == AxisDirection.POSITIVE ? 3 : 0;
-            return switch (dir.getAxis()) {
+        Model3D model = cache.get(direction);
+        if (model == null) {
+            model = new Model3D().setTexture(MekanismRenderer.teleporterPortal);
+            Axis renderAxis = direction.getAxis().isHorizontal() ? Axis.Y : rotated ? Axis.X : Axis.Z;
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                model.setSideRender(direction, side.getAxis() == renderAxis);
+            }
+            int min = direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : -2;
+            int max = direction.getAxisDirection() == AxisDirection.POSITIVE ? 3 : 0;
+            switch (direction.getAxis()) {
                 case X -> {
                     setDimensions(rotated, model::zBounds, model::yBounds);
-                    yield model.xBounds(min, max);
+                    model.xBounds(min, max);
                 }
                 case Y -> {
                     setDimensions(rotated, model::zBounds, model::xBounds);
-                    yield model.yBounds(min, max);
+                    model.yBounds(min, max);
                 }
                 case Z -> {
                     setDimensions(rotated, model::xBounds, model::yBounds);
-                    yield model.zBounds(min, max);
+                    model.zBounds(min, max);
                 }
-            };
-        });
+            }
+            cache.put(direction, model);
+        }
+        return model;
     }
 
     private void setDimensions(boolean rotated, ModelBoundsSetter setter1, ModelBoundsSetter setter2) {

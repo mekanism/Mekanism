@@ -78,10 +78,12 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     public void addGasTargetCapability(List<CapabilityOutputTarget<IGasHandler>> outputTargets, Direction side) {
-        outputTargets.add(new CapabilityOutputTarget<>(
-              chemicalCapabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              this::getActive
-        ));
+        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
+        if (cache == null) {
+            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            chemicalCapabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));
     }
 
     @Override

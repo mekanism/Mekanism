@@ -3,6 +3,7 @@ package mekanism.common.tile.multiblock;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -39,6 +40,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
           Capabilities.GAS.block(),
           Capabilities.FLUID.block()
     );
+    private final Predicate<BoilerValveMode> MODE_MATCHES = mode -> mode == getMode();
 
     public TileEntityBoilerValve(BlockPos pos, BlockState state) {
         super(MekanismBlocks.BOILER_VALVE, pos, state);
@@ -66,10 +68,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     public void addGasTargetCapability(List<AdvancedCapabilityOutputTarget<IGasHandler, BoilerValveMode>> outputTargets, Direction side) {
-        outputTargets.add(new AdvancedCapabilityOutputTarget<>(
-              capabilityCaches.computeIfAbsent(side, s -> Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(s), s.getOpposite())),
-              mode -> mode == getMode()
-        ));
+        BlockCapabilityCache<IGasHandler, @Nullable Direction> cache = capabilityCaches.get(side);
+        if (cache == null) {
+            cache = Capabilities.GAS.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            capabilityCaches.put(side, cache);
+        }
+        outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));
     }
 
     @Override

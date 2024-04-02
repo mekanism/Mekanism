@@ -51,19 +51,21 @@ public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
         if (side != null && side.getAxis().isHorizontal() && renderType == RenderType.translucent()) {
             if (data.has(TileEntityFissionAssembly.GLOWING)) {
                 //TODO: Eventually we may want to make the glow component be part of the json so resource packs can customize it more
-                List<BakedQuad> allQuads = cachedGlows.computeIfAbsent(side, s -> {
-                    Vec3 startPos = switch (s) {
+                List<BakedQuad> allQuads = cachedGlows.get(side);
+                if (allQuads == null) {
+                    Vec3 startPos = switch (side) {
                         case NORTH, EAST -> NORTH_EAST;
                         case SOUTH, WEST -> SOUTH_WEST;
                         default -> throw new IllegalStateException("Unexpected face");
                     };
-                    Quad.Builder quadBuilder = new Quad.Builder(MekanismRenderer.whiteIcon, s)
+                    Quad.Builder quadBuilder = new Quad.Builder(MekanismRenderer.whiteIcon, side)
                           .light(LightTexture.FULL_BLOCK, LightTexture.FULL_SKY)
                           .uv(0, 0, 16, 16)
                           .color(GLOW_ARGB)
                           .rect(startPos, 0.9, height, 1);
-                    return List.of(quadBuilder.build().bake());
-                });
+                    allQuads = List.of(quadBuilder.build().bake());
+                    cachedGlows.put(side, allQuads);
+                }
                 if (quads.isEmpty()) {
                     return allQuads;
                 }

@@ -104,10 +104,13 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 LogisticalTransporterBase transporter = getTransmitter();
                 //Note: We check here whether it exposes the cap rather than in the cap itself as we invalidate the cached cap whenever this changes
                 if (transporter.exposesInsertCap(side)) {
-                    handlers.put(side, cachedCapability = cursedHandlers.computeIfAbsent(side, s -> new CursedTransporterItemHandler(transporter, worldPosition.relative(s),
-                          () -> level == null ? -1 : level.getGameTime())));
-                } else {
-                    return null;
+                    CursedTransporterItemHandler cached = cursedHandlers.get(side);
+                    if (cached == null) {
+                        cached = new CursedTransporterItemHandler(transporter, worldPosition.relative(side), () -> level == null ? -1 : level.getGameTime());
+                        cursedHandlers.put(side, cached);
+                    }
+                    handlers.put(side, cached);
+                    return (T) cached;
                 }
             }
             return (T) cachedCapability;

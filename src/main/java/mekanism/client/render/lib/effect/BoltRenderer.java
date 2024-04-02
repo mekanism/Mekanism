@@ -61,7 +61,7 @@ public class BoltRenderer {
                     data.bolts.removeIf(bolt -> bolt.tick(timestamp));
                 }
                 if (data.bolts.isEmpty() && data.lastBolt != null && data.lastBolt.getSpawnFunction().isConsecutive()) {
-                    data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp);
+                    data.addBolt(new BoltInstance(data.lastBolt, timestamp), timestamp, random);
                 }
                 data.bolts.forEach(bolt -> bolt.render(matrix, buffer, timestamp, cameraPos));
 
@@ -81,13 +81,13 @@ public class BoltRenderer {
             data.lastBolt = newBoltData;
             Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
             if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
-                data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp);
+                data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp, random);
             }
             data.lastUpdateTimestamp = timestamp;
         }
     }
 
-    public class BoltOwnerData {
+    public static class BoltOwnerData {
 
         private final Set<BoltInstance> bolts = new ObjectOpenHashSet<>();
         private BoltEffect lastBolt;
@@ -95,7 +95,7 @@ public class BoltRenderer {
         private Timestamp lastUpdateTimestamp = new Timestamp();
         private double lastBoltDelay;
 
-        private void addBolt(BoltInstance instance, Timestamp timestamp) {
+        private void addBolt(BoltInstance instance, Timestamp timestamp, RandomSource random) {
             bolts.add(instance);
             lastBoltDelay = instance.bolt.getSpawnFunction().getSpawnDelay(random);
             lastBoltTimestamp = timestamp;

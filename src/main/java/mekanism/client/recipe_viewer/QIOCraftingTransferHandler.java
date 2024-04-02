@@ -325,7 +325,12 @@ public class QIOCraftingTransferHandler {
                         if (elements == 1) {
                             shuffleLookup.put(source, Collections.singletonList(actualSources));
                         } else {
-                            shuffleLookup.computeIfAbsent(source, s -> new ArrayList<>(elements)).add(actualSources);
+                            List<List<SingularHashedItemSource>> list = shuffleLookup.get(source);
+                            if (list == null) {
+                                list = new ArrayList<>(elements);
+                                shuffleLookup.put(source, list);
+                            }
+                            list.add(actualSources);
                         }
                     }
                 }
