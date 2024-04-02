@@ -241,13 +241,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(IModuleContainer::moduleBasedEnchantments)
-              .ifPresent(map -> {
-                  for (Entry<Enchantment, Integer> entry : map.entrySet()) {
-                      enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
-                  }
-              });
+        Optional<Map<Enchantment, Integer>> optionalEnchantmentMap = IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(IModuleContainer::moduleBasedEnchantments);
+        if (optionalEnchantmentMap.isPresent()) {
+            for (Entry<Enchantment, Integer> entry : optionalEnchantmentMap.get().entrySet()) {
+                enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
+            }
+        }
         return enchantments;
     }
 

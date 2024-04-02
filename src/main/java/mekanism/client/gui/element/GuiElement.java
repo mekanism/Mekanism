@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -194,8 +193,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         // positions changing when resizing, instead of moving where we are in relation to
         relativeX += changeX;
         relativeY += changeY;
-        for (List<GuiElement> guiElements : Arrays.asList(children, positionOnlyChildren)) {
-            guiElements.forEach(child -> child.move(changeX, changeY));
+        for (GuiElement child : children) {
+            child.move(changeX, changeY);
+        }
+        for (GuiElement child : positionOnlyChildren) {
+            child.move(changeX, changeY);
         }
     }
 
