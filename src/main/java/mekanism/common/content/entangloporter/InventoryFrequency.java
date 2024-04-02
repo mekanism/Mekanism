@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -49,6 +50,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
@@ -259,14 +261,18 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                         //Skip trying to eject for this QE if it can't function
                         continue;
                     }
+                    Direction facing = qe.getDirection();
                     for (Map.Entry<TransmissionType, Consumer<?>> entry : typesToEject.entrySet()) {
                         TransmissionType transmissionType = entry.getKey();
                         ConfigInfo config = qe.getConfig().getConfig(transmissionType);
                         //Validate the ejector for the config allows ejecting this transmission type. In theory, we already check all
                         // of this except config#isEjecting before we get here, but we do so anyway for consistency
                         if (config != null && qe.getEjector().isEjecting(config, transmissionType)) {
-                            for (Direction side : config.getAllOutputtingSides()) {
-                                accept(entry.getValue(), qe, side, transmissionType);
+                            for (Map.Entry<RelativeSide, DataType> sideEntry : config.getSideConfig()) {
+                                if (sideEntry.getValue().canOutput()) {
+                                    Direction side = sideEntry.getKey().getDirection(facing);
+                                    accept(entry.getValue(), qe, side, transmissionType);
+                                }
                             }
                         }
                     }

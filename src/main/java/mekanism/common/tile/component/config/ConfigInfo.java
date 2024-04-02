@@ -1,14 +1,12 @@
 package mekanism.common.tile.component.config;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.IChemicalTank;
@@ -92,6 +90,10 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return sideConfig.get(side);
     }
 
+    public Set<Map.Entry<RelativeSide, DataType>> getSideConfig() {
+        return sideConfig.entrySet();
+    }
+
     @Override
     public boolean setDataType(@NotNull DataType dataType, @NotNull RelativeSide side) {
         return isSideEnabled(side) && sideConfig.put(side, dataType) != dataType;
@@ -164,34 +166,6 @@ public class ConfigInfo implements IPersistentConfigInfo {
         if (slotInfo.containsKey(DataType.ENERGY)) {
             setDataType(DataType.ENERGY, RelativeSide.BACK);
         }
-    }
-
-    public Set<Direction> getSidesForData(@NotNull DataType dataType) {
-        return getSides(type -> type == dataType);
-    }
-
-    public Set<Direction> getSides(Predicate<DataType> predicate) {
-        Direction facing = facingSupplier.get();
-        Set<Direction> directions = null;
-        for (Map.Entry<RelativeSide, DataType> entry : sideConfig.entrySet()) {
-            if (predicate.test(entry.getValue())) {
-                if (directions == null) {
-                    //Lazy init the set so that if there are none that match we can just use an empty set
-                    // instead of having to initialize an enum set
-                    directions = EnumSet.noneOf(Direction.class);
-                }
-                directions.add(entry.getKey().getDirection(facing));
-            }
-        }
-        return directions == null ? Collections.emptySet() : directions;
-    }
-
-    public Set<Direction> getAllOutputtingSides() {
-        return getSides(DataType::canOutput);
-    }
-
-    public Set<Direction> getSidesForOutput(DataType outputType) {
-        return getSides(type -> type == outputType || type == DataType.INPUT_OUTPUT);
     }
 
     /**

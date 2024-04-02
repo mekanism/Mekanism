@@ -2,6 +2,7 @@ package mekanism.common.tile.component;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -134,18 +136,19 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     public void tickServer() {
+        Lazy<Direction> facing = Lazy.of(tile::getDirection);
         for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
             if (isEjecting(info, type)) {
                 if (type == TransmissionType.ITEM) {
                     if (tickDelay == 0) {
-                        outputItems(info);
+                        outputItems(facing.get(), info);
                     } else {
                         tickDelay--;
                     }
                 } else if (type != TransmissionType.HEAT) {
-                    eject(type, info);
+                    eject(type, facing.get(), info);
                 }
             }
         }
@@ -154,14 +157,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void eject(TransmissionType type, ConfigInfo info) {
+    private void eject(TransmissionType type, Direction facing, ConfigInfo info) {
         //Used to keep track of tanks to what sides they output to
         Map<Object, Set<Direction>> outputData = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (dataType.canOutput()) {
                 ISlotInfo slotInfo = info.getSlotInfo(dataType);
                 if (slotInfo != null) {
-                    Set<Direction> outputSides = info.getSidesForData(dataType);
+                    List<Direction> outputSides = getSidesForData(info, facing, dataType);
                     if (!outputSides.isEmpty()) {
                         if (outputData == null) {
                             //Lazy init outputData
@@ -242,7 +245,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
-    private void outputItems(ConfigInfo info) {
+    private void outputItems(Direction facing, ConfigInfo info) {
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {
                 continue;
@@ -250,9 +253,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
             if (slotInfo instanceof InventorySlotInfo inventorySlotInfo) {
                 //Validate the slot info is of the correct type
-                Set<Direction> outputs = info.getSidesForData(dataType);
+                List<Direction> outputs = getSidesForData(info, facing, dataType);
                 if (!outputs.isEmpty()) {
-                    IItemHandler handler = getHandler(outputs.iterator().next());
+                    IItemHandler handler = getHandler(outputs.get(0));
                     //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
                     // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
                     // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
@@ -281,6 +284,21 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
 
         tickDelay = MekanismUtils.TICKS_PER_HALF_SECOND;
+    }
+
+    private List<Direction> getSidesForData(ConfigInfo info, @NotNull Direction facing, @NotNull DataType dataType) {
+        List<Direction> directions = null;
+        for (Map.Entry<RelativeSide, DataType> entry : info.getSideConfig()) {
+            if (entry.getValue() == dataType) {
+                if (directions == null) {
+                    //Lazy init the set so that if there are none that match we can just use an empty set
+                    // instead of having to initialize an enum set
+                    directions = new ArrayList<>();
+                }
+                directions.add(entry.getKey().getDirection(facing));
+            }
+        }
+        return directions == null ? Collections.emptyList() : directions;
     }
 
     private IItemHandler getHandler(Direction side) {
