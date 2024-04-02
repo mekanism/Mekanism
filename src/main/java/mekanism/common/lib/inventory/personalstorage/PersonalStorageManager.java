@@ -65,7 +65,11 @@ public class PersonalStorageManager {
             return false;
         }
         //Get a new inventory id
-        forOwner(owner).ifPresent(inv -> inv.addInventory(getInventoryId(stack), contents));
+        Optional<PersonalStorageData> data = forOwner(owner);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (data.isPresent()) {
+            data.get().addInventory(getInventoryId(stack), contents);
+        }
         return true;
     }
 
@@ -90,7 +94,11 @@ public class PersonalStorageManager {
             UUID storageId = stack.removeData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
             if (storageId != null) {
                 //If there actually was an id stored then remove the corresponding inventory
-                forOwner(owner).ifPresent(handler -> handler.removeInventory(storageId));
+                Optional<PersonalStorageData> data = forOwner(owner);
+                //noinspection OptionalIsPresent - Capturing lambda
+                if (data.isPresent()) {
+                    data.get().removeInventory(storageId);
+                }
             }
         }
     }

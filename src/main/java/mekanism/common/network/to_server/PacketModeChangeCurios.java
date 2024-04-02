@@ -7,6 +7,7 @@ import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +37,13 @@ public record PacketModeChangeCurios(String slotType, int slot, int shift, boole
     @Override
     public void handle(PlayPayloadContext context) {
         if (Mekanism.hooks.CuriosLoaded) {
-            context.player().ifPresent(player -> {
+            Player player = context.player().orElse(null);
+            if (player != null) {
                 ItemStack stack = CuriosIntegration.getCurioStack(player, slotType, slot);
                 if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
                     modeItem.changeMode(player, stack, shift, displayChangeMessage ? DisplayChange.OTHER : DisplayChange.NONE);
                 }
-            });
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -19,6 +20,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.BlockData;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
@@ -113,7 +115,11 @@ public class LookingAtUtils {
 
     private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile != null) {
-            tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(blockData -> blockData.addToTooltip(info::addText));
+            Optional<BlockData> blockData = tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (blockData.isPresent()) {
+                blockData.get().addToTooltip(info::addText);
+            }
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
                 info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));
             }

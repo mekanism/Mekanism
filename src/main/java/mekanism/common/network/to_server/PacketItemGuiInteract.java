@@ -34,12 +34,13 @@ public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionH
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             ItemStack stack = player.getItemInHand(hand);
             if (!stack.isEmpty()) {
                 interaction.consume(stack, player, extra);
             }
-        });
+        }
     }
 
     @Override

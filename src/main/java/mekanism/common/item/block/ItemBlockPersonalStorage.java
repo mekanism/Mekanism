@@ -7,6 +7,7 @@ import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.item.interfaces.IGuiItem;
+import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -76,13 +77,12 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide) {
             ItemStack stack = item.getItem();
-            PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(inventory -> {
-                if (inventory.isInventoryEmpty()) {
-                    //If the inventory was actually empty we can prune the data from the storage manager
-                    // (if it isn't empty we want to persist it so that server admins can recover their items)
-                    PersonalStorageManager.deleteInventory(stack);
-                }
-            });
+            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack).orElse(null);
+            if (inventory != null && inventory.isInventoryEmpty()) {
+                //If the inventory was actually empty we can prune the data from the storage manager
+                // (if it isn't empty we want to persist it so that server admins can recover their items)
+                PersonalStorageManager.deleteInventory(stack);
+            }
         }
     }
 

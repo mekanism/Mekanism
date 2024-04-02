@@ -50,12 +50,13 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
             if (tile != null) {
                 interaction.consume(tile, player, extra);
             }
-        });
+        }
     }
 
     @Override

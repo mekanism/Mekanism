@@ -3,6 +3,7 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
@@ -261,11 +263,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (slotId >= Inventory.INVENTORY_SIZE && slotId < Inventory.INVENTORY_SIZE + 4 && entity instanceof Player player) {
-            ModuleHelper.get().getModuleContainer(stack).ifPresent(container -> {
-                for (Module<?> module : container.modules()) {
-                    module.tick(player);
-                }
-            });
+            Collection<Module<?>> modules = ModuleHelper.get().getModuleContainer(stack)
+                  .map(ModuleContainer::modules)
+                  .orElse(Collections.emptyList());
+            for (Module<?> module : modules) {
+                module.tick(player);
+            }
         }
     }
 

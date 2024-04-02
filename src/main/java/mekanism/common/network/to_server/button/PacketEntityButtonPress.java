@@ -9,6 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,12 +37,13 @@ public record PacketEntityButtonPress(ClickedEntityButton buttonClicked, int ent
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             Entity entity = player.level().getEntity(entityID);
             if (entity != null) {
                 player.openMenu(buttonClicked.getProvider(entity), buf -> buf.writeVarInt(entityID));
             }
-        });
+        }
     }
 
     @Override

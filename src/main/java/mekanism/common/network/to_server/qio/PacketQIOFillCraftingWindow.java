@@ -14,6 +14,7 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -46,27 +47,26 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket<PlayPayloadC
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
-            if (player.containerMenu instanceof QIOItemViewerContainer container) {
-                byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
-                if (selectedCraftingGrid == -1) {
-                    Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
-                } else {
-                    Optional<RecipeHolder<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
-                    if (optionalRecipe.isPresent()) {
-                        Recipe<?> recipe = optionalRecipe.get().value();
-                        if (recipe instanceof CraftingRecipe craftingRecipe) {
-                            QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID, craftingRecipe, sources);
-                        } else {
-                            Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
-                                  player, recipe.getClass());
-                        }
+        Player player = context.player().orElse(null);
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
+            byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
+            if (selectedCraftingGrid == -1) {
+                Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
+            } else {
+                Optional<RecipeHolder<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
+                if (optionalRecipe.isPresent()) {
+                    Recipe<?> recipe = optionalRecipe.get().value();
+                    if (recipe instanceof CraftingRecipe craftingRecipe) {
+                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID, craftingRecipe, sources);
                     } else {
-                        Mekanism.logger.warn("Received transfer request from: {}, but could not find specified recipe.", player);
+                        Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
+                              player, recipe.getClass());
                     }
+                } else {
+                    Mekanism.logger.warn("Received transfer request from: {}, but could not find specified recipe.", player);
                 }
             }
-        });
+        }
     }
 
     @Override

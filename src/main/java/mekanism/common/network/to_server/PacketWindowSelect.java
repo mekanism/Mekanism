@@ -7,6 +7,7 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,11 +24,10 @@ public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) im
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
-            if (player.containerMenu instanceof MekanismContainer container) {
-                container.setSelectedWindow(player.getUUID(), selectedWindow);
-            }
-        });
+        Player player = context.player().orElse(null);
+        if (player != null && player.containerMenu instanceof MekanismContainer container) {
+            container.setSelectedWindow(player.getUUID(), selectedWindow);
+        }
     }
 
     @Override

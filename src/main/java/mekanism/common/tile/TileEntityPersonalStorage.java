@@ -11,6 +11,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
@@ -111,13 +112,13 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     public void readFromStack(ItemStack stack) {
         super.readFromStack(stack);
         if (!isRemote()) {
-            PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(storageItemInventory -> {
+            AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryIfPresent(stack).orElse(null);
+            if (storageItemInventory != null) {
                 List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots(null);
                 for (int i = 0; i < inventorySlots.size(); i++) {
-                    IInventorySlot itemSlot = inventorySlots.get(i);
-                    setStackInSlot(i, itemSlot.getStack().copy());
+                    setStackInSlot(i, inventorySlots.get(i).getStack().copy());
                 }
-            });
+            }
         }
     }
 }

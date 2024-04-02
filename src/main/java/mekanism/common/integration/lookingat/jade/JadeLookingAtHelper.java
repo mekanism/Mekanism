@@ -1,5 +1,6 @@
 package mekanism.common.integration.lookingat.jade;
 
+import java.util.Optional;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
@@ -7,6 +8,7 @@ import mekanism.common.integration.lookingat.LookingAtHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -20,11 +22,12 @@ public class JadeLookingAtHelper implements LookingAtHelper {
 
     @Override
     public void addText(Component text) {
-        ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, text).result().ifPresent(tag -> {
+        Optional<Tag> result = ComponentSerialization.CODEC.encodeStart(NbtOps.INSTANCE, text).result();
+        if (result.isPresent()) {
             CompoundTag textData = new CompoundTag();
-            textData.put(TEXT, tag);
+            textData.put(TEXT, result.get());
             data.add(textData);
-        });
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IEntitySecurityUtils;
@@ -18,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +60,8 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
         if (!hasContent(name)) {//Ensure the client sent a valid string
             return;
         }
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             Entity entity = player.level().getEntity(entityId);
             //Validate the player can access the robit before changing the robit's name
             if (entity instanceof EntityRobit robit && IEntitySecurityUtils.INSTANCE.canAccess(player, robit)) {
@@ -70,11 +73,14 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
                     // end up adding any Easter egg skins that aren't unlocked by default, to still
                     // be able to equip them. We already validate the player can access the robit
                     // above before setting the name
-                    Util.getRandomSafe(EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList()), robit.level().random)
-                          .ifPresent(skin -> robit.setSkin(skin, null));
+                    Optional<ResourceKey<RobitSkin>> randomSkin = Util.getRandomSafe(EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList()), robit.level().random);
+                    //noinspection OptionalIsPresent - Capturing lambda
+                    if (randomSkin.isPresent()) {
+                        robit.setSkin(randomSkin.get(), null);
+                    }
                 }
             }
-        });
+        }
     }
 
     @Override

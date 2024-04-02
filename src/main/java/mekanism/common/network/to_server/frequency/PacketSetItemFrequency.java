@@ -11,6 +11,7 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,8 @@ public class PacketSetItemFrequency<FREQ extends Frequency> extends PacketSetFre
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             ItemStack stack = player.getItemInHand(currentHand);
             if (stack.getItem() instanceof IFrequencyItem && IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
                 FrequencyAware<FREQ> frequencyAware = (FrequencyAware<FREQ>) stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
@@ -49,7 +51,7 @@ public class PacketSetItemFrequency<FREQ extends Frequency> extends PacketSetFre
                     frequencyAware.removeFrequency(data, player.getUUID());
                 }
             }
-        });
+        }
     }
 
     @Override

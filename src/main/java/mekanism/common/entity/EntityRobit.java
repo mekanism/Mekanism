@@ -85,6 +85,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -503,8 +504,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
-            GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, homeLocation).result()
-                  .ifPresent(home -> nbtTags.put(NBTConstants.HOME_LOCATION, home));
+            Optional<Tag> result = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, homeLocation).result();
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (result.isPresent()) {
+                nbtTags.put(NBTConstants.HOME_LOCATION, result.get());
+            }
         }
         ContainerType.ITEM.saveTo(nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.saveTo(nbtTags, getEnergyContainers(null));
@@ -519,8 +523,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result()
-              .ifPresent(pos -> homeLocation = pos));
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result().orElse(null));
         ContainerType.ITEM.readFrom(nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.readFrom(nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);

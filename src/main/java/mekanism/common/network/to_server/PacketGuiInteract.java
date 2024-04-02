@@ -113,7 +113,8 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             if (interactionType == Type.ENTITY) {
                 Entity entity = player.level().getEntity(entityID);
                 if (entity != null) {
@@ -129,7 +130,7 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
                     }
                 }
             }
-        });
+        }
     }
 
     @Override

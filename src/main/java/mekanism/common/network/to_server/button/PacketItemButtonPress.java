@@ -10,6 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,8 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof IGuiItem) {
                 player.openMenu(buttonClicked.getProvider(stack, hand), buf -> {
@@ -42,7 +44,7 @@ public record PacketItemButtonPress(ClickedItemButton buttonClicked, Interaction
                     buf.writeItem(stack);
                 });
             }
-        });
+        }
     }
 
     @Override

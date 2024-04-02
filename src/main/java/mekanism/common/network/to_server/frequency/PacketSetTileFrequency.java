@@ -10,6 +10,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +39,8 @@ public class PacketSetTileFrequency<FREQ extends Frequency> extends PacketSetFre
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             BlockEntity tile = WorldUtils.getTileEntity(player.level(), pos);
             if (tile instanceof IFrequencyHandler frequencyHandler && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, tile)) {
                 if (set) {
@@ -47,7 +49,7 @@ public class PacketSetTileFrequency<FREQ extends Frequency> extends PacketSetFre
                     frequencyHandler.removeFrequency(type, data, player.getUUID());
                 }
             }
-        });
+        }
     }
 
     @Override

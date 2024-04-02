@@ -32,7 +32,8 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> 
     @Override
     @SuppressWarnings("ConstantConditions")//not null, validated by hasNestedData
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
+        Player player = context.player().orElse(null);
+        if (player != null) {
             ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
                 RadialData<?> radialData = radialModeItem.getRadialData(stack);
@@ -48,7 +49,7 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> 
                     setMode(player, stack, radialModeItem, radialData);
                 }
             }
-        });
+        }
     }
 
     private <MODE extends IRadialMode> void setMode(Player player, ItemStack stack, IGenericRadialModeItem item, RadialData<MODE> radialData) {

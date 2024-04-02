@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.common.Mekanism;
@@ -66,7 +67,11 @@ public class CopyAttachmentsLootFunction implements LootItemFunction {
     private <ATTACHMENT> void copyAttachment(IAttachmentHolder source, IAttachmentHolder target, AttachmentType<ATTACHMENT> attachmentType) {
         //TODO: Is this fine or do we need a better way of copying this as a new object? For BlockData it doesn't matter
         // but it might for some types we add in the future?
-        source.getExistingData(attachmentType).ifPresent(attachment -> target.setData(attachmentType, attachment));
+        Optional<ATTACHMENT> existingData = source.getExistingData(attachmentType);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (existingData.isPresent()) {
+            target.setData(attachmentType, existingData.get());
+        }
     }
 
     @Override

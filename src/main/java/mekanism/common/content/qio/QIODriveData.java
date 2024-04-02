@@ -2,8 +2,10 @@ package mekanism.common.content.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.RegistryUtils;
@@ -25,7 +27,11 @@ public class QIODriveData {
         countCapacity = driveItem.getCountCapacity(driveStack);
         typeCapacity = driveItem.getTypeCapacity(driveStack);
         // load item map from drive stack
-        driveStack.getExistingData(MekanismAttachmentTypes.DRIVE_METADATA).ifPresent(driveData -> driveData.loadItemMap(this));
+        Optional<DriveMetadata> existingData = driveStack.getExistingData(MekanismAttachmentTypes.DRIVE_METADATA);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (existingData.isPresent()) {
+            existingData.get().loadItemMap(this);
+        }
         // update cached item count value
         itemCount = itemMap.values().longStream().sum();
 

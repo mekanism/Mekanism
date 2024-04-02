@@ -1,5 +1,6 @@
 package mekanism.client.key;
 
+import java.util.Optional;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.MekanismClient;
 import mekanism.client.sound.SoundHandler;
@@ -25,6 +26,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.SlotResult;
 
 public class MekanismKeyHandler {
 
@@ -79,16 +81,17 @@ public class MekanismKeyHandler {
                 PacketUtils.sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC);
             } else if (Mekanism.hooks.CuriosLoaded) {
-                CuriosIntegration.findFirstCurioAsResult(player, stack -> {
+                Optional<SlotResult> curiosResult = CuriosIntegration.findFirstCurioAsResult(player, stack -> {
                     if (stack.canEquip(slot, player) && IModeItem.isModeItem(stack, slot)) {
                         return !(stack.getItem() instanceof IGasItem item) || item.hasGas(stack);
                     }
                     return false;
-                }).ifPresent(result -> {
-                    SlotContext slotContext = result.slotContext();
+                });
+                if (curiosResult.isPresent()) {
+                    SlotContext slotContext = curiosResult.get().slotContext();
                     PacketUtils.sendToServer(new PacketModeChangeCurios(slotContext.identifier(), slotContext.index(), player.isShiftKeyDown()));
                     SoundHandler.playSound(MekanismSounds.HYDRAULIC);
-                });
+                }
             }
         }
     }

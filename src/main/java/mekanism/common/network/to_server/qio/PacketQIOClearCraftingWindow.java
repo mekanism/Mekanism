@@ -6,6 +6,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,19 +26,18 @@ public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) imp
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> {
-            if (player.containerMenu instanceof QIOItemViewerContainer container) {
-                byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
-                if (selectedCraftingGrid == -1) {
-                    Mekanism.logger.warn("Received clear request from: {}, but they do not currently have a crafting window open.", player);
-                } else if (selectedCraftingGrid != window) {
-                    Mekanism.logger.warn("Received clear request from: {}, but they currently have a different crafting window open.", player);
-                } else {
-                    QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
-                    craftingWindow.emptyTo(toPlayerInv, container.getHotBarSlots(), container.getMainInventorySlots());
-                }
+        Player player = context.player().orElse(null);
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
+            byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
+            if (selectedCraftingGrid == -1) {
+                Mekanism.logger.warn("Received clear request from: {}, but they do not currently have a crafting window open.", player);
+            } else if (selectedCraftingGrid != window) {
+                Mekanism.logger.warn("Received clear request from: {}, but they currently have a different crafting window open.", player);
+            } else {
+                QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
+                craftingWindow.emptyTo(toPlayerInv, container.getHotBarSlots(), container.getMainInventorySlots());
             }
-        });
+        }
     }
 
     @Override

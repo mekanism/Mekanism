@@ -42,7 +42,10 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         Optional<BlockData> existingData = stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
         tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData.isPresent(), true)));
-        existingData.ifPresent(data -> data.addToTooltip(tooltip::add));
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (existingData.isPresent()) {
+            existingData.get().addToTooltip(tooltip::add);
+        }
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {

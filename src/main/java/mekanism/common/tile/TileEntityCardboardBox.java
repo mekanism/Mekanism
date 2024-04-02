@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.Optional;
+import mekanism.common.attachments.BlockData;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -17,12 +19,20 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     @Override
     public void readFromStack(ItemStack stack) {
         super.readFromStack(stack);
-        stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(storedData -> setData(MekanismAttachmentTypes.BLOCK_DATA, storedData));
+        Optional<BlockData> existingData = stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (existingData.isPresent()) {
+            setData(MekanismAttachmentTypes.BLOCK_DATA, existingData.get());
+        }
     }
 
     @Override
     public void writeToStack(ItemStack stack) {
         super.writeToStack(stack);
-        getExistingData(MekanismAttachmentTypes.BLOCK_DATA).ifPresent(storedData -> stack.setData(MekanismAttachmentTypes.BLOCK_DATA, storedData));
+        Optional<BlockData> existingData = getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (existingData.isPresent()) {
+            stack.setData(MekanismAttachmentTypes.BLOCK_DATA, existingData.get());
+        }
     }
 }

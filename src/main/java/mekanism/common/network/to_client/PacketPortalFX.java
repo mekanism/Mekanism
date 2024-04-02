@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,8 @@ public record PacketPortalFX(BlockPos pos, Direction direction) implements IMeka
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.level().ifPresent(world -> {
+        Level world = context.level().orElse(null);
+        if (world != null) {
             BlockPos secondPos = pos.relative(direction);
             for (int i = 0; i < 50; i++) {
                 world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextFloat(), pos.getY() + world.random.nextFloat(),
@@ -38,7 +40,7 @@ public record PacketPortalFX(BlockPos pos, Direction direction) implements IMeka
                 world.addParticle(ParticleTypes.PORTAL, secondPos.getX() + world.random.nextFloat(), secondPos.getY() + world.random.nextFloat(),
                       secondPos.getZ() + world.random.nextFloat(), 0.0F, 0.0F, 0.0F);
             }
-        });
+        }
     }
 
     @Override

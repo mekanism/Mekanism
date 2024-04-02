@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,18 +32,17 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.level().ifPresent(world -> {
-            //Only handle the update packet if the block is currently loaded (otherwise we would have the warning get logged in cases we don't want it to)
-            if (WorldUtils.isBlockLoaded(world, pos)) {
-                TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
-                if (tile == null) {
-                    Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
-                          world.dimension().location());
-                } else {
-                    tile.handleUpdatePacket(updateTag);
-                }
+        Level world = context.level().orElse(null);
+        //Only handle the update packet if the block is currently loaded (otherwise we would have the warning get logged in cases we don't want it to)
+        if (WorldUtils.isBlockLoaded(world, pos)) {
+            TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
+            if (tile == null) {
+                Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
+                      world.dimension().location());
+            } else {
+                tile.handleUpdatePacket(updateTag);
             }
-        });
+        }
     }
 
     @Override

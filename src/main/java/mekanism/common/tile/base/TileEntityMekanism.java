@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -41,6 +42,8 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.FilterAware;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -788,7 +791,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsUpgrades()) {
             //The read method validates that data is stored
-            stack.getExistingData(MekanismAttachmentTypes.UPGRADES).ifPresent(storedUpgrades -> storedUpgrades.copyTo(getComponent()));
+            Optional<UpgradeAware> storedUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (storedUpgrades.isPresent()) {
+                storedUpgrades.get().copyTo(getComponent());
+            }
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
@@ -796,7 +803,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (this instanceof ITileFilterHolder<?> filterHolder) {
-            stack.getExistingData(MekanismAttachmentTypes.FILTER_AWARE).ifPresent(storedFilters -> storedFilters.copyTo(filterHolder.getFilterManager()));
+            Optional<FilterAware> filterAware = stack.getExistingData(MekanismAttachmentTypes.FILTER_AWARE);
+            //noinspection OptionalIsPresent - Capturing lambda
+            if (filterAware.isPresent()) {
+                filterAware.get().copyTo(filterHolder.getFilterManager());
+            }
         }
         if (supportsRedstone()) {
             setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
