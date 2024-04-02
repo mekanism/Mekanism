@@ -505,7 +505,13 @@ public class WorldUtils {
     public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
             Fluid fluid = fluidStack.getFluid();
-            soundEvent = fluid.getPickupSound().orElseGet(() -> fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL));
+            Optional<SoundEvent> pickupSound = fluid.getPickupSound();
+            //noinspection OptionalIsPresent - Capturing lambdas
+            if (pickupSound.isPresent()) {
+                soundEvent = pickupSound.get();
+            } else {
+                soundEvent = fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL);
+            }
         }
         if (soundEvent != null) {
             world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -590,13 +596,15 @@ public class WorldUtils {
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos pos) {
-        return getBlockState(world, pos)
-              .filter(state -> {
-                  if (baseContext == null) {
-                      return state.canBeReplaced();
-                  }
-                  return state.canBeReplaced(BlockPlaceContext.at(baseContext, pos, baseContext.getClickedFace()));
-              }).isPresent();
+        Optional<BlockState> blockState = getBlockState(world, pos);
+        if (blockState.isPresent()) {
+            BlockState state = blockState.get();
+            if (baseContext == null) {
+                return state.canBeReplaced();
+            }
+            return state.canBeReplaced(BlockPlaceContext.at(baseContext, pos, baseContext.getClickedFace()));
+        }
+        return false;
     }
 
     /**

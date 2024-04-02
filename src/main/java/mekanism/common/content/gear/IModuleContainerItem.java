@@ -59,15 +59,21 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     }
 
     default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
-        return moduleContainer(stack)
-              .filter(container -> container.has(type))
-              .isPresent();
+        Optional<? extends IModuleContainer> container = moduleContainer(stack);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (container.isPresent()) {
+            return container.get().has(type);
+        }
+        return false;
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
-        return moduleContainer(stack)
-              .filter(container -> container.hasEnabled(type))
-              .isPresent();
+        Optional<? extends IModuleContainer> container = moduleContainer(stack);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (container.isPresent()) {
+            return container.get().hasEnabled(type);
+        }
+        return false;
     }
 
     @Override

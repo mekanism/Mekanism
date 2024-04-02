@@ -2,6 +2,8 @@ package mekanism.common.recipe.condition;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.maven.artifact.versioning.ComparableVersion;
@@ -11,8 +13,12 @@ public record ModVersionLoadedCondition(String modid, String minVersion) impleme
     @Override
     public boolean test(IContext context) {
         //They match or we are ahead of the min version
-        return ModList.get().getModContainerById(modid).filter(modContainer -> new ComparableVersion(minVersion).compareTo(
-              new ComparableVersion(modContainer.getModInfo().getVersion().toString())) <= 0).isPresent();
+        Optional<? extends ModContainer> containerById = ModList.get().getModContainerById(modid);
+        if (containerById.isEmpty()) {
+            return false;
+        }
+        ModContainer modContainer = containerById.get();
+        return new ComparableVersion(minVersion).compareTo(new ComparableVersion(modContainer.getModInfo().getVersion().toString())) <= 0;
     }
 
     @Override

@@ -231,7 +231,11 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Deprecated//TODO - 1.21?: Remove all usages of this
     private boolean hasLegacyData(ItemStack stack) {
-        return !stack.isEmpty() && ItemDataUtils.getMekData(stack).filter(mekData -> mekData.contains(containerTag, Tag.TAG_LIST)).isPresent();
+        if (!stack.isEmpty()) {
+            CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
+            return mekData != null && mekData.contains(containerTag, Tag.TAG_LIST);
+        }
+        return false;
     }
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data

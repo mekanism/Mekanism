@@ -91,19 +91,21 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
-                Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack)
-                      // make sure the container supports this module and that we can still install more of this module
-                      .filter(container -> container.canInstall(data));
+                Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack);
                 if (moduleContainer.isPresent()) {
-                    operated = true;
-                    operatingTicks++;
-                    clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
-                    if (operatingTicks == ticksRequired) {
-                        operatingTicks = 0;
-                        int added = moduleContainer.get().addModule(data, moduleSlot.getCount());
-                        if (added > 0) {
-                            containerSlot.setStack(stack);
-                            MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
+                    ModuleContainer container = moduleContainer.get();
+                    // make sure the container supports this module and that we can still install more of this module
+                    if (container.canInstall(data)) {
+                        operated = true;
+                        operatingTicks++;
+                        clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
+                        if (operatingTicks == ticksRequired) {
+                            operatingTicks = 0;
+                            int added = container.addModule(data, moduleSlot.getCount());
+                            if (added > 0) {
+                                containerSlot.setStack(stack);
+                                MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
+                            }
                         }
                     }
                 }
@@ -122,14 +124,15 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public void removeModule(Player player, ModuleData<?> type, boolean removeAll) {
         ItemStack stack = containerSlot.getStack();
-        Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack)
-              .filter(container -> container.has(type));
+        Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack);
         if (moduleContainer.isPresent()) {
             ModuleContainer container = moduleContainer.get();
-            int toRemove = removeAll ? container.installedCount(type) : 1;
-            if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))){
-                container.removeModule(type, toRemove);
-                containerSlot.setStack(stack);
+            if (container.has(type)) {
+                int toRemove = removeAll ? container.installedCount(type) : 1;
+                if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))) {
+                    container.removeModule(type, toRemove);
+                    containerSlot.setStack(stack);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import com.mojang.authlib.GameProfile;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.IContentsListener;
@@ -19,6 +20,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -121,12 +123,21 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     public void addTrusted(String name) {
-        SecurityFrequency frequency = getFreq();
-        if (frequency != null && level != null) {
-            Optional.ofNullable(level.getServer())
-                  .map(MinecraftServer::getProfileCache)
-                  .flatMap(cache -> cache.get(name))
-                  .ifPresent(profile -> frequency.addTrusted(profile.getId(), profile.getName()));
+        if (level != null) {
+            MinecraftServer server = level.getServer();
+            if (server != null) {
+                GameProfileCache profileCache = server.getProfileCache();
+                if (profileCache != null) {
+                    SecurityFrequency frequency = getFreq();
+                    if (frequency != null) {
+                        Optional<GameProfile> gameProfile = profileCache.get(name);
+                        if (gameProfile.isPresent()) {
+                            GameProfile profile = gameProfile.get();
+                            frequency.addTrusted(profile.getId(), profile.getName());
+                        }
+                    }
+                }
+            }
         }
     }
 

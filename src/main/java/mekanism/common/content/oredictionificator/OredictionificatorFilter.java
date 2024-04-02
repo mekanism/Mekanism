@@ -54,7 +54,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         if (filterTag == null) {
             setSelectedOutput(getFallbackElement());
         } else if (!filterTag.contains(selectedOutput)) {
-            filterTag.stream().findFirst().ifPresentOrElse(this::setSelectedOutput, () -> setSelectedOutput(getFallbackElement()));
+            filterTag.stream().findFirst().ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
         }
         //Note: Even though the tag instance may have changed, we don't need to reset the cached
         // stack if the tag still contains the selected output as that means it is not empty and
@@ -150,10 +150,14 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         isValid = buffer.readBoolean();
     }
 
+    private void setToFallback() {
+        setSelectedOutput(getFallbackElement());
+    }
+
     private void setSelectedOrFallback(@NotNull ResourceLocation resourceLocation) {
         Registry<TYPE> registry = getRegistry();
         registry.getHolder(ResourceKey.create(registry.key(), resourceLocation))
-              .ifPresentOrElse(this::setSelectedOutput, () -> setSelectedOutput(getFallbackElement()));
+              .ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
     }
 
     public STACK getResult() {

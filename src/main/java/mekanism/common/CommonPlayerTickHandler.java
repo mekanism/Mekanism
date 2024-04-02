@@ -16,6 +16,8 @@ import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
+import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -92,11 +94,15 @@ public class CommonPlayerTickHandler {
     }
 
     public static float getSwimBoost(Player player) {
-        boolean hasSwimBoost = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
-              .map(container -> container.getIfEnabled(MekanismModules.HYDROSTATIC_REPULSOR_UNIT))
-              .filter(module -> module.getCustomInstance().isSwimBoost(module, player))
-              .isPresent();
-        return hasSwimBoost ? 1 : 0;
+        Optional<IModule<ModuleHydrostaticRepulsorUnit>> swimModule = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
+              .map(container -> container.getIfEnabled(MekanismModules.HYDROSTATIC_REPULSOR_UNIT));
+        if (swimModule.isPresent()) {
+            IModule<ModuleHydrostaticRepulsorUnit> module = swimModule.get();
+            if (module.getCustomInstance().isSwimBoost(module, player)) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     @SubscribeEvent
@@ -292,10 +298,10 @@ public class CommonPlayerTickHandler {
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
                 if (module.canUseEnergy(player, usage)) {
                     // if we're sprinting with the boost module, limit the height
-                    if (IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
+                    IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.LEGS)
                           .map(container -> container.getIfEnabled(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT))
-                          .filter(boostModule -> boostModule.getCustomInstance().canFunction(boostModule, player))
-                          .isPresent()) {
+                          .orElse(null);
+                    if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, player)) {
                         boost = Mth.sqrt(boost);
                     }
                     player.addDeltaMovement(new Vec3(0, boost, 0));

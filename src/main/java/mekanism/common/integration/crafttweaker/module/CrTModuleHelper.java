@@ -55,9 +55,12 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static boolean isEnabled(ItemStack stack, ModuleData<?> type) {
-        return container(stack)
-              .filter(container -> container.hasEnabled(type))
-              .isPresent();
+        Optional<? extends IModuleContainer> container = container(stack);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (container.isPresent()) {
+            return container.get().hasEnabled(type);
+        }
+        return false;
     }
 
     /**

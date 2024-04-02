@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -26,6 +27,7 @@ import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -246,9 +248,12 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     protected <STACK> STACK getDisplayedStack(IRecipeSlotsView recipeSlotsView, String slotName, IIngredientType<STACK> type, STACK empty) {
-        return recipeSlotsView.findSlotByName(slotName)
-              .flatMap(view -> view.getDisplayedIngredient(type))
-              .orElse(empty);
+        Optional<IRecipeSlotView> slotByName = recipeSlotsView.findSlotByName(slotName);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (slotByName.isPresent()) {
+            return slotByName.get().getDisplayedIngredient(type).orElse(empty);
+        }
+        return empty;
     }
 
     protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, List<ItemStack> stacks) {

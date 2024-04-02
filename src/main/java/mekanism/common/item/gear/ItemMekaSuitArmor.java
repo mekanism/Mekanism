@@ -330,16 +330,16 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (getType() == ArmorItem.Type.CHESTPLATE && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
-            Optional<? extends IModuleContainer> moduleContainer = moduleContainer(stack);
-            boolean hasElytra = moduleContainer.map(container -> container.getIfEnabled(MekanismModules.ELYTRA_UNIT))
-                  .filter(module -> module.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get()))
-                  .isPresent();
-            if (hasElytra) {
-                //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
-                // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
-                IModule<ModuleJetpackUnit> jetpack = moduleContainer.get().getIfEnabled(MekanismModules.JETPACK_UNIT);
-                return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
-                       StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN).isEmpty();
+            IModuleContainer container = moduleContainer(stack).orElse(null);
+            if (container != null) {
+                IModule<ModuleElytraUnit> elytra = container.getIfEnabled(MekanismModules.ELYTRA_UNIT);
+                if (elytra != null && elytra.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
+                    //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
+                    // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
+                    IModule<ModuleJetpackUnit> jetpack = container.getIfEnabled(MekanismModules.JETPACK_UNIT);
+                    return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
+                           StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN).isEmpty();
+                }
             }
         }
         return false;

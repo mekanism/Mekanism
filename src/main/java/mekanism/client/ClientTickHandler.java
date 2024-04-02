@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
@@ -18,6 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
@@ -114,11 +117,12 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        return IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
-              .filter(container -> !container.isContainerOnCooldown(player))
-              .map(container -> container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT))
-              .filter(module -> module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement))
-              .isPresent();
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD).orElse(null);
+        if (container != null && !container.isContainerOnCooldown(player)) {
+            IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
+            return module != null && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
+        }
+        return false;
     }
 
     public static boolean isFlamethrowerOn(Player player) {

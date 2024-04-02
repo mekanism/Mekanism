@@ -60,11 +60,16 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
     protected void loadLegacyData(ItemStack stack) {
         ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound)
               //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
-              .or(() -> ItemDataUtils.getMekData(stack)
-                    .filter(mekData -> mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND))
-                    .map(mekData -> mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY))
-                    .filter(frequencyComponent -> frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND))
-                    .map(frequencyComponent -> frequencyComponent.getCompound(frequencyType.getName())))
+              .or(() -> {
+                  CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
+                  if (mekData != null && mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+                      CompoundTag frequencyComponent = mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+                      if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
+                          return Optional.of(frequencyComponent.getCompound(frequencyType.getName()));
+                      }
+                  }
+                  return Optional.empty();
+              })
               .ifPresent(this::deserializeNBT);
     }
 
