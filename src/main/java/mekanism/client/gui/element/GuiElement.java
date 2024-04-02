@@ -180,7 +180,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public boolean childrenContainsElement(Predicate<GuiElement> checker) {
-        return children.stream().anyMatch(e -> e.containsElement(checker));
+        for (GuiElement child : children) {
+            if (child.containsElement(checker)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean containsElement(Predicate<GuiElement> checker) {

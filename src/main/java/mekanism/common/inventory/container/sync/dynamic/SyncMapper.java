@@ -125,7 +125,13 @@ public class SyncMapper extends BaseAnnotationScanner {
                 String getterName = getAnnotationValue(data, "getter", "");
                 PropertyField newField;
                 Class<?> fieldType = field.getType();
-                SpecialPropertyHandler<?> handler = specialProperties.stream().filter(h -> h.fieldType.isAssignableFrom(fieldType)).findFirst().orElse(null);
+                SpecialPropertyHandler<?> handler = null;
+                for (SpecialPropertyHandler<?> h : specialProperties) {
+                    if (h.fieldType.isAssignableFrom(fieldType)) {
+                        handler = h;
+                        break;
+                    }
+                }
                 try {
                     if (handler == null) {
                         PropertyType type = PropertyType.getFromType(fieldType);

@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
+import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
@@ -43,15 +44,17 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     @Override
     public Optional<ChemicalDissolutionRecipe> recompose(IRecipeManager<? super ChemicalDissolutionRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalDissolutionRecipeManager manager) {
-            Optional<? extends ICrTChemicalStack<?, ?, ?>> output = CrTRecipeComponents.CHEMICAL_COMPONENTS.stream()
-                  .map(chemicalComponent -> CrTUtils.getSingleIfPresent(recipe, chemicalComponent.output()))
-                  .filter(Optional::isPresent)
-                  .findFirst()
-                  .flatMap(singleIfPresent -> singleIfPresent);
+            Optional<? extends ICrTChemicalStack<?, ?, ?>> found = Optional.empty();
+            for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
+                found = CrTUtils.getSingleIfPresent(recipe, chemicalComponent.output());
+                if (found.isPresent()) {
+                    break;
+                }
+            }
             return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
-                  output.orElseThrow(() -> new IllegalArgumentException("No specified output chemical."))
+                  found.orElseThrow(() -> new IllegalArgumentException("No specified output chemical."))
             ));
         }
         return Optional.empty();

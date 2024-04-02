@@ -46,7 +46,8 @@ public final class FilterAware implements INBTSerializable<ListTag> {
 
     private <FILTER extends IFilter<?>> Stream<FILTER> getEnabledStream(Class<FILTER> filterClass) {
         return filters.stream()
-              .filter(filter -> filter.isEnabled() && filterClass.isInstance(filter))
+              .filter(IFilter::isEnabled)
+              .filter(filterClass::isInstance)
               .map(filterClass::cast);
     }
 

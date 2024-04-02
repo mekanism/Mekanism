@@ -3,7 +3,10 @@ package mekanism.common.integration.crafttweaker.bracket;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketDumper;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -12,6 +15,7 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -80,12 +84,17 @@ public class CrTBracketDumpers {
     }
 
     private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {
-        return CraftTweakerAPI.getAccessibleElementsProvider()
+        Optional<Registry<Object>> optionalRegistry = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registry(registryKey)
-              .stream()
-              .flatMap(registry -> registry.keySet().stream())
-              .map(v -> "<" + bracket + ":" + v + ">")
-              .toList();
+              .registry(registryKey);
+        if (optionalRegistry.isEmpty()) {
+            return List.of();
+        }
+        Registry<?> registry = optionalRegistry.get();
+        List<String> list = new ArrayList<>();
+        for (ResourceLocation v : registry.keySet()) {
+            list.add("<" + bracket + ":" + v + ">");
+        }
+        return list;
     }
 }

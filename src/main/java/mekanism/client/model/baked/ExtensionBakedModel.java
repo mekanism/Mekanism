@@ -73,7 +73,13 @@ public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
     @Override
     public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
-        return cachedRenderPasses.computeIfAbsent(super.getRenderPasses(stack, fabulous), original -> original.stream().<BakedModel>map(this::wrapModel).toList());
+        List<BakedModel> superPasses = super.getRenderPasses(stack, fabulous);
+        List<BakedModel> passes = cachedRenderPasses.get(superPasses);
+        if (passes == null) {
+            passes = superPasses.stream().<BakedModel>map(this::wrapModel).toList();
+            cachedRenderPasses.put(superPasses, passes);
+        }
+        return passes;
     }
 
     protected ExtensionBakedModel<T> wrapModel(BakedModel model) {

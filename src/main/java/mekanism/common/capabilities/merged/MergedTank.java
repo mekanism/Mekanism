@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.merged;
 
-import java.util.Arrays;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -31,7 +30,7 @@ public class MergedTank extends MergedChemicalTank {
 
     private MergedTank(IExtendedFluidTank fluidTank, IChemicalTank<?, ?>... chemicalTanks) {
         super(fluidTank::isEmpty, chemicalTanks);
-        this.fluidTank = new FluidTankWrapper(this, fluidTank, () -> Arrays.stream(chemicalTanks).allMatch(IChemicalTank::isEmpty));
+        this.fluidTank = new FluidTankWrapper(this, fluidTank, chemicalTanks);
     }
 
     public CurrentType getCurrentType() {

@@ -9,13 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.common.base.TagCache;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.TooltipFlag.Default;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -182,9 +184,31 @@ public class SearchQueryParser {
         // ~ is a dummy char, not actually used by parser
         NAME('~', (key, stack) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
         MOD_ID('@', (key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        TOOLTIP('$', (key, stack) -> stack.getTooltipLines(null, TooltipFlag.Default.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
-              .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
-        TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));
+        TOOLTIP('$', (key, stack) -> {
+            List<Component> tooltipLines = stack.getTooltipLines(null, Default.NORMAL);
+            if (!tooltipLines.isEmpty()) {
+                String lowerKey = key.toLowerCase(Locale.ROOT);
+                for (Component tooltipLine : tooltipLines) {
+                    String tooltip = tooltipLine.getString().toLowerCase(Locale.ROOT);
+                    if (tooltip.contains(lowerKey)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }),
+        TAG('#', (key, stack) -> {
+            List<String> itemTags = TagCache.getItemTags(stack);
+            if (!itemTags.isEmpty()) {
+                String lowerKey = key.toLowerCase(Locale.ROOT);
+                for (String tag : itemTags) {
+                    if (tag.toLowerCase(Locale.ROOT).contains(lowerKey)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
 
         private static final Char2ObjectMap<QueryType> charLookupMap;
 
@@ -223,7 +247,19 @@ public class SearchQueryParser {
 
         @Override
         public boolean test(ItemStack stack) {
-            return queryStrings.entrySet().stream().allMatch(entry -> entry.getValue().stream().anyMatch(key -> entry.getKey().matches(key, stack)));
+            for (Entry<QueryType, List<String>> entry : queryStrings.entrySet()) {
+                boolean hasMatch = true;
+                for (String key : entry.getValue()) {
+                    if (entry.getKey().matches(key, stack)) {
+                        hasMatch = false;
+                        break;
+                    }
+                }
+                if (hasMatch) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private boolean isEmpty() {
@@ -251,7 +287,15 @@ public class SearchQueryParser {
         @Override
         public boolean test(ItemStack stack) {
             // allow empty query lists to match all stacks
-            return queries.isEmpty() || queries.stream().anyMatch(query -> query.test(stack));
+            if (queries.isEmpty()) {
+                return true;
+            }
+            for (SearchQuery query : queries) {
+                if (query.test(stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override

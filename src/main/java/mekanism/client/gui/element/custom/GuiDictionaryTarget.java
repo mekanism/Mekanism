@@ -1,13 +1,12 @@
 package mekanism.client.gui.element.custom;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -32,6 +31,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -150,9 +150,10 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     ));
                 }
                 //Get any attribute tags
-                Set<Attribute> attributes = Arrays.stream(EnumUtils.EQUIPMENT_SLOT_TYPES)
-                      .flatMap(slot -> itemStack.getAttributeModifiers(slot).keySet().stream())
-                      .collect(Collectors.toSet());
+                Set<Attribute> attributes = new HashSet<>();
+                for (EquipmentSlot slot : EnumUtils.EQUIPMENT_SLOT_TYPES) {
+                    attributes.addAll(itemStack.getAttributeModifiers(slot).keySet());
+                }
                 if (!attributes.isEmpty()) {
                     //Only add them though if it has any attributes at all
                     tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(attributes.stream()

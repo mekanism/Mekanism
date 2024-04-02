@@ -119,7 +119,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                   .filter(container -> hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0)))
                   .isPresent();
         }
-        return getModules(stack).stream().anyMatch(module -> module.isEnabled() && canPerformAction(module, action));
+        for (IModule<?> module : getModules(stack)) {
+            if (module.isEnabled() && canPerformAction(module, action)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, ToolAction action) {

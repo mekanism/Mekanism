@@ -1,9 +1,9 @@
 package mekanism.common.capabilities.fluid;
 
-import java.util.function.BooleanSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.nbt.CompoundTag;
@@ -16,15 +16,15 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class FluidTankWrapper implements IExtendedFluidTank {
 
+    private final IChemicalTank<?, ?>[] chemicalTanks;
     private final IExtendedFluidTank internal;
-    private final BooleanSupplier insertCheck;
     private final MergedTank mergedTank;
 
-    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, BooleanSupplier insertCheck) {
+    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, IChemicalTank<?, ?>... chemicalTanks) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
         this.mergedTank = mergedTank;
         this.internal = internal;
-        this.insertCheck = insertCheck;
+        this.chemicalTanks = chemicalTanks;
     }
 
     public MergedTank getMergedTank() {
@@ -41,10 +41,19 @@ public class FluidTankWrapper implements IExtendedFluidTank {
         internal.setStackUnchecked(stack);
     }
 
+    private boolean canInsert() {
+        for (IChemicalTank<?, ?> otherTank : chemicalTanks) {
+            if (!otherTank.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         //Only allow inserting if we pass the check
-        return insertCheck.getAsBoolean() ? internal.insert(stack, action, automationType) : stack;
+        return canInsert() ? internal.insert(stack, action, automationType) : stack;
     }
 
     @Override

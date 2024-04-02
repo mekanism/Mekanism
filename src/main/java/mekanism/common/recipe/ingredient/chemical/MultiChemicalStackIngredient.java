@@ -17,7 +17,6 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -53,17 +52,32 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
     @Override
     public boolean test(@NotNull STACK stack) {
-        return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
+        for (INGREDIENT ingredient : ingredients) {
+            if (ingredient.test(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean testType(@NotNull STACK stack) {
-        return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
+        for (INGREDIENT ingredient : ingredients) {
+            if (ingredient.testType(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean testType(@NotNull CHEMICAL chemical) {
-        return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(chemical));
+        for (INGREDIENT ingredient : ingredients) {
+            if (ingredient.testType(chemical)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @NotNull
@@ -91,7 +105,12 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
     @Override
     public boolean hasNoMatchingInstances() {
-        return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
+        for (INGREDIENT ingredient : ingredients) {
+            if (!ingredient.hasNoMatchingInstances()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @NotNull

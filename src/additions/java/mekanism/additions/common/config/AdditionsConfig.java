@@ -1,5 +1,6 @@
 package mekanism.additions.common.config;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -132,10 +134,13 @@ public class AdditionsConfig extends BaseMekanismConfig {
         public List<MobSpawnSettings.SpawnerData> getSpawnersToAdd(List<MobSpawnSettings.SpawnerData> monsterSpawns) {
             //If the adult mob can spawn let the baby mob spawn as well
             //Note: We adjust the mob's spawning based on the adult's spawn rates
-            return monsterSpawns.stream()
-                  .filter(monsterSpawn -> monsterSpawn.type == parentType)
-                  .map(this::getSpawner)
-                  .toList();
+            List<SpawnerData> list = new ArrayList<>();
+            for (SpawnerData monsterSpawn : monsterSpawns) {
+                if (monsterSpawn.type == parentType) {
+                    list.add(getSpawner(monsterSpawn));
+                }
+            }
+            return list;
         }
     }
 }

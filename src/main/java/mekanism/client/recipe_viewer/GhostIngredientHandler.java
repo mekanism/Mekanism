@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
@@ -287,7 +286,11 @@ public class GhostIngredientHandler {
         public List<TARGET> convertToTargets(List<Rect2i> coveredArea) {
             List<Rect2i> visibleAreas = new ArrayList<>();
             addVisibleAreas(visibleAreas, new Rect2i(x, y, width, height), coveredArea);
-            return visibleAreas.stream().map(visibleArea -> targetCreator.create(ghostHandler, supported, visibleArea)).collect(Collectors.toList());
+            List<TARGET> list = new ArrayList<>(visibleAreas.size());
+            for (Rect2i visibleArea : visibleAreas) {
+                list.add(targetCreator.create(ghostHandler, supported, visibleArea));
+            }
+            return list;
         }
     }
 }

@@ -2,6 +2,8 @@ package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -12,6 +14,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
@@ -20,7 +23,12 @@ public class SawmillEmiRecipe extends MekanismEmiHolderRecipe<SawmillRecipe> {
         super(category, recipeHolder);
         addInputDefinition(recipe.getInput());
         addItemOutputDefinition(recipe.getMainOutputDefinition());
-        addOutputDefinition(recipe.getSecondaryOutputDefinition().stream().map(EmiStack::of).map(stack -> stack.setChance((float) recipe.getSecondaryChance())).toList());
+        List<ItemStack> secondaryOutputDefinition = recipe.getSecondaryOutputDefinition();
+        List<EmiStack> list = new ArrayList<>(secondaryOutputDefinition.size());
+        for (ItemStack itemStack : secondaryOutputDefinition) {
+            list.add(EmiStack.of(itemStack).setChance((float) recipe.getSecondaryChance()));
+        }
+        addOutputDefinition(list);
     }
 
     @Override

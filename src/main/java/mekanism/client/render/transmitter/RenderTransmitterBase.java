@@ -4,9 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
@@ -28,6 +27,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -78,10 +78,12 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
 
     protected void renderModel(TRANSMITTER transmitter, PoseStack matrix, VertexConsumer builder, int rgb, float alpha, int light, int overlayLight,
           TextureAtlasSprite icon) {
+        List<String> list = new ArrayList<>(EnumUtils.DIRECTIONS.length);
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            list.add(side.getSerializedName() + transmitter.getTransmitter().getConnectionType(side).name());
+        }
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
-              overlayLight, icon, Arrays.stream(EnumUtils.DIRECTIONS)
-                    .map(side -> side.getSerializedName() + transmitter.getTransmitter().getConnectionType(side).getSerializedName().toUpperCase(Locale.ROOT))
-                    .toList());
+              overlayLight, icon, list);
     }
 
     protected void renderModel(TRANSMITTER transmitter, PoseStack matrix, VertexConsumer builder, float red, float green, float blue, float alpha, int light,

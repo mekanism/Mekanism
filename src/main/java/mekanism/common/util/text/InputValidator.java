@@ -2,7 +2,6 @@ package mekanism.common.util.text;
 
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
-import java.util.Arrays;
 import mekanism.api.functions.CharPredicate;
 import net.minecraft.resources.ResourceLocation;
 
@@ -36,7 +35,17 @@ public class InputValidator {
     }
 
     public static CharPredicate or(CharPredicate... validators) {
-        return c -> Arrays.stream(validators).anyMatch(v -> v.test(c));
+        if (validators.length == 1) {
+            return validators[0];
+        }
+        return c -> {
+            for (CharPredicate v : validators) {
+                if (v.test(c)) {
+                    return true;
+                }
+            }
+            return false;
+        };
     }
 
     public static boolean test(String s, CharPredicate predicate) {

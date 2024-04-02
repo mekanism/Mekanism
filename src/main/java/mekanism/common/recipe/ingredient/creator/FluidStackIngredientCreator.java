@@ -15,7 +15,6 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.core.Holder;
@@ -323,12 +322,22 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean test(FluidStack stack) {
-            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
+            for (FluidStackIngredient ingredient : ingredients) {
+                if (ingredient.test(stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
         public boolean testType(FluidStack stack) {
-            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
+            for (FluidStackIngredient ingredient : ingredients) {
+                if (ingredient.testType(stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -355,7 +364,12 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean hasNoMatchingInstances() {
-            return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
+            for (FluidStackIngredient ingredient : ingredients) {
+                if (!ingredient.hasNoMatchingInstances()) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

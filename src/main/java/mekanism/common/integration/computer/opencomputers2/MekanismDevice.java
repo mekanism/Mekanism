@@ -79,7 +79,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
             if (overloads.size() == 1) {
                 return new Method(key, overloads.get(0));
             }
-            Set<RPCMethod> set = new HashSet<>();
+            Set<RPCMethod> set = new HashSet<>(overloads.size());
             for (BoundMethodData<?> md : overloads) {
                 set.add(new Method(key, md));
             }
@@ -109,7 +109,15 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
 
         @Override
         public Optional<RPCMethod> findOverload(RPCInvocation invocation) {
-            return this.children.stream().filter(m -> m.getParameters().length == invocation.getParameters().size()).findFirst();
+            if (!this.children.isEmpty()) {
+                int parameters = invocation.getParameters().size();
+                for (RPCMethod m : this.children) {
+                    if (m.getParameters().length == parameters) {
+                        return Optional.of(m);
+                    }
+                }
+            }
+            return Optional.empty();
         }
     }
 

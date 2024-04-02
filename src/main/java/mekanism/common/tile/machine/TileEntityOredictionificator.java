@@ -116,15 +116,26 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         //For each tag that matches a tag that is filterable, add it to the resulting list
         return stack.getTags()
               .map(TagKey::location)
-              .filter(resource -> possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre)))
-              .toList();
+              .filter(resource -> {
+                  for (String pre : possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList())) {
+                      if (resource.getPath().startsWith(pre)) {
+                          return true;
+                      }
+                  }
+                  return false;
+              }).toList();
     }
 
     private boolean hasFilterableTags(ItemStack stack) {
         Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
         return stack.getTags().anyMatch(tag -> {
             ResourceLocation resource = tag.location();
-            return possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre));
+            for (String pre : possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList())) {
+                if (resource.getPath().startsWith(pre)) {
+                    return true;
+                }
+            }
+            return false;
         });
     }
 

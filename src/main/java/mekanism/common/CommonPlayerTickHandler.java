@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -343,9 +344,11 @@ public class CommonPlayerTickHandler {
                     // Scales mining speed based on hardest block
                     // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
                     float targetHardness = event.getState().getDestroySpeed(player.level(), pos);
-                    float maxHardness = blocks.entrySet().stream()
-                          .map(entry -> entry.getValue().getDestroySpeed(player.level(), entry.getKey()))
-                          .reduce(targetHardness, Float::max);
+                    float maxHardness = targetHardness;
+                    for (Entry<BlockPos, BlockState> entry : blocks.entrySet()) {
+                        float destroySpeed = entry.getValue().getDestroySpeed(player.level(), entry.getKey());
+                        maxHardness = Math.max(maxHardness, destroySpeed);
+                    }
                     speed *= (targetHardness / maxHardness);
                 }
             }

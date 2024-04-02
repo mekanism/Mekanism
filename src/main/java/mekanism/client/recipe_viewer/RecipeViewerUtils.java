@@ -117,8 +117,11 @@ public class RecipeViewerUtils {
         if (recipeType != null) {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe<CHEMICAL, ?>> recipeHolder : recipeType.getRecipes(null)) {
                 ItemStackToChemicalRecipe<CHEMICAL, ?> recipe = recipeHolder.value();
-                if (recipe.getOutputDefinition().stream().anyMatch(output -> supportedTypes.contains(output.getType()))) {
-                    stacks.addAll(recipe.getInput().getRepresentations());
+                for (ChemicalStack<CHEMICAL> output : recipe.getOutputDefinition()) {
+                    if (supportedTypes.contains(output.getType())) {
+                        stacks.addAll(recipe.getInput().getRepresentations());
+                        break;
+                    }
                 }
             }
         }

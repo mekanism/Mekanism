@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import java.util.Arrays;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -41,7 +39,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -149,11 +146,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             boost = FloatingLong.ZERO;
         } else {
             //Otherwise, calculate boost to apply from lava
-            long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> {
+            //Only check and add loaded neighbors to the which sides have lava on them
+            BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+            int lavaSides = 0;
+            for (Direction dir : EnumUtils.DIRECTIONS) {
                 //Only check and add loaded neighbors to the which sides have lava on them
-                Optional<FluidState> fluidState = WorldUtils.getFluidState(level, worldPosition.relative(side));
-                return fluidState.isPresent() && fluidState.get().is(FluidTags.LAVA);
-            }).count();
+                mutable.setWithOffset(worldPosition, dir);
+                if (WorldUtils.getFluidState(level, mutable).filter(state -> state.is(FluidTags.LAVA)).isPresent()) {
+                    lavaSides++;
+                }
+            }
             if (getBlockState().getFluidState().is(FluidTags.LAVA)) {
                 //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
                 lavaSides++;

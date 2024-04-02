@@ -16,7 +16,6 @@ import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -185,10 +184,11 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
             // we also handle any ingredients that are synchronized by just writing their contents
             // as then we can build a grouped ingredient for them
-            return new IIngredientList(Arrays.stream(vanillaIngredient.getItems())
-                  .map(stack -> IItemStack.of(stack.copyWithCount(amount)))
-                  .toArray(IIngredient[]::new))
-                  .getCommandString();
+            List<IItemStack> list = new ArrayList<>();
+            for (ItemStack stack : vanillaIngredient.getItems()) {
+                list.add(IItemStack.of(stack.copyWithCount(amount)));
+            }
+            return new IIngredientList(list.toArray(new IIngredient[0])).getCommandString();
         }
         return null;
     }

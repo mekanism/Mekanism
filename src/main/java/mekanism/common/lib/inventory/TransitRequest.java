@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -158,8 +159,12 @@ public abstract class TransitRequest {
     }
 
     public TransitResponse createSimpleResponse() {
-        ItemData data = getItemData().stream().findFirst().orElse(null);
-        return data == null ? getEmptyResponse() : createResponse(data.itemType.createStack(data.totalCount), data);
+        Optional<? extends ItemData> first = getItemData().stream().findFirst();
+        if (first.isEmpty()) {
+            return getEmptyResponse();
+        }
+        ItemData data = first.get();
+        return createResponse(data.itemType.createStack(data.totalCount), data);
     }
 
     @NotNull

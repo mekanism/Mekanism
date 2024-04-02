@@ -25,7 +25,12 @@ import org.jetbrains.annotations.Nullable;
 public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer {
 
     default boolean isValidFluid(@NotNull Fluid fluid) {
-        return getFluidLoggedProperty().getPossibleValues().stream().anyMatch(possibleValue -> possibleValue.getFluid() == fluid);
+        for (IFluidLogType possibleValue : getFluidLoggedProperty().getPossibleValues()) {
+            if (possibleValue.getFluid() == fluid) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

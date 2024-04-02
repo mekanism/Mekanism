@@ -256,7 +256,15 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     }
 
     protected EmiIngredient chemicalIngredient(ChemicalStackIngredient<?, ?> ingredient, int scalar) {
-        return EmiIngredient.of(ingredient.getRepresentations().stream().map(stack -> ChemicalEmiStack.create(stack.getType(), stack.getAmount() * scalar)).toList());
+        List<? extends ChemicalStack<?>> representations = ingredient.getRepresentations();
+        if (representations.isEmpty()) {
+            return EmiStack.EMPTY;
+        }
+        List<ChemicalEmiStack<?>> list = new ArrayList<>(representations.size());
+        for (ChemicalStack<?> stack : representations) {
+            list.add(ChemicalEmiStack.create(stack.getType(), stack.getAmount() * scalar));
+        }
+        return EmiIngredient.of(list);
     }
 
     protected SlotWidget initItem(WidgetHolder widgetHolder, GuiSlot slot, EmiIngredient ingredient) {

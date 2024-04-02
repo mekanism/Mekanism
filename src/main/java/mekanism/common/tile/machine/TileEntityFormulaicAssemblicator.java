@@ -346,10 +346,18 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
+    private boolean canMoveLastRemaining() {
+        for (ItemStack it : lastRemainingItems) {
+            if (!it.isEmpty() && !tryMoveToOutput(it, Action.SIMULATE)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean doSingleCraft() {
         ItemStack output = lastOutputStack;
-        if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) &&
-            (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, Action.SIMULATE)))) {
+        if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) && canMoveLastRemaining()) {
             tryMoveToOutput(output, Action.EXECUTE);
             //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
             // For example if there are multiple stacks of dirt, or even just different item types, in remaining and we have room for one stack,

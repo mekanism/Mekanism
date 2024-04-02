@@ -276,14 +276,22 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         ), MekanismConfig.gear);
 
         if (!gasTankSpecs.isEmpty()) {
-            ContainerType.GAS.addDefaultContainers(eventBus, this, stack -> gasTankSpecs.stream()
-                  .<IGasTank>map(spec -> spec.createTank(RateLimitGasTank::create, stack))
-                  .toList(), MekanismConfig.gear);
+            ContainerType.GAS.addDefaultContainers(eventBus, this, stack -> {
+                List<IGasTank> list = new ArrayList<>(gasTankSpecs.size());
+                for (ChemicalTankSpec<Gas> spec : gasTankSpecs) {
+                    list.add(spec.createTank(RateLimitGasTank::create, stack));
+                }
+                return list;
+            }, MekanismConfig.gear);
         }
         if (!fluidTankSpecs.isEmpty()) {
-            ContainerType.FLUID.addDefaultContainers(eventBus, this, stack -> fluidTankSpecs.stream()
-                  .<IExtendedFluidTank>map(spec -> spec.createTank(RateLimitFluidTank::create, stack))
-                  .toList(), MekanismConfig.gear);
+            ContainerType.FLUID.addDefaultContainers(eventBus, this, stack -> {
+                List<IExtendedFluidTank> list = new ArrayList<>(fluidTankSpecs.size());
+                for (FluidTankSpec spec : fluidTankSpecs) {
+                    list.add(spec.createTank(RateLimitFluidTank::create, stack));
+                }
+                return list;
+            }, MekanismConfig.gear);
         }
     }
 

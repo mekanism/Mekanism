@@ -88,8 +88,8 @@ public abstract class BaseAdvancementProvider implements DataProvider {
 
     protected static ItemLike[] getItems(Collection<? extends Holder<? extends ItemLike>> items, Predicate<Item> matcher) {
         return items.stream()
-              .map(Holder::value)
-              .filter(itemProvider -> matcher.test(itemProvider.asItem()))
+              .map(holder -> holder.value().asItem())
+              .filter(matcher)
               .toArray(ItemLike[]::new);
     }
 }

@@ -178,26 +178,28 @@ public class RenderTickHandler {
                         renderInfoConsumer.accept(new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0));
                     }
                 } else {
-                    transparentRenderers.entrySet().stream()
-                          .map(entry -> {
-                              List<LazyRender> renders = entry.getValue();
-                              double closest = Double.MAX_VALUE;
-                              for (LazyRender render : renders) {
-                                  Vec3 renderPos = render.getCenterPos(partialTick);
-                                  if (renderPos != null) {
-                                      //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
-                                      double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
-                                      if (distanceSqr < closest) {
-                                          closest = distanceSqr;
-                                      }
-                                  }
-                              }
-                              //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
-                              return new TransparentRenderInfo(entry.getKey(), renders, closest);
-                          })
-                          //Sort in the order of furthest to closest (reverse of by closest)
-                          .sorted(Comparator.comparingDouble(info -> -info.closest))
-                          .forEachOrdered(renderInfoConsumer);
+                    List<TransparentRenderInfo> toSort = new ArrayList<>(transparentRenderers.size());
+                    for (Entry<RenderType, List<LazyRender>> renderTypeListEntry : transparentRenderers.entrySet()) {
+                        List<LazyRender> renders = renderTypeListEntry.getValue();
+                        double closest = Double.MAX_VALUE;
+                        for (LazyRender render : renders) {
+                            Vec3 renderPos = render.getCenterPos(partialTick);
+                            if (renderPos != null) {
+                                //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
+                                double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
+                                if (distanceSqr < closest) {
+                                    closest = distanceSqr;
+                                }
+                            }
+                        }
+                        //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
+                        toSort.add(new TransparentRenderInfo(renderTypeListEntry.getKey(), renders, closest));
+                    }
+                    //Sort in the order of furthest to closest (reverse of by closest)
+                    toSort.sort(Comparator.comparingDouble(info -> -info.closest));
+                    for (TransparentRenderInfo apply : toSort) {
+                        renderInfoConsumer.accept(apply);
+                    }
                 }
                 transparentRenderers.clear();
                 profiler.pop();

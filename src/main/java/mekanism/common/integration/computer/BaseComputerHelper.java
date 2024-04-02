@@ -7,9 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
@@ -422,7 +422,11 @@ public abstract class BaseComputerHelper {
     }
 
     public <KEY, VALUE> Object convert(@NotNull Map<KEY, VALUE> res, Function<KEY, Object> keyConverter, @NotNull Function<VALUE, Object> valueConverter) {
-        return res.entrySet().stream().collect(Collectors.toMap(entry -> keyConverter.apply(entry.getKey()), entry -> valueConverter.apply(entry.getValue()), (a, b) -> b));
+        Map<Object, Object> map = new HashMap<>(res.size());
+        for (Entry<KEY, VALUE> entry : res.entrySet()) {
+            map.put(keyConverter.apply(entry.getKey()), valueConverter.apply(entry.getValue()));
+        }
+        return map;
     }
 
     public Object convert(@Nullable Item item) {

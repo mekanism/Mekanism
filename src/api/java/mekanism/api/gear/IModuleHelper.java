@@ -1,5 +1,6 @@
 package mekanism.api.gear;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -186,11 +187,15 @@ public interface IModuleHelper {
      *
      * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     default <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> loadAll(ItemStack stack, Class<MODULE> moduleClass) {
-        return (List) loadAll(stack).stream()
-              .filter(module -> moduleClass.isInstance(module.getCustomInstance()))
-              .toList();
+        List<IModule<? extends MODULE>> list = new ArrayList<>();
+        for (IModule<?> module : loadAll(stack)) {
+            if (moduleClass.isInstance(module.getCustomInstance())) {
+                list.add((IModule<? extends MODULE>) module);
+            }
+        }
+        return list;
     }
 
     /**

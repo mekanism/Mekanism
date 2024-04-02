@@ -2,7 +2,6 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -183,7 +182,11 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (positions.length == 0) {
             throw new IllegalArgumentException("No positions given.");
         }
-        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).value().getTemperature(pos)).sum() / positions.length;
+        double sum = 0;
+        for (BlockPos pos : positions) {
+            sum += world.getBiome(pos).value().getTemperature(pos);
+        }
+        return sum / positions.length;
     }
 
     public boolean setShape(IShape shape) {

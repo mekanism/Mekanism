@@ -788,7 +788,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 int errorIndex = errorTypes.indexOf(error);
                 if (errorIndex >= 0) {
                     if (globalTypes.contains(errorIndex)) {
-                        return () -> Arrays.stream(trackedErrors).anyMatch(processTrackedErrors -> processTrackedErrors[errorIndex]);
+                        return () -> {
+                            for (boolean[] tracked : trackedErrors) {
+                                if (tracked[errorIndex]) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
                     }
                     return () -> trackedErrors[processIndex][errorIndex];
                 }

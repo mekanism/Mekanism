@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -454,8 +455,13 @@ public class WorldUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x &&
-                                                                   SectionPos.blockToSectionCoord(coord.pos().getZ()) == chunk.z);
+        for (GlobalPos coord : Mekanism.activeVibrators) {
+            if (coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x &&
+                SectionPos.blockToSectionCoord(coord.pos().getZ()) == chunk.z) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable Direction side) {

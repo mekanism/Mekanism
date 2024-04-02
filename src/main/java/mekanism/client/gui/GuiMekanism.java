@@ -163,7 +163,11 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public void containerTick() {
         super.containerTick();
-        children().stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+        for (GuiEventListener child : children()) {
+            if (child instanceof GuiElement element) {
+                element.tick();
+            }
+        }
         windows.forEach(GuiWindow::tick);
     }
 
@@ -478,16 +482,23 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.keyPressed(keyCode, scanCode, modifiers)) ||
+        for (GuiWindow window : windows) {
+            if (window.keyPressed(keyCode, scanCode, modifiers)) {
+                return true;
+            }
+        }
+        return GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.keyPressed(keyCode, scanCode, modifiers)) ||
                super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) ||
-               GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.charTyped(c, keyCode)) ||
-               super.charTyped(c, keyCode);
+        for (GuiWindow window : windows) {
+            if (window.charTyped(c, keyCode)) {
+                return true;
+            }
+        }
+        return GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
     }
 
     /**
@@ -567,7 +578,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
         if (window == null) {
-            return children().stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+            for (GuiEventListener child : children()) {
+                if (child.isMouseOver(mouseX, mouseY)) {
+                    return false;
+                }
+            }
+            return true;
         }
         return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
     }
@@ -721,7 +737,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Nullable
     @Override
     public GuiWindow getWindowHovering(double mouseX, double mouseY) {
-        return windows.stream().filter(w -> w.isMouseOver(mouseX, mouseY)).findFirst().orElse(null);
+        for (GuiWindow w : windows) {
+            if (w.isMouseOver(mouseX, mouseY)) {
+                return w;
+            }
+        }
+        return null;
     }
 
     public Collection<GuiWindow> getWindows() {

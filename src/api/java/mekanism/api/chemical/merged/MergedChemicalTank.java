@@ -1,7 +1,6 @@
 package mekanism.api.chemical.merged;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,12 @@ public class MergedChemicalTank {
             for (IChemicalTank<?, ?> tank : allTanks) {
                 if (type.canHandle(tank)) {
                     //TODO: Improve this so it doesn't have to loop nearly as much?
-                    List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).toList();
+                    List<IChemicalTank<?, ?>> otherTanks = new ArrayList<>();
+                    for (IChemicalTank<?, ?> otherTank : allTanks) {
+                        if (tank != otherTank) {
+                            otherTanks.add(otherTank);
+                        }
+                    }
                     tankMap.put(type, type.createWrapper(this, tank, otherTanks, extraCheck));
                     handled = true;
                     break;

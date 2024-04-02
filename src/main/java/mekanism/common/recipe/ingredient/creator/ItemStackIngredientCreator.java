@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
@@ -212,12 +211,22 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public boolean test(ItemStack stack) {
-            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.test(stack));
+            for (SingleItemStackIngredient ingredient : ingredients) {
+                if (ingredient.test(stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
         public boolean testType(ItemStack stack) {
-            return Arrays.stream(ingredients).anyMatch(ingredient -> ingredient.testType(stack));
+            for (SingleItemStackIngredient ingredient : ingredients) {
+                if (ingredient.testType(stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -244,7 +253,12 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public boolean hasNoMatchingInstances() {
-            return Arrays.stream(ingredients).allMatch(InputIngredient::hasNoMatchingInstances);
+            for (SingleItemStackIngredient ingredient : ingredients) {
+                if (!ingredient.hasNoMatchingInstances()) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

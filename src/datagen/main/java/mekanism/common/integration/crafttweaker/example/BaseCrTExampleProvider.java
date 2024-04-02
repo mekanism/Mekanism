@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -200,7 +201,14 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     public boolean supportsConversion(Class<?> crtClass, @Nullable Class<?> crtGenerics, Class<?> actualClass) {
         List<ClassConversionInfo<?>> conversions = getConversions(crtClass, crtGenerics);
-        return conversions != null && conversions.stream().anyMatch(conversionInfo -> conversionInfo.actualClass.isAssignableFrom(actualClass));
+        if (conversions != null) {
+            for (ClassConversionInfo<?> conversionInfo : conversions) {
+                if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, @Nullable Class<?> crtGenerics, CrTImportsComponent imports, ACTUAL actual) {
@@ -276,10 +284,12 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         examples.clear();
         addExamples();
         PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
-        return CompletableFuture.allOf(examples.entrySet().stream().map(entry -> {
+        List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
+        for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
             Path path = pathProvider.file(new ResourceLocation(modid, entry.getKey()), "zs");
-            return save(cache, entry.getValue().build(), path);
-        }).toArray(CompletableFuture[]::new));
+            list.add(save(cache, entry.getValue().build(), path));
+        }
+        return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
     }
 
     @NotNull

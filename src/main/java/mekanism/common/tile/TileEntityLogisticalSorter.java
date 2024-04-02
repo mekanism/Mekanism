@@ -55,7 +55,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
-    private final Finder strictFinder = stack -> filterManager.getEnabledFilters().stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().test(stack));
+    private final Finder strictFinder = stack -> {
+        for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
+            if (!filter.allowDefault && filter.getFinder().test(stack)) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     @Nullable
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> homeInventory;
