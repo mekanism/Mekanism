@@ -110,8 +110,6 @@
   "jetpack.mekanism.normal": "Звычайны",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",
-  "logistical_sorter.mekanism.auto_eject": "Аўто:",
-  "logistical_sorter.mekanism.single_item": "Адзіночны:",
   "miner.mekanism.paused": "Прыпынены",
   "miner.mekanism.ready": "Гатова",
   "miner.mekanism.reset": "Скід",

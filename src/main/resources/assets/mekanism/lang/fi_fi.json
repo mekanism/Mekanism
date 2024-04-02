@@ -488,8 +488,6 @@
   "item.mekanism.ultimate_tier_installer": "Ensiluokkainen tasonasentaja",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details",
-  "logistical_sorter.mekanism.default": "Oletus:",
-  "logistical_sorter.mekanism.round_robin": "Kierto:",
   "logistical_sorter.mekanism.round_robin.description": "Kiertää kaikki yhdistetyt varastot ja lähettää kaikille vuorotellen.",
   "matrix.mekanism.induction_matrix": "Induktio Matriisi",
   "robit.mekanism.crafting": "Robit-Työstäminen",
