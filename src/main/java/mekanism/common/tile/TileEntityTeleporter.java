@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -201,7 +202,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (inTeleporter.isEmpty()) {
             didTeleport.clear();
         } else {
-            didTeleport.removeIf(id -> !inTeleporter.contains(id));
+            //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
+            for (Iterator<UUID> iterator = didTeleport.iterator(); iterator.hasNext(); ) {
+                UUID id = iterator.next();
+                if (!inTeleporter.contains(id)) {
+                    iterator.remove();
+                }
+            }
         }
     }
 

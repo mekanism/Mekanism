@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -451,7 +452,13 @@ public class RadiationManager implements IRadiationManager {
         // update meltdowns
         List<Meltdown> dimensionMeltdowns = meltdowns.getOrDefault(world.dimension().location(), Collections.emptyList());
         if (!dimensionMeltdowns.isEmpty()) {
-            dimensionMeltdowns.removeIf(meltdown -> meltdown.update(world));
+            //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
+            for (Iterator<Meltdown> iterator = dimensionMeltdowns.iterator(); iterator.hasNext(); ) {
+                Meltdown meltdown = iterator.next();
+                if (meltdown.update(world)) {
+                    iterator.remove();
+                }
+            }
             //If we have/had any meltdowns mark our data handler as dirty as when a meltdown updates
             // the number of ticks it has been around for will change
             markDirty();

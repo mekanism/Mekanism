@@ -2,6 +2,7 @@ package mekanism.common.lib.inventory;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -9,6 +10,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.lib.inventory.HandlerTransitRequest.HandlerItemData;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.StackUtils;
@@ -57,7 +59,12 @@ public abstract class TransitRequest {
             }
         }
         // remove items that we don't have enough of
-        ret.getItemMap().entrySet().removeIf(entry -> entry.getValue().getTotalCount() < min);
+        //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
+        for (Iterator<HandlerItemData> iterator = ret.getItemMap().values().iterator(); iterator.hasNext(); ) {
+            if (iterator.next().getTotalCount() < min) {
+                iterator.remove();
+            }
+        }
         return ret;
     }
 

@@ -3,6 +3,7 @@ package mekanism.common.registration.impl;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -142,13 +143,23 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
 
         public BlockEntityTypeBuilder<BE> without(BlockCapability<?, ?>... capabilities) {
             for (BlockCapability<?, ?> capability : capabilities) {
-                capabilityProviders.removeIf(data -> data.capability() == capability);
+                //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
+                for (Iterator<CapabilityData<BE, ?, ?>> iterator = capabilityProviders.iterator(); iterator.hasNext(); ) {
+                    if (iterator.next().capability() == capability) {
+                        iterator.remove();
+                    }
+                }
             }
             return this;
         }
 
         public BlockEntityTypeBuilder<BE> without(Collection<? extends BlockCapability<?, ?>> capabilities) {
-            capabilityProviders.removeIf(data -> capabilities.contains(data.capability()));
+            //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
+            for (Iterator<CapabilityData<BE, ?, ?>> iterator = capabilityProviders.iterator(); iterator.hasNext(); ) {
+                if (capabilities.contains(iterator.next().capability())) {
+                    iterator.remove();
+                }
+            }
             return this;
         }
 

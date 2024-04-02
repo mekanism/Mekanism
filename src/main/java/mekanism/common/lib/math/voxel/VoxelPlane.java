@@ -1,6 +1,7 @@
 package mekanism.common.lib.math.voxel;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import mekanism.common.lib.multiblock.Structure.Axis;
@@ -71,15 +72,14 @@ public class VoxelPlane {
         }
         if (hasFrame) {
             //Afterwards if we have a frame, go through all the blocks that are outside
-            outsideSet.removeIf(pos -> {
-                if (isOutside(pos)) {
-                    return false;
+            for (Iterator<BlockPos> iterator = outsideSet.iterator(); iterator.hasNext(); ) {
+                if (!isOutside(iterator.next())) {
+                    // and if they are inside our frame, add them to our plane's size and remove them
+                    // from the positions that are outside of frame but in the plane
+                    size++;
+                    iterator.remove();
                 }
-                // and if they are inside our frame, add them to our plane's size and remove them
-                // from the positions that are outside of frame but in the plane
-                size++;
-                return true;
-            });
+            }
         }
     }
 
