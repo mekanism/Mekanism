@@ -482,12 +482,12 @@ public class WorldUtils {
                     //If something went wrong return that we couldn't actually place it
                     return false;
                 }
-                playEmptySound(player, world, pos, fluidType, fluidStack);
+                playEmptySound(player, world, pos, fluidType);
             } else {
                 if (!world.isClientSide() && isReplaceable && !state.liquid()) {
                     world.destroyBlock(pos, true);
                 }
-                playEmptySound(player, world, pos, fluidType, fluidStack);
+                playEmptySound(player, world, pos, fluidType);
                 world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
             }
             return true;
@@ -495,7 +495,7 @@ public class WorldUtils {
         return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
-    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType, @NotNull FluidStack fluidStack) {
+    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType) {
         SoundEvent soundevent = fluidType.getSound(player, world, pos, SoundActions.BUCKET_EMPTY);
         if (soundevent != null) {
             world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);

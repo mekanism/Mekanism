@@ -321,12 +321,4 @@ public class PlayerState {
     public Set<UUID> getActiveFlamethrowers() {
         return activeFlamethrowers;
     }
-
-    private static class FlightInfo {
-
-        public boolean hadFlightItem;
-        public boolean wasFlyingGameMode;
-        public boolean wasFlyingAllowed;
-        public boolean wasFlying;
-    }
 }

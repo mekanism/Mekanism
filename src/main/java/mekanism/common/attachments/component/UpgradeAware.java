@@ -36,7 +36,7 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
         if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
             AttributeUpgradeSupport upgradeSupport = Attribute.get(blockItem.getBlock(), AttributeUpgradeSupport.class);
             if (upgradeSupport != null) {
-                return new UpgradeAware(stack, upgradeSupport.supportedUpgrades());
+                return new UpgradeAware(upgradeSupport.supportedUpgrades());
             }
         }
         return null;
@@ -46,7 +46,7 @@ public class UpgradeAware implements IMekanismInventory, IAttachedComponent<Tile
     private final Set<Upgrade> supportedUpgrades;
     private final List<IInventorySlot> upgradeSlots;
 
-    private UpgradeAware(ItemStack stack, Set<Upgrade> supportedUpgrades) {
+    private UpgradeAware(Set<Upgrade> supportedUpgrades) {
         this.supportedUpgrades = supportedUpgrades;
         this.upgradeSlots = List.of(UpgradeInventorySlot.input(null, this.supportedUpgrades), UpgradeInventorySlot.output(null));
     }
