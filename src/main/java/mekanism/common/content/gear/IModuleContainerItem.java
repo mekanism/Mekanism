@@ -41,9 +41,8 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        return moduleContainer(stack)
-              .map(container -> container.getIfEnabled(typeProvider))
-              .orElse(null);
+        IModuleContainer container = moduleContainer(stack).orElse(null);
+        return container == null ? null : container.getIfEnabled(typeProvider);
     }
 
     default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
@@ -59,26 +58,22 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     }
 
     default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
-        Optional<? extends IModuleContainer> container = moduleContainer(stack);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (container.isPresent()) {
-            return container.get().has(type);
-        }
-        return false;
+        IModuleContainer container = moduleContainer(stack).orElse(null);
+        return container != null && container.has(type);
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
-        Optional<? extends IModuleContainer> container = moduleContainer(stack);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (container.isPresent()) {
-            return container.get().hasEnabled(type);
-        }
-        return false;
+        IModuleContainer container = moduleContainer(stack).orElse(null);
+        return container != null && container.hasEnabled(type);
     }
 
     @Override
     default void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        moduleContainer(stack).ifPresent(container -> list.addAll(container.getHUDStrings(player)));
+        Optional<? extends IModuleContainer> moduleContainer = moduleContainer(stack);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (moduleContainer.isPresent()) {
+            list.addAll(moduleContainer.get().getHUDStrings(player));
+        }
     }
 
     @Override
@@ -99,11 +94,12 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     @Nullable
     @Override
     default Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return getModules(stack).stream()
-              .filter(IModule::handlesModeChange)
-              .findFirst()
-              .map(module -> getModeScrollComponent(module, stack))
-              .orElse(null);
+        for (IModule<?> module : getModules(stack)) {
+            if (module.handlesModeChange()) {
+                return getModeScrollComponent(module, stack);
+            }
+        }
+        return null;
     }
 
     private static <MODULE extends ICustomModule<MODULE>> void changeMode(IModule<MODULE> module, Player player, ItemStack stack, int shift, DisplayChange displayChange) {

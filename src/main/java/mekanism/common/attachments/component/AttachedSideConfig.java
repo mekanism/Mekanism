@@ -3,6 +3,7 @@ package mekanism.common.attachments.component;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -38,10 +39,12 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
 
     @Nullable
     public static IPersistentConfigInfo getStoredConfigInfo(ItemStack stack, TransmissionType transmissionType) {
-        return stack.getExistingData(MekanismAttachmentTypes.SIDE_CONFIG)
-              .map(config -> config.configInfo.get(transmissionType))
-              .filter(config -> !config.sideConfig.isEmpty())
-              .orElse(null);
+        Optional<AttachedSideConfig> existingData = stack.getExistingData(MekanismAttachmentTypes.SIDE_CONFIG);
+        if (existingData.isEmpty()) {
+            return null;
+        }
+        LightConfigInfo config = existingData.get().configInfo.get(transmissionType);
+        return config.sideConfig.isEmpty() ? null : config;
     }
 
     private final Map<TransmissionType, LightConfigInfo> configInfo;

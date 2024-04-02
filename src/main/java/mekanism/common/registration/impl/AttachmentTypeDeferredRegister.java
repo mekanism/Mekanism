@@ -280,16 +280,27 @@ public class AttachmentTypeDeferredRegister extends MekanismDeferredRegister<Att
     @SuppressWarnings("OptionalAssignedToNull")
     public static <TYPE> IAttachmentCopyHandler<Optional<TYPE>> optionalCopier(IAttachmentCopyHandler<TYPE> innerCopier) {
         return (attachmentHolder, optional) -> {
-            Optional<TYPE> result = optional.map(value -> innerCopier.copy(attachmentHolder, value));
-            if (result.isPresent()) {
-                return result;
+            if (optional.isPresent()) {
+                TYPE copy = innerCopier.copy(attachmentHolder, optional.get());
+                if (copy != null) {
+                    return Optional.of(copy);
+                }
             }
             return null;
         };
     }
 
     public static <TYPE> IAttachmentComparator<Optional<TYPE>> optionalComparator(IAttachmentComparator<TYPE> innerComparator) {
-        return (a, b) -> a.map(aVal -> b.filter(bVal -> innerComparator.areCompatible(aVal, bVal)).isPresent()).orElseGet(b::isEmpty);
+        return (a, b) -> {
+            if (a.isPresent()) {
+                //noinspection OptionalIsPresent - Capturing lambda
+                if (b.isPresent()) {
+                    return innerComparator.areCompatible(a.get(), b.get());
+                }
+                return false;
+            }
+            return b.isEmpty();
+        };
     }
 
     private static final IAttachmentSerializer<ByteTag, Boolean> TRUE_SERIALIZER = new IAttachmentSerializer<>() {

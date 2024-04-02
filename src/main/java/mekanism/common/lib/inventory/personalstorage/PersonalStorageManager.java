@@ -53,7 +53,12 @@ public class PersonalStorageManager {
             return Optional.empty();
         }
         UUID invId = getInventoryId(stack);
-        return forOwner(owner).map(data -> data.getOrAddInventory(invId));
+        Optional<PersonalStorageData> data = forOwner(owner);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (data.isPresent()) {
+            return Optional.of(data.get().getOrAddInventory(invId));
+        }
+        return Optional.empty();
     }
 
     public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {

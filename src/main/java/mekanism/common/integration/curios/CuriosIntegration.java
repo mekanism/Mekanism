@@ -21,6 +21,7 @@ import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 public class CuriosIntegration {
 
@@ -62,9 +63,11 @@ public class CuriosIntegration {
         if (capability == null) {
             return ItemStack.EMPTY;
         }
-        return capability
-              .getStacksHandler(slotType)
-              .map(handler -> handler.getStacks().getStackInSlot(slot))
-              .orElse(ItemStack.EMPTY);
+        Optional<ICurioStacksHandler> stacksHandler = capability.getStacksHandler(slotType);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (stacksHandler.isPresent()) {
+            return stacksHandler.get().getStacks().getStackInSlot(slot);
+        }
+        return ItemStack.EMPTY;
     }
 }

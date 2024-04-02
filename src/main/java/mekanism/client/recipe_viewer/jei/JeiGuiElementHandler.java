@@ -34,14 +34,15 @@ public class JeiGuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>
 
     @Override
     public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
-        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) ->
-              ingredientManager.createTypedIngredient(ingredient).map(typedIngredient -> {
-                  record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
-                  }
-                  Rect2i bounds = helper.getIngredientBounds(mouseX, mouseY);
-                  return new ClickableIngredient<>(typedIngredient, bounds);
-              }).orElse(null)
-        );
+        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) -> {
+            Optional<ITypedIngredient<Object>> typedIngredient = ingredientManager.createTypedIngredient(ingredient);
+            if (typedIngredient.isPresent()) {
+                record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
+                }
+                return new ClickableIngredient<>(typedIngredient.get(), helper.getIngredientBounds(mouseX, mouseY));
+            }
+            return null;
+        });
     }
 
     @Override

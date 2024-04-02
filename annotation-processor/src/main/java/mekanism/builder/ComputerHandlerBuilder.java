@@ -237,7 +237,7 @@ public class ComputerHandlerBuilder {
             //generate the doc string, if we have all the data
             String methodDescription = null;
             if (docPlaceholder != null) {
-                methodDescription = wrapperMethod.getAnnotationMirrors()
+                String unformattedDescription = wrapperMethod.getAnnotationMirrors()
                       .stream()
                       //find the doc annotation on the target method
                       .filter(it -> typeUtils.isSameType(it.getAnnotationType(), wrappingComputerMethodDocAnnotationType))
@@ -252,10 +252,12 @@ public class ComputerHandlerBuilder {
                       )
                       //get the value as a string
                       .map(v -> (String) v.getValue())
-                      //format it
-                      .map(template -> String.format(template, docPlaceholder))
                       //something in the chain failed, default to null
                       .orElse(null);
+                if (unformattedDescription != null) {
+                    //format it
+                    methodDescription = String.format(unformattedDescription, docPlaceholder);
+                }
             }
 
             //add a call to register() in the handler class's constructor

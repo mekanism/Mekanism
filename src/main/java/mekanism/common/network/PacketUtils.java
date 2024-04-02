@@ -125,7 +125,7 @@ public class PacketUtils {
     }
 
     public static Optional<BlockEntity> blockEntity(IPayloadContext context, BlockPos pos) {
-        return context.level().map(level -> WorldUtils.getTileEntity(level, pos));
+        return Optional.ofNullable(WorldUtils.getTileEntity(context.level().orElse(null), pos));
     }
 
     public static <CLASS extends AbstractContainerMenu> Optional<CLASS> container(IPayloadContext context, Class<CLASS> clazz) {

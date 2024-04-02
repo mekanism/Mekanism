@@ -2,6 +2,7 @@ package mekanism.client.recipe_viewer.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
+import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Registry;
@@ -27,10 +28,11 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>
 
     @Override
     public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
-        return registry.getOptional(id)
-              .filter(chemical -> !chemical.isEmptyType())
-              .<EmiStack>map(chemical -> stackCreator.create(chemical, amount))
-              .orElse(EmiStack.EMPTY);
+        Optional<CHEMICAL> chemical = registry.getOptional(id).filter(c -> !c.isEmptyType());
+        if (chemical.isPresent()) {
+            return stackCreator.create(chemical.get(), amount);
+        }
+        return EmiStack.EMPTY;
     }
 
     @Override

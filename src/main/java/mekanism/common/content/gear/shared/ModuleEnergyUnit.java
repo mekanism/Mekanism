@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.shared;
 
+import java.util.Optional;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -21,10 +22,13 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
     }
 
     private static FloatingLong getEnergyValue(ItemStack stack, FloatingLong base) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(container -> container.get(MekanismModules.ENERGY_UNIT))
-              .map(module -> base.multiply(Math.pow(2, module.getInstalledCount())))
-              .orElse(base);
+        Optional<IModule<ModuleEnergyUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(stack)
+              .map(container -> container.get(MekanismModules.ENERGY_UNIT));
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (module.isEmpty()) {
+            return base;
+        }
+        return base.multiply(Math.pow(2, module.get().getInstalledCount()));
     }
 
     @Override

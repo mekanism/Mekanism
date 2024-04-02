@@ -100,12 +100,8 @@ public interface IModuleHelper {
      * @return {@code true} if the item has the module installed and enabled.
      */
     default boolean isEnabled(ItemStack stack, IModuleDataProvider<?> typeProvider) {
-        Optional<? extends IModuleContainer> moduleContainer = getModuleContainer(stack);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (moduleContainer.isPresent()) {
-            return moduleContainer.get().hasEnabled(typeProvider);
-        }
-        return false;
+        IModuleContainer container = getModuleContainer(stack).orElse(null);
+        return container != null && container.hasEnabled(typeProvider);
     }
 
     /**
@@ -118,9 +114,8 @@ public interface IModuleHelper {
      */
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        return getModuleContainer(stack)
-              .map(container -> container.get(typeProvider))
-              .orElse(null);
+        IModuleContainer container = getModuleContainer(stack).orElse(null);
+        return container == null ? null : container.get(typeProvider);
     }
 
     /**

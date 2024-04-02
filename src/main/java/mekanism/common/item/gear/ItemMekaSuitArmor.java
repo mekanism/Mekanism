@@ -65,11 +65,13 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -232,9 +234,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         //Enchantments in our data
-        int moduleLevel = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(container -> container.getModuleEnchantmentLevel(enchantment))
-              .orElse(0);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack).orElse(null);
+        int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 
@@ -520,15 +521,23 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the data map
-                    absorbRatio = source.typeHolder().unwrapKey()
-                          // Reference holders can query data map values
-                          .map(type -> source.typeHolder())
-                          // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
-                          // but just in case have the fallback to look up the name from the registry
-                          .or(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE).map(registry -> registry.wrapAsHolder(source.type())))
-                          .map(holder -> holder.getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION))
-                          .map(MekaSuitAbsorption::absorption)
-                          .orElseGet(MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio::get);
+                    MekaSuitAbsorption absorptionData = null;
+                    if (source.typeHolder().unwrapKey().isPresent()) {
+                        // Reference holders can query data map values
+                        absorptionData = source.typeHolder().getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
+                    } else {
+                        // Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
+                        // but just in case have the fallback to look up the name from the registry
+                        Optional<Registry<DamageType>> registry = player.level().registryAccess().registry(Registries.DAMAGE_TYPE);
+                        if (registry.isPresent()) {
+                            absorptionData = registry.get().wrapAsHolder(source.type()).getData(MekanismDataMapTypes.MEKA_SUIT_ABSORPTION);
+                        }
+                    }
+                    if (absorptionData != null) {
+                        absorbRatio = absorptionData.absorption();
+                    } else {
+                        absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.get();
+                    }
                     if (absorbRatio == 0) {
                         //If the config or the data map specifies that the damage type shouldn't be blocked at all
                         // stop checking if the armor is able to

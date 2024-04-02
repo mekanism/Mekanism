@@ -68,15 +68,19 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
                 throw new IllegalArgumentException("Mismatched fluid input and gas output. Only one is present.");
             }
             if (gasInput.isPresent()) {
-                return fluidInput.map(fluidIngredient -> manager.makeRecipe(
-                      fluidIngredient,
+                //noinspection OptionalIsPresent - Capturing lambdas
+                if (fluidInput.isPresent()) {
+                    return Optional.of(manager.makeRecipe(
+                          fluidInput.get(),
+                          gasInput.get(),
+                          gasOutput.get(),
+                          fluidOutput.get()
+                    ));
+                }
+                return Optional.of(manager.makeRecipe(
                       gasInput.get(),
-                      gasOutput.get(),
                       fluidOutput.get()
-                )).or(() -> Optional.of(manager.makeRecipe(
-                      gasInput.get(),
-                      fluidOutput.get()
-                )));
+                ));
             } else if (fluidInput.isPresent()) {
                 return Optional.of(manager.makeRecipe(
                       fluidInput.get(),

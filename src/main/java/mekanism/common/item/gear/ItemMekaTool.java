@@ -164,9 +164,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         //Enchantments in our data
-        int moduleLevel = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(container -> container.getModuleEnchantmentLevel(enchantment))
-              .orElse(0);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack).orElse(null);
+        int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 

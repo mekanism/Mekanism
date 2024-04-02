@@ -3,9 +3,10 @@ package mekanism.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.gear.IHUDElement;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiUtils;
@@ -122,18 +123,18 @@ public class HUDRenderer {
         pose.pushPose();
         //Render any elements that might be on modules in the meka suit while worn or on the meka tool while held
         for (EquipmentSlot type : EQUIPMENT_ORDER) {
-            List<IHUDElement> hudElements = IModuleHelper.INSTANCE.getModuleContainer(player, type)
-                  .map(container -> container.getHUDElements(player))
-                  .orElse(List.of());
-            for (IHUDElement element : hudElements) {
-                curY -= 18;
-                if (reverseHud) {
-                    //Align the mekasuit module icons to the left of the screen
-                    renderHUDElement(font, guiGraphics, 10, curY, element, color, false);
-                } else {
-                    //Align the mekasuit module icons to the right of the screen
-                    int elementWidth = 24 + font.width(element.getText());
-                    renderHUDElement(font, guiGraphics, startX - elementWidth, curY, element, color, true);
+            Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(player, type);
+            if (moduleContainer.isPresent()) {
+                for (IHUDElement element : moduleContainer.get().getHUDElements(player)) {
+                    curY -= 18;
+                    if (reverseHud) {
+                        //Align the mekasuit module icons to the left of the screen
+                        renderHUDElement(font, guiGraphics, 10, curY, element, color, false);
+                    } else {
+                        //Align the mekasuit module icons to the right of the screen
+                        int elementWidth = 24 + font.width(element.getText());
+                        renderHUDElement(font, guiGraphics, startX - elementWidth, curY, element, color, true);
+                    }
                 }
             }
         }

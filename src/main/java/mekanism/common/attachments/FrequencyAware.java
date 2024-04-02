@@ -58,19 +58,18 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
 
     @Deprecated//TODO - 1.21?: Remove this way of loading legacy data
     protected void loadLegacyData(ItemStack stack) {
-        ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound)
-              //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
-              .or(() -> {
-                  CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
-                  if (mekData != null && mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-                      CompoundTag frequencyComponent = mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-                      if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
-                          return Optional.of(frequencyComponent.getCompound(frequencyType.getName()));
-                      }
-                  }
-                  return Optional.empty();
-              })
-              .ifPresent(this::deserializeNBT);
+        Optional<CompoundTag> optional = ItemDataUtils.getAndRemoveData(stack, NBTConstants.FREQUENCY, CompoundTag::getCompound);
+        if (optional.isEmpty()) {
+            //Note: We don't remove legacy data for the "or" case as it is still necessary/used, and we are just reading the identity
+            CompoundTag mekData = stack.getTagElement(NBTConstants.MEK_DATA);
+            if (mekData != null && mekData.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+                CompoundTag frequencyComponent = mekData.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+                if (frequencyComponent.contains(frequencyType.getName(), Tag.TAG_COMPOUND)) {
+                    optional = Optional.of(frequencyComponent.getCompound(frequencyType.getName()));
+                }
+            }
+        }
+        optional.ifPresent(this::deserializeNBT);
     }
 
     @Nullable

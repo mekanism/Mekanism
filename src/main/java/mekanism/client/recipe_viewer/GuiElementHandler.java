@@ -94,7 +94,12 @@ public class GuiElementHandler {
             //Note: We do not need to check if there is a window over the child as if we are currently hovering any window
             // we only check the children that are part of that window
             if (child instanceof IRecipeViewerIngredientHelper helper && child.isMouseOver(mouseX, mouseY)) {
-                return helper.getIngredient(mouseX, mouseY).map(ingredient -> ingredientWrapper.apply(helper, ingredient));
+                Optional<?> ingredient = helper.getIngredient(mouseX, mouseY);
+                //noinspection OptionalIsPresent - Capturing lambda
+                if (ingredient.isPresent()) {
+                    return Optional.ofNullable(ingredientWrapper.apply(helper, ingredient.get()));
+                }
+                return Optional.empty();
             }
         }
         return Optional.empty();

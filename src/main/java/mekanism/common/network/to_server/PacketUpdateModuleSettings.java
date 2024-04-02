@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
@@ -10,13 +11,18 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.gear.config.ModuleIntegerData;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //TODO: Eventually it would be nice to make this more generic in terms of how it can sync module data so that we can support custom types
 // though given the module tweaker screen doesn't currently have a way to support custom types it isn't that big a deal to make this support it yet either
@@ -60,22 +66,29 @@ public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadCo
     @Override
     public void handle(PlayPayloadContext context) {
         if (!data.isBlank() && value != null) {
-            context.player()
-                  .map(player -> player.getInventory().getItem(slotId))
-                  .flatMap(stack -> ModuleHelper.get().getModuleContainer(stack))
-                  .map(container -> container.get(moduleType))
-                  .map(module -> module.getConfigItem(data))
-                  .ifPresent(this::setValue);
+            Player player = context.player().orElse(null);
+            if (player != null) {
+                ItemStack stack = player.getInventory().getItem(slotId);
+                Optional<ModuleContainer> moduleContainer = ModuleHelper.get().getModuleContainer(stack);
+                if (moduleContainer.isPresent()) {
+                    Module<?> module = moduleContainer.get().get(moduleType);
+                    if (module != null) {
+                        setValue(module.getConfigItem(data));
+                    }
+                }
+            }
         }
     }
 
-    private <TYPE> void setValue(ModuleConfigItem<TYPE> moduleConfigItem) {
-        ModuleConfigData<TYPE> configData = moduleConfigItem.getData();
-        if (configData instanceof ModuleEnumData && dataType == ModuleDataType.ENUM) {
-            moduleConfigItem.set((TYPE) MathUtils.getByIndexMod(((ModuleEnumData<?>) configData).getEnums(), (int) value));
-        } else if (dataType.typeMatches(configData)) {
-            //noinspection unchecked
-            moduleConfigItem.set((TYPE) value);
+    private <TYPE> void setValue(@Nullable ModuleConfigItem<TYPE> moduleConfigItem) {
+        if (moduleConfigItem != null) {
+            ModuleConfigData<TYPE> configData = moduleConfigItem.getData();
+            if (configData instanceof ModuleEnumData && dataType == ModuleDataType.ENUM) {
+                moduleConfigItem.set((TYPE) MathUtils.getByIndexMod(((ModuleEnumData<?>) configData).getEnums(), (int) value));
+            } else if (dataType.typeMatches(configData)) {
+                //noinspection unchecked
+                moduleConfigItem.set((TYPE) value);
+            }
         }
     }
 

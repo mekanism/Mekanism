@@ -44,8 +44,12 @@ public class RadiationSource implements IRadiationSource {
     }
 
     public static Optional<RadiationSource> load(CompoundTag tag) {
-        return GlobalPos.CODEC.parse(NbtOps.INSTANCE, tag).result()
-              .map(pos -> new RadiationSource(pos, tag.getDouble(NBTConstants.RADIATION)));
+        Optional<GlobalPos> result = GlobalPos.CODEC.parse(NbtOps.INSTANCE, tag).result();
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (result.isPresent()) {
+            return Optional.of(new RadiationSource(result.get(), tag.getDouble(NBTConstants.RADIATION)));
+        }
+        return Optional.empty();
     }
 
     public CompoundTag write() {
