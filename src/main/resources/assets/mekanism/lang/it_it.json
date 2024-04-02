@@ -1255,6 +1255,8 @@
   "laser_amplifier.mekanism.entity_detection": "Rilevamento entità",
   "laser_amplifier.mekanism.redstone_output": "Uscita pietrarossa: %1$s",
   "logistical_sorter.mekanism.auto_eject.description": "Espelle automaticamente gli elementi non filtrati agli inventari connessi, usando la configurazione predefinita.",
+  "logistical_sorter.mekanism.default": "Colore predefinito:",
+  "logistical_sorter.mekanism.round_robin": "Trasferimento circolare:",
   "logistical_sorter.mekanism.round_robin.description": "Cicla tra tutti gli inventari connessi durante l'invio di elementi.",
   "logistical_sorter.mekanism.single_item.description": "Invia un singolo elemento invece di un'intera pila ogni volta (sovrascrive il valore minimo e massimo impostato nei filtri di ItemStack).",
   "matrix.mekanism.cells": "%1$s celle",
