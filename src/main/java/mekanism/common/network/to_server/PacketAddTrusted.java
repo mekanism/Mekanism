@@ -29,7 +29,10 @@ public record PacketAddTrusted(BlockPos pos, String name) implements IMekanismPa
     @Override
     public void handle(PlayPayloadContext context) {
         if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME)) {
-            PacketUtils.blockEntity(context, pos, TileEntitySecurityDesk.class).ifPresent(tile -> tile.addTrusted(name));
+            TileEntitySecurityDesk tile = PacketUtils.blockEntity(context, pos, TileEntitySecurityDesk.class);
+            if (tile != null) {
+                tile.addTrusted(name);
+            }
         }
     }
 

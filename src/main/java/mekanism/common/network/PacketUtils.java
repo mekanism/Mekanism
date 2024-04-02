@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
 public class PacketUtils {
 
@@ -105,27 +106,36 @@ public class PacketUtils {
               .map(ServerPlayer.class::cast);
     }
 
-    public static Optional<TileComponentEjector> ejector(IPayloadContext context, BlockPos pos) {
-        return blockEntity(context, pos, ISideConfiguration.class).map(ISideConfiguration::getEjector);
+    @Nullable
+    public static TileComponentEjector ejector(IPayloadContext context, BlockPos pos) {
+        ISideConfiguration sideConfig = blockEntity(context, pos, ISideConfiguration.class);
+        return sideConfig == null ? null : sideConfig.getEjector();
     }
 
-    public static Optional<TileComponentConfig> config(IPayloadContext context, BlockPos pos) {
-        return blockEntity(context, pos, ISideConfiguration.class).map(ISideConfiguration::getConfig);
+    @Nullable
+    public static TileComponentConfig config(IPayloadContext context, BlockPos pos) {
+        ISideConfiguration sideConfig = blockEntity(context, pos, ISideConfiguration.class);
+        return sideConfig == null ? null : sideConfig.getConfig();
     }
 
-    @SuppressWarnings("unchecked")
-    public static Optional<FilterManager<?>> filterManager(IPayloadContext context, BlockPos pos) {
-        return blockEntity(context, pos, ITileFilterHolder.class).map(ITileFilterHolder::getFilterManager);
+    @Nullable
+    public static FilterManager<?> filterManager(IPayloadContext context, BlockPos pos) {
+        ITileFilterHolder<?> filterHolder = blockEntity(context, pos, ITileFilterHolder.class);
+        return filterHolder == null ? null : filterHolder.getFilterManager();
     }
 
-    public static <CLASS> Optional<CLASS> blockEntity(IPayloadContext context, BlockPos pos, Class<CLASS> clazz) {
-        return blockEntity(context, pos)
-              .filter(clazz::isInstance)
-              .map(clazz::cast);
+    @Nullable
+    public static <CLASS> CLASS blockEntity(IPayloadContext context, BlockPos pos, Class<CLASS> clazz) {
+        BlockEntity be = blockEntity(context, pos);
+        if (clazz.isInstance(be)) {
+            return clazz.cast(be);
+        }
+        return null;
     }
 
-    public static Optional<BlockEntity> blockEntity(IPayloadContext context, BlockPos pos) {
-        return Optional.ofNullable(WorldUtils.getTileEntity(context.level().orElse(null), pos));
+    @Nullable
+    public static BlockEntity blockEntity(IPayloadContext context, BlockPos pos) {
+        return WorldUtils.getTileEntity(context.level().orElse(null), pos);
     }
 
     public static <CLASS extends AbstractContainerMenu> Optional<CLASS> container(IPayloadContext context, Class<CLASS> clazz) {

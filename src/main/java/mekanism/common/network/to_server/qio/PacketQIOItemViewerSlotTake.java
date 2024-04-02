@@ -31,7 +31,8 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.container(context, QIOItemViewerContainer.class).ifPresent(container -> {
+        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class).orElse(null);
+        if (container != null) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
                 HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
@@ -59,7 +60,7 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
                     }
                 }
             }
-        });
+        }
     }
 
     @Override

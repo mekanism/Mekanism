@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,11 @@ public record PacketSetDeltaMovement(Vec3 deltaMovement) implements IMekanismPac
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> player.lerpMotion(deltaMovement.x, deltaMovement.y, deltaMovement.z));
+        //noinspection SimplifyOptionalCallChains - Capturing lambda
+        Player player = context.player().orElse(null);
+        if (player != null) {
+            player.lerpMotion(deltaMovement.x, deltaMovement.y, deltaMovement.z);
+        }
     }
 
     @Override

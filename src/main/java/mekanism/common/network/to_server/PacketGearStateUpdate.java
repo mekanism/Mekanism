@@ -7,6 +7,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +47,11 @@ public class PacketGearStateUpdate implements IMekanismPacket<PlayPayloadContext
         //Inform all clients tracking the changed player
         //Note: We just resend all the data for the updated player as the packet size is about the same
         // and this allows us to separate the packet into a server to client and client to server packet
-        context.player().ifPresent(player -> PacketUtils.sendToAllTracking(new PacketPlayerData(uuid), player));
+        //noinspection SimplifyOptionalCallChains - Capturing lambda
+        Player player = context.player().orElse(null);
+        if (player != null) {
+            PacketUtils.sendToAllTracking(new PacketPlayerData(uuid), player);
+        }
     }
 
     @Override

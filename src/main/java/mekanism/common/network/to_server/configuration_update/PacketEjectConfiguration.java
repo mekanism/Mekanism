@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,13 +28,14 @@ public record PacketEjectConfiguration(BlockPos pos, TransmissionType transmissi
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.config(context, pos).ifPresent(configComponent -> {
+        TileComponentConfig configComponent = PacketUtils.config(context, pos);
+        if (configComponent != null) {
             ConfigInfo info = configComponent.getConfig(transmission);
             if (info != null) {
                 info.setEjecting(!info.isEjecting());
                 configComponent.tile.markForSave();
             }
-        });
+        }
     }
 
     @Override

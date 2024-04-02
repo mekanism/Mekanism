@@ -25,7 +25,9 @@ public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPa
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.level().ifPresent(level -> Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result));
+        if (context.level().isPresent()) {
+            Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
+        }
     }
 
     @Override

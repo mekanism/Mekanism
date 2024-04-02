@@ -29,7 +29,11 @@ public record PacketPlayerRadiationData(double radiation) implements IMekanismPa
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player().ifPresent(player -> player.setData(MekanismAttachmentTypes.RADIATION, radiation));
+        //noinspection SimplifyOptionalCallChains - Capturing lambda
+        Player player = context.player().orElse(null);
+        if (player != null) {
+            player.setData(MekanismAttachmentTypes.RADIATION, radiation);
+        }
     }
 
     @Override

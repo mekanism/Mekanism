@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.frequency;
 
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
@@ -30,13 +31,12 @@ public class PacketSetFrequencyColor<FREQ extends Frequency & IColorableFrequenc
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player()
-              .map(Entity::getUUID)
-              .ifPresent(player -> {
-                  FREQ freq = type.getFrequency(data, player);
-                  if (freq != null && freq.ownerMatches(player)) {//Only allow changing the color if the owner of the frequency
-                      freq.setColor(set ? freq.getColor().getNext() : freq.getColor().getPrevious());
-                  }
-              });
+        UUID player = context.player().map(Entity::getUUID).orElse(null);
+        if (player != null) {
+            FREQ freq = type.getFrequency(data, player);
+            if (freq != null && freq.ownerMatches(player)) {//Only allow changing the color if the owner of the frequency
+                freq.setColor(set ? freq.getColor().getNext() : freq.getColor().getPrevious());
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.common.Mekanism;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -38,17 +39,17 @@ public record PacketTransporterBatch(BlockPos pos, IntSet deletes, byte[] rawUpd
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.blockEntity(context, pos, TileEntityLogisticalTransporterBase.class)
-              .map(TileEntityLogisticalTransporterBase::getTransmitter)
-              .ifPresent(transporter -> {
-                  Int2ObjectMap<TransporterStack> updates = PacketUtils.read(rawUpdates, buffer -> buffer.readMap(Int2ObjectOpenHashMap::new, FriendlyByteBuf::readVarInt, TransporterStack::readFromPacket));
-                  for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
-                      transporter.addStack(entry.getIntKey(), entry.getValue());
-                  }
-                  for (int toDelete : deletes) {
-                      transporter.deleteStack(toDelete);
-                  }
-              });
+        TileEntityLogisticalTransporterBase tile = PacketUtils.blockEntity(context, pos, TileEntityLogisticalTransporterBase.class);
+        if (tile != null) {
+            LogisticalTransporterBase transporter = tile.getTransmitter();
+            Int2ObjectMap<TransporterStack> updates = PacketUtils.read(rawUpdates, buffer -> buffer.readMap(Int2ObjectOpenHashMap::new, FriendlyByteBuf::readVarInt, TransporterStack::readFromPacket));
+            for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
+                transporter.addStack(entry.getIntKey(), entry.getValue());
+            }
+            for (int toDelete : deletes) {
+                transporter.deleteStack(toDelete);
+            }
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,15 +25,16 @@ public record PacketKey(int key, boolean add) implements IMekanismPacket<PlayPay
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player()
+        UUID player = context.player()
               .map(Entity::getUUID)
-              .ifPresent(player -> {
-                  if (add) {
-                      Mekanism.keyMap.add(player, key);
-                  } else {
-                      Mekanism.keyMap.remove(player, key);
-                  }
-              });
+              .orElse(null);
+        if (player != null) {
+            if (add) {
+                Mekanism.keyMap.add(player, key);
+            } else {
+                Mekanism.keyMap.remove(player, key);
+            }
+        }
     }
 
     @Override

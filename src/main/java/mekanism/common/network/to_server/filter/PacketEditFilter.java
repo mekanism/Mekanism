@@ -2,6 +2,7 @@ package mekanism.common.network.to_server.filter;
 
 import mekanism.common.Mekanism;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -28,7 +29,10 @@ public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FIL
     @Override
     public void handle(PlayPayloadContext context) {
         if (filter != null) {
-            PacketUtils.filterManager(context, pos).ifPresent(filterManager -> filterManager.tryEditFilter(filter, edited));
+            FilterManager<?> filterManager = PacketUtils.filterManager(context, pos);
+            if (filterManager != null) {
+                filterManager.tryEditFilter(filter, edited);
+            }
         }
     }
 

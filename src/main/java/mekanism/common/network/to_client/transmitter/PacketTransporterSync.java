@@ -1,6 +1,7 @@
 package mekanism.common.network.to_client.transmitter;
 
 import mekanism.common.Mekanism;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
@@ -33,12 +34,12 @@ public record PacketTransporterSync(BlockPos pos, int stackId, byte[] rawStack) 
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.blockEntity(context, pos, TileEntityLogisticalTransporterBase.class)
-              .map(TileEntityLogisticalTransporterBase::getTransmitter)
-              .ifPresent(transporter -> {
-                  TransporterStack stack = PacketUtils.read(rawStack, TransporterStack::readFromPacket);
-                  transporter.addStack(stackId, stack);
-              });
+        TileEntityLogisticalTransporterBase tile = PacketUtils.blockEntity(context, pos, TileEntityLogisticalTransporterBase.class);
+        if (tile != null) {
+            LogisticalTransporterBase transporter = tile.getTransmitter();
+            TransporterStack stack = PacketUtils.read(rawStack, TransporterStack::readFromPacket);
+            transporter.addStack(stackId, stack);
+        }
     }
 
     @Override

@@ -38,9 +38,13 @@ public class PacketOpenGui implements IMekanismPacket<PlayPayloadContext> {
 
     @Override
     public void handle(PlayPayloadContext context) {
-        context.player()
+        //noinspection SimplifyOptionalCallChains - Capturing lambda
+        Player player = context.player()
               .filter(type.shouldOpenForPlayer)
-              .ifPresent(player -> player.openMenu(type.containerSupplier.get()));
+              .orElse(null);
+        if (player != null) {
+            player.openMenu(type.containerSupplier.get());
+        }
     }
 
     @Override

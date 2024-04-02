@@ -6,6 +6,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.MekClickType;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.core.BlockPos;
@@ -30,7 +31,8 @@ public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide 
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.config(context, pos).ifPresent(configComponent -> {
+        TileComponentConfig configComponent = PacketUtils.config(context, pos);
+        if (configComponent != null) {
             ConfigInfo info = configComponent.getConfig(transmission);
             if (info != null) {
                 DataType type = info.getDataType(inputSide);
@@ -49,7 +51,7 @@ public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide 
                     configComponent.sideChanged(transmission, inputSide);
                 }
             }
-        });
+        }
     }
 
     @Override

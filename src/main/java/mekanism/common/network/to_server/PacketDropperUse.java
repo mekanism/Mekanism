@@ -25,7 +25,6 @@ import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.ChemicalUtil;
@@ -74,7 +73,8 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
         if (tankId < 0) {
             return;
         }
-        PacketUtils.asServerPlayer(context).ifPresent(player -> {
+        Player optionalPlayer = context.player().orElse(null);
+        if (optionalPlayer instanceof ServerPlayer player) {
             ItemStack stack = player.containerMenu.getCarried();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
@@ -97,7 +97,7 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
                     }
                 }
             }
-        });
+        }
     }
 
     private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,

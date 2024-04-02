@@ -40,7 +40,10 @@ public class PacketGuiSetEnergy implements IMekanismPacket<PlayPayloadContext> {
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.blockEntity(context, pos, TileEntityMekanism.class).ifPresent(tile -> interaction.consume(tile, value));
+        TileEntityMekanism tile = PacketUtils.blockEntity(context, pos, TileEntityMekanism.class);
+        if (tile != null) {
+            interaction.consume(tile, value);
+        }
     }
 
     @Override

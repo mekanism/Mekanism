@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.MekClickType;
 import mekanism.common.network.PacketUtils;
+import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,11 +28,14 @@ public record PacketEjectColor(BlockPos pos, MekClickType clickType) implements 
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.ejector(context, pos).ifPresent(ejector -> ejector.setOutputColor(switch (clickType) {
-            case LEFT -> TransporterUtils.increment(ejector.getOutputColor());
-            case RIGHT -> TransporterUtils.decrement(ejector.getOutputColor());
-            case SHIFT_LEFT -> null;
-        }));
+        TileComponentEjector ejector = PacketUtils.ejector(context, pos);
+        if (ejector != null) {
+            ejector.setOutputColor(switch (clickType) {
+                case LEFT -> TransporterUtils.increment(ejector.getOutputColor());
+                case RIGHT -> TransporterUtils.decrement(ejector.getOutputColor());
+                case SHIFT_LEFT -> null;
+            });
+        }
     }
 
     @Override

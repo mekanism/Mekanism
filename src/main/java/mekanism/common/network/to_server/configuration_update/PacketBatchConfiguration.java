@@ -32,7 +32,8 @@ public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType 
 
     @Override
     public void handle(PlayPayloadContext context) {
-        PacketUtils.config(context, pos).ifPresent(configComponent -> {
+        TileComponentConfig configComponent = PacketUtils.config(context, pos);
+        if (configComponent != null) {
             if (transmission == null) {
                 for (TransmissionType type : configComponent.getTransmissions()) {
                     updateAllSides(configComponent, type, configComponent.getConfig(type));
@@ -43,7 +44,7 @@ public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType 
             if (info != null) {
                 updateAllSides(configComponent, transmission, info);
             }
-        });
+        }
     }
 
     private void updateAllSides(TileComponentConfig configComponent, TransmissionType transmission, @Nullable ConfigInfo info) {
