@@ -1,5 +1,8 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -7,9 +10,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NavigableMap;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
@@ -28,8 +29,8 @@ public class Structure {
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
 
-    private final Map<Axis, NavigableMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
-    private final Map<Axis, NavigableMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, Int2ObjectSortedMap<VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, Int2ObjectSortedMap<VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
 
     private boolean valid;
 
@@ -85,12 +86,12 @@ public class Structure {
         return nodes.get(pos);
     }
 
-    public NavigableMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
-        return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
+    public Int2ObjectSortedMap<VoxelPlane> getMinorAxisMap(Axis axis) {
+        return minorPlaneMap.computeIfAbsent(axis, k -> new Int2ObjectRBTreeMap<>());
     }
 
-    public NavigableMap<Integer, VoxelPlane> getMajorAxisMap(Axis axis) {
-        return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
+    public Int2ObjectSortedMap<VoxelPlane> getMajorAxisMap(Axis axis) {
+        return planeMap.computeIfAbsent(axis, k -> new Int2ObjectRBTreeMap<>());
     }
 
     public void markForUpdate(Level world, boolean invalidate) {
@@ -145,16 +146,18 @@ public class Structure {
             }
             //Iterate through the over the other structure's minor plane map and merge
             // the minor planes into our structure.
-            for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
+            for (Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
                 Axis axis = entry.getKey();
-                Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
-                Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
-                entry.getValue().forEach((key, value) -> {
+                Int2ObjectSortedMap<VoxelPlane> minorMap = getMinorAxisMap(axis);
+                Int2ObjectSortedMap<VoxelPlane> majorMap = getMajorAxisMap(axis);
+                for (Int2ObjectMap.Entry<VoxelPlane> e : entry.getValue().int2ObjectEntrySet()) {
+                    int key = e.getIntKey();
+                    VoxelPlane value = e.getValue();
                     VoxelPlane majorPlane = majorMap.get(key);
                     if (majorPlane != null) {
                         //If the major map already has an entry for the position, merge them
                         majorPlane.merge(value);
-                        return;
+                        continue;
                     }
                     VoxelPlane minorPlane = minorMap.get(key);
                     if (minorPlane == null) {
@@ -171,16 +174,16 @@ public class Structure {
                             minorMap.remove(key);
                         }
                     }
-                });
+                }
             }
             //Iterate through the over the other structure's major plane map and merge
             // the major planes into our structure.
-            for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.planeMap.entrySet()) {
+            for (Entry<Axis, Int2ObjectSortedMap<VoxelPlane>> entry : s.planeMap.entrySet()) {
                 Axis axis = entry.getKey();
-                Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
-                Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
-                for (Entry<Integer, VoxelPlane> e : entry.getValue().entrySet()) {
-                    Integer key = e.getKey();
+                Int2ObjectSortedMap<VoxelPlane> minorMap = getMinorAxisMap(axis);
+                Int2ObjectSortedMap<VoxelPlane> majorMap = getMajorAxisMap(axis);
+                for (Int2ObjectMap.Entry<VoxelPlane> e : entry.getValue().int2ObjectEntrySet()) {
+                    int key = e.getIntKey();
                     VoxelPlane value = e.getValue();
                     VoxelPlane majorPlane = majorMap.get(key);
                     if (majorPlane == null) {
