@@ -644,10 +644,12 @@ public class WorldUtils {
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
-        getBlockState(world, pos).ifPresent(state -> {
+        Optional<BlockState> blockState = getBlockState(world, pos);
+        if (blockState.isPresent() && world != null) {//World can't be null here but double check it
+            BlockState state = blockState.get();
             state.onNeighborChange(world, pos, fromPos);
             state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
-        });
+        }
     }
 
     /**

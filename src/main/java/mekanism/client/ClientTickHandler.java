@@ -306,29 +306,30 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
-            IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
+            IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
                   .map(container -> container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT))
-                  .ifPresent(module -> {
-                      //This near plane is the same as spectators have set for lava and powdered snow
-                      event.setNearPlaneDistance(-8.0F);
-                      if (event.getFarPlaneDistance() < 20) {
-                          float scalar;
-                          if (event.getType() == FogType.LAVA) {
-                              //Special handling for lava which is usually either at 1 or 3
-                              scalar = 24 * event.getFarPlaneDistance();
-                          } else {
-                              //Shortly before 27 this ends up being 192, but we want to get it beforehand, so we just allow numbers below 20
-                              scalar = 5 + 2.5F * (float) Math.pow(Math.E, 0.16F * event.getFarPlaneDistance());
-                          }
-                          //192 is roughly equivalent to what spectators have lava, powdered snow, and a couple other bounds for fog are,
-                          // so we want to make sure we don't go above that
-                          event.setFarPlaneDistance(Math.min(192, scalar));
-                      }
-                      //Scale the distance based on the number of installed modules
-                      event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
-                      //Cancel the event to ensure our changes are applied
-                      event.setCanceled(true);
-                  });
+                  .orElse(null);
+            if (module != null) {
+                //This near plane is the same as spectators have set for lava and powdered snow
+                event.setNearPlaneDistance(-8.0F);
+                if (event.getFarPlaneDistance() < 20) {
+                    float scalar;
+                    if (event.getType() == FogType.LAVA) {
+                        //Special handling for lava which is usually either at 1 or 3
+                        scalar = 24 * event.getFarPlaneDistance();
+                    } else {
+                        //Shortly before 27 this ends up being 192, but we want to get it beforehand, so we just allow numbers below 20
+                        scalar = 5 + 2.5F * (float) Math.pow(Math.E, 0.16F * event.getFarPlaneDistance());
+                    }
+                    //192 is roughly equivalent to what spectators have lava, powdered snow, and a couple other bounds for fog are,
+                    // so we want to make sure we don't go above that
+                    event.setFarPlaneDistance(Math.min(192, scalar));
+                }
+                //Scale the distance based on the number of installed modules
+                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
+                //Cancel the event to ensure our changes are applied
+                event.setCanceled(true);
+            }
         }
     }
 
