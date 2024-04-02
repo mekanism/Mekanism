@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.math.MathUtils;
@@ -30,7 +28,6 @@ import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
-import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
@@ -388,9 +385,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         // the entries in the itemList that changed instead of creating a new ItemSlotData for each one that is the same,
         // this greatly increases the time complexity of doing so due to having to find the matching entry in the itemList
         // so is not worth doing so
-        for (Entry<UUIDAwareHashedItem, Long> entry : cachedInventory.entrySet()) {
+        for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : cachedInventory.object2LongEntrySet()) {
             UUIDAwareHashedItem key = entry.getKey();
-            Long value = entry.getValue();
+            long value = entry.getLongValue();
             itemList.add(new ItemSlotData(key, key.getUUID(), value));
             totalItems += value;
         }
