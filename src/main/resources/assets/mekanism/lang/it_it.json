@@ -526,7 +526,7 @@
   "configuration.mekanism.strict_input": "Entrata limitata",
   "configuration.mekanism.strict_input.enabled": "Entrata limitata (%1$s)",
   "configuration.mekanism.transporter": "Configurazione Trasportatore",
-  "configuration_card.mekanism.cleared": "Reimpostato Carta di Configurazione",
+  "configuration_card.mekanism.cleared": "Carta di Configurazione reimpostata",
   "configuration_card.mekanism.got": "Caricata configurazione da %1$s",
   "configuration_card.mekanism.has_data": "Dati: %1$s",
   "configuration_card.mekanism.set": "Impostata configurazione con tipo %1$s",
