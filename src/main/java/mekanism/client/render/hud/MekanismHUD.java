@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
@@ -38,11 +39,11 @@ public class MekanismHUD implements IGuiOverlay {
     @Nullable
     private IItemHUDProvider getHudProvider(ItemStack stack) {
         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+            //mekanism does this
             return hudProvider;
         }
-        return IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .<IItemHUDProvider>map(container -> (list, player, s, slotType) -> list.addAll(container.getHUDStrings(player)))
-              .orElse(null);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        return container != null ? (list, player, s, slotType) -> list.addAll(container.getHUDStrings(player)) : null;
     }
 
     @Override

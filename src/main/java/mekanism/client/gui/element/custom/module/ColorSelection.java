@@ -1,9 +1,7 @@
 package mekanism.client.gui.element.custom.module;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleColorData;
 import mekanism.client.gui.GuiModuleTweaker;
 import mekanism.client.gui.GuiUtils;
@@ -11,6 +9,7 @@ import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiColorWindow;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
@@ -84,20 +83,18 @@ class ColorSelection extends MiniElement {
             if (armorPreview != null && data.matches(MekanismModules.COLOR_MODULATION_UNIT, ModuleColorModulationUnit.COLOR_CONFIG_KEY) && currentModule != null) {
                 ItemStack stack = currentModule.getContainer().getPreviewStack();
                 if (stack.getItem() instanceof ArmorItem armorItem) {
-                    Optional<IModuleConfigItem<Integer>> foundConfig = ModuleHelper.get().getModuleContainer(stack)
-                          .map(container -> container.get(MekanismModules.COLOR_MODULATION_UNIT))
-                          .map(module -> module.getConfigItem(ModuleColorModulationUnit.COLOR_CONFIG_KEY))
-                          .filter(configItem -> configItem.getData() instanceof ModuleColorData)
-                          .map(configItem -> (IModuleConfigItem<Integer>) configItem);
-                    if (foundConfig.isPresent()) {
-                        IModuleConfigItem<Integer> configItem = foundConfig.get();
-                        //Ensure the preview has been initialized
-                        armorPreview.get();
-                        EquipmentSlot slot = armorItem.getEquipmentSlot();
-                        //Replace the current preview with our copy
-                        armorPreview.updatePreview(slot, stack);
-                        updatePreviewColor = c -> configItem.set(c.argb());
-                        previewReset = () -> armorPreview.resetToDefault(slot);
+                    Module<ModuleColorModulationUnit> module = ModuleHelper.get().getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                    if (module != null) {
+                        ModuleColorData configItem = module.getConfigItemData(ModuleColorModulationUnit.COLOR_CONFIG_KEY, ModuleColorData.class);
+                        if (configItem != null) {
+                            //Ensure the preview has been initialized
+                            armorPreview.get();
+                            EquipmentSlot slot = armorItem.getEquipmentSlot();
+                            //Replace the current preview with our copy
+                            armorPreview.updatePreview(slot, stack);
+                            updatePreviewColor = c -> configItem.set(c.argb());
+                            previewReset = () -> armorPreview.resetToDefault(slot);
+                        }
                     }
                 }
             }

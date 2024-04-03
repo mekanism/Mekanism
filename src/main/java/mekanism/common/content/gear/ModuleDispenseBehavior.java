@@ -25,9 +25,8 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             return stack;
         }
         boolean preventDrop = result == ModuleDispenseResult.FAIL_PREVENT_DROP;
-        Collection<? extends IModule<?>> modules = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(IModuleContainer::modules)
-              .orElse(List.of());
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        Collection<? extends IModule<?>> modules = container != null ? container.modules() : List.of();
         for (IModule<?> module : modules) {
             if (module.isEnabled()) {
                 result = onModuleDispense(module, source);

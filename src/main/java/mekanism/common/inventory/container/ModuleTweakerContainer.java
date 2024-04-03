@@ -63,7 +63,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
     }
 
     public static boolean isTweakableItem(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack).isPresent();
+        return IModuleHelper.INSTANCE.getModuleContainerNullable(stack) != null;
     }
 
     public static boolean hasTweakableItem(Player player) {

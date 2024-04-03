@@ -307,6 +307,15 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return configItems.get(name);
     }
 
+    @Nullable
+    public <TYPE extends ModuleConfigData<?>> TYPE getConfigItemData(String name, Class<TYPE> dataType) {
+        ModuleConfigItem<?> configItem = getConfigItem(name);
+        if (configItem != null && dataType.isInstance(configItem.getData())) {
+            return dataType.cast(configItem.getData());
+        }
+        return null;
+    }
+
     public Collection<ModuleConfigItem<?>> getConfigItems() {
         return configItemsView;
     }

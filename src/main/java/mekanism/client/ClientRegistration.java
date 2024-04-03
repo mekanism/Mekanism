@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
@@ -148,6 +150,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
@@ -551,11 +554,12 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
             if (index == 1) {
-                return IModuleHelper.INSTANCE.getModuleContainer(stack)
-                      .map(container -> container.get(MekanismModules.COLOR_MODULATION_UNIT))
-                      .map(colorModulation -> colorModulation.getCustomInstance().getColor())
-                      .map(color -> color.toTint().argb())
-                      .orElse(-1);
+                IModule<ModuleColorModulationUnit> colorModulationUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                if (colorModulationUnit == null) {
+                    return -1;
+                } else {
+                    return colorModulationUnit.getCustomInstance().getColor().toTint().argb();//todo store tint argb on the unit?
+                }
             }
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);

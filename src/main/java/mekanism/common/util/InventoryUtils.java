@@ -73,9 +73,9 @@ public final class InventoryUtils {
                 dropItemContents(upgradeAware.getInventorySlots(null), scalar, dropper);
                 dropItemContents(upgradeAware.getUpgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
-            Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
-            if (moduleContainer.isPresent()) {
-                dropItemContents(moduleContainer.get().modules(), scalar, dropper, module -> module.getData().getItemProvider().getItemStack(module.getInstalledCount()));
+            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+            if (moduleContainer != null) {
+                dropItemContents(moduleContainer.modules(), scalar, dropper, module -> module.getData().getItemProvider().getItemStack(module.getInstalledCount()));
             }
         }
     }

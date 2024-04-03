@@ -117,7 +117,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD).orElse(null);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, EquipmentSlot.HEAD);
         if (container != null && !container.isContainerOnCooldown(player)) {
             IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
             return module != null && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
@@ -306,9 +306,8 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
-            IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD)
-                  .map(container -> container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT))
-                  .orElse(null);
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, EquipmentSlot.HEAD);
+            IModule<ModuleVisionEnhancementUnit> module = container != null ? container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT) : null;
             if (module != null) {
                 //This near plane is the same as spectators have set for lava and powdered snow
                 event.setNearPlaneDistance(-8.0F);

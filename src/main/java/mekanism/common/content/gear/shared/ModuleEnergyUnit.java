@@ -22,13 +22,11 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
     }
 
     private static FloatingLong getEnergyValue(ItemStack stack, FloatingLong base) {
-        Optional<IModule<ModuleEnergyUnit>> module = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(container -> container.get(MekanismModules.ENERGY_UNIT));
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (module.isEmpty()) {
+        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
+        if (module == null) {
             return base;
         }
-        return base.multiply(Math.pow(2, module.get().getInstalledCount()));
+        return base.multiply(Math.pow(2, module.getInstalledCount()));
     }
 
     @Override

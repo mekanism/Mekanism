@@ -13,8 +13,11 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
@@ -36,6 +39,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IModuleHelper#INSTANCE}
@@ -153,8 +157,9 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public Optional<ModuleContainer> getModuleContainer(ItemStack stack) {
-        return isModuleContainer(stack) ? Optional.of(stack.getData(MekanismAttachmentTypes.MODULE_CONTAINER)) : Optional.empty();
+    @Nullable
+    public ModuleContainer getModuleContainerNullable(ItemStack stack) {
+        return isModuleContainer(stack) ? stack.getData(MekanismAttachmentTypes.MODULE_CONTAINER) : null;
     }
 
     @Override
@@ -185,5 +190,10 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public synchronized void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
         MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
+    }
+
+    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        ModuleContainer container = getModuleContainerNullable(stack);
+        return container != null ? container.get(typeProvider) : null;
     }
 }

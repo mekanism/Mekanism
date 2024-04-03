@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -40,6 +41,7 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.QuickHash;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.lib.Color;
@@ -112,10 +114,8 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static Color getColor(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(container -> container.get(MekanismModules.COLOR_MODULATION_UNIT))
-              .map(module -> module.getCustomInstance().getColor())
-              .orElse(Color.WHITE);
+        IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
+        return colorUnit != null ? colorUnit.getCustomInstance().getColor() : Color.WHITE;
     }
 
     public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight,
@@ -540,10 +540,8 @@ public class MekaSuitArmor implements ICustomArmor {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            Optional<? extends IModuleContainer> optionalIModuleContainer = IModuleHelper.INSTANCE.getModuleContainer(player, slotType)
-                  .filter(container -> container.isInstance(ItemMekaSuitArmor.class));
-            if (optionalIModuleContainer.isPresent()) {
-                IModuleContainer container = optionalIModuleContainer.get();
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, slotType);
+            if (container != null && container.isInstance(ItemMekaSuitArmor.class)) {
                 wornParts.add(slotType);
                 for (Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                     if (container.hasEnabled(entry.getKey())) {

@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import java.util.Optional;
 import java.util.Set;
 import mekanism.api.JsonConstants;
+import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -27,11 +28,17 @@ public class MaxedModuleContainerItemPredicate implements ICustomItemPredicate {
     @Override
     public boolean test(@NotNull ItemStack stack) {
         if (stack.is(item)) {
-            Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
-            if (moduleContainer.isPresent()) {
-                IModuleContainer container = moduleContainer.get();
-                return container.moduleTypes().containsAll(supportedModules) &&
-                       container.modules().stream().allMatch(module -> module.getInstalledCount() == module.getData().getMaxStackSize());
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+            if (container != null) {
+                if (!container.moduleTypes().containsAll(supportedModules)) {
+                    return false;
+                }
+                for (IModule<?> module : container.modules()) {
+                    if (module.getInstalledCount() != module.getData().getMaxStackSize()) {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
         return false;

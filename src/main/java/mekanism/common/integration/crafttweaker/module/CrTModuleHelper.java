@@ -105,6 +105,6 @@ public class CrTModuleHelper {
     }
 
     private static Optional<? extends IModuleContainer> container(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack);
+        return Optional.ofNullable(IModuleHelper.INSTANCE.getModuleContainerNullable(stack));
     }
 }

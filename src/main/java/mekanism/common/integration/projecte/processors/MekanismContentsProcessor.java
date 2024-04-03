@@ -53,9 +53,9 @@ public class MekanismContentsProcessor implements INBTProcessor {
             currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.getInventorySlots(null));
         }
         //Stored modules
-        Optional<? extends IModuleContainer> moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
-        if (moduleContainer.isPresent()) {
-            for (IModule<?> module : moduleContainer.get().modules()) {
+        IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
                 ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
                 currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
             }

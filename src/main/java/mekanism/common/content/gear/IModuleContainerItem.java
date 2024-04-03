@@ -2,7 +2,6 @@ package mekanism.common.content.gear;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -23,25 +22,23 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
-    default Optional<? extends IModuleContainer> moduleContainer(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack);
+    default IModuleContainer moduleContainer(ItemStack stack) {
+        return IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
     }
 
     default Collection<? extends IModule<?>> getModules(ItemStack stack) {
-        return moduleContainer(stack)
-              .map(IModuleContainer::modules)
-              .orElse(List.of());
+        IModuleContainer container = moduleContainer(stack);
+        return container != null ? container.modules() : List.of();
     }
 
     default boolean hasInstalledModules(ItemStack stack) {
-        return moduleContainer(stack)
-              .filter(container -> container.installedCount() > 0)
-              .isPresent();
+        IModuleContainer container = moduleContainer(stack);
+        return container != null && container.installedCount() > 0;
     }
 
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = moduleContainer(stack).orElse(null);
+        IModuleContainer container = moduleContainer(stack);
         return container == null ? null : container.getIfEnabled(typeProvider);
     }
 
@@ -58,21 +55,20 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     }
 
     default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
-        IModuleContainer container = moduleContainer(stack).orElse(null);
+        IModuleContainer container = moduleContainer(stack);
         return container != null && container.has(type);
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
-        IModuleContainer container = moduleContainer(stack).orElse(null);
+        IModuleContainer container = moduleContainer(stack);
         return container != null && container.hasEnabled(type);
     }
 
     @Override
     default void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        Optional<? extends IModuleContainer> moduleContainer = moduleContainer(stack);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (moduleContainer.isPresent()) {
-            list.addAll(moduleContainer.get().getHUDStrings(player));
+        IModuleContainer moduleContainer = moduleContainer(stack);
+        if (moduleContainer != null) {
+            list.addAll(moduleContainer.getHUDStrings(player));
         }
     }
 
@@ -88,7 +84,15 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
     @Override
     default boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return IModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(IModule::handlesAnyModeChange);
+        if (!IModeItem.super.supportsSlotType(stack, slotType)) {
+            return false;
+        }
+        for (IModule<?> iModule : getModules(stack)) {
+            if (iModule.handlesAnyModeChange()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nullable

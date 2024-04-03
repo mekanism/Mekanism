@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -114,7 +113,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        IModuleContainer container = moduleContainer(stack).orElse(null);
+        IModuleContainer container = moduleContainer(stack);
         if (container != null) {
             if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
                 return hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
@@ -164,18 +163,16 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         //Enchantments in our data
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack).orElse(null);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
         int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 
-    @Override
     public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        Optional<Map<Enchantment, Integer>> optionalEnchantmentMap = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(IModuleContainer::moduleBasedEnchantments);
-        if (optionalEnchantmentMap.isPresent()) {
-            for (Entry<Enchantment, Integer> entry : optionalEnchantmentMap.get().entrySet()) {
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        if (container != null) {
+            for (Entry<Enchantment, Integer> entry : container.moduleBasedEnchantments().entrySet()) {
                 enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
             }
         }

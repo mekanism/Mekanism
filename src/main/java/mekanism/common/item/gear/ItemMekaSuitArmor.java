@@ -3,7 +3,6 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -134,10 +133,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             case CHESTPLATE -> {
                 gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
-                    return moduleContainer(stack)
-                          .map(container -> container.get(MekanismModules.JETPACK_UNIT))
-                          .map(moduleJetpackUnitIModule -> MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * moduleJetpackUnitIModule.getInstalledCount())
-                          .orElse(0L);
+                    IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
+                    return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
                 }, gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
@@ -236,7 +233,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         //Enchantments in our data
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack).orElse(null);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
         int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
@@ -244,10 +241,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
         Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        Optional<Map<Enchantment, Integer>> optionalEnchantmentMap = IModuleHelper.INSTANCE.getModuleContainer(stack)
-              .map(IModuleContainer::moduleBasedEnchantments);
-        if (optionalEnchantmentMap.isPresent()) {
-            for (Entry<Enchantment, Integer> entry : optionalEnchantmentMap.get().entrySet()) {
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        if (container != null) {
+            for (Entry<Enchantment, Integer> entry : container.moduleBasedEnchantments().entrySet()) {
                 enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
             }
         }
@@ -263,11 +259,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (slotId >= Inventory.INVENTORY_SIZE && slotId < Inventory.INVENTORY_SIZE + 4 && entity instanceof Player player) {
-            Collection<Module<?>> modules = ModuleHelper.get().getModuleContainer(stack)
-                  .map(ModuleContainer::modules)
-                  .orElse(Collections.emptyList());
-            for (Module<?> module : modules) {
-                module.tick(player);
+            ModuleContainer container = ModuleHelper.get().getModuleContainerNullable(stack);
+            if (container != null) {
+                for (Module<?> module : container.modules()) {
+                    module.tick(player);
+                }
             }
         }
     }
@@ -334,7 +330,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (getType() == ArmorItem.Type.CHESTPLATE && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
-            IModuleContainer container = moduleContainer(stack).orElse(null);
+            IModuleContainer container = moduleContainer(stack);
             if (container != null) {
                 IModule<ModuleElytraUnit> elytra = container.getIfEnabled(MekanismModules.ELYTRA_UNIT);
                 if (elytra != null && elytra.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
