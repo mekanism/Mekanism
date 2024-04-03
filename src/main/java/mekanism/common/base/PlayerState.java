@@ -1,7 +1,6 @@
 package mekanism.common.base;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.functions.FloatSupplier;
@@ -237,7 +236,7 @@ public class PlayerState {
         }
         if (CommonPlayerTickHandler.isGravitationalModulationReady(player) && player.getAbilities().flying) {
             //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
-            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getModule(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
             if (module != null) {//Should not be null but double check
                 FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
                 Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;

@@ -22,13 +22,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
+    @Nullable
     default IModuleContainer moduleContainer(ItemStack stack) {
         return IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
     }
 
     default Collection<? extends IModule<?>> getModules(ItemStack stack) {
-        IModuleContainer container = moduleContainer(stack);
-        return container != null ? container.modules() : List.of();
+        return IModuleHelper.INSTANCE.loadAll(stack);
     }
 
     default boolean hasInstalledModules(ItemStack stack) {
@@ -38,8 +38,7 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getEnabledModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = moduleContainer(stack);
-        return container == null ? null : container.getIfEnabled(typeProvider);
+        return IModuleHelper.INSTANCE.getIfEnabled(stack, typeProvider);
     }
 
     default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
@@ -60,8 +59,7 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
-        IModuleContainer container = moduleContainer(stack);
-        return container != null && container.hasEnabled(type);
+        return IModuleHelper.INSTANCE.isEnabled(stack, type);
     }
 
     @Override

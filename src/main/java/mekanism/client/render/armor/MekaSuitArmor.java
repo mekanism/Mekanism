@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -114,7 +113,7 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static Color getColor(ItemStack stack) {
-        IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
+        IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
         return colorUnit != null ? colorUnit.getCustomInstance().getColor() : Color.WHITE;
     }
 

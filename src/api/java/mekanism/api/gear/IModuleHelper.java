@@ -114,8 +114,39 @@ public interface IModuleHelper {
      */
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        //TODO - 1.20.5: Rename to getModule or get, and also re-evaluate other names in this class
         IModuleContainer container = getModuleContainerNullable(stack);
         return container == null ? null : container.get(typeProvider);
+    }
+
+    /**
+     * {@return the module if it is installed on the given stack and is currently enabled}
+     *
+     * @param stack        Stack to check for being a module container and then to retrieve the container of.
+     * @param typeProvider Module type.
+     *
+     * @since 10.5.15
+     */
+    @Nullable
+    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        IModuleContainer container = getModuleContainerNullable(stack);
+        return container == null ? null : container.getIfEnabled(typeProvider);
+    }
+
+    /**
+     * {@return the module if it is installed on the item in entity's equipment slot and is currently enabled}
+     *
+     * @param entity       Entity that has the stack.
+     * @param slot         Slot the stack is in.
+     * @param typeProvider Module type.
+     *
+     * @since 10.5.15
+     */
+    @Nullable
+    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot,
+          IModuleDataProvider<MODULE> typeProvider) {
+        IModuleContainer container = getModuleContainerNullable(entity, slot);
+        return container == null ? null : container.getIfEnabled(typeProvider);
     }
 
     /**
@@ -124,16 +155,22 @@ public interface IModuleHelper {
      * @param stack Stack to check for being a module container and then to retrieve the container of.
      *
      * @since 10.5.0
+     * @deprecated Prefer using {@link #getModuleContainerNullable(ItemStack)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.5.15")
     default Optional<? extends IModuleContainer> getModuleContainer(ItemStack stack) {
         return Optional.ofNullable(getModuleContainerNullable(stack));
     }
 
-    @Nullable
+    /**
+     * {@return module container for the stack, or null if the stack is empty or not a module container}
+     *
+     * @param stack Stack to check for being a module container and then to retrieve the container of.
+     *
+     * @since 10.5.15
+     */
+    @Nullable//TODO - 1.20.5: Rename to getModuleContainer
     IModuleContainer getModuleContainerNullable(ItemStack stack);
-
-    @Nullable <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider);
 
     /**
      * {@return module container for the item in entity's equipment slot, or empty if it is empty or not a module container}
@@ -142,13 +179,22 @@ public interface IModuleHelper {
      * @param slot   Slot the stack is in.
      *
      * @since 10.5.0
+     * @deprecated Prefer using {@link #getModuleContainerNullable(LivingEntity, EquipmentSlot)}
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.5.15")
     default Optional<? extends IModuleContainer> getModuleContainer(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
         return Optional.ofNullable(getModuleContainerNullable(entity, slot));
     }
 
-    @Nullable
+    /**
+     * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the stack is empty or not a module container}
+     *
+     * @param entity Entity that has the stack.
+     * @param slot   Slot the stack is in.
+     *
+     * @since 10.5.15
+     */
+    @Nullable//TODO - 1.20.5: Rename to getModuleContainer
     default IModuleContainer getModuleContainerNullable(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
         if (entity == null || slot == null) {
             return null;
@@ -289,16 +335,4 @@ public interface IModuleHelper {
      * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      */
     void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive);
-
-    @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = getModuleContainerNullable(stack);
-        return container == null ? null : container.getIfEnabled(typeProvider);
-    }
-
-    @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot, IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = getModuleContainerNullable(entity, slot);
-        return container == null ? null : container.getIfEnabled(typeProvider);
-    }
 }

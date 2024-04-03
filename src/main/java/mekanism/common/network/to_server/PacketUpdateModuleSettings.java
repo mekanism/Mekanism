@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
@@ -13,7 +12,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
@@ -69,12 +67,9 @@ public class PacketUpdateModuleSettings implements IMekanismPacket<PlayPayloadCo
             Player player = context.player().orElse(null);
             if (player != null) {
                 ItemStack stack = player.getInventory().getItem(slotId);
-                ModuleContainer moduleContainer = ModuleHelper.get().getModuleContainerNullable(stack);
-                if (moduleContainer != null) {
-                    Module<?> module = moduleContainer.get(moduleType);
-                    if (module != null) {
-                        setValue(module.getConfigItem(data));
-                    }
+                Module<?> module = ModuleHelper.get().load(stack, moduleType);
+                if (module != null) {
+                    setValue(module.getConfigItem(data));
                 }
             }
         }

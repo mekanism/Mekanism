@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.component.UpgradeAware;
@@ -53,12 +52,9 @@ public class MekanismContentsProcessor implements INBTProcessor {
             currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.getInventorySlots(null));
         }
         //Stored modules
-        IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
-        if (moduleContainer != null) {
-            for (IModule<?> module : moduleContainer.modules()) {
-                ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
-                currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
-            }
+        for (IModule<?> module : IModuleHelper.INSTANCE.loadAll(stack)) {
+            ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
+            currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
         }
         return currentEMC;
     }

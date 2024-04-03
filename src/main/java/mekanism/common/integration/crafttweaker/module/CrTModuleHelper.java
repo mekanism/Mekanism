@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker.module;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -28,9 +27,8 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack stack) {
-        return container(stack)
-              .map(IModuleContainer::supportedTypes)
-              .orElse(Set.of());
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        return container == null ? Set.of() : container.supportedTypes();
     }
 
     /**
@@ -55,8 +53,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static boolean isEnabled(ItemStack stack, ModuleData<?> type) {
-        IModuleContainer container = container(stack).orElse(null);
-        return container != null && container.hasEnabled(type);
+        return IModuleHelper.INSTANCE.isEnabled(stack, type);
     }
 
     /**
@@ -70,8 +67,7 @@ public class CrTModuleHelper {
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, ModuleData<MODULE> type) {
-        IModuleContainer container = container(stack).orElse(null);
-        return container == null ? null : container.get(type);
+        return IModuleHelper.INSTANCE.load(stack, type);
     }
 
     /**
@@ -85,9 +81,7 @@ public class CrTModuleHelper {
     @SuppressWarnings({"rawtypes"})
     public static List<IModule> loadAll(ItemStack stack) {
         //ZenCode does not like ? extends IModule<?> so we need to just cast it to a type without any generics specified
-        return container(stack)
-              .<List<IModule>>map(container -> new ArrayList<>(container.modules()))
-              .orElse(List.of());
+        return new ArrayList<>(IModuleHelper.INSTANCE.loadAll(stack));
     }
 
     /**
@@ -99,12 +93,6 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
-        return container(stack)
-              .map(IModuleContainer::moduleTypes)
-              .orElse(Set.of());
-    }
-
-    private static Optional<? extends IModuleContainer> container(ItemStack stack) {
-        return Optional.ofNullable(IModuleHelper.INSTANCE.getModuleContainerNullable(stack));
+        return IModuleHelper.INSTANCE.loadAllTypes(stack);
     }
 }

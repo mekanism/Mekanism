@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.MekanismIMC;
@@ -16,8 +15,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
-import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
@@ -192,7 +189,8 @@ public class ModuleHelper implements IModuleHelper {
         MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
     }
 
-    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+    @Override
+    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
         ModuleContainer container = getModuleContainerNullable(stack);
         return container != null ? container.get(typeProvider) : null;
     }

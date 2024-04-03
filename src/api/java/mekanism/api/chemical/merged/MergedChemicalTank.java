@@ -201,7 +201,7 @@ public class MergedChemicalTank {
          *
          * @deprecated Use {@link #createWrapper(MergedChemicalTank, IChemicalTank, List, BooleanSupplier)}
          */
-        @Deprecated(forRemoval = true, since = "10.5.14")
+        @Deprecated(forRemoval = true, since = "10.5.15")
         public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, BooleanSupplier insertCheck) {
             return createWrapper(mergedTank, tank, List.of(), insertCheck);
         }
@@ -209,7 +209,7 @@ public class MergedChemicalTank {
         /**
          * It is assumed that {@link #canHandle(IChemicalTank)} is called before this method
          *
-         * @since 10.5.14
+         * @since 10.5.15
          */
         public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
             return tankWrapper.create(mergedTank, (TANK) tank, otherTanks, insertCheck);
@@ -223,7 +223,7 @@ public class MergedChemicalTank {
 
     private static class GasTankWrapper extends ChemicalTankWrapper<Gas, GasStack> implements IGasTank {
 
-        @Deprecated(forRemoval = true, since = "10.5.14")
+        @Deprecated(forRemoval = true, since = "10.5.15")
         public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, BooleanSupplier insertCheck) {
             this(mergedTank, internal, List.of(), insertCheck);
         }
@@ -235,7 +235,7 @@ public class MergedChemicalTank {
 
     private static class InfusionTankWrapper extends ChemicalTankWrapper<InfuseType, InfusionStack> implements IInfusionTank {
 
-        @Deprecated(forRemoval = true, since = "10.5.14")
+        @Deprecated(forRemoval = true, since = "10.5.15")
         public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
         }
@@ -247,7 +247,7 @@ public class MergedChemicalTank {
 
     private static class PigmentTankWrapper extends ChemicalTankWrapper<Pigment, PigmentStack> implements IPigmentTank {
 
-        @Deprecated(forRemoval = true, since = "10.5.14")
+        @Deprecated(forRemoval = true, since = "10.5.15")
         public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
         }
@@ -259,7 +259,7 @@ public class MergedChemicalTank {
 
     private static class SlurryTankWrapper extends ChemicalTankWrapper<Slurry, SlurryStack> implements ISlurryTank {
 
-        @Deprecated(forRemoval = true, since = "10.5.14")
+        @Deprecated(forRemoval = true, since = "10.5.15")
         public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, BooleanSupplier insertCheck) {
             super(mergedTank, internal, insertCheck);
         }

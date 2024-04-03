@@ -25,7 +25,7 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     private final BooleanSupplier insertCheck;
     private final MergedChemicalTank mergedTank;
 
-    @Deprecated(forRemoval = true, since = "10.5.14")
+    @Deprecated(forRemoval = true, since = "10.5.15")
     protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
         this(mergedTank, internal, List.of(), insertCheck);
     }

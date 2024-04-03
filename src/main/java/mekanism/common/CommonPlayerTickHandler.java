@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -95,12 +94,7 @@ public class CommonPlayerTickHandler {
 
     public static float getSwimBoost(Player player) {
         IModule<ModuleHydrostaticRepulsorUnit> swimModule = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.LEGS, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-        if (swimModule != null) {
-            if (swimModule.getCustomInstance().isSwimBoost(swimModule, player)) {
-                return 1;
-            }
-        }
-        return 0;
+        return swimModule != null && swimModule.getCustomInstance().isSwimBoost(swimModule, player) ? 1 : 0;
     }
 
     @SubscribeEvent

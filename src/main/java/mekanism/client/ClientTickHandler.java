@@ -306,8 +306,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, EquipmentSlot.HEAD);
-            IModule<ModuleVisionEnhancementUnit> module = container != null ? container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT) : null;
+            IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.HEAD, MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
                 //This near plane is the same as spectators have set for lava and powdered snow
                 event.setNearPlaneDistance(-8.0F);
