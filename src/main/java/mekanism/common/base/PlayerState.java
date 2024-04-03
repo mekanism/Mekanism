@@ -4,33 +4,22 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.functions.FloatSupplier;
-import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
-import mekanism.common.registries.MekanismGameEvents;
-import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class PlayerState {
@@ -228,35 +217,6 @@ public class PlayerState {
 
     public Set<UUID> getActiveGravitationalModulators() {
         return activeGravitationalModulators;
-    }
-
-    public void updateFlightInfo(Player player) {
-        if (!MekanismUtils.isPlayingMode(player)) {
-            return; //don't process creative/spectator players
-        }
-        if (CommonPlayerTickHandler.isGravitationalModulationReady(player) && player.getAbilities().flying) {
-            //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
-            IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-            if (module != null) {//Should not be null but double check
-                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
-                if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
-                    FloatingLong boostUsage = usage.multiply(4);
-                    if (module.canUseEnergy(player, boostUsage, false)) {
-                        float boost = module.getCustomInstance().getBoost();
-                        if (boost > 0) {
-                            player.moveRelative(boost, ModuleGravitationalModulatingUnit.BOOST_VEC);
-                            usage = boostUsage;
-                            gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
-                        }
-                    }
-                }
-                module.useEnergy(player, usage);
-                if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-                    player.gameEvent(gameEvent.value());
-                }
-            }
-        }
     }
 
     // ----------------------

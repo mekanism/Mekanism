@@ -167,22 +167,15 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
-
-        Mekanism.playerState.updateFlightInfo(player);
-    }
-
-    public static boolean isGravitationalModulationReady(Player player) {
-        return MekanismUtils.isPlayingMode(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
     }
 
     public static boolean isGravitationalModulationReady(ItemStack stack) {
         IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
         return module != null && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
-
     }
 
     public static boolean isGravitationalModulationOn(Player player) {
-        return isGravitationalModulationReady(player) && player.getAbilities().flying;
+        return ModuleGravitationalModulatingUnit.shouldProcess(player) && isGravitationalModulationReady(player.getItemBySlot(EquipmentSlot.CHEST));
     }
 
     @SubscribeEvent
