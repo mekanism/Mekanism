@@ -197,10 +197,10 @@ public class ClientTickHandler {
                 ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
                 if (!primaryJetpack.isEmpty()) {
                     JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-                    JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, () -> minecraft.player.input.jumping);
+                    JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.jumping);
                     MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
                     double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
-                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, () -> minecraft.player.input.jumping)) {
+                    if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.jumping)) {
                         minecraft.player.resetFallDistance();
                     }
                 }

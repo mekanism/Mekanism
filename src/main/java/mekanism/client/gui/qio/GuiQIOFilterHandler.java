@@ -1,6 +1,5 @@
 package mekanism.client.gui.qio;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
@@ -36,7 +35,6 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extends GuiMekanismTile<TILE, MekanismTileContainer<TILE>> {
@@ -104,20 +102,19 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
             }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
-                List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
                     if (filter instanceof IItemStackFilter<?> itemFilter) {
-                        list.add(itemFilter.getItemStack());
+                        return List.of(itemFilter.getItemStack());
                     } else if (filter instanceof ITagFilter<?> tagFilter) {
                         String name = tagFilter.getTagName();
                         if (name != null && !name.isEmpty()) {
-                            list.addAll(TagCache.getItemTagStacks(tagFilter.getTagName()));
+                            return TagCache.getItemTagStacks(tagFilter.getTagName());
                         }
                     } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                        list.addAll(TagCache.getItemModIDStacks(modIDFilter.getModID()));
+                        return TagCache.getItemModIDStacks(modIDFilter.getModID());
                     }
                 }
-                return list;
+                return List.of();
             }));
         }
     }

@@ -34,14 +34,15 @@ public record BoilerRecipeViewerRecipe(@Nullable GasStackIngredient superHeatedC
               MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.GAS_REGISTRY) {
-            gas.ifAttributePresent(HeatedCoolant.class, heatedCoolant -> {
+            HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);
+            if (heatedCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
                 Gas cooledCoolant = heatedCoolant.getCooledGas();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
                 recipes.put(RecipeViewerUtils.synthetic(gas.getRegistryName(), "boiler", Mekanism.MODID),
                       new BoilerRecipeViewerRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
                             MekanismGases.STEAM.getStack(waterAmount), cooledCoolant.getStack(coolantAmount), HeatUtils.BASE_BOIL_TEMP));
-            });
+            }
         }
         return recipes;
     }

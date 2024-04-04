@@ -7,9 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
@@ -132,12 +130,12 @@ public class BoltRenderer {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             RenderBounds bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.start(); i < bounds.end(); i++) {
-                renderQuads.get(i).getVecs().forEach(v -> {
+                for (Vec3 v : renderQuads.get(i).getVecs()) {
                     Vec3 shiftedVertex = cameraPos == null ? v : v.subtract(cameraPos);
                     buffer.vertex(matrix, (float) shiftedVertex.x, (float) shiftedVertex.y, (float) shiftedVertex.z)
                           .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
                           .endVertex();
-                });
+                }
             }
         }
 

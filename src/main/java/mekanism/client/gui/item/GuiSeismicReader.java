@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
-    private final List<BlockInfo> blockList = new ArrayList<>();
+    private final List<BlockInfo<?>> blockList = new ArrayList<>();
     private final Reference2IntMap<Block> frequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     private MekanismButton upButton;
@@ -59,7 +59,29 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             BlockState state = level.getBlockState(p);
             //Try to get the clone item stack as maybe it has one, though it might not have a corresponding block
             ItemStack stack = state.getCloneItemStack(new BlockHitResult(p.getCenter().relative(Direction.UP, 0.5), Direction.UP, p, false), level, p, player);
-            blockList.add(new BlockInfo(state, stack));
+            if (stack.isEmpty()) {
+                Fluid fluid = Fluids.EMPTY;
+                if (state.getBlock() instanceof LiquidBlock liquidBlock) {
+                    fluid = liquidBlock.getFluid();
+                } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
+                    fluid = fluidBlock.getFluid();
+                } else if (state.getBlock() instanceof BubbleColumnBlock bubbleColumn) {
+                    fluid = bubbleColumn.getFluidState(state).getType();
+                }
+                if (fluid == Fluids.EMPTY) {
+                    blockList.add(new BlockInfo<>(state, state, null));
+                } else {
+                    blockList.add(new BlockInfo<>(state, fluid, (graphics, f, x, y) -> {
+                        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
+                        MekanismRenderer.color(graphics, properties.getTintColor());
+                        TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
+                        graphics.blit(x, y, 0, 16, 16, texture);
+                        MekanismRenderer.resetColor(graphics);
+                    }));
+                }
+            } else {
+                blockList.add(new BlockInfo<>(state, stack, this::renderItem));
+            }
         }
     }
 
@@ -106,35 +128,14 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         for (int i = 0; i < 9; i++) {
             int layer = currentLayer + (i - 4);
             if (0 <= layer && layer < blockList.size()) {
-                BlockInfo info = blockList.get(layer);
-                RenderTarget renderTarget;
-                if (info.stackRepresentation().isEmpty()) {
-                    BlockState state = info.state();
-                    Fluid fluid = Fluids.EMPTY;
-                    if (state.getBlock() instanceof LiquidBlock liquidBlock) {
-                        fluid = liquidBlock.getFluid();
-                    } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
-                        fluid = fluidBlock.getFluid();
-                    } else if (state.getBlock() instanceof BubbleColumnBlock bubbleColumn) {
-                        fluid = bubbleColumn.getFluidState(state).getType();
-                    }
-                    if (fluid == Fluids.EMPTY) {
-                        continue;
-                    }
-                    IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
-                    renderTarget = (graphics, x, y) -> {
-                        MekanismRenderer.color(guiGraphics, properties.getTintColor());
-                        TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        guiGraphics.blit(x, y, 0, 16, 16, texture);
-                        MekanismRenderer.resetColor(guiGraphics);
-                    };
-                } else {
-                    renderTarget = (graphics, x, y) -> renderItem(graphics, info.stackRepresentation(), x, y);
+                BlockInfo<?> info = blockList.get(layer);
+                if (info.renderTarget == null) {
+                    continue;
                 }
                 int renderX = 92;
                 int renderY = 146 - 16 * i;
                 if (i == 4) {
-                    renderTarget.render(guiGraphics, renderX, renderY);
+                    info.render(guiGraphics, renderX, renderY);
                 } else {
                     PoseStack pose = guiGraphics.pose();
                     pose.pushPose();
@@ -145,7 +146,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                         pose.translate(1.5F, 0, 0);
                     }
                     pose.scale(0.8F, 0.8F, 0.8F);
-                    renderTarget.render(guiGraphics, 0, 0);
+                    info.render(guiGraphics, 0, 0);
                     pose.popPose();
                 }
             }
@@ -159,7 +160,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             if (frequencies.containsKey(block)) {
                 frequency = frequencies.getInt(block);
             } else {
-                for (BlockInfo info : blockList) {
+                for (BlockInfo<?> info : blockList) {
                     if (info.state().is(block)) {
                         frequency++;
                     }
@@ -176,16 +177,20 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
     }
 
-    private record BlockInfo(BlockState state, ItemStack stackRepresentation) {
+    private record BlockInfo<TYPE>(BlockState state, TYPE type, RenderTarget<TYPE> renderTarget) {
 
         public Block block() {
             return state.getBlock();
         }
+
+        public void render(GuiGraphics guiGraphics, int x, int y) {
+            renderTarget.render(guiGraphics, type, x, y);
+        }
     }
 
     @FunctionalInterface
-    private interface RenderTarget {
+    private interface RenderTarget<TYPE> {
 
-        void render(GuiGraphics guiGraphics, int x, int y);
+        void render(GuiGraphics guiGraphics, TYPE type, int x, int y);
     }
 }

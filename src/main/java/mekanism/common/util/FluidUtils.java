@@ -5,7 +5,6 @@ import java.util.OptionalInt;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.providers.IFluidProvider;
 import mekanism.common.attachments.containers.AttachedFluidTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
@@ -14,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -30,11 +30,11 @@ public final class FluidUtils {
     private FluidUtils() {
     }
 
-    public static ItemStack getFilledVariant(ItemStack toFill, IFluidProvider provider) {
+    public static ItemStack getFilledVariant(ItemStack toFill, Fluid fluid) {
         AttachedFluidTanks attachment = ContainerType.FLUID.getAttachment(toFill);
         if (attachment != null) {
             for (IExtendedFluidTank fluidTank : attachment.getFluidTanks(null)) {
-                fluidTank.setStack(provider.getFluidStack(fluidTank.getCapacity()));
+                fluidTank.setStack(new FluidStack(fluid, fluidTank.getCapacity()));
             }
         }
         //The item is now filled return it for convenience

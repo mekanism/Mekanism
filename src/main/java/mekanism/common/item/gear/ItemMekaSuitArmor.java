@@ -557,7 +557,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (energyUseCallbacks == null) {
                     details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
                 } else {
-                    energyUseCallbacks.add(() -> details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL));
+                    energyUseCallbacks.add(details);
                 }
             }
         }
@@ -597,7 +597,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private static class FoundArmorDetails {
+    private static class FoundArmorDetails implements Runnable {
 
         private final IEnergyContainer energyContainer;
         private final EnergyUsageInfo usageInfo;
@@ -607,6 +607,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             this.energyContainer = energyContainer;
             this.usageInfo = new EnergyUsageInfo(energyContainer.getEnergy());
             this.armor = armor;
+        }
+
+        @Override
+        public void run() {
+            energyContainer.extract(usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
         }
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.item.interfaces;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -126,7 +125,7 @@ public interface IJetpackItem {
     /**
      * @return If fall distance should get reset or not
      */
-    static boolean handleJetpackMotion(Player player, JetpackMode mode, double thrust, BooleanSupplier ascendingSupplier) {
+    static <PLAYER extends Player> boolean handleJetpackMotion(PLAYER player, JetpackMode mode, double thrust, Predicate<PLAYER> ascendingCheck) {
         Vec3 motion = player.getDeltaMovement();
         if (mode == JetpackMode.VECTOR && player.isShiftKeyDown()) {
             //TODO: Do we want to expand holding shift to some sort of secondary behavior
@@ -146,7 +145,7 @@ public interface IJetpackItem {
             Vec3 delta = new Vec3(thrustVec.x, thrustVec.y * getVerticalCoefficient(motion.y()), thrustVec.z);
             player.addDeltaMovement(delta);
         } else if (mode == JetpackMode.HOVER) {
-            boolean ascending = ascendingSupplier.getAsBoolean();
+            boolean ascending = ascendingCheck.test(player);
             boolean descending = player.isDescending();
             if (ascending == descending) {
                 if (motion.y() > 0) {
@@ -169,10 +168,10 @@ public interface IJetpackItem {
         return Math.min(1, Math.exp(-currentYVelocity));
     }
 
-    static JetpackMode getPlayerJetpackMode(Player player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
+    static <PLAYER extends Player> JetpackMode getPlayerJetpackMode(PLAYER player, JetpackMode mode, Predicate<PLAYER> ascendingCheck) {
         if (!player.isSpectator()) {
             if (mode != JetpackMode.DISABLED) {
-                boolean ascending = ascendingSupplier.getAsBoolean();
+                boolean ascending = ascendingCheck.test(player);
                 if (mode == JetpackMode.HOVER) {
                     if (ascending && !player.isDescending() || !CommonPlayerTickHandler.isOnGroundOrSleeping(player)) {
                         return mode;

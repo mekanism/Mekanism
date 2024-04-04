@@ -823,7 +823,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             // things we are mining
             return inverseReplaceTargetMatches(target);
         }
-        return filterManager.anyEnabledMatch(filter -> filter.replaceTargetMatches(target));
+        return filterManager.anyEnabledMatch(target, MinerFilter::replaceTargetMatches);
     }
 
     /**

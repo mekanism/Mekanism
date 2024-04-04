@@ -237,7 +237,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         // so we just do it based on their ordinal
         for (Upgrade upgrade : EnumUtils.UPGRADES) {
             if (supports(upgrade)) {
-                list.add(SyncableInt.create(() -> upgrades.getOrDefault(upgrade, 0), value -> {
+                list.add(SyncableInt.create(() -> getUpgrades(upgrade), value -> {
                     if (value == 0) {
                         upgrades.remove(upgrade);
                     } else if (value > 0) {

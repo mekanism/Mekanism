@@ -3,7 +3,6 @@ package mekanism.client.render.hud;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
@@ -57,7 +56,7 @@ public class MekanismHUD implements IGuiOverlay {
                 ItemStack stack = player.getItemBySlot(slotType);
                 IItemHUDProvider hudProvider = getHudProvider(stack);
                 if (hudProvider != null) {
-                    count += makeComponent(list -> hudProvider.addHUDStrings(list, player, stack, slotType), renderStrings);
+                    count += makeComponent(hudProvider, player, stack, slotType, renderStrings, IItemHUDProvider::addHUDStrings);
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
@@ -67,7 +66,8 @@ public class MekanismHUD implements IGuiOverlay {
                         ItemStack stack = inv.getStackInSlot(i);
                         IItemHUDProvider hudProvider = getHudProvider(stack);
                         if (hudProvider != null) {
-                            count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, player, stack), renderStrings);
+                            count += makeComponent(hudProvider, player, stack, null, renderStrings,
+                                  (provider, l, plyr, s, ignored) -> provider.addCurioHUDStrings(l, plyr, s));
                         }
                     }
                 }
@@ -123,13 +123,19 @@ public class MekanismHUD implements IGuiOverlay {
         }
     }
 
-    private int makeComponent(Consumer<List<Component>> adder, List<List<Component>> initial) {
+    private int makeComponent(IItemHUDProvider hudProvider, Player player, ItemStack stack, EquipmentSlot slot, List<List<Component>> initial, HudComponentBuilder builder) {
         List<Component> list = new ArrayList<>();
-        adder.accept(list);
+        builder.add(hudProvider, list, player, stack, slot);
         int size = list.size();
         if (size > 0) {
             initial.add(list);
         }
         return size;
+    }
+
+    @FunctionalInterface
+    private interface HudComponentBuilder {
+
+        void add(IItemHUDProvider hudProvider, List<Component> existing, Player player, ItemStack stack, EquipmentSlot slot);
     }
 }

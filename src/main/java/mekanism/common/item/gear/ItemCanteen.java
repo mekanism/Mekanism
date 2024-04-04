@@ -55,7 +55,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
-        tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismFluids.NUTRITIONAL_PASTE));
+        tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
     }
 
     @NotNull

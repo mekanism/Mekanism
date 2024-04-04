@@ -98,7 +98,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
      * <p>
      * False: gas -> fluid
      */
-    public boolean mode;
+    private boolean mode;
 
     private final IOutputHandler<@NotNull GasStack> gasOutputHandler;
     private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
@@ -183,7 +183,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        BooleanSupplier modeSupplier = () -> mode;
+        BooleanSupplier modeSupplier = this::getMode;
         builder.addSlot(gasInputSlot = GasInventorySlot.rotaryDrain(gasTank, modeSupplier, listener, 5, 25));
         builder.addSlot(gasOutputSlot = GasInventorySlot.rotaryFill(gasTank, modeSupplier, listener, 5, 56));
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, modeSupplier, listener, 155, 25));
@@ -210,6 +210,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         }
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
         return sendUpdatePacket;
+    }
+
+    public boolean getMode() {
+        return mode;
     }
 
     @Override
@@ -294,7 +298,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @NotNull
     @Override
     public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@NotNull RotaryRecipe recipe, int cacheIndex) {
-        return new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)
+        return new RotaryCachedRecipe(recipe, recheckAllRecipeErrors, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, this::getMode)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
@@ -314,7 +318,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> mode, value -> mode = value));
+        container.track(SyncableBoolean.create(this::getMode, value -> mode = value));
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 

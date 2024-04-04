@@ -55,7 +55,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
 
             @Override
             public boolean isActive() {
-                return !tile.mode;
+                return !tile.getMode();
             }
         }, ProgressType.LARGE_RIGHT, this, 64, 39).recipeViewerCategories(RecipeViewerRecipeType.CONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
@@ -67,18 +67,18 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
 
             @Override
             public boolean isActive() {
-                return tile.mode;
+                return tile.getMode();
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).recipeViewerCategories(RecipeViewerRecipeType.DECONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        addRenderableWidget(new ToggleButton(this, 4, 4, () -> tile.mode, () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
+        addRenderableWidget(new ToggleButton(this, 4, 4, tile::getMode, () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
               getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics, (tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, imageHeight - 92, titleTextColor());
+        drawString(guiGraphics, (tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, imageHeight - 92, titleTextColor());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

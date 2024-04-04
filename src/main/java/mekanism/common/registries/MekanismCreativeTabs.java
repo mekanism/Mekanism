@@ -51,7 +51,7 @@ public class MekanismCreativeTabs {
             if (MekanismConfig.general.prefilledFluidTanks.get()) {
                 for (Fluid fluid : BuiltInRegistries.FLUID) {
                     if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
-                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), () -> fluid));
+                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), fluid));
                     }
                 }
             }

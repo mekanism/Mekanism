@@ -3,6 +3,7 @@ package mekanism.common.content.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.NBTConstants;
@@ -47,7 +48,21 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     public boolean anyEnabledMatch(Predicate<FILTER> validator) {
-        return getEnabledFilters().stream().anyMatch(validator);
+        for (FILTER filter : getEnabledFilters()) {
+            if (validator.test(filter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public <DATA> boolean anyEnabledMatch(DATA extra, BiPredicate<FILTER, DATA> validator) {
+        for (FILTER filter : getEnabledFilters()) {
+            if (validator.test(filter, extra)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasEnabledFilters() {

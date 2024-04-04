@@ -3,6 +3,7 @@ package mekanism.common.integration.curios;
 import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.client.render.MekanismCurioRenderer;
+import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
@@ -32,7 +33,8 @@ public class CuriosIntegration {
     private static void registerRenderers(ItemLike... items) {
         for (ItemLike item : items) {
             if (item.asItem() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
-                CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(gear.getGearModel(armor.getType())));
+                ICustomArmor customArmor = gear.getGearModel(armor.getType());
+                CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(customArmor));
             } else {
                 Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));
             }

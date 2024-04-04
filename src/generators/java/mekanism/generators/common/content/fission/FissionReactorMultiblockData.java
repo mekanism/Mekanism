@@ -364,16 +364,20 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
      */
     private double getWasteTankRadioactivity(boolean dump) {
-        if (wasteTank.isEmpty()) {
-            return MekanismGases.NUCLEAR_WASTE.get().mapAttributeToDouble(Radiation.class, attribute -> partialWaste * attribute.getRadioactivity());
+        GasStack stored = wasteTank.getStack();
+        Radiation attribute;
+        if (stored.isEmpty()) {
+            attribute = MekanismGases.NUCLEAR_WASTE.get().get(Radiation.class);
+        } else {
+            attribute = stored.get(Radiation.class);
         }
-        return wasteTank.getStack().mapAttributeToDouble(Radiation.class, (stored, attribute) -> {
-            if (dump) {
-                //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
-                wasteTank.setEmpty();
-            }
-            return (stored.getAmount() + partialWaste) * attribute.getRadioactivity();
-        });
+        if (attribute == null) {
+            return 0;
+        } else if (dump) {
+            //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
+            wasteTank.setEmpty();
+        }
+        return (stored.getAmount() + partialWaste) * attribute.getRadioactivity();
     }
 
     /**
@@ -381,11 +385,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      */
     private double getTankRadioactivityAndDump(IGasTank tank) {
         if (!tank.isEmpty()) {
-            return tank.getStack().mapAttributeToDouble(Radiation.class, (stored, attribute) -> {
+            GasStack stored = tank.getStack();
+            Radiation attribute = stored.get(Radiation.class);
+            if (attribute != null) {
                 //If we have a radioactive substance, then we need to set the tank to empty
                 tank.setEmpty();
                 return stored.getAmount() * attribute.getRadioactivity();
-            });
+            }
         }
         return 0;
     }
@@ -406,7 +412,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!gasCoolantTank.isEmpty()) {
-            gasCoolantTank.getStack().ifAttributePresent(CooledCoolant.class, coolantType -> {
+            CooledCoolant coolantType = gasCoolantTank.getStack().get(CooledCoolant.class);
+            if (coolantType != null) {
                 double caseCoolantHeat = heat * coolantType.getConductivity();
                 lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.getThermalEnthalpy(), gasCoolantTank.getStored());
                 if (lastBoilRate > 0) {
@@ -415,7 +422,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                     caseCoolantHeat = lastBoilRate * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
-            });
+            }
         }
     }
 
@@ -448,8 +455,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
-                wasteToAdd.ifAttributePresent(Radiation.class, attribute ->
-                      IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * attribute.getRadioactivity()));
+                Radiation attribute = wasteToAdd.get(Radiation.class);
+                if (attribute != null) {
+                    IRadiationManager.INSTANCE.radiate(GlobalPos.of(world.dimension(), getBounds().getCenter()), leftoverWaste * attribute.getRadioactivity());
+                }
             }
         }
         // update previous burn

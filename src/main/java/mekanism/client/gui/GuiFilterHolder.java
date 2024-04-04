@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -23,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
@@ -64,20 +64,21 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                     GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_BOTTOM : GuiInteraction.MOVE_FILTER_DOWN;
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
-            }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
-                List<ItemStack> list = new ArrayList<>();
-                if (filter != null) {
-                    if (filter instanceof IItemStackFilter<?> itemFilter) {
-                        list.add(itemFilter.getItemStack());
-                    } else if (filter instanceof ITagFilter<?> tagFilter) {
-                        list.addAll(getTagStacks(tagFilter.getTagName()));
-                    } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                        list.addAll(getModIDStacks(modIDFilter.getModID()));
-                    }
-                }
-                return list;
-            }));
+            }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), this::getRenderStacks));
         }
+    }
+
+    private List<ItemStack> getRenderStacks(@Nullable IFilter<?> filter) {
+        if (filter != null) {
+            if (filter instanceof IItemStackFilter<?> itemFilter) {
+                return List.of(itemFilter.getItemStack());
+            } else if (filter instanceof ITagFilter<?> tagFilter) {
+                return getTagStacks(tagFilter.getTagName());
+            } else if (filter instanceof IModIDFilter<?> modIDFilter) {
+                return getModIDStacks(modIDFilter.getModID());
+            }
+        }
+        return List.of();
     }
 
     protected FilterButton addFilterButton(FilterButton button) {

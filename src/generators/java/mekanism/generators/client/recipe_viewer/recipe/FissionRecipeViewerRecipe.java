@@ -37,13 +37,14 @@ public record FissionRecipeViewerRecipe(@Nullable GasStackIngredient inputCoolan
               MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.GAS_REGISTRY) {
-            gas.ifAttributePresent(CooledCoolant.class, cooledCoolant -> {
+            CooledCoolant cooledCoolant = gas.get(CooledCoolant.class);
+            if (cooledCoolant != null) {
                 //If it is a cooled coolant add a recipe for it
                 Gas heatedCoolant = cooledCoolant.getHeatedGas();
                 long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
                 recipes.put(RecipeViewerUtils.synthetic(gas.getRegistryName(), "fission", MekanismGenerators.MODID), new FissionRecipeViewerRecipe(IngredientCreatorAccess.gas().from(gas, amount),
                       IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1), heatedCoolant.getStack(amount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
-            });
+            }
         }
         return recipes;
     }

@@ -1,6 +1,7 @@
 package mekanism.additions.client;
 
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
@@ -14,6 +15,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.StairsShape;
@@ -48,9 +50,10 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
 
     private void glowPanels() {
         ModelFile model = models().getExistingFile(modLoc("block/glow_panel"));
+        Function<BlockState, ModelFile> modelFunc = state -> model;
         for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
             BlockGlowPanel glowPanel = blockRO.getBlock();
-            directionalBlock(glowPanel, state -> model, 180, glowPanel.getFluidLoggedProperty());
+            directionalBlock(glowPanel, modelFunc, 180, glowPanel.getFluidLoggedProperty());
         }
     }
 

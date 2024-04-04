@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
@@ -46,6 +47,7 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -76,6 +78,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
     private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
+    private final Function<TileEntityLogisticalTransporterBase, EnumColor> outputColorFunction;
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
@@ -110,6 +113,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
         this.energyEjectRate = energyEjectRate;
+        this.outputColorFunction = transporter -> this.outputColor;
         tile.addComponent(this);
     }
 
@@ -270,7 +274,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
                             ejectMap.handler = getHandler(side);
                             //If the spot is not loaded just skip trying to eject to it
-                            TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, transporter -> outputColor);
+                            TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, this.outputColorFunction);
                             if (!response.isEmpty()) {
                                 // use the items returned by the TransitResponse; will be visible next loop
                                 response.useAll();

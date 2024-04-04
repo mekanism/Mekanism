@@ -87,7 +87,7 @@ public class ThreadMinerSearch extends Thread {
                     accepted = false;
                 } else {
                     //Ensure that the inverse mode is the opposite of the filter match
-                    accepted = tile.getInverse() != tile.getFilterManager().anyEnabledMatch(filter -> filter.canFilter(state));
+                    accepted = tile.getInverse() != tile.getFilterManager().anyEnabledMatch(state, MinerFilter::canFilter);
                 }
                 acceptedItems.put(info, accepted);
             }

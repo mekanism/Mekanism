@@ -151,7 +151,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         updateHeatCapacitors(null);
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
-            superheatedCoolantTank.getStack().ifAttributePresent(HeatedCoolant.class, coolantType -> {
+            HeatedCoolant coolantType = superheatedCoolantTank.getStack().get(HeatedCoolant.class);
+            if (coolantType != null) {
                 long toCool = Math.round(BoilerMultiblockData.COOLANT_COOLING_EFFICIENCY * superheatedCoolantTank.getStored());
                 toCool = MathUtils.clampToLong(toCool * (1 - heatCapacitor.getTemperature() / HeatUtils.HEATED_COOLANT_TEMP));
                 GasStack cooledCoolant = coolantType.getCooledGas().getStack(toCool);
@@ -161,7 +162,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                     heatCapacitor.handleHeat(heatEnergy);
                     superheatedCoolantTank.shrinkStack(toCool, Action.EXECUTE);
                 }
-            });
+            }
         }
         // handle water heat transfer
         if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
