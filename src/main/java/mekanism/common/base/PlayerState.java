@@ -3,7 +3,7 @@ package mekanism.common.base;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.functions.FloatSupplier;
+import mekanism.api.functions.ToFloatFunction;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
@@ -145,7 +145,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.value(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
+        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.value(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", CommonPlayerTickHandler::getStepBoost);
     }
 
     // ----------------------
@@ -155,15 +155,15 @@ public class PlayerState {
     // ----------------------
 
     public void updateSwimBoost(Player player) {
-        updateAttribute(player, NeoForgeMod.SWIM_SPEED.value(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
+        updateAttribute(player, NeoForgeMod.SWIM_SPEED.value(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", CommonPlayerTickHandler::getSwimBoost);
     }
 
-    //TODO - 1.20.4: Move these to the items?
-    private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, FloatSupplier additionalSupplier) {
+    //Note: The attributes that currently use this cannot be converted to just being attributes on the items, as they can be disabled based on the player state
+    private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, ToFloatFunction<Player> additionalSupplier) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
             AttributeModifier existing = attributeInstance.getModifier(uuid);
-            float additional = additionalSupplier.getAsFloat();
+            float additional = additionalSupplier.applyAsFloat(player);
             if (existing != null) {
                 if (existing.getAmount() == additional) {
                     //If we already have it set to the correct value just exit
