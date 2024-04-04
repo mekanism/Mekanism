@@ -5,8 +5,10 @@ import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LRU<T> extends AbstractCollection<T> {
 
@@ -79,6 +81,30 @@ public class LRU<T> extends AbstractCollection<T> {
             callback.accept(ptr.value);
             ptr = ptr.prev;
         }
+    }
+
+    /**
+     * Get the first element, like {@link Queue#element()}
+     *
+     * @return the first element
+     * @throws NoSuchElementException when there are no items in the LRU
+     */
+    @NotNull
+    public T head() {
+        if (head.value == null) {
+            throw new NoSuchElementException("No entries");
+        }
+        return head.value;
+    }
+
+    /**
+     * Like {@link Queue#peek()}
+     *
+     * @return the head of this LRU, or null if this LRU is empty
+     */
+    @Nullable
+    public T peek() {
+        return head.value;
     }
 
     private static class LRUEntry<T> {

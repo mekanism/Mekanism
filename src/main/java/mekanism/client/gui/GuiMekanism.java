@@ -195,7 +195,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Nullable
     private ComponentPath handleNavigationWithWindows(Function<ContainerEventHandler, @Nullable ComponentPath> handleNavigation) {
-        GuiWindow topWindow = windows.iterator().next();
+        GuiWindow topWindow = windows.head();
         List<GuiEventListener> combinedChildren;
         //Note: As allowContainer wise only allows interacting with slots, which we don't have navigation for, we check against allowAll.
         // If we are allowed to interact with everything, we want to include all the windows and children in the navigation check,
@@ -417,7 +417,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
         // first try to send the mouse event to our focused window
-        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        GuiWindow top = windows.peek();
         if (top != null) {
             boolean windowScroll = top.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
             if (windowScroll || !top.getInteractionStrategy().allowAll()) {
@@ -433,7 +433,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
-        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        GuiWindow top = windows.peek();
         for (GuiWindow overlay : windows) {
             if (overlay.mouseClicked(mouseX, mouseY, button)) {
                 if (windows.contains(overlay)) {
@@ -446,6 +446,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     }
                     // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
                     if (top != overlay) {
+                        //noinspection DataFlowIssue: if null, we won't be in this loop
                         top.onFocusLost();
                         windows.moveUp(overlay);
                         overlay.onFocused();
@@ -688,7 +689,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public void addWindow(GuiWindow window) {
-        GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
+        GuiWindow top = windows.peek();
         if (top != null) {
             top.onFocusLost();
         }
@@ -699,13 +700,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public void removeWindow(GuiWindow window) {
         if (!windows.isEmpty()) {
-            GuiWindow top = windows.iterator().next();
+            GuiWindow top = windows.head();
             windows.remove(window);
             if (window == top) {
                 //If the window was the top window, make it lose focus
                 window.onFocusLost();
                 //Amd check if a new window is now in focus
-                GuiWindow newTop = windows.isEmpty() ? null : windows.iterator().next();
+                GuiWindow newTop = windows.peek();
                 if (newTop == null) {
                     //If there isn't any because they have all been removed
                     // fire an "event" for any post all windows being closed
