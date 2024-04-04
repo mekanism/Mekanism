@@ -1,5 +1,8 @@
 package mekanism.common.content.gear;
 
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,22 +41,22 @@ public final class ModuleContainer implements IModuleContainer {
 
     public static ModuleContainer create(IAttachmentHolder holder) {
         if (holder instanceof ItemStack stack && IModuleHelper.INSTANCE.isModuleContainer(stack)) {
-            return new ModuleContainer(stack, new LinkedHashMap<>());
+            return new ModuleContainer(stack, new Object2IntLinkedOpenHashMap<>());
         }
         throw new IllegalArgumentException("Attempted to attach a ModuleContainer to an object that does not support containing modules.");
     }
 
     private final Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>();
     private final Map<ModuleData<?>, Module<?>> modulesView = Collections.unmodifiableMap(modules);
-    private final Map<Enchantment, Integer> enchantments;
-    private final Map<Enchantment, Integer> enchantmentsView;
+    private final Object2IntMap<Enchantment> enchantments;
+    private final Object2IntMap<Enchantment> enchantmentsView;
 
     final ItemStack container;
 
-    private ModuleContainer(ItemStack container, Map<Enchantment, Integer> enchantments) {
+    private ModuleContainer(ItemStack container, Object2IntMap<Enchantment> enchantments) {
         this.container = container;
         this.enchantments = enchantments;
-        this.enchantmentsView = Collections.unmodifiableMap(this.enchantments);
+        this.enchantmentsView = Object2IntMaps.unmodifiable(this.enchantments);
     }
 
     @Nullable
@@ -70,7 +73,9 @@ public final class ModuleContainer implements IModuleContainer {
         CompoundTag extraData = new CompoundTag();
         if (!enchantments.isEmpty()) {
             ListTag enchantmentNbt = new ListTag();
-            enchantments.forEach((enchantment, level) -> enchantmentNbt.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(enchantment), level)));
+            for (Object2IntMap.Entry<Enchantment> entry : enchantments.object2IntEntrySet()) {
+                enchantmentNbt.add(EnchantmentHelper.storeEnchantment(EnchantmentHelper.getEnchantmentId(entry.getKey()), entry.getIntValue()));
+            }
             extraData.put(NBTConstants.ENCHANTMENTS, enchantmentNbt);
         }
         if (!extraData.isEmpty()) {
@@ -113,7 +118,7 @@ public final class ModuleContainer implements IModuleContainer {
         if (!(holder instanceof ItemStack stack) || !IModuleHelper.INSTANCE.isModuleContainer(stack)) {
             return null;
         }
-        ModuleContainer copy = new ModuleContainer(stack, new LinkedHashMap<>(enchantments));
+        ModuleContainer copy = new ModuleContainer(stack, new Object2IntLinkedOpenHashMap<>(enchantments));
         for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
             ModuleData<?> type = entry.getKey();
             //Copy the modules by saving and deserializing it against the new stack
@@ -140,7 +145,7 @@ public final class ModuleContainer implements IModuleContainer {
     }
 
     @Override
-    public Map<Enchantment, Integer> moduleBasedEnchantments() {
+    public Map<Enchantment, Integer> moduleBasedEnchantments() {//TODO - 1.20.5: Change this to returning an Object2IntMap
         return enchantmentsView;
     }
 
@@ -148,7 +153,7 @@ public final class ModuleContainer implements IModuleContainer {
     @Override
     public void setEnchantmentLevel(Enchantment enchantment, int level) {
         if (level == 0) {
-            enchantments.remove(enchantment);
+            enchantments.removeInt(enchantment);
         } else {
             enchantments.put(enchantment, level);
         }

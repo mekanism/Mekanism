@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.ChunkEvent;
@@ -129,7 +130,9 @@ public class ChunkCommand {
         ChunkPos pos = event.getChunk().getPos();
         if (chunkWatchers.contains(pos.toLong())) {
             Component message = direction.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(pos));
-            event.getLevel().players().forEach(player -> player.sendSystemMessage(message));
+            for (Player player : event.getLevel().players()) {
+                player.sendSystemMessage(message);
+            }
         }
     }
 

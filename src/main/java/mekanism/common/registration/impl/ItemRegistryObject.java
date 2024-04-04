@@ -121,7 +121,9 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
             capabilityAware.attachCapabilities(event);
         }
         if (containerCapabilities != null) {
-            containerCapabilities.forEach(consumer -> consumer.accept(event));
+            for (Consumer<RegisterCapabilitiesEvent> consumer : containerCapabilities) {
+                consumer.accept(event);
+            }
             //We only allow registering once, and then we allow the memory to be freed up
             containerCapabilities = null;
         }
@@ -135,8 +137,10 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
             attachmentAware.attachAttachments(eventBus);
         }
         if (defaultContainers != null) {
-            //Note: We pass null for the event bus to not expose this attachment as a capability
-            defaultContainers.forEach(((containerType, defaultCreators) -> containerType.addDefaultContainers(null, item, (Function) defaultCreators)));
+            for (Map.Entry<ContainerType<?, ?, ?>, Function<ItemStack, ? extends List<?>>> entry : defaultContainers.entrySet()) {
+                //Note: We pass null for the event bus to not expose this attachment as a capability
+                entry.getKey().addDefaultContainers(null, item, (Function) entry.getValue());
+            }
             //We only allow them being attached once
             defaultContainers = null;
         }

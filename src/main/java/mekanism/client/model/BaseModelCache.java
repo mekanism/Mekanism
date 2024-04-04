@@ -55,7 +55,9 @@ public class BaseModelCache {
     }
 
     public void setup(RegisterAdditional event) {
-        modelMap.values().forEach(mekanismModelData -> mekanismModelData.setup(event));
+        for (MekanismModelData mekanismModelData : modelMap.values()) {
+            mekanismModelData.setup(event);
+        }
     }
 
     protected OBJModelData registerOBJ(String path) {

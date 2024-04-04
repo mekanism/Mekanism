@@ -3,13 +3,12 @@ package mekanism.common.content.blocktype;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream.Builder;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeHasBounding;
+import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
@@ -17,9 +16,7 @@ import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.lib.transmitter.TransmissionType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,8 +114,8 @@ public class BlockType {
             return self();
         }
 
-        public final T withBounding(TriConsumer<BlockPos, BlockState, Builder<BlockPos>> boundingPositions) {
-            return with(new AttributeHasBounding(boundingPositions));
+        public final T withBounding(HandleBoundingBlock boundingPosHandlers) {
+            return with(new AttributeHasBounding(boundingPosHandlers));
         }
 
         @SafeVarargs

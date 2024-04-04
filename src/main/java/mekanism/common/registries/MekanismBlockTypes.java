@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
+import mekanism.api.functions.TriConsumer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
@@ -11,6 +12,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeHasBounding;
+import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeSideConfig;
@@ -140,8 +143,11 @@ import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class MekanismBlockTypes {
@@ -326,12 +332,17 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR, Upgrade.STONE_GENERATOR)
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
-          .withBounding((pos, state, builder) -> {
-              for (int x = -1; x <= 1; x++) {
-                  for (int y = 0; y <= 1; y++) {
-                      for (int z = -1; z <= 1; z++) {
-                          if (x != 0 || y != 0 || z != 0) {
-                              builder.add(pos.offset(x, y, z));
+          .withBounding(new HandleBoundingBlock() {
+              @Override
+              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+                  BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+                  for (int x = -1; x <= 1; x++) {
+                      for (int y = 0; y <= 1; y++) {
+                          for (int z = -1; z <= 1; z++) {
+                              if (x != 0 || y != 0 || z != 0) {
+                                  mutable.setWithOffset(pos, x, y, z);
+                                  consumer.accept(level, mutable, data);
+                              }
                           }
                       }
                   }
@@ -377,7 +388,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSideConfig(TransmissionType.GAS, TransmissionType.ITEM)
-          .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("solarNeutronActivator")
           .replace(Attributes.ACTIVE)
           .build();
@@ -447,7 +458,7 @@ public class MekanismBlockTypes {
           .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
           .with(AttributeCustomSelectionBox.JAVA)
-          .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("seismicVibrator")
           .build();
     // Personal Barrel
@@ -510,7 +521,7 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1), Attributes.SECURITY)
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(AttributeCustomSelectionBox.JSON)
-          .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("securityDesk")
           .build();
     // Modification Station
@@ -521,11 +532,15 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY)
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(AttributeCustomSelectionBox.JSON)
-          .withBounding((pos, state, builder) -> {
-              builder.add(pos.above());
-              BlockPos rightPos = pos.relative(MekanismUtils.getRight(Attribute.getFacing(state)));
-              builder.add(rightPos);
-              builder.add(rightPos.above());
+          .withBounding(new HandleBoundingBlock() {
+              @Override
+              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+                  BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+                  consumer.accept(level, mutable.setWithOffset(pos, Direction.UP), data);
+                  mutable.setWithOffset(pos, MekanismUtils.getRight(Attribute.getFacing(state)));
+                  consumer.accept(level, mutable, data);
+                  consumer.accept(level, mutable.move(Direction.UP), data);
+              }
           })
           .withComputerSupport("modificationStation")
           .build();
@@ -537,7 +552,7 @@ public class MekanismBlockTypes {
           .withSideConfig(TransmissionType.GAS, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
           .withCustomShape(BlockShapes.ISOTOPIC_CENTRIFUGE)
-          .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("isotopicCentrifuge")
           .build();
     // Nutritional Liquifier
@@ -580,7 +595,7 @@ public class MekanismBlockTypes {
           .withSideConfig(TransmissionType.PIGMENT, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
           .with(AttributeCustomSelectionBox.JAVA)
-          .withBounding((pos, state, builder) -> builder.add(pos.above()))
+          .with(AttributeHasBounding.ABOVE_ONLY)
           .withComputerSupport("pigmentMixer")
           .build();
     // Painting Machine

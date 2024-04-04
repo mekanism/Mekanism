@@ -2,6 +2,7 @@ package mekanism.common.registration.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -44,7 +45,9 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
             Mekanism.logger.error("GlobalEntityTypeAttributes have already been set. This should not happen.");
         } else {
             //Register our living entity attributes
-            livingEntityAttributes.forEach((holder, builder) -> event.put(holder.get(), builder.get().build()));
+            for (Map.Entry<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<Builder>> entry : livingEntityAttributes.entrySet()) {
+                event.put(entry.getKey().get(), entry.getValue().get().build());
+            }
             //And set the map to null to allow it to be garbage collected
             livingEntityAttributes = null;
         }

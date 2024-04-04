@@ -313,8 +313,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
 
         //And set any persistent data that we stored
-        prevElements.forEach(e -> {
-            if (e.index() < children().size()) {
+        int childCount = children().size();
+        for (PreviousElement e : prevElements) {
+            if (e.index() < childCount) {
                 GuiEventListener widget = children().get(e.index());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
@@ -327,7 +328,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     }
                 }
             }
-        });
+        }
     }
 
     @Override
@@ -475,7 +476,9 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (hasClicked) {
             // always pass mouse released events to windows for drag checks
-            windows.forEach(w -> w.onRelease(mouseX, mouseY));
+            for (GuiWindow w : windows) {
+                w.onRelease(mouseX, mouseY);
+            }
             return super.mouseReleased(mouseX, mouseY, button);
         }
         return false;

@@ -56,7 +56,9 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     protected final void buildRecipes(RecipeOutput output) {
         WrapperRecipeOutput trackingConsumer = new WrapperRecipeOutput(output, existingFileHelper);
         addRecipes(trackingConsumer);
-        getSubRecipeProviders().forEach(subRecipeProvider -> subRecipeProvider.addRecipes(trackingConsumer));
+        for (ISubRecipeProvider subRecipeProvider : getSubRecipeProviders()) {
+            subRecipeProvider.addRecipes(trackingConsumer);
+        }
     }
 
     protected abstract void addRecipes(RecipeOutput output);

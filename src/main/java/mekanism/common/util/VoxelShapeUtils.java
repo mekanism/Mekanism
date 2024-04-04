@@ -30,7 +30,9 @@ public final class VoxelShapeUtils {
      */
     public static void printSimplified(String name, VoxelShape shape) {
         Mekanism.logger.info("Simplified: {}", name);
-        shape.optimize().toAabbs().forEach(box -> print(box.minX * 16, box.minY * 16, box.minZ * 16, box.maxX * 16, box.maxY * 16, box.maxZ * 16));
+        for (AABB box : shape.optimize().toAabbs()) {
+            print(box.minX * 16, box.minY * 16, box.minZ * 16, box.maxX * 16, box.maxY * 16, box.maxZ * 16);
+        }
     }
 
     /**

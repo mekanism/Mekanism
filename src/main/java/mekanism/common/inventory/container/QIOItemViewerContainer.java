@@ -353,14 +353,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // just short circuit a lot of logic
             return;
         }
-        itemMap.object2LongEntrySet().forEach(entry -> {
+        for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : itemMap.object2LongEntrySet()) {
             long value = entry.getLongValue();
             if (value == 0) {
                 cachedInventory.removeLong(entry.getKey());
             } else {
                 cachedInventory.put(entry.getKey(), value);
             }
-        });
+        }
         syncItemList();
     }
 

@@ -508,7 +508,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             //Note: We only need to clear tags here as the modids cannot change just because a reload happened
             tagLookupMap.clear();
             tagWildcardCache.clear();
-            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType));
+            for (QIOItemTypeData item : itemDataMap.values()) {
+                tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType);
+            }
         }
         return superDirty;
     }
@@ -543,7 +545,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         super.onRemove();
         // copy keys to avoid CME
         Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
-        keys.forEach(key -> removeDrive(key, false));
+        for (QIODriveKey key : keys) {
+            removeDrive(key, false);
+        }
         driveMap.clear();
         for (ServerPlayer player : playersViewingItems) {
             Mekanism.packetHandler().killItemViewer(player);
@@ -606,10 +610,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
-            data.getItemMap().forEach((storedKey, value) -> {
-                itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, value);
+            for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+                HashedItem storedKey = entry.getKey();
+                itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, entry.getLongValue());
                 markForUpdate(storedKey);
-            });
+            }
             setNeedsUpdate();
         }
     }
@@ -620,7 +625,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
         QIODriveData data = driveMap.get(key);
         if (updateItemMap) {
-            data.getItemMap().forEach((storedKey, value) -> {
+            for (Object2LongMap.Entry<HashedItem> entry : data.getItemMap().object2LongEntrySet()) {
+                HashedItem storedKey = entry.getKey();
+                long value = entry.getLongValue();
                 QIOItemTypeData itemData = itemDataMap.get(storedKey);
                 if (itemData != null) {
                     itemData.containingDrives.remove(key);
@@ -632,7 +639,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                         removeItemData(storedKey);
                     }
                 }
-            });
+            }
             setNeedsUpdate();
         }
         // remove drive and capacity info from core tracking

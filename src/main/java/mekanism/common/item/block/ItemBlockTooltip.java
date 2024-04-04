@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
@@ -79,10 +80,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     @Override
     public boolean placeBlock(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
-        if (hasBounding == null || WorldUtils.areBlocksValidAndReplaceable(context.getLevel(), context, hasBounding.getPositions(context.getClickedPos(), state))) {
+        if (hasBounding == null) {
             return super.placeBlock(context, state);
         }
-        return false;
+        AtomicBoolean isValid = new AtomicBoolean();
+        hasBounding.handle(context.getLevel(), context.getClickedPos(), state, context, (level, pos, ctx) -> {
+            if (isValid.get() && !WorldUtils.isValidReplaceableBlock(level, ctx, pos)) {
+                isValid.set(false);
+            }
+        });
+        return isValid.get() && super.placeBlock(context, state);
     }
 
     @Override

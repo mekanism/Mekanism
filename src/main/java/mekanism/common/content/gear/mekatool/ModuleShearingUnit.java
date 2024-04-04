@@ -133,8 +133,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         IShearable target = (IShearable) entity;
         if (target.isShearable(stack, world, pos)) {
             if (!world.isClientSide) {
-                target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE))
-                      .forEach(drop -> target.spawnShearedDrop(world, pos, drop));
+                for (ItemStack drop : target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE))) {
+                    target.spawnShearedDrop(world, pos, drop);
+                }
                 entity.gameEvent(GameEvent.SHEAR, player);
                 if (energyContainer != null) {
                     energyContainer.extract(MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get(), Action.EXECUTE, AutomationType.MANUAL);

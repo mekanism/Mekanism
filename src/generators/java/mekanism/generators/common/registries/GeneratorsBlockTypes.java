@@ -1,6 +1,8 @@
 package mekanism.generators.common.registries;
 
+import mekanism.api.functions.TriConsumer;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
+import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -41,7 +43,10 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class GeneratorsBlockTypes {
 
@@ -95,9 +100,14 @@ public class GeneratorsBlockTypes {
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
-          .withBounding((pos, state, builder) -> {
-              for (int i = 0; i < 4; i++) {
-                  builder.add(pos.above(i + 1));
+          .withBounding(new HandleBoundingBlock() {
+              @Override
+              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+                  BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+                  for (int i = 0; i < 4; i++) {
+                      mutable.setWithOffset(pos, 0, i + 1, 0);
+                      consumer.accept(level, mutable, data);
+                  }
               }
           })
           .withComputerSupport("windGenerator")
@@ -122,11 +132,16 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
-          .withBounding((pos, state, builder) -> {
-              builder.add(pos.above());
-              for (int x = -1; x <= 1; x++) {
-                  for (int z = -1; z <= 1; z++) {
-                      builder.add(pos.offset(x, 2, z));
+          .withBounding(new HandleBoundingBlock() {
+              @Override
+              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+                  BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+                  consumer.accept(level, mutable, data);
+                  for (int x = -1; x <= 1; x++) {
+                      for (int z = -1; z <= 1; z++) {
+                          mutable.setWithOffset(pos, x, 2, z);
+                          consumer.accept(level, mutable, data);
+                      }
                   }
               }
           })

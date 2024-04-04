@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
-import java.util.stream.Stream;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -110,8 +109,11 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                     //If the mode change is being enabled, and we handle mode changes
                     if (value && handlesModeChange()) {
                         // turn off mode change handling for other modules
-                        otherModules().filter(IModule::handlesModeChange)
-                              .forEach(Module::setModeHandlingDisabledForce);
+                        for (Module<?> module : container.modules()) {
+                            if (module.getData() != data && module.handlesModeChange()) {
+                                module.setModeHandlingDisabledForce();
+                            }
+                        }
                     }
                 }
             });
@@ -272,15 +274,17 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     private void disableOtherExclusives(boolean forceDisable) {
         int exclusiveFlags = data.getExclusiveFlags();
-        otherModules().forEach(module -> {
-            // disable other exclusive modules if this is an exclusive module, as this one will now be active
-            if (module.getData().isExclusive(exclusiveFlags)) {
-                module.setDisabledForce(forceDisable);
+        for (Module<?> module : container.modules()) {
+            if (module.getData() != getData()) {
+                // disable other exclusive modules if this is an exclusive module, as this one will now be active
+                if (module.getData().isExclusive(exclusiveFlags)) {
+                    module.setDisabledForce(forceDisable);
+                }
+                if (handlesModeChange() && module.handlesModeChange()) {
+                    module.setModeHandlingDisabledForce();
+                }
             }
-            if (handlesModeChange() && module.handlesModeChange()) {
-                module.setModeHandlingDisabledForce();
-            }
-        });
+        }
     }
 
     @Override
@@ -291,14 +295,6 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Override
     public ModuleContainer getContainer() {
         return container;
-    }
-
-    /**
-     * @return Other installed modules.
-     */
-    private Stream<Module<?>> otherModules() {
-        return container.modules().stream()
-              .filter(module -> module.getData() != getData());
     }
 
     @Nullable

@@ -51,7 +51,9 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     private static <TYPE extends BlockType> BlockBehaviour.Properties hack(TYPE type, BlockBehaviour.Properties props) {
         cacheType = type;
-        type.getAll().forEach(a -> a.adjustProperties(props));
+        for (Attribute a : type.getAll()) {
+            a.adjustProperties(props);
+        }
         return props;
     }
 

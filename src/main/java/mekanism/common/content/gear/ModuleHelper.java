@@ -57,7 +57,9 @@ public class ModuleHelper implements IModuleHelper {
         Map<Item, String> moduleContainers = addModuleContainers(event);
         this.moduleContainers.addAll(moduleContainers.keySet());
         Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap = new IdentityHashMap<>();
-        moduleContainers.forEach((container, imcMethod) -> mapSupportedModules(event, imcMethod, container, supportedContainersBuilderMap));
+        for (Map.Entry<Item, String> entry : moduleContainers.entrySet()) {
+            mapSupportedModules(event, entry.getValue(), entry.getKey(), supportedContainersBuilderMap);
+        }
         for (Map.Entry<ModuleData<?>, ImmutableSet.Builder<Item>> entry : supportedContainersBuilderMap.entrySet()) {
             supportedContainers.put(entry.getKey(), entry.getValue().build());
         }

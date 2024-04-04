@@ -1,7 +1,5 @@
 package mekanism.common.block.attribute;
 
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
@@ -20,14 +18,21 @@ import net.minecraft.world.level.block.state.BlockState;
 // at some point that should be cleaned up some
 public class AttributeHasBounding implements Attribute {
 
-    private final TriConsumer<BlockPos, BlockState, Builder<BlockPos>> boundingPositions;
+    public static final AttributeHasBounding ABOVE_ONLY = new AttributeHasBounding(new HandleBoundingBlock() {
+        @Override
+        public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+            consumer.accept(level, pos.above(), data);
+        }
+    });
 
-    public AttributeHasBounding(TriConsumer<BlockPos, BlockState, Builder<BlockPos>> boundingPositions) {
-        this.boundingPositions = boundingPositions;
+    private final HandleBoundingBlock boundingPosHandlers;
+
+    public AttributeHasBounding(HandleBoundingBlock boundingPosHandlers) {
+        this.boundingPosHandlers = boundingPosHandlers;
     }
 
-    public void removeBoundingBlocks(Level level, BlockPos pos, BlockState state) {
-        getPositions(pos, state).forEach(p -> {
+    public void removeBoundingBlocks(Level world, BlockPos pos, BlockState state) {
+        boundingPosHandlers.handle(world, pos, state, null, (level, p, ignored) -> {
             BlockState boundingState = level.getBlockState(p);
             if (!boundingState.isAir()) {
                 //The state might be air if we broke a bounding block first
@@ -41,15 +46,15 @@ public class AttributeHasBounding implements Attribute {
         });
     }
 
-    public void placeBoundingBlocks(Level level, BlockPos orig, BlockState state) {
-        getPositions(orig, state).forEach(boundingLocation -> {
+    public void placeBoundingBlocks(Level world, BlockPos orig, BlockState state) {
+        boundingPosHandlers.handle(world, orig, state, orig, (level, boundingLocation, data) -> {
             BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
             BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), level, boundingLocation, null, Direction.NORTH);
             level.setBlock(boundingLocation, newState, Block.UPDATE_ALL);
             if (!level.isClientSide()) {
                 TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, boundingLocation);
                 if (tile != null) {
-                    tile.setMainLocation(orig);
+                    tile.setMainLocation(data);
                 } else {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
                 }
@@ -57,9 +62,12 @@ public class AttributeHasBounding implements Attribute {
         });
     }
 
-    public Stream<BlockPos> getPositions(BlockPos pos, BlockState state) {
-        Stream.Builder<BlockPos> builder = Stream.builder();
-        boundingPositions.accept(pos, state, builder);
-        return builder.build();
+    public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+        boundingPosHandlers.handle(level, pos, state, data, consumer);
+    }
+
+    public interface HandleBoundingBlock {
+
+        <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer);
     }
 }

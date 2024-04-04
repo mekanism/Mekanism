@@ -110,9 +110,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     private void transferToNewGuiInternal(IGuiWrapper gui) {
         guiObj = gui;
-        children.forEach(child -> child.transferToNewGuiInternal(gui));
+        for (GuiElement guiElement : children) {
+            guiElement.transferToNewGuiInternal(gui);
+        }
         //Transfer position only children as well
-        positionOnlyChildren.forEach(child -> child.transferToNewGuiInternal(gui));
+        for (GuiElement child : positionOnlyChildren) {
+            child.transferToNewGuiInternal(gui);
+        }
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addChild(ELEMENT element) {
@@ -175,8 +179,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
      */
     public void resize(int prevLeft, int prevTop, int left, int top) {
         setPosition(getX() - prevLeft + left, getY() - prevTop + top);
-        children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
-        positionOnlyChildren.forEach(child -> child.resize(prevLeft, prevTop, left, top));
+        for (GuiElement guiElement : children) {
+            guiElement.resize(prevLeft, prevTop, left, top);
+        }
+        for (GuiElement child : positionOnlyChildren) {
+            child.resize(prevLeft, prevTop, left, top);
+        }
     }
 
     public boolean childrenContainsElement(Predicate<GuiElement> checker) {
@@ -424,7 +432,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         //TODO - 1.20.4: For this and onRelease etc do we want to somewhat do something like ContainerEventHandler does
         // where it only does the focused element?
-        children.forEach(element -> element.onDrag(mouseX, mouseY, deltaX, deltaY));
+        for (GuiElement element : children) {
+            element.onDrag(mouseX, mouseY, deltaX, deltaY);
+        }
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
     }
 

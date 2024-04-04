@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -106,18 +107,21 @@ public abstract class BaseTagProvider implements DataProvider {
                 }
             }
             List<CompletableFuture<?>> futures = new ArrayList<>();
-            supportedTagTypes.forEach((registry, tagTypeMap) -> {
+            for (Map.Entry<ResourceKey<? extends Registry<?>>, Map<TagKey<?>, TagBuilder>> entry : supportedTagTypes.entrySet()) {
+                Map<TagKey<?>, TagBuilder> tagTypeMap = entry.getValue();
                 if (!tagTypeMap.isEmpty()) {
                     //Create a dummy provider and pass all our collected data through to it
-                    futures.add(new TagsProvider(output, registry, lookupProvider, modid, existingFileHelper) {
+                    futures.add(new TagsProvider(output, entry.getKey(), lookupProvider, modid, existingFileHelper) {
                         @Override
                         protected void addTags(@NotNull HolderLookup.Provider lookupProvider) {
                             //Add each tag builder to the wrapped provider's builder
-                            tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.location(), tagBuilder));
+                            for (Map.Entry<TagKey<?>, TagBuilder> e : tagTypeMap.entrySet()) {
+                                builders.put(e.getKey().location(), e.getValue());
+                            }
                         }
                     }.run(cache));
                 }
-            });
+            }
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         });
     }

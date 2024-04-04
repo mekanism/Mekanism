@@ -1,10 +1,8 @@
 package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -568,7 +566,12 @@ public class WorldUtils {
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
     public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull BlockPos... positions) {
-        return areBlocksValidAndReplaceable(world, baseContext, Arrays.stream(positions));
+        for (BlockPos position : positions) {
+            if (!isValidReplaceableBlock(world, baseContext, position)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -578,16 +581,12 @@ public class WorldUtils {
      */
     public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
-        return areBlocksValidAndReplaceable(world, baseContext, positions.stream());
-    }
-
-    /**
-     * Checks if all the positions are valid and the current block in them can be replaced.
-     *
-     * @return True if the blocks can be replaced and is within the world's bounds.
-     */
-    public static boolean areBlocksValidAndReplaceable(@NotNull BlockGetter world, @Nullable BlockPlaceContext baseContext, @NotNull Stream<BlockPos> positions) {
-        return positions.allMatch(pos -> isValidReplaceableBlock(world, baseContext, pos));
+        for (BlockPos position : positions) {
+            if (!isValidReplaceableBlock(world, baseContext, position)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

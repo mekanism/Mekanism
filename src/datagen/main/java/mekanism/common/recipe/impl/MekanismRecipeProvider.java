@@ -112,7 +112,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
-        compatProviders.forEach(compatProvider -> compatProvider.addRecipes(consumer));
+        for (ISubRecipeProvider compatProvider : compatProviders) {
+            compatProvider.addRecipes(consumer);
+        }
     }
 
     @Override

@@ -494,18 +494,23 @@ public class RenderTickHandler {
     }
 
     private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, int red, int green, int blue, int alpha) {
-        List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
-            BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
+        List<Vertex[]> vertices = cachedWireFrames.get(state);
+        if (vertices == null) {
+            BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             //TODO: Eventually we may want to add support for Model data and maybe render type
             ModelData modelData = ModelData.EMPTY;
-            List<Vertex[]> vertices = new ArrayList<>();
+            vertices = new ArrayList<>();
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
+                for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, direction, rand, modelData, null))) {
+                    vertices.add(quad.getVertices());
+                }
             }
-            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
-            return vertices;
-        });
-        renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);
+            for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, null, rand, modelData, null))) {
+                vertices.add(quad.getVertices());
+            }
+            cachedWireFrames.put(state, vertices);
+        }
+        renderVertexWireFrame(vertices, buffer, matrix, red, green, blue, alpha);
     }
 
     public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
