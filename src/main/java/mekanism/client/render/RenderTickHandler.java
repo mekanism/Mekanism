@@ -427,9 +427,9 @@ public class RenderTickHandler {
                         if (tile != null) {
                             BlockEntityRenderer<BlockEntity> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
-                                renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) -> {
+                                renderWireFrame = (state,buffer, matrixStack, random,  red, green, blue, alpha) -> {
                                     if (wireFrameRenderer.isCombined()) {
-                                        renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                                        renderQuadsWireFrame(state, buffer, matrixStack, random, red, green, blue, alpha);
                                     }
                                     wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrixStack, buffer, red, green, blue, alpha);
                                 };
@@ -437,15 +437,14 @@ public class RenderTickHandler {
                         }
                     } else {
                         //Otherwise, skip getting the tile and just grab the model
-                        renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) ->
-                              renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                        renderWireFrame = this::renderQuadsWireFrame;
                     }
                     if (renderWireFrame != null) {
                         matrix.pushPose();
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0x66);
+                        renderWireFrame.render(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random, 0, 0, 0, 0x66);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -493,7 +492,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, int red, int green, int blue, int alpha) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand, int red, int green, int blue, int alpha) {
         List<Vertex[]> vertices = cachedWireFrames.get(state);
         if (vertices == null) {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
@@ -510,7 +509,7 @@ public class RenderTickHandler {
             }
             cachedWireFrames.put(state, vertices);
         }
-        renderVertexWireFrame(vertices, buffer, matrix, red, green, blue, alpha);
+        renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
     }
 
     public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
@@ -583,6 +582,6 @@ public class RenderTickHandler {
     @FunctionalInterface
     private interface WireFrameRenderer {
 
-        void render(VertexConsumer buffer, PoseStack matrix, BlockState state, int red, int green, int blue, int alpha);
+        void render(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource random, int red, int green, int blue, int alpha);
     }
 }
