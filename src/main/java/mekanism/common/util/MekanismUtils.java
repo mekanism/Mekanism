@@ -168,19 +168,10 @@ public final class MekanismUtils {
     }
 
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
-        if (entity instanceof Player player) {
-            return getItemInHand(player, side);
-        } else if (side == HumanoidArm.RIGHT) {
+        if (entity.getMainArm() == side) {
             return entity.getMainHandItem();
         }
         return entity.getOffhandItem();
-    }
-
-    public static ItemStack getItemInHand(Player player, HumanoidArm side) {
-        if (player.getMainArm() == side) {
-            return player.getMainHandItem();
-        }
-        return player.getOffhandItem();
     }
 
     /**
