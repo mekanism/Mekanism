@@ -2,9 +2,15 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -21,6 +27,14 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NotNull GasStack> gasInputHandler;
     private final BooleanSupplier modeSupplier;
+    private final Consumer<FluidStack> fluidInputSetter;
+    private final Consumer<GasStack> gasInputSetter;
+    private final Consumer<FluidStack> fluidOutputSetter;
+    private final Consumer<GasStack> gasOutputSetter;
+    private final Supplier<FluidStackIngredient> fluidInputGetter;
+    private final Supplier<GasStackIngredient> gasInputGetter;
+    private final Function<GasStack, FluidStack> fluidOutputGetter;
+    private final Function<FluidStack, GasStack> gasOutputGetter;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
     private GasStack recipeGas = GasStack.EMPTY;
@@ -46,6 +60,14 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
         this.gasOutputHandler = Objects.requireNonNull(gasOutputHandler, "Gas output handler cannot be null.");
         this.fluidOutputHandler = Objects.requireNonNull(fluidOutputHandler, "Fluid output handler cannot be null.");
         this.modeSupplier = Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null.");
+        this.fluidInputSetter = input -> this.recipeFluid = input;
+        this.gasInputSetter = input -> this.recipeGas = input;
+        this.fluidOutputSetter = output -> this.fluidOutput = output;
+        this.gasOutputSetter = output -> this.gasOutput = output;
+        this.fluidInputGetter = this.recipe::getFluidInput;
+        this.gasInputGetter = this.recipe::getGasInput;
+        this.fluidOutputGetter = this.recipe::getFluidOutput;
+        this.gasOutputGetter = this.recipe::getGasOutput;
     }
 
     @Override
@@ -59,16 +81,16 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
                     tracker.mismatchedRecipe();
                 } else {
                     //Handle fluid to gas conversion
-                    CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, fluidInputHandler, recipe::getFluidInput, input -> recipeFluid = input,
-                          gasOutputHandler, recipe::getGasOutput, output -> gasOutput = output, FluidStack::isEmpty);
+                    CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, fluidInputHandler, fluidInputGetter, fluidInputSetter,
+                          gasOutputHandler, gasOutputGetter, gasOutputSetter, ConstantPredicates.FLUID_EMPTY);
                 }
             } else if (!recipe.hasGasToFluid()) {
                 //If our recipe doesn't have a gas to fluid version, return that we cannot operate
                 tracker.mismatchedRecipe();
             } else {
                 //Handle gas to fluid conversion
-                CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, gasInputHandler, recipe::getGasInput, input -> recipeGas = input,
-                      fluidOutputHandler, recipe::getFluidOutput, output -> fluidOutput = output, GasStack::isEmpty);
+                CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, gasInputHandler, gasInputGetter, gasInputSetter,
+                      fluidOutputHandler, fluidOutputGetter, fluidOutputSetter, ConstantPredicates.chemicalEmpty());
             }
         }
     }

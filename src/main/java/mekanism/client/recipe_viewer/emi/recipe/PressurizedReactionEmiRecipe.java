@@ -4,6 +4,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -32,12 +33,12 @@ public class PressurizedReactionEmiRecipe extends MekanismEmiHolderRecipe<Pressu
             itemOutputs.add(output.item());
             gasOutputs.add(output.gas());
         }
-        if (itemOutputs.stream().allMatch(ItemStack::isEmpty)) {
+        if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             addOutputDefinition(List.of());
         } else {
             addItemOutputDefinition(itemOutputs);
         }
-        if (gasOutputs.stream().allMatch(GasStack::isEmpty)) {
+        if (gasOutputs.stream().allMatch(ConstantPredicates.chemicalEmpty())) {
             addOutputDefinition(List.of());
         } else {
             addChemicalOutputDefinition(gasOutputs);

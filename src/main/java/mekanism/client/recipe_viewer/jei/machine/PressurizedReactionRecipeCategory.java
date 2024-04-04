@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei.machine;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -72,10 +73,10 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
             itemOutputs.add(output.item());
             gasOutputs.add(output.gas());
         }
-        if (!itemOutputs.stream().allMatch(ItemStack::isEmpty)) {
+        if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
-        if (!gasOutputs.stream().allMatch(GasStack::isEmpty)) {
+        if (!gasOutputs.stream().allMatch(ConstantPredicates.chemicalEmpty())) {
             initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs)
                   .setSlotName(OUTPUT_GAS);
         }

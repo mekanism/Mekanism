@@ -4,7 +4,11 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriPredicate;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,6 +30,20 @@ public class ConstantPredicates {
     private static final Predicate<Object> alwaysTrue = t -> true;
     private static final BiPredicate<Object, Object> alwaysTrueBi = (t, u) -> true;
     private static final TriPredicate<Object, Object, Object> alwaysTrueTri = (t, u, v) -> true;
+
+    /**
+     * Represents a predicate that checks if an item stack is empty.
+     *
+     * @since 10.5.15
+     */
+    public static final Predicate<ItemStack> ITEM_EMPTY = ItemStack::isEmpty;
+    /**
+     * Represents a predicate that checks if a fluid stack is empty.
+     *
+     * @since 10.5.15
+     */
+    public static final Predicate<FluidStack> FLUID_EMPTY = FluidStack::isEmpty;
+    private static final Predicate<ChemicalStack<?>> CHEMICAL_EMPTY = ChemicalStack::isEmpty;
 
     private static final Predicate<Object> alwaysFalse = t -> false;
     private static final BiPredicate<Object, Object> alwaysFalseBi = (t, u) -> false;
@@ -92,5 +110,14 @@ public class ConstantPredicates {
      */
     public static <T> BiPredicate<T, @NotNull AutomationType> notExternal() {
         return (BiPredicate<T, @NotNull AutomationType>) notExternal;
+    }
+
+    /**
+     * Represents a predicate that checks if a chemical stack is empty.
+     *
+     * @since 10.5.15
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Predicate<STACK> chemicalEmpty() {
+        return (Predicate<STACK>) CHEMICAL_EMPTY;
     }
 }

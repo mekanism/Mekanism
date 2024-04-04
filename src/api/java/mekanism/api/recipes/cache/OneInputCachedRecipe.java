@@ -2,6 +2,7 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -40,6 +41,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
     private final Supplier<? extends InputIngredient<INPUT>> inputSupplier;
     private final Function<INPUT, OUTPUT> outputGetter;
     private final Predicate<OUTPUT> outputEmptyCheck;
+    private final Consumer<INPUT> inputSetter;
+    private final Consumer<OUTPUT> outputSetter;
 
     //Note: Our input and output shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
     @Nullable
@@ -68,13 +71,14 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
         this.outputGetter = Objects.requireNonNull(outputGetter, "Output getter cannot be null.");
         this.inputEmptyCheck = Objects.requireNonNull(inputEmptyCheck, "Input empty check cannot be null.");
         this.outputEmptyCheck = Objects.requireNonNull(outputEmptyCheck, "Output empty check cannot be null.");
+        this.inputSetter = input -> this.input = input;
+        this.outputSetter = output -> this.output = output;
     }
 
     @Override
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         super.calculateOperationsThisTick(tracker);
-        CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, inputHandler, inputSupplier, input -> this.input = input, outputHandler, outputGetter,
-              output -> this.output = output, inputEmptyCheck);
+        CachedRecipeHelper.oneInputCalculateOperationsThisTick(tracker, inputHandler, inputSupplier, inputSetter, outputHandler, outputGetter, outputSetter, inputEmptyCheck);
     }
 
     @Override
@@ -103,7 +107,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      */
     public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty,
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
               ConstantPredicates.alwaysFalse());
     }
 
@@ -118,8 +122,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      */
     public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStack, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, FluidStack::isEmpty,
-              FluidStack::isEmpty);
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
+              ConstantPredicates.FLUID_EMPTY);
     }
 
     /**
@@ -133,8 +137,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      */
     public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
-              ItemStack::isEmpty);
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
+              ConstantPredicates.ITEM_EMPTY);
     }
 
     /**
@@ -148,8 +152,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      */
     public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidStack, ItemStackToFluidRecipe> itemToFluid(ItemStackToFluidRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
-              FluidStack::isEmpty);
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
+              ConstantPredicates.FLUID_EMPTY);
     }
 
     /**
@@ -164,8 +168,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
     OneInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
           IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
-              ChemicalStack::isEmpty);
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
+              ConstantPredicates.chemicalEmpty());
     }
 
     /**
@@ -180,8 +184,8 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
           RECIPE extends ChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> OneInputCachedRecipe<@NotNull STACK, @NotNull STACK, RECIPE> chemicalToChemical(
           RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull STACK> inputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ChemicalStack::isEmpty,
-              ChemicalStack::isEmpty);
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.chemicalEmpty(),
+              ConstantPredicates.chemicalEmpty());
     }
 
     /**
@@ -195,7 +199,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe &
      */
     public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChanceOutput, SawmillRecipe> sawing(SawmillRecipe recipe, BooleanSupplier recheckAllErrors,
           IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChanceOutput> outputHandler) {
-        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ItemStack::isEmpty,
+        return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.alwaysFalse());
     }
 }
