@@ -21,7 +21,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -38,7 +37,6 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -65,6 +63,7 @@ import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -125,24 +124,19 @@ public class ClientTickHandler {
         return false;
     }
 
-    public static boolean isFlamethrowerOn(Player player) {
-        if (player != minecraft.player) {
-            return Mekanism.playerState.isFlamethrowerOn(player);
-        }
-        return hasFlamethrower(player) && minecraft.options.keyUse.isDown();
-    }
-
-    public static boolean hasFlamethrower(Player player) {
-        ItemStack currentItem = player.getInventory().getSelected();
-        return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem);
-    }
-
     public static void portableTeleport(Player player, InteractionHand hand, FrequencyIdentity identity) {
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
             PacketUtils.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
             portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
+        }
+    }
+
+    @SubscribeEvent
+    public void onStartTracking(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide && event.getEntity() instanceof Player player && MekanismConfig.client.enablePlayerSounds.get()) {
+            SoundHandler.startFlamethrowerSound(player);
         }
     }
 
@@ -182,7 +176,6 @@ public class ClientTickHandler {
             Mekanism.playerState.setJetpackState(playerUUID, jetpackInUse, true);
             Mekanism.playerState.setScubaMaskState(playerUUID, isScubaMaskOn(minecraft.player), true);
             Mekanism.playerState.setGravitationalModulationState(playerUUID, isGravitationalModulationOn(minecraft.player), true);
-            Mekanism.playerState.setFlamethrowerState(playerUUID, hasFlamethrower(minecraft.player), isFlamethrowerOn(minecraft.player), true);
 
             for (Iterator<Entry<Player, TeleportData>> iter = portableTeleports.entrySet().iterator(); iter.hasNext(); ) {
                 Entry<Player, TeleportData> entry = iter.next();

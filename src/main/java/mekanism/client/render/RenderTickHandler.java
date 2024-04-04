@@ -43,8 +43,8 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Camera;
@@ -66,6 +66,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -313,42 +314,57 @@ public class RenderTickHandler {
                             world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
                     }
-                    //Traverse players and do animations for idle flame throwers
+                    //Traverse players and do animations for idle flamethrowers
                     for (Player p : world.players()) {
-                        if (!p.swinging && !Mekanism.playerState.isFlamethrowerOn(p)) {
-                            ItemStack currentItem = p.getMainHandItem();
-                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
-                                Pos3D flameVec;
-                                Entity vehicle = p.getVehicle();
-                                boolean rightHanded = p.getMainArm() == HumanoidArm.RIGHT;
-                                if (player == p && minecraft.options.getCameraType().isFirstPerson()) {
-                                    flameVec = new Pos3D(1, 1, 1)
-                                          .multiply(p.getViewVector(minecraft.getPartialTick()))
-                                          .yRot(rightHanded ? 15 : -15)
-                                          .translate(0, p.getEyeHeight() - 0.1, 0);
-                                } else {
-                                    double flameXCoord = rightHanded ? -0.2 : 0.2;
-                                    double flameYCoord = 1;
-                                    double flameZCoord = 1.2;
-                                    if (p.isCrouching()) {
-                                        flameYCoord -= 0.65;
-                                        flameZCoord -= 0.15;
-                                    } else if (vehicle != null) {
-                                        flameYCoord -= p.getMyRidingOffset(vehicle) + 0.1;
-                                    }
-                                    flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(p.yBodyRot);
+                        if (!p.swinging) {
+                            if (player.isUsingItem()) {
+                                InteractionHand usedHand = player.getUsedItemHand();
+                                if (!(player.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
+                                    //If we the used item isn't a flamethrower, grab the other hand's item for checks
+                                    // if it was an active flamethrower we just skip adding the idle particles
+                                    tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                                 }
-                                Vec3 motion = vehicle == null ? p.getDeltaMovement() : vehicle.getDeltaMovement();
-                                Vec3 flameMotion = new Vec3(motion.x(), p.onGround() || vehicle != null ? 0 : motion.y(), motion.z());
-                                Vec3 mergedVec = p.position().add(flameVec);
-                                world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x,
-                                      flameMotion.y, flameMotion.z);
+                            } else if (!tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.MAIN_HAND)) {
+                                //If the player isn't using an item, try to first add particles for a flamethrower in the main hand
+                                // and then add particles for a flamethrower in the offhand if we failed
+                                tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.OFF_HAND);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private static boolean tryAddIdleFlamethrowerParticles(Minecraft minecraft, Player player, InteractionHand hand) {
+        if (!ItemFlamethrower.isIdleFlamethrower(player, hand)) {
+            return false;
+        }
+        Pos3D flameVec;
+        Entity vehicle = player.getVehicle();
+        boolean rightHanded = MekanismUtils.isRightArm(player, hand);
+        if (minecraft.player == player && minecraft.options.getCameraType().isFirstPerson()) {
+            flameVec = new Pos3D(1, 1, 1)
+                  .multiply(player.getViewVector(minecraft.getPartialTick()))
+                  .yRot(rightHanded ? 15 : -15)
+                  .translate(0, player.getEyeHeight() - 0.1, 0);
+        } else {
+            double flameXCoord = rightHanded ? -0.2 : 0.2;
+            double flameYCoord = 1;
+            double flameZCoord = 1.2;
+            if (player.isCrouching()) {
+                flameYCoord -= 0.65;
+                flameZCoord -= 0.15;
+            } else if (vehicle != null) {
+                flameYCoord -= player.getMyRidingOffset(vehicle) + 0.1;
+            }
+            flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(player.yBodyRot);
+        }
+        Vec3 motion = vehicle == null ? player.getDeltaMovement() : vehicle.getDeltaMovement();
+        Vec3 flameMotion = new Vec3(motion.x(), player.onGround() || vehicle != null ? 0 : motion.y(), motion.z());
+        Vec3 mergedVec = player.position().add(flameVec);
+        player.level().addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
+        return true;
     }
 
     @SubscribeEvent

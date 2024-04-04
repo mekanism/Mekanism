@@ -30,7 +30,6 @@ public class PlayerState {
     private final Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeScubaMasks = new ObjectOpenHashSet<>();
     private final Set<UUID> activeGravitationalModulators = new ObjectOpenHashSet<>();
-    private final Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
 
     private LevelAccessor world;
 
@@ -38,7 +37,6 @@ public class PlayerState {
         activeJetpacks.clear();
         activeScubaMasks.clear();
         activeGravitationalModulators.clear();
-        activeFlamethrowers.clear();
         if (isRemote) {
             SoundHandler.clearPlayerSounds();
         }
@@ -48,7 +46,6 @@ public class PlayerState {
         activeJetpacks.remove(uuid);
         activeScubaMasks.remove(uuid);
         activeGravitationalModulators.remove(uuid);
-        activeFlamethrowers.remove(uuid);
         if (isRemote) {
             SoundHandler.clearPlayerSounds(uuid);
             if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUUID().equals(uuid)) {
@@ -161,6 +158,7 @@ public class PlayerState {
         updateAttribute(player, NeoForgeMod.SWIM_SPEED.value(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
     }
 
+    //TODO - 1.20.4: Move these to the items?
     private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, FloatSupplier additionalSupplier) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
@@ -217,65 +215,5 @@ public class PlayerState {
 
     public Set<UUID> getActiveGravitationalModulators() {
         return activeGravitationalModulators;
-    }
-
-    // ----------------------
-    //
-    // Flamethrower state tracking
-    //
-    // ----------------------
-
-    public void setFlamethrowerState(UUID uuid, boolean isActive, boolean isLocal) {
-        setFlamethrowerState(uuid, isActive, isActive, isLocal);
-    }
-
-    public void setFlamethrowerState(UUID uuid, boolean hasFlameThrower, boolean isActive, boolean isLocal) {
-        boolean alreadyActive = activeFlamethrowers.contains(uuid);
-        boolean changed = alreadyActive != isActive;
-        if (alreadyActive && !isActive) {
-            activeFlamethrowers.remove(uuid); // On -> off
-        } else if (!alreadyActive && isActive) {
-            activeFlamethrowers.add(uuid); // Off -> on
-        }
-
-        if (world == null) {
-            //world is set from the OnWorldLoad event, a tick should never have happened before that.
-            throw new NullPointerException("mekanism.common.base.PlayerState#world is null. This should not happen. Optifine is known to cause this on client side.");
-        }
-
-        if (world.isClientSide()) {
-            boolean startSound;
-            // If something changed, and we're in a remote world, take appropriate action
-            if (changed) {
-                // If the player is the "local" player, we need to tell the server the state has changed
-                if (isLocal) {
-                    PacketUtils.sendToServer(new PacketGearStateUpdate(GearType.FLAMETHROWER, uuid, isActive));
-                }
-
-                // Start a sound playing if the person is now using a flamethrower
-                startSound = isActive;
-            } else {
-                //Start the sound if it isn't already active, and still isn't, but has a flame thrower
-                // This allows us to catch and start playing the idle sound
-                //TODO: Currently this only happens for the local player as "having" a flame thrower is not
-                // synced from server to client. This is not that big a deal, though may be something we want
-                // to look into eventually
-                startSound = !isActive && hasFlameThrower;
-                //Note: If they just continue to hold (but not use) a flamethrower it "will" continue having this
-                // attempt to start the sound. This is not a major deal as the uuid gets checked before attempting
-                // to retrieve the player or actually creating a new sound object.
-            }
-            if (startSound && MekanismConfig.client.enablePlayerSounds.get()) {
-                SoundHandler.startSound(world, uuid, SoundType.FLAMETHROWER);
-            }
-        }
-    }
-
-    public boolean isFlamethrowerOn(Player p) {
-        return activeFlamethrowers.contains(p.getUUID());
-    }
-
-    public Set<UUID> getActiveFlamethrowers() {
-        return activeFlamethrowers;
     }
 }

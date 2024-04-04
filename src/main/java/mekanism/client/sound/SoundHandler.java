@@ -92,11 +92,14 @@ public class SoundHandler {
         switch (soundType) {
             case JETPACK -> startSound(world, uuid, jetpackSounds, JetpackSound::new);
             case SCUBA_MASK -> startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
-            //TODO: Evaluate at some point if there is a better way to do this
-            // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-            case FLAMETHROWER -> startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
             case GRAVITATIONAL_MODULATOR -> startSound(world, uuid, gravitationalModulationSounds, GravitationalModulationSound::new);
         }
+    }
+
+    public static void startFlamethrowerSound(@NotNull Player player) {
+        //TODO: Evaluate at some point if there is a better way to do this
+        // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+        startSounds(player, flamethrowerSounds, FlamethrowerSoundActive::new, FlamethrowerSoundIdle::new);
     }
 
     private static void startSound(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<Player, PlayerSound> soundCreator) {
@@ -116,21 +119,19 @@ public class SoundHandler {
     }
 
     @SafeVarargs
-    private static void startSounds(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<Player, PlayerSound>... soundCreators) {
+    private static void startSounds(Player player, Map<UUID, PlayerSound[]> knownSounds, Function<Player, PlayerSound>... soundCreators) {
+        UUID uuid = player.getUUID();
         if (knownSounds.containsKey(uuid)) {
             if (playerSoundsEnabled()) {
                 //Check if it needs to be restarted
                 restartSounds(knownSounds.get(uuid));
             }
         } else {
-            Player player = world.getPlayerByUUID(uuid);
-            if (player != null) {
-                PlayerSound[] sounds = new PlayerSound[soundCreators.length];
-                for (int i = 0; i < soundCreators.length; i++) {
-                    playSound(sounds[i] = soundCreators[i].apply(player));
-                }
-                knownSounds.put(uuid, sounds);
+            PlayerSound[] sounds = new PlayerSound[soundCreators.length];
+            for (int i = 0; i < soundCreators.length; i++) {
+                playSound(sounds[i] = soundCreators[i].apply(player));
             }
+            knownSounds.put(uuid, sounds);
         }
     }
 

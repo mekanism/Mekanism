@@ -7,6 +7,7 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,14 +31,6 @@ public interface IGasItem {
     }
 
     default boolean hasGas(ItemStack stack) {
-        IGasHandler handler = Capabilities.GAS.getCapability(stack);
-        if (handler != null) {
-            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                if (!handler.getChemicalInTank(tank).isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return ChemicalUtil.hasGas(stack);
     }
 }

@@ -19,8 +19,6 @@ import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydrostaticRepulsorUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
-import mekanism.common.entity.EntityFlame;
-import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
@@ -74,10 +72,6 @@ public class CommonPlayerTickHandler {
                mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) && scubaTank.getMode(tank);
     }
 
-    private static boolean isFlamethrowerOn(Player player, ItemStack currentItem) {
-        return Mekanism.playerState.isFlamethrowerOn(player) && !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower;
-    }
-
     public static float getStepBoost(Player player) {
         if (player.isShiftKeyDown()) {
             return 0;
@@ -109,20 +103,6 @@ public class CommonPlayerTickHandler {
         Mekanism.playerState.updateSwimBoost(player);
         if (player instanceof ServerPlayer serverPlayer) {
             RadiationManager.get().tickServer(serverPlayer);
-        }
-
-        ItemStack currentItem = player.getInventory().getSelected();
-        if (isFlamethrowerOn(player, currentItem)) {
-            EntityFlame flame = EntityFlame.create(player);
-            if (flame != null) {
-                if (flame.isAlive()) {
-                    //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
-                    player.level().addFreshEntity(flame);
-                }
-                if (MekanismUtils.isPlayingMode(player)) {
-                    ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
-                }
-            }
         }
 
         ItemStack jetpack = IJetpackItem.getActiveJetpack(player);

@@ -13,6 +13,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
@@ -21,15 +22,22 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCrea
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -57,6 +65,66 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged || oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack) {
+        //Note: This is the same value as tridents and shields use. Technically we would be fine with them using it forever, but this is fine
+        // while we could base this on how much gas is stored in the flamethrower, then if something is filling it while using, then it will be wrong
+        //Secondary note: When this does run out the use animation briefly resets so the item renders slightly different for a second,
+        // but I don't think it is worth trying to fix given how long a use duration we have
+        return 72_000;
+    }
+
+    @NotNull
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        if (player != null && hasGas(context.getItemInHand())) {
+            player.startUsingItem(context.getHand());
+            return InteractionResult.CONSUME;
+        }
+        return super.useOn(context);
+    }
+
+    @NotNull
+    @Override
+    public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (hasGas(stack)) {
+            player.awardStat(Stats.ITEM_USED.get(this));
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(stack);
+        }
+        return InteractionResultHolder.pass(stack);
+    }
+
+    @Override
+    public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int remainingDuration) {
+        //TODO: Do we want to allow non players to use the flamethrower?
+        if (remainingDuration >= 0 && entity instanceof Player player) {
+            //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
+            if (hasGas(stack)) {
+                if (!level.isClientSide) {
+                    EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
+                    if (flame != null) {
+                        if (flame.isAlive()) {
+                            //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
+                            level.addFreshEntity(flame);
+                        }
+                        if (MekanismUtils.isPlayingMode(player)) {
+                            useGas(stack, 1);
+                        }
+                    }
+                }
+            } else {
+                //If the flamethrower runs out of gas, make it act as if the entity stopped using the item
+                // Have this happen on both the server and the client
+                entity.releaseUsingItem();
+            }
+        } else {
+            entity.releaseUsingItem();
+        }
     }
 
     @Override
@@ -131,6 +199,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return false;
+    }
+
+    public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        //If a flamethrower has no gas it can't be idle
+        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(stack);
     }
 
     @NothingNullByDefault

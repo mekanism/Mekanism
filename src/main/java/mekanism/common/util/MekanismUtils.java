@@ -55,6 +55,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -160,6 +161,10 @@ public final class MekanismUtils {
             return registryName.getNamespace();
         }
         return modid;
+    }
+
+    public static boolean isRightArm(LivingEntity entity, InteractionHand hand) {
+        return (entity.getMainArm() == HumanoidArm.RIGHT) == (hand == InteractionHand.MAIN_HAND);
     }
 
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {

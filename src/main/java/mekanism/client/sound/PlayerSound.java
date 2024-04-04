@@ -149,7 +149,6 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
     }
 
     public enum SoundType {
-        FLAMETHROWER,
         JETPACK,
         SCUBA_MASK,
         GRAVITATIONAL_MODULATOR

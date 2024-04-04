@@ -139,7 +139,16 @@ public class VoiceConnection extends Thread {
     }
 
     public int getCurrentChannel() {
-        WalkieData data = WalkieData.get(getPlayer().getInventory().getSelected());
+        ServerPlayer player = getPlayer();
+        int channel = getCurrentChannel(player.getMainHandItem());
+        if (channel == 0) {
+            channel = getCurrentChannel(player.getOffhandItem());
+        }
+        return channel;
+    }
+
+    private int getCurrentChannel(ItemStack stack) {
+        WalkieData data = WalkieData.get(stack);
         if (data != null && data.isRunning()) {
             return data.getChannel();
         }

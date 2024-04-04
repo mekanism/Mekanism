@@ -2,12 +2,12 @@ package mekanism.common.entity;
 
 import java.util.Optional;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -62,27 +63,29 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     @Nullable
-    public static EntityFlame create(Player player) {
-        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level());
+    public static EntityFlame create(Level level, LivingEntity owner, InteractionHand hand, FlamethrowerMode mode) {
+        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(level);
         if (flame == null) {
             return null;
         }
-        Pos3D playerPos = new Pos3D(player.getX(), player.getEyeY() - 0.1, player.getZ());
+        Pos3D ownerPos = new Pos3D(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
-        Vec3 lookVec = player.getLookAngle();
-        flameVec = flameVec.multiply(lookVec).yRot(6);
+        boolean rightHanded = MekanismUtils.isRightArm(owner, hand);
 
-        Vec3 mergedVec = playerPos.add(flameVec);
+        Vec3 lookVec = owner.getLookAngle();
+        flameVec = flameVec.multiply(lookVec)
+              .yRot(rightHanded ? 10 : -10);
+
+        Vec3 mergedVec = ownerPos.add(flameVec);
         flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
-        flame.setOwner(player);
-        ItemStack selected = player.getInventory().getSelected();
-        flame.setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, ((ItemFlamethrower) selected.getItem()).getMode(selected));
-        flame.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 0.5F, 1);
-        //Attempt to ray trace the area between the player and where the flame would actually start
+        flame.setOwner(owner);
+        flame.setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, mode);
+        flame.shootFromRotation(owner, owner.getXRot(), owner.getYRot(), 0, 0.5F, 1);
+        //Attempt to ray trace the area between the owner and where the flame would actually start
         // if it hits a block instead just have the flame hit the block directly to avoid being able
         // to shoot a flamethrower through one thick walls.
-        BlockHitResult blockRayTrace = player.level().clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flame));
+        BlockHitResult blockRayTrace = level.clip(new ClipContext(ownerPos, mergedVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, flame));
         if (blockRayTrace.getType() != Type.MISS) {
             flame.onHit(blockRayTrace);
         }

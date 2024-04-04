@@ -39,7 +39,6 @@ public class PacketGearStateUpdate implements IMekanismPacket<PlayPayloadContext
     @Override
     public void handle(PlayPayloadContext context) {
         switch (gearType) {
-            case FLAMETHROWER -> Mekanism.playerState.setFlamethrowerState(uuid, state, false);
             case JETPACK -> Mekanism.playerState.setJetpackState(uuid, state, false);
             case SCUBA_MASK -> Mekanism.playerState.setScubaMaskState(uuid, state, false);
             case GRAVITATIONAL_MODULATOR -> Mekanism.playerState.setGravitationalModulationState(uuid, state, false);
@@ -62,7 +61,6 @@ public class PacketGearStateUpdate implements IMekanismPacket<PlayPayloadContext
     }
 
     public enum GearType {
-        FLAMETHROWER,
         JETPACK,
         SCUBA_MASK,
         GRAVITATIONAL_MODULATOR

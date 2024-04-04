@@ -102,7 +102,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         }
         if (transporter instanceof DiversionTransporter diversionTransporter) {
             Player player = Minecraft.getInstance().player;
-            ItemStack itemStack = player.getInventory().getSelected();
+            //Player shouldn't be null here, but validate it
+            ItemStack itemStack = player == null ? ItemStack.EMPTY : player.getMainHandItem();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 BlockHitResult rayTraceResult = MekanismUtils.rayTrace(player);
                 if (rayTraceResult.getType() != Type.MISS && rayTraceResult.getBlockPos().equals(pos)) {
