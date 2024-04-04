@@ -351,7 +351,6 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public void trackForMainContainer(MekanismContainer container) {
         if (securityFrequency != null) {
             trackFrequencyForMainContainer(container, securityFrequency, FrequencyType.SECURITY);

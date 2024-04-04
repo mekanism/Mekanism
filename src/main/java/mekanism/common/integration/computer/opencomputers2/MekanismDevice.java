@@ -87,31 +87,14 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         }).toList();
     }
 
-    private static class MethodGroup implements RPCMethodGroup {
-
-        private final String name;
-        private final Set<RPCMethod> children;
-
-        private MethodGroup(String name, Set<RPCMethod> children) {
-            this.name = name;
-            this.children = children;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public Set<RPCMethod> getOverloads() {
-            return children;
-        }
+    private record MethodGroup(String getName, Set<RPCMethod> getOverloads) implements RPCMethodGroup {
 
         @Override
         public Optional<RPCMethod> findOverload(RPCInvocation invocation) {
-            if (!this.children.isEmpty()) {
+            Set<RPCMethod> children = getOverloads();
+            if (!children.isEmpty()) {
                 int parameters = invocation.getParameters().size();
-                for (RPCMethod m : this.children) {
+                for (RPCMethod m : children) {
                     if (m.getParameters().length == parameters) {
                         return Optional.of(m);
                     }

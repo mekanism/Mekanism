@@ -63,7 +63,7 @@ public class UnitDisplayUtils {
         return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, spaceBetweenSymbol);
     }
 
-    public static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
+    private static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         if (value == 0) {
             if (isShort) {
                 String spaceStr = spaceBetweenSymbol ? " " : "";

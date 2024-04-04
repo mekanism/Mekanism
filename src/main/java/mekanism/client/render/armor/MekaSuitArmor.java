@@ -495,7 +495,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
     private record ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
 
-        public ArmorQuads {
+        private ArmorQuads {
             if (opaqueQuads.isEmpty()) {
                 opaqueQuads = Collections.emptyMap();
             }
@@ -566,7 +566,7 @@ public class MekaSuitArmor implements ICustomArmor {
             super(rl);
         }
 
-        public Set<String> getPartsForSpec(ModuleModelSpec spec, boolean active) {
+        private Set<String> getPartsForSpec(ModuleModelSpec spec, boolean active) {
             SpecData specData = specParts.get(spec);
             if (specData == null) {
                 return Collections.emptySet();
@@ -672,7 +672,7 @@ public class MekaSuitArmor implements ICustomArmor {
         }
 
         @Override
-        public boolean isComponentVisible(String component, boolean fallback) {
+        public boolean isComponentVisible(@NotNull String component, boolean fallback) {
             //Ignore fallback as we always have a true or false answer
             return parts.contains(component);
         }

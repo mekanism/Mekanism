@@ -83,6 +83,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
      */
     private RefreshListener getRefreshListener(@NotNull Direction side) {
         RefreshListener listener = cachedListeners.get(side);
+        //noinspection Java8MapApi - Capturing lambda
         if (listener == null) {
             listener = new RefreshListener(transmitterTile, side);
             cachedListeners.put(side, listener);

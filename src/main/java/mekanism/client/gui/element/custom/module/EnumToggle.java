@@ -87,7 +87,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
             GuiUtils.fill(guiGraphics, getRelativeX() + optionCenter, getRelativeY() + 17, 1, 3, color);
             if (usesIcons) {
                 IHasModeIcon hasModeIcon = (IHasModeIcon) option;
-                guiGraphics.blit(hasModeIcon.getModeIcon(), (int) (getRelativeX() + optionCenter - 8), getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
             } else {
                 parent.drawTextWithScale(guiGraphics, text, getRelativeX() + left, getRelativeY() + 20, textColor, TEXT_SCALE);
             }

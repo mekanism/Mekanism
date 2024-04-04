@@ -19,7 +19,7 @@ public class OC2CapabilityHelper {
         });
     }*/
 
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")
     public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         //TODO - 1.20.2: Reimplement when OC2 updates
         //builder.with(CAPABILITY, (ICapabilityProvider<? super TILE, @Nullable Direction, Device>) PROVIDER, supportsComputer);

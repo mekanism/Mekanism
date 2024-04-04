@@ -326,6 +326,7 @@ public class QIOCraftingTransferHandler {
                             shuffleLookup.put(source, Collections.singletonList(actualSources));
                         } else {
                             List<List<SingularHashedItemSource>> list = shuffleLookup.get(source);
+                            //noinspection Java8MapApi - Capturing lambda
                             if (list == null) {
                                 list = new ArrayList<>(elements);
                                 shuffleLookup.put(source, list);

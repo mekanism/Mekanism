@@ -22,13 +22,11 @@ public class HashList<T> extends LinkedHashSet<T> {
     protected List<T> list;
 
     public HashList() {
-        super();
         list = new ArrayList<>();
     }
 
     public HashList(Collection<? extends T> toCopy) {
-        super();
-        list = new ArrayList<>();
+        this();
         addAll(toCopy);
     }
 
@@ -93,7 +91,7 @@ public class HashList<T> extends LinkedHashSet<T> {
     public Object clone() {
         @SuppressWarnings("unchecked") // safe (result of clone)
         HashList<T> dup = (HashList<T>) super.clone();
-        dup.list = new ArrayList<T>(this.list);
+        dup.list = new ArrayList<>(this.list);
         return dup;
     }
 
