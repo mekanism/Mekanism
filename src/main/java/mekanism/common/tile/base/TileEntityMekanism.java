@@ -620,10 +620,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             tile.updateSound();
         }
         tile.onUpdateClient();
-        tile.ticker++;
-        if (tile.supportsRedstone()) {
-            tile.redstoneLastTick = tile.redstone;
-        }
+        //None of our impls currently care about the ticker in their onUpdateClient methods
+        //tile.ticker++;
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
