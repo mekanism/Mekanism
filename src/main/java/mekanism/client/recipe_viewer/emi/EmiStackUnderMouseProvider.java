@@ -27,7 +27,7 @@ public class EmiStackUnderMouseProvider implements EmiStackProvider<Screen> {
                 } else {
                     return null;
                 }
-                return new EmiStackInteraction(emiStack);
+                return new EmiStackInteraction(emiStack, null, false);
             }).orElse(EmiStackInteraction.EMPTY);
         }
         return EmiStackInteraction.EMPTY;
