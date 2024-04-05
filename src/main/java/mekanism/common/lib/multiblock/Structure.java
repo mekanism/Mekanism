@@ -216,7 +216,7 @@ public class Structure {
 
     public void removeMultiblock(Level world) {
         if (multiblockData != null) {
-            multiblockData.remove(world);
+            multiblockData.remove(world, this);
             multiblockData = null;
         }
     }
@@ -236,8 +236,6 @@ public class Structure {
                 // from a structural multiblock's perspective
                 multiblock.resetStructure(multiblock.getManager());
             }
-        } else if (node instanceof IStructuralMultiblock) {
-            node.resetStructure(null);
         }
         FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
             if (pos.equals(start)) {
@@ -247,8 +245,7 @@ public class Structure {
             if (tile instanceof IMultiblockBase adj && isCompatible(n, adj)) {
                 boolean didMerge = false;
                 if (n instanceof IStructuralMultiblock structuralN && adj instanceof IStructuralMultiblock structuralAdj) {
-                    Set<MultiblockManager<?>> managers = new HashSet<>();
-                    managers.addAll(structuralN.getStructureMap().keySet());
+                    Set<MultiblockManager<?>> managers = new HashSet<>(structuralN.getStructureMap().keySet());
                     managers.addAll(structuralAdj.getStructureMap().keySet());
                     // if both are structural, they should merge all manager structures
                     //TODO - 1.18: Figure out what this should be as having it just be equals seems incorrect.

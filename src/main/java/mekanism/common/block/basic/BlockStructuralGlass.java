@@ -29,12 +29,10 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
-                if (!tile.structuralGuiAccessAllowed() || !tile.hasFormedMultiblock()) {
-                    //If the block's multiblock doesn't allow gui access via structural multiblocks (for example the evaporation plant),
-                    // or if the multiblock is not formed then pass
-                    return InteractionResult.PASS;
-                }
+            if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand)) && !tile.structuralGuiAccessAllowed()) {
+                //If the block's multiblock doesn't allow gui access via structural multiblocks (for example the evaporation plant),
+                // or if the multiblock is not formed then pass
+                return InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
         }
