@@ -67,13 +67,14 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      * run
      */
     default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isItemValid(stack)) {
-            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
-            return stack;
+        if (stack.isEmpty()) {
+            //"Fail quick" if the given stack is empty
+            return ItemStack.EMPTY;
         }
+        //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
         int needed = getLimit(stack) - getCount();
-        if (needed <= 0) {
-            //Fail if we are a full slot
+        if (needed <= 0 || !isItemValid(stack)) {
+            //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         boolean sameType = false;
