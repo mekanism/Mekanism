@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 public class HandlerTransitRequest extends TransitRequest {
 
     private final IItemHandler handler;
-    private final Map<HashedItem, HandlerItemData> itemMap = new LinkedHashMap<>();
+    private Map<HashedItem, HandlerItemData> itemMap = Collections.emptyMap();
 
     public HandlerTransitRequest(IItemHandler handler) {
         this.handler = handler;
@@ -22,6 +23,9 @@ public class HandlerTransitRequest extends TransitRequest {
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = HashedItem.create(stack);
+        if (itemMap.isEmpty()) {
+            itemMap = new LinkedHashMap<>();
+        }
         itemMap.computeIfAbsent(hashed, HandlerItemData::new).addSlot(slot, stack);
     }
 
@@ -62,8 +66,7 @@ public class HandlerTransitRequest extends TransitRequest {
             if (handler != null && !slotMap.isEmpty()) {
                 HashedItem itemType = getItemType();
                 ItemStack itemStack = itemType.getInternalStack();
-                ObjectIterator<Int2IntMap.Entry> iterator = slotMap.int2IntEntrySet().iterator();
-                while (iterator.hasNext()) {
+                for (ObjectIterator<Int2IntMap.Entry> iterator = slotMap.int2IntEntrySet().iterator(); iterator.hasNext(); )  {
                     Int2IntMap.Entry entry = iterator.next();
                     int slot = entry.getIntKey();
                     int currentCount = entry.getIntValue();
