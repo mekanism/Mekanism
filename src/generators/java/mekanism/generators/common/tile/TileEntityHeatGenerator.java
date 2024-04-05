@@ -95,7 +95,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
         // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> CommonHooks.getBurnTime(stack, null) / 20, size -> new FluidStack(Fluids.LAVA, size),
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> stack.getBurnTime(null) / 20, size -> new FluidStack(Fluids.LAVA, size),
               listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();

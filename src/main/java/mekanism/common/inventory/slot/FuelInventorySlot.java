@@ -31,7 +31,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return 0;
         }
-        int burnTime = CommonHooks.getBurnTime(current, null) / 2;
+        int burnTime = current.getBurnTime(null) / 2;
         if (burnTime > 0) {
             if (current.hasCraftingRemainingItem()) {
                 if (current.getCount() > 1) {

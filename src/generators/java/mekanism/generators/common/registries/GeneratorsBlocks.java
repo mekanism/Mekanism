@@ -57,7 +57,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class GeneratorsBlocks {
@@ -77,7 +76,7 @@ public class GeneratorsBlocks {
                             TileEntityHeatGenerator.INVERSE_CONDUCTION_COEFFICIENT, TileEntityHeatGenerator.INVERSE_INSULATION_COEFFICIENT
                       )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                             .addFluidSlot(0, (tank, listener, x, y) -> FluidFuelInventorySlot.forFuel(tank,
-                                  s -> CommonHooks.getBurnTime(s, null) / 20,
+                                  s -> s.getBurnTime(null) / 20,
                                   size -> new FluidStack(Fluids.LAVA, size),
                                   listener, x, y)
                             ).addEnergy()

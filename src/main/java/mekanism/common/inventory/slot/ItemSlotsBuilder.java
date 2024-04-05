@@ -83,7 +83,7 @@ public class ItemSlotsBuilder {
     }
 
     public ItemSlotsBuilder addFuelSlot() {
-        return addFuelSlot(stack -> CommonHooks.getBurnTime(stack, null));
+        return addFuelSlot(stack -> stack.getBurnTime(null));
     }
 
     public ItemSlotsBuilder addFuelSlot(ToIntFunction<@NotNull ItemStack> fuelValue) {
