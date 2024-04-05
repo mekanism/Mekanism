@@ -191,6 +191,10 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().has(type);
     }
 
+    public boolean isRadioactive() {
+        return getType().isRadioactive();
+    }
+
     @Nullable
     @Override
     public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
