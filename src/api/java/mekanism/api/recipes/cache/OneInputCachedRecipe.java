@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Base class to help implement handling of recipes with two inputs.
+ * Base class to help implement handling of recipes with one input.
  */
 @NothingNullByDefault
 public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>> extends CachedRecipe<RECIPE> {

@@ -2565,6 +2565,11 @@ methods:
     returns:
       javaType: int
       type: Number (int)
+  - description: Checks if a reaction is occurring.
+    methodName: isIgnited
+    returns:
+      javaType: boolean
+      type: boolean
   - methodName: setInjectionRate
     params:
     - javaType: int
@@ -4579,5 +4584,5 @@ methods:
     returns:
       javaType: boolean
       type: boolean
-version: 10.5.13
+version: 10.5.14
 ---
