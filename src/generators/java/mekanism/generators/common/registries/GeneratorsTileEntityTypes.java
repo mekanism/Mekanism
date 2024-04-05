@@ -4,6 +4,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -39,41 +40,41 @@ public class GeneratorsTileEntityTypes {
 
     //Generators
     public static final TileEntityTypeRegistryObject<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, TileEntityAdvancedSolarGenerator::new)
+          .mekBuilder(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, TileEntityAdvancedSolarGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .withSimple(Capabilities.EVAPORATION_SOLAR)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityBioGenerator> BIO_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator::new)
+    public static final TileEntityTypeRegistryObject<TileEntityBioGenerator> BIO_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityGasGenerator> GAS_BURNING_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.GAS_BURNING_GENERATOR, TileEntityGasGenerator::new)
+    public static final TileEntityTypeRegistryObject<TileEntityGasGenerator> GAS_BURNING_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.GAS_BURNING_GENERATOR, TileEntityGasGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new)
+    public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new)
+    public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new)
+    public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
     //Misc
     public static final TileEntityTypeRegistryObject<TileEntityReactorGlass> REACTOR_GLASS = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new)
+          .mekBuilder(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     //Fission Reactor
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_CASING, TileEntityFissionReactorCasing::new)
+          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_CASING, TileEntityFissionReactorCasing::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_PORT, TileEntityFissionReactorPort::new)
+          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_PORT, TileEntityFissionReactorPort::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, TileEntityFissionReactorLogicAdapter::new)
+          .mekBuilder(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, TileEntityFissionReactorLogicAdapter::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
@@ -81,28 +82,28 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityControlRodAssembly> CONTROL_ROD_ASSEMBLY = TILE_ENTITY_TYPES.register(GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, TileEntityControlRodAssembly::new);
     //Fusion Reactor
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, TileEntityFusionReactorController::new)
+          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, TileEntityFusionReactorController::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
           .without(Capabilities.GAS.block(), Capabilities.FLUID.block(), Capabilities.HEAT)
           .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorBlock::new)
+          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorBlock::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityLaserFocusMatrix> LASER_FOCUS_MATRIX = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.LASER_FOCUS_MATRIX, TileEntityLaserFocusMatrix::new)
+          .mekBuilder(GeneratorsBlocks.LASER_FOCUS_MATRIX, TileEntityLaserFocusMatrix::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.LASER_RECEPTOR)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, TileEntityFusionReactorLogicAdapter::new)
+          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, TileEntityFusionReactorLogicAdapter::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_PORT, TileEntityFusionReactorPort::new)
+          .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_PORT, TileEntityFusionReactorPort::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     //Turbine
@@ -110,16 +111,16 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityRotationalComplex> ROTATIONAL_COMPLEX = TILE_ENTITY_TYPES.register(GeneratorsBlocks.ROTATIONAL_COMPLEX, TileEntityRotationalComplex::new);
     public static final TileEntityTypeRegistryObject<TileEntitySaturatingCondenser> SATURATING_CONDENSER = TILE_ENTITY_TYPES.register(GeneratorsBlocks.SATURATING_CONDENSER, TileEntitySaturatingCondenser::new);
     public static final TileEntityTypeRegistryObject<TileEntityTurbineCasing> TURBINE_CASING = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.TURBINE_CASING, TileEntityTurbineCasing::new)
+          .mekBuilder(GeneratorsBlocks.TURBINE_CASING, TileEntityTurbineCasing::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityTurbineRotor> TURBINE_ROTOR = TILE_ENTITY_TYPES.register(GeneratorsBlocks.TURBINE_ROTOR, TileEntityTurbineRotor::new);
     public static final TileEntityTypeRegistryObject<TileEntityTurbineValve> TURBINE_VALVE = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.TURBINE_VALVE, TileEntityTurbineValve::new)
+          .mekBuilder(GeneratorsBlocks.TURBINE_VALVE, TileEntityTurbineValve::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityTurbineVent> TURBINE_VENT = TILE_ENTITY_TYPES
-          .mekBuilder(GeneratorsBlocks.TURBINE_VENT, TileEntityTurbineVent::new)
+          .mekBuilder(GeneratorsBlocks.TURBINE_VENT, TileEntityTurbineVent::new, TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
 }

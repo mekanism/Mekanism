@@ -42,18 +42,18 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     public <BE extends TileEntityMekanism> TileEntityTypeRegistryObject<BE> register(BlockRegistryObject<?, ?> block, BlockEntitySupplier<BE> factory) {
-        return mekBuilder(block, factory).build();
+        return mekBuilder(block, factory, TileEntityMekanism::tickServer).build();
     }
 
-    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> caplessMekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> caplessMekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory, BlockEntityTicker<BE> serverTicker) {
         return new BlockEntityTypeBuilder<BE>(block, factory)
               .clientTicker(TileEntityMekanism::tickClient)
-              .serverTicker(TileEntityMekanism::tickServer);
+              .serverTicker(serverTicker);
     }
 
-    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory, BlockEntityTicker<BE> serverTicker) {
         BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
-        BlockEntityTypeBuilder<BE> builder = this.<BE>caplessMekBuilder(block, factory)
+        BlockEntityTypeBuilder<BE> builder = this.<BE>caplessMekBuilder(block, factory, serverTicker)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
               .withSimple(IBlockSecurityUtils.INSTANCE.securityCapability(), hasSecurity)
