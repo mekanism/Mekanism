@@ -3530,6 +3530,14 @@
       }
     },
     {
+      "description": "Checks if a reaction is occurring.",
+      "methodName": "isIgnited",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
       "methodName": "setInjectionRate",
       "params": [
         {

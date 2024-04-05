@@ -405,6 +405,7 @@ Fusion Reactor Multiblock (formed),getWater,,Table (FluidStack),,false,Get the c
 Fusion Reactor Multiblock (formed),getWaterCapacity,,Number (int),,false,Get the capacity of the water tank.
 Fusion Reactor Multiblock (formed),getWaterFilledPercentage,,Number (double),,false,Get the filled percentage of the water tank.
 Fusion Reactor Multiblock (formed),getWaterNeeded,,Number (int),,false,Get the amount needed to fill the water tank.
+Fusion Reactor Multiblock (formed),isIgnited,,boolean,,false,Checks if a reaction is occurring.
 Fusion Reactor Multiblock (formed),setInjectionRate,rate: Number (int),,,false,
 Fusion Reactor Port,getMode,,boolean,,false,"true -> output, false -> input"
 Fusion Reactor Port,setMode,output: boolean,,,false,"true -> output, false -> input"
