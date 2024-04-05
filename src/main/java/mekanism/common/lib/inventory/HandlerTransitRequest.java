@@ -1,7 +1,7 @@
 package mekanism.common.lib.inventory;
 
+import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +49,7 @@ public class HandlerTransitRequest extends TransitRequest {
 
     public class HandlerItemData extends ItemData {
 
-        private final Int2IntMap slotMap = new Int2IntOpenHashMap();
+        private final Int2IntMap slotMap = new Int2IntLinkedOpenHashMap();
 
         public HandlerItemData(HashedItem itemType) {
             super(itemType);
