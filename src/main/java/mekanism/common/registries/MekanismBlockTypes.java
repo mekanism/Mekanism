@@ -408,6 +408,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.chargePad, MekanismConfig.storage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())
+          .with(new AttributeParticleFX().add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextDouble() - 0.5, -0.35, rand.nextDouble() - 0.5)))
           .withCustomShape(BlockShapes.CHARGEPAD)
           .withComputerSupport("chargepad")
           .build();

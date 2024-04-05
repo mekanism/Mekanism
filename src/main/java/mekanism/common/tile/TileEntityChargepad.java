@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -116,15 +115,6 @@ public class TileEntityChargepad extends TileEntityMekanism {
             }
         }
         return false;
-    }
-
-    @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        if (getActive()) {
-            level.addParticle(DustParticleOptions.REDSTONE, getBlockPos().getX() + level.random.nextDouble(), getBlockPos().getY() + 0.15,
-                  getBlockPos().getZ() + level.random.nextDouble(), 0, 0, 0);
-        }
     }
 
     @Override
