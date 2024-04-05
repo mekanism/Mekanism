@@ -132,7 +132,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             }
         } else {
-            playersUsing.forEach(Player::closeContainer);
+            if (!playersUsing.isEmpty()) {
+                playersUsing.forEach(Player::closeContainer);
+            }
             if (prevStructure) {
                 structureChanged(multiblock);
                 prevStructure = false;
