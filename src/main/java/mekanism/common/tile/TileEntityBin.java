@@ -6,6 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
@@ -22,23 +23,26 @@ import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> targetInventory;
     public int addTicks = 0;
     public int removeTicks = 0;
     private int delayTicks;
@@ -92,8 +96,10 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 BlockPos below = getBlockPos().below();
-                BlockEntity tile = WorldUtils.getTileEntity(getLevel(), below);
-                TransitResponse response = request.eject(this, below, tile, Direction.DOWN, 0, transporter -> transporter.getTransmitter().getColor());
+                if (targetInventory == null) {
+                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, below, Direction.UP);
+                }
+                TransitResponse response = request.eject(this, below, targetInventory.getCapability(), 0, transporter -> transporter.getTransmitter().getColor());
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
                     MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);

@@ -3,10 +3,9 @@ package mekanism.common.tile.component;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,13 +55,11 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -160,6 +157,16 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    private void addData(Map<Object, Set<Direction>> outputData, Object container, Set<Direction> outputSides) {
+        Set<Direction> directions = outputData.get(container);
+        if (directions == null) {
+            outputSides = EnumSet.copyOf(outputSides);
+            outputData.put(container, outputSides);
+        } else {
+            directions.addAll(outputSides);
+        }
+    }
+
     /**
      * @apiNote Ensure that it can eject before calling this method.
      */
@@ -170,28 +177,28 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             if (dataType.canOutput()) {
                 ISlotInfo slotInfo = info.getSlotInfo(dataType);
                 if (slotInfo != null) {
-                    List<Direction> outputSides = getSidesForData(info, facing, dataType);
+                    Set<Direction> outputSides = getSidesForData(info, facing, dataType);
                     if (!outputSides.isEmpty()) {
                         if (outputData == null) {
-                            //Lazy init outputData
-                            outputData = new HashMap<>();
+                            //Lazy init outputData, we use an identity hashmap to allow for cheaper compare checks
+                            outputData = new IdentityHashMap<>();
                         }
                         if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo) {
                             for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
                                 if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
-                                    outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                    addData(outputData, tank, outputSides);
                                 }
                             }
                         } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo fluidSlotInfo) {
                             for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
                                 if (!tank.isEmpty()) {
-                                    outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                    addData(outputData, tank, outputSides);
                                 }
                             }
                         } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo energySlotInfo) {
                             for (IEnergyContainer container : energySlotInfo.getContainers()) {
                                 if (!container.isEmpty()) {
-                                    outputData.computeIfAbsent(container, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                    addData(outputData, container, outputSides);
                                 }
                             }
                         }
@@ -252,6 +259,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
      * @apiNote Ensure that it can eject before calling this method.
      */
     private void outputItems(Direction facing, ConfigInfo info) {
+        ServerLevel level = (ServerLevel) tile.getLevel();
+        BlockPos.MutableBlockPos relative = null;
+        Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {
                 continue;
@@ -259,29 +269,47 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
             if (slotInfo instanceof InventorySlotInfo inventorySlotInfo) {
                 //Validate the slot info is of the correct type
-                List<Direction> outputs = getSidesForData(info, facing, dataType);
+                Set<Direction> outputs = getSidesForData(info, facing, dataType);
                 if (!outputs.isEmpty()) {
-                    IItemHandler handler = getHandler(outputs.get(0));
-                    //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
-                    // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
-                    // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
-                    // instead of only having to do it once per DataType
-                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
-                    if (!ejectMap.isEmpty()) {
-                        for (Direction side : outputs) {
-                            BlockPos relative = tile.getBlockPos().relative(side);
-                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), relative);
+                    EjectTransitRequest ejectMap = null;
+                    if (typeCapabilityCaches == null) {
+                        typeCapabilityCaches = capabilityCaches.computeIfAbsent(TransmissionType.ITEM, t -> new EnumMap<>(Direction.class));
+                        relative = new BlockPos.MutableBlockPos();
+                    }
+                    for (Direction side : outputs) {
+                        relative.setWithOffset(tile.getBlockPos(), side);
+                        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = (BlockCapabilityCache<IItemHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
+                        if (cache == null) {
+                            cache = Capabilities.ITEM.createCache(level, relative.immutable(), side.getOpposite());
+                            typeCapabilityCaches.put(side, cache);
+                        }
+                        IItemHandler capability = cache.getCapability();
+                        if (capability == null) {
+                            //Skip sides where there isn't a target
+                            continue;
+                        }
+                        if (ejectMap == null) {
+                            //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
+                            // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
+                            // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
+                            // instead of only having to do it once per DataType
+                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(getHandler(side)), inventorySlotInfo.getSlots());
+                            //No items to eject, exit
+                            if (ejectMap.isEmpty()) {
+                                break;
+                            }
+                        } else {
                             //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
                             ejectMap.handler = getHandler(side);
-                            //If the spot is not loaded just skip trying to eject to it
-                            TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, this.outputColorFunction);
-                            if (!response.isEmpty()) {
-                                // use the items returned by the TransitResponse; will be visible next loop
-                                response.useAll();
-                                if (ejectMap.isEmpty()) {
-                                    //If we are out of items to eject, break
-                                    break;
-                                }
+                        }
+                        //If the spot is not loaded just skip trying to eject to it
+                        TransitResponse response = ejectMap.eject(tile, relative, capability, 0, this.outputColorFunction);
+                        if (!response.isEmpty()) {
+                            // use the items returned by the TransitResponse; will be visible next loop
+                            response.useAll();
+                            if (ejectMap.isEmpty()) {
+                                //If we are out of items to eject, break
+                                break;
                             }
                         }
                     }
@@ -292,19 +320,19 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tickDelay = MekanismUtils.TICKS_PER_HALF_SECOND;
     }
 
-    private List<Direction> getSidesForData(ConfigInfo info, @NotNull Direction facing, @NotNull DataType dataType) {
-        List<Direction> directions = null;
+    private Set<Direction> getSidesForData(ConfigInfo info, @NotNull Direction facing, @NotNull DataType dataType) {
+        Set<Direction> directions = null;
         for (Map.Entry<RelativeSide, DataType> entry : info.getSideConfig()) {
             if (entry.getValue() == dataType) {
                 if (directions == null) {
                     //Lazy init the set so that if there are none that match we can just use an empty set
                     // instead of having to initialize an enum set
-                    directions = new ArrayList<>();
+                    directions = EnumSet.noneOf(Direction.class);
                 }
                 directions.add(entry.getKey().getDirection(facing));
             }
         }
-        return directions == null ? Collections.emptyList() : directions;
+        return directions == null ? Set.of() : directions;
     }
 
     private IItemHandler getHandler(Direction side) {

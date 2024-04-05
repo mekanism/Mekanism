@@ -98,7 +98,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -123,6 +122,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Nullable
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullInventory;
+    @Nullable
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> selfEjectInventory;
     @Nullable
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> ejectInventory;
 
@@ -265,24 +266,28 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
 
         if (doEject && delayTicks == 0) {
-            Direction oppositeDirection = getOppositeDirection();
+            Direction direction = getDirection();
+            Direction oppositeDirection = direction.getOpposite();
             BlockPos ejectPos = getBlockPos().above().relative(oppositeDirection);
-            if (ejectInventory == null) {
-                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos, oppositeDirection);
+            if (selfEjectInventory == null) {
+                selfEjectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos, oppositeDirection);
             }
-            IItemHandler ejectHandler = ejectInventory.getCapability();
-            if (ejectHandler != null) {
+            IItemHandler ejectHandler = selfEjectInventory.getCapability();
+            BlockPos ejectInvPos = ejectPos.relative(oppositeDirection);
+            if (ejectInventory == null) {
+                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectInvPos, direction);
+            }
+            IItemHandler targetHandler = ejectInventory.getCapability();
+            if (ejectHandler != null && targetHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
-                    BlockPos ejectInvPos = getBlockPos().above().relative(oppositeDirection, 2);
-                    BlockEntity ejectInv = WorldUtils.getTileEntity(level, ejectInvPos);
-                    TransitResponse response = ejectMap.eject(this, ejectPos, ejectInvPos, ejectInv, oppositeDirection, 0, transporter -> transporter.getTransmitter().getColor());
+                    TransitResponse response = ejectMap.eject(this, ejectPos, ejectInvPos, targetHandler, 0, transporter -> transporter.getTransmitter().getColor());
                     if (!response.isEmpty()) {
                         response.useAll();
                     }
                 }
-                delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
             }
+            delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
         } else if (delayTicks > 0) {
             delayTicks--;
         }
@@ -624,6 +629,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         super.invalidateDirectionCaches(newDirection);
         //Note: We only need to invalidate the eject inventory on rotation as the center block stays in the same position
         ejectInventory = null;
+        selfEjectInventory = null;
     }
 
     public boolean canInsert(List<ItemStack> toInsert) {

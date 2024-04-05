@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.lib.inventory.HandlerTransitRequest.HandlerItemData;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -17,7 +17,6 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -72,21 +71,26 @@ public abstract class TransitRequest {
     public abstract Collection<? extends ItemData> getItemData();
 
     @NotNull
-    public TransitResponse eject(BlockEntity outputter, BlockPos targetPos, @Nullable BlockEntity target, Direction side, int min,
+    public TransitResponse eject(BlockEntity outputter, BlockPos targetPos, @Nullable IItemHandler target, int min,
           Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
-        return eject(outputter, outputter.getBlockPos(), targetPos, target, side, min, outputColor);
+        return eject(outputter, outputter.getBlockPos(), targetPos, target, min, outputColor);
     }
 
     @NotNull
-    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, BlockPos targetPos, @Nullable BlockEntity target, Direction side, int min,
+    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, BlockPos targetPos, @Nullable IItemHandler target, int min,
           Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
         if (isEmpty()) {//Short circuit if our request is empty
             return getEmptyResponse();
         }
-        if (target instanceof TileEntityLogisticalTransporterBase transporter) {
+        Level level = outputter.getLevel();
+        if (target instanceof CursedTransporterItemHandler) {
+            TileEntityLogisticalTransporterBase transporter = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, level, targetPos);
+            if (transporter == null) {
+                return getEmptyResponse();
+            }
             return transporter.getTransmitter().insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
         }
-        return addToInventory(outputter.getLevel(), targetPos, target, side, min);
+        return addToInventoryUnchecked(target, min);
     }
 
     @NotNull
@@ -96,20 +100,12 @@ public abstract class TransitRequest {
         } else if (force && WorldUtils.getTileEntity(level, pos) instanceof TileEntityLogisticalSorter sorter) {
             return sorter.sendHome(this);
         }
-        return addToInventory(inventory, min);
+        return addToInventoryUnchecked(inventory, min);
     }
 
+    //Note: We are unchecked because we don't validate if we are empty or not
     @NotNull
-    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable BlockEntity tile, Direction side, int min) {
-        if (isEmpty()) {//Short circuit if our request is empty
-            return getEmptyResponse();
-        }
-        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
-        return addToInventory(inventory, min);
-    }
-
-    @NotNull
-    private TransitResponse addToInventory(@Nullable IItemHandler inventory, int min) {
+    public TransitResponse addToInventoryUnchecked(@Nullable IItemHandler inventory, int min) {
         if (inventory == null) {
             return getEmptyResponse();
         }
