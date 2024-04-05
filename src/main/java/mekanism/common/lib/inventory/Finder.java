@@ -12,9 +12,13 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 public interface Finder extends Predicate<ItemStack> {
 
     Finder ANY = stack -> true;
+    Finder NONE = stack -> false;
 
     static Finder item(Item itemType) {
-        return stack -> itemType != Items.AIR && itemType == stack.getItem();
+        if (itemType == Items.AIR) {
+            return NONE;
+        }
+        return stack -> stack.is(itemType);
     }
 
     static Finder item(ItemStack itemType) {

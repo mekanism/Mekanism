@@ -168,10 +168,9 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         // Update the structure with number of blades found on rotors
         structure.blades = blades;
 
-        BlockPos startCoord = complex.relative(Direction.UP);
-        if (WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, startCoord) != null) {
-            structure.coils = FormationProtocol.explore(startCoord, coord -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, coord) != null);
-        }
+        //Explore short circuits if the start position is not valid
+        structure.coils = FormationProtocol.explore(world, chunkMap, complex.relative(Direction.UP), null,
+              (level, chunks, start, n, pos) -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, level, chunks, pos) != null);
 
         if (coils.size() > structure.coils) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS);

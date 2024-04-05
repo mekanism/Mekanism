@@ -239,41 +239,41 @@ public class Structure {
         } else if (node instanceof IStructuralMultiblock) {
             node.resetStructure(null);
         }
-        FormationProtocol.explore(node.getBlockPos(), pos -> {
-            if (pos.equals(node.getBlockPos())) {
+        FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
+            if (pos.equals(start)) {
                 return true;
             }
-            BlockEntity tile = WorldUtils.getTileEntity(node.getLevel(), chunkMap, pos);
-            if (tile instanceof IMultiblockBase adj && isCompatible(node, adj)) {
+            BlockEntity tile = WorldUtils.getTileEntity(level, chunks, pos);
+            if (tile instanceof IMultiblockBase adj && isCompatible(n, adj)) {
                 boolean didMerge = false;
-                if (node instanceof IStructuralMultiblock && adj instanceof IStructuralMultiblock) {
+                if (n instanceof IStructuralMultiblock structuralN && adj instanceof IStructuralMultiblock structuralAdj) {
                     Set<MultiblockManager<?>> managers = new HashSet<>();
-                    managers.addAll(((IStructuralMultiblock) node).getStructureMap().keySet());
-                    managers.addAll(((IStructuralMultiblock) adj).getStructureMap().keySet());
+                    managers.addAll(structuralN.getStructureMap().keySet());
+                    managers.addAll(structuralAdj.getStructureMap().keySet());
                     // if both are structural, they should merge all manager structures
                     //TODO - 1.18: Figure out what this should be as having it just be equals seems incorrect.
                     // My guess is it should be the commented code down below but maybe it should be |= instead
                     for (MultiblockManager<?> manager : managers) {
-                        didMerge = mergeIfNecessary(node, adj, manager);
+                        didMerge = mergeIfNecessary(n, adj, manager);
                     }
-                        /*if (!managers.isEmpty()) {
-                            boolean merged = true;
-                            for (MultiblockManager<?> manager : managers) {
-                                merged &= mergeIfNecessary(node, adj, manager);
-                            }
-                            didMerge = merged;
-                        }*/
-                } else if (node instanceof IStructuralMultiblock) {
+                    /*if (!managers.isEmpty()) {
+                        boolean merged = true;
+                        for (MultiblockManager<?> manager : managers) {
+                            merged &= mergeIfNecessary(n, adj, manager);
+                        }
+                        didMerge = merged;
+                    }*/
+                } else if (n instanceof IStructuralMultiblock) {
                     // validate from the perspective of the IMultiblock
-                    if (!hasStructure(node, (IMultiblock<?>) adj)) {
-                        validate(adj, chunkMap);
+                    if (!hasStructure(n, (IMultiblock<?>) adj)) {
+                        validate(adj, chunks);
                     }
                     return false;
                 } else if (adj instanceof IStructuralMultiblock) {
-                    didMerge = mergeIfNecessary(node, adj, getManager(node));
+                    didMerge = mergeIfNecessary(n, adj, getManager(n));
                 } else { // both are regular IMultiblocks
                     // we know the structures are compatible so managers must be the same for both
-                    didMerge = mergeIfNecessary(node, adj, getManager(node));
+                    didMerge = mergeIfNecessary(n, adj, getManager(n));
                 }
                 return didMerge;
             }

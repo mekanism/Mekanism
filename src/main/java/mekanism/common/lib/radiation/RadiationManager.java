@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.Chunk3D;
 import mekanism.api.NBTConstants;
@@ -22,7 +21,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
@@ -318,7 +316,7 @@ public class RadiationManager implements IRadiationManager {
         if (!radiationTable.isEmpty()) {
             radiationTable.clear();
             markDirty();
-            updateClientRadiationForAll(ConstantPredicates.alwaysTrue());
+            updateClientRadiationForAll();
         }
     }
 
@@ -341,17 +339,23 @@ public class RadiationManager implements IRadiationManager {
     }
 
     private void updateClientRadiationForAll(ResourceKey<Level> dimension) {
-        updateClientRadiationForAll(player -> player.level().dimension() == dimension);
-    }
-
-    private void updateClientRadiationForAll(Predicate<ServerPlayer> clearForPlayer) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
             //Validate it is not null in case we somehow are being called from the client or at some other unexpected time
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                if (clearForPlayer.test(player)) {
+                if (player.level().dimension() == dimension) {
                     updateClientRadiation(player);
                 }
+            }
+        }
+    }
+
+    private void updateClientRadiationForAll() {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) {
+            //Validate it is not null in case we somehow are being called from the client or at some other unexpected time
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                updateClientRadiation(player);
             }
         }
     }
@@ -479,7 +483,7 @@ public class RadiationManager implements IRadiationManager {
                 //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
                 markDirty();
                 //Update radiation levels for any players where it has changed
-                updateClientRadiationForAll(ConstantPredicates.alwaysTrue());
+                updateClientRadiationForAll();
             }
         }
     }

@@ -83,8 +83,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             return FormationResult.fail(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER);
         }
 
-        structure.superheatingElements = FormationProtocol.explore(elements.iterator().next(), coord ->
-              coord.getY() < initDisperser.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, world, chunkMap, coord) != null);
+        structure.superheatingElements = FormationProtocol.explore(world, chunkMap, elements.iterator().next(), initDisperser,
+              (level, chunks, start, n, pos) -> pos.getY() < n.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, level, chunks, pos) != null);
 
         if (elements.size() > structure.superheatingElements) {
             return FormationResult.fail(MekanismLang.BOILER_INVALID_SUPERHEATING);
@@ -109,13 +109,16 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
 
         //Gradle build requires these fields to be final
         final BlockPos renderLocation = structure.renderLocation;
-        final int volLength = structure.length();
-        final int volWidth = structure.width();
-        structure.setWaterVolume(FormationProtocol.explore(initAir, coord ->
-              coord.getY() >= renderLocation.getY() - 1 && coord.getY() < initDisperser.getY() &&
-              coord.getX() >= renderLocation.getX() && coord.getX() < renderLocation.getX() + volLength &&
-              coord.getZ() >= renderLocation.getZ() && coord.getZ() < renderLocation.getZ() + volWidth &&
-              isAirOrFrame(chunkMap, coord)));
+        record Data(int disperserY, BlockPos renderLoc, int volLength, int volWidth) {
+        }
+        Data data = new Data(initDisperser.getY(), renderLocation, structure.length(), structure.width());
+        structure.setWaterVolume(FormationProtocol.explore(world, chunkMap, initAir, data, (level, chunks, start, d, pos) -> {
+            BlockPos renderLoc = d.renderLoc();
+            return pos.getY() >= renderLoc.getY() - 1 && pos.getY() < d.disperserY() &&
+                   pos.getX() >= renderLoc.getX() && pos.getX() < renderLoc.getX() + d.volLength() &&
+                   pos.getZ() >= renderLoc.getZ() && pos.getZ() < renderLoc.getZ() + d.volWidth() &&
+                   isAirOrFrame(chunks, pos);
+        }));
 
         //Make sure all air blocks are connected
         if (totalAir > structure.getWaterVolume()) {

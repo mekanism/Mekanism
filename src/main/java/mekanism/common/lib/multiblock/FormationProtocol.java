@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
@@ -157,12 +156,18 @@ public class FormationProtocol<T extends MultiblockData> {
         return MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_BLOCK_POS.translate(pos.getX(), pos.getY(), pos.getZ()));
     }
 
-    public static int explore(BlockPos start, Predicate<BlockPos> checker) {
-        return explore(start, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
+    @FunctionalInterface
+    public interface FormationChecker<NODE> {
+
+        boolean check(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, BlockPos toCheck);
     }
 
-    public static int explore(BlockPos start, Predicate<BlockPos> checker, int maxCount) {
-        if (!checker.test(start)) {
+    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker) {
+        return explore(level, chunkMap, start, node, checker, MAX_SIZE * MAX_SIZE * MAX_SIZE);
+    }
+
+    public static <NODE> int explore(Level level, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos start, NODE node, FormationChecker<NODE> checker, int maxCount) {
+        if (!checker.check(level, chunkMap, start, node, start)) {
             return 0;
         }
 
@@ -179,7 +184,7 @@ public class FormationProtocol<T extends MultiblockData> {
             }
             for (Direction side : EnumUtils.DIRECTIONS) {
                 mutable.setWithOffset(ptr, side);
-                if (!traversed.contains(mutable) && checker.test(mutable)) {
+                if (!traversed.contains(mutable) && checker.check(level, chunkMap, start, node, mutable)) {
                     BlockPos offset = mutable.immutable();
                     openSet.add(offset);
                     traversed.add(offset);
