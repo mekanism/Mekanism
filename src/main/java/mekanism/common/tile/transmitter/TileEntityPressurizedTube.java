@@ -11,7 +11,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -38,7 +37,6 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -141,7 +139,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             if (isRemote()) {
                 if (tube.hasTransmitterNetwork()) {
                     BoxedChemicalNetwork network = tube.getTransmitterNetwork();
-                    if (!network.lastChemical.isEmpty() && !network.isTankEmpty() && network.lastChemical.getChemical().has(Radiation.class)) {
+                    if (!network.lastChemical.isEmpty() && !network.isTankEmpty() && network.lastChemical.getChemical().isRadioactive()) {
                         //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                         // going through it, but it shouldn't matter too much
                         return network.currentScale;
@@ -149,7 +147,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
                 }
             } else {
                 IGasTank gasTank = tube.getGasTank();
-                if (!gasTank.isEmpty() && gasTank.getStack().has(Radiation.class)) {
+                if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
                     return gasTank.getStored() / (float) gasTank.getCapacity();
                 }
             }

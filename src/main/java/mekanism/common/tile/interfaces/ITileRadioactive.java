@@ -2,7 +2,6 @@ package mekanism.common.tile.interfaces;
 
 import java.util.List;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 
@@ -14,9 +13,8 @@ public interface ITileRadioactive {
                 IGasTank tank = tanks.get(0);
                 if (!tank.isEmpty() && tank.getStack().isRadioactive()) {
                     return tank.getStored() / (float) tank.getCapacity();
-                } else {
-                    return 0F;
                 }
+                return 0F;
             }
             float summedScale = 0;
             for (IGasTank tank : tanks) {

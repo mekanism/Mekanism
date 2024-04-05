@@ -191,6 +191,13 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().has(type);
     }
 
+    /**
+     * Helper to check if this chemical is radioactive without having to look it up from the attributes.
+     *
+     * @return {@code true} if this chemical is radioactive.
+     *
+     * @since 10.5.15
+     */
     public boolean isRadioactive() {
         return getType().isRadioactive();
     }
