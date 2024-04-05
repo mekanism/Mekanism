@@ -6,11 +6,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
@@ -135,7 +132,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
                         //There's a stack available to insert into the network...
                         if (!request.isEmpty()) {
-                            TransitResponse response = insert(inventoryPos, request, getColor(), true, 0);
+                            TransitResponse response = insert(null, inventoryPos, request, getColor(), true, 0);
                             if (response.isEmpty()) {
                                 //Insert failed; increment the backoff and calculate delay. Note that we cap retries
                                 // at a max of 40 ticks (2 seconds), which would be 4 consecutive retries
@@ -389,37 +386,30 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    public TransitResponse insert(BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
-    }
-
-    public TransitResponse insert(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(null, outputterPos, request, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
+    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        return insert(outputter, outputterPos, request, color, min, doEmit,
+              (stack, req, out, transporter, m, updateFlowing) -> stack.recalculatePath(req, transporter, m, updateFlowing));
     }
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputter.getBlockPos(), request, color, doEmit, stack -> stack.recalculateRRPath(request, outputter, this, min, doEmit));
+        return insert(outputter, outputter.getBlockPos(), request, color, min, doEmit, TransporterStack::recalculateRRPath);
     }
 
-    private TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit,
-          Function<TransporterStack, TransitResponse> pathCalculator) {
+    private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,
+          int min, boolean doEmit, PathCalculator<BE> pathCalculator) {
         Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
             TransporterStack stack = createInsertStack(outputterPos.immutable(), color);
             if (stack.canInsertToTransporterNN(this, from, outputter)) {
-                return updateTransit(doEmit, stack, pathCalculator.apply(stack));
+                return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
             }
         }
         return request.getEmptyResponse();
     }
 
     public TransitResponse insertUnchecked(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insertUnchecked(outputterPos, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
-    }
-
-    private TransitResponse insertUnchecked(BlockPos outputterPos, @Nullable EnumColor color, boolean doEmit, Function<TransporterStack, TransitResponse> pathCalculator) {
         TransporterStack stack = createInsertStack(outputterPos, color);
-        return updateTransit(doEmit, stack, pathCalculator.apply(stack));
+        return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min, doEmit));
     }
 
     public TransporterStack createInsertStack(BlockPos outputterCoord, @Nullable EnumColor color) {
@@ -460,5 +450,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         // the next tick will generate the necessary save and if we crash before the next tick,
         // it's unlikely the data will be saved anyway (since chunks aren't saved until the end of
         // a tick).
+    }
+
+    @FunctionalInterface
+    private interface PathCalculator<BE extends BlockEntity> {
+
+        TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean doEmit);
     }
 }
