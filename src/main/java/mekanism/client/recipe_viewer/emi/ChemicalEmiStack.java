@@ -4,6 +4,7 @@ import dev.emi.emi.api.render.EmiRender;
 import dev.emi.emi.api.render.EmiTooltipComponents;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -100,7 +101,7 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     @Override
     public List<Component> getTooltipText() {
         if (chemical.isEmptyType()) {
-            return List.of();
+            return Collections.emptyList();
         }
         List<Component> tooltips = new ArrayList<>();
         tooltips.add(getName());

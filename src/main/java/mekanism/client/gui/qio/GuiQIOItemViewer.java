@@ -2,6 +2,7 @@ package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntSupplier;
@@ -71,7 +72,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             return List.of(MekanismLang.FREQUENCY.translate(freq.key()));
         }).tooltip(() -> {
             if (getFrequency() == null) {
-                return List.of();
+                return Collections.emptyList();
             }
             return List.of(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(menu.getTotalItems()),
                         TextUtils.format(menu.getCountCapacity())),

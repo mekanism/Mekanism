@@ -2,6 +2,7 @@ package mekanism.api.chemical.merged;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +204,7 @@ public class MergedChemicalTank {
          */
         @Deprecated(forRemoval = true, since = "10.5.15")
         public TANK createWrapper(MergedChemicalTank mergedTank, IChemicalTank<?, ?> tank, BooleanSupplier insertCheck) {
-            return createWrapper(mergedTank, tank, List.of(), insertCheck);
+            return createWrapper(mergedTank, tank, Collections.emptyList(), insertCheck);
         }
 
         /**
@@ -225,7 +226,7 @@ public class MergedChemicalTank {
 
         @Deprecated(forRemoval = true, since = "10.5.15")
         public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, BooleanSupplier insertCheck) {
-            this(mergedTank, internal, List.of(), insertCheck);
+            this(mergedTank, internal, Collections.emptyList(), insertCheck);
         }
 
         public GasTankWrapper(MergedChemicalTank mergedTank, IGasTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
@@ -237,7 +238,7 @@ public class MergedChemicalTank {
 
         @Deprecated(forRemoval = true, since = "10.5.15")
         public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, BooleanSupplier insertCheck) {
-            super(mergedTank, internal, insertCheck);
+            this(mergedTank, internal, Collections.emptyList(), insertCheck);
         }
 
         public InfusionTankWrapper(MergedChemicalTank mergedTank, IInfusionTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
@@ -249,7 +250,7 @@ public class MergedChemicalTank {
 
         @Deprecated(forRemoval = true, since = "10.5.15")
         public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, BooleanSupplier insertCheck) {
-            super(mergedTank, internal, insertCheck);
+            this(mergedTank, internal, Collections.emptyList(), insertCheck);
         }
 
         public PigmentTankWrapper(MergedChemicalTank mergedTank, IPigmentTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {
@@ -261,7 +262,7 @@ public class MergedChemicalTank {
 
         @Deprecated(forRemoval = true, since = "10.5.15")
         public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, BooleanSupplier insertCheck) {
-            super(mergedTank, internal, insertCheck);
+            this(mergedTank, internal, Collections.emptyList(), insertCheck);
         }
 
         public SlurryTankWrapper(MergedChemicalTank mergedTank, ISlurryTank internal, List<IChemicalTank<?, ?>> otherTanks, @Nullable BooleanSupplier insertCheck) {

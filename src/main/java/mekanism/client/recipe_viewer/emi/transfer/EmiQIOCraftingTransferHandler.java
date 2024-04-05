@@ -14,6 +14,7 @@ import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -40,7 +41,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Override
     public EmiPlayerInventory getInventory(AbstractContainerScreen<CONTAINER> screen) {
         //TODO - 1.20.4: ?? Do we need to somehow implement this in order to support the craftables view in Emi?
-        return new EmiPlayerInventory(List.of());
+        return new EmiPlayerInventory(Collections.emptyList());
     }
 
     @Override
@@ -80,7 +81,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
                 return List.of(EmiTooltipComponents.of(transferResult.tooltip()));
             }
         }
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Override

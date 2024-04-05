@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -24,7 +25,7 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
         addChemicalOutputDefinition(List.of(recipe.steam()));
         if (recipe.superHeatedCoolant() == null) {
             addEmptyInput();
-            addOutputDefinition(List.of());
+            addOutputDefinition(Collections.emptyList());
         } else {
             addInputDefinition(recipe.superHeatedCoolant());
             addChemicalOutputDefinition(List.of(recipe.cooledCoolant()));

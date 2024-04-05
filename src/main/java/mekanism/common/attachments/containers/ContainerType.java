@@ -194,7 +194,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public List<CONTAINER> getAttachmentContainersIfPresent(IAttachmentHolder holder) {
         ATTACHMENT attachment = getAttachmentIfPresent(holder);
-        return attachment == null ? List.of() : attachment.getContainers();
+        return attachment == null ? Collections.emptyList() : attachment.getContainers();
     }
 
     @Nullable
@@ -236,16 +236,16 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     @Nullable
     private ATTACHMENT getDefaultInternal(IAttachmentHolder holder) {
-        List<CONTAINER> defaultContainers = List.of();
+        List<CONTAINER> defaultContainers = Collections.emptyList();
         if (holder instanceof ItemStack stack) {
             if (!stack.isEmpty()) {
-                defaultContainers = knownDefaultItemContainers.getOrDefault(stack.getItem(), s -> List.of()).apply(stack);
+                defaultContainers = knownDefaultItemContainers.getOrDefault(stack.getItem(), s -> Collections.emptyList()).apply(stack);
                 if (!defaultContainers.isEmpty() && itemAttachmentConstructor != null) {
                     return itemAttachmentConstructor.apply(stack, defaultContainers);
                 }
             }
         } else if (holder instanceof Entity entity) {
-            defaultContainers = knownDefaultEntityContainers.getOrDefault(entity.getType(), s -> List.of()).apply(entity);
+            defaultContainers = knownDefaultEntityContainers.getOrDefault(entity.getType(), s -> Collections.emptyList()).apply(entity);
         }
         if (defaultContainers.isEmpty()) {
             return null;

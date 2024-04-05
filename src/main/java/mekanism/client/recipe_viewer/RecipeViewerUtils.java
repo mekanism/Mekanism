@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -158,8 +159,8 @@ public class RecipeViewerUtils {
         }
         if (tags.size() == 1) {
             //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
-            return tags.stream().findFirst().map(tag -> tag.stream().map(ItemStack::new).toList()).orElse(List.of());
+            return tags.stream().findFirst().map(tag -> tag.stream().map(ItemStack::new).toList()).orElse(Collections.emptyList());
         }
-        return List.of();
+        return Collections.emptyList();
     }
 }

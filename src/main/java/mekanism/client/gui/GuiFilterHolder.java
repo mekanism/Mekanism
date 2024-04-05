@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -78,7 +79,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                 return getModIDStacks(modIDFilter.getModID());
             }
         }
-        return List.of();
+        return Collections.emptyList();
     }
 
     protected FilterButton addFilterButton(FilterButton button) {

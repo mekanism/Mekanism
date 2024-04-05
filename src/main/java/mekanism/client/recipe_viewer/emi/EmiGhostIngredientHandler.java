@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.emi;
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.GuiMekanism;
@@ -41,7 +42,7 @@ public class EmiGhostIngredientHandler implements EmiDragDropHandler<Screen> {
         if (screen instanceof GuiMekanism<?> gui) {
             return GhostIngredientHandler.getTargetsTyped(gui, stack, EmiGhostIngredientHandler::getFirstSupportedStack, EmiTarget::new);
         }
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Nullable

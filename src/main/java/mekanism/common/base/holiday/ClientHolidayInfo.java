@@ -1,5 +1,6 @@
 package mekanism.common.base.holiday;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.client.render.lib.QuadTransformation;
@@ -26,7 +27,7 @@ public final class ClientHolidayInfo {
     private static final Predicate<ResourceLocation> IS_HELLO_SCREEN = s -> s.getPath().contains("screen_hello");
     private static final Predicate<ResourceLocation> IS_CMD_SCREEN = s -> s.getPath().contains("screen_cmd");
     private static final Predicate<ResourceLocation> IS_BLANK_SCREEN = s -> s.getPath().contains("screen_blank");
-    private static Map<Holiday, QuadTransformation> HOLIDAY_MINER_TRANSFORMS = Map.of();
+    private static Map<Holiday, QuadTransformation> HOLIDAY_MINER_TRANSFORMS = Collections.emptyMap();
 
     @SubscribeEvent
     public static void onStitch(TextureAtlasStitchedEvent event) {

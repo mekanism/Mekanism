@@ -122,7 +122,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM -> {
                 List<IInventorySlot> slots;
                 if (stack.getItem() instanceof ItemBlockPersonalStorage) {
-                    slots = PersonalStorageManager.getInventoryIfPresent(stack).map(inv -> inv.getInventorySlots(null)).orElse(List.of());
+                    slots = PersonalStorageManager.getInventoryIfPresent(stack).map(inv -> inv.getInventorySlots(null)).orElse(Collections.emptyList());
                 } else {
                     slots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
                 }

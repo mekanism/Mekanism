@@ -128,12 +128,12 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     public Set<ModuleData<?>> getSupported(Item item) {
-        return supportedModules.getOrDefault(item, Set.of());
+        return supportedModules.getOrDefault(item, Collections.emptySet());
     }
 
     @Override
     public Set<Item> getSupported(IModuleDataProvider<?> typeProvider) {
-        return supportedContainers.getOrDefault(typeProvider.getModuleData(), Set.of());
+        return supportedContainers.getOrDefault(typeProvider.getModuleData(), Collections.emptySet());
     }
 
     @Override

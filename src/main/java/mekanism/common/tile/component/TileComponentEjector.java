@@ -3,6 +3,7 @@ package mekanism.common.tile.component;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
@@ -329,7 +330,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 directions.add(entry.getKey().getDirection(facing));
             }
         }
-        return directions == null ? Set.of() : directions;
+        return directions == null ? Collections.emptySet() : directions;
     }
 
     private IItemHandler getHandler(Direction side) {

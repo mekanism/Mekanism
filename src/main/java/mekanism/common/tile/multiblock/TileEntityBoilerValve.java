@@ -1,5 +1,6 @@
 package mekanism.common.tile.multiblock;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks(side) : List.of();
+        return side -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks(side) : Collections.emptyList();
     }
 
     @Override

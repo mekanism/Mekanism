@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.module;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.gear.ICustomModule;
@@ -28,7 +29,7 @@ public class CrTModuleHelper {
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack stack) {
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
-        return container == null ? Set.of() : container.supportedTypes();
+        return container == null ? Collections.emptySet() : container.supportedTypes();
     }
 
     /**

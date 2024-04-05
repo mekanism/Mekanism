@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -45,7 +46,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                                                                                         "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel gasTank;
     private int processTicks;
-    private List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> gasHandlerBelow = List.of();
+    private List<BlockCapabilityCache<IGasHandler, @Nullable Direction>> gasHandlerBelow = Collections.emptyList();
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);

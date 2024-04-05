@@ -1,5 +1,6 @@
 package mekanism.client.gui.qio;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
@@ -55,7 +56,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         return () -> {
             QIOFrequency freq = holder.getQIOFrequency();
             if (freq == null) {
-                return List.of();
+                return Collections.emptyList();
             }
             return List.of(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(freq.getTotalItemCount()),
                         TextUtils.format(freq.getTotalItemCountCapacity())),
@@ -114,7 +115,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                         return TagCache.getItemModIDStacks(modIDFilter.getModID());
                     }
                 }
-                return List.of();
+                return Collections.emptyList();
             }));
         }
     }

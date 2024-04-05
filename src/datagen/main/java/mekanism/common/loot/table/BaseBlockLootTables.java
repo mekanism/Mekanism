@@ -215,8 +215,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 CopyContainersLootFunction.Builder containerBuilder = CopyContainersLootFunction.builder();
                 for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
                     AttachedContainers<?> attachment = type.getAttachment(stack);
-                    List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : List.of();
-                    List<?> attachmentContainers = attachment == null ? List.of() : attachment.getContainers();
+                    List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
+                    List<?> attachmentContainers = attachment == null ? Collections.emptyList() : attachment.getContainers();
                     if (containers.size() == attachmentContainers.size()) {
                         if (!containers.isEmpty()) {
                             containerBuilder.copy(type);

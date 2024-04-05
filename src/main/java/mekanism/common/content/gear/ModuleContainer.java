@@ -227,7 +227,7 @@ public final class ModuleContainer implements IModuleContainer {
     @Override
     public List<IHUDElement> getHUDElements(Player player) {
         if (modules.isEmpty()) {
-            return List.of();
+            return Collections.emptyList();
         }
         List<IHUDElement> ret = new ArrayList<>();
         for (Module<?> module : modules()) {
@@ -241,7 +241,7 @@ public final class ModuleContainer implements IModuleContainer {
     @Override
     public List<Component> getHUDStrings(Player player) {
         if (modules.isEmpty()) {
-            return List.of();
+            return Collections.emptyList();
         }
         List<Component> ret = new ArrayList<>();
         for (Module<?> module : modules()) {

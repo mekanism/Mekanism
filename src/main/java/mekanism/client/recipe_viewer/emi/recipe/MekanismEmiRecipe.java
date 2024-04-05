@@ -8,6 +8,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -196,7 +197,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     public List<? extends GuiEventListener> children() {
         //TODO: I believe returning empty for this is fine for now, though we could potentially gather the children and then
         // return the same instance for the element each call to addWidgets, and just wrap it into a new widget?
-        return List.of();
+        return Collections.emptyList();
     }
 
     protected static <STACK> Supplier<STACK> getSupplier(List<STACK> stacks, STACK empty) {

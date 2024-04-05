@@ -1,6 +1,7 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
 import dev.emi.emi.api.widget.WidgetHolder;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -34,7 +35,7 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
         addInputDefinition(input);
         List<? extends ChemicalStack<?>> inputRepresentations = input.getRepresentations();
-        displayItems = input instanceof ChemicalStackIngredient.SlurryStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : List.of();
+        displayItems = input instanceof ChemicalStackIngredient.SlurryStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : Collections.emptyList();
         oreInfo = new IOreInfo() {
             @NotNull
             @Override

@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.Action;
@@ -69,7 +70,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public int valve;
     @NotNull
     public FluidStack valveFluid = FluidStack.EMPTY;
-    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerBelow = List.of();
+    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
 
     public float prevScale;
 

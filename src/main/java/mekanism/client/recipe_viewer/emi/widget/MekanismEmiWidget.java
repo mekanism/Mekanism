@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.emi.widget;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.Widget;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.gui.element.GuiElement;
@@ -49,7 +50,7 @@ public class MekanismEmiWidget extends Widget {
         /*if (element.isMouseOver(mouseX, mouseY)) {
             element.renderToolTip(guiGraphics, mouseX, mouseY);
         }*/
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Override

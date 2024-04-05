@@ -105,7 +105,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * The nodes that have full sources near them or in them
      */
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
-    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerAbove = List.of();
+    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerAbove = Collections.emptyList();
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")

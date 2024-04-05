@@ -2,6 +2,7 @@ package mekanism.api.gear;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -233,7 +234,7 @@ public interface IModuleHelper {
      */
     default Collection<? extends IModule<?>> loadAll(ItemStack stack) {
         IModuleContainer container = getModuleContainerNullable(stack);
-        return container != null ? container.modules() : List.of();
+        return container != null ? container.modules() : Collections.emptyList();
     }
 
     /**
@@ -264,7 +265,7 @@ public interface IModuleHelper {
      */
     default Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
         IModuleContainer container = getModuleContainerNullable(stack);
-        return container != null ? container.moduleTypes() : Set.of();
+        return container != null ? container.moduleTypes() : Collections.emptySet();
     }
 
     /**
