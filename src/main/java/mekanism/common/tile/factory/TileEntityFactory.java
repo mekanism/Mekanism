@@ -178,7 +178,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
+        builder.addContainer(energyContainer = MachineEnergyContainer.input(this, () -> {
+            listener.onContentsChanged();
+            for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
+                cacheLookupMonitor.unpause();
+            }
+        }));
         return builder.build();
     }
 

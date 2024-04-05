@@ -18,6 +18,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     protected final int cacheIndex;
     protected CachedRecipe<RECIPE> cachedRecipe;
     protected boolean hasNoRecipe;
+    protected boolean shouldUnpause;
 
     public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler) {
         this(handler, 0);
@@ -41,6 +42,11 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     public void onChange() {
         //Mark that we may have a recipe again
         hasNoRecipe = false;
+        unpause();
+    }
+
+    public void unpause() {
+        shouldUnpause = true;
     }
 
     /**
@@ -65,6 +71,10 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
             handler.onCachedRecipeChanged(cachedRecipe, cacheIndex);
         }
         if (cachedRecipe != null) {
+            if (shouldUnpause) {
+                shouldUnpause = false;
+                cachedRecipe.unpauseErrors();
+            }
             cachedRecipe.process();
             return true;
         }
@@ -76,8 +86,8 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
             if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
-                handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler handler) {
-                c.loadSavedUsageSoFar(handler.getSavedUsedSoFar(cacheIndex));
+                handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler lookupHandler) {
+                c.loadSavedUsageSoFar(lookupHandler.getSavedUsedSoFar(cacheIndex));
             }
         }
     }

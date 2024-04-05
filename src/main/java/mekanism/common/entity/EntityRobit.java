@@ -14,6 +14,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -206,7 +207,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         // recipe the same tick and thus create uneven spikes of CPU usage
         int checkOffset = level().random.nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
         recheckAllRecipeErrors = () -> !playersUsing.isEmpty() && level().getGameTime() % TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY == checkOffset;
-        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
+        IContentsListener recipeCacheUnpauseListener = () -> {
+            onContentsChanged();
+            recipeCacheLookupMonitor.unpause();
+        };
+        energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, recipeCacheUnpauseListener));
 
         inventorySlots = new ArrayList<>();
         inventoryContainerSlots = new ArrayList<>();
@@ -221,7 +226,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
-        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
+        inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35));
         smeltingInputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         smeltingOutputSlot.tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));
 

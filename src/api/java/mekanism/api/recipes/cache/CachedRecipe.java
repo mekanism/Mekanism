@@ -35,6 +35,12 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      */
     private Set<RecipeError> errors = Collections.emptySet();
     /**
+     * Tracks whether recipe processing is currently paused due to errors.
+     *
+     * @since 10.5.15
+     */
+    private boolean pausedForErrors = false;
+    /**
      * Used to check if the {@link CachedRecipe} should recheck for all errors.
      */
     private final BooleanSupplier recheckAllErrors;
@@ -265,8 +271,22 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         //Validate the errors actually changed as they potentially are just the same ones we found last go around
         if (!this.errors.equals(errors)) {
             this.errors = errors;
+            if (this.errors.size() > 1) {
+                pausedForErrors = true;
+            } else {
+                pausedForErrors = !this.errors.contains(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
+            }
             onErrorsChange.accept(errors);
         }
+    }
+
+    /**
+     * Unpauses any recipes that got paused due to errors that cause processing to stop.
+     *
+     * @since 10.5.15
+     */
+    public void unpauseErrors() {
+        pausedForErrors = false;
     }
 
     /**
@@ -286,6 +306,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     public void process() {
         //TODO: Evaluate adding in some marker that gets set to true here that then denies the various callbacks/builders from being used
         // as once we start processing the cached recipe should basically be immutable
+        if (pausedForErrors) {
+            //Note: We just set active as false if we are paused for errors and then don't do any other processing
+            setActive.accept(false);
+            return;
+        }
         int operations;
         if (canHolderFunction.getAsBoolean()) {
             setupVariableValues();
