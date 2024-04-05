@@ -5,7 +5,9 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -21,7 +23,17 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
-    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class);
+    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = new ChemicalAttributeValidator() {
+        @Override
+        public boolean validate(ChemicalAttribute attr) {
+            return attr instanceof GasAttributes.Radiation;
+        }
+
+        @Override
+        public boolean process(Chemical<?> chemical) {
+            return chemical.isRadioactive();
+        }
+    };
 
     public static StackedWasteBarrel create(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Radioactive Waste Barrel tile entity cannot be null");

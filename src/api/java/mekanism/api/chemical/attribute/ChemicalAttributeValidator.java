@@ -6,8 +6,28 @@ import mekanism.api.chemical.ChemicalStack;
 
 public interface ChemicalAttributeValidator {
 
-    ChemicalAttributeValidator DEFAULT = attr -> !attr.needsValidation();
-    ChemicalAttributeValidator ALWAYS_ALLOW = attr -> true;
+    ChemicalAttributeValidator DEFAULT = new ChemicalAttributeValidator() {
+        @Override
+        public boolean validate(ChemicalAttribute attr) {
+            return !attr.needsValidation();
+        }
+
+        @Override
+        public boolean process(Chemical<?> chemical) {
+            return !chemical.hasAttributesWithValidation();
+        }
+    };
+    ChemicalAttributeValidator ALWAYS_ALLOW = new ChemicalAttributeValidator() {
+        @Override
+        public boolean validate(ChemicalAttribute attr) {
+            return true;
+        }
+
+        @Override
+        public boolean process(Chemical<?> chemical) {
+            return true;
+        }
+    };
 
     /**
      * Whether a certain attribute is considered valid by the caller.

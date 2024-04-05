@@ -26,7 +26,8 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     private final ResourceLocation iconLocation;
     private final boolean hidden;
     private final int tint;
-    private final boolean isRadioactive;
+    private boolean isRadioactive;
+    private boolean hasAttributesWithValidation;
 
     @Nullable
     private String translationKey;
@@ -38,6 +39,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         this.tint = builder.getTint();
         this.hidden = builder.isHidden();
         this.isRadioactive = attributeMap.containsKey(Radiation.class);
+        this.hasAttributesWithValidation = isRadioactive || attributeMap.values().stream().anyMatch(ChemicalAttribute::needsValidation);
     }
 
     @NotNull
@@ -71,6 +73,17 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         return isRadioactive;
     }
 
+    /**
+     * Helper to check if this chemical has any attributes that need validation.
+     *
+     * @return {@code true} if this chemical doesn't fit for {@link mekanism.api.chemical.attribute.ChemicalAttributeValidator#DEFAULT}.
+     *
+     * @since 10.5.15
+     */
+    public boolean hasAttributesWithValidation() {
+        return hasAttributesWithValidation;
+    }
+
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
@@ -85,6 +98,12 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      */
     public void addAttribute(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
+        if (attribute instanceof Radiation) {
+            isRadioactive = true;
+            hasAttributesWithValidation = true;
+        } else if (attribute.needsValidation()) {
+            hasAttributesWithValidation = true;
+        }
     }
 
     @Override
