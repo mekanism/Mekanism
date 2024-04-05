@@ -1,5 +1,6 @@
 package mekanism.tools.client.jei;
 
+import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
@@ -23,9 +24,11 @@ public class ToolsJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registry) {
-        //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
-        for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
-            RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem.value(), item -> item instanceof IHasRepairType hasRepairType ? hasRepairType.getRepairMaterial().getItems() : null);
+        if (MekanismJEI.shouldLoad()) {
+            //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
+            for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
+                RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem.value(), item -> item instanceof IHasRepairType hasRepairType ? hasRepairType.getRepairMaterial().getItems() : null);
+            }
         }
     }
 }
