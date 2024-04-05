@@ -60,6 +60,10 @@ public class CursedTransporterItemHandler implements IItemHandler {
         return TransitRequest.simple(stack.copyWithCount(limit));
     }
 
+    public LogisticalTransporterBase getTransporter() {
+        return transporter;
+    }
+
     @NotNull
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack itemStack, boolean simulate) {

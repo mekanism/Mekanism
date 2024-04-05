@@ -27,6 +27,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -46,7 +47,6 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -75,7 +75,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
     private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
-    private final Function<TileEntityLogisticalTransporterBase, EnumColor> outputColorFunction;
+    private final Function<LogisticalTransporterBase, EnumColor> outputColorFunction;
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final LongSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
@@ -260,7 +260,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
      */
     private void outputItems(Direction facing, ConfigInfo info) {
         ServerLevel level = (ServerLevel) tile.getLevel();
-        BlockPos.MutableBlockPos relative = null;
         Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches = null;
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {
@@ -274,13 +273,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     EjectTransitRequest ejectMap = null;
                     if (typeCapabilityCaches == null) {
                         typeCapabilityCaches = capabilityCaches.computeIfAbsent(TransmissionType.ITEM, t -> new EnumMap<>(Direction.class));
-                        relative = new BlockPos.MutableBlockPos();
                     }
                     for (Direction side : outputs) {
-                        relative.setWithOffset(tile.getBlockPos(), side);
                         BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = (BlockCapabilityCache<IItemHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
                         if (cache == null) {
-                            cache = Capabilities.ITEM.createCache(level, relative.immutable(), side.getOpposite());
+                            cache = Capabilities.ITEM.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
                             typeCapabilityCaches.put(side, cache);
                         }
                         IItemHandler capability = cache.getCapability();
@@ -303,7 +300,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             ejectMap.handler = getHandler(side);
                         }
                         //If the spot is not loaded just skip trying to eject to it
-                        TransitResponse response = ejectMap.eject(tile, relative, capability, 0, this.outputColorFunction);
+                        TransitResponse response = ejectMap.eject(tile, capability, 0, this.outputColorFunction);
                         if (!response.isEmpty()) {
                             // use the items returned by the TransitResponse; will be visible next loop
                             response.useAll();

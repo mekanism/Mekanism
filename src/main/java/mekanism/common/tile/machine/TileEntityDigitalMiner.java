@@ -42,6 +42,7 @@ import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -273,15 +274,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 selfEjectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos, oppositeDirection);
             }
             IItemHandler ejectHandler = selfEjectInventory.getCapability();
-            BlockPos ejectInvPos = ejectPos.relative(oppositeDirection);
             if (ejectInventory == null) {
-                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectInvPos, direction);
+                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos.relative(oppositeDirection), direction);
             }
             IItemHandler targetHandler = ejectInventory.getCapability();
             if (ejectHandler != null && targetHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
-                    TransitResponse response = ejectMap.eject(this, ejectPos, ejectInvPos, targetHandler, 0, transporter -> transporter.getTransmitter().getColor());
+                    TransitResponse response = ejectMap.eject(this, ejectPos, targetHandler, 0, LogisticalTransporterBase::getColor);
                     if (!response.isEmpty()) {
                         response.useAll();
                     }

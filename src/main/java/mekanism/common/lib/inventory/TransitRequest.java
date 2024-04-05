@@ -10,10 +10,10 @@ import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.item.CursedTransporterItemHandler;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.lib.inventory.HandlerTransitRequest.HandlerItemData;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -71,24 +71,18 @@ public abstract class TransitRequest {
     public abstract Collection<? extends ItemData> getItemData();
 
     @NotNull
-    public TransitResponse eject(BlockEntity outputter, BlockPos targetPos, @Nullable IItemHandler target, int min,
-          Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
-        return eject(outputter, outputter.getBlockPos(), targetPos, target, min, outputColor);
+    public TransitResponse eject(BlockEntity outputter, @Nullable IItemHandler target, int min, Function<LogisticalTransporterBase, EnumColor> outputColor) {
+        return eject(outputter, outputter.getBlockPos(), target, min, outputColor);
     }
 
     @NotNull
-    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, BlockPos targetPos, @Nullable IItemHandler target, int min,
-          Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
+    public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, @Nullable IItemHandler target, int min,
+          Function<LogisticalTransporterBase, EnumColor> outputColor) {
         if (isEmpty()) {//Short circuit if our request is empty
             return getEmptyResponse();
-        }
-        Level level = outputter.getLevel();
-        if (target instanceof CursedTransporterItemHandler) {
-            TileEntityLogisticalTransporterBase transporter = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, level, targetPos);
-            if (transporter == null) {
-                return getEmptyResponse();
-            }
-            return transporter.getTransmitter().insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
+        } else if (target instanceof CursedTransporterItemHandler cursed) {
+            LogisticalTransporterBase transporter = cursed.getTransporter();
+            return transporter.insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
         }
         return addToInventoryUnchecked(target, min);
     }

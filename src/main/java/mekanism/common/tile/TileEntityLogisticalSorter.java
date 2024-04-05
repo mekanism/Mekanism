@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -33,11 +32,9 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -45,11 +42,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,10 +104,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             //If there is no tile to pull from or the push to, skip doing any checks
             if (back != null) {
                 Direction direction = getDirection();
-                BlockPos frontPos = worldPosition.relative(direction);
-                Lazy<BlockEntity> front = Lazy.of(() -> WorldUtils.getTileEntity(getLevel(), frontPos));
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, frontPos, direction.getOpposite());
+                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction), direction.getOpposite());
                 }
                 IItemHandler frontCap = targetInventory.getCapability();
                 if (frontCap != null) {
@@ -123,7 +116,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
                             continue;
                         }
                         int min = singleItem ? 1 : filter.sizeMode ? filter.min : 0;
-                        TransitResponse response = emitItemToTransporter(frontCap, front, request, filter.color, min);
+                        TransitResponse response = emitItemToTransporter(frontCap, request, filter.color, min);
                         if (!response.isEmpty()) {
                             response.useAll();
                             setActive(true);
@@ -134,7 +127,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
 
                     if (!sentItems && autoEject) {
                         TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : 64, strictFinder);
-                        TransitResponse response = emitItemToTransporter(frontCap, front, request, color, 0);
+                        TransitResponse response = emitItemToTransporter(frontCap, request, color, 0);
                         if (!response.isEmpty()) {
                             response.useAll();
                             setActive(true);
@@ -147,18 +140,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         return sendUpdatePacket;
     }
 
-    private TransitResponse emitItemToTransporter(IItemHandler target, Supplier<BlockEntity> front, TransitRequest request, EnumColor filterColor, int min) {
+    private TransitResponse emitItemToTransporter(IItemHandler target, TransitRequest request, EnumColor filterColor, int min) {
         if (request.isEmpty()) {
             return request.getEmptyResponse();
-        } else if (target instanceof CursedTransporterItemHandler) {
-            if (front.get() instanceof TileEntityLogisticalTransporterBase transporterBase) {
-                LogisticalTransporterBase transporter = transporterBase.getTransmitter();
-                if (roundRobin) {
-                    return transporter.insertRR(this, request, filterColor, true, min);
-                }
-                return transporter.insert(this, getBlockPos(), request, filterColor, true, min);
+        } else if (target instanceof CursedTransporterItemHandler cursed) {
+            LogisticalTransporterBase transporter = cursed.getTransporter();
+            if (roundRobin) {
+                return transporter.insertRR(this, request, filterColor, true, min);
             }
-            return request.getEmptyResponse();
+            return transporter.insert(this, getBlockPos(), request, filterColor, true, min);
         }
         return request.addToInventoryUnchecked(target, min);
     }
