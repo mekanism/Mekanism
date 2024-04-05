@@ -91,10 +91,11 @@ public class LRU<T> extends AbstractCollection<T> {
      */
     @NotNull
     public T head() {
-        if (head.value == null) {
+        //head.next is never null as it will be tail when empty
+        if (head.next.value == null) {
             throw new NoSuchElementException("No entries");
         }
-        return head.value;
+        return head.next.value;
     }
 
     /**
@@ -104,7 +105,7 @@ public class LRU<T> extends AbstractCollection<T> {
      */
     @Nullable
     public T peek() {
-        return head.value;
+        return head.next.value;
     }
 
     private static class LRUEntry<T> {
