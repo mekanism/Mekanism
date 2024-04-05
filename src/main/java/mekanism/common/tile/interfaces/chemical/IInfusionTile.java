@@ -1,5 +1,6 @@
 package mekanism.common.tile.interfaces.chemical;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -16,13 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public interface IInfusionTile extends IInfusionTracker {
 
+    @Nullable
     InfusionHandlerManager getInfusionManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
+    @Nullable
     default InfusionHandlerManager getInitialInfusionManager(IContentsListener listener) {
-        return new InfusionHandlerManager(getInitialInfusionTanks(listener), new SimpleDynamicInfusionHandler(this::getInfusionTanks, listener));
+        IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> initialInfusionTanks = getInitialInfusionTanks(listener);
+        if (initialInfusionTanks == null) {
+            return null;
+        }
+        return new InfusionHandlerManager(initialInfusionTanks, new SimpleDynamicInfusionHandler(this::getInfusionTanks, listener));
     }
 
     /**
@@ -37,7 +44,8 @@ public interface IInfusionTile extends IInfusionTracker {
      * @apiNote This should not be overridden
      */
     default boolean canHandleInfusion() {
-        return getInfusionManager().canHandle();
+        InfusionHandlerManager infusionManager = getInfusionManager();
+        return infusionManager != null && infusionManager.canHandle();
     }
 
     /**
@@ -45,6 +53,7 @@ public interface IInfusionTile extends IInfusionTracker {
      */
     @Override
     default List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
-        return getInfusionManager().getContainers(side);
+        InfusionHandlerManager infusionManager = getInfusionManager();
+        return infusionManager != null ? infusionManager.getContainers(side) : Collections.emptyList();
     }
 }

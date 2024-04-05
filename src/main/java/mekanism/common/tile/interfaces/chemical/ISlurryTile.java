@@ -1,5 +1,6 @@
 package mekanism.common.tile.interfaces.chemical;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -16,13 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public interface ISlurryTile extends ISlurryTracker {
 
+    @Nullable
     SlurryHandlerManager getSlurryManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
+    @Nullable
     default SlurryHandlerManager getInitialSlurryManager(IContentsListener listener) {
-        return new SlurryHandlerManager(getInitialSlurryTanks(listener), new SimpleDynamicSlurryHandler(this::getSlurryTanks, listener));
+        IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> initialSlurryTanks = getInitialSlurryTanks(listener);
+        if (initialSlurryTanks == null) {
+            return null;
+        }
+        return new SlurryHandlerManager(initialSlurryTanks, new SimpleDynamicSlurryHandler(this::getSlurryTanks, listener));
     }
 
     /**
@@ -37,7 +44,8 @@ public interface ISlurryTile extends ISlurryTracker {
      * @apiNote This should not be overridden
      */
     default boolean canHandleSlurry() {
-        return getSlurryManager().canHandle();
+        SlurryHandlerManager slurryManager = getSlurryManager();
+        return slurryManager != null && slurryManager.canHandle();
     }
 
     /**
@@ -45,6 +53,7 @@ public interface ISlurryTile extends ISlurryTracker {
      */
     @Override
     default List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
-        return getSlurryManager().getContainers(side);
+        SlurryHandlerManager slurryManager = getSlurryManager();
+        return slurryManager != null ? slurryManager.getContainers(side) : Collections.emptyList();
     }
 }

@@ -166,7 +166,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      * A timer used to send packets to clients.
      */
     public int ticker;
-    private final List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
     private final List<ITileComponent> components = new ArrayList<>();
 
     protected final IBlockProvider blockProvider;
@@ -220,31 +219,38 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables IFrequencyHandler
 
     //Variables for handling ITileContainer
+    @Nullable
     protected final ItemHandlerManager itemHandlerManager;
     //End variables ITileContainer
 
     //Variables for handling IGasTile
+    @Nullable
     private final GasHandlerManager gasHandlerManager;
     private float radiationScale;
     //End variables IGasTile
 
     //Variables for handling IInfusionTile
+    @Nullable
     private final InfusionHandlerManager infusionHandlerManager;
     //End variables IInfusionTile
 
     //Variables for handling IPigmentTile
+    @Nullable
     private final PigmentHandlerManager pigmentHandlerManager;
     //End variables IPigmentTile
 
     //Variables for handling ISlurryTile
+    @Nullable
     private final SlurryHandlerManager slurryHandlerManager;
     //End variables ISlurryTile
 
     //Variables for handling IMekanismFluidHandler
+    @Nullable
     private final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
 
     //Variables for handling IMekanismStrictEnergyHandler
+    @Nullable
     private final EnergyHandlerManager energyHandlerManager;
     private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
@@ -252,6 +258,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Variables for handling IMekanismHeatHandler
     protected final Map<Direction, BlockCapabilityCache<IHeatHandler, @Nullable Direction>> adjacentHeatCaps;
     protected final CachedAmbientTemperature ambientTemperature;
+    @Nullable
     protected final HeatHandlerManager heatHandlerManager;
     //End variables for IMekanismHeatHandler
 
@@ -285,22 +292,64 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setSupportedTypes(block);
         presetVariables();
         IContentsListener saveOnlyListener = this::markForSave;
-        capabilityHandlerManagers.add(gasHandlerManager = getInitialGasManager(getListener(ContainerType.GAS, saveOnlyListener)));
-        capabilityHandlerManagers.add(infusionHandlerManager = getInitialInfusionManager(getListener(ContainerType.INFUSION, saveOnlyListener)));
-        capabilityHandlerManagers.add(pigmentHandlerManager = getInitialPigmentManager(getListener(ContainerType.PIGMENT, saveOnlyListener)));
-        capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager(getListener(ContainerType.SLURRY, saveOnlyListener)));
-        capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener)), this));
-        capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener)), this));
-        capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener)), this));
+
+        gasHandlerManager = getInitialGasManager(getListener(ContainerType.GAS, saveOnlyListener));
+        List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
+        if (gasHandlerManager != null) {
+            capabilityHandlerManagers.add(gasHandlerManager);
+        }
+
+        infusionHandlerManager = getInitialInfusionManager(getListener(ContainerType.INFUSION, saveOnlyListener));
+        if (infusionHandlerManager != null) {
+            capabilityHandlerManagers.add(infusionHandlerManager);
+        }
+
+        pigmentHandlerManager = getInitialPigmentManager(getListener(ContainerType.PIGMENT, saveOnlyListener));
+        if (pigmentHandlerManager != null) {
+            capabilityHandlerManagers.add(pigmentHandlerManager);
+        }
+
+        slurryHandlerManager = getInitialSlurryManager(getListener(ContainerType.SLURRY, saveOnlyListener));
+        if (slurryHandlerManager != null) {
+            capabilityHandlerManagers.add(slurryHandlerManager);
+        }
+
+        IFluidTankHolder initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
+        if (initialFluidTanks != null) {
+            capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(initialFluidTanks, this));
+        } else {
+            fluidHandlerManager = null;
+        }
+
+        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
+        if (initialEnergyContainers != null) {
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this));
+        } else {
+            energyHandlerManager = null;
+        }
+
+        IInventorySlotHolder initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
+        if (initialInventory != null) {
+            capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(initialInventory, this));
+        } else {
+            itemHandlerManager = null;
+        }
+
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature), this));
+        IHeatCapacitorHolder initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
+        if (initialHeatCapacitors != null) {
+            capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(initialHeatCapacitors, this));
+        } else {
+            heatHandlerManager = null;
+        }
         if (canHandleHeat()) {
             adjacentHeatCaps = new EnumMap<>(Direction.class);
             this.ambientTemperature = ambientTemperature;
         } else {
-            adjacentHeatCaps = Map.of();
+            adjacentHeatCaps = Collections.emptyMap();
             this.ambientTemperature = null;
         }
+
         addCapabilityResolvers(capabilityHandlerManagers);
         frequencyComponent = new TileComponentFrequency(this);
         if (supportsUpgrades()) {
@@ -411,42 +460,42 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public final boolean hasInventory() {
-        return itemHandlerManager.canHandle();
+        return itemHandlerManager != null && itemHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleGas() {
-        return gasHandlerManager.canHandle();
+        return gasHandlerManager != null && gasHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleInfusion() {
-        return infusionHandlerManager.canHandle();
+        return infusionHandlerManager != null && infusionHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandlePigment() {
-        return pigmentHandlerManager.canHandle();
+        return pigmentHandlerManager != null && pigmentHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleSlurry() {
-        return slurryHandlerManager.canHandle();
+        return slurryHandlerManager != null && slurryHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleFluid() {
-        return fluidHandlerManager.canHandle();
+        return fluidHandlerManager != null && fluidHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleEnergy() {
-        return energyHandlerManager.canHandle();
+        return energyHandlerManager != null && energyHandlerManager.canHandle();
     }
 
     @Override
     public final boolean canHandleHeat() {
-        return heatHandlerManager.canHandle();
+        return heatHandlerManager != null && heatHandlerManager.canHandle();
     }
 
     public void addComponent(ITileComponent component) {
@@ -1147,7 +1196,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return itemHandlerManager.getContainers(side);
+        return itemHandlerManager != null ? itemHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
     @Override
@@ -1157,7 +1206,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods ITileContainer
 
     //Methods for implementing IGasTile
-    @NotNull
+    @Nullable
     @Override
     public GasHandlerManager getGasManager() {
         return gasHandlerManager;
@@ -1188,7 +1237,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IGasTile
 
     //Methods for implementing IInfusionTile
-    @NotNull
+    @Nullable
     @Override
     public InfusionHandlerManager getInfusionManager() {
         return infusionHandlerManager;
@@ -1196,7 +1245,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IInfusionTile
 
     //Methods for implementing IPigmentTile
-    @NotNull
+    @Nullable
     @Override
     public PigmentHandlerManager getPigmentManager() {
         return pigmentHandlerManager;
@@ -1204,7 +1253,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods IPigmentTile
 
     //Methods for implementing ISlurryTile
-    @NotNull
+    @Nullable
     @Override
     public SlurryHandlerManager getSlurryManager() {
         return slurryHandlerManager;
@@ -1220,7 +1269,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public final List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidHandlerManager.getContainers(side);
+        return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
     }
     //End methods IMekanismFluidHandler
 
@@ -1233,7 +1282,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public final List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return energyHandlerManager.getContainers(side);
+        return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
     @NotNull
@@ -1298,7 +1347,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @NotNull
     @Override
     public final List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
-        return heatHandlerManager.getContainers(side);
+        return heatHandlerManager != null ? heatHandlerManager.getContainers(side) : Collections.emptyList();
     }
     //End methods for IInWorldHeatHandler
 

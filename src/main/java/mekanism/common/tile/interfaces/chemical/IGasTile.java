@@ -1,5 +1,6 @@
 package mekanism.common.tile.interfaces.chemical;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -16,13 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public interface IGasTile extends IGasTracker {
 
+    @Nullable
     GasHandlerManager getGasManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
+    @Nullable
     default GasHandlerManager getInitialGasManager(IContentsListener listener) {
-        return new GasHandlerManager(getInitialGasTanks(listener), new SimpleDynamicGasHandler(this::getGasTanks, listener));
+        IChemicalTankHolder<Gas, GasStack, IGasTank> initialGasTanks = getInitialGasTanks(listener);
+        if (initialGasTanks == null) {
+            return null;
+        }
+        return new GasHandlerManager(initialGasTanks, new SimpleDynamicGasHandler(this::getGasTanks, listener));
     }
 
     /**
@@ -37,7 +44,8 @@ public interface IGasTile extends IGasTracker {
      * @apiNote This should not be overridden
      */
     default boolean canHandleGas() {
-        return getGasManager().canHandle();
+        GasHandlerManager gasManager = getGasManager();
+        return gasManager != null && gasManager.canHandle();
     }
 
     /**
@@ -45,6 +53,7 @@ public interface IGasTile extends IGasTracker {
      */
     @Override
     default List<IGasTank> getGasTanks(@Nullable Direction side) {
-        return getGasManager().getContainers(side);
+        GasHandlerManager gasManager = getGasManager();
+        return gasManager != null ? gasManager.getContainers(side) : Collections.emptyList();
     }
 }

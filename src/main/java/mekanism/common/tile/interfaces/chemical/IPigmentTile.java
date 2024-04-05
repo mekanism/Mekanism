@@ -1,5 +1,6 @@
 package mekanism.common.tile.interfaces.chemical;
 
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -16,13 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @MethodsReturnNonnullByDefault
 public interface IPigmentTile extends IPigmentTracker {
 
+    @Nullable
     PigmentHandlerManager getPigmentManager();
 
     /**
      * @apiNote This should not be overridden, or directly called except for initial creation
      */
+    @Nullable
     default PigmentHandlerManager getInitialPigmentManager(IContentsListener listener) {
-        return new PigmentHandlerManager(getInitialPigmentTanks(listener), new SimpleDynamicPigmentHandler(this::getPigmentTanks, listener));
+        IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> initialPigmentTanks = getInitialPigmentTanks(listener);
+        if (initialPigmentTanks == null) {
+            return null;
+        }
+        return new PigmentHandlerManager(initialPigmentTanks, new SimpleDynamicPigmentHandler(this::getPigmentTanks, listener));
     }
 
     /**
@@ -37,7 +44,8 @@ public interface IPigmentTile extends IPigmentTracker {
      * @apiNote This should not be overridden
      */
     default boolean canHandlePigment() {
-        return getPigmentManager().canHandle();
+        PigmentHandlerManager pigmentManager = getPigmentManager();
+        return pigmentManager != null && pigmentManager.canHandle();
     }
 
     /**
@@ -45,6 +53,7 @@ public interface IPigmentTile extends IPigmentTracker {
      */
     @Override
     default List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
-        return getPigmentManager().getContainers(side);
+        PigmentHandlerManager pigmentManager = getPigmentManager();
+        return pigmentManager != null ? pigmentManager.getContainers(side) : Collections.emptyList();
     }
 }

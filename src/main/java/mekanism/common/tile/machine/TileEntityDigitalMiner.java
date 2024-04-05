@@ -1109,7 +1109,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         if (capability == Capabilities.ITEM.block()) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
-            return itemHandlerManager.resolve(capability, side);
+            return Objects.requireNonNull(itemHandlerManager, "Expected to have item handler").resolve(capability, side);
         }
         //Otherwise, we can just grab the capability from the tile normally
         return WorldUtils.getCapability(level, capability, worldPosition, null, this, side);
