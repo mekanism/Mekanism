@@ -53,21 +53,24 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         if (!removing) {
             //Don't try to remove it from the tile when the tile is the thing being removed
             if (structures.remove(structure.getManager(), structure)) {
+                boolean hasFormed = false;
+                boolean canAccess = false;
                 for (Structure struct : structures.values()) {
                     MultiblockData multiblock = getMultiblockData(struct);
                     if (multiblock != null && multiblock.isFormed()) {
-                        updateFormedMultiblock(true, multiblock.allowsStructuralGuiAccess(this));
-                        return;
+                        hasFormed = true;
+                        canAccess |= multiblock.allowsStructuralGuiAccess(this);
                     }
                 }
-                updateFormedMultiblock(false, false);
+                updateFormedMultiblock(hasFormed, canAccess);
             }
         }
     }
 
     @Override
     public void multiblockFormed(MultiblockData multiblock) {
-        updateFormedMultiblock(true, multiblock.allowsStructuralGuiAccess(this));
+        //Note: We pass the existing value of canAccessGui, as then we will validate when interacting, and only allow interacting with a specific sub one
+        updateFormedMultiblock(true, canAccessGui || multiblock.allowsStructuralGuiAccess(this));
     }
 
     private void updateFormedMultiblock(boolean hasFormed, boolean canAccess) {
