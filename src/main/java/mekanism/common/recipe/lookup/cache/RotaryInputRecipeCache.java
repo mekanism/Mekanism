@@ -3,7 +3,6 @@ package mekanism.common.recipe.lookup.cache;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
@@ -78,9 +77,18 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RotaryRecipe> matchPredicate = recipe -> recipe.test(input);
-        RotaryRecipe recipe = fluidInputCache.findFirstRecipe(input, matchPredicate);
-        return recipe == null ? findFirstRecipe(complexFluidInputRecipes, matchPredicate) : recipe;
+        RotaryRecipe recipe = findFirstRecipe(input, fluidInputCache.getRecipes(input));
+        return recipe == null ? findFirstRecipe(input, complexFluidInputRecipes) : recipe;
+    }
+
+    @Nullable
+    private RotaryRecipe findFirstRecipe(FluidStack input, Iterable<RotaryRecipe> recipes) {
+        for (RotaryRecipe recipe : recipes) {
+            if (recipe.test(input)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     /**
@@ -98,9 +106,18 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RotaryRecipe> matchPredicate = recipe -> recipe.test(input);
-        RotaryRecipe recipe = gasInputCache.findFirstRecipe(input, matchPredicate);
-        return recipe == null ? findFirstRecipe(complexGasInputRecipes, matchPredicate) : recipe;
+        RotaryRecipe recipe = findFirstRecipe(input, gasInputCache.getRecipes(input));
+        return recipe == null ? findFirstRecipe(input, complexGasInputRecipes) : recipe;
+    }
+
+    @Nullable
+    private RotaryRecipe findFirstRecipe(GasStack input, Iterable<RotaryRecipe> recipes) {
+        for (RotaryRecipe recipe : recipes) {
+            if (recipe.test(input)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     @Override

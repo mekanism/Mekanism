@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -92,18 +91,18 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
         // secondary validation we check inputB first as we know the recipe contains inputA as one of the
         // inputs, but we want to make sure that we only mark it as valid if the same input is on both sides
         // if the recipe combines two of the same type of ingredient
-        if (cache.contains(inputA, recipe -> {
-            INGREDIENT ingredientA = inputAExtractor.apply(recipe);
-            INGREDIENT ingredientB = inputBExtractor.apply(recipe);
-            return ingredientB.testType(inputB) && ingredientA.testType(inputA) || ingredientA.testType(inputB) && ingredientB.testType(inputA);
-        })) {
+        if (containsInput(inputA, inputB, cache.getRecipes(inputA))) {
             return true;
         }
         //Our quick lookup cache does not contain it, check any recipes where the ingredients are complex
-        for (RECIPE complexRecipe : complexRecipes) {
-            INGREDIENT ingredientA = inputAExtractor.apply(complexRecipe);
-            INGREDIENT ingredientB = inputBExtractor.apply(complexRecipe);
-            if (ingredientA.testType(inputA) && ingredientB.testType(inputB) || ingredientB.testType(inputA) && ingredientA.testType(inputB)) {
+        return containsInput(inputA, inputB, complexRecipes);
+    }
+
+    private boolean containsInput(INPUT inputA, INPUT inputB, Iterable<RECIPE> recipes) {
+        for (RECIPE recipe : recipes) {
+            INGREDIENT ingredientA = inputAExtractor.apply(recipe);
+            INGREDIENT ingredientB = inputBExtractor.apply(recipe);
+            if (ingredientB.testType(inputB) && ingredientA.testType(inputA) || ingredientA.testType(inputB) && ingredientB.testType(inputA)) {
                 return true;
             }
         }
@@ -126,12 +125,21 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
             return null;
         }
         initCacheIfNeeded(world);
-        //Note: The recipe's test method checks both directions
-        Predicate<RECIPE> matchPredicate = r -> r.test(inputA, inputB);
         //Lookup a recipe from the input map
-        RECIPE recipe = cache.findFirstRecipe(inputA, matchPredicate);
+        RECIPE recipe = findFirstRecipe(inputA, inputB, cache.getRecipes(inputA));
         // if there is no recipe, then check if any of our complex recipes match
-        return recipe == null ? findFirstRecipe(complexRecipes, matchPredicate) : recipe;
+        return recipe == null ? findFirstRecipe(inputA, inputB, complexRecipes) : recipe;
+    }
+
+    @Nullable
+    private RECIPE findFirstRecipe(INPUT inputA, INPUT inputB, Iterable<RECIPE> recipes) {
+        for (RECIPE recipe : recipes) {
+            //Note: The recipe's test method checks both directions
+            if (recipe.test(inputA, inputB)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     @Override

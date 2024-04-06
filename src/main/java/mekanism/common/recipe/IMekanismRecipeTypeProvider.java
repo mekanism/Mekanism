@@ -48,13 +48,24 @@ public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPU
      */
     @Nullable
     default RECIPE findFirst(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
-        return stream(world).map(RecipeHolder::value).filter(matchCriteria).findFirst().orElse(null);
+        for (RecipeHolder<RECIPE> recipeRecipeHolder : getRecipes(world)) {
+            RECIPE value = recipeRecipeHolder.value();
+            if (matchCriteria.test(value)) {
+                return value;
+            }
+        }
+        return null;
     }
 
     /**
      * Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in {@link #getInputCache()}.
      */
     default boolean contains(@Nullable Level world, Predicate<RECIPE> matchCriteria) {
-        return stream(world).anyMatch(holder -> matchCriteria.test(holder.value()));
+        for (RecipeHolder<RECIPE> holder : getRecipes(world)) {
+            if (matchCriteria.test(holder.value())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -144,16 +144,25 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RECIPE> matchPredicate = r -> r.test(inputA, inputB);
         //Lookup a recipe from the specified input map
         RECIPE recipe;
         if (useCacheA) {
-            recipe = cacheA.findFirstRecipe(inputA, matchPredicate);
+            recipe = findFirstRecipe(inputA, inputB, cacheA.getRecipes(inputA));
         } else {
-            recipe = cacheB.findFirstRecipe(inputB, matchPredicate);
+            recipe = findFirstRecipe(inputA, inputB, cacheB.getRecipes(inputB));
         }
         // if there is no recipe, then check if any of our complex recipes (either a or b being complex) match
-        return recipe == null ? findFirstRecipe(complexRecipes, matchPredicate) : recipe;
+        return recipe == null ? findFirstRecipe(inputA, inputB, complexRecipes) : recipe;
+    }
+
+    @Nullable
+    private RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB, Iterable<RECIPE> recipes) {
+        for (RECIPE recipe : recipes) {
+            if (recipe.test(inputA, inputB)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     /**
@@ -175,18 +184,31 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RECIPE> matchPredicate;
         if (cacheB.isEmpty(inputB)) {
             //If b is empty, lookup by A and our match criteria
-            matchPredicate = matchCriteria;
+            RECIPE recipe = cacheA.findFirstRecipe(inputA, matchCriteria);
+            if (recipe == null) {
+                for (RECIPE complexRecipe : complexRecipes) {
+                    if (inputAExtractor.apply(complexRecipe).testType(inputA) && matchCriteria.test(complexRecipe)) {
+                        return complexRecipe;
+                    }
+                }
+            }
         } else {
-            matchPredicate = recipe -> inputBExtractor.apply(recipe).testType(inputB) && matchCriteria.test(recipe);
+            for (RECIPE recipe : cacheA.getRecipes(inputA)) {
+                if (inputBExtractor.apply(recipe).testType(inputB) && matchCriteria.test(recipe)) {
+                    return recipe;
+                }
+            }
+            for (RECIPE complexRecipe : complexRecipes) {
+                if (inputAExtractor.apply(complexRecipe).testType(inputA)) {
+                    if (inputBExtractor.apply(complexRecipe).testType(inputB) && matchCriteria.test(complexRecipe)) {
+                        return complexRecipe;
+                    }
+                }
+            }
         }
-        RECIPE recipe = cacheA.findFirstRecipe(inputA, matchPredicate);
-        if (recipe == null) {
-            return findFirstRecipe(complexRecipes, r -> inputAExtractor.apply(r).testType(inputA) && matchPredicate.test(r));
-        }
-        return recipe;
+        return null;
     }
 
     @Override

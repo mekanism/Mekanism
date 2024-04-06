@@ -64,9 +64,18 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RECIPE> matchPredicate = recipe -> recipe.test(input);
-        RECIPE recipe = cache.findFirstRecipe(input, matchPredicate);
-        return recipe == null ? findFirstRecipe(complexRecipes, matchPredicate) : recipe;
+        RECIPE recipe = findFirstRecipe(input, cache.getRecipes(input));
+        return recipe == null ? findFirstRecipe(input, complexRecipes) : recipe;
+    }
+
+    @Nullable
+    private RECIPE findFirstRecipe(INPUT input, Iterable<RECIPE> recipes) {
+        for (RECIPE recipe : recipes) {
+            if (recipe.test(input)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     /**
@@ -99,7 +108,14 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
         }
         initCacheIfNeeded(world);
         RECIPE recipe = cache.findFirstRecipe(input, matchCriteria);
-        return recipe == null ? findFirstRecipe(complexRecipes, r -> inputExtractor.apply(r).testType(input) && matchCriteria.test(r)) : recipe;
+        if (recipe == null) {
+            for (RECIPE complexRecipe : complexRecipes) {
+                if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.test(complexRecipe)) {
+                    return complexRecipe;
+                }
+            }
+        }
+        return recipe;
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -186,8 +185,10 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
         }
         initCacheIfNeeded(world);
         //Note: If cache 1 contains input 1 then we only need to test the type of input 2 and 3 as we already know input 1 matches
-        if (cache1.contains(input1, recipe -> input2Extractor.apply(recipe).testType(input2) && input3Extractor.apply(recipe).testType(input3))) {
-            return true;
+        for (RECIPE recipe : cache1.getRecipes(input1)) {
+            if (input2Extractor.apply(recipe).testType(input2) && input3Extractor.apply(recipe).testType(input3)) {
+                return true;
+            }
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
         for (RECIPE recipe : complexIngredients1) {
@@ -219,11 +220,20 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
             return null;
         }
         initCacheIfNeeded(world);
-        Predicate<RECIPE> matchPredicate = r -> r.test(inputA, inputB, inputC);
         //Lookup a recipe from the A input map (the fact that it is A is arbitrary, it just as well could be B or C)
-        RECIPE recipe = cacheA.findFirstRecipe(inputA, matchPredicate);
+        RECIPE recipe = findFirstRecipe(inputA, inputB, inputC, cacheA.getRecipes(inputA));
         // if there is no recipe, then check if any of our complex recipes (either a, b, or c being complex) match
-        return recipe == null ? findFirstRecipe(complexRecipes, matchPredicate) : recipe;
+        return recipe == null ? findFirstRecipe(inputA, inputB, inputC, complexRecipes) : recipe;
+    }
+
+    @Nullable
+    private RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC, Iterable<RECIPE> recipes) {
+        for (RECIPE recipe : recipes) {
+            if (recipe.test(inputA, inputB, inputC)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package mekanism.common.recipe.lookup.cache.type;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -35,12 +35,9 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
 
     @Override
     public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
-        Set<RECIPE> recipes = inputCache.get(createKey(input));
-        if (recipes != null) {
-            for (RECIPE recipe : recipes) {
-                if (matchCriteria.test(recipe)) {
-                    return true;
-                }
+        for (RECIPE recipe : getRecipes(input)) {
+            if (matchCriteria.test(recipe)) {
+                return true;
             }
         }
         return false;
@@ -49,22 +46,17 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
     @Nullable
     @Override
     public RECIPE findFirstRecipe(INPUT input, Predicate<RECIPE> matchCriteria) {
-        return findFirstRecipe(inputCache.get(createKey(input)), matchCriteria);
-    }
-
-    /**
-     * Helper to filter a potentially null collection of recipes by a given predicate.
-     */
-    @Nullable
-    protected RECIPE findFirstRecipe(@Nullable Collection<RECIPE> recipes, Predicate<RECIPE> matchCriteria) {
-        if (recipes != null) {
-            for (RECIPE recipe : recipes) {
-                if (matchCriteria.test(recipe)) {
-                    return recipe;
-                }
+        for (RECIPE recipe : getRecipes(input)) {
+            if (matchCriteria.test(recipe)) {
+                return recipe;
             }
         }
         return null;
+    }
+
+    @Override
+    public Iterable<RECIPE> getRecipes(INPUT input) {
+        return inputCache.getOrDefault(createKey(input), Collections.emptySet());
     }
 
     /**

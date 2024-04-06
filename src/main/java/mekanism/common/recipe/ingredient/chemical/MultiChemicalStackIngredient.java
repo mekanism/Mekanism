@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
@@ -128,6 +129,15 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         boolean result = false;
         for (INGREDIENT ingredient : ingredients) {
             result |= checker.test(ingredient);
+        }
+        return result;
+    }
+
+    @Override
+    public <DATA> boolean forEachIngredient(DATA data, BiPredicate<DATA, INGREDIENT> checker) {
+        boolean result = false;
+        for (INGREDIENT ingredient : ingredients) {
+            result |= checker.test(data, ingredient);
         }
         return result;
     }

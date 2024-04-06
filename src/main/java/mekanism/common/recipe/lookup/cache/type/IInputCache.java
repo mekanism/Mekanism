@@ -33,6 +33,16 @@ public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, R
     boolean contains(INPUT input, Predicate<RECIPE> matchCriteria);
 
     /**
+     * Gets the recipe for the given input. Note: that no validation is done here about the input matching the recipe's criteria in regard to required amounts, all that
+     * is done regarding the input is that the type is used in the recipe.
+     *
+     * @param input Input to check.
+     *
+     * @return Recipes for the given input that matches the given criteria, or empty if no recipe matches.
+     */
+    Iterable<RECIPE> getRecipes(INPUT input);
+
+    /**
      * Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
      * criteria in regard to required amounts, all that is done regarding the input is that the type is used in the recipe.
      *
@@ -65,7 +75,7 @@ public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, R
      * or {@code false} if we were able to fully cache the ingredient's components.
      */
     default boolean mapMultiInputs(RECIPE recipe, IMultiIngredient<INPUT, ? extends INGREDIENT> multi) {
-        return multi.forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
+        return multi.forEachIngredient(recipe, this::mapInputs);
     }
 
     /**

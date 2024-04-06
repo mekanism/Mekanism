@@ -1,13 +1,14 @@
 package mekanism.common.recipe.lookup.cache.type;
 
+import com.google.common.collect.Iterables;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Extended input cache that implements the backend handling to allow for both the basic key based input lookup that {@link BaseInputCache} provides, and also a more
@@ -44,28 +45,16 @@ public abstract class NBTSensitiveInputCache<KEY, NBT_KEY, INPUT, INGREDIENT ext
      * @implNote Checks the more specific NBT based cache before checking the more generic base type.
      */
     @Override
-    public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
-        Set<RECIPE> recipes = nbtInputCache.get(createNbtKey(input));
-        if (recipes != null) {
-            for (RECIPE recipe : recipes) {
-                if (matchCriteria.test(recipe)) {
-                    return true;
-                }
-            }
+    public Iterable<RECIPE> getRecipes(INPUT input) {
+        Set<RECIPE> nbtRecipes = nbtInputCache.getOrDefault(createNbtKey(input), Collections.emptySet());
+        if (nbtRecipes.isEmpty()) {
+            return super.getRecipes(input);
         }
-        return super.contains(input, matchCriteria);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Checks the more specific NBT based cache before checking the more generic base type.
-     */
-    @Nullable
-    @Override
-    public RECIPE findFirstRecipe(INPUT input, Predicate<RECIPE> matchCriteria) {
-        RECIPE recipe = findFirstRecipe(nbtInputCache.get(createNbtKey(input)), matchCriteria);
-        return recipe == null ? super.findFirstRecipe(input, matchCriteria) : recipe;
+        Collection<RECIPE> basicRecipes = (Collection<RECIPE>) super.getRecipes(input);
+        if (basicRecipes.isEmpty()) {
+            return nbtRecipes;
+        }
+        return Iterables.concat(nbtRecipes, basicRecipes);
     }
 
     /**

@@ -1,10 +1,8 @@
 package mekanism.common.recipe.lookup.cache;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -49,21 +47,6 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
     protected abstract void initCache(List<RecipeHolder<RECIPE>> recipes);
 
     /**
-     * Helper to filter a potentially null collection of recipes by a given predicate.
-     */
-    @Nullable
-    protected RECIPE findFirstRecipe(@Nullable Collection<RECIPE> recipes, Predicate<RECIPE> matchCriteria) {
-        if (recipes != null) {
-            for (RECIPE recipe : recipes) {
-                if (matchCriteria.test(recipe)) {
-                    return recipe;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
      */
     protected <INPUT, INGREDIENT extends InputIngredient<INPUT>, CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> boolean containsInput(
@@ -105,8 +88,10 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
         }
         initCacheIfNeeded(world);
         //Note: If cache 1 contains input 1 then we only need to test the type of input 2 as we already know input 1 matches
-        if (cache1.contains(input1, recipe -> input2Extractor.apply(recipe).testType(input2))) {
-            return true;
+        for (RECIPE recipe : cache1.getRecipes(input1)) {
+            if (input2Extractor.apply(recipe).testType(input2)) {
+                return true;
+            }
         }
         //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
         for (RECIPE recipe : complexIngredients1) {

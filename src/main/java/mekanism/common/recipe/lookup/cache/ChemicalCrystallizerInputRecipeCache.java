@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -125,10 +124,20 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     @Nullable
     @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalCrystallizerRecipe findFirstRecipe(ChemicalType type, STACK stack) {
-        Predicate<ChemicalCrystallizerRecipe> matchPredicate = recipe -> ((ChemicalStackIngredient<CHEMICAL, STACK>) recipe.getInput()).test(stack);
         ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe> cache = (ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe>) typeBasedCache.get(type);
-        ChemicalCrystallizerRecipe recipe = cache.findFirstRecipe(stack, matchPredicate);
-        return recipe == null ? findFirstRecipe(typeBasedComplexRecipes.get(type), matchPredicate) : recipe;
+        ChemicalCrystallizerRecipe recipe = findFirstRecipe(stack, cache.getRecipes(stack));
+        return recipe == null ? findFirstRecipe(stack, typeBasedComplexRecipes.get(type)) : recipe;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalCrystallizerRecipe findFirstRecipe(STACK input, Iterable<ChemicalCrystallizerRecipe> recipes) {
+        for (ChemicalCrystallizerRecipe recipe : recipes) {
+            if (((ChemicalStackIngredient<CHEMICAL, STACK>) recipe.getInput()).test(input)) {
+                return recipe;
+            }
+        }
+        return null;
     }
 
     @Override

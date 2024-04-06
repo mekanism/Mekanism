@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -386,6 +387,15 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             boolean result = false;
             for (FluidStackIngredient ingredient : ingredients) {
                 result |= checker.test(ingredient);
+            }
+            return result;
+        }
+
+        @Override
+        public <DATA> boolean forEachIngredient(DATA data, BiPredicate<DATA, FluidStackIngredient> checker) {
+            boolean result = false;
+            for (FluidStackIngredient ingredient : ingredients) {
+                result |= checker.test(data, ingredient);
             }
             return result;
         }
