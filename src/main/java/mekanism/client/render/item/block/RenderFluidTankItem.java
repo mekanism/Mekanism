@@ -2,6 +2,7 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderFluidTank;
@@ -35,8 +36,7 @@ public class RenderFluidTankItem extends MekanismISTER {
             if (!fluid.isEmpty()) {
                 float fluidScale = (float) fluid.getAmount() / attachment.getTankCapacity(0);
                 if (fluidScale > 0) {
-                    MekanismRenderer.renderObject(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                          MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera());
+                    RenderResizableCuboid.renderCube(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), null);
                 }
             }
         }

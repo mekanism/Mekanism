@@ -477,9 +477,12 @@ public class RenderTickHandler {
                             Vec3 viewPosition = info.getPosition();
                             matrix.pushPose();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                            MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT,
-                                  info);
+                            @Nullable Model3D object = getOverlayModel(face, type);
+                            VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+                            int argb = MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F);
+                            if (object != null) {
+                                RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
+                            }
                             matrix.popPose();
                         }
                     }

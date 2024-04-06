@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -118,51 +119,318 @@ public class RenderResizableCuboid {
         PoseStack.Pose lastMatrix = matrix.last();
         Matrix4f matrix4f = lastMatrix.pose();
         NormalData normal = new NormalData(lastMatrix.normal(), NORMAL, faceDisplay);
-        Vector3f from = new Vector3f();
-        Vector3f to = new Vector3f();
 
-        //Calculate if we can speed up any of the for loops by skipping ones that will never draw anything
-        int xIncrement = 1;
-        int yIncrement = 1;
-        int zIncrement = 1;
-        if (axisToRender == X_AXIS_MASK) {
-            //Only sides are on the x-axis, we can skip from min to max x
-            xIncrement = Math.max(xDelta, 1);
-        } else if (axisToRender == Y_AXIS_MASK) {
-            //Only sides are on the y-axis, we can skip from min to max y
-            yIncrement = Math.max(yDelta, 1);
-        } else if (axisToRender == Z_AXIS_MASK) {
-            //Only sides are on the z-axis, we can skip from min to max z
-            zIncrement = Math.max(zDelta, 1);
+        if ((axisToRender & X_AXIS_MASK) != 0) {
+            renderSideXAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
+        }
+        if ((axisToRender & Y_AXIS_MASK) != 0) {
+            renderSideYAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
+        }
+        if ((axisToRender & Z_AXIS_MASK) != 0) {
+            renderSideZAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
         }
 
+        matrix.popPose();
+    }
+
+    private static void renderSideZAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+
+        TextureAtlasSprite northSprite = sprites[Direction.NORTH.ordinal()];
+        TextureAtlasSprite southSprite = sprites[Direction.SOUTH.ordinal()];
+        boolean hasNorth = northSprite != null;
+        boolean hasSouth = southSprite != null;
+
+        if (!hasNorth && !hasSouth) {
+            return; //sanity check failed
+        }
+
+        int colorNorth = colors[Direction.NORTH.ordinal()];
+        int colorSouth = colors[Direction.SOUTH.ordinal()];
+
+        int redNorth = ARGB32.red(colorNorth);
+        int greenNorth = ARGB32.green(colorNorth);
+        int blueNorth = ARGB32.blue(colorNorth);
+        int alphaNorth = ARGB32.alpha(colorNorth);
+        int redSouth = ARGB32.red(colorSouth);
+        int greenSouth = ARGB32.green(colorSouth);
+        int blueSouth = ARGB32.blue(colorSouth);
+        int alphaSouth = ARGB32.alpha(colorSouth);
+
         // render each side
-        for (int y = 0; y <= yDelta; y += yIncrement) {
-            TextureAtlasSprite upSprite = y == yDelta ? sprites[Direction.UP.ordinal()] : null;
-            TextureAtlasSprite downSprite = y == 0 ? sprites[Direction.DOWN.ordinal()] : null;
-            from.y = yBounds[y];
-            to.y = yBounds[y + 1];
-            for (int z = 0; z <= zDelta; z += zIncrement) {
-                TextureAtlasSprite northSprite = z == 0 ? sprites[Direction.NORTH.ordinal()] : null;
-                TextureAtlasSprite southSprite = z == zDelta ? sprites[Direction.SOUTH.ordinal()] : null;
-                from.z = zBounds[z];
-                to.z = zBounds[z + 1];
-                for (int x = 0; x <= xDelta; x += xIncrement) {
-                    TextureAtlasSprite westSprite = x == 0 ? sprites[Direction.WEST.ordinal()] : null;
-                    TextureAtlasSprite eastSprite = x == xDelta ? sprites[Direction.EAST.ordinal()] : null;
-                    //Set bounds
-                    from.x = xBounds[x];
-                    to.x = xBounds[x + 1];
-                    putTexturedQuad(buffer, matrix4f, westSprite, from, to, Direction.WEST, colors, light, overlay, faceDisplay, normal);
-                    putTexturedQuad(buffer, matrix4f, eastSprite, from, to, Direction.EAST, colors, light, overlay, faceDisplay, normal);
-                    putTexturedQuad(buffer, matrix4f, northSprite, from, to, Direction.NORTH, colors, light, overlay, faceDisplay, normal);
-                    putTexturedQuad(buffer, matrix4f, southSprite, from, to, Direction.SOUTH, colors, light, overlay, faceDisplay, normal);
-                    putTexturedQuad(buffer, matrix4f, upSprite, from, to, Direction.UP, colors, light, overlay, faceDisplay, normal);
-                    putTexturedQuad(buffer, matrix4f, downSprite, from, to, Direction.DOWN, colors, light, overlay, faceDisplay, normal);
+        for (int y = 0; y <= yDelta; y += 1) {
+            float y1 = yBounds[y];
+            float y2 = yBounds[y + 1];
+            float vBoundsMin = minBound(y1, y2);
+            float vBoundsMax = maxBound(y1, y2);
+
+            //Flip V - north
+            float minVNorth;
+            float maxVNorth;
+            if (hasNorth) {
+                minVNorth = northSprite.getV(1 - vBoundsMax);
+                maxVNorth = northSprite.getV(1 - vBoundsMin);
+            } else {
+                minVNorth = 0F;
+                maxVNorth = 0F;
+            }
+
+            //Flip V
+            float minVSouth;
+            float maxVSouth;
+            if (hasSouth) {
+                minVSouth = southSprite.getV(1 - vBoundsMax);
+                maxVSouth = southSprite.getV(1 - vBoundsMin);
+            } else {
+                minVSouth = 0F;
+                maxVSouth = 0F;
+            }
+
+            for (int x = 0; x <= xDelta; x += 1) {
+                // start with texture coordinates
+                float x1 = xBounds[x];
+                float x2 = xBounds[x + 1];
+
+                // choose UV based on opposite two axis
+                float uBoundsMin = minBound(x2, x1);
+                float uBoundsMax = maxBound(x2, x1);
+
+                float minUNorth;
+                float maxUNorth;
+                if (hasNorth) {
+                    minUNorth = northSprite.getU(uBoundsMin);
+                    maxUNorth = northSprite.getU(uBoundsMax);
+                } else {
+                    minUNorth = 0F;
+                    maxUNorth = 0F;
+                }
+
+                float minUSouth;
+                float maxUSouth;
+                if (hasSouth) {
+                    minUSouth = southSprite.getU(uBoundsMin);
+                    maxUSouth = southSprite.getU(uBoundsMax);
+                } else {
+                    minUSouth = 0F;
+                    maxUSouth = 0F;
+                }
+
+                if (hasNorth) {
+                    float z1 = zBounds[0];
+                    // add quads
+
+                    drawFace(buffer, matrix4f, minUNorth, maxUNorth, minVNorth, maxVNorth, light, overlay, faceDisplay, normal,
+                          x1, y1, z1,
+                          x1, y2, z1,
+                          x2, y2, z1,
+                          x2, y1, z1, redNorth, greenNorth, blueNorth, alphaNorth);
+                }
+                if (hasSouth) {
+                    float z2 = zBounds[zDelta + 1];
+                    // add quads
+                    drawFace(buffer, matrix4f, minUSouth, maxUSouth, minVSouth, maxVSouth, light, overlay, faceDisplay, normal,
+                          x2, y1, z2,
+                          x2, y2, z2,
+                          x1, y2, z2,
+                          x1, y1, z2, redSouth, greenSouth, blueSouth, alphaSouth);
+                }
+
+            }
+        }
+    }
+
+    private static void renderSideXAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+        TextureAtlasSprite westSprite = sprites[Direction.WEST.ordinal()];
+        TextureAtlasSprite eastSprite = sprites[Direction.EAST.ordinal()];
+        boolean hasWest = westSprite != null;
+        boolean hasEast = eastSprite != null;
+
+        if (!hasWest && !hasEast) {
+            return; //sanity check failed
+        }
+
+        int westColor = colors[Direction.WEST.ordinal()];
+        int eastColor = colors[Direction.EAST.ordinal()];
+        int redWest = ARGB32.red(westColor);
+        int greenWest = ARGB32.green(westColor);
+        int blueWest = ARGB32.blue(westColor);
+        int alphaWest = ARGB32.alpha(westColor);
+        int redEast = ARGB32.red(eastColor);
+        int greenEast = ARGB32.green(eastColor);
+        int blueEast = ARGB32.blue(eastColor);
+        int alphaEast = ARGB32.alpha(eastColor);
+
+        // render each side
+        for (int y = 0; y <= yDelta; y += 1) {
+            float y1 = yBounds[y], y2 = yBounds[y + 1];
+            float vBoundsMin = minBound(y1, y2);
+            float vBoundsMax = maxBound(y1, y2);
+
+            //Flip V - West
+            float minVWest;
+            float maxVWest;
+            if (hasWest) {
+                minVWest = westSprite.getV(1 - vBoundsMax);
+                maxVWest = westSprite.getV(1 - vBoundsMin);
+            } else {
+                minVWest = 0F;
+                maxVWest = 0F;
+            }
+
+            //Flip V - East
+            float minVEast;
+            float maxVEast;
+            if (hasEast) {
+                minVEast = eastSprite.getV(1 - vBoundsMax);
+                maxVEast = eastSprite.getV(1 - vBoundsMin);
+            } else {
+                minVEast = 0F;
+                maxVEast = 0F;
+            }
+
+            for (int z = 0; z <= zDelta; z += 1) {
+                float z1 = zBounds[z];
+                float z2 = zBounds[z + 1];
+                float uBoundsMin = minBound(z2, z1);
+                float uBoundsMax = maxBound(z2, z1);
+
+                float minUWest;
+                float maxUWest;
+                if (hasWest) {
+                    minUWest = westSprite.getU(uBoundsMin);
+                    maxUWest = westSprite.getU(uBoundsMax);
+                } else {
+                    minUWest = 0F;
+                    maxUWest = 0F;
+                }
+
+                float minUEast;
+                float maxUEast;
+                if (hasEast) {
+                    minUEast = eastSprite.getU(uBoundsMin);
+                    maxUEast = eastSprite.getU(uBoundsMax);
+                } else {
+                    minUEast = 0F;
+                    maxUEast = 0F;
+                }
+
+                if (hasWest) {
+                    float x1 = xBounds[0];
+                    // add quads
+                    drawFace(buffer, matrix4f, minUWest, maxUWest, minVWest, maxVWest, light, overlay, faceDisplay, normal,
+                          x1, y1, z2,
+                          x1, y2, z2,
+                          x1, y2, z1,
+                          x1, y1, z1, redWest, greenWest, blueWest, alphaWest);
+                }
+                if (hasEast) {
+                    float x2 = xBounds[xDelta + 1];
+                    // add quads
+                    drawFace(buffer, matrix4f, minUEast, maxUEast, minVEast, maxVEast, light, overlay, faceDisplay, normal,
+                          x2, y1, z1,
+                          x2, y2, z1,
+                          x2, y2, z2,
+                          x2, y1, z2, redEast, greenEast, blueEast, alphaEast);
+
                 }
             }
         }
-        matrix.popPose();
+    }
+
+    private static void renderSideYAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+        TextureAtlasSprite upSprite = sprites[Direction.UP.ordinal()];
+        TextureAtlasSprite downSprite = sprites[Direction.DOWN.ordinal()];
+        boolean hasUp = upSprite != null;
+        boolean hasDown = downSprite != null;
+
+        if (!hasUp && !hasDown) {
+            return; //sanity check failed
+        }
+
+        int downColor = colors[Direction.DOWN.ordinal()];
+        int upColor = colors[Direction.UP.ordinal()];
+        int redUp = ARGB32.red(upColor);
+        int greenUp = ARGB32.green(upColor);
+        int blueUp = ARGB32.blue(upColor);
+        int alphaUp = ARGB32.alpha(upColor);
+        int redDown = ARGB32.red(downColor);
+        int greenDown = ARGB32.green(downColor);
+        int blueDown = ARGB32.blue(downColor);
+        int alphaDown = ARGB32.alpha(downColor);
+
+        // render each side
+        for (int z = 0; z <= zDelta; z += 1) {
+            float z1 = zBounds[z];
+            float z2 = zBounds[z + 1];
+            float vBoundsMin = minBound(z2, z1);
+            float vBoundsMax = maxBound(z2, z1);
+            //Flip V - Up
+            float minVUp;
+            float maxVUp;
+            if (hasUp) {
+                minVUp = upSprite.getV(1 - vBoundsMax);
+                maxVUp = upSprite.getV(1 - vBoundsMin);
+            } else {
+                minVUp = 0F;
+                maxVUp = 0F;
+            }
+            //Flip V - Down
+            float minV;
+            float maxV;
+            if (hasDown) {
+                minV = downSprite.getV(1 - vBoundsMax);
+                maxV = downSprite.getV(1 - vBoundsMin);
+            } else {
+                minV = 0F;
+                maxV = 0F;
+            }
+
+            for (int x = 0; x <= xDelta; x += 1) {
+                float x1 = xBounds[x];
+                float x2 = xBounds[x + 1];
+
+                float uBoundsMin = minBound(x1, x2);
+                float uBoundsMax = maxBound(x1, x2);
+
+                float minUUp;
+                float maxUUp;
+                if (hasUp) {
+                    minUUp = upSprite.getU(uBoundsMin);
+                    maxUUp = upSprite.getU(uBoundsMax);
+                } else {
+                    minUUp = 0F;
+                    maxUUp = 0F;
+                }
+
+                float minU;
+                float maxU;
+                if (hasDown) {
+                    minU = downSprite.getU(uBoundsMin);
+                    maxU = downSprite.getU(uBoundsMax);
+                } else {
+                    minU = 0F;
+                    maxU = 0F;
+                }
+
+                if (hasUp) {
+                    float y2 = yBounds[yDelta + 1];
+                    // add quads
+                    drawFace(buffer, matrix4f, minUUp, maxUUp, minVUp, maxVUp, light, overlay, faceDisplay, normal,
+                          x1, y2, z1,
+                          x1, y2, z2,
+                          x2, y2, z2,
+                          x2, y2, z1, redUp, greenUp, blueUp, alphaUp);
+                }
+                if (hasDown) {
+                    float y1 = yBounds[0];
+                    // add quads
+                    drawFace(buffer, matrix4f, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
+                          x1, y1, z2,
+                          x1, y1, z1,
+                          x2, y1, z1,
+                          x2, y1, z2, redDown, greenDown, blueDown, alphaDown);
+                }
+            }
+        }
     }
 
     /**
@@ -195,85 +463,12 @@ public class RenderResizableCuboid {
         return delta;
     }
 
-    /**
-     * @implNote From Mantle with some adjustments
-     */
-    private static void putTexturedQuad(VertexConsumer buffer, Matrix4f matrix, @Nullable TextureAtlasSprite spriteInfo, Vector3f from, Vector3f to, Direction face, int[] colors,
-          int light, int overlay, FaceDisplay faceDisplay, NormalData normal) {
-        if (spriteInfo == null) {
-            return;
-        }
-        // start with texture coordinates
-        float x1 = from.x(), y1 = from.y(), z1 = from.z();
-        float x2 = to.x(), y2 = to.y(), z2 = to.z();
-        // choose UV based on opposite two axis
-        Bounds uBounds, vBounds;
-        switch (face.getAxis()) {
-            case Z -> {
-                uBounds = Bounds.calculate(x2, x1);
-                vBounds = Bounds.calculate(y1, y2);
-            }
-            case X -> {
-                uBounds = Bounds.calculate(z2, z1);
-                vBounds = Bounds.calculate(y1, y2);
-            }
-            default -> {
-                uBounds = Bounds.calculate(x1, x2);
-                vBounds = Bounds.calculate(z2, z1);
-            }
-        }
-
-        float minU = spriteInfo.getU(uBounds.min());
-        float maxU = spriteInfo.getU(uBounds.max());
-        //Flip V
-        float minV = spriteInfo.getV(1 - vBounds.max());
-        float maxV = spriteInfo.getV(1 - vBounds.min());
-        int argb = colors[face.ordinal()];
-        // add quads
-        switch (face) {
-            case DOWN -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x1, y1, z2,
-                  x1, y1, z1,
-                  x2, y1, z1,
-                  x2, y1, z2);
-            case UP -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x1, y2, z1,
-                  x1, y2, z2,
-                  x2, y2, z2,
-                  x2, y2, z1);
-            case NORTH -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x1, y1, z1,
-                  x1, y2, z1,
-                  x2, y2, z1,
-                  x2, y1, z1);
-            case SOUTH -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x2, y1, z2,
-                  x2, y2, z2,
-                  x1, y2, z2,
-                  x1, y1, z2);
-            case WEST -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x1, y1, z2,
-                  x1, y2, z2,
-                  x1, y2, z1,
-                  x1, y1, z1);
-            case EAST -> drawFace(buffer, matrix, argb, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
-                  x2, y1, z1,
-                  x2, y2, z1,
-                  x2, y2, z2,
-                  x2, y1, z2);
-        }
-    }
-
-    private static void drawFace(VertexConsumer buffer, Matrix4f matrix, int argb, float minU, float maxU, float minV, float maxV, int light, int overlay,
+    private static void drawFace(VertexConsumer buffer, Matrix4f matrix, float minU, float maxU, float minV, float maxV, int light, int overlay,
           FaceDisplay faceDisplay, NormalData normal,
           float x1, float y1, float z1,
           float x2, float y2, float z2,
           float x3, float y3, float z3,
-          float x4, float y4, float z4) {
-        int red = FastColor.ARGB32.red(argb);
-        int green = FastColor.ARGB32.green(argb);
-        int blue = FastColor.ARGB32.blue(argb);
-        int alpha = FastColor.ARGB32.alpha(argb);
+          float x4, float y4, float z4, int red, int green, int blue, int alpha) {
         if (faceDisplay.front) {
             buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).uv(minU, maxV).overlayCoords(overlay).uv2(light).normal(normal.front.x(), normal.front.y(), normal.front.z()).endVertex();
             buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).uv(minU, minV).overlayCoords(overlay).uv2(light).normal(normal.front.x(), normal.front.y(), normal.front.z()).endVertex();
@@ -288,19 +483,26 @@ public class RenderResizableCuboid {
         }
     }
 
-    private record Bounds(float min, float max) {
-
-        public static Bounds calculate(float min, float max) {
-            // wrap UV to be between 0 and 1, assumes none of the positions lie outside the 0, 0, 0 to 1, 1, 1 range
-            // however, one of them might be exactly on the 1.0 bound, that one should be set to 1 instead of left at 0
-            boolean bigger = min > max;
-            min = min % 1;
-            max = max % 1;
-            if (bigger) {
-                return new Bounds(min == 0 ? 1 : min, max);
-            }
-            return new Bounds(min, max == 0 ? 1 : max);
+    private static float minBound(float min, float max) {
+        // wrap UV to be between 0 and 1, assumes none of the positions lie outside the 0, 0, 0 to 1, 1, 1 range
+        // however, one of them might be exactly on the 1.0 bound, that one should be set to 1 instead of left at 0
+        boolean bigger = min > max;
+        min = min % 1;
+        if (bigger) {
+            return min == 0 ? 1 : min;
         }
+        return min;
+    }
+
+    private static float maxBound(float min, float max) {
+        // wrap UV to be between 0 and 1, assumes none of the positions lie outside the 0, 0, 0 to 1, 1, 1 range
+        // however, one of them might be exactly on the 1.0 bound, that one should be set to 1 instead of left at 0
+        boolean bigger = min > max;
+        max = max % 1;
+        if (bigger) {
+            return max;
+        }
+        return max == 0 ? 1 : max;
     }
 
     /**
