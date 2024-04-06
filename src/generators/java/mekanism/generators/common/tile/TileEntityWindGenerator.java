@@ -15,7 +15,6 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.SharedConstants;
@@ -63,9 +62,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (ticker % SharedConstants.TICKS_PER_SECOND == 0) {
             // Recalculate the current multiplier once a second
             currentMultiplier = getMultiplier();
-            setActive(MekanismUtils.canFunction(this) && !currentMultiplier.isZero());
+            setActive(canFunction() && !currentMultiplier.isZero());
         }
-        if (!currentMultiplier.isZero() && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
+        if (!currentMultiplier.isZero() && canFunction() && !getEnergyContainer().getNeeded().isZero()) {
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(currentMultiplier), Action.EXECUTE, AutomationType.INTERNAL);
         }
         return sendUpdatePacket;

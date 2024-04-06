@@ -245,7 +245,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
 
         //Note: If we have any overflow don't function or use any energy until the overflow has been dealt with
-        if (!hasOverflow && MekanismUtils.canFunction(this) && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
+        if (!hasOverflow && canFunction() && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);

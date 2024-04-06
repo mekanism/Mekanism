@@ -228,7 +228,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         energySlot.fillContainerOrConvert();
         if (getControlType() != RedstoneControl.PULSE) {
             pulseOperations = 0;
-        } else if (MekanismUtils.canFunction(this)) {
+        } else if (canFunction()) {
             pulseOperations++;
         }
         checkFormula();
@@ -237,7 +237,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
 
         FloatingLong clientEnergyUsed = FloatingLong.ZERO;
-        if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
+        if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || canFunction())) {
             boolean canOperate = true;
             if (!isRecipe) {
                 canOperate = moveItemsToGrid();

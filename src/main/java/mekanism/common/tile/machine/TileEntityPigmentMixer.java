@@ -50,7 +50,6 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotIn
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -214,7 +213,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     public CachedRecipe<PigmentMixingRecipe> createNewCachedRecipe(@NotNull PigmentMixingRecipe recipe, int cacheIndex) {
         return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, recheckAllRecipeErrors, leftInputHandler, rightInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)

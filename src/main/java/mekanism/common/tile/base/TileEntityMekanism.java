@@ -1098,7 +1098,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public boolean wasPowered() {
+    public final boolean wasPowered() {
         return supportsRedstone() && redstoneLastTick;
     }
 
@@ -1110,6 +1110,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 onPowerChange();
             }
         }
+    }
+
+    public boolean canFunction() {
+        if (supportsRedstone()) {
+            return switch (controlType) {
+                case DISABLED -> true;
+                case HIGH -> isPowered();
+                case LOW -> !isPowered();
+                case PULSE -> isPowered() && !redstoneLastTick;
+            };
+        }
+        return true;
     }
     //End methods ITileRedstone
 

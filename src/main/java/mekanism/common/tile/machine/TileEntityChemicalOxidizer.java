@@ -43,7 +43,6 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -148,7 +147,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@NotNull ItemStackToGasRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)

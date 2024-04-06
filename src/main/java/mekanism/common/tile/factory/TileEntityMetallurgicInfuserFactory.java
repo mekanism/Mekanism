@@ -39,7 +39,6 @@ import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -171,7 +170,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], infusionInputHandler,
                     outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)

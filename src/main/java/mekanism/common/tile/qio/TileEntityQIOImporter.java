@@ -48,7 +48,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     protected boolean onUpdateServer(@Nullable QIOFrequency frequency) {
         boolean needsUpdate = super.onUpdateServer(frequency);
-        if (frequency != null && MekanismUtils.canFunction(this)) {
+        if (frequency != null && canFunction()) {
             if (delay > 0) {
                 delay--;
             } else {

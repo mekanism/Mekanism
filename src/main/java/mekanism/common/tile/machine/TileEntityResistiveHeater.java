@@ -30,7 +30,6 @@ import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -89,7 +88,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         FloatingLong toUse = FloatingLong.ZERO;
-        if (MekanismUtils.canFunction(this)) {
+        if (canFunction()) {
             toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
             if (!toUse.isZero()) {
                 heatCapacitor.handleHeat(toUse.multiply(MekanismConfig.general.resistiveHeaterEfficiency.get()).doubleValue());

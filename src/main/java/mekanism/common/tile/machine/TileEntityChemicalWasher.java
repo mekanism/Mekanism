@@ -195,7 +195,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@NotNull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.fluidChemicalToChemical(recipe, recheckAllRecipeErrors, fluidInputHandler, slurryInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setBaselineMaxOperations(() -> baselineMaxOperations)

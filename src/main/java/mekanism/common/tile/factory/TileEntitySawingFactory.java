@@ -34,7 +34,6 @@ import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -152,7 +151,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@NotNull SawmillRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.sawing(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)

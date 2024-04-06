@@ -55,7 +55,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
@@ -259,7 +258,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
                 for (TileEntityQuantumEntangloporter qe : activeQEs.values()) {
-                    if (!MekanismUtils.canFunction(qe)) {
+                    if (!qe.canFunction()) {
                         //Skip trying to eject for this QE if it can't function
                         continue;
                     }

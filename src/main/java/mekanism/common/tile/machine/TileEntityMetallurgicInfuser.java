@@ -160,7 +160,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@NotNull MetallurgicInfuserRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors, itemInputHandler, infusionInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)

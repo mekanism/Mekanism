@@ -40,7 +40,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -116,7 +115,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy().copyAsConst();
         heatCapacitor.handleHeat(getBoost().doubleValue());
-        if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
+        if (canFunction() && !getEnergyContainer().getNeeded().isZero()) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
             if (lavaTank.extract(fluidRate, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == fluidRate) {
                 setActive(true);

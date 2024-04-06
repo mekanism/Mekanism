@@ -71,7 +71,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        if (MekanismUtils.canFunction(this) && !bioFuelTank.isEmpty() &&
+        if (canFunction() && !bioFuelTank.isEmpty() &&
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
             MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);

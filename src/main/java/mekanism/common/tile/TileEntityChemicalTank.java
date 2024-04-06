@@ -88,7 +88,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
         ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
         ejectorComponent.setOutputData(configComponent, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY)
-              .setCanEject(type -> MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
+              .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
     }
 
     @Override

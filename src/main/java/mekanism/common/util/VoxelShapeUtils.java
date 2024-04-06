@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Direction;
@@ -98,7 +99,7 @@ public final class VoxelShapeUtils {
      * @return The rotated {@link VoxelShape}
      */
     public static VoxelShape rotate(VoxelShape shape, Direction side) {
-        return rotate(shape, box -> rotate(box, side));
+        return rotate(shape, side, VoxelShapeUtils::rotate);
     }
 
     /**
@@ -110,7 +111,7 @@ public final class VoxelShapeUtils {
      * @return The rotated {@link VoxelShape}
      */
     public static VoxelShape rotate(VoxelShape shape, Rotation rotation) {
-        return rotate(shape, box -> rotate(box, rotation));
+        return rotate(shape, rotation, VoxelShapeUtils::rotate);
     }
 
     /**
@@ -122,7 +123,7 @@ public final class VoxelShapeUtils {
      * @return The rotated {@link VoxelShape}
      */
     public static VoxelShape rotateHorizontal(VoxelShape shape, Direction side) {
-        return rotate(shape, box -> rotateHorizontal(box, side));
+        return rotate(shape, side, VoxelShapeUtils::rotateHorizontal);
     }
 
     /**
@@ -141,6 +142,28 @@ public final class VoxelShapeUtils {
         for (AABB sourceBoundingBox : sourceBoundingBoxes) {
             //Make the bounding box be centered around the middle, and then move it back after rotating
             rotatedPieces.add(Shapes.create(rotateFunction.apply(sourceBoundingBox.move(fromOrigin.x, fromOrigin.y, fromOrigin.z))
+                  .move(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
+        }
+        //return the recombined rotated voxel shape
+        return combine(rotatedPieces);
+    }
+
+    /**
+     * Rotates a {@link VoxelShape} using a specific transformation function for each {@link AABB} in the {@link VoxelShape}.
+     *
+     * @param shape          The {@link VoxelShape} to rotate
+     * @param rotateFunction The transformation function to apply to each {@link AABB} in the {@link VoxelShape}.
+     *
+     * @return The rotated {@link VoxelShape}
+     */
+    public static <DATA> VoxelShape rotate(VoxelShape shape, DATA data, BiFunction<AABB, DATA, AABB> rotateFunction) {
+        List<VoxelShape> rotatedPieces = new ArrayList<>();
+        //Explode the voxel shape into bounding boxes
+        List<AABB> sourceBoundingBoxes = shape.toAabbs();
+        //Rotate them and convert them each back into a voxel shape
+        for (AABB sourceBoundingBox : sourceBoundingBoxes) {
+            //Make the bounding box be centered around the middle, and then move it back after rotating
+            rotatedPieces.add(Shapes.create(rotateFunction.apply(sourceBoundingBox.move(fromOrigin.x, fromOrigin.y, fromOrigin.z), data)
                   .move(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
         }
         //return the recombined rotated voxel shape

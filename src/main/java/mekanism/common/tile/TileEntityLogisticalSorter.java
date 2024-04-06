@@ -99,7 +99,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             setActive(false);
         }
 
-        if (MekanismUtils.canFunction(this) && delayTicks == 0) {
+        if (canFunction() && delayTicks == 0) {
             IItemHandler back = getHomeInventory();
             //If there is no tile to pull from or the push to, skip doing any checks
             if (back != null) {

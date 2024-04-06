@@ -172,7 +172,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@NotNull GasToGasRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setOnFinish(this::markForSave)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

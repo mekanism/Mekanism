@@ -23,7 +23,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -72,7 +71,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        if (MekanismUtils.canFunction(this)) {
+        if (canFunction()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);

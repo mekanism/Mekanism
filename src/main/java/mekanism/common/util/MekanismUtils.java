@@ -38,7 +38,6 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -353,25 +352,6 @@ public final class MekanismUtils {
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
         return Mekanism.rl(type.getPrefix() + name);
-    }
-
-    /**
-     * Whether a certain Mekanism TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity supports redstone.
-     *
-     * @param tile - TileEntity to check
-     *
-     * @return if the TileEntity can function with redstone logic
-     */
-    public static boolean canFunction(TileEntityMekanism tile) {
-        if (!tile.supportsRedstone()) {
-            return true;
-        }
-        return switch (tile.getControlType()) {
-            case DISABLED -> true;
-            case HIGH -> tile.isPowered();
-            case LOW -> !tile.isPowered();
-            case PULSE -> tile.isPowered() && !tile.wasPowered();
-        };
     }
 
     public static boolean lighterThanAirGas(FluidStack stack) {

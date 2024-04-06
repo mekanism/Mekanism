@@ -17,7 +17,6 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -58,7 +57,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        if (MekanismUtils.canFunction(this)) {
+        if (canFunction()) {
             //TODO: Maybe even make some generators have a side config/ejector component and move this to the ejector component?
             if (outputCaches == null) {
                 Direction direction = getDirection();

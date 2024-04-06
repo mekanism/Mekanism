@@ -16,7 +16,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -69,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
         seesSun = checkCanSeeSun();
-        if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
+        if (seesSun && canFunction() && !getEnergyContainer().getNeeded().isZero()) {
             setActive(true);
             FloatingLong production = getProduction();
             lastProductionAmount = production.subtract(getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL));

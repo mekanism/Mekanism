@@ -177,10 +177,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         return WorldUtils.canSeeSun(level, worldPosition.above());
     }
 
-    private boolean canFunction() {
+    @Override
+    public boolean canFunction() {
         // Sort out if the solar neutron activator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
-        return MekanismUtils.canFunction(this) && canSeeSun();
+        return super.canFunction() && canSeeSun();
     }
 
     private float recalculateProductionRate() {

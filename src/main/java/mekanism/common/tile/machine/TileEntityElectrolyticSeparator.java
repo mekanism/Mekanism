@@ -267,13 +267,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         return tank.getStored() >= getDumpingExcessTarget(tank);
     }
 
-    private boolean canFunction() {
+    @Override
+    public boolean canFunction() {
         //We can function if:
         // - the tile can function
         // - at least one side is not set to dumping excess
         // - at least one side is not at the dumping excess target
-        return MekanismUtils.canFunction(this) && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS ||
-                                                   !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
+        return super.canFunction() && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS || !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
     }
 
     public FloatingLong getRecipeEnergyMultiplier() {

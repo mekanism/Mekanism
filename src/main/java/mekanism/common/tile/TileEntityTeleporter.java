@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -47,7 +48,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -86,6 +86,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo((byte) 4, null, Collections.emptyList());
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
+    private final Predicate<Entity> SAME_DIMENSION_TARGET = entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) && !didTeleport.contains(entity.getUUID());
+    private final Predicate<Entity> DIFFERENT_DIMENSION_TARGET = entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) && entity.canChangeDimensions() && !didTeleport.contains(entity.getUUID());
     private AABB teleportBounds;
     public int teleDelay = 0;
     public boolean shouldRender;
@@ -169,7 +171,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
         TeleportInfo teleportInfo = canTeleport(freq);
         status = teleportInfo.status();
-        if (status == 1 && teleDelay == 0 && MekanismUtils.canFunction(this)) {
+        if (status == 1 && teleDelay == 0 && canFunction()) {
             teleport(freq, teleportInfo);
         }
         if (teleDelay == 0 && teleportBounds != null && !didTeleport.isEmpty()) {
@@ -457,9 +459,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         //Don't get entities that are currently spectator, are a passenger, are part entities (as the parent entity should be what we teleport),
         // entities that cannot change dimensions if we are teleporting to another dimension, or entities that recently teleported
         //Note: Passengers get handled separately
-        return level == null || teleportBounds == null ? Collections.emptyList() : level.getEntitiesOfClass(Entity.class, teleportBounds,
-              entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) &&
-                        (sameDimension || entity.canChangeDimensions()) && !didTeleport.contains(entity.getUUID()));
+        if (level == null || teleportBounds == null) {
+            return Collections.emptyList();
+        }
+        return level.getEntitiesOfClass(Entity.class, teleportBounds, sameDimension ? SAME_DIMENSION_TARGET : DIFFERENT_DIMENSION_TARGET);
     }
 
     /**

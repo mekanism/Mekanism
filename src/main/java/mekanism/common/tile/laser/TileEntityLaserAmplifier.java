@@ -72,7 +72,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     private boolean shouldFire() {
-        return ticks >= delay && energyContainer.getEnergy().compareTo(minThreshold) >= 0 && MekanismUtils.canFunction(this);
+        return ticks >= delay && energyContainer.getEnergy().compareTo(minThreshold) >= 0 && canFunction();
     }
 
     @Override

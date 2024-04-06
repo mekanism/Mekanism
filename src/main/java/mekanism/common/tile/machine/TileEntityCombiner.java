@@ -137,7 +137,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@NotNull CombinerRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.combiner(recipe, recheckAllRecipeErrors, inputHandler, extraInputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setRequiredTicks(this::getTicksRequired)

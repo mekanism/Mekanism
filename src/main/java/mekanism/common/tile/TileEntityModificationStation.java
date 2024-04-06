@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -86,7 +85,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         FloatingLong clientEnergyUsed = FloatingLong.ZERO;
-        if (MekanismUtils.canFunction(this)) {
+        if (canFunction()) {
             boolean operated = false;
             if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();

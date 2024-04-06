@@ -28,7 +28,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -80,7 +79,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             }
         }
         didProcess = false;
-        if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
+        if (canFunction() && !inputSlot.isEmpty()) {
             ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getStack());
             if (!result.isEmpty()) {
                 ItemStack outputStack = outputSlot.getStack();

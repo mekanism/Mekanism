@@ -30,7 +30,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
@@ -89,7 +88,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         //Only attempt to use power if chunk loading isn't disabled in the config
-        if (MekanismConfig.general.allowChunkloading.get() && MekanismUtils.canFunction(this)) {
+        if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
