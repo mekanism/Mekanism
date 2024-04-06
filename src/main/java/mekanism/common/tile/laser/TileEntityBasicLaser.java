@@ -294,23 +294,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress = diggingProgress.plusEqual(remainingEnergy);
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                                MekFakePlayer.withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), dummy -> {
-                                    dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-                                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
-                                    if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                                        if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, result.getDirection())) {
-                                            //Convert TNT that can be lit on fire into a tnt entity
-                                            //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
-                                            // there will be a crash as our fake player's level will be null
-                                            hitState.onCaughtFire(level, hitPos, result.getDirection(), null);
-                                            level.removeBlock(hitPos, false);
-                                        } else {
-                                            //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
-                                            handleBreakBlock(hitState, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
-                                        }
-                                    }
-                                    return null;
-                                });
+                                withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
                             }
                             diggingProgress = FloatingLong.ZERO;
                         } else {
@@ -332,6 +316,25 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
         }
         return sendUpdatePacket;
+    }
+
+    private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide) {
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
+        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
+        if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
+            if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, hitSide)) {
+                //Convert TNT that can be lit on fire into a tnt entity
+                //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
+                // there will be a crash as our fake player's level will be null
+                hitState.onCaughtFire(level, hitPos, hitSide, null);
+                level.removeBlock(hitPos, false);
+            } else {
+                //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
+                handleBreakBlock(hitState, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
+            }
+        }
+        dummy.cleanupFakePlayer(level);
     }
 
     /**

@@ -563,7 +563,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             missingStack = new ItemStack(replaceTarget);
             return false;
         }
-        BlockState newState = withFakePlayer(fakePlayer -> StackUtils.getStateForPlacement(stack, pos, fakePlayer));
+        BlockState newState = getStateForPlacement(stack, pos);
         if (newState == null || !newState.canSurvive(level, pos)) {
             //If the spot is not a valid position for the block, then we return that we were unsuccessful
             return false;
@@ -576,14 +576,19 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
-        return withFakePlayer(dummy -> !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled());
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
+        dummy.cleanupFakePlayer((ServerLevel) level);
+        return canMine;
     }
 
-    private <R> R withFakePlayer(Function<MekFakePlayer, R> fakePlayerConsumer) {
-        return MekFakePlayer.withFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
-            dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-            return fakePlayerConsumer.apply(dummy);
-        });
+    private BlockState getStateForPlacement(ItemStack stack, BlockPos pos) {
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        BlockState result = StackUtils.getStateForPlacement(stack, pos, dummy);
+        dummy.cleanupFakePlayer((ServerLevel) level);
+        return result;
     }
 
     private ItemStack getReplace(Item replaceTarget, Predicate<Item> replaceStackMatches) {
@@ -1283,7 +1288,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
         ServerLevel level = (ServerLevel) getWorldNN();
-        return withFakePlayer(fakePlayer -> Block.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), fakePlayer, stack));
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        List<ItemStack> drops = Block.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
+        dummy.cleanupFakePlayer(level);
+        return drops;
     }
 
     //Methods relating to IComputerTile
