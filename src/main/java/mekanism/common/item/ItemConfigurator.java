@@ -182,7 +182,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            displayChange.sendMessage(player, () -> MekanismLang.CONFIGURE_STATE.translate(newMode));
+            displayChange.sendMessage(player, newMode, MekanismLang.CONFIGURE_STATE::translate);
         }
     }
 

@@ -26,7 +26,9 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
 
     @Override
     protected void render(TileEntityWindGenerator tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        renderTranslated(tile, partialTick, matrix, (poseStack, angle) -> model.render(poseStack, renderer, angle, light, overlayLight, false));
+        double angle = setupRenderer(tile, partialTick, matrix);
+        model.render(matrix, renderer, angle, light, overlayLight, false);
+        matrix.popPose();
     }
 
     @Override
@@ -49,11 +51,13 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityWindGenerator windGenerator) {
-            renderTranslated(windGenerator, partialTick, matrix, (poseStack, angle) -> model.renderWireFrame(poseStack, buffer, angle, red, green, blue, alpha));
+            double angle = setupRenderer(windGenerator, partialTick, matrix);
+            model.renderWireFrame(matrix, buffer, angle, red, green, blue, alpha);
+            matrix.popPose();
         }
     }
 
-    private void renderTranslated(TileEntityWindGenerator tile, float partialTick, PoseStack matrix, WindGeneratorRenderer renderer) {
+    private double setupRenderer(TileEntityWindGenerator tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
@@ -62,12 +66,6 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
         if (tile.getActive() && partialTick > 0) {
             angle = (angle + tile.getHeightSpeedRatio() * partialTick) % 360;
         }
-        renderer.render(matrix, angle);
-        matrix.popPose();
-    }
-
-    private interface WindGeneratorRenderer {
-
-        void render(PoseStack poseStack, double angle);
+        return angle;
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import java.util.function.Supplier;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
@@ -36,8 +37,9 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
         leftColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY));
         rightColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY));
         PigmentStack outputStack = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
-        leftColorDetails.setOutputIngredient(outputStack);
-        rightColorDetails.setOutputIngredient(outputStack);
+        Supplier<PigmentStack> outputSupplier = () -> outputStack;
+        leftColorDetails.setOutputIngredient(outputSupplier);
+        rightColorDetails.setOutputIngredient(outputSupplier);
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);
         leftColorDetails.reset();
         rightColorDetails.reset();

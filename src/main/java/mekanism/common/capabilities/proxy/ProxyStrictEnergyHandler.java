@@ -48,21 +48,21 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
 
     @Override
     public FloatingLong insertEnergy(int container, FloatingLong amount, Action action) {
-        return readOnly || readOnlyInsert.getAsBoolean() ? amount : energyHandler.insertEnergy(container, amount, side, action);
+        return readOnlyInsert() ? amount : energyHandler.insertEnergy(container, amount, side, action);
     }
 
     @Override
     public FloatingLong extractEnergy(int container, FloatingLong amount, Action action) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
+        return readOnlyExtract() ? FloatingLong.ZERO : energyHandler.extractEnergy(container, amount, side, action);
     }
 
     @Override
     public FloatingLong insertEnergy(FloatingLong amount, Action action) {
-        return readOnly || readOnlyInsert.getAsBoolean() ? amount : energyHandler.insertEnergy(amount, side, action);
+        return readOnlyInsert() ? amount : energyHandler.insertEnergy(amount, side, action);
     }
 
     @Override
     public FloatingLong extractEnergy(FloatingLong amount, Action action) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
+        return readOnlyExtract() ? FloatingLong.ZERO : energyHandler.extractEnergy(amount, side, action);
     }
 }

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -41,13 +40,13 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     @Override
     protected void render(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        renderTranslated(tile, partialTick, matrix, poseStack -> {
-            Pose entry = poseStack.last();
-            VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
-            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
-                buffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
-            }
-        });
+        setupRenderer(tile, partialTick, matrix);
+        Pose entry = matrix.last();
+        VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
+        for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
+            buffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
+        }
+        matrix.popPose();
     }
 
     @Override
@@ -77,12 +76,13 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
             if (vertices.isEmpty()) {
                 MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
             }
-            renderTranslated(mixer, partialTick, matrix, poseStack -> RenderTickHandler.renderVertexWireFrame(vertices, buffer, poseStack.last().pose(),
-                  red, green, blue, alpha));
+            setupRenderer(mixer, partialTick, matrix);
+            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
+            matrix.popPose();
         }
     }
 
-    private void renderTranslated(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix, Consumer<PoseStack> renderer) {
+    private void setupRenderer(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         switch (tile.getDirection()) {
             case NORTH -> matrix.translate(7 / 16F, 0, 6 / 16F);
@@ -94,8 +94,6 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         matrix.translate(shift, 0, shift);
         matrix.mulPose(Axis.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
         matrix.translate(-shift, 0, -shift);
-        renderer.accept(matrix);
-        matrix.popPose();
     }
 
     @Override

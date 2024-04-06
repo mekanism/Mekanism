@@ -6,7 +6,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 public class PigmentExtractorColorDetails extends RecipeViewerColorDetails<Pigment, PigmentStack> {
 
     public PigmentExtractorColorDetails() {
-        super(PigmentStack.EMPTY);
+        super(() -> PigmentStack.EMPTY);
     }
 
     @Override

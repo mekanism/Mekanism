@@ -9,7 +9,7 @@ public class PigmentMixerColorDetails extends RecipeViewerColorDetails<Pigment, 
     private Supplier<PigmentStack> outputIngredient;
 
     public PigmentMixerColorDetails() {
-        super(PigmentStack.EMPTY);
+        super(() -> PigmentStack.EMPTY);
         setOutputIngredient(empty);
     }
 
@@ -27,10 +27,6 @@ public class PigmentMixerColorDetails extends RecipeViewerColorDetails<Pigment, 
     @Override
     public int getColorTo() {
         return getColor(outputIngredient);
-    }
-
-    public void setOutputIngredient(PigmentStack outputIngredient) {
-        setOutputIngredient(() -> outputIngredient);
     }
 
     public void setOutputIngredient(Supplier<PigmentStack> outputIngredient) {

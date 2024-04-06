@@ -289,7 +289,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getMode(stack);
             setMode(stack, player, newState);
-            displayChange.sendMessage(player, () -> MekanismLang.BUCKET_MODE.translate(OnOff.of(newState, true)));
+            displayChange.sendMessage(player, newState, s -> MekanismLang.BUCKET_MODE.translate(OnOff.of(s, true)));
         }
     }
 

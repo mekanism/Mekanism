@@ -53,7 +53,9 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
     }
 
     private static List<BakedQuad> getBakedQuads(List<String> visible, TextureAtlasSprite icon, Level world) {
-        return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
+        ContentsModelData modelData = new ContentsModelData(visible, icon);
+        List<BakedQuad> modelQuads = contentModelCache.get(modelData);
+        if (modelQuads == null) {
             ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
                   (modelLoc, material) -> material.sprite(),
                   MODEL_LOCATION
@@ -68,8 +70,10 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
                 //Set the normals to ones that ignore the diffuse light in the same way we do it in Render Resizable Cuboid
                 unpackedQuad.vertexTransform(vertex -> vertex.normal(NORMAL));
             }
-            return QuadUtils.bake(unpackedQuads);
-        });
+            modelQuads = QuadUtils.bake(unpackedQuads);
+            contentModelCache.put(modelData, modelQuads);
+        }
+        return modelQuads;
     }
 
     protected RenderTransmitterBase(BlockEntityRendererProvider.Context context) {

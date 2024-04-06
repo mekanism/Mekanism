@@ -63,7 +63,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             int newChannel = Math.floorMod(data.getChannel() + shift - 1, 8) + 1;
             if (data.getChannel() != newChannel) {
                 data.channel = newChannel;
-                displayChange.sendMessage(player, () -> AdditionsLang.CHANNEL_CHANGE.translate(newChannel));
+                displayChange.sendMessage(player, newChannel, AdditionsLang.CHANNEL_CHANGE::translate);
             }
         }
     }

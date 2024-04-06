@@ -10,8 +10,8 @@ public abstract class RecipeViewerColorDetails<CHEMICAL extends Chemical<CHEMICA
     protected final Supplier<STACK> empty;
     public Supplier<STACK> ingredient;
 
-    protected RecipeViewerColorDetails(STACK empty) {
-        this.empty = () -> empty;
+    protected RecipeViewerColorDetails(Supplier<STACK> empty) {
+        this.empty = empty;
         setIngredient(this.empty);
     }
 

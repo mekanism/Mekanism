@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
 
 @NothingNullByDefault
 public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<BoilerMultiblockData, TileEntityBoilerCasing> {
@@ -27,26 +26,30 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
     protected void render(TileEntityBoilerCasing tile, BoilerMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light,
           int overlayLight, ProfilerFiller profiler) {
         BlockPos pos = tile.getBlockPos();
-        Lazy<VertexConsumer> buffer = Lazy.of(() -> renderer.getBuffer(Sheets.translucentCullBlockSheet()));
+        VertexConsumer buffer = null;
         if (!multiblock.waterTank.isEmpty()) {
+            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
             if (height > 0) {
                 FluidRenderData data = RenderData.Builder.create(multiblock.waterTank.getFluid())
                       .of(multiblock)
                       .height(height)
                       .build();
-                renderObject(data, multiblock.valves, pos, matrix, buffer.get(), overlayLight, multiblock.prevWaterScale);
+                renderObject(data, multiblock.valves, pos, matrix, buffer, overlayLight, multiblock.prevWaterScale);
             }
         }
         if (!multiblock.steamTank.isEmpty()) {
             int height = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
             if (height > 0) {
+                if (buffer == null) {
+                    buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+                }
                 RenderData data = RenderData.Builder.create(multiblock.steamTank.getStack())
                       .of(multiblock)
                       .location(multiblock.upperRenderLocation)
                       .height(height)
                       .build();
-                renderObject(data, pos, matrix, buffer.get(), overlayLight, multiblock.prevSteamScale);
+                renderObject(data, pos, matrix, buffer, overlayLight, multiblock.prevSteamScale);
             }
         }
     }

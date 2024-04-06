@@ -6,6 +6,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.KeyMapping;
@@ -93,7 +94,7 @@ public class MekKeyBindingBuilder {
     }
 
     public MekKeyBindingBuilder toggleable() {
-        return toggleable(() -> true);
+        return toggleable(ConstantPredicates.ALWAYS_TRUE);
     }
 
     public MekKeyBindingBuilder toggleable(BooleanSupplier toggleable) {

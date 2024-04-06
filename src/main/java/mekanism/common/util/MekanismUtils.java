@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
@@ -687,12 +686,18 @@ public final class MekanismUtils {
         return Collections.emptyList();
     }
 
+    @FunctionalInterface
+    public interface ModifyPlayerBounding {
+
+        AABB modify(AABB bounding, double data);
+    }
+
     /**
      * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing()} except calculates if a given portion of the player is in the
      * fluids.
      */
-    public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
-        AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
+    public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, double data, ModifyPlayerBounding modifyBoundingBox) {
+        AABB bb = modifyBoundingBox.modify(player.getBoundingBox().deflate(0.001), data);
         int xMin = Mth.floor(bb.minX);
         int xMax = Mth.ceil(bb.maxX);
         int yMin = Mth.floor(bb.minY);

@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,13 +44,17 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     protected void render(TileEntityFluidTank tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         FluidStack fluid = tile.fluidTank.getFluid();
         float fluidScale = tile.prevScale;
-        Lazy<VertexConsumer> buffer = Lazy.of(() -> renderer.getBuffer(Sheets.translucentCullBlockSheet()));
+        VertexConsumer buffer = null;
         if (!fluid.isEmpty() && fluidScale > 0) {
-            MekanismRenderer.renderObject(getFluidModel(fluid, fluidScale), matrix, buffer.get(), MekanismRenderer.getColorARGB(fluid, fluidScale),
+            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            MekanismRenderer.renderObject(getFluidModel(fluid, fluidScale), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         }
         if (!tile.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tile.valveFluid)) {
-            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, fluidScale), matrix, buffer.get(),
+            if (buffer == null) {
+                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            }
+            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, fluidScale), matrix, buffer,
                   MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT,
                   getCamera(), tile.getBlockPos());
         }

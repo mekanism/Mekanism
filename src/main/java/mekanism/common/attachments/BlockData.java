@@ -56,13 +56,6 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
         this.blockEntityTag = blockEntityTag;
     }
 
-    @Deprecated
-    public void loadLegacyData(CompoundTag data) {
-        //Note: We can't use deserialize as the legacy data doesn't compress the tile tag onto the block state tag
-        blockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), data.getCompound(NBTConstants.BLOCK_STATE));
-        NBTUtils.setCompoundIfPresent(data, "tileTag", nbt -> blockEntityTag = nbt);
-    }
-
     public boolean tryPlaceIntoWorld(Level level, BlockPos pos, @Nullable Player player) {
         //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
         // the cardboard box and will instead leave it how it was when the box was initially put on

@@ -87,7 +87,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IAt
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getMode(stack);
             setMode(stack, player, newState);
-            displayChange.sendMessage(player, () -> MekanismLang.FLOWING.translate(OnOff.of(newState, true)));
+            displayChange.sendMessage(player, newState, s -> MekanismLang.FLOWING.translate(OnOff.of(s, true)));
         }
     }
 

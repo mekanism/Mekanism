@@ -31,12 +31,12 @@ public class ProxyItemHandler extends ProxyHandler implements IItemHandlerModifi
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return readOnly || readOnlyInsert.getAsBoolean() ? stack : inventory.insertItem(slot, stack, side, Action.get(!simulate));
+        return readOnlyInsert() ? stack : inventory.insertItem(slot, stack, side, Action.get(!simulate));
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? ItemStack.EMPTY : inventory.extractItem(slot, amount, side, Action.get(!simulate));
+        return readOnlyExtract() ? ItemStack.EMPTY : inventory.extractItem(slot, amount, side, Action.get(!simulate));
     }
 
     @Override

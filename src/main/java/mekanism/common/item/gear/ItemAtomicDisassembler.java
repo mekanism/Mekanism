@@ -15,6 +15,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
@@ -248,7 +249,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         DisassemblerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            displayChange.sendMessage(player, () -> MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, newMode, EnumColor.AQUA, newMode.getEfficiency()));
+            displayChange.sendMessage(player, newMode, m -> MekanismLang.DISASSEMBLER_MODE_CHANGE.translate(EnumColor.INDIGO, m, EnumColor.AQUA, m.getEfficiency()));
         }
     }
 
@@ -276,12 +277,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @NothingNullByDefault
     public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTextComponent, IRadialMode {
-        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, () -> true, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
+        NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, ConstantPredicates.ALWAYS_TRUE, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.PINK, ExcavationMode.SLOW.icon()),
         //Note: Uses extreme icon as both are efficiency 128
         FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.RED, ExcavationMode.EXTREME.icon()),
         VEIN(MekanismLang.RADIAL_VEIN_NORMAL, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.AQUA, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, "vein_normal.png")),
-        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, () -> true, EnumColor.WHITE, ExcavationMode.OFF.icon());
+        OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ALWAYS_TRUE, EnumColor.WHITE, ExcavationMode.OFF.icon());
 
         private static final DisassemblerMode[] MODES = values();
 

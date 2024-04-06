@@ -119,7 +119,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
         JetpackMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            displayChange.sendMessage(player, () -> MekanismLang.JETPACK_MODE_CHANGE.translate(newMode));
+            displayChange.sendMessage(player, newMode, MekanismLang.JETPACK_MODE_CHANGE::translate);
         }
     }
 

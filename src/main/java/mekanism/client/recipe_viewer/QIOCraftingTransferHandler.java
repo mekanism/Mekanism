@@ -264,7 +264,10 @@ public class QIOCraftingTransferHandler {
             }
             if (!missingSlots.isEmpty()) {
                 //If we have any missing slots, report that they are missing to the user and don't allow transferring
-                List<SLOT> missing = missingSlots.intStream().mapToObj(slot -> hashedIngredients.get((byte) slot).view()).toList();
+                List<SLOT> missing = new ArrayList<>(missingSlots.size());
+                for (byte slot : missingSlots) {
+                    missing.add(hashedIngredients.get(slot).view());
+                }
                 return recipeHelper.createMissingSlotsError(missing);
             }
         }

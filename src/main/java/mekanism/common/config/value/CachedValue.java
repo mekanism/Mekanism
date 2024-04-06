@@ -1,8 +1,9 @@
 package mekanism.common.config.value;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import mekanism.common.Mekanism;
 import mekanism.common.config.IMekanismConfig;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
@@ -40,8 +41,16 @@ public abstract class CachedValue<T> {
         }
     }
 
-    public boolean removeInvalidationListenersMatching(Predicate<IConfigValueInvalidationListener> checker) {
-        return invalidationListeners != null && !invalidationListeners.isEmpty() && invalidationListeners.removeIf(checker);
+    public <DATA> void removeInvalidationListenersMatching(DATA data, BiPredicate<IConfigValueInvalidationListener, DATA> checker) {
+        if (invalidationListeners != null && !invalidationListeners.isEmpty()) {
+            //noinspection Java8CollectionRemoveIf - Capturing lambda
+            for (Iterator<IConfigValueInvalidationListener> iter = invalidationListeners.iterator(); iter.hasNext(); ) {
+                IConfigValueInvalidationListener listener = iter.next();
+                if (checker.test(listener, data)) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     protected abstract boolean clearCachedValue(boolean checkChanged);

@@ -151,7 +151,9 @@ public interface QuadTransformation {
 
         @Override
         public boolean transform(Quad quad) {
-            quad.vertexTransform(v -> v.color(color));
+            for (Vertex v : quad.getVertices()) {
+                v.color(color);
+            }
             return true;
         }
 
@@ -181,7 +183,9 @@ public interface QuadTransformation {
 
         @Override
         public boolean transform(Quad quad) {
-            quad.vertexTransform(v -> v.light(lightU, lightV));
+            for (Vertex v : quad.getVertices()) {
+                v.light(lightU, lightV);
+            }
             return true;
         }
 
@@ -243,10 +247,10 @@ public interface QuadTransformation {
 
         @Override
         public boolean transform(Quad quad) {
-            quad.vertexTransform(v -> {
+            for (Vertex v : quad.getVertices()) {
                 v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
                 v.normal(round(quaternion.rotate(v.getNormalD()).normalize()));
-            });
+            }
             return true;
         }
 
@@ -278,7 +282,9 @@ public interface QuadTransformation {
 
         @Override
         public boolean transform(Quad quad) {
-            quad.vertexTransform(v -> v.pos(v.getPos().add(translation)));
+            for (Vertex v : quad.getVertices()) {
+                v.pos(v.getPos().add(translation));
+            }
             return true;
         }
 
@@ -315,7 +321,9 @@ public interface QuadTransformation {
             //Calculate how much of a shift it is based on the texture's scale
             float uShift = this.uShift * (uMax - uMin);
             float vShift = this.vShift * (vMax - vMin);
-            quad.vertexTransform(v -> v.texRaw(v.getTexU() + uShift, v.getTexV() + vShift));
+            for (Vertex v : quad.getVertices()) {
+                v.texRaw(v.getTexU() + uShift, v.getTexV() + vShift);
+            }
             return true;
         }
 

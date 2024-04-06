@@ -6,6 +6,7 @@ import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
@@ -129,7 +130,7 @@ public class UnitDisplayUtils {
 
     @NothingNullByDefault
     public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
-        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, () -> true) {
+        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, ConstantPredicates.ALWAYS_TRUE) {
             @Override
             protected FloatingLong getConversion() {
                 //Unused but override it anyway

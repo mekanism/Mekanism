@@ -1,6 +1,6 @@
 package mekanism.common.item.interfaces;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
@@ -67,12 +67,12 @@ public interface IModeItem {
         MAIN_HAND,
         OTHER;
 
-        public void sendMessage(Player player, Supplier<Component> message) {
+        public <DATA> void sendMessage(Player player, DATA data, Function<DATA, Component> message) {
             if (this == MAIN_HAND) {
                 //TODO: Eventually decide if we want to make it so that it checks if IModeItem#getScrollTextComponent is null and otherwise just make it a system message
                 displayModeChange(player);
             } else if (this == OTHER) {
-                player.sendSystemMessage(MekanismUtils.logFormat(message.get()));
+                player.sendSystemMessage(MekanismUtils.logFormat(message.apply(data)));
             }
         }
     }

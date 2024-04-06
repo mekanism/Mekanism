@@ -62,11 +62,11 @@ public class QuadUtils {
         TextureAtlasSprite texture = quad.getTexture();
         float uMin = texture.getU0(), uMax = texture.getU1();
         float vMin = texture.getV0(), vMax = texture.getV1();
-        quad.vertexTransform(v -> {
+        for (Vertex v : quad.getVertices()) {
             float newU = (v.getTexU() - uMin) / (uMax - uMin);
             float newV = (v.getTexV() - vMin) / (vMax - vMin);
             v.texRaw(newTexture.getU(newU), newTexture.getV(newV));
-        });
+        }
     }
 
     // this is an adaptation of fry's original UV contractor (pulled from BakedQuadBuilder).

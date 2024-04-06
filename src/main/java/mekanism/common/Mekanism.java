@@ -435,8 +435,8 @@ public class Mekanism {
         }
         if (event.getLevel() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
             //Remove any invalidation listeners that loaded oredictionificators might have added if the OD was in the given level
-            MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListenersMatching(listener ->
-                  listener instanceof ODConfigValueInvalidationListener odListener && odListener.isIn(level));
+            MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListenersMatching(level, (listener, world) ->
+                  listener instanceof ODConfigValueInvalidationListener odListener && odListener.isIn(world));
         }
     }
 }

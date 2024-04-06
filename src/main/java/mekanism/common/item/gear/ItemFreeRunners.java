@@ -137,7 +137,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         FreeRunnerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            displayChange.sendMessage(player, () -> MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode));
+            displayChange.sendMessage(player, newMode, MekanismLang.FREE_RUNNER_MODE_CHANGE::translate);
         }
     }
 

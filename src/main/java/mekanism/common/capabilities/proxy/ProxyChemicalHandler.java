@@ -82,27 +82,27 @@ public abstract class ProxyChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, 
 
     @Override
     public STACK insertChemical(int tank, STACK stack, Action action) {
-        return readOnly || readOnlyInsert.getAsBoolean() ? stack : sidedHandler.insertChemical(tank, stack, side, action);
+        return readOnlyInsert() ? stack : sidedHandler.insertChemical(tank, stack, side, action);
     }
 
     @Override
     public STACK extractChemical(int tank, long amount, Action action) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? getEmptyStack() : sidedHandler.extractChemical(tank, amount, side, action);
+        return readOnlyExtract() ? getEmptyStack() : sidedHandler.extractChemical(tank, amount, side, action);
     }
 
     @Override
     public STACK insertChemical(STACK stack, Action action) {
-        return readOnly || readOnlyInsert.getAsBoolean() ? stack : sidedHandler.insertChemical(stack, side, action);
+        return readOnlyInsert() ? stack : sidedHandler.insertChemical(stack, side, action);
     }
 
     @Override
     public STACK extractChemical(long amount, Action action) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? getEmptyStack() : sidedHandler.extractChemical(amount, side, action);
+        return readOnlyExtract() ? getEmptyStack() : sidedHandler.extractChemical(amount, side, action);
     }
 
     @Override
     public STACK extractChemical(STACK stack, Action action) {
-        return readOnly || readOnlyExtract.getAsBoolean() ? getEmptyStack() : sidedHandler.extractChemical(stack, side, action);
+        return readOnlyExtract() ? getEmptyStack() : sidedHandler.extractChemical(stack, side, action);
     }
 
     public static class ProxyGasHandler extends ProxyChemicalHandler<Gas, GasStack, ISidedGasHandler> implements IGasHandler {

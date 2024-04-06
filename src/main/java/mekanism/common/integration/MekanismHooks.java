@@ -2,6 +2,7 @@ package mekanism.common.integration;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
@@ -140,15 +141,15 @@ public final class MekanismHooks {
      * @apiNote DME only uses strings in IMC, so we can safely just include them here without worrying about classloading issues
      */
     private void sendDarkModeEverywhereIMC() {
-        List<String> methodBlacklist = List.of(
+        List<Supplier<String>> methodBlacklist = List.of(
               //Used for drawing fluids and chemicals in various GUIs including JEI as well as similar styled things
-              "mekanism.client.gui.GuiUtils:drawTiledSprite",
+              () -> "mekanism.client.gui.GuiUtils:drawTiledSprite",
               //MekaSuit HUD rendering (already configurable by the user)
-              "mekanism.client.render.HUDRenderer:renderCompass",
-              "mekanism.client.render.HUDRenderer:renderHUDElement"
+              () -> "mekanism.client.render.HUDRenderer:renderCompass",
+              () -> "mekanism.client.render.HUDRenderer:renderHUDElement"
         );
-        for (String method : methodBlacklist) {
-            InterModComms.sendTo(DARK_MODE_EVERYWHERE_MODID, "dme-shaderblacklist", () -> method);
+        for (Supplier<String> method : methodBlacklist) {
+            InterModComms.sendTo(DARK_MODE_EVERYWHERE_MODID, "dme-shaderblacklist", method);
         }
     }
 }

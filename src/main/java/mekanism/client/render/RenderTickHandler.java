@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
@@ -100,7 +99,7 @@ import org.joml.Vector4f;
 
 public class RenderTickHandler {
 
-    public final Minecraft minecraft = Minecraft.getInstance();
+    public static final Minecraft minecraft = Minecraft.getInstance();
 
     private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
@@ -155,28 +154,11 @@ public class RenderTickHandler {
             renderStage(event, !transparentRenderers.isEmpty(), (camera, renderer, poseStack, renderTick, partialTick) -> {
                 ProfilerFiller profiler = minecraft.getProfiler();
                 profiler.push(ProfilerConstants.DELAYED);
-                record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
-                }
-                Consumer<TransparentRenderInfo> renderInfoConsumer = info -> {
-                    //Batch all renders for a single render type into a single buffer addition
-                    VertexConsumer buffer = renderer.getBuffer(info.renderType);
-                    for (LazyRender transparentRender : info.renders) {
-                        String profilerSection = transparentRender.getProfilerSection();
-                        if (profilerSection != null) {
-                            profiler.push(profilerSection);
-                        }
-                        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
-                        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
-                        if (profilerSection != null) {
-                            profiler.pop();
-                        }
-                    }
-                    renderer.endBatch(info.renderType);
-                };
                 if (transparentRenderers.size() == 1) {
                     //If we only have one render type we don't need to bother calculating any distances
                     for (Map.Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
-                        renderInfoConsumer.accept(new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0));
+                        TransparentRenderInfo renderInfo = new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0);
+                        renderInfo.render(camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 } else {
                     List<TransparentRenderInfo> toSort = new ArrayList<>(transparentRenderers.size());
@@ -199,7 +181,7 @@ public class RenderTickHandler {
                     //Sort in the order of furthest to closest (reverse of by closest)
                     toSort.sort(Comparator.comparingDouble(info -> -info.closest));
                     for (TransparentRenderInfo apply : toSort) {
-                        renderInfoConsumer.accept(apply);
+                        apply.render(camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 }
                 transparentRenderers.clear();
@@ -420,31 +402,33 @@ public class RenderTickHandler {
                 }
                 AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
                 if (customSelectionBox != null) {
-                    WireFrameRenderer renderWireFrame = null;
                     if (customSelectionBox.isJavaModel()) {
                         //If we use a TER to render the wire frame, grab the tile
                         BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
                             BlockEntityRenderer<BlockEntity> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
-                                renderWireFrame = (state,buffer, matrixStack, random,  red, green, blue, alpha) -> {
-                                    if (wireFrameRenderer.isCombined()) {
-                                        renderQuadsWireFrame(state, buffer, matrixStack, random, red, green, blue, alpha);
-                                    }
-                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrixStack, buffer, red, green, blue, alpha);
-                                };
+                                matrix.pushPose();
+                                Vec3 viewPosition = info.getPosition();
+                                matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
+                                //0.4 Alpha
+                                VertexConsumer buffer = renderer.getBuffer(RenderType.lines());
+                                //0.4 Alpha
+                                if (wireFrameRenderer.isCombined()) {
+                                    renderQuadsWireFrame(actualState, buffer, matrix, world.random, 0, 0, 0, 0x66);
+                                }
+                                wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrix, buffer, 0, 0, 0, 0x66);
+                                matrix.popPose();
+                                shouldCancel = true;
                             }
                         }
                     } else {
                         //Otherwise, skip getting the tile and just grab the model
-                        renderWireFrame = this::renderQuadsWireFrame;
-                    }
-                    if (renderWireFrame != null) {
                         matrix.pushPose();
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
-                        renderWireFrame.render(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random, 0, 0, 0, 0x66);
+                        renderQuadsWireFrame(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random, 0, 0, 0, 0x66);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -550,11 +534,14 @@ public class RenderTickHandler {
     }
 
     private Model3D getOverlayModel(Direction side, TransmissionType type) {
-        return cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class))
-              .computeIfAbsent(type, t -> new Model3D()
-                    .setTexture(MekanismRenderer.overlays.get(t))
-                    .prepSingleFaceModelSize(side)
-              );
+        Map<TransmissionType, Model3D> modelMap = cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class));
+        Model3D model = modelMap.get(type);
+        if (model == null) {
+            model = new Model3D().setTexture(MekanismRenderer.overlays.get(type))
+                  .prepSingleFaceModelSize(side);
+            modelMap.put(type, model);
+        }
+        return model;
     }
 
     @FunctionalInterface
@@ -582,9 +569,22 @@ public class RenderTickHandler {
         }
     }
 
-    @FunctionalInterface
-    private interface WireFrameRenderer {
-
-        void render(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource random, int red, int green, int blue, int alpha);
+    private record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
+        private void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
+            //Batch all renders for a single render type into a single buffer addition
+            VertexConsumer buffer = renderer.getBuffer(renderType);
+            for (LazyRender transparentRender : renders) {
+                String profilerSection = transparentRender.getProfilerSection();
+                if (profilerSection != null) {
+                    profiler.push(profilerSection);
+                }
+                //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+                transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
+                if (profilerSection != null) {
+                    profiler.pop();
+                }
+            }
+            renderer.endBatch(renderType);
+        }
     }
 }

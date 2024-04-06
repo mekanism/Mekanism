@@ -181,7 +181,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getMode(stack);
             setMode(stack, player, newState);
-            displayChange.sendMessage(player, () -> MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true)));
+            displayChange.sendMessage(player, newState, s -> MekanismLang.FIRE_MODE.translate(OnOff.of(s, true)));
         }
     }
 

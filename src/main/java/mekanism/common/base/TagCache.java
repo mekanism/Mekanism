@@ -65,24 +65,29 @@ public final class TagCache {
     }
 
     public static List<String> getTileEntityTypeTags(@NotNull Block block) {
-        return tileEntityTypeTagCache.computeIfAbsent(block, b -> {
-            if (b instanceof IHasTileEntity<?> hasTileEntity) {
+        List<String> cache = tileEntityTypeTagCache.get(block);
+        if (cache == null) {
+            if (block instanceof IHasTileEntity<?> hasTileEntity) {
                 //If it is one of our blocks, short circuit and just lookup the tile's type directly
-                return getTagsAsStrings(RegistryUtils.getBEHolder(hasTileEntity.getTileType().get()));
+                cache = getTagsAsStrings(RegistryUtils.getBEHolder(hasTileEntity.getTileType().get()));
+            } else {
+                BlockState state = block.defaultBlockState();
+                if (state.hasBlockEntity()) {
+                    //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
+                    // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
+                    // that we don't know about and don't handle properly
+                    cache = getTagsAsStrings(StreamSupport.stream(BuiltInRegistries.BLOCK_ENTITY_TYPE.spliterator(), false)
+                          .filter(type -> type.isValid(state))
+                          .flatMap(type -> RegistryUtils.getBEHolder(type).tags())
+                          .distinct()
+                    );
+                } else {
+                    cache = Collections.emptyList();
+                }
             }
-            BlockState state = b.defaultBlockState();
-            if (state.hasBlockEntity()) {
-                //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
-                // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
-                // that we don't know about and don't handle properly
-                return getTagsAsStrings(StreamSupport.stream(BuiltInRegistries.BLOCK_ENTITY_TYPE.spliterator(), false)
-                      .filter(type -> type.isValid(state))
-                      .flatMap(type -> RegistryUtils.getBEHolder(type).tags())
-                      .distinct()
-                );
-            }
-            return Collections.emptyList();
-        });
+            tileEntityTypeTagCache.put(block, cache);
+        }
+        return cache;
     }
 
     public static <TYPE> List<String> getTagsAsStrings(@NotNull Holder<TYPE> holder) {

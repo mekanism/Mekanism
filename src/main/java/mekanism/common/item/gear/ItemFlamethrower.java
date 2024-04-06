@@ -176,7 +176,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
         FlamethrowerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            displayChange.sendMessage(player, () -> MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode));
+            displayChange.sendMessage(player, newMode, MekanismLang.FLAMETHROWER_MODE_CHANGE::translate);
         }
     }
 

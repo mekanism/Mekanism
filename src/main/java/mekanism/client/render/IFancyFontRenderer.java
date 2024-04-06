@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.Font;
@@ -117,17 +116,18 @@ public interface IFancyFontRenderer {
     }
 
     default void drawTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, float scale) {
-        prepTextScale(guiGraphics, g -> drawString(g, text, 0, 0, color), x, y, scale);
+        PoseStack pose = prepTextScale(guiGraphics, x, y, scale);
+        drawString(guiGraphics, text, 0, 0, color);
+        pose.popPose();
     }
 
-    default void prepTextScale(GuiGraphics guiGraphics, Consumer<GuiGraphics> runnable, float x, float y, float scale) {
+    private PoseStack prepTextScale(GuiGraphics guiGraphics, float x, float y, float scale) {
         float yAdd = 4 - (scale * 8) / 2F;
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(x, y + yAdd, 0);
         pose.scale(scale, scale, scale);
-        runnable.accept(guiGraphics);
-        pose.popPose();
+        return pose;
     }
 
     /**
@@ -176,13 +176,13 @@ public interface IFancyFontRenderer {
         public int renderWithScale(GuiGraphics guiGraphics, float x, float y, int color, float maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(maxLength / scale);
-            font.prepTextScale(guiGraphics, g -> {
-                int startY = 0;
-                for (LineData line : linesToDraw) {
-                    font.drawString(g, line.component(), 0, startY, color);
-                    startY += 9;
-                }
-            }, x, y, scale);
+            PoseStack pose = font.prepTextScale(guiGraphics, x, y, scale);
+            int startY = 0;
+            for (LineData line : linesToDraw) {
+                font.drawString(guiGraphics, line.component(), 0, startY, color);
+                startY += 9;
+            }
+            pose.popPose();
             return linesToDraw.size();
         }
 

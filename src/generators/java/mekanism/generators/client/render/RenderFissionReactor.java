@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.neoforge.common.util.Lazy;
 
 @NothingNullByDefault
 public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing> {
@@ -55,8 +54,9 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     protected void render(TileEntityFissionReactorCasing tile, FissionReactorMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer,
           int light, int overlayLight, ProfilerFiller profiler) {
         BlockPos pos = tile.getBlockPos();
-        Lazy<VertexConsumer> buffer = Lazy.of(() -> renderer.getBuffer(Sheets.translucentCullBlockSheet()));
+        VertexConsumer buffer = null;
         if (multiblock.isBurning()) {
+            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
             Model3D model = glowModel.get();
             Camera camera = getCamera();
@@ -66,20 +66,26 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                 matrix.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 matrix.scale(1, assembly.height() + 0.625F, 1);
-                MekanismRenderer.renderObject(model, matrix, buffer.get(), GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, camera, assemblyPos);
+                MekanismRenderer.renderObject(model, matrix, buffer, GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, camera, assemblyPos);
                 matrix.popPose();
             }
             profiler.pop();
         }
         if (!multiblock.fluidCoolantTank.isEmpty()) {
+            if (buffer == null) {
+                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            }
             FluidRenderData data = RenderData.Builder.create(multiblock.fluidCoolantTank.getFluid()).of(multiblock).build();
-            renderObject(data, multiblock.valves, pos, matrix, buffer.get(), overlayLight, multiblock.prevCoolantScale);
+            renderObject(data, multiblock.valves, pos, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
+            if (buffer == null) {
+                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            }
             RenderData data = RenderData.Builder.create(multiblock.heatedCoolantTank.getStack()).of(multiblock).build();
             //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
             Model3D gasModel = cachedHeatedCoolantModels.computeIfAbsent(data, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
-            renderObject(data, pos, gasModel, matrix, buffer.get(), overlayLight, multiblock.prevHeatedCoolantScale);
+            renderObject(data, pos, gasModel, matrix, buffer, overlayLight, multiblock.prevHeatedCoolantScale);
         }
     }
 

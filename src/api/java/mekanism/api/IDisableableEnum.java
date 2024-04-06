@@ -18,8 +18,18 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
     boolean isEnabled();
 
     @Override
+    default TYPE getNext() {
+        return IIncrementalEnum.super.getNext(IDisableableEnum::isEnabled);
+    }
+
+    @Override
     default TYPE getNext(Predicate<TYPE> isValid) {
         return IIncrementalEnum.super.getNext(element -> element.isEnabled() && isValid.test(element));
+    }
+
+    @Override
+    default TYPE getPrevious() {
+        return IIncrementalEnum.super.getPrevious(IDisableableEnum::isEnabled);
     }
 
     @Override

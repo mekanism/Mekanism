@@ -30,8 +30,10 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     @Override
     protected void addTypeDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
-        Attribute.ifPresent(getBlock(), AttributeFactoryType.class, attribute -> tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
-              attribute.getFactoryType())));
+        AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
+        if (factoryType != null) {
+            tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
+        }
         super.addTypeDetails(stack, world, tooltip, flag);
     }
 }

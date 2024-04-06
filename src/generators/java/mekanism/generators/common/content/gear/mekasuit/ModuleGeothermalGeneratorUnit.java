@@ -1,5 +1,7 @@
 package mekanism.generators.common.content.gear.mekasuit;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -9,9 +11,12 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
+import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,14 +29,28 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {
 
+    private static final Int2ObjectMap<ModuleDamageAbsorbInfo> DAMAGE_ABSORB_VALUES = Util.make(() -> {
+        int maxSize = 8;
+        //Based on the max size of the module
+        Int2ObjectMap<ModuleDamageAbsorbInfo> map = new Int2ObjectArrayMap<>(maxSize);
+        FloatingLongSupplier NO_COST = () -> FloatingLong.ZERO;
+        for (int count = 1; count <= maxSize; count++) {
+            //Scale the amount absorbed by how many modules are installed out of the possible number installed
+            float ratio = count / (float) maxSize;
+            map.put(count, new ModuleDamageAbsorbInfo(new ConfigBasedCachedFloatSupplier(() -> MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * ratio,
+                  MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio), NO_COST));
+        }
+        return map;
+    });
+
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer();
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
-            Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
-                  Math.min(bb.minY + legHeight, bb.maxY), bb.maxZ));
+            Map<FluidType, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, legHeight, (bb, data) -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
+                  Math.min(bb.minY + data, bb.maxY), bb.maxZ));
             for (Map.Entry<FluidType, FluidInDetails> entry : fluidsIn.entrySet()) {
                 FluidInDetails details = entry.getValue();
                 double height = details.getMaxHeight();
@@ -75,11 +94,6 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleGeothermalGeneratorUnit> module, DamageSource damageSource) {
-        if (damageSource.is(DamageTypeTags.IS_FIRE)) {
-            //Scale the amount absorbed by how many modules are installed out of the possible number installed
-            float ratio = MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * (module.getInstalledCount() / (float) module.getData().getMaxStackSize());
-            return new ModuleDamageAbsorbInfo(() -> ratio, () -> FloatingLong.ZERO);
-        }
-        return null;
+        return damageSource.is(DamageTypeTags.IS_FIRE) ? DAMAGE_ABSORB_VALUES.get(module.getInstalledCount()) : null;
     }
 }
