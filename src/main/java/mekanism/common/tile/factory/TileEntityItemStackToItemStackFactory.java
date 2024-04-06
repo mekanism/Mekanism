@@ -20,6 +20,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
+    private static final TriPredicate<ItemStackToItemStackRecipe, ItemStack, ItemStack> OUTPUT_CHECK =
+          (recipe, input, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -63,9 +66,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Override
     protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
-        ItemStack output = outputSlot.getStack();
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput,
-              recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput), output));
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), OUTPUT_CHECK);
     }
 
     @NotNull

@@ -28,6 +28,7 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
+import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache.CheckRecipeType;
 import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
@@ -43,6 +44,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
+    private static final CheckRecipeType<ItemStack, SawmillRecipe, ItemStack, ItemStack> OUTPUT_CHECK = (recipe, input, output, extra) -> {
+        ChanceOutput chanceOutput = recipe.getOutput(input);
+        if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
+            //If the input is good and the primary output matches, make sure that the secondary
+            // output of this recipe will stack with what is currently in the secondary slot
+            if (extra.isEmpty()) {
+                return true;
+            }
+            ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
+            return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
+        }
+        return false;
+    };
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -112,21 +126,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Override
     protected SawmillRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
-        ItemStack output = outputSlot.getStack();
         ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, recipe -> {
-            ChanceOutput chanceOutput = recipe.getOutput(fallbackInput);
-            if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
-                //If the input is good and the primary output matches, make sure that the secondary
-                // output of this recipe will stack with what is currently in the secondary slot
-                if (extra.isEmpty()) {
-                    return true;
-                }
-                ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-                return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
-            }
-            return false;
-        });
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), extra, OUTPUT_CHECK);
     }
 
     @NotNull

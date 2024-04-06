@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -178,7 +177,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * @apiNote This is mainly meant as a helper for factories so makes the assumption that if inputB is empty it doesn't factor it into the check at all.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, Predicate<RECIPE> matchCriteria) {
+    public <DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, DATA data, CheckRecipeType<INPUT_A, INPUT_B, RECIPE, DATA> matchCriteria) {
         if (cacheA.isEmpty(inputA)) {
             //Don't allow empty primary inputs
             return null;
@@ -186,23 +185,25 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
         initCacheIfNeeded(world);
         if (cacheB.isEmpty(inputB)) {
             //If b is empty, lookup by A and our match criteria
-            RECIPE recipe = cacheA.findFirstRecipe(inputA, matchCriteria);
-            if (recipe == null) {
-                for (RECIPE complexRecipe : complexRecipes) {
-                    if (inputAExtractor.apply(complexRecipe).testType(inputA) && matchCriteria.test(complexRecipe)) {
-                        return complexRecipe;
-                    }
+            for (RECIPE recipe : cacheA.getRecipes(inputA)) {
+                if (matchCriteria.testType(recipe, inputA, inputB, data)) {
+                    return recipe;
+                }
+            }
+            for (RECIPE complexRecipe : complexRecipes) {
+                if (inputAExtractor.apply(complexRecipe).testType(inputA) && matchCriteria.testType(complexRecipe, inputA, inputB, data)) {
+                    return complexRecipe;
                 }
             }
         } else {
             for (RECIPE recipe : cacheA.getRecipes(inputA)) {
-                if (inputBExtractor.apply(recipe).testType(inputB) && matchCriteria.test(recipe)) {
+                if (inputBExtractor.apply(recipe).testType(inputB) && matchCriteria.testType(recipe, inputA, inputB, data)) {
                     return recipe;
                 }
             }
             for (RECIPE complexRecipe : complexRecipes) {
                 if (inputAExtractor.apply(complexRecipe).testType(inputA)) {
-                    if (inputBExtractor.apply(complexRecipe).testType(inputB) && matchCriteria.test(complexRecipe)) {
+                    if (inputBExtractor.apply(complexRecipe).testType(inputB) && matchCriteria.testType(complexRecipe, inputA, inputB, data)) {
                         return complexRecipe;
                     }
                 }
@@ -239,5 +240,11 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
               Function<RECIPE, INGREDIENT> inputBExtractor, Supplier<CACHE> cacheSupplier) {
             super(recipeType, inputAExtractor, cacheSupplier.get(), inputBExtractor, cacheSupplier.get());
         }
+    }
+
+    @FunctionalInterface
+    public interface CheckRecipeType<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe & BiPredicate<INPUT_A, INPUT_B>, DATA> {
+
+        boolean testType(RECIPE recipe, INPUT_A inputA, INPUT_B inputB, DATA data);
     }
 }

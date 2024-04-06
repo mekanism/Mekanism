@@ -18,7 +18,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -576,7 +575,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
-        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
         dummy.cleanupFakePlayer((ServerLevel) level);
@@ -584,7 +583,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     private BlockState getStateForPlacement(ItemStack stack, BlockPos pos) {
-        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         BlockState result = StackUtils.getStateForPlacement(stack, pos, dummy);
         dummy.cleanupFakePlayer((ServerLevel) level);
@@ -1288,7 +1287,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
         ServerLevel level = (ServerLevel) getWorldNN();
-        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ())
+        MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         List<ItemStack> drops = Block.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
         dummy.cleanupFakePlayer(level);

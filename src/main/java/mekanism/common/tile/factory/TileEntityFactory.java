@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
+import java.util.function.ToIntBiFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -69,6 +69,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -279,6 +280,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, updateCache) != null;
     }
 
+    @Contract("null, _ -> false")
     protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @NotNull ItemStack stack);
 
     @Nullable
@@ -287,7 +289,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (!CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //If our recipe caches are valid, grab our cached recipe and see if it is still valid
             CachedRecipe<RECIPE> cached = getCachedRecipe(process);
-            if (cached != null && isCachedRecipeValid(cached, fallbackInput)) {
+            if (isCachedRecipeValid(cached, fallbackInput)) {
                 //Our input matches the recipe we have cached for this slot
                 return cached.getRecipe();
             }
@@ -526,7 +528,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     //End methods IComputerTile
 
     private void sortInventory() {
-        Map<HashedItem, RecipeProcessInfo> processes = new HashMap<>();
+        Map<HashedItem, RecipeProcessInfo<RECIPE>> processes = new HashMap<>();
         List<ProcessInfo> emptyProcesses = new ArrayList<>();
         for (ProcessInfo processInfo : processInfoSlots) {
             IInventorySlot inputSlot = processInfo.inputSlot();
@@ -535,7 +537,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             } else {
                 ItemStack inputStack = inputSlot.getStack();
                 HashedItem item = HashedItem.raw(inputStack);
-                RecipeProcessInfo recipeProcessInfo = processes.computeIfAbsent(item, i -> new RecipeProcessInfo());
+                RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(item, i -> new RecipeProcessInfo<>());
                 recipeProcessInfo.processes.add(processInfo);
                 recipeProcessInfo.totalCount += inputStack.getCount();
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
@@ -543,10 +545,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     // and our cache is not invalid/out of date due to a reload
                     CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.process());
                     if (isCachedRecipeValid(cachedRecipe, inputStack)) {
+                        recipeProcessInfo.item = inputStack;
+                        recipeProcessInfo.recipe = cachedRecipe.getRecipe();
                         // And our current process has a cached recipe then set the lazily initialized per slot value
                         // Note: If something goes wrong, and we end up with zero as how much we need as an input
                         // we just bump the value up to one to make sure we properly handle it
-                        recipeProcessInfo.lazyMinPerSlot = () -> Math.max(1, getNeededInput(cachedRecipe.getRecipe(), inputStack));
+                        recipeProcessInfo.lazyMinPerSlot = (info, factory) -> factory.getNeededInput(info.recipe, (ItemStack) info.item);
                     }
                 }
             }
@@ -555,23 +559,24 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             //If all input slots are empty, just exit
             return;
         }
-        for (Entry<HashedItem, RecipeProcessInfo> entry : processes.entrySet()) {
-            RecipeProcessInfo recipeProcessInfo = entry.getValue();
+        for (Entry<HashedItem, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
+            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
             if (recipeProcessInfo.lazyMinPerSlot == null) {
+                recipeProcessInfo.item = entry.getKey();
                 //If we don't have a lazy initializer for our minPerSlot setup, that means that there is
                 // no valid cached recipe for any of the slots of this type currently, so we want to try and
                 // get the recipe we will have for the first slot, once we end up with more items in the stack
-                recipeProcessInfo.lazyMinPerSlot = () -> {
+                recipeProcessInfo.lazyMinPerSlot = (info, factory) -> {
                     //Note: We put all of this logic in the lazy init, so that we don't actually call any of this
                     // until it is needed. That way if we have no empty slots and all our input slots are filled
                     // we don't do any extra processing here, and can properly short circuit
-                    HashedItem item = entry.getKey();
-                    ItemStack largerInput = item.createStack(Math.min(item.getMaxStackSize(), recipeProcessInfo.totalCount));
-                    ProcessInfo processInfo = recipeProcessInfo.processes.get(0);
+                    HashedItem item = (HashedItem) info.item;
+                    ItemStack largerInput = item.createStack(Math.min(item.getMaxStackSize(), info.totalCount));
+                    ProcessInfo processInfo = info.processes.get(0);
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
-                    RECIPE recipe = getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
-                    if (recipe != null) {
-                        return Math.max(1, getNeededInput(recipe, largerInput));
+                    info.recipe = factory.getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
+                    if (info.recipe != null) {
+                        return factory.getNeededInput(info.recipe, largerInput);
                     }
                     return 1;
                 };
@@ -587,10 +592,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         distributeItems(processes);
     }
 
-    private void addEmptySlotsAsTargets(Map<HashedItem, RecipeProcessInfo> processes, List<ProcessInfo> emptyProcesses) {
-        for (Entry<HashedItem, RecipeProcessInfo> entry : processes.entrySet()) {
-            RecipeProcessInfo recipeProcessInfo = entry.getValue();
-            int minPerSlot = recipeProcessInfo.getMinPerSlot();
+    private void addEmptySlotsAsTargets(Map<HashedItem, RecipeProcessInfo<RECIPE>> processes, List<ProcessInfo> emptyProcesses) {
+        for (Entry<HashedItem, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
+            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
+            int minPerSlot = recipeProcessInfo.getMinPerSlot(this);
             int maxSlots = recipeProcessInfo.totalCount / minPerSlot;
             if (maxSlots <= 1) {
                 //If we don't have enough to even fill the input for a slot for a single recipe; skip
@@ -630,9 +635,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
-    private void distributeItems(Map<HashedItem, RecipeProcessInfo> processes) {
-        for (Entry<HashedItem, RecipeProcessInfo> entry : processes.entrySet()) {
-            RecipeProcessInfo recipeProcessInfo = entry.getValue();
+    private void distributeItems(Map<HashedItem, RecipeProcessInfo<RECIPE>> processes) {
+        for (Entry<HashedItem, RecipeProcessInfo<RECIPE>> entry : processes.entrySet()) {
+            RecipeProcessInfo<RECIPE> recipeProcessInfo = entry.getValue();
             int processCount = recipeProcessInfo.processes.size();
             if (processCount == 1) {
                 //If there is only one process with the item in it; short-circuit, no balancing is needed
@@ -647,7 +652,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 continue;
             }
             int remainder = recipeProcessInfo.totalCount % processCount;
-            int minPerSlot = recipeProcessInfo.getMinPerSlot();
+            int minPerSlot = recipeProcessInfo.getMinPerSlot(this);
             if (minPerSlot > 1) {
                 int perSlotRemainder = numberPerSlot % minPerSlot;
                 if (perSlotRemainder > 0) {
@@ -732,18 +737,20 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                               @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
-    private static class RecipeProcessInfo {
+    private static class RecipeProcessInfo<RECIPE extends MekanismRecipe> {
 
         private final List<ProcessInfo> processes = new ArrayList<>();
         @Nullable
-        private IntSupplier lazyMinPerSlot;
+        private ToIntBiFunction<RecipeProcessInfo<RECIPE>, TileEntityFactory<RECIPE>> lazyMinPerSlot;
+        private Object item;
+        private RECIPE recipe;
         private int minPerSlot = 1;
         private int totalCount;
 
-        public int getMinPerSlot() {
+        public int getMinPerSlot(TileEntityFactory<RECIPE> factory) {
             if (lazyMinPerSlot != null) {
                 //Get the value lazily
-                minPerSlot = lazyMinPerSlot.getAsInt();
+                minPerSlot = Math.max(1, lazyMinPerSlot.applyAsInt(this, factory));
                 lazyMinPerSlot = null;
             }
             return minPerSlot;

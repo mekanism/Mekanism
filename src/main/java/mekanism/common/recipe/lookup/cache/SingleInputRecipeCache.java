@@ -12,6 +12,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -88,7 +89,20 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      */
     @Nullable
     public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input) {
-        return findTypeBasedRecipe(world, input, ConstantPredicates.alwaysTrue());
+        if (cache.isEmpty(input)) {
+            //Don't allow empty inputs
+            return null;
+        }
+        initCacheIfNeeded(world);
+        RECIPE recipe = cache.findFirstRecipe(input, ConstantPredicates.alwaysTrue());
+        if (recipe == null) {
+            for (RECIPE complexRecipe : complexRecipes) {
+                if (inputExtractor.apply(complexRecipe).testType(input)) {
+                    return complexRecipe;
+                }
+            }
+        }
+        return recipe;
     }
 
     /**
@@ -101,21 +115,52 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, Predicate<RECIPE> matchCriteria) {
+    public <DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA data, TriPredicate<RECIPE, INPUT, DATA> matchCriteria) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;
         }
         initCacheIfNeeded(world);
-        RECIPE recipe = cache.findFirstRecipe(input, matchCriteria);
-        if (recipe == null) {
-            for (RECIPE complexRecipe : complexRecipes) {
-                if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.test(complexRecipe)) {
-                    return complexRecipe;
-                }
+        for (RECIPE recipe : cache.getRecipes(input)) {
+            if (matchCriteria.test(recipe, input, data)) {
+                return recipe;
             }
         }
-        return recipe;
+        for (RECIPE complexRecipe : complexRecipes) {
+            if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.test(complexRecipe, input, data)) {
+                return complexRecipe;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds the first recipe that matches the given input type ignoring the size requirement and also matches the given recipe predicate.
+     *
+     * @param world         World.
+     * @param input         Recipe input.
+     * @param matchCriteria Extra validation criteria to check.
+     *
+     * @return Recipe matching the given input, or {@code null} if no recipe matches.
+     */
+    @Nullable
+    public <DATA_1, DATA_2> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input, DATA_1 data1, DATA_2 data2, CheckRecipeType<INPUT, RECIPE, DATA_1, DATA_2> matchCriteria) {
+        if (cache.isEmpty(input)) {
+            //Don't allow empty inputs
+            return null;
+        }
+        initCacheIfNeeded(world);
+        for (RECIPE recipe : cache.getRecipes(input)) {
+            if (matchCriteria.testType(recipe, input, data1, data2)) {
+                return recipe;
+            }
+        }
+        for (RECIPE complexRecipe : complexRecipes) {
+            if (inputExtractor.apply(complexRecipe).testType(input) && matchCriteria.testType(complexRecipe, input, data1, data2)) {
+                return complexRecipe;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -126,5 +171,11 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
                 complexRecipes.add(recipe);
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface CheckRecipeType<INPUT, RECIPE extends MekanismRecipe & Predicate<INPUT>, DATA_1, DATA_2> {
+
+        boolean testType(RECIPE recipe, INPUT input, DATA_1 data1, DATA_2 data2);
     }
 }
