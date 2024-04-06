@@ -27,7 +27,7 @@ public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket
 
     @Override
     public void handle(PlayPayloadContext context) {
-        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class).orElse(null);
+        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class);
         if (container != null) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {

@@ -30,8 +30,7 @@ public class PacketUpdateItemViewer extends PacketQIOItemViewerGuiSync {
 
     @Override
     public void handle(PlayPayloadContext context) {
-        //noinspection SimplifyOptionalCallChains - Capturing lambda
-        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class).orElse(null);
+        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class);
         if (container != null) {
             container.handleUpdate(itemMap, countCapacity, typeCapacity);
         }

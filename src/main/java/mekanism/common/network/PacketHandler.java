@@ -174,8 +174,12 @@ public class PacketHandler extends BasePacketHandler {
         //QIO
         registrar.play(PacketBatchItemViewerSync.ID, PacketBatchItemViewerSync::new);
         registrar.play(PacketUpdateItemViewer.ID, PacketUpdateItemViewer::new);
-        killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), context -> PacketUtils.container(context, QIOItemViewerContainer.class)
-              .ifPresent(QIOItemViewerContainer::handleKill));
+        killItemViewer = registrar.playInstanced(Mekanism.rl("kill_qio"), context -> {
+            QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class);
+            if (container != null) {
+                container.handleKill();
+            }
+        });
 
         //Transmitters
         registrar.play(PacketNetworkScale.ID, PacketNetworkScale::new);

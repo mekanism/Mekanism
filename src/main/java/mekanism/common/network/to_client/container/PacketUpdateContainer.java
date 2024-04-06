@@ -1,7 +1,6 @@
 package mekanism.common.network.to_client.container;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.IMekanismPacket;
@@ -31,16 +30,12 @@ public record PacketUpdateContainer(short windowId, List<PropertyData> data) imp
 
     @Override
     public void handle(PlayPayloadContext context) {
-        //Ensure that the container is one of ours,
-        Optional<MekanismContainer> containered = PacketUtils.container(context, MekanismContainer.class);
-        if (containered.isPresent()) {
-            MekanismContainer container = containered.get();
-            // the window id is the same as we expect it to be
-            if (container.containerId == windowId) {
-                // and if so handle the packet
-                for (PropertyData datum : data) {
-                    datum.handleWindowProperty(container);
-                }
+        MekanismContainer container = PacketUtils.container(context, MekanismContainer.class);
+        //Ensure that the container is one of ours, and the window id is the same as we expect it to be
+        if (container != null && container.containerId == windowId) {
+            // and if so handle the packet
+            for (PropertyData datum : data) {
+                datum.handleWindowProperty(container);
             }
         }
     }

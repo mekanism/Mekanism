@@ -138,11 +138,13 @@ public class PacketUtils {
         return WorldUtils.getTileEntity(context.level().orElse(null), pos);
     }
 
-    public static <CLASS extends AbstractContainerMenu> Optional<CLASS> container(IPayloadContext context, Class<CLASS> clazz) {
-        return context.player()
-              .map(player -> player.containerMenu)
-              .filter(clazz::isInstance)
-              .map(clazz::cast);
+    @Nullable
+    public static <CLASS extends AbstractContainerMenu> CLASS container(IPayloadContext context, Class<CLASS> clazz) {
+        Player player = context.player().orElse(null);
+        if (player != null && clazz.isInstance(player.containerMenu)) {
+            return clazz.cast(player.containerMenu);
+        }
+        return null;
     }
 
     /**
