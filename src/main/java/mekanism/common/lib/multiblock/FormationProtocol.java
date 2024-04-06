@@ -93,9 +93,9 @@ public class FormationProtocol<T extends MultiblockData> {
             // In theory we could partially get around this issue by keeping track of all the positions for the multiblock in the cache and only
             // reuse the id if we contain all elements we previously had, but doing so is not currently worth all the extra checks
             UUID idToUse = manager.getUniqueInventoryID();
-            if (!result.idsFound.isEmpty()) {
+            if (!result.idsFound().isEmpty()) {
                 RejectContents rejectContents = new RejectContents();
-                for (Map.Entry<UUID, MultiblockCache<T>> entry : result.idsFound.entrySet()) {
+                for (Map.Entry<UUID, MultiblockCache<T>> entry : result.idsFound().entrySet()) {
                     if (cache == null) {
                         cache = entry.getValue();
                     } else {
@@ -105,6 +105,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 //Replace the caches for all the old ids with a singular merged cache with our desired id
                 manager.replaceCaches(result.idsFound().keySet(), idToUse, cache);
                 if (!rejectContents.rejectedItems.isEmpty()) {
+                    //TODO - 1.20.4: Don't drop it in the center if there is no nearest player, maybe drop it on top of the multiblock? Or to one of the sides
                     Vec3 dropPosition = pointerPos.getCenter();
                     //Try to see which player was nearest to multiblocks that have rejected items
                     Player nearestPlayer = world.getNearestPlayer(dropPosition.x, dropPosition.y, dropPosition.z, 25, true);

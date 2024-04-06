@@ -52,17 +52,22 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public void removeStructure(Structure structure) {
         if (!removing) {
             //Don't try to remove it from the tile when the tile is the thing being removed
-            if (structures.remove(structure.getManager(), structure)) {
-                boolean hasFormed = false;
-                boolean canAccess = false;
-                for (Structure struct : structures.values()) {
-                    MultiblockData multiblock = getMultiblockData(struct);
-                    if (multiblock != null && multiblock.isFormed()) {
-                        hasFormed = true;
-                        canAccess |= multiblock.allowsStructuralGuiAccess(this);
+            if (hasFormedMultiblock || canAccessGui) {
+                MultiblockManager<?> manager = structure.getManager();
+                if (structures.get(manager) == structure) {
+                    boolean hasFormed = false;
+                    boolean canAccess = false;
+                    for (Structure struct : structures.values()) {
+                        if (struct != structure) {
+                            MultiblockData multiblock = getMultiblockData(struct);
+                            if (multiblock != null && multiblock.isFormed()) {
+                                hasFormed = true;
+                                canAccess |= multiblock.allowsStructuralGuiAccess(this);
+                            }
+                        }
                     }
+                    updateFormedMultiblock(hasFormed, canAccess);
                 }
-                updateFormedMultiblock(hasFormed, canAccess);
             }
         }
     }
@@ -109,7 +114,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Nullable
     private MultiblockData getMultiblockData(Structure structure) {
         //Like the getMultiblockData(MultiblockManager) method except can assume the structure is indeed in our structures map,
-        // so we can slightly short circuit lookup
+        // so we can slightly short circuit lookup, and return null if there is no data
         MultiblockData data = structure.getMultiblockData();
         if (data != null && data.isFormed()) {
             return data;

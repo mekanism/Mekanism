@@ -236,6 +236,8 @@ public class Structure {
                 // from a structural multiblock's perspective
                 multiblock.resetStructure(multiblock.getManager());
             }
+        } else if (node instanceof IStructuralMultiblock) {
+            node.resetStructure(null);
         }
         FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
             if (pos.equals(start)) {
@@ -248,17 +250,13 @@ public class Structure {
                     Set<MultiblockManager<?>> managers = new HashSet<>(structuralN.getStructureMap().keySet());
                     managers.addAll(structuralAdj.getStructureMap().keySet());
                     // if both are structural, they try to merge all manager structures
-                    if (!managers.isEmpty()) {
-                        boolean merged = false;
-                        for (MultiblockManager<?> manager : managers) {
-                            merged |= mergeIfNecessary(n, adj, manager, true);
-                        }
-                        didMerge = merged;
+                    for (MultiblockManager<?> manager : managers) {
+                        didMerge |= mergeIfNecessary(n, adj, manager, true);
                     }
                 } else if (n instanceof IStructuralMultiblock) {
                     // validate from the perspective of the IMultiblock
-                    if (adj instanceof IMultiblock<?> adjMultiblock && !hasStructure(n, adjMultiblock)) {
-                        adjMultiblock.getStructure().markForUpdate(level, true);
+                    if (!hasStructure(n, (IMultiblock<?>) adj)) {
+                        validate(adj, chunks);
                     }
                     return false;
                 } else if (adj instanceof IStructuralMultiblock) {
@@ -290,15 +288,11 @@ public class Structure {
         // only merge if the structures are different
         if (!node.hasStructure(adjStructure)) {
             if (bothStructural) {
-                boolean nodeFormed = nodeStructure.getMultiblockData() != null && nodeStructure.getMultiblockData().isFormed();
-                boolean adjFormed = adjStructure.getMultiblockData() != null && adjStructure.getMultiblockData().isFormed();
-                if (nodeFormed || adjFormed) {
-                    //If at least one is formed, but they aren't both formed then don't merge them
-                    // as it means we are placing a structural multiblock against another structural one that is already formed,
-                    // so it has to be outside the bounds
-                    if (nodeFormed != adjFormed) {
-                        return false;
-                    }
+                //If at least one is formed, but they aren't both formed then don't merge them
+                // as it means we are placing a structural multiblock against another structural one that is already formed,
+                // so it has to be outside the bounds
+                if ((nodeStructure.getMultiblockData() == null) == (adjStructure.getMultiblockData() != null)) {
+                    return false;
                 }
             }
             Structure changed;
