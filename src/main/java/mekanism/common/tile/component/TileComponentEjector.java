@@ -286,19 +286,20 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Skip sides where there isn't a target
                             continue;
                         }
+                        IItemHandler handler = getHandler(side);
                         if (ejectMap == null) {
                             //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
                             // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
                             // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
                             // instead of only having to do it once per DataType
-                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(getHandler(side)), inventorySlotInfo.getSlots());
+                            ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
                             //No items to eject, exit
                             if (ejectMap.isEmpty()) {
                                 break;
                             }
                         } else {
                             //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
-                            ejectMap.handler = getHandler(side);
+                            ejectMap.handler = handler;
                         }
                         //If the spot is not loaded just skip trying to eject to it
                         TransitResponse response = ejectMap.eject(tile, capability, 0, this.outputColorFunction);
@@ -526,6 +527,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
         public EjectTransitRequest(IItemHandler handler) {
             super(handler);
+            this.handler = handler;
         }
 
         @Override
