@@ -61,6 +61,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -263,7 +264,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                         continue;
                     }
                     ServerLevel level = (ServerLevel) qe.getLevel();
-                    if (level == null || !level.shouldTickBlocksAt(qe.getBlockPos().asLong())) {
+                    if (level == null || !level.shouldTickBlocksAt(ChunkPos.asLong(qe.getBlockPos()))) {
                         //Skip QEs that aren't supposed to be ticking
                         continue;
                     }
