@@ -60,6 +60,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -259,6 +260,11 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                 for (TileEntityQuantumEntangloporter qe : activeQEs.values()) {
                     if (!MekanismUtils.canFunction(qe)) {
                         //Skip trying to eject for this QE if it can't function
+                        continue;
+                    }
+                    ServerLevel level = (ServerLevel) qe.getLevel();
+                    if (level == null || !level.shouldTickBlocksAt(qe.getBlockPos().asLong())) {
+                        //Skip QEs that aren't supposed to be ticking
                         continue;
                     }
                     Direction facing = qe.getDirection();
