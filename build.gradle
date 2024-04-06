@@ -687,30 +687,30 @@ def changeLogResolver = { ->
             if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request") && !message.contains("[no-changelog]")) {
                 //Ignore Merges and PR Merges
                 message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
-                    return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
-                }).replaceAll("\\n", "<br>&emsp;")//convert new lines that are part of a commit message into actual new lines and a tab
+                    return "[${match[0]}](https://github.com/mekanism/Mekanism/issues/${match[1]})"
+                }).replaceAll("\\n", "  \n\t")//convert new lines that are part of a commit message into new lines and a tab
                 if (generatedChangelog != "") {
                     //If this isn't the first commit prepend an extra newline
-                    generatedChangelog += "<br>"
+                    generatedChangelog += "  \n"
                 }
-                generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}"
+                generatedChangelog += "[${commit.getAbbreviatedId()}](https://github.com/mekanism/Mekanism/commit/${commit.id}) - ${message}"
             }
         }
         println "Changelog generated"
     }
 
-    def releaseNotesFile = project.file("docs/release_${mod_version}.html")
+    def releaseNotesFile = project.file("docs/release_${mod_version}.md")
     if (releaseNotesFile.exists()) {
         //Add any version specific changelog stuff
         def releaseNotes = releaseNotesFile.getText()
-        generatedChangelog = "$releaseNotes<br> $generatedChangelog"
+        generatedChangelog = "$releaseNotes\n\n $generatedChangelog"
     }
 
     if (release_type == "alpha") {
         //Add a warning at the top about what an alpha build means
         generatedChangelog = "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, " +
                 "and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep " +
-                "it to a minimum make sure to make backups. You can read more about the alpha state of this project <a href=\"https://github.com/mekanism/Mekanism#alpha-status\">here</a>." +
+                "it to a minimum make sure to make backups. You can read more about the alpha state of this project [here](https://github.com/mekanism/Mekanism#alpha-status)." +
                 "<br> $generatedChangelog"
     }
     resolvedChangelog = generatedChangelog
@@ -719,7 +719,7 @@ def changeLogResolver = { ->
 
 tasks.register('outputChangelog') {
     doLast {
-        project.file("build/changelog.html").text = changeLogResolver.call()
+        project.file("build/changelog.md").text = changeLogResolver.call()
     }
 }
 
@@ -777,7 +777,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
 
 void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
     artifact.changelog = changelog
-    artifact.changelogType = 'html'
+    artifact.changelogType = 'markdown'
     artifact.releaseType = "${release_type}"
 }
 

@@ -77,10 +77,11 @@ jobs:
             build/changelog.html
 
       - name: GH Release
+        id: gh_release
         uses: softprops/action-gh-release@v1
         with:
           files: build/libs/!(MekanismDefense*).jar
-          body_path: build/changelog.html
+          body_path: build/changelog.md
           tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }}
           target_commitish: ${{ github.sha }}
 
@@ -97,3 +98,20 @@ jobs:
           BUILD_NUMBER: ${{ github.run_number }}
           GIT_COMMIT: ${{ github.sha }}
           GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha != github.sha && steps.last_success_build.outputs.sha || steps.last_success_build_any.outputs.sha }}
+
+      - name: Read changelog
+        id: read_changelog
+        uses: andstor/file-reader-action@v1
+        with:
+          path: "build/changelog.md"
+
+      - name: Announce Release
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          embed-title: Mekanism ${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }} for Minecraft ${{ steps.gradle_props.outputs.minecraft_version }} Released
+          embed-url: ${{ steps.gh_release.outputs.url }}
+          embed-description: |
+            Available on Curseforge after approval.
+            
+            ${{ steps.read_changelog.outputs.contents }}
