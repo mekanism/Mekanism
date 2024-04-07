@@ -1,6 +1,5 @@
 package mekanism.common.block.attribute;
 
-import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
@@ -20,8 +19,8 @@ public class AttributeHasBounding implements Attribute {
 
     public static final AttributeHasBounding ABOVE_ONLY = new AttributeHasBounding(new HandleBoundingBlock() {
         @Override
-        public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
-            consumer.accept(level, pos.above(), data);
+        public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
+            return consumer.accept(level, pos.above(), data);
         }
     });
 
@@ -43,6 +42,7 @@ public class AttributeHasBounding implements Attribute {
                           RegistryUtils.getName(boundingState.getBlock()));
                 }
             }
+            return true;
         });
     }
 
@@ -59,15 +59,22 @@ public class AttributeHasBounding implements Attribute {
                     Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
                 }
             }
+            return true;//todo decide if this should bail on failure with partially place blocks
         });
     }
 
-    public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
-        boundingPosHandlers.handle(level, pos, state, data, consumer);
+    public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate) {
+        return boundingPosHandlers.handle(level, pos, state, data, predicate);
     }
 
     public interface HandleBoundingBlock {
 
-        <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer);
+        <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> predicate);
+    }
+
+    @FunctionalInterface
+    public interface TriBooleanFunction<PARAM1, PARAM2, PARAM3> {
+
+        boolean accept(PARAM1 param1, PARAM2 param2, PARAM3 param3);
     }
 }

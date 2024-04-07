@@ -1,8 +1,8 @@
 package mekanism.generators.common.registries;
 
-import mekanism.api.functions.TriConsumer;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
+import mekanism.common.block.attribute.AttributeHasBounding.TriBooleanFunction;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -102,12 +102,15 @@ public class GeneratorsBlockTypes {
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   for (int i = 0; i < 4; i++) {
                       mutable.setWithOffset(pos, 0, i + 1, 0);
-                      consumer.accept(level, mutable, data);
+                      if (!consumer.accept(level, mutable, data)) {
+                          return false;
+                      }
                   }
+                  return true;
               }
           })
           .withComputerSupport("windGenerator")
@@ -134,15 +137,20 @@ public class GeneratorsBlockTypes {
           .with(AttributeUpgradeSupport.MUFFLING_ONLY)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
-                  consumer.accept(level, mutable, data);
+                  if (!consumer.accept(level, mutable, data)) {
+                      return false;
+                  }
                   for (int x = -1; x <= 1; x++) {
                       for (int z = -1; z <= 1; z++) {
                           mutable.setWithOffset(pos, x, 2, z);
-                          consumer.accept(level, mutable, data);
+                          if (!consumer.accept(level, mutable, data)) {
+                              return false;
+                          }
                       }
                   }
+                  return true;
               }
           })
           .withComputerSupport("advancedSolarGenerator")

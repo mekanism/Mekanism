@@ -4,7 +4,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.function.Supplier;
 import mekanism.api.Upgrade;
-import mekanism.api.functions.TriConsumer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
@@ -14,6 +13,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
+import mekanism.common.block.attribute.AttributeHasBounding.TriBooleanFunction;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeSideConfig;
@@ -334,18 +334,21 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
                   for (int x = -1; x <= 1; x++) {
                       for (int y = 0; y <= 1; y++) {
                           for (int z = -1; z <= 1; z++) {
                               if (x != 0 || y != 0 || z != 0) {
                                   mutable.setWithOffset(pos, x, y, z);
-                                  consumer.accept(level, mutable, data);
+                                  if (!consumer.accept(level, mutable, data)) {
+                                      return false;
+                                  }
                               }
                           }
                       }
                   }
+                  return true;
               }
           })
           .withComputerSupport("digitalMiner")
@@ -535,12 +538,16 @@ public class MekanismBlockTypes {
           .with(AttributeCustomSelectionBox.JSON)
           .withBounding(new HandleBoundingBlock() {
               @Override
-              public <DATA> void handle(Level level, BlockPos pos, BlockState state, DATA data, TriConsumer<Level, BlockPos, DATA> consumer) {
+              public <DATA> boolean handle(Level level, BlockPos pos, BlockState state, DATA data, TriBooleanFunction<Level, BlockPos, DATA> consumer) {
                   BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
-                  consumer.accept(level, mutable.setWithOffset(pos, Direction.UP), data);
+                  if (!consumer.accept(level, mutable.setWithOffset(pos, Direction.UP), data)) {
+                      return false;
+                  }
                   mutable.setWithOffset(pos, MekanismUtils.getRight(Attribute.getFacing(state)));
-                  consumer.accept(level, mutable, data);
-                  consumer.accept(level, mutable.move(Direction.UP), data);
+                  if (!consumer.accept(level, mutable, data)) {
+                      return false;
+                  }
+                  return consumer.accept(level, mutable.move(Direction.UP), data);
               }
           })
           .withComputerSupport("modificationStation")

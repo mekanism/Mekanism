@@ -83,13 +83,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (hasBounding == null) {
             return super.placeBlock(context, state);
         }
-        AtomicBoolean isValid = new AtomicBoolean(true);
-        hasBounding.handle(context.getLevel(), context.getClickedPos(), state, context, (level, pos, ctx) -> {
-            if (isValid.get() && !WorldUtils.isValidReplaceableBlock(level, ctx, pos)) {
-                isValid.set(false);
-            }
-        });
-        return isValid.get() && super.placeBlock(context, state);
+
+        return hasBounding.handle(context.getLevel(), context.getClickedPos(), state, context, (level, pos, ctx) -> WorldUtils.isValidReplaceableBlock(level, ctx, pos)) && super.placeBlock(context, state);
     }
 
     @Override
