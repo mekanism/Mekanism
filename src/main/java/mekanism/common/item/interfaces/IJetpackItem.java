@@ -90,12 +90,11 @@ public interface IJetpackItem {
         if (entity.isPassenger()) {
             return ItemStack.EMPTY;
         }
-        return getJetpack(entity, stack -> {
-            if (stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack)) {
-                return !(entity instanceof Player player) || !player.getCooldowns().isOnCooldown(stack.getItem());
-            }
-            return false;
-        });
+        ItemStack jetpack = getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
+        if (entity instanceof Player player && player.getCooldowns().isOnCooldown(jetpack.getItem())) {
+            return ItemStack.EMPTY;
+        }
+        return jetpack;
     }
 
     /**

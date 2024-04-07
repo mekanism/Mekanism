@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.OptionalInt;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -44,7 +45,11 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return FluidUtils.getRGBDurabilityForDisplay(stack).orElseGet(() -> ChemicalUtil.getRGBDurabilityForDisplay(stack));
+        OptionalInt color = FluidUtils.getRGBDurabilityForDisplay(stack);
+        if (color.isPresent()) {
+            return color.getAsInt();
+        }
+        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @NotNull
