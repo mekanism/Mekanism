@@ -19,8 +19,6 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
-import mekanism.client.render.lib.Quad;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
@@ -56,6 +54,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -480,52 +479,17 @@ public class RenderTickHandler {
     }
 
     private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand, int red, int green, int blue, int alpha) {
-        List<Vertex[]> vertices = cachedWireFrames.get(state);
-        if (vertices == null) {
-            BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            //TODO: Eventually we may want to add support for Model data and maybe render type
-            ModelData modelData = ModelData.EMPTY;
-            vertices = new ArrayList<>();
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, direction, rand, modelData, null))) {
-                    vertices.add(quad.getVertices());
-                }
+        //TODO: Eventually we may want to add support for Model data and maybe render type
+        ModelData modelData = ModelData.EMPTY;
+        BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+        for (Direction direction : EnumUtils.DIRECTIONS) {
+            for (BakedQuad quad : bakedModel.getQuads(state, direction, rand, modelData, null)) {
+                buffer.putBulkData(matrix.last(), quad, red, green, blue, alpha, 0, OverlayTexture.NO_OVERLAY, false);
             }
-            for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, null, rand, modelData, null))) {
-                vertices.add(quad.getVertices());
-            }
-            cachedWireFrames.put(state, vertices);
         }
-        renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
-    }
-
-    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
-        for (Vertex[] vertices : allVertices) {
-            Vector4f vertex = getVertex(matrix, vertices[0]);
-            Vector3f normal = vertices[0].getNormal();
-            Vector4f vertex2 = getVertex(matrix, vertices[1]);
-            Vector3f normal2 = vertices[1].getNormal();
-            Vector4f vertex3 = getVertex(matrix, vertices[2]);
-            Vector3f normal3 = vertices[2].getNormal();
-            Vector4f vertex4 = getVertex(matrix, vertices[3]);
-            Vector3f normal4 = vertices[3].getNormal();
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
-
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
-
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
-
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
+        for (BakedQuad quad : bakedModel.getQuads(state, null, rand, modelData, null)) {
+            buffer.putBulkData(matrix.last(), quad, red, green, blue, alpha, 0, OverlayTexture.NO_OVERLAY, false);
         }
-    }
-
-    private static Vector4f getVertex(Matrix4f matrix4f, Vertex vertex) {
-        Vector4f vector4f = new Vector4f((float) vertex.getPos().x(), (float) vertex.getPos().y(), (float) vertex.getPos().z(), 1);
-        return vector4f.mul(matrix4f);
     }
 
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {

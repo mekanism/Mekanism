@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,12 +23,6 @@ import net.minecraft.world.phys.AABB;
 
 @NothingNullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
-
-    private static final List<Vertex[]> vertices = new ArrayList<>();
-
-    public static void resetCached() {
-        vertices.clear();
-    }
 
     public RenderSeismicVibrator(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -58,11 +53,10 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
-            if (vertices.isEmpty()) {
-                MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
-            }
             setupRenderer(vibrator, partialTick, matrix);
-            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getQuads(tile.getLevel().random)) {
+                buffer.putBulkData(matrix.last(), quad, red, green, blue, alpha, 0, OverlayTexture.NO_OVERLAY, false);
+            }
             matrix.popPose();
         }
     }

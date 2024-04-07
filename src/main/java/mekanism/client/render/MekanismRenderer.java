@@ -308,9 +308,7 @@ public class MekanismRenderer {
         RenderDimensionalStabilizer.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderNutritionalLiquifier.resetCachedModels();
-        RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
-        RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
 
