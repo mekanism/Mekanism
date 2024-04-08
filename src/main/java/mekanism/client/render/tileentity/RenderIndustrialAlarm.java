@@ -12,9 +12,11 @@ import mekanism.common.tile.TileEntityIndustrialAlarm;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityIndustrialAlarm, ModelIndustrialAlarm> {
@@ -28,7 +30,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
     @Override
     protected void render(TileEntityIndustrialAlarm tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        RenderTickHandler.addTransparentRenderer(model.getRenderType(), new LazyRender() {
+        RenderTickHandler.addTransparentRenderer(new LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                 float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
@@ -63,14 +65,22 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
             }
 
             @Override
+            @NotNull
             public Vec3 getCenterPos(float partialTick) {
                 //Centered position, does not need to be cached as it is only called once
                 return tile.getBlockPos().getCenter();
             }
 
             @Override
+            @NotNull
             public String getProfilerSection() {
                 return ProfilerConstants.INDUSTRIAL_ALARM;
+            }
+
+            @Override
+            @NotNull
+            public RenderType getRenderType() {
+                return model.getRenderType();
             }
         });
     }

@@ -93,6 +93,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -104,7 +105,7 @@ public class RenderTickHandler {
 
     private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
-    private static final Map<RenderType, List<LazyRender>> transparentRenderers = new HashMap<>();
+    private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
 
     private boolean outliningArea = false;
@@ -144,8 +145,8 @@ public class RenderTickHandler {
         }
     }
 
-    public static void addTransparentRenderer(RenderType renderType, LazyRender render) {
-        transparentRenderers.computeIfAbsent(renderType, r -> new ArrayList<>()).add(render);
+    public static void addTransparentRenderer(LazyRender render) {
+        transparentRenderers.add(render);
     }
 
     @SubscribeEvent
@@ -162,31 +163,19 @@ public class RenderTickHandler {
                 profiler.push(ProfilerConstants.DELAYED);
                 if (transparentRenderers.size() == 1) {
                     //If we only have one render type we don't need to bother calculating any distances
-                    for (Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
-                        doTransparentRender(entry.getKey(), entry.getValue(), camera, renderer, poseStack, renderTick, partialTick, profiler);
-                    }
+                    LazyRender lazyRender = transparentRenderers.get(0);
+                    doTransparentRender(lazyRender.getRenderType(), lazyRender, camera, renderer, poseStack, renderTick, partialTick, profiler);
                 } else {
-                    List<TransparentRenderInfo> toSort = new ArrayList<>(transparentRenderers.size());
-                    for (Entry<RenderType, List<LazyRender>> renderTypeListEntry : transparentRenderers.entrySet()) {
-                        List<LazyRender> renders = renderTypeListEntry.getValue();
-                        double closest = Double.MAX_VALUE;
-                        for (LazyRender render : renders) {
-                            Vec3 renderPos = render.getCenterPos(partialTick);
-                            if (renderPos != null) {
-                                //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
-                                double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
-                                if (distanceSqr < closest) {
-                                    closest = distanceSqr;
-                                }
-                            }
-                        }
-                        //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
-                        toSort.add(new TransparentRenderInfo(renderTypeListEntry.getKey(), renders, closest));
+
+                    for (LazyRender render : transparentRenderers) {
+                        Vec3 renderPos = render.getCenterPos(partialTick);
+                        //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
+                        render.distance = camera.getPosition().distanceToSqr(renderPos);
                     }
                     //Sort in the order of furthest to closest (reverse of by closest)
-                    toSort.sort(Comparator.comparingDouble(info -> -info.closest));
-                    for (TransparentRenderInfo apply : toSort) {
-                        apply.render(camera, renderer, poseStack, renderTick, partialTick, profiler);
+                    transparentRenderers.sort(Comparator.comparingDouble(info -> -info.distance));
+                    for (LazyRender render : transparentRenderers) {
+                        doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 }
                 transparentRenderers.clear();
@@ -541,41 +530,32 @@ public class RenderTickHandler {
         return model;
     }
 
-    public interface LazyRender {
+    public static abstract class LazyRender {
 
-        void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
+        public double distance;
 
-        @Nullable
-        default Vec3 getCenterPos(float partialTick) {
-            return null;
-        }
+        public abstract void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
 
-        @Nullable
-        default String getProfilerSection() {
-            return null;
-        }
+        @NotNull
+        public abstract Vec3 getCenterPos(float partialTick);
+
+        @NotNull
+        public abstract String getProfilerSection();
+
+        @NotNull
+        public abstract RenderType getRenderType();
     }
 
-    private record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
-        private void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
-            doTransparentRender(renderType, renders, camera, renderer, poseStack, renderTick, partialTick, profiler);
-        }
-    }
-
-    private static void doTransparentRender(RenderType renderType, List<LazyRender> renders, Camera camera, BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
+    private static void doTransparentRender(RenderType renderType, LazyRender transparentRender, Camera camera, BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
         //Batch all renders for a single render type into a single buffer addition
         VertexConsumer buffer = renderer.getBuffer(renderType);
-        for (LazyRender transparentRender : renders) {
-            String profilerSection = transparentRender.getProfilerSection();
-            if (profilerSection != null) {
-                profiler.push(profilerSection);
-            }
-            //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
-            transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
-            if (profilerSection != null) {
-                profiler.pop();
-            }
-        }
+
+        String profilerSection = transparentRender.getProfilerSection();
+        profiler.push(profilerSection);
+        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
+        profiler.pop();
+
         renderer.endBatch(renderType);
     }
 }

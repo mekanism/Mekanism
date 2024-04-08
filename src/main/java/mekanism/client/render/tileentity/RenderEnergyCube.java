@@ -14,9 +14,11 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 @NothingNullByDefault
@@ -33,7 +35,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
         float energyScale = tile.getEnergyScale();
         Vec3 renderPos = tile.getBlockPos().getCenter();
         BaseTier baseTier = tile.getTier().getBaseTier();
-        RenderTickHandler.addTransparentRenderer(ModelEnergyCore.BATCHED_RENDER_TYPE, new LazyRender() {
+        RenderTickHandler.addTransparentRenderer(new LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                 float ticks = renderTick + partialTick;
@@ -50,13 +52,21 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
             }
 
             @Override
+            @NotNull
             public Vec3 getCenterPos(float partialTick) {
                 return renderPos;
             }
 
             @Override
+            @NotNull
             public String getProfilerSection() {
                 return ProfilerConstants.ENERGY_CUBE_CORE;
+            }
+
+            @Override
+            @NotNull
+            public RenderType getRenderType() {
+                return ModelEnergyCore.BATCHED_RENDER_TYPE;
             }
         });
     }

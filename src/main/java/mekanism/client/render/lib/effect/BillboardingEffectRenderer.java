@@ -8,9 +8,11 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.RenderTickHandler.LazyRender;
 import mekanism.common.lib.effect.CustomEffect;
 import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -25,20 +27,28 @@ public class BillboardingEffectRenderer {
     }
 
     public static void render(ResourceLocation texture, String profilerSection, Supplier<CustomEffect> lazyEffect) {
-        RenderTickHandler.addTransparentRenderer(MekanismRenderType.SPS.apply(texture), new LazyRender() {
+        RenderType renderType = MekanismRenderType.SPS.apply(texture);
+        RenderTickHandler.addTransparentRenderer(new LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
                 BillboardingEffectRenderer.render(camera, renderer, poseStack, renderTick, partialTick, lazyEffect.get());
             }
 
             @Override
+            @NotNull
             public Vec3 getCenterPos(float partialTick) {
                 return lazyEffect.get().getPos(partialTick);
             }
 
             @Override
+            @NotNull
             public String getProfilerSection() {
                 return profilerSection;
+            }
+
+            @Override
+            public @NotNull RenderType getRenderType() {
+                return renderType;
             }
         });
     }
