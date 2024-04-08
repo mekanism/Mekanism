@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -81,6 +82,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
+    }
+
+    @Override
+    @Deprecated
+    public boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
+        return false;
     }
 
     @NotNull

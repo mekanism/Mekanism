@@ -45,6 +45,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
@@ -74,6 +75,12 @@ public abstract class BlockMekanism extends Block {
             return PushReaction.BLOCK;
         }
         return super.getPistonPushReaction(state);
+    }
+
+    @Override
+    @Deprecated
+    public boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
+        return false;
     }
 
     @NotNull
