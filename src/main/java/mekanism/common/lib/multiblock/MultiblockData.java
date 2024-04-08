@@ -281,7 +281,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         for (BlockPos pos : locations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IStructuralMultiblock structuralMultiblock) {
-                structuralMultiblock.removeStructure(oldStructure);
+                structuralMultiblock.multiblockUnformed(oldStructure);
             }
         }
         inventoryID = null;

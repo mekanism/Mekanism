@@ -27,9 +27,12 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     //Note: We never expect this to actually be filled, but we set the default to six in case it somehow is part of a structure in every direction
     // given our expected is so low we use an array map
-    private final Map<MultiblockManager<?>, Structure> structures = new Reference2ObjectArrayMap<>(6);
+    private final Map<MultiblockManager<?>, Structure> structures = new Reference2ObjectArrayMap<>(2);
     private final Structure invalidStructure = Structure.INVALID;
     private final MultiblockData defaultMultiblock = new MultiblockData(this);
+    /**
+     * Used to mark that the multiblock is currently being removed/unloaded, so we can skip updating the backing maps.
+     */
     private boolean removing;
     private boolean hasFormedMultiblock = false;
     private boolean canAccessGui = false;
@@ -49,7 +52,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void removeStructure(Structure structure) {
+    public void multiblockUnformed(Structure structure) {
         if (!removing) {
             //Don't try to remove it from the tile when the tile is the thing being removed
             if (hasFormedMultiblock || canAccessGui) {
@@ -135,24 +138,24 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             //If we don't have any structures that allow gui access, just short circuit and pass
             return InteractionResult.PASS;
         }
-        InteractionResult result = InteractionResult.PASS;
         for (Structure structure : structures.values()) {
             //If we already have an interaction that has been handled with one of our multiblocks just pass
             // in 99% of cases we will not have a second iteration of the loop
-            if (result == InteractionResult.PASS) {
-                IMultiblock<?> master = structure.getController();
-                if (master != null) {
-                    MultiblockData data = getMultiblockData(structure);
-                    if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
-                        // make sure this block is on the structure first
-                        if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                            result = master.onActivate(player, hand, stack);
+            IMultiblock<?> master = structure.getController();
+            if (master != null) {
+                MultiblockData data = getMultiblockData(structure);
+                if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
+                    // make sure this block is on the structure first
+                    if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
+                        InteractionResult result = master.onActivate(player, hand, stack);
+                        if (result != InteractionResult.PASS) {
+                            return result;
                         }
                     }
                 }
             }
         }
-        return result;
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -183,20 +186,19 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         if (isRemote()) {
             return InteractionResult.PASS;
         }
-        InteractionResult interactionResult = InteractionResult.PASS;
         for (Structure structure : structures.values()) {
-            if (interactionResult == InteractionResult.PASS && structure.getController() != null) {
+            if (structure.getController() != null) {
                 MultiblockData multiblock = getMultiblockData(structure);
                 if (multiblock == null || !multiblock.isFormed()) {
                     FormationResult result = structure.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendSystemMessage(result.getResultText());
-                        interactionResult = InteractionResult.sidedSuccess(isRemote());
+                        return InteractionResult.sidedSuccess(isRemote());
                     }
                 }
             }
         }
-        return interactionResult;
+        return InteractionResult.PASS;
     }
 
     @Override

@@ -16,7 +16,7 @@ public interface IStructuralMultiblock extends IMultiblockBase {
      */
     boolean structuralGuiAccessAllowed();
 
-    void removeStructure(Structure structure);
+    void multiblockUnformed(Structure structure);
 
     void multiblockFormed(MultiblockData multiblock);
 }
