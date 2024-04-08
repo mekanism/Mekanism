@@ -54,6 +54,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -151,14 +152,18 @@ public class RenderTickHandler {
     public void renderWorld(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             //Only do matrix transforms and mess with buffers if we actually have any renders to render
-            renderStage(event, !transparentRenderers.isEmpty(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+            if (!transparentRenderers.isEmpty()) {
+                Camera camera = event.getCamera();
+                MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+                PoseStack poseStack = event.getPoseStack();
+                int renderTick = event.getRenderTick();
+                float partialTick = event.getPartialTick();
                 ProfilerFiller profiler = minecraft.getProfiler();
                 profiler.push(ProfilerConstants.DELAYED);
                 if (transparentRenderers.size() == 1) {
                     //If we only have one render type we don't need to bother calculating any distances
-                    for (Map.Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
-                        TransparentRenderInfo renderInfo = new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0);
-                        renderInfo.render(camera, renderer, poseStack, renderTick, partialTick, profiler);
+                    for (Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
+                        doTransparentRender(entry.getKey(), entry.getValue(), camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 } else {
                     List<TransparentRenderInfo> toSort = new ArrayList<>(transparentRenderers.size());
@@ -186,19 +191,11 @@ public class RenderTickHandler {
                 }
                 transparentRenderers.clear();
                 profiler.pop();
-            });
+            }
         } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
-            //Only do matrix transforms and mess with buffers if we actually have any bolts to render
-            renderStage(event, boltRenderer.hasBoltsToRender(), (camera, renderer, poseStack, renderTick, partialTick) -> {
-                boltRenderer.render(partialTick, poseStack, renderer, camera.getPosition());
-                renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
-            });
-        }
-    }
-
-    private void renderStage(RenderLevelStageEvent event, boolean shouldRender, StageRenderer renderer) {
-        if (shouldRender) {
-            renderer.render(event.getCamera(), minecraft.renderBuffers().bufferSource(), event.getPoseStack(), event.getRenderTick(), event.getPartialTick());
+            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+            boltRenderer.render(event.getPartialTick(), event.getPoseStack(), renderer, event.getCamera().getPosition());
+            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
         }
     }
 
@@ -544,16 +541,6 @@ public class RenderTickHandler {
         return model;
     }
 
-    @FunctionalInterface
-    private interface StageRenderer {
-
-        /**
-         * @param camera Camera position, in general rendering will have to be translated by the inverse position of the client viewing camera to get back to 0, 0, 0
-         */
-        void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
-    }
-
-    @FunctionalInterface
     public interface LazyRender {
 
         void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
@@ -571,20 +558,24 @@ public class RenderTickHandler {
 
     private record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
         private void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
-            //Batch all renders for a single render type into a single buffer addition
-            VertexConsumer buffer = renderer.getBuffer(renderType);
-            for (LazyRender transparentRender : renders) {
-                String profilerSection = transparentRender.getProfilerSection();
-                if (profilerSection != null) {
-                    profiler.push(profilerSection);
-                }
-                //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
-                transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
-                if (profilerSection != null) {
-                    profiler.pop();
-                }
-            }
-            renderer.endBatch(renderType);
+            doTransparentRender(renderType, renders, camera, renderer, poseStack, renderTick, partialTick, profiler);
         }
+    }
+
+    private static void doTransparentRender(RenderType renderType, List<LazyRender> renders, Camera camera, BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
+        //Batch all renders for a single render type into a single buffer addition
+        VertexConsumer buffer = renderer.getBuffer(renderType);
+        for (LazyRender transparentRender : renders) {
+            String profilerSection = transparentRender.getProfilerSection();
+            if (profilerSection != null) {
+                profiler.push(profilerSection);
+            }
+            //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+            transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
+            if (profilerSection != null) {
+                profiler.pop();
+            }
+        }
+        renderer.endBatch(renderType);
     }
 }
