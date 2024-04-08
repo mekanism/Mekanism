@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +26,12 @@ import net.minecraft.world.phys.Vec3;
 @NothingNullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> implements IWireFrameRenderer {
 
+    private static final List<Vertex[]> vertices = new ArrayList<>();
     private static final float SHAFT_SPEED = 5F;
+
+    public static void resetCached() {
+        vertices.clear();
+    }
 
     public RenderPigmentMixer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -69,10 +73,11 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            setupRenderer(mixer, partialTick, matrix);
-            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
-                buffer.putBulkData(matrix.last(), quad, red, green, blue, alpha, 0, OverlayTexture.NO_OVERLAY, false);
+            if (vertices.isEmpty()) {
+                MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
             }
+            setupRenderer(mixer, partialTick, matrix);
+            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
             matrix.popPose();
         }
     }
