@@ -309,9 +309,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 if (!veinedBlocks.isEmpty()) {
                     //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                     FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
-                          hardness -> getDestroyEnergy(modDestroyEnergy, hardness),
-                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, oreTracker.getBoolean(bs.getBlock()) ? 1.5 : 2)));
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
+                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness)
+                                .multiply(0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2)));
                 }
             }
         }
@@ -322,7 +322,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
     }
 
-    public FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
+    public static FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
         return getDestroyEnergy(getDestroyEnergy(itemStack, silk), hardness);
     }
 
@@ -330,9 +330,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
     }
 
-    private FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
+    private static FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
         FloatingLong destroyEnergy = getDestroyEnergy(silk);
-        IModule<ModuleExcavationEscalationUnit> module = getEnabledModule(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
+        IModule<ModuleExcavationEscalationUnit> module = IModuleHelper.INSTANCE.getIfEnabled(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
         return destroyEnergy.multiply(efficiency);
     }

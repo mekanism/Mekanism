@@ -174,9 +174,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
                 // Only allow mining things that are considered an ore
                 if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0, Reference2BooleanMaps.singleton(state.getBlock(), true));
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, world, pos, (ServerPlayer) player, stack, this, found, hardness -> FloatingLong.ZERO,
-                          (hardness, distance, bs) -> getDestroyEnergy(baseDestroyEnergy, hardness).multiply(0.5 * Math.pow(distance, 1.5)));
+                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
+                          Reference2BooleanMaps.singleton(state.getBlock(), true));
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, FloatingLong.ZERO, baseDestroyEnergy, world, pos, (ServerPlayer) player, stack,
+                          this, found, (base, hardness) -> FloatingLong.ZERO,
+                          (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness).multiply(0.5 * Math.pow(distance, 1.5)));
                 }
             }
         }
@@ -187,7 +189,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
     }
 
-    private FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
+    private static FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
         return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
     }
 

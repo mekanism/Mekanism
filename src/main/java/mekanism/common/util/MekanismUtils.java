@@ -721,8 +721,9 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool,
-          Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
+    public static void veinMineArea(IEnergyContainer energyContainer, FloatingLong energyRequired, FloatingLong baseBlastEnergy, FloatingLong baseVeinEnergy,
+          Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy,
+          VeinEnergyFunction veinEnergy) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
@@ -741,7 +742,7 @@ public final class MekanismUtils {
                 continue;
             }
             int distance = foundEntry.getIntValue();
-            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(hardness) : veinEnergy.calc(hardness, distance, targetState);
+            FloatingLong destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
@@ -824,12 +825,12 @@ public final class MekanismUtils {
     @FunctionalInterface
     public interface BlastEnergyFunction {
 
-        FloatingLong calc(float hardness);
+        FloatingLong calc(FloatingLong baseBlastEnergy, float hardness);
     }
 
     @FunctionalInterface
     public interface VeinEnergyFunction {
 
-        FloatingLong calc(float hardness, int distance, BlockState state);
+        FloatingLong calc(FloatingLong baseVeinEnergy, float hardness, int distance, BlockState state);
     }
 }
