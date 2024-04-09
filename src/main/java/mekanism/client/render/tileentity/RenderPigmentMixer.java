@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -24,15 +23,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> implements IWireFrameRenderer {
 
-    private static final List<Line> lines = new ArrayList<>();
     private static final float SHAFT_SPEED = 5F;
+    @Nullable
+    private static Set<Line> lines;
 
     public static void resetCached() {
-        lines.clear();
+        lines = null;
     }
 
     public RenderPigmentMixer(BlockEntityRendererProvider.Context context) {
@@ -73,10 +74,10 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            if (lines.isEmpty()) {
-                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY, null));
+            if (lines == null) {
+                lines = Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY, null);
             }
             setupRenderer(mixer, partialTick, matrix);
             Pose pose = matrix.last();

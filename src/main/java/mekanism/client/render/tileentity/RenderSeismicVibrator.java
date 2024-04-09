@@ -3,8 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -21,14 +20,16 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
 
-    private static final List<Line> lines = new ArrayList<>();
+    @Nullable
+    private static Set<Line> lines;
 
     public static void resetCached() {
-        lines.clear();
+        lines = null;
     }
 
     public RenderSeismicVibrator(BlockEntityRendererProvider.Context context) {
@@ -58,10 +59,10 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
-            if (lines.isEmpty()) {
-                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY, null));
+            if (lines == null) {
+                lines = Outlines.extract(MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY, null);
             }
             setupRenderer(vibrator, partialTick, matrix);
             Pose pose = matrix.last();

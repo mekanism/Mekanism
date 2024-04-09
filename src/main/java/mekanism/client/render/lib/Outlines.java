@@ -1,8 +1,9 @@
 package mekanism.client.render.lib;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -19,8 +20,8 @@ import org.joml.Vector3f;
 
 public class Outlines {
 
-    public static List<Line> extract(BakedModel model, @Nullable BlockState state, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
-        List<Line> lines = new ArrayList<>();
+    public static Set<Line> extract(BakedModel model, @Nullable BlockState state, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+        Set<Line> lines = new HashSet<>();
         VertexExtractor consumer = new VertexExtractor(lines);
         for (Direction direction : EnumUtils.DIRECTIONS) {
             for (BakedQuad quad : model.getQuads(state, direction, rand, modelData, renderType)) {
@@ -38,11 +39,11 @@ public class Outlines {
     @MethodsReturnNonnullByDefault
     private static class VertexExtractor {
 
-        final List<Line> lines;
+        final Set<Line> lines;
         final Vector3f[] vertices = new Vector3f[4];
         int vertexIndex = 0;
 
-        private VertexExtractor(List<Line> lines) {
+        private VertexExtractor(Set<Line> lines) {
             this.lines = lines;
         }
 
@@ -50,18 +51,11 @@ public class Outlines {
             vertices[vertexIndex++] = new Vector3f(pX, pY, pZ);
             if (vertexIndex == 4) {
                 vertexIndex = 0;
-                addLine(vertices[0], vertices[1]);
-                addLine(vertices[1], vertices[2]);
-                addLine(vertices[2], vertices[3]);
-                addLine(vertices[3], vertices[0]);
+                lines.add(new Line(vertices[0], vertices[1]));
+                lines.add(new Line(vertices[1], vertices[2]));
+                lines.add(new Line(vertices[2], vertices[3]));
+                lines.add(new Line(vertices[3], vertices[0]));
                 Arrays.fill(vertices, null);
-            }
-        }
-
-        private void addLine(Vector3f v1, Vector3f v2) {
-            Line line = new Line(v1, v2);
-            if (!lines.contains(line)) {
-                lines.add(line);
             }
         }
 
@@ -78,7 +72,11 @@ public class Outlines {
         }
     }
 
-    public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {
+    public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ, int hash) {
+
+        public Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {
+            this(x1, y1, z1, x2, y2, z2, nX, nY, nZ, calculateHash(x1, y1, z1, x2, y2, z2));
+        }
 
         public Line(Vector3f v1, Vector3f v2, Vector3f normal) {
             this(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, normal.x, normal.y, normal.z);
@@ -86,6 +84,29 @@ public class Outlines {
 
         public Line(Vector3f v1, Vector3f v2) {
             this(v1, v2, v2.sub(v1, new Vector3f()).normalize());
+        }
+
+        private static int calculateHash(float x1, float y1, float z1, float x2, float y2, float z2) {
+            float minX = Math.min(x1, x2);
+            float minY = Math.min(y1, y2);
+            float minZ = Math.min(z1, z2);
+            float maxX = Math.max(x1, x2);
+            float maxY = Math.max(x1, x2);
+            float maxZ = Math.max(x1, x2);
+            //Supports up to a scale of 0.005 in the json (which the miner uses for LEDs)
+            return Objects.hash(
+                  (long) (minX * 3_200),
+                  (long) (minY * 3_200),
+                  (long) (minZ * 3_200),
+                  (long) (maxX * 3_200),
+                  (long) (maxY * 3_200),
+                  (long) (maxZ * 3_200)
+            );
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
         }
 
         @SuppressWarnings("SuspiciousNameCombination")
