@@ -142,7 +142,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
                     for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
                         if (!inventorySlot.isEmpty()) {
-                            InventoryUtils.dropStack(inventorySlot.getStack().copy(), slotStack -> Block.popResourceFromFace(world, pos, side, slotStack));
+                            InventoryUtils.dropStack(world, pos, side, inventorySlot.getStack().copy(), Block::popResourceFromFace);
                             inventorySlot.setEmpty();
                         }
                     }

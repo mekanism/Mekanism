@@ -75,7 +75,7 @@ public final class TransporterUtils {
             blockPos = transporter.getBlockPos();
         }
         TransporterManager.remove(transporter.getLevel(), stack);
-        InventoryUtils.dropStack(stack.itemStack, item -> Block.popResource(transporter.getLevel(), blockPos, item));
+        InventoryUtils.dropStack(transporter.getLevel(), blockPos, null, stack.itemStack, (level, pos, ignored, item) -> Block.popResource(level, pos, item));
     }
 
     public static float[] getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {

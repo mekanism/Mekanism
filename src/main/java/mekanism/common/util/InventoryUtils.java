@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -43,7 +42,8 @@ public final class InventoryUtils {
      */
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
-        if (!entity.level().isClientSide && !stack.isEmpty()) {
+        Level level = entity.level();
+        if (!level.isClientSide && !stack.isEmpty()) {
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
                 if (!IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
@@ -54,40 +54,42 @@ public final class InventoryUtils {
                 return;
             }
             int scalar = stack.getCount();
-            Consumer<ItemStack> dropper = slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack));
+            BlockPos blockPos = entity.blockPosition();
+            ItemDropper dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
             if (stack.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(stack)) {
                     scalar = inventory.getScalar(stack);
-                    dropItemContents(inventory.getDroppedSlots(stack), scalar, dropper);
+                    dropItemContents(level, blockPos, inventory.getDroppedSlots(stack), scalar, dropper);
                 } else {
                     //Explicitly denying dropping items
                     return;
                 }
             } else if (ContainerType.ITEM.supports(stack)) {
-                dropItemContents(ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
+                dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
             }
             Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
             if (existingUpgrades.isPresent()) {
                 UpgradeAware upgradeAware = existingUpgrades.get();
-                dropItemContents(upgradeAware.getInventorySlots(null), scalar, dropper);
-                dropItemContents(upgradeAware.getUpgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+                dropItemContents(level, blockPos, upgradeAware.getInventorySlots(null), scalar, dropper);
+                dropItemContents(level, blockPos, upgradeAware.getUpgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
             if (moduleContainer != null) {
-                dropItemContents(moduleContainer.modules(), scalar, dropper, module -> module.getData().getItemProvider().getItemStack(module.getInstalledCount()));
+                dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper, module -> module.getData().getItemProvider().getItemStack(module.getInstalledCount()));
             }
         }
     }
 
-    private static void dropItemContents(List<IInventorySlot> slots, int scalar, Consumer<ItemStack> dropper) {
-        dropItemContents(slots, scalar, dropper, slot -> slot.getStack().copy());
+    private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper dropper) {
+        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getStack().copy());
     }
 
     /**
      * @param stackExtractor It is expected the stack returned by the stack extractor can be safely mutated
      */
-    private static <T> void dropItemContents(Collection<T> toDrop, int scalar, Consumer<ItemStack> dropper, Function<T, ItemStack> stackExtractor) {
+    private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper dropper,
+          Function<T, ItemStack> stackExtractor) {
         for (T drop : toDrop) {
             ItemStack stackToDrop = stackExtractor.apply(drop);
             if (!stackToDrop.isEmpty()) {
@@ -106,7 +108,7 @@ public final class InventoryUtils {
                     }
                 }
                 //Copy the stack as the passed slot is likely to be the actual backing slot
-                dropStack(stackToDrop, dropper);
+                dropStack(level, pos, null, stackToDrop, dropper);
             }
         }
     }
@@ -117,23 +119,23 @@ public final class InventoryUtils {
      * @param stack   Item Stack to drop, may be passed directly to the dropper.
      * @param dropper Called to drop the item.
      */
-    public static void dropStack(ItemStack stack, Consumer<ItemStack> dropper) {
+    public static void dropStack(Level level, BlockPos pos, Direction side, ItemStack stack, ItemDropper dropper) {
         int count = stack.getCount();
         int max = stack.getMaxStackSize();
         if (count > max) {
             //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
             // stack counts, drop as many stacks as we need at their max size
             while (count > max) {
-                dropper.accept(stack.copyWithCount(max));
+                dropper.drop(level, pos, side, stack.copyWithCount(max));
                 count -= max;
             }
             if (count > 0) {
                 //If we have anything left to drop afterward, do so
-                dropper.accept(stack.copyWithCount(count));
+                dropper.drop(level, pos, side, stack.copyWithCount(count));
             }
         } else {
             //If we have a valid stack, we can just directly drop that instead without requiring any copies
-            dropper.accept(stack);
+            dropper.drop(level, pos, side, stack);
         }
     }
 
@@ -225,5 +227,10 @@ public final class InventoryUtils {
             }
         }
         return stack;
+    }
+
+    public interface ItemDropper {
+
+        void drop(Level level, BlockPos pos, Direction side, ItemStack stack);
     }
 }

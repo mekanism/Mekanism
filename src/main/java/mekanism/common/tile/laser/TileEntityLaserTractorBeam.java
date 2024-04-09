@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
@@ -65,9 +64,8 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         breakBlock(state, hitPos);
         CommonWorldTickHandler.fallbackItemCollector = null;
         if (!drops.isEmpty()) {
-            Lazy<Direction> direction = Lazy.of(this::getDirection);
-            Lazy<BlockPos> dropPos = Lazy.of(() -> worldPosition.relative(direction.get(), 2));
-            Lazy<Direction> opposite = Lazy.of(() -> direction.get().getOpposite());
+            BlockPos dropPos = null;
+            Direction opposite = null;
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {
                 //Try inserting it first where it can stack and then into empty slots
@@ -76,7 +74,12 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
                     //If we have some drop left over that we couldn't fit, then spawn it into the world
                     // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
                     // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
-                    Block.popResourceFromFace(level, dropPos.get(), opposite.get(), drop);
+                    if (dropPos == null) {
+                        Direction direction = getDirection();
+                        dropPos = worldPosition.relative(direction, 2);
+                        opposite = direction.getOpposite();
+                    }
+                    Block.popResourceFromFace(level, dropPos, opposite, drop);
                 }
             }
         }

@@ -552,10 +552,12 @@ public final class MekanismUtils {
     }
 
     public static boolean isSameTypeFactory(Block block, Block factoryBlockType) {
-        return Attribute.matches(block, AttributeFactoryType.class, attribute -> {
+        AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
+        if (attribute != null) {
             AttributeFactoryType otherType = Attribute.get(factoryBlockType, AttributeFactoryType.class);
             return otherType != null && attribute.getFactoryType() == otherType.getFactoryType();
-        });
+        }
+        return false;
     }
 
     /**
