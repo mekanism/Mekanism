@@ -33,7 +33,7 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
     @Override
     protected void init() {
         super.init();
-        addSorterDefaults(gui(), filter, getSlotOffset(), this::addChild, tile::getSingleItem, (min, max) -> {
+        addSorterDefaults(gui(), getSlotOffset(), this::addChild, (min, max) -> {
             minField = min;
             maxField = max;
         });
@@ -54,6 +54,11 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        renderSorterForeground(guiGraphics, filter, tile.getSingleItem());
+        renderSorterForeground(guiGraphics);
+    }
+
+    @Override
+    public boolean isSingleItem() {
+        return tile.getSingleItem();
     }
 }

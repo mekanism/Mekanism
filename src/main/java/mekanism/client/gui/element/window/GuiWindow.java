@@ -196,12 +196,22 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         RenderSystem.enableDepthTest();
     }
 
+    public final boolean togglePinned(GuiElement toggler, double mouseX, double mouseY) {
+        togglePinned();
+        return true;
+    }
+
     public void togglePinned() {
         pinned = !pinned;
     }
 
     public boolean isPinned() {
         return pinned;
+    }
+
+    public final boolean close(GuiElement closer, double mouseX, double mouseY) {
+        close();
+        return true;
     }
 
     public void close() {

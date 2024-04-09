@@ -73,11 +73,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             return list;
         }).spacing(1).clearFormat());
         addRenderableWidget(new GuiDigitalSwitch(this, 19, 56, EJECT, tile::getDoEject, MekanismLang.AUTO_EJECT.translate(),
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), SwitchType.LOWER_ICON));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON));
         addRenderableWidget(new GuiDigitalSwitch(this, 38, 56, INPUT, tile::getDoPull, MekanismLang.AUTO_PULL.translate(),
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), SwitchType.LOWER_ICON));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON));
         addRenderableWidget(new GuiDigitalSwitch(this, 57, 56, SILK, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), SwitchType.LOWER_ICON));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, ((GuiDigitalMiner) element.gui()).tile)), SwitchType.LOWER_ICON));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MinerEnergyContainer energyContainer = tile.getEnergyContainer();
@@ -86,7 +86,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
-              .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
+              .hover((element, graphics, mouseX, mouseY) -> {
+                  GuiDigitalMiner gui = (GuiDigitalMiner) element.gui();
+                  ILangEntry langEntry  =gui.tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL : MekanismLang.MINER_MISSING_BLOCK;
+                  element.displayTooltips(graphics, mouseX, mouseY, langEntry.translate());
+              }));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
             return List.of(
@@ -98,13 +102,13 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
         int buttonStart = 19;
         startButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
         stopButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
         configButton = addRenderableWidget(new TranslationButton(this, 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
-              () -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, ((GuiDigitalMiner) element.gui()).tile))));
         addRenderableWidget(new TranslationButton(this, 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, ((GuiDigitalMiner) element.gui()).tile))));
         updateEnabledButtons();
         trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilterManager().anyEnabledMatch(MinerFilter::hasBlacklistedElement));
         trackWarning(WarningType.NO_SPACE_IN_OUTPUT_OVERFLOW, tile::hasOverflow);

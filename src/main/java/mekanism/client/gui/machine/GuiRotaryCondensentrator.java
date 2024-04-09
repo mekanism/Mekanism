@@ -71,8 +71,9 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).recipeViewerCategories(RecipeViewerRecipeType.DECONDENSENTRATING))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));
-        addRenderableWidget(new ToggleButton(this, 4, 4, tile::getMode, () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
-              getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
+        addRenderableWidget(new ToggleButton(this, 4, 4, tile::getMode,
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiRotaryCondensentrator) element.gui()).tile)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.CONDENSENTRATOR_TOGGLE.translate())));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.client.gui.qio;
 
 import mekanism.client.gui.element.GuiScreenSwitch;
+import mekanism.client.gui.machine.GuiFormulaicAssemblicator;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketUtils;
@@ -20,6 +21,6 @@ public class GuiQIOImporter extends GuiQIOFilterHandler<TileEntityQIOImporter> {
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiScreenSwitch(this, 9, 122, imageWidth - 18, MekanismLang.QIO_IMPORT_WITHOUT_FILTER.translate(), tile::getImportWithoutFilter,
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_IMPORT_WITHOUT_FILTER, tile))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_IMPORT_WITHOUT_FILTER, ((GuiQIOImporter) element.gui()).tile))));
     }
 }

@@ -32,8 +32,11 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 18, 11, 14, getButtonLocation("fuzzy"),
-              () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 18, 11, 14, getButtonLocation("fuzzy"), (element, mouseX, mouseY) -> {
+            GuiQIOItemStackFilter self = (GuiQIOItemStackFilter) element;
+            self.filter.fuzzyMode = !self.filter.fuzzyMode;
+            return true;
+        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.FUZZY_MODE.translate())));
     }
 
     @Override

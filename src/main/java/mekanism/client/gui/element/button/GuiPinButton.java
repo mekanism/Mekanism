@@ -16,8 +16,8 @@ public class GuiPinButton extends ToggleButton {
 
     public GuiPinButton(IGuiWrapper gui, int x, int y, GuiWindow window) {
         super(gui, x, y, WIDTH, 8, 12, 24, UNPINNED, PINNED, window::isPinned, window::togglePinned, (onHover, guiGraphics, mouseX, mouseY) -> {
-            ILangEntry langEntry = window.isPinned() ? MekanismLang.UNPIN : MekanismLang.PIN;
-            gui.displayTooltips(guiGraphics, mouseX, mouseY, langEntry.translate());
+            ILangEntry langEntry = ((ToggleButton) onHover).isToggled() ? MekanismLang.UNPIN : MekanismLang.PIN;
+            onHover.displayTooltips(guiGraphics, mouseX, mouseY, langEntry.translate());
         });
     }
 

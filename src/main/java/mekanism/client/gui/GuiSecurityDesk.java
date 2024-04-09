@@ -73,13 +73,16 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addRenderableWidget(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addRenderableWidget(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         scrollList = addRenderableWidget(new GuiTextScrollList(this, 13, 13, 122, 42));
-        removeButton = addRenderableWidget(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
-            int selection = scrollList.getSelection();
-            if (tile.getFreq() != null && selection != -1) {
-                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
-                scrollList.clearSelection();
-                updateButtons();
+        removeButton = addRenderableWidget(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
+            GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+            int selection = desk.scrollList.getSelection();
+            if (desk.tile.getFreq() != null && selection != -1) {
+                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, desk.tile, selection));
+                desk.scrollList.clearSelection();
+                desk.updateButtons();
+                return true;
             }
+            return false;
         }));
         trustedField = addRenderableWidget(new GuiTextField(this, 35, 68, 99, 11));
         trustedField.setMaxLength(Player.MAX_NAME_LENGTH);
@@ -88,28 +91,37 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         trustedField.setInputValidator(InputValidator.USERNAME);
         trustedField.addCheckmarkButton(this::setTrusted);
         publicButton = addRenderableWidget(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
-              () -> {
-                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
-                  updateButtons();
-              }, getOnHover(MekanismLang.PUBLIC_MODE)));
+              (element, mouseX, mouseY) -> {
+                  GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.PUBLIC.ordinal()));
+                  desk.updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PUBLIC_MODE.translate())));
         privateButton = addRenderableWidget(new MekanismImageButton(this, 54, 113, 40, 16, 40, 16, getButtonLocation("private"),
-              () -> {
-                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PRIVATE.ordinal()));
-                  updateButtons();
-              }, getOnHover(MekanismLang.PRIVATE_MODE)));
+              (element, mouseX, mouseY) -> {
+                  GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.PRIVATE.ordinal()));
+                  desk.updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PRIVATE_MODE.translate())));
         trustedButton = addRenderableWidget(new MekanismImageButton(this, 95, 113, 40, 16, 40, 16, getButtonLocation("trusted"),
-              () -> {
-                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
-                  updateButtons();
-              }, getOnHover(MekanismLang.TRUSTED_MODE)));
+              (element, mouseX, mouseY) -> {
+                  GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, desk.tile, SecurityMode.TRUSTED.ordinal()));
+                  desk.updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.TRUSTED_MODE.translate())));
         overrideButton = addRenderableWidget(new MekanismImageButton(this, 146, 59, 16, 16, getButtonLocation("exclamation"),
-              () -> {
-                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
-                  updateButtons();
-              }, (onHover, guiGraphics, mouseX, mouseY) -> {
-            SecurityFrequency frequency = tile.getFreq();
+              (element, mouseX, mouseY) -> {
+                  GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+                  PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, desk.tile));
+                  desk.updateButtons();
+                  return true;
+              }, (element, guiGraphics, mouseX, mouseY) -> {
+            GuiSecurityDesk desk = (GuiSecurityDesk) element.gui();
+            SecurityFrequency frequency = desk.tile.getFreq();
             if (frequency != null) {
-                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())));
+                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())));
             }
         }));
         updateButtons();

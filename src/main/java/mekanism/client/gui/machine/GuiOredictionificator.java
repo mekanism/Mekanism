@@ -52,8 +52,11 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         FilterManager<OredictionificatorItemFilter> filterManager = tile.getFilterManager();
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 213, 17, 90, filterManager::count, () -> FILTER_COUNT));
         addRenderableWidget(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 94, 119));
-        addRenderableWidget(new TranslationButton(this, 10, 86, 202, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
+        addRenderableWidget(new TranslationButton(this, 10, 86, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, mouseX, mouseY) -> {
+            GuiOredictionificator gui = (GuiOredictionificator) element.gui();
+            gui.addWindow(GuiOredictionificatorFilter.create(gui, gui.tile));
+            return true;
+        }));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 202, 22, i, scrollBar::getCurrentSelection, filterManager, this::onClick,

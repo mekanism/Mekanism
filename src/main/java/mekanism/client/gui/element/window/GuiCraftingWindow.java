@@ -44,7 +44,8 @@ public class GuiCraftingWindow extends GuiWindow {
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
-              () -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, Screen.hasShiftDown())), getOnHover(MekanismLang.CRAFTING_WINDOW_CLEAR)));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(((GuiCraftingWindow) element).index, Screen.hasShiftDown())),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.CRAFTING_WINDOW_CLEAR.translate())));
     }
 
     public void updateContainer(QIOItemViewerContainer container) {

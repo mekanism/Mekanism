@@ -86,8 +86,11 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addRenderableWidget(new GuiElementHolder(this, 9, 30, 204, 68));
         //new filter button border
         addRenderableWidget(new GuiElementHolder(this, 9, 98, 204, 22));
-        addRenderableWidget(new TranslationButton(this, 10, 99, 202, 20, MekanismLang.BUTTON_NEW_FILTER,
-              () -> addWindow(new GuiQIOFilerSelect(this, tile))));
+        addRenderableWidget(new TranslationButton(this, 10, 99, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, mouseX, mouseY) -> {
+            GuiQIOFilterHandler<?> gui = (GuiQIOFilterHandler<?>) element.gui();
+            gui.addWindow(new GuiQIOFilerSelect(gui, gui.tile));
+            return true;
+        }));
         SortableFilterManager<QIOFilter<?>> filterManager = tile.getFilterManager();
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 213, 30, 90, filterManager::count, () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info

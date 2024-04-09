@@ -2,6 +2,7 @@ package mekanism.client.gui.element.text;
 
 import java.util.function.BiFunction;
 import mekanism.client.gui.element.GuiElement.ButtonBackground;
+import mekanism.client.gui.element.GuiElement.IClickable;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,13 +17,13 @@ public enum ButtonType {
         return ret;
     });
 
-    private final BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator;
+    private final BiFunction<GuiTextField, IClickable, MekanismImageButton> buttonCreator;
 
-    ButtonType(BiFunction<GuiTextField, Runnable, MekanismImageButton> buttonCreator) {
+    ButtonType(BiFunction<GuiTextField, IClickable, MekanismImageButton> buttonCreator) {
         this.buttonCreator = buttonCreator;
     }
 
-    public MekanismImageButton getButton(GuiTextField field, Runnable callback) {
+    public MekanismImageButton getButton(GuiTextField field, IClickable callback) {
         return buttonCreator.apply(field, callback);
     }
 }

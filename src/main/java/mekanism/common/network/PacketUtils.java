@@ -195,8 +195,9 @@ public class PacketUtils {
      *
      * @param message - the message to send
      */
-    public static <MSG extends CustomPacketPayload> void sendToServer(MSG message) {
+    public static <MSG extends CustomPacketPayload> boolean sendToServer(MSG message) {
         PacketDistributor.SERVER.noArg().send(message);
+        return true;
     }
 
     public static <MSG extends CustomPacketPayload> void sendToAllTracking(MSG message, Entity entity) {

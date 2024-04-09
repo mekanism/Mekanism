@@ -196,7 +196,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= getX() + borderSize() && mouseY >= getY() + borderSize() && mouseX < getRight() - borderSize() && mouseY < getBottom() - borderSize()) {
-                if (onClick.onClick(this, (int) mouseX, (int) mouseY)) {
+                if (onClick.onClick(this, mouseX, mouseY)) {
                     playDownSound(minecraft.getSoundManager());
                     return true;
                 }

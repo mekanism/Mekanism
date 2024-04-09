@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiUtils;
@@ -220,14 +219,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     protected static ResourceLocation getButtonLocation(String name) {
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
-    }
-
-    protected IHoverable getOnHover(ILangEntry translationHelper) {
-        return getOnHover((Supplier<Component>) translationHelper::translate);
-    }
-
-    protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
-        return (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, componentSupplier.get());
     }
 
     public boolean hasPersistentData() {
@@ -690,6 +681,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @FunctionalInterface
     public interface IClickable {
 
-        boolean onClick(GuiElement element, int mouseX, int mouseY);
+        boolean onClick(GuiElement element, double mouseX, double mouseY);
     }
 }

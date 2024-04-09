@@ -22,16 +22,22 @@ import net.minecraft.world.item.ItemStack;
 
 public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalMiner> {
 
-    default void addMinerDefaults(IGuiWrapper gui, MinerFilter<?> filter, int slotOffset, UnaryOperator<GuiElement> childAdder) {
+    @Override
+    MinerFilter<?> getFilter();
+
+    default void addMinerDefaults(IGuiWrapper gui, int slotOffset, UnaryOperator<GuiElement> childAdder) {
         childAdder.apply(new GuiSlot(SlotType.NORMAL, gui, getRelativeX() + 148, getRelativeY() + slotOffset).setRenderHover(true)
-              .stored(() -> new ItemStack(filter.replaceTarget)).click(GuiFilter.getHandleClickSlot(gui, GuiFilter.NOT_EMPTY_BLOCK, stack -> filter.replaceTarget = stack.getItem()))
+              .stored(() -> new ItemStack(getFilter().replaceTarget)).click(GuiFilter.getHandleClickSlot(GuiFilter.NOT_EMPTY_BLOCK, stack -> getFilter().replaceTarget = stack.getItem()))
               .setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
-                  filter.replaceTarget = ((ItemStack) ingredient).getItem();
+                  getFilter().replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
         childAdder.apply(new MekanismImageButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> filter.requiresReplacement = !filter.requiresReplacement,
-              (onHover, guiGraphics, mouseX, mouseY) -> gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requiresReplacement)))));
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), (element, mouseX, mouseY) -> {
+            MinerFilter<?> filter = ((GuiMinerFilterHelper) element).getFilter();
+            filter.requiresReplacement = !filter.requiresReplacement;
+            return true;
+        }, (element, guiGraphics, mouseX, mouseY) -> element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(((GuiMinerFilterHelper) element).getFilter().requiresReplacement)))));
     }
 
     @Override

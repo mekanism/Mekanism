@@ -31,7 +31,8 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
         super.addGuiElements();
         addRenderableWidget(new GuiFrequencySelector<>(this, 17));
         addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
-              () -> PacketUtils.sendToServer(new PacketItemButtonPress(ClickedItemButton.BACK_BUTTON, menu.getHand())), getOnHover(MekanismLang.BACK)));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketItemButtonPress(ClickedItemButton.BACK_BUTTON, ((GuiQIOItemFrequencySelect) element.gui()).menu.getHand())),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.BACK.translate())));
     }
 
     @Override

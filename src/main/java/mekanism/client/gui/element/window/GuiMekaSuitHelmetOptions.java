@@ -46,10 +46,12 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         // and then divide by 99 to get it to [0, 1]
         jitterSlider.setValue((MekanismConfig.client.hudJitter.get() - 1) / 99);
 
-        addChild(new GuiScreenSwitch(gui, relativeX + 7, relativeY + 112, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled, () -> {
-            MekanismConfig.client.hudCompassEnabled.set(!MekanismConfig.client.hudCompassEnabled.get());
-            MekanismConfig.client.save();
-        }));
+        addChild(new GuiScreenSwitch(gui, relativeX + 7, relativeY + 112, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled,
+              (element, mouseX, mouseY) -> {
+                  MekanismConfig.client.hudCompassEnabled.set(!MekanismConfig.client.hudCompassEnabled.get());
+                  MekanismConfig.client.save();
+                  return true;
+              }));
     }
 
     @Override
@@ -63,7 +65,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         drawScaledCenteredText(guiGraphics, MekanismLang.WARNING.translate(), relativeX + 70, relativeY + 52, subheadingTextColor(), 0.8F);
         drawScaledCenteredText(guiGraphics, MekanismLang.DANGER.translate(), relativeX + 119, relativeY + 52, subheadingTextColor(), 0.8F);
 
-        drawScaledCenteredText(guiGraphics, MekanismLang.OPACITY.translate(Math.round(MekanismConfig.client.hudOpacity.get() * 100)),relativeX + 70, relativeY + 75, subheadingTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.OPACITY.translate(Math.round(MekanismConfig.client.hudOpacity.get() * 100)), relativeX + 70, relativeY + 75, subheadingTextColor(), 0.8F);
         drawScaledCenteredText(guiGraphics, MekanismLang.JITTER.translate((int) MekanismConfig.client.hudJitter.get()), relativeX + 70, relativeY + 100, subheadingTextColor(), 0.8F);
     }
 }

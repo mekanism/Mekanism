@@ -23,6 +23,8 @@ public class MovableFilterButton extends FilterButton {
 
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
+    private final IntConsumer upButtonPress;
+    private final IntConsumer downButtonPress;
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, IntConsumer upButtonPress,
           IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
@@ -34,10 +36,18 @@ public class MovableFilterButton extends FilterButton {
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
         int arrowX = relativeX + width - 14;
-        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) - 8, false, () -> upButtonPress.accept(getActualIndex()),
-              (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate())));
-        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) + 1, true, () -> downButtonPress.accept(getActualIndex()),
-              (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate())));
+        this.upButtonPress = upButtonPress;
+        this.downButtonPress = downButtonPress;
+        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) - 8, false, (element, mouseX, mouseY) -> {
+            MovableFilterButton self = (MovableFilterButton) element;
+            self.upButtonPress.accept(self.getActualIndex());
+            return true;
+        }, (onHover, guiGraphics, mouseX, mouseY) -> onHover.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate())));
+        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) + 1, true, (element, mouseX, mouseY) -> {
+            MovableFilterButton self = (MovableFilterButton) element;
+            self.downButtonPress.accept(self.getActualIndex());
+            return true;
+        }, (onHover, guiGraphics, mouseX, mouseY) -> onHover.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate())));
     }
 
     @Override

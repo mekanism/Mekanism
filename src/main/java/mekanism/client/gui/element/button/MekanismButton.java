@@ -19,16 +19,16 @@ public class MekanismButton extends GuiElement {
     @Nullable
     private final IHoverable onHover;
     @NotNull
-    private final Runnable onLeftClick;
+    private final IClickable onLeftClick;
     @Nullable
-    private final Runnable onRightClick;
+    private final IClickable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull Runnable onLeftClick, @Nullable IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick, @Nullable IHoverable onHover) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull Runnable onLeftClick, @Nullable Runnable onRightClick,
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick,
           @Nullable IHoverable onHover) {
         super(gui, x, y, width, height, text);
         this.onHover = onHover;
@@ -41,10 +41,10 @@ public class MekanismButton extends GuiElement {
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            onLeftClick.run();
+            onLeftClick.onClick(this, mouseX, mouseY);
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (onRightClick != null) {
-                onRightClick.run();
+                onRightClick.onClick(this, mouseX, mouseY);
             }
         }
     }
@@ -60,8 +60,7 @@ public class MekanismButton extends GuiElement {
         //From AbstractButton with an additional check of validating that it is focused
         if (this.active && this.visible && this.isFocused() && CommonInputs.selected(keyCode)) {
             playDownSound(minecraft.getSoundManager());
-            onLeftClick.run();
-            return true;
+            return onLeftClick.onClick(this, getButtonX() + getButtonWidth() / 2.0, getButtonY() + getButtonHeight() / 2.0);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

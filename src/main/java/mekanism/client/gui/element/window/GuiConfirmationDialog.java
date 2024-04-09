@@ -12,16 +12,19 @@ import net.minecraft.network.chat.Component;
 public class GuiConfirmationDialog extends GuiWindow {
 
     private final WrappedTextRenderer wrappedTextRenderer;
+    private final Runnable onConfirm;
 
     private GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, Component title, Runnable onConfirm, DialogType type) {
         super(gui, x, y, width, height, WindowType.CONFIRMATION);
         this.wrappedTextRenderer = new WrappedTextRenderer(this, title);
+        this.onConfirm = onConfirm;
         active = true;
 
         addChild(new TranslationButton(gui, relativeX + width / 2 - 51, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
-        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
-            onConfirm.run();
-            close();
+        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, (element, mouseX, mouseY) -> {
+            GuiConfirmationDialog confirmation = (GuiConfirmationDialog) element;
+            confirmation.onConfirm.run();
+            return confirmation.close(element, mouseX, mouseY);
         }, null, type.getColorSupplier()));
     }
 

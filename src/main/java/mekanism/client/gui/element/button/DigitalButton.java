@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DigitalButton extends TranslationButton {
 
-    public DigitalButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
+    public DigitalButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
         super(gui, x, y, width, height, translationHelper, onPress, onHover, null);
         setButtonBackground(ButtonBackground.DIGITAL);
     }

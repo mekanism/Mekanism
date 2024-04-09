@@ -103,9 +103,9 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected IClickable getSlotClickHandler() {
         return (element, mouseX, mouseY) -> {
             if (!Screen.hasShiftDown()) {
-                ItemStack stack = gui().getCarriedItem();
+                ItemStack stack = element.gui().getCarriedItem();
                 if (!stack.isEmpty()) {
-                    setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);
+                    ((GuiModIDFilter<?, ?>) element).setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);
                     return true;
                 }
             }

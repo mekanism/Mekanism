@@ -20,10 +20,10 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     private final ResourceLocation icon;
     private final BooleanSupplier stateSupplier;
     private final Component tooltip;
-    private final Runnable onToggle;
+    private final IClickable onToggle;
 
     public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, Component tooltip,
-          Runnable onToggle, SwitchType type) {
+          IClickable onToggle, SwitchType type) {
         super(SWITCH, gui, x, y, type.width, type.height);
         this.type = type;
         this.icon = icon;
@@ -57,7 +57,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        onToggle.run();
+        onToggle.onClick(this, mouseX, mouseY);
     }
 
     public enum SwitchType {

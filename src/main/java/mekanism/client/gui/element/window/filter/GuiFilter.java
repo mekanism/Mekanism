@@ -66,8 +66,14 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && hasFilterSelect()) {
                 //If it is a new filter, and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect,
-                      getOnHover(MekanismLang.BACK)));
+                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, mouseX, mouseY) -> {
+                    //Add the window for the filter select dialog to the parent gui
+                    IGuiWrapper wrapper = element.gui();
+                    GuiFilter<?, TILE> guiFilter = (GuiFilter<?, TILE>) element;
+                    wrapper.addWindow(guiFilter.getFilterSelect(wrapper, guiFilter.tile));
+                    //And close the filter
+                    return close(element, mouseX, mouseY);
+                }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.BACK.translate())));
             } else {
                 super.addCloseButton();
             }
@@ -91,6 +97,11 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         //No-op the super close button addition
     }
 
+    @Override
+    public FILTER getFilter() {
+        return filter;
+    }
+
     protected int getSlotOffset() {
         return 18;
     }
@@ -112,13 +123,17 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         int screenBottom = screenTop + getScreenHeight();
         addChild(new GuiInnerScreen(gui(), relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
-              isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
-            if (origFilter != null) {
-                PacketUtils.sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, null));
+              isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, mouseX, mouseY) -> {
+            GuiFilter<FILTER, ?> self = (GuiFilter<FILTER, ?>) element;
+            if (self.origFilter != null) {
+                PacketUtils.sendToServer(new PacketEditFilter<>(self.tile.getBlockPos(), self.origFilter, null));
             }
-            close();
+            return self.close(element, mouseX, mouseY);
         }));
-        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
+        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (element, mouseX, mouseY) -> {
+            ((GuiFilter<?, ?>) element).validateAndSave();
+            return true;
+        }));
         GuiSlot slot = addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
         IClickable slotClickHandler = getSlotClickHandler();
         if (slotClickHandler != null) {
@@ -136,13 +151,6 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     @Nullable
     protected IGhostIngredientConsumer getGhostHandler() {
         return null;
-    }
-
-    private void openFilterSelect() {
-        //Add the window for the filter select dialog to the parent gui
-        gui().addWindow(getFilterSelect(gui(), tile));
-        //And close the filter
-        close();
     }
 
     protected List<Component> getScreenText() {
@@ -224,12 +232,12 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract FILTER createNewFilter();
 
-    public static IClickable getHandleClickSlot(IGuiWrapper gui, Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
+    public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
         return (element, mouseX, mouseY) -> {
             if (Screen.hasShiftDown()) {
                 itemConsumer.accept(ItemStack.EMPTY);
             } else {
-                ItemStack stack = gui.getCarriedItem();
+                ItemStack stack = element.gui().getCarriedItem();
                 if (!stackValidator.test(stack)) {
                     return false;
                 }

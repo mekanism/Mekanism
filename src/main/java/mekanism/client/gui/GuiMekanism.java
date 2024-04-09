@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -173,14 +170,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     protected void renderTitleText(GuiGraphics guiGraphics) {
         drawTitleText(guiGraphics, title, titleLabelY);
-    }
-
-    protected IHoverable getOnHover(ILangEntry translationHelper) {
-        return getOnHover((Supplier<Component>) translationHelper::translate);
-    }
-
-    protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
-        return (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, componentSupplier.get());
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -616,7 +605,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
         return super.isHovering(x, y, width, height, mouseX, mouseY) && getWindowHovering(mouseX, mouseY) == null &&
-               overNoButtons(null, mouseX, mouseY);
+               overNoButtons((GuiWindow) null, mouseX, mouseY);
     }
 
     protected void addSlots() {

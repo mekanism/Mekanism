@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 public class GuiScreenSwitch extends GuiInnerScreen {
 
     private final BooleanSupplier stateSupplier;
-    private final Runnable onToggle;
+    private final IClickable onToggle;
 
-    public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, Component buttonName, BooleanSupplier stateSupplier, Runnable onToggle) {
+    public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, Component buttonName, BooleanSupplier stateSupplier, IClickable onToggle) {
         super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
@@ -40,6 +40,6 @@ public class GuiScreenSwitch extends GuiInnerScreen {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        onToggle.run();
+        onToggle.onClick(this, mouseX, mouseY);
     }
 }

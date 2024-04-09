@@ -25,6 +25,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     private final IReactorLogic<TYPE> tile;
     private final int typeOffset;
     private final Supplier<@Nullable TYPE> modeSupplier;
+    private final Consumer<TYPE> onPress;
 
 
     public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, IntSupplier indexSupplier, Supplier<TYPE[]> modeList,
@@ -37,20 +38,24 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     private ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
-        super(gui, x, y, 128, 22, Component.empty(), () -> {
-            TYPE mode = modeSupplier.get();
+        super(gui, x, y, 128, 22, Component.empty(), (element, mouseX, mouseY) -> ((ReactorLogicButton<?>) element).click(), (element, guiGraphics, mouseX, mouseY) -> {
+            IReactorLogicMode<?> mode = ((ReactorLogicButton<?>) element).modeSupplier.get();
             if (mode != null) {
-                onPress.accept(mode);
-            }
-        }, (onHover, guiGraphics, mouseX, mouseY) -> {
-            TYPE mode = modeSupplier.get();
-            if (mode != null) {
-                gui.displayTooltips(guiGraphics, mouseX, mouseY, mode.getDescription());
+                element.displayTooltips(guiGraphics, mouseX, mouseY, mode.getDescription());
             }
         });
+        this.onPress = onPress;
         this.typeOffset = 22 * index;
         this.modeSupplier = modeSupplier;
         this.tile = tile;
+    }
+
+    private boolean click() {
+        TYPE mode = modeSupplier.get();
+        if (mode != null) {
+            onPress.accept(mode);
+        }
+        return true;
     }
 
     @Override

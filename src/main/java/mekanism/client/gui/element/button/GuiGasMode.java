@@ -27,7 +27,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank, IHoverable onHover) {
-        super(gui, x, y, 10, IDLE, () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)), onHover);
+        super(gui, x, y, 10, IDLE, (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)), onHover);
         this.left = left;
         this.gasModeSupplier = gasModeSupplier;
     }

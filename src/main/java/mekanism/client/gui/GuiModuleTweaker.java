@@ -71,7 +71,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 138, 20, saveCallback, armorPreview));
         scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 108, 18));
-        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 106, 16, MekanismLang.BUTTON_OPTIONS, (element, mouseX, mouseY) -> {
+            ((GuiModuleTweaker) element.gui()).openOptions();
+            return true;
+        }));
         optionsButton.active = false;
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {

@@ -17,9 +17,11 @@ import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
@@ -50,16 +52,22 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
-        teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
-            TeleporterFrequency frequency = getFrequency();
-            if (frequency != null && menu.getStatus() == 1) {
+        teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, (element, mouseX, mouseY) -> {
+            GuiPortableTeleporter gui = (GuiPortableTeleporter) element.gui();
+            TeleporterFrequency frequency = gui.getFrequency();
+            if (frequency != null && gui.menu.getStatus() == 1) {
                 //This should always be true if the teleport button is active, but validate it just in case
-                ClientTickHandler.portableTeleport(getMinecraft().player, menu.getHand(), frequency.getIdentity());
-                getMinecraft().player.closeContainer();
+                Player player = Minecraft.getInstance().player;
+                if (player == null) {
+                    return false;
+                }
+                ClientTickHandler.portableTeleport(player, gui.menu.getHand(), frequency.getIdentity());
+                player.closeContainer();
             } else {
                 //If something did go wrong make the teleport button not able to be pressed
                 teleportButton.active = false;
             }
+            return true;
         }));
         //Teleporter button starts as deactivated until we have a frequency get synced
         teleportButton.active = false;

@@ -19,7 +19,7 @@ public class FilterSelectButton extends MekanismButton {
 
     private final boolean down;
 
-    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
+    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
         super(gui, x, y, 11, 7, Component.empty(), onPress, onHover);
         this.down = down;
     }

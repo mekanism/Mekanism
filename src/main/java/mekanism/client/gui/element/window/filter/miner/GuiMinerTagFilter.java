@@ -28,7 +28,7 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     @Override
     protected void init() {
         super.init();
-        addMinerDefaults(gui(), filter, getSlotOffset(), this::addChild);
+        addMinerDefaults(gui(), getSlotOffset(), this::addChild);
     }
 
     @Override

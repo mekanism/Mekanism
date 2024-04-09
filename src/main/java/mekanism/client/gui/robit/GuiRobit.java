@@ -30,28 +30,20 @@ public abstract class GuiRobit<CONTAINER extends AbstractContainerMenu & IEntity
         addRenderableWidget(new GuiSecurityTab(this, robit, 120));
         addRenderableWidget(GuiSideHolder.create(this, imageWidth, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 10, 18, getButtonLocation("main"),
-              () -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_MAIN, robit)),
-              getOnHover(MekanismLang.ROBIT)));
-        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 30, 18, getButtonLocation("crafting"), () -> {
-            if (shouldOpenGui(RobitGuiType.CRAFTING)) {
-                PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit));
-            }
-        }, getOnHover(MekanismLang.ROBIT_CRAFTING)));
-        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 50, 18, getButtonLocation("inventory"), () -> {
-            if (shouldOpenGui(RobitGuiType.INVENTORY)) {
-                PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit));
-            }
-        }, getOnHover(MekanismLang.ROBIT_INVENTORY)));
-        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 70, 18, getButtonLocation("smelting"), () -> {
-            if (shouldOpenGui(RobitGuiType.SMELTING)) {
-                PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit));
-            }
-        }, getOnHover(MekanismLang.ROBIT_SMELTING)));
-        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 90, 18, getButtonLocation("repair"), () -> {
-            if (shouldOpenGui(RobitGuiType.REPAIR)) {
-                PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit));
-            }
-        }, getOnHover(MekanismLang.ROBIT_REPAIR)));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_MAIN, ((GuiRobit<?>) element.gui()).robit)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ROBIT.translate())));
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 30, 18, getButtonLocation("crafting"), (element, mouseX, mouseY) ->
+              shouldOpenGui(RobitGuiType.CRAFTING) && PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ROBIT_CRAFTING.translate())));
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 50, 18, getButtonLocation("inventory"), (element, mouseX, mouseY) ->
+              shouldOpenGui(RobitGuiType.INVENTORY) && PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ROBIT_INVENTORY.translate())));
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 70, 18, getButtonLocation("smelting"), (element, mouseX, mouseY) ->
+              shouldOpenGui(RobitGuiType.SMELTING) && PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ROBIT_SMELTING.translate())));
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 90, 18, getButtonLocation("repair"), (element, mouseX, mouseY) ->
+              shouldOpenGui(RobitGuiType.REPAIR) && PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ROBIT_REPAIR.translate())));
     }
 
     protected abstract boolean shouldOpenGui(RobitGuiType guiType);

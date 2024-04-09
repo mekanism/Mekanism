@@ -46,10 +46,11 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
-              () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, this.tile)), getOnHover(MekanismLang.STRICT_INPUT)));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, ((GuiTransporterConfig<?>) element).tile)),
+              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.STRICT_INPUT.translate())));
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
-              () -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
-              () -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.RIGHT))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.RIGHT))));
         addSideDataButton(RelativeSide.BOTTOM, 41, 64 + 16);
         addSideDataButton(RelativeSide.TOP, 41, 34);
         addSideDataButton(RelativeSide.FRONT, 41, 57);
@@ -76,13 +77,13 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, guiGraphics, mouseX, mouseY) -> {
-            if (onHover instanceof SideDataButton button) {
+        return (element, guiGraphics, mouseX, mouseY) -> {
+            if (element instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(side), colorComponent);
+                    button.displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(side), colorComponent);
                 }
             }
         };

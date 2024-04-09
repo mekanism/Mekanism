@@ -28,9 +28,9 @@ public class GuiResizeControls extends GuiSideHolder {
     public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
         super(gui, -26, y, 39, true, false);
         expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
-              () -> handleResize(ResizeType.EXPAND_Y, Screen.hasShiftDown())));
+              (element, mouseX, mouseY) -> ((GuiResizeControls) element).handleResize(ResizeType.EXPAND_Y, Screen.hasShiftDown())));
         shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 25, 19, 9, 19, 9, MINUS,
-              () -> handleResize(ResizeType.SHRINK_Y, Screen.hasShiftDown())));
+              (element, mouseX, mouseY) -> ((GuiResizeControls) element).handleResize(ResizeType.SHRINK_Y, Screen.hasShiftDown())));
         updateButtonState();
         active = true;
     }
@@ -68,12 +68,14 @@ public class GuiResizeControls extends GuiSideHolder {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_RESIZE_CONTROLS);
     }
 
-    private void handleResize(ResizeType type, boolean adjustMax) {
+    private boolean handleResize(ResizeType type, boolean adjustMax) {
         //Validate something didn't change and it still is actually a controller
         if (gui() instanceof ResizeController resizeHandler) {
             resizeHandler.resize(type, adjustMax);
             updateButtonState();
+            return true;
         }
+        return false;
     }
 
     private void updateButtonState() {

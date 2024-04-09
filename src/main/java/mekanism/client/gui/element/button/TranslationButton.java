@@ -14,15 +14,15 @@ public class TranslationButton extends MekanismButton {
     @Nullable
     private final Supplier<EnumColor> colorSupplier;
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress) {
         this(gui, x, y, width, height, translationHelper, onPress, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
         this(gui, x, y, width, height, translationHelper, onPress, onHover, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress, @Nullable IHoverable onHover,
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull IClickable onPress, @Nullable IHoverable onHover,
           @Nullable Supplier<EnumColor> colorSupplier) {
         super(gui, x, y, width, height, translationHelper.translate(), onPress, onHover);
         this.colorSupplier = colorSupplier;

@@ -63,24 +63,29 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         this.yStart = yStart;
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, 27, yStart + 22, 122, 42));
-        publicButton = addChild(new MekanismImageButton(frequencySelector, 27, yStart, 38, 20, 38, 20, getButtonLocation("public"), () -> {
-            this.securityMode = SecurityMode.PUBLIC;
-            this.scrollList.clearSelection();
-            updateButtons();
-        }, getOnHover(MekanismLang.PUBLIC_MODE)));
-        trustedButton = addChild(new MekanismImageButton(frequencySelector, 69, yStart, 38, 20, 38, 20, getButtonLocation("trusted"), () -> {
-            this.securityMode = SecurityMode.TRUSTED;
-            this.scrollList.clearSelection();
-            updateButtons();
-        },getOnHover(MekanismLang.TRUSTED_MODE)));
-        privateButton = addChild(new MekanismImageButton(frequencySelector, 111, yStart, 38, 20, 38, 20, getButtonLocation("private"), () -> {
-            this.securityMode = SecurityMode.PRIVATE;
-            this.scrollList.clearSelection();
-            updateButtons();
-        }, getOnHover(MekanismLang.PRIVATE_MODE)));
+        publicButton = addChild(new MekanismImageButton(frequencySelector, 27, yStart, 38, 20, 38, 20, getButtonLocation("public"),
+              (element, mouseX, mouseY) -> {
+                  this.securityMode = SecurityMode.PUBLIC;
+                  this.scrollList.clearSelection();
+                  updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PUBLIC_MODE.translate())));
+        trustedButton = addChild(new MekanismImageButton(frequencySelector, 69, yStart, 38, 20, 38, 20, getButtonLocation("trusted"),
+              (element, mouseX, mouseY) -> {
+                  this.securityMode = SecurityMode.TRUSTED;
+                  this.scrollList.clearSelection();
+                  updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.TRUSTED_MODE.translate())));
+        privateButton = addChild(new MekanismImageButton(frequencySelector, 111, yStart, 38, 20, 38, 20, getButtonLocation("private"),
+              (element, mouseX, mouseY) -> {
+                  this.securityMode = SecurityMode.PRIVATE;
+                  this.scrollList.clearSelection();
+                  updateButtons();
+                  return true;
+              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PRIVATE_MODE.translate())));
         int buttonWidth = hasColor ? 50 : 60;
-        setButton = addChild(new TranslationButton(frequencySelector, 27, yStart + 113, buttonWidth, 18,
-              MekanismLang.BUTTON_SET, () -> {
+        setButton = addChild(new TranslationButton(frequencySelector, 27, yStart + 113, buttonWidth, 18, MekanismLang.BUTTON_SET, (element, mouseX, mouseY) -> {
             int selection = this.scrollList.getSelection();
             if (selection != -1) {
                 Frequency frequency = getFrequencies().get(selection);
@@ -89,26 +94,35 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             //Note: We update the buttons regardless so that if something went wrong, and we don't have a selection
             // we will disable the ability to press the set button
             updateButtons();
+            return true;
         }));
-        deleteButton = addChild(new TranslationButton(frequencySelector, 29 + buttonWidth, yStart + 113, buttonWidth, 18,
-              MekanismLang.BUTTON_DELETE, () -> GuiConfirmationDialog.show(gui(), MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
-            int selection = this.scrollList.getSelection();
-            if (selection != -1) {
-                Frequency frequency = getFrequencies().get(selection);
-                this.frequencySelector.sendRemoveFrequency(frequency.getIdentity());
-                this.scrollList.clearSelection();
-            }
-            //Note: We update the buttons regardless so that if something went wrong, and we don't have a selection
-            // we will disable the ability to press the delete button
-            updateButtons();
-        }, DialogType.DANGER)));
+        deleteButton = addChild(new TranslationButton(frequencySelector, 29 + buttonWidth, yStart + 113, buttonWidth, 18, MekanismLang.BUTTON_DELETE, (element, mouseX, mouseY) -> {
+            GuiConfirmationDialog.show(gui(), MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
+                int selection = this.scrollList.getSelection();
+                if (selection != -1) {
+                    Frequency frequency = getFrequencies().get(selection);
+                    this.frequencySelector.sendRemoveFrequency(frequency.getIdentity());
+                    this.scrollList.clearSelection();
+                }
+                //Note: We update the buttons regardless so that if something went wrong, and we don't have a selection
+                // we will disable the ability to press the delete button
+                updateButtons();
+            }, DialogType.DANGER);
+            return true;
+        }));
         if (hasColor) {
             addChild(new GuiSlot(SlotType.NORMAL, frequencySelector, 131, yStart + 113).setRenderAboveSlots());
             IGuiColorFrequencySelector<?> colorFrequencySelector = (IGuiColorFrequencySelector<?>) frequencySelector;
             addChild(new ColorButton(frequencySelector, 132, yStart + 114, 16, 16, () -> {
                 IColorableFrequency frequency = colorFrequencySelector.getFrequency();
                 return frequency == null ? null : frequency.getColor();
-            }, () -> colorFrequencySelector.sendColorUpdate(true), () -> colorFrequencySelector.sendColorUpdate(false)));
+            }, (element, mouseX, mouseY) -> {
+                colorFrequencySelector.sendColorUpdate(true);
+                return true;
+            }, (element, mouseX, mouseY) -> {
+                colorFrequencySelector.sendColorUpdate(false);
+                return true;
+            }));
         }
         frequencyField = addChild(new GuiTextField(frequencySelector, this, 50, yStart + 99, 98, 11));
         frequencyField.setMaxLength(FrequencyManager.MAX_FREQ_LENGTH);

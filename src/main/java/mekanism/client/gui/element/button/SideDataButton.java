@@ -24,17 +24,28 @@ import org.jetbrains.annotations.Nullable;
 
 public class SideDataButton extends BasicColorButton {
 
+    private final SideDataPacketCreator packetCreator;
     private final Supplier<DataType> dataTypeSupplier;
+    private final TileEntityMekanism tile;
+    private final RelativeSide slotPos;
     public final ItemStack otherBlockItem;
 
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntityMekanism tile, SideDataPacketCreator packetCreator, @Nullable IHoverable onHover) {
         super(gui, x, y, 22, () -> {
-                  DataType dataType = dataTypeSupplier.get();
-                  return dataType == null ? null : colorSupplier.get();
-              }, () -> PacketUtils.sendToServer(packetCreator.create(tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()), slotPos)),
-              () -> PacketUtils.sendToServer(packetCreator.create(tile.getBlockPos(), MekClickType.RIGHT, slotPos)), onHover);
+            DataType dataType = dataTypeSupplier.get();
+            return dataType == null ? null : colorSupplier.get();
+        }, (element, mouseX, mouseY) -> {
+            SideDataButton button = (SideDataButton) element;
+            return PacketUtils.sendToServer(button.packetCreator.create(button.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()), button.slotPos));
+        }, (element, mouseX, mouseY) -> {
+            SideDataButton button = (SideDataButton) element;
+            return PacketUtils.sendToServer(button.packetCreator.create(button.tile.getBlockPos(), MekClickType.RIGHT, button.slotPos));
+        }, onHover);
         this.dataTypeSupplier = dataTypeSupplier;
+        this.packetCreator = packetCreator;
+        this.tile = tile;
+        this.slotPos = slotPos;
         Level tileWorld = tile.getLevel();
         if (tileWorld != null) {
             Direction globalSide = slotPos.getDirection(tile.getDirection());

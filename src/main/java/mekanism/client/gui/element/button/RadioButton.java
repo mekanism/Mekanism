@@ -18,7 +18,7 @@ public class RadioButton extends MekanismButton {
 
     private final BooleanSupplier toggled;
 
-    public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
+    public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
         super(gui, x, y, RADIO_SIZE, RADIO_SIZE, Component.empty(), onPress, onHover);
         this.toggled = toggled;
         this.clickSound = MekanismSounds.BEEP;

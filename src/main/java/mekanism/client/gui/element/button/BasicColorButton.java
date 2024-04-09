@@ -14,19 +14,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class BasicColorButton extends MekanismButton {
 
-    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull Runnable onLeftClick,
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull IClickable onLeftClick,
           @Nullable GuiElement.IHoverable onHover) {
         return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
     }
 
-    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @NotNull Runnable onLeftClick, @NotNull Runnable onRightClick,
+    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @NotNull IClickable onLeftClick, @NotNull IClickable onRightClick,
           @Nullable GuiElement.IHoverable onHover) {
         return new BasicColorButton(gui, x, y, size, () -> color, onLeftClick, onRightClick, onHover);
     }
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull Runnable onLeftClick, @Nullable Runnable onRightClick,
+    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick,
           @Nullable GuiElement.IHoverable onHover) {
         super(gui, x, y, size, size, Component.empty(), onLeftClick, onRightClick, onHover);
         this.colorSupplier = color;

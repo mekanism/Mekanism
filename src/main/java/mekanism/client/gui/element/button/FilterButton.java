@@ -1,14 +1,12 @@
 package mekanism.client.gui.element.button;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -44,6 +42,8 @@ public class FilterButton extends MekanismButton {
 
     protected final FilterManager<?> filterManager;
     private final GuiSequencedSlotDisplay slotDisplay;
+    private final ObjIntConsumer<IFilter<?>> onPress;
+    private final IntConsumer toggleButtonPress;
     private final IntSupplier filterIndex;
     private final RadioButton toggleButton;
     private final GuiSlot slot;
@@ -60,28 +60,36 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
           ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, Component.empty(), () -> {
-            int actualIndex = filterIndex.getAsInt() + index;
-            onPress.accept(getFilter(filterManager, actualIndex), actualIndex);
+        super(gui, x, y, width, height, Component.empty(), (element, mouseX, mouseY) -> {
+            FilterButton button = (FilterButton) element;
+            int actualIndex = button.filterIndex.getAsInt() + button.index;
+            button.onPress.accept(getFilter(button.filterManager, actualIndex), actualIndex);
+            return true;
         }, null);
         this.index = index;
         this.filterIndex = filterIndex;
         this.filterManager = filterManager;
+        this.onPress = onPress;
+        this.toggleButtonPress = toggleButtonPress;
         slot = addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 2, relativeY + 2));
         slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3, () -> renderStackSupplier.apply(getFilter())));
-        BooleanSupplier enabledCheck = () -> {
-            IFilter<?> filter = getFilter();
-            return filter != null && filter.isEnabled();
-        };
         toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + (this.height / 2) - (RadioButton.RADIO_SIZE / 2),
-              enabledCheck, () -> toggleButtonPress.accept(getActualIndex()), (element, guiGraphics, mouseX, mouseY) -> {
-            if (enabledCheck.getAsBoolean()) {
-                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER));
+              this::isEnabled, (element, mouseX, mouseY) -> {
+            ((FilterButton) element).toggleButtonPress.accept(getActualIndex());
+            return true;
+        }, (element, guiGraphics, mouseX, mouseY) -> {
+            if (((FilterButton) element).isEnabled()) {
+                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER));
             } else {
-                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.RED, MekanismLang.MODULE_DISABLED_LOWER));
+                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.RED, MekanismLang.MODULE_DISABLED_LOWER));
             }
         }));
         setButtonBackground(ButtonBackground.NONE);
+    }
+
+    private boolean isEnabled() {
+        IFilter<?> filter = getFilter();
+        return filter != null && filter.isEnabled();
     }
 
     protected int getToggleXShift() {

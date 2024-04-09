@@ -52,7 +52,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Nullable
     @Override
     protected IClickable getSlotClickHandler() {
-        return getHandleClickSlot(gui(), NOT_EMPTY, this::setFilterStack);
+        return getHandleClickSlot(NOT_EMPTY, this::setFilterStack);
     }
 
     private void setFilterStack(@NotNull ItemStack stack) {

@@ -48,12 +48,14 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
         addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, relativeX + 134, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, relativeX + 134, relativeY + 59));
-        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, () -> {
-            if (scrollList.hasSelection()) {
-                PacketUtils.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
-                      this.tile, scrollList.getSelection().ordinal()));
+        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12, MekanismLang.UPGRADE_UNINSTALL, (element, mouseX, mouseY) -> {
+            GuiUpgradeWindow self = (GuiUpgradeWindow) element;
+            if (self.scrollList.hasSelection()) {
+                return PacketUtils.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
+                      self.tile, self.scrollList.getSelection().ordinal()));
             }
-        }, getOnHover(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP)));
+            return false;
+        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.UPGRADE_UNINSTALL_TOOLTIP.translate())));
         MekanismTileContainer<?> container = (MekanismTileContainer<?>) ((GuiMekanism<?>) gui()).getMenu();
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 18, container.getUpgradeSlot()));
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));

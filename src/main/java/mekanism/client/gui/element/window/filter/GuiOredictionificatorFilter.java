@@ -46,18 +46,24 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 18, 12, getButtonLocation("left"), () -> {
-            if (filter.hasFilter()) {
-                filter.previous();
-                slotDisplay.updateStackList();
+        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 18, 12, getButtonLocation("left"), (element, mouseX, mouseY) -> {
+            GuiOredictionificatorFilter self = (GuiOredictionificatorFilter) element;
+            if (self.filter.hasFilter()) {
+                self.filter.previous();
+                self.slotDisplay.updateStackList();
+                return true;
             }
-        }, getOnHover(MekanismLang.LAST_ITEM)));
-        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 52, 12, getButtonLocation("right"), () -> {
-            if (filter.hasFilter()) {
-                filter.next();
-                slotDisplay.updateStackList();
+            return false;
+        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.LAST_ITEM.translate())));
+        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 52, 12, getButtonLocation("right"), (element, mouseX, mouseY) -> {
+            GuiOredictionificatorFilter self = (GuiOredictionificatorFilter) element;
+            if (self.filter.hasFilter()) {
+                self.filter.next();
+                self.slotDisplay.updateStackList();
+                return true;
             }
-        }, getOnHover(MekanismLang.NEXT_ITEM)));
+            return false;
+        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.NEXT_ITEM.translate())));
     }
 
     @Override

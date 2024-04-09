@@ -50,20 +50,20 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                 int shiftedZ = z + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
                 int chunkZ = tileChunkZ + z;
                 if (x == 0 && z == 0) {
-                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE, () -> {
+                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE, (element, mouseX, mouseY) -> {
                         for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
                             if (hasAtRadius(i, false)) {
-                                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENABLE_RADIUS_CHUNKLOAD, tile, i));
-                                break;
+                                return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENABLE_RADIUS_CHUNKLOAD, tile, i));
                             }
                         }
-                    }, () -> {
+                        return false;
+                    }, (element, mouseX, mouseY) -> {
                         for (int i = TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i > 0; i--) {
                             if (hasAtRadius(i, true)) {
-                                PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.DISABLE_RADIUS_CHUNKLOAD, tile, i));
-                                break;
+                                return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.DISABLE_RADIUS_CHUNKLOAD, tile, i));
                             }
                         }
+                        return false;
                     }, (onHover, guiGraphics, mouseX, mouseY) -> {
                         List<Component> tooltips = new ArrayList<>();
                         tooltips.add(MekanismLang.STABILIZER_CENTER.translate(EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
@@ -86,15 +86,17 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                                 break;
                             }
                         }
-                        displayTooltips(guiGraphics, mouseX, mouseY, tooltips);
+                        onHover.displayTooltips(guiGraphics, mouseX, mouseY, tooltips);
                     }));
                 } else {
                     int packetTarget = shiftedX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + shiftedZ;
                     addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
                           () -> tile.isChunkLoadingAt(shiftedX, shiftedZ),
-                          () -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
-                          getOnHover(() -> MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(tile.isChunkLoadingAt(shiftedX, shiftedZ), true),
-                                EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ))));
+                          (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
+                          (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY,
+                                MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(tile.isChunkLoadingAt(shiftedX, shiftedZ), true),
+                                EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
+                          )));
                 }
             }
         }

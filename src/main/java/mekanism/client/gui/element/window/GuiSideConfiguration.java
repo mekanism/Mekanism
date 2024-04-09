@@ -77,21 +77,24 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             addChild(tab);
             configTabs.add(tab);
         }
-        ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
-              () -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType)),
-              getOnHover(MekanismLang.AUTO_EJECT)));
-        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"), () -> {
-            DataType targetType = getTargetType(DataType::getNext);
-            PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
-        }, () -> {
-            DataType targetType = getTargetType(DataType::getPrevious);
-            PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
-        }, (onHover, guiGraphics, mouseX, mouseY) -> {
-            DataType targetType = getTargetType(DataType::getNext);
+        ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"), (element, mouseX, mouseY) -> {
+            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
+            return PacketUtils.sendToServer(new PacketEjectConfiguration(self.tile.getBlockPos(), self.currentType));
+        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.AUTO_EJECT.translate())));
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"), (element, mouseX, mouseY) -> {
+            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
+            DataType targetType = self.getTargetType(DataType::getNext);
+            return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
+        }, (element, mouseX, mouseY) -> {
+            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
+            DataType targetType = self.getTargetType(DataType::getPrevious);
+            return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
+        }, (element, guiGraphics, mouseX, mouseY) -> {
+            DataType targetType = ((GuiSideConfiguration<?>) element).getTargetType(DataType::getNext);
             if (targetType == DataType.NONE) {
-                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate());
+                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate());
             } else {
-                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_INCREMENT.translate());
+                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_INCREMENT.translate());
             }
         }));
         addSideDataButton(RelativeSide.BOTTOM, 68, 92);
@@ -145,8 +148,8 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, guiGraphics, mouseX, mouseY) -> {
-            if (onHover instanceof SideDataButton button) {
+        return (element, guiGraphics, mouseX, mouseY) -> {
+            if (element instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     List<Component> tooltipLines = new ArrayList<>(3);
@@ -155,7 +158,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
                     if (!button.otherBlockItem.isEmpty()) {
                         tooltipLines.add(button.otherBlockItem.getHoverName());
                     }
-                    displayTooltips(guiGraphics, mouseX, mouseY, tooltipLines);
+                    button.displayTooltips(guiGraphics, mouseX, mouseY, tooltipLines);
                 }
             }
         };

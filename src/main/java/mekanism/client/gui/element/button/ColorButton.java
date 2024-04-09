@@ -13,13 +13,13 @@ public class ColorButton extends MekanismButton {
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public ColorButton(IGuiWrapper gui, int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, @NotNull Runnable onPress, @NotNull Runnable onRightClick) {
+    public ColorButton(IGuiWrapper gui, int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, @NotNull IClickable onPress, @NotNull IClickable onRightClick) {
         super(gui, x, y, width, height, Component.empty(), onPress, onRightClick, (onHover, guiGraphics, mouseX, mouseY) -> {
-            EnumColor color = colorSupplier.get();
+            EnumColor color = ((ColorButton) onHover).colorSupplier.get();
             if (color != null) {
-                gui.displayTooltips(guiGraphics, mouseX, mouseY, color.getColoredName());
+                onHover.displayTooltips(guiGraphics, mouseX, mouseY, color.getColoredName());
             } else {
-                gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.NONE.translate());
+                onHover.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.NONE.translate());
             }
         });
         this.colorSupplier = colorSupplier;

@@ -31,11 +31,12 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
         if (filterSupplier == null) {
             return buttonY;
         }
-        addChild(new TranslationButton(gui(), relativeX + 12, buttonY, 128, FILTER_HEIGHT, translationHelper, () -> {
+        addChild(new TranslationButton(gui(), relativeX + 12, buttonY, 128, FILTER_HEIGHT, translationHelper, (element, mouseX, mouseY) -> {
             //Add the window for the filter dialog to the parent gui
-            gui().addWindow(filterSupplier.create(gui(), tile));
+            IGuiWrapper gui = element.gui();
+            gui.addWindow(filterSupplier.create(gui, tile));
             //And close the filter select dialog
-            close();
+            return close(element, mouseX, mouseY);
         }));
         return buttonY + FILTER_HEIGHT;
     }
