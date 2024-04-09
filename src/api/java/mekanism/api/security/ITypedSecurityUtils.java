@@ -1,6 +1,7 @@
 package mekanism.api.security;
 
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +48,8 @@ public interface ITypedSecurityUtils<PROVIDER> {
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
      * @see #canAccess(UUID, Object, boolean)
+     * @see ISecurityUtils#canAccess(Player, Object, Function, Function)
+     * @see ISecurityUtils#canAccess(UUID, Object, Function, Function, boolean)
      * @see ISecurityUtils#canAccess(Player, Supplier, Supplier)
      * @see ISecurityUtils#canAccess(UUID, Supplier, Supplier, boolean)
      * @see ISecurityUtils#canAccessObject(Player, ISecurityObject)
@@ -58,7 +61,7 @@ public interface ITypedSecurityUtils<PROVIDER> {
         if (provider == null) {
             return true;
         }
-        return ISecurityUtils.INSTANCE.canAccess(player, () -> securityCapability(provider), () -> ownerCapability(provider));
+        return ISecurityUtils.INSTANCE.canAccess(player, provider, this::securityCapability, this::ownerCapability);
     }
 
     /**
@@ -74,6 +77,8 @@ public interface ITypedSecurityUtils<PROVIDER> {
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
      * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
      * @see #canAccess(Player, Object)
+     * @see ISecurityUtils#canAccess(Player, Object, Function, Function)
+     * @see ISecurityUtils#canAccess(UUID, Object, Function, Function, boolean)
      * @see ISecurityUtils#canAccess(Player, Supplier, Supplier)
      * @see ISecurityUtils#canAccess(UUID, Supplier, Supplier, boolean)
      * @see ISecurityUtils#canAccessObject(Player, ISecurityObject)
@@ -85,7 +90,7 @@ public interface ITypedSecurityUtils<PROVIDER> {
         if (provider == null) {
             return true;
         }
-        return ISecurityUtils.INSTANCE.canAccess(player, () -> securityCapability(provider), () -> ownerCapability(provider), isClient);
+        return ISecurityUtils.INSTANCE.canAccess(player, provider, this::securityCapability, this::ownerCapability, isClient);
     }
 
     /**
@@ -123,13 +128,14 @@ public interface ITypedSecurityUtils<PROVIDER> {
      *
      * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then the returned mode is {@link SecurityMode#PUBLIC}
      * @see ISecurityUtils#getSecurityMode(Supplier, Supplier, boolean)
+     * @see ISecurityUtils#getSecurityMode(Object, Function, Function, boolean)
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
     default SecurityMode getSecurityMode(@Nullable PROVIDER provider, boolean isClient) {
         if (provider == null) {
             return SecurityMode.PUBLIC;
         }
-        return ISecurityUtils.INSTANCE.getSecurityMode(() -> securityCapability(provider), () -> ownerCapability(provider), isClient);
+        return ISecurityUtils.INSTANCE.getSecurityMode(provider, this::securityCapability, this::ownerCapability, isClient);
     }
 
     /**

@@ -159,7 +159,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
         SecurityMode securityMode() {
             OBJECT object = objectSupplier.get();
-            return ISecurityUtils.INSTANCE.getSecurityMode(() -> securityProvider.apply(object), () -> ownerProvider.apply(object), true);
+            return ISecurityUtils.INSTANCE.getSecurityMode(object, securityProvider, ownerProvider, true);
         }
     }
 }

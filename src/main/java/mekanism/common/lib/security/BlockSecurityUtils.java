@@ -1,5 +1,6 @@
 package mekanism.common.lib.security;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -44,28 +44,43 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
     @Override
     public boolean canAccess(Player player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
         CachingCapabilityLookup lookup = new CachingCapabilityLookup(level, pos, state, blockEntity);
-        return ISecurityUtils.INSTANCE.canAccess(player, lookup::securityCapability, lookup::ownerCapability);
+        return ISecurityUtils.INSTANCE.canAccess(player, lookup, CachingCapabilityLookup::securityCapability, CachingCapabilityLookup::ownerCapability);
     }
 
     @Override
     public boolean canAccess(@Nullable UUID player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
         CachingCapabilityLookup lookup = new CachingCapabilityLookup(level, pos, state, blockEntity);
-        return ISecurityUtils.INSTANCE.canAccess(player, lookup::securityCapability, lookup::ownerCapability, level.isClientSide());
+        return ISecurityUtils.INSTANCE.canAccess(player, lookup, CachingCapabilityLookup::securityCapability, CachingCapabilityLookup::ownerCapability, level.isClientSide());
     }
 
     @Override
     public SecurityMode getSecurityMode(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
         CachingCapabilityLookup lookup = new CachingCapabilityLookup(level, pos, state, blockEntity);
-        return ISecurityUtils.INSTANCE.getSecurityMode(lookup::securityCapability, lookup::ownerCapability, level.isClientSide());
+        return ISecurityUtils.INSTANCE.getSecurityMode(lookup, CachingCapabilityLookup::securityCapability, CachingCapabilityLookup::ownerCapability, level.isClientSide());
     }
 
     public void securityChanged(Set<Player> playersUsing, Level level, BlockPos pos, @Nullable BlockEntity target, SecurityMode old, SecurityMode mode) {
-        SecurityUtils.get().securityChanged(playersUsing, player -> canAccess(player, level, pos, target), old, mode);
+        //If the mode changed and the new security mode is more restrictive than the old one
+        // and there are players using the security object
+        if (!playersUsing.isEmpty() && ISecurityUtils.INSTANCE.moreRestrictive(old, mode)) {
+            //then double check that all the players are actually supposed to be able to access the GUI
+            //Note: We directly store and then query our caching capability lookup so that we don't have to re-look up
+            // the capabilities of the block for each player
+            CachingCapabilityLookup lookup = new CachingCapabilityLookup(level, pos, null, target);
+            for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
+                if (!ISecurityUtils.INSTANCE.canAccess(player, lookup, CachingCapabilityLookup::securityCapability, CachingCapabilityLookup::ownerCapability)) {
+                    //and if they can't then boot them out
+                    player.closeContainer();
+                }
+            }
+        }
     }
 
     /**
      * Used to allow caching the block state and block entity lookup between security capability and owner capability lookup. That way if the block queried does not
      * expose a security capability at the given position we don't have to do more world lookups when querying if the block exposes an owner capability.
+     *
+     * @implNote As this caches the security and owner objects, this is not suitable for persisting between calls.
      */
     private static class CachingCapabilityLookup {
 
@@ -74,12 +89,26 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
 
         private final Level level;
         private final BlockPos pos;
-        private final Lazy<BlockTarget> lazyTarget;
+        @Nullable
+        private final BlockState knownState;
+        @Nullable
+        private final BlockEntity knownBlockEntity;
+        @Nullable
+        private BlockTarget target;
+        @Nullable
+        private ISecurityObject securityObject;
+        @Nullable
+        private IOwnerObject ownerObject;
 
         CachingCapabilityLookup(Level level, BlockPos pos, @Nullable BlockState knownState, @Nullable BlockEntity knownBlockEntity) {
             this.level = level;
             this.pos = pos;
-            this.lazyTarget = Lazy.of(() -> {
+            this.knownState = knownState;
+            this.knownBlockEntity = knownBlockEntity;
+        }
+
+        private BlockTarget getTarget() {
+            if (target == null) {
                 // Get block state and block entity if they were not provided
                 BlockState state = knownState;
                 BlockEntity blockEntity = knownBlockEntity;
@@ -96,20 +125,27 @@ public class BlockSecurityUtils implements IBlockSecurityUtils {
                 } else if (state == null) {
                     state = blockEntity.getBlockState();
                 }
-                return new BlockTarget(state, blockEntity);
-            });
+                target = new BlockTarget(state, blockEntity);
+            }
+            return target;
         }
 
         @Nullable
         ISecurityObject securityCapability() {
-            BlockTarget blockTarget = lazyTarget.get();
-            return IBlockSecurityUtils.INSTANCE.securityCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+            if (securityObject == null) {
+                BlockTarget blockTarget = getTarget();
+                securityObject = IBlockSecurityUtils.INSTANCE.securityCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+            }
+            return securityObject;
         }
 
         @Nullable
         IOwnerObject ownerCapability() {
-            BlockTarget blockTarget = lazyTarget.get();
-            return IBlockSecurityUtils.INSTANCE.ownerCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+            if (ownerObject == null) {
+                BlockTarget blockTarget = getTarget();
+                ownerObject = IBlockSecurityUtils.INSTANCE.ownerCapability(level, pos, blockTarget.state(), blockTarget.blockEntity());
+            }
+            return ownerObject;
         }
     }
 }

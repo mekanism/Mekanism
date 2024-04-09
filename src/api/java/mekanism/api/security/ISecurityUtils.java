@@ -2,6 +2,7 @@ package mekanism.api.security;
 
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.entity.player.Player;
@@ -45,6 +46,27 @@ public interface ISecurityUtils {
     boolean canAccess(Player player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider);
 
     /**
+     * Checks if a player can access the given capability provider; validating that protection is enabled in the config. Additionally, this method also checks to see if
+     * operators bypassing security is enabled in the config and if it is, provides access to the player if they are an operator.
+     *
+     * @param player           Player to check access for.
+     * @param provider         The provider to get the capabilities for.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
+     *
+     * @return {@code true} if the player can access the given provider.
+     *
+     * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
+     * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
+     * @see #canAccess(UUID, Supplier, Supplier, boolean)
+     * @see #canAccessObject(Player, ISecurityObject)
+     * @see #canAccessObject(UUID, ISecurityObject, boolean)
+     * @since 10.5.18
+     */
+    <PROVIDER> boolean canAccess(Player player, PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider,
+          Function<PROVIDER, @Nullable IOwnerObject> ownerProvider);
+
+    /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config. Additionally, this method also checks to see if
      * operators bypassing security is enabled in the config and if it is, provides access to the player if they are an operator.
      *
@@ -80,6 +102,28 @@ public interface ISecurityUtils {
      * @since 10.5.0
      */
     boolean canAccess(@Nullable UUID player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
+
+    /**
+     * Checks if a player can access the given capability provider; validating that protection is enabled in the config.
+     *
+     * @param player           Player to check access for.
+     * @param provider         The provider to get the capabilities for.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
+     * @param isClient         {@code true} if this method is being run clientside.
+     *
+     * @return {@code true} if the player can access the given provider. If the player is {@code null} this will return {@code true} if the provider's security is
+     * {@link SecurityMode#PUBLIC}.
+     *
+     * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
+     * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
+     * @see #canAccess(Player, Supplier, Supplier)
+     * @see #canAccessObject(Player, ISecurityObject)
+     * @see #canAccessObject(UUID, ISecurityObject, boolean)
+     * @since 10.5.18
+     */
+    <PROVIDER> boolean canAccess(@Nullable UUID player, PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider,
+          Function<PROVIDER, @Nullable IOwnerObject> ownerProvider, boolean isClient);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config.
@@ -133,6 +177,29 @@ public interface ISecurityUtils {
      * @since 10.5.0
      */
     SecurityMode getSecurityMode(Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
+
+    /**
+     * Gets the "effective" security mode for a given provider. If no provider is given, or it does not expose a {@link ISecurityObject security object}, then the
+     * security will be assumed to be {@link SecurityMode#PUBLIC} <em>unless</em> an {@link IOwnerObject} is exposed, in which case the security will be assumed
+     * {@link SecurityMode#PRIVATE} if protection is enabled.
+     * <br><br>
+     * When a {@link ISecurityObject security object} is exposed; this method is <em>different</em> from just querying {@link ISecurityObject#getSecurityMode()} as this
+     * method takes into account whether protection is disabled in the config and whether the owner of the {@link ISecurityObject} has their security frequency configured
+     * to override the access level of less restrictive {@link ISecurityObject security objects}.
+     *
+     * @param provider         The provider to get the capabilities for.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
+     * @param isClient         {@code true} if this method is being run clientside.
+     *
+     * @return Effective security mode.
+     *
+     * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then the returned mode is {@link SecurityMode#PUBLIC}
+     * @see #getEffectiveSecurityMode(ISecurityObject, boolean)
+     * @since 10.5.18
+     */
+    <PROVIDER> SecurityMode getSecurityMode(PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider,
+          Function<PROVIDER, @Nullable IOwnerObject> ownerProvider, boolean isClient);
 
     /**
      * Gets the "effective" security mode for a given object. This is <em>different</em> from just querying {@link ISecurityObject#getSecurityMode()} as this method takes

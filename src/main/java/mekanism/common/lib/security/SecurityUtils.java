@@ -1,10 +1,8 @@
 package mekanism.common.lib.security;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IOwnerObject;
@@ -53,6 +51,11 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
+    public <PROVIDER> boolean canAccess(Player player, PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider, Function<PROVIDER, @Nullable IOwnerObject> ownerProvider) {
+        return isOp(player) || canAccess(player.getUUID(), provider, securityProvider, ownerProvider, player.level().isClientSide);
+    }
+
+    @Override
     public boolean canAccess(@Nullable UUID player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient) {
         if (!MekanismConfig.general.allowProtection.get()) {
             //If protection is disabled, access is always granted
@@ -63,6 +66,29 @@ public final class SecurityUtils implements ISecurityUtils {
         if (securityCapability == null) {
             //If it is an owner item but not a security item make sure the owner matches
             IOwnerObject ownerCapability = ownerProvider.get();
+            if (ownerCapability != null) {
+                //If it is an owner object but not a security object make sure the owner matches
+                UUID owner = ownerCapability.getOwnerUUID();
+                return owner == null || owner.equals(player);
+            }
+            //Otherwise, if there is no owner AND no security, access is always granted
+            return true;
+        }
+        return canAccessObject(player, securityCapability, isClient);
+    }
+
+    @Override
+    public <PROVIDER> boolean canAccess(@Nullable UUID player, PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider,
+          Function<PROVIDER, @Nullable IOwnerObject> ownerProvider, boolean isClient) {
+        if (!MekanismConfig.general.allowProtection.get()) {
+            //If protection is disabled, access is always granted
+            return true;
+        }
+        //Note: We don't just use getSecurityObject here as we support checking access to things that are only owned and don't have security
+        ISecurityObject securityCapability = securityProvider.apply(provider);
+        if (securityCapability == null) {
+            //If it is an owner item but not a security item make sure the owner matches
+            IOwnerObject ownerCapability = ownerProvider.apply(provider);
             if (ownerCapability != null) {
                 //If it is an owner object but not a security object make sure the owner matches
                 UUID owner = ownerCapability.getOwnerUUID();
@@ -163,6 +189,20 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
+    public <PROVIDER> SecurityMode getSecurityMode(PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider,
+          Function<PROVIDER, @Nullable IOwnerObject> ownerProvider, boolean isClient) {
+        if (!MekanismConfig.general.allowProtection.get()) {
+            return SecurityMode.PUBLIC;
+        }
+        ISecurityObject security = securityProvider.apply(provider);
+        if (security != null) {
+            return getEffectiveSecurityMode(security, isClient);
+        }
+        IOwnerObject ownerObject = ownerProvider.apply(provider);
+        return ownerObject == null ? SecurityMode.PUBLIC : SecurityMode.PRIVATE;
+    }
+
+    @Override
     public SecurityMode getEffectiveSecurityMode(ISecurityObject securityObject, boolean isClient) {
         Objects.requireNonNull(securityObject, "Security object may not be null.");
         return getFinalData(securityObject, isClient).mode();
@@ -184,21 +224,6 @@ public final class SecurityUtils implements ISecurityUtils {
     public void displayNoAccess(Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
         player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS));
-    }
-
-    void securityChanged(Set<Player> playersUsing, Predicate<Player> accessCheck, SecurityMode old, SecurityMode mode) {
-        //If the mode changed and the new security mode is more restrictive than the old one
-        // and there are players using the security object
-        if (moreRestrictive(old, mode) && !playersUsing.isEmpty()) {
-            //then double check that all the players are actually supposed to be able to access the GUI
-            for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
-                //TODO: Can we make it so we keep track of target's capabilities so we don't have to look them up for each player we compare against?
-                if (!accessCheck.test(player)) {
-                    //and if they can't then boot them out
-                    player.closeContainer();
-                }
-            }
-        }
     }
 
     public boolean isTrusted(SecurityMode mode, @Nullable UUID ownerUUID, UUID playerUUID) {
