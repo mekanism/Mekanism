@@ -187,7 +187,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public boolean childrenContainsElement(Predicate<GuiElement> checker) {
+    public final boolean childrenContainsElement(Predicate<GuiElement> checker) {
         for (GuiElement child : children) {
             if (child.containsElement(checker)) {
                 return true;
@@ -320,7 +320,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         if (checkWindows(mouseX, mouseY)) {
             //If we are are not covered by a window, try to locate which child we are over
-            return Optional.ofNullable(GuiUtils.findChild(children, child -> child.isMouseOver(mouseX, mouseY)));
+            return Optional.ofNullable(GuiUtils.findChild(children, mouseX, mouseY, GuiElement::isMouseOver));
         }
         return Optional.empty();
     }
@@ -405,7 +405,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     //TODO - 1.20: Do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        GuiElement clickedChild = GuiUtils.findChild(children, child -> child.mouseClicked(mouseX, mouseY, button));
+        GuiElement clickedChild = GuiUtils.findChild(children, mouseX, mouseY, button, GuiElement::mouseClicked);
         //Note: This setFocused call is outside the clickedChild find, so that if we couldn't find one
         // then we un-focus whatever child is currently focused
         if (clickedChild != null) {
@@ -420,12 +420,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return GuiUtils.checkChildren(children, child -> child.keyPressed(keyCode, scanCode, modifiers)) || super.keyPressed(keyCode, scanCode, modifiers);
+        return GuiUtils.checkChildren(children, keyCode, scanCode, modifiers, GuiElement::keyPressed) || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return GuiUtils.checkChildren(children, child -> child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
+        return GuiUtils.checkChildrenChar(children, c, keyCode, GuiElement::charTyped) || super.charTyped(c, keyCode);
     }
 
     @Override
@@ -449,7 +449,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return GuiUtils.checkChildren(children, child -> child.mouseScrolled(mouseX, mouseY, xDelta, yDelta)) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
+        for (int i = children.size() - 1; i >= 0; i--) {
+            GuiElement child = children.get(i);
+            if (child.mouseScrolled(mouseX, mouseY, xDelta, yDelta)) {
+                return true;
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override
@@ -511,7 +517,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, child -> child.isMouseOver(mouseX, mouseY));
+        return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, mouseX, mouseY, GuiElement::isMouseOver);
     }
 
     /**

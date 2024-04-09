@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
@@ -194,7 +194,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Nullable
-    private ComponentPath handleNavigationWithWindows(Function<ContainerEventHandler, @Nullable ComponentPath> handleNavigation) {
+    private <NAVIGATION extends FocusNavigationEvent> ComponentPath handleNavigationWithWindows(NAVIGATION navigation,
+          BiFunction<ContainerEventHandler, NAVIGATION, @Nullable ComponentPath> handleNavigation) {
         GuiWindow topWindow = windows.head();
         List<GuiEventListener> combinedChildren;
         //Note: As allowContainer wise only allows interacting with slots, which we don't have navigation for, we check against allowAll.
@@ -239,7 +240,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 return GuiMekanism.this.getRectangle();
             }
         };
-        ComponentPath componentPath = handleNavigation.apply(handlerWithWindows);
+        ComponentPath componentPath = handleNavigation.apply(handlerWithWindows, navigation);
         if (componentPath == null) {
             return null;
         } else if (componentPath instanceof ComponentPath.Path path) {
@@ -259,7 +260,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         if (windows.isEmpty()) {
             return super.handleTabNavigation(navigation);
         }
-        return handleNavigationWithWindows(handlerWithWindows -> handlerWithWindows.handleTabNavigation(navigation));
+        return handleNavigationWithWindows(navigation, ContainerEventHandler::handleTabNavigation);
     }
 
     @Nullable
@@ -268,7 +269,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         if (windows.isEmpty()) {
             return super.handleArrowNavigation(navigation);
         }
-        return handleNavigationWithWindows(handlerWithWindows -> handlerWithWindows.handleArrowNavigation(navigation));
+        return handleNavigationWithWindows(navigation, ContainerEventHandler::handleArrowNavigation);
     }
 
     @Override
@@ -376,7 +377,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
-            tooltipElement = (GuiElement) GuiUtils.findChild(children(), child -> child instanceof GuiElement && child.isMouseOver(mouseX, mouseY));
+            tooltipElement = (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
         }
 
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
@@ -458,7 +459,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
         // otherwise, we send it to the current element (this is the same as super.super [ContainerEventHandler#mouseClicked], but in reverse order)
         //TODO: Why do we do this in reverse order?
-        GuiEventListener clickedChild = GuiUtils.findChild(children(), child -> child.mouseClicked(mouseX, mouseY, button));
+        GuiEventListener clickedChild = GuiUtils.findChild(children(), mouseX, mouseY, button, GuiEventListener::mouseClicked);
         if (clickedChild != null) {
             setFocused(clickedChild);
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
@@ -491,7 +492,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 return true;
             }
         }
-        return GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.keyPressed(keyCode, scanCode, modifiers)) ||
+        return GuiUtils.checkChildren(children(), keyCode, scanCode, modifiers, (child, k, s, m) -> child instanceof GuiElement && child.keyPressed(k, s, m)) ||
                super.keyPressed(keyCode, scanCode, modifiers);
     }
 
@@ -502,7 +503,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 return true;
             }
         }
-        return GuiUtils.checkChildren(children(), child -> child instanceof GuiElement && child.charTyped(c, keyCode)) || super.charTyped(c, keyCode);
+        return GuiUtils.checkChildrenChar(children(), c, keyCode, (child, ch, k) -> child instanceof GuiElement && child.charTyped(ch, k)) || super.charTyped(c, keyCode);
     }
 
     /**
@@ -550,8 +551,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 if (overNoButtons && slot.isActive()) {
                     if (window == null) {
                         return slot;
-                    } else if (virtual && window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot((IVirtualSlot) slot))) {
-                        return slot;
+                    } else if (virtual) {
+                        for (GuiElement child : window.children()) {
+                            if (child instanceof GuiVirtualSlot v && v.isElementForSlot((IVirtualSlot) slot)) {
+                                return slot;
+                            }
+                        }
                     }
                 }
             }
@@ -570,8 +575,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
                     GuiWindow window = getWindowHovering(mouseX, mouseY);
                     //If we are hovering over a window, check if the virtual slot is a child of the window
-                    if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot(virtualSlot))) {
-                        return overNoButtons(window, mouseX, mouseY);
+                    if (window == null) {
+                        return overNoButtons((GuiWindow) null, mouseX, mouseY);
+                    } else {
+                        for (GuiElement child : window.children()) {
+                            if (child instanceof GuiVirtualSlot v && v.isElementForSlot(virtualSlot)) {
+                                return overNoButtons(window, mouseX, mouseY);
+                            }
+                        }
                     }
                 }
             }
@@ -582,14 +593,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
         if (window == null) {
-            for (GuiEventListener child : children()) {
-                if (child.isMouseOver(mouseX, mouseY)) {
-                    return false;
-                }
-            }
-            return true;
+            return overNoButtons(children(), mouseX, mouseY);
         }
-        return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
+        return overNoButtons(window.children(), mouseX, mouseY);
+    }
+
+    private static boolean overNoButtons(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
+        for (GuiEventListener child : children) {
+            if (child.isMouseOver(mouseX, mouseY)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isVirtualSlotAvailable(IVirtualSlot virtualSlot) {

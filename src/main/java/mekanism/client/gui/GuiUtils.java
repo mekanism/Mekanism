@@ -180,6 +180,73 @@ public class GuiUtils {
         return null;
     }
 
+    // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
+    public static <CHILD extends GuiEventListener> boolean checkChildren(List<? extends CHILD> children, double mouseX, double mouseY, MouseOverPredicate<CHILD> checker) {
+        return findChild(children, mouseX, mouseY, checker) != null;
+    }
+
+    @Nullable
+    public static <CHILD extends GuiEventListener> CHILD findChild(List<? extends CHILD> children, double mouseX, double mouseY, MouseOverPredicate<CHILD> checker) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            CHILD child = children.get(i);
+            if (checker.test(child, mouseX, mouseY)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static <CHILD extends GuiEventListener> CHILD findChild(List<? extends CHILD> children, double mouseX, double mouseY, int button, MouseClickedPredicate<CHILD> checker) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            CHILD child = children.get(i);
+            if (checker.test(child, mouseX, mouseY, button)) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    public static <CHILD extends GuiEventListener> boolean checkChildren(List<? extends CHILD> children, int keyCode, int scanCode, int modifiers, KeyPressedPredicate<CHILD> checker) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            CHILD child = children.get(i);
+            if (checker.test(child, keyCode, scanCode, modifiers)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static <CHILD extends GuiEventListener> boolean checkChildrenChar(List<? extends CHILD> children, char c, int keyCode, CharTypedPredicate<CHILD> checker) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            CHILD child = children.get(i);
+            if (checker.test(child, c, keyCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public interface MouseOverPredicate<ELEMENT> {
+
+        boolean test(ELEMENT element, double mouseX, double mouseY);
+    }
+
+    public interface MouseClickedPredicate<ELEMENT> {
+
+        boolean test(ELEMENT element, double mouseX, double mouseY, int button);
+    }
+
+    public interface KeyPressedPredicate<ELEMENT> {
+
+        boolean test(ELEMENT element, int keyCode, int scanCode, int modifiers);
+    }
+
+    public interface CharTypedPredicate<ELEMENT> {
+
+        boolean test(ELEMENT element, char c, int keyCode);
+    }
+
     public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
         return guiGraphics.drawString(font, component.getVisualOrderText(), x, y, color, drawShadow);
     }
