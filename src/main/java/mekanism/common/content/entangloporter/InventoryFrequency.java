@@ -301,32 +301,18 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FloatingLong toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isZero()) {
-            EnergyAcceptorTarget target = new EnergyAcceptorTarget(expected);
-            Consumer<IStrictEnergyHandler> capabilityHandler = target::addHandler;
-            typesToEject.put(TransmissionType.ENERGY, capabilityHandler);
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
+            typesToEject.put(TransmissionType.ENERGY, target);
+            transferHandlers.add(target);
         }
     }
 
     private void addFluidTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FluidStack fluidToSend = storedFluid.extract(storedFluid.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!fluidToSend.isEmpty()) {
-            FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
-            Consumer<IFluidHandler> capabilityHandler = handler -> {
-                if (FluidUtils.canFill(handler, fluidToSend)) {
-                    target.addHandler(handler);
-                }
-            };
-            typesToEject.put(TransmissionType.FLUID, capabilityHandler);
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            SendingFluidHandlerTarget target = new SendingFluidHandlerTarget(fluidToSend, expected, storedFluid);
+            typesToEject.put(TransmissionType.FLUID, target);
+            transferHandlers.add(target);
         }
     }
 
@@ -334,18 +320,82 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
           IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, Consumer<?>> typesToEject, List<Runnable> transferHandlers, int expected) {
         STACK toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
-            ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(toSend, expected);
-            Consumer<IChemicalHandler<CHEMICAL, STACK>> capabilityHandler = handler -> {
-                if (ChemicalUtil.canInsert(handler, toSend)) {
-                    target.addHandler(handler);
-                }
-            };
-            typesToEject.put(chemicalType, capabilityHandler);
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            SendingChemicalHandlerTarget<?, ?, ?> target = new SendingChemicalHandlerTarget<>(toSend, expected, tank);
+            typesToEject.put(chemicalType, target);
+            transferHandlers.add(target);
+        }
+    }
+
+    private static class SendingEnergyAcceptorTarget extends EnergyAcceptorTarget implements Runnable, Consumer<IStrictEnergyHandler> {
+
+        private final IEnergyContainer storedEnergy;
+        private final FloatingLong toSend;
+
+        public SendingEnergyAcceptorTarget(int expectedSize, IEnergyContainer storedEnergy, FloatingLong toSend) {
+            super(expectedSize);
+            this.storedEnergy = storedEnergy;
+            this.toSend = toSend;
+        }
+
+        @Override
+        public void run() {
+            if (getHandlerCount() > 0) {
+                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend), Action.EXECUTE, AutomationType.INTERNAL);
+            }
+        }
+
+        @Override
+        public void accept(IStrictEnergyHandler handler) {
+            addHandler(handler);
+        }
+    }
+
+    private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<IFluidHandler> {
+
+        private final IExtendedFluidTank storedFluid;
+
+        public SendingFluidHandlerTarget(@NotNull FluidStack toSend, int expectedSize, IExtendedFluidTank storedFluid) {
+            super(toSend, expectedSize);
+            this.storedFluid = storedFluid;
+        }
+
+        @Override
+        public void run() {
+            if (getHandlerCount() > 0) {
+                storedFluid.extract(EmitUtils.sendToAcceptors(this, extra.getAmount(), extra), Action.EXECUTE, AutomationType.INTERNAL);
+            }
+        }
+
+        @Override
+        public void accept(IFluidHandler handler) {
+            if (FluidUtils.canFill(handler, extra)) {
+                addHandler(handler);
+            }
+        }
+    }
+
+    private static class SendingChemicalHandlerTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
+          extends ChemicalHandlerTarget<CHEMICAL, STACK, HANDLER> implements Runnable, Consumer<HANDLER> {
+
+        private final IChemicalTank<CHEMICAL, STACK> storedChemical;
+
+        public SendingChemicalHandlerTarget(@NotNull STACK toSend, int expectedSize, IChemicalTank<CHEMICAL, STACK> storedChemical) {
+            super(toSend, expectedSize);
+            this.storedChemical = storedChemical;
+        }
+
+        @Override
+        public void run() {
+            if (getHandlerCount() > 0) {
+                storedChemical.extract(EmitUtils.sendToAcceptors(this, extra.getAmount(), extra), Action.EXECUTE, AutomationType.INTERNAL);
+            }
+        }
+
+        @Override
+        public void accept(HANDLER handler) {
+            if (ChemicalUtil.canInsert(handler, extra)) {
+                addHandler(handler);
+            }
         }
     }
 }
