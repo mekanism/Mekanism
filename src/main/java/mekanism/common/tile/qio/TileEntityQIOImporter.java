@@ -36,6 +36,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
+    private final Predicate<ItemStack> FILTER_ENABLED = stack -> getFilterManager().anyEnabledMatch(stack, (filter, s) -> filter.getFinder().test(s));
+
     @Nullable
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
     private int delay = 0;
@@ -77,7 +79,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
         Predicate<ItemStack> canFilter;
         if (getFilterManager().hasEnabledFilters()) {
-            canFilter = stack -> getFilterManager().anyEnabledMatch(stack, (filter, s) -> filter.getFinder().test(s));
+            canFilter = FILTER_ENABLED;
         } else if (importWithoutFilter) {
             // return true if we don't have any enabled filters installed, and we allow for filterless importing
             canFilter = ConstantPredicates.alwaysTrue();

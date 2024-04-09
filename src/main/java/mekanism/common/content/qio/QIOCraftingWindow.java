@@ -11,8 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -289,31 +287,30 @@ public class QIOCraftingWindow implements IContentsListener {
      */
     public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         if (toPlayerInv) {
-            emptyTo(toTransfer -> {
-                ItemStack remainder = MekanismContainer.insertItem(hotBarSlots, toTransfer, true, windowData);
-                remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, true, windowData);
-                remainder = MekanismContainer.insertItem(hotBarSlots, remainder, false, windowData);
-                return MekanismContainer.insertItem(mainInventorySlots, remainder, false, windowData);
-            });
+            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+                if (!inputSlot.isEmpty()) {
+                    ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
+                    if (!toTransfer.isEmpty()) {
+                        ItemStack remainder = MekanismContainer.insertItem(hotBarSlots, toTransfer, true, windowData);
+                        remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, true, windowData);
+                        remainder = MekanismContainer.insertItem(hotBarSlots, remainder, false, windowData);
+                        remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, false, windowData);
+                        inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                    }
+                }
+            }
         } else {
             QIOFrequency frequency = holder.getFrequency();
             //NO-OP if the frequency is null and that is the target
             if (frequency != null) {
-                emptyTo(frequency::addItem);
-            }
-        }
-    }
-
-    /**
-     * @param inserter Unary operator that takes the stack to transfer and returns remainder
-     */
-    private void emptyTo(UnaryOperator<ItemStack> inserter) {
-        for (CraftingWindowInventorySlot inputSlot : inputSlots) {
-            if (!inputSlot.isEmpty()) {
-                ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
-                if (!toTransfer.isEmpty()) {
-                    ItemStack remainder = inserter.apply(toTransfer);
-                    inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+                    if (!inputSlot.isEmpty()) {
+                        ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
+                        if (!toTransfer.isEmpty()) {
+                            ItemStack remainder = frequency.addItem(toTransfer);
+                            inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                        }
+                    }
                 }
             }
         }
@@ -904,24 +901,25 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
                 //Ensure our remainder helper has been initialized as we will make use of it in validation
                 remainderHelper.updateInputsWithReplacement(index, used);
-                IntFunction<ItemStack> itemGetter = i -> {
-                    if (i == index) {
-                        return used;
-                    } else if (i >= 0 && i < inputSlots.length) {
-                        return inputSlots[i].getStack();
-                    }
-                    return ItemStack.EMPTY;
-                };
                 if (lastRecipe.value() instanceof IShapedRecipe<?> shapedRecipe) {
                     //It is a shaped recipe, make use of this information to attempt to find the proper match
-                    mapShapedRecipe(shapedRecipe, ingredients, itemGetter);
+                    mapShapedRecipe(shapedRecipe, ingredients, index, used);
                 } else {
-                    mapShapelessRecipe(ingredients, itemGetter);
+                    mapShapelessRecipe(ingredients, index, used);
                 }
             }
         }
 
-        private void mapShapedRecipe(IShapedRecipe<?> shapedRecipe, NonNullList<Ingredient> ingredients, IntFunction<ItemStack> itemGetter) {
+        private ItemStack getItem(int i, int index, ItemStack used) {
+            if (i == index) {
+                return used;
+            } else if (i >= 0 && i < inputSlots.length) {
+                return inputSlots[i].getStack();
+            }
+            return ItemStack.EMPTY;
+        }
+
+        private void mapShapedRecipe(IShapedRecipe<?> shapedRecipe, NonNullList<Ingredient> ingredients, int index, ItemStack used) {
             int recipeWidth = shapedRecipe.getRecipeWidth();
             int recipeHeight = shapedRecipe.getRecipeHeight();
             for (int columnStart = 0; columnStart <= 3 - recipeWidth; columnStart++) {
@@ -932,8 +930,8 @@ public class QIOCraftingWindow implements IContentsListener {
                     // be so that it matches when mirrored, and if it does, the ingredients still should be close enough
                     // for the various spots given this is more of a heuristic than actually having to match no matter what,
                     // because we will end up testing the recipe with the item we try to use anyway at the end before moving it.
-                    if (mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, true, itemGetter) ||
-                        mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, false, itemGetter)) {
+                    if (mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, true, index, used) ||
+                        mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, false, index, used)) {
                         return;
                     }
                 }
@@ -943,7 +941,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         private boolean mapShapedRecipe(NonNullList<Ingredient> ingredients, int columnStart, int rowStart, int recipeWidth, int recipeHeight, boolean mirrored,
-              IntFunction<ItemStack> itemGetter) {
+              int index, ItemStack used) {
             for (int actualColumn = 0; actualColumn < 3; actualColumn++) {
                 for (int actualRow = 0; actualRow < 3; actualRow++) {
                     int column = actualColumn - columnStart;
@@ -956,10 +954,10 @@ public class QIOCraftingWindow implements IContentsListener {
                             ingredient = ingredients.get(column + row * recipeWidth);
                         }
                     }
-                    int index = actualColumn + actualRow * 3;
-                    if (ingredient.test(itemGetter.apply(index))) {
+                    int i = actualColumn + actualRow * 3;
+                    if (ingredient.test(getItem(i, index, used))) {
                         //If the ingredient matches, add it to our map
-                        slotIngredients.put(index, ingredient);
+                        slotIngredients.put(i, ingredient);
                     } else {
                         //Otherwise, if the ingredient doesn't match, clear our stored ingredients
                         // as they were empty to start and return there is no match
@@ -971,21 +969,22 @@ public class QIOCraftingWindow implements IContentsListener {
             return true;
         }
 
-        private void mapShapelessRecipe(NonNullList<Ingredient> ingredients, IntFunction<ItemStack> itemGetter) {
+        private void mapShapelessRecipe(NonNullList<Ingredient> ingredients, int index, ItemStack used) {
             //Note: We don't make use of the "simple" way of looking the ingredients up that Vanilla's Shapeless recipe uses,
             // when all the ingredients are simple, as we care about which slot the various things happens in, which is much
             // easier to grab from forge's RecipeMatcher which works for simple ingredients as well, and is just not used
             // normally as it has slightly more overhead
             Int2IntMap actualLookup = new Int2IntArrayMap(inputSlots.length);
             List<ItemStack> inputs = new ArrayList<>(inputSlots.length);
-            for (int index = 0; index < inputSlots.length; index++) {
-                ItemStack stack = itemGetter.apply(index);
+            for (int i = 0; i < inputSlots.length; i++) {
+                ItemStack stack = getItem(i, index, used);
                 if (!stack.isEmpty()) {
-                    actualLookup.put(inputs.size(), index);
+                    actualLookup.put(inputs.size(), i);
                     inputs.add(stack);
                 }
             }
             int[] matches = RecipeMatcher.findMatches(inputs, ingredients);
+            //noinspection ConstantValue,UnreachableCode - It can return null values
             if (matches != null) {
                 for (int ingredientIndex = 0; ingredientIndex < matches.length; ingredientIndex++) {
                     int actualSlot = actualLookup.getOrDefault(matches[ingredientIndex], -1);

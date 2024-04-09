@@ -111,31 +111,27 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     private static List<ResourceLocation> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
-        Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
         //For each tag that matches a tag that is filterable, add it to the resulting list
         return stack.getTags()
               .map(TagKey::location)
-              .filter(resource -> {
-                  for (String pre : possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList())) {
-                      if (resource.getPath().startsWith(pre)) {
-                          return true;
-                      }
-                  }
-                  return false;
-              }).toList();
+              .filter(TileEntityOredictionificator::isPossibleFilter)
+              .toList();
     }
 
     private boolean hasFilterableTags(ItemStack stack) {
+        return stack.getTags().anyMatch(tag -> isPossibleFilter(tag.location()));
+    }
+
+    private static boolean isPossibleFilter(ResourceLocation resource) {
+        //Note: We get the possible filters inside the stream so that we don't have to capture it
+        // as while we look it for every item, it is cached on the config value, so it becomes a simple getter
         Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
-        return stack.getTags().anyMatch(tag -> {
-            ResourceLocation resource = tag.location();
-            for (String pre : possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList())) {
-                if (resource.getPath().startsWith(pre)) {
-                    return true;
-                }
+        for (String pre : possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList())) {
+            if (resource.getPath().startsWith(pre)) {
+                return true;
             }
-            return false;
-        });
+        }
+        return false;
     }
 
     public static boolean isValidTarget(ResourceLocation tag) {
