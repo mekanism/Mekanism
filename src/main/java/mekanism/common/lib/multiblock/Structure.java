@@ -216,7 +216,7 @@ public class Structure {
 
     public void removeMultiblock(Level world) {
         if (multiblockData != null) {
-            multiblockData.remove(world);
+            multiblockData.remove(world, this);
             multiblockData = null;
         }
     }
@@ -247,22 +247,12 @@ public class Structure {
             if (tile instanceof IMultiblockBase adj && isCompatible(n, adj)) {
                 boolean didMerge = false;
                 if (n instanceof IStructuralMultiblock structuralN && adj instanceof IStructuralMultiblock structuralAdj) {
-                    Set<MultiblockManager<?>> managers = new HashSet<>();
-                    managers.addAll(structuralN.getStructureMap().keySet());
+                    Set<MultiblockManager<?>> managers = new HashSet<>(structuralN.getStructureMap().keySet());
                     managers.addAll(structuralAdj.getStructureMap().keySet());
-                    // if both are structural, they should merge all manager structures
-                    //TODO - 1.18: Figure out what this should be as having it just be equals seems incorrect.
-                    // My guess is it should be the commented code down below but maybe it should be |= instead
+                    // if both are structural, they try to merge all manager structures
                     for (MultiblockManager<?> manager : managers) {
-                        didMerge = mergeIfNecessary(n, adj, manager);
+                        didMerge |= mergeIfNecessary(n, adj, manager, true);
                     }
-                    /*if (!managers.isEmpty()) {
-                        boolean merged = true;
-                        for (MultiblockManager<?> manager : managers) {
-                            merged &= mergeIfNecessary(n, adj, manager);
-                        }
-                        didMerge = merged;
-                    }*/
                 } else if (n instanceof IStructuralMultiblock) {
                     // validate from the perspective of the IMultiblock
                     if (!hasStructure(n, (IMultiblock<?>) adj)) {
@@ -270,10 +260,10 @@ public class Structure {
                     }
                     return false;
                 } else if (adj instanceof IStructuralMultiblock) {
-                    didMerge = mergeIfNecessary(n, adj, getManager(n));
+                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
                 } else { // both are regular IMultiblocks
                     // we know the structures are compatible so managers must be the same for both
-                    didMerge = mergeIfNecessary(n, adj, getManager(n));
+                    didMerge = mergeIfNecessary(n, adj, getManager(n), false);
                 }
                 return didMerge;
             }
@@ -285,7 +275,7 @@ public class Structure {
         return structural.getStructure(multiblock.getManager()) == multiblock.getStructure();
     }
 
-    private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager) {
+    private static boolean mergeIfNecessary(IMultiblockBase node, IMultiblockBase adj, MultiblockManager<?> manager, boolean bothStructural) {
         // reset the structures if they're invalid
         Structure nodeStructure = node.getStructure(manager);
         if (!nodeStructure.isValid()) {
@@ -297,6 +287,14 @@ public class Structure {
         }
         // only merge if the structures are different
         if (!node.hasStructure(adjStructure)) {
+            if (bothStructural) {
+                //If at least one is formed, but they aren't both formed then don't merge them
+                // as it means we are placing a structural multiblock against another structural one that is already formed,
+                // so it has to be outside the bounds
+                if ((nodeStructure.getMultiblockData() == null) == (adjStructure.getMultiblockData() != null)) {
+                    return false;
+                }
+            }
             Structure changed;
             // merge into the bigger structure for efficiency
             if (nodeStructure.size() >= adjStructure.size() || (nodeStructure.getManager() != null && adjStructure.getManager() == null)) {

@@ -77,6 +77,11 @@ public class MultiblockManager<T extends MultiblockData> {
         return nameLower;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public boolean isCompatible(BlockEntity tile) {
         if (tile instanceof IMultiblock<?> multiblock) {
             return multiblock.getManager() == this;

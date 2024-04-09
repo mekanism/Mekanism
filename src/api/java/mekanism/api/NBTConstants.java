@@ -123,6 +123,10 @@ public final class NBTConstants {
     public static final String FILTER = "filter";
     public static final String FILTERS = "filters";
     public static final String FINISHED = "finished";
+    /**
+     * @since 10.5.18
+     */
+    public static final String FORMED = "formed";
     public static final String FLUID_STORED = "fluid";
     public static final String FLUID_TANKS = "FluidTanks";
     public static final String FOLLOW = "follow";
@@ -135,6 +139,10 @@ public final class NBTConstants {
     public static final String GAS_STORED_ALT = "gas1";
     public static final String GAS_STORED_ALT_2 = "gas2";
     public static final String GAS_TANKS = "GasTanks";
+    /**
+     * @since 10.5.18
+     */
+    public static final String GUI = "gui";
     public static final String HANDLE_SOUND = "handleSound";
     public static final String HEAT_CAPACITORS = "HeatCapacitors";
     public static final String HEAT_CAPACITY = "heatCapacity";

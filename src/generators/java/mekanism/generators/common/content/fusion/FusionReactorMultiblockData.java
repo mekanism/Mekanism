@@ -33,6 +33,7 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
@@ -168,6 +169,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
+    }
+
+    @Override
+    public boolean allowsStructuralGuiAccess(TileEntityStructuralMultiblock multiblock) {
+        return false;
     }
 
     @Override

@@ -15,4 +15,8 @@ public interface IStructuralMultiblock extends IMultiblockBase {
      * evaporation plant.
      */
     boolean structuralGuiAccessAllowed();
+
+    void multiblockUnformed(Structure structure);
+
+    void multiblockFormed(MultiblockData multiblock);
 }

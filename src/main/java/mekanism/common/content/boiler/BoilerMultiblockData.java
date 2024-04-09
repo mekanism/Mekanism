@@ -30,6 +30,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityBoilerValve;
@@ -136,9 +137,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    public void remove(Level world) {
+    public void remove(Level world, Structure oldStructure) {
         hotMap.removeBoolean(inventoryID);
-        super.remove(world);
+        super.remove(world, oldStructure);
     }
 
     @Override

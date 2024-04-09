@@ -42,6 +42,7 @@ import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -146,6 +147,14 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     /**
+     * Returns true if the multiblock's gui can be accessed via structural multiblocks, false otherwise. An example this may be false for would be on a thermal
+     * evaporation plant.
+     */
+    public boolean allowsStructuralGuiAccess(TileEntityStructuralMultiblock multiblock) {
+        return true;
+    }
+
+    /**
      * Tick the multiblock.
      *
      * @return if we need an update packet
@@ -206,6 +215,12 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 internalMultiblock.setMultiblock(this);
             }
         }
+        for (BlockPos pos : locations) {
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof IStructuralMultiblock structuralMultiblock) {
+                structuralMultiblock.multiblockFormed(this);
+            }
+        }
 
         if (shouldCap(CacheSubstance.FLUID)) {
             for (IExtendedFluidTank tank : getFluidTanks(null)) {
@@ -256,11 +271,17 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return true;
     }
 
-    public void remove(Level world) {
+    public void remove(Level world, Structure oldStructure) {
         for (BlockPos pos : internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof IInternalMultiblock internalMultiblock) {
                 internalMultiblock.setMultiblock(null);
+            }
+        }
+        for (BlockPos pos : locations) {
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof IStructuralMultiblock structuralMultiblock) {
+                structuralMultiblock.multiblockUnformed(oldStructure);
             }
         }
         inventoryID = null;

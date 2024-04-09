@@ -74,7 +74,6 @@ public class GeneratorsTileEntityTypes {
     //Misc
     public static final TileEntityTypeRegistryObject<TileEntityReactorGlass> REACTOR_GLASS = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new)
-          .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     //Fission Reactor

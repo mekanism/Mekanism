@@ -12,6 +12,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
@@ -112,9 +113,9 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void remove(Level world) {
+    public void remove(Level world, Structure oldStructure) {
         energyContainer.invalidate();
-        super.remove(world);
+        super.remove(world, oldStructure);
     }
 
     @Override
