@@ -65,6 +65,7 @@ public abstract class MekanismJavaModel extends Model {
         }
     }
 
+    //todo make this use XFact's code
     public static void renderWireFrame(ModelPart part, PoseStack matrix, VertexConsumer vertexConsumer, int red, int green, int blue, int alpha) {
         if (part.visible) {
             part.visit(matrix, (pose, name, cubeIndex, cube) -> {

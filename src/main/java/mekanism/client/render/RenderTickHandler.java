@@ -19,6 +19,8 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
+import mekanism.client.render.lib.Outlines;
+import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
@@ -95,6 +97,7 @@ import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -103,7 +106,7 @@ public class RenderTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
+    private static final Map<BlockState, List<Line>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
@@ -401,9 +404,9 @@ public class RenderTickHandler {
                                 VertexConsumer buffer = renderer.getBuffer(RenderType.lines());
                                 //0.4 Alpha
                                 if (wireFrameRenderer.isCombined()) {
-                                    renderQuadsWireFrame(actualState, buffer, matrix, world.random, 0, 0, 0, 0x66);
+                                    renderQuadsWireFrame(actualState, buffer, matrix, world.random);
                                 }
-                                wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrix, buffer, 0, 0, 0, 0x66);
+                                wireFrameRenderer.renderWireFrame(tile, event.getPartialTick(), matrix, buffer, 0, 0, 0, 102);
                                 matrix.popPose();
                                 shouldCancel = true;
                             }
@@ -414,7 +417,7 @@ public class RenderTickHandler {
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
-                        renderQuadsWireFrame(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random, 0, 0, 0, 0x66);
+                        renderQuadsWireFrame(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -465,53 +468,33 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand, int red, int green, int blue, int alpha) {
-        List<Vertex[]> vertices = cachedWireFrames.get(state);
-        if (vertices == null) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand) {
+        List<Line> lines = cachedWireFrames.get(state);
+        if (lines == null) {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             //TODO: Eventually we may want to add support for Model data and maybe render type
             ModelData modelData = ModelData.EMPTY;
-            vertices = new ArrayList<>();
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, direction, rand, modelData, null))) {
-                    vertices.add(quad.getVertices());
-                }
-            }
-            for (Quad quad : QuadUtils.unpack(bakedModel.getQuads(state, null, rand, modelData, null))) {
-                vertices.add(quad.getVertices());
-            }
-            cachedWireFrames.put(state, vertices);
+            lines = Outlines.extract(bakedModel, state, rand, modelData);
+            cachedWireFrames.put(state, lines);
         }
-        renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
+        PoseStack.Pose pose = matrix.last();
+        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
     }
 
-    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
-        for (Vertex[] vertices : allVertices) {
-            Vector4f vertex = getVertex(matrix, vertices[0]);
-            Vector3f normal = vertices[0].getNormal();
-            Vector4f vertex2 = getVertex(matrix, vertices[1]);
-            Vector3f normal2 = vertices[1].getNormal();
-            Vector4f vertex3 = getVertex(matrix, vertices[2]);
-            Vector3f normal3 = vertices[2].getNormal();
-            Vector4f vertex4 = getVertex(matrix, vertices[3]);
-            Vector3f normal4 = vertices[3].getNormal();
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
+    public static void renderVertexWireFrame(List<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal) {
+        //tmp variables to avoid allocating each loop
+        Vector4f pos = new Vector4f();
+        Vector3f normal = new Vector3f();
 
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
+        for (Line line : lines) {
+            poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);
 
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
+            pose.transform(line.x1(), line.y1(), line.z1(), 1F, pos);
+            buffer.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, 102).normal(normal.x, normal.y, normal.z).endVertex();
 
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
+            pose.transform(line.x2(), line.y2(), line.z2(), 1F, pos);
+            buffer.vertex(pos.x, pos.y, pos.z).color(0, 0, 0, 102).normal(normal.x, normal.y, normal.z).endVertex();
         }
-    }
-
-    private static Vector4f getVertex(Matrix4f matrix4f, Vertex vertex) {
-        Vector4f vector4f = new Vector4f((float) vertex.getPos().x(), (float) vertex.getPos().y(), (float) vertex.getPos().z(), 1);
-        return vector4f.mul(matrix4f);
     }
 
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {

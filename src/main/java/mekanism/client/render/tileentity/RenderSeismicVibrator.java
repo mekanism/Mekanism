@@ -8,7 +8,8 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Vertex;
+import mekanism.client.render.lib.Outlines;
+import mekanism.client.render.lib.Outlines.Line;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,14 +20,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 @NothingNullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
 
-    private static final List<Vertex[]> vertices = new ArrayList<>();
+    private static final List<Line> lines = new ArrayList<>();
 
     public static void resetCached() {
-        vertices.clear();
+        lines.clear();
     }
 
     public RenderSeismicVibrator(BlockEntityRendererProvider.Context context) {
@@ -58,11 +60,12 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
-            if (vertices.isEmpty()) {
-                MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
+            if (lines.isEmpty()) {
+                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY));
             }
             setupRenderer(vibrator, partialTick, matrix);
-            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
+            Pose pose = matrix.last();
+            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
             matrix.popPose();
         }
     }

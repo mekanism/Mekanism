@@ -9,6 +9,8 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.lib.Outlines;
+import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.lib.Vertex;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
@@ -22,15 +24,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 @NothingNullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> implements IWireFrameRenderer {
 
-    private static final List<Vertex[]> vertices = new ArrayList<>();
+    private static final List<Line> lines = new ArrayList<>();
     private static final float SHAFT_SPEED = 5F;
 
     public static void resetCached() {
-        vertices.clear();
+        lines.clear();
     }
 
     public RenderPigmentMixer(BlockEntityRendererProvider.Context context) {
@@ -73,11 +76,12 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            if (vertices.isEmpty()) {
-                MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
+            if (lines.isEmpty()) {
+                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY));
             }
             setupRenderer(mixer, partialTick, matrix);
-            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
+            Pose pose = matrix.last();
+            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
             matrix.popPose();
         }
     }

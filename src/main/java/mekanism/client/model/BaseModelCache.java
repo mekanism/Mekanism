@@ -4,9 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import mekanism.client.render.lib.Quad;
-import mekanism.client.render.lib.QuadUtils;
-import mekanism.client.render.lib.Vertex;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -187,12 +184,6 @@ public class BaseModelCache {
         @Override
         protected void setup(RegisterAdditional event) {
             event.register(rl);
-        }
-
-        public void collectQuadVertices(List<Vertex[]> vertices, RandomSource random) {
-            for (Quad quad : QuadUtils.unpack(getQuads(random))) {
-                vertices.add(quad.getVertices());
-            }
         }
 
         public List<BakedQuad> getQuads(RandomSource random) {
