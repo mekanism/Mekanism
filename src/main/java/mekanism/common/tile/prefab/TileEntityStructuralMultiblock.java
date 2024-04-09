@@ -25,8 +25,9 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism implements IStructuralMultiblock, IConfigurable {
 
-    //Note: We never expect this to actually be filled, but we set the default to six in case it somehow is part of a structure in every direction
-    // given our expected is so low we use an array map
+    //Note: We never expect this to really get past two (and at an absolute max of nine if the player intentionally does weird things),
+    // we just use an array map as it has better performance, and on chunk unload or server restart it will get back to being a capacity
+    // of two
     private final Map<MultiblockManager<?>, Structure> structures = new Reference2ObjectArrayMap<>(2);
     private final Structure invalidStructure = Structure.INVALID;
     private final MultiblockData defaultMultiblock = new MultiblockData(this);
