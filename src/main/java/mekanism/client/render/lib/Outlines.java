@@ -11,6 +11,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -89,10 +90,28 @@ public class Outlines {
             nY = nY / nLen;
             nZ = nZ / nLen;
 
-            lines.add(new Line((float) x1, (float) y1, (float) z1, (float) x2, (float) y2, (float) z2, (float) nX, (float) nY, (float) nZ));
+            Line line = new Line((float) x1, (float) y1, (float) z1, (float) x2, (float) y2, (float) z2, (float) nX, (float) nY, (float) nZ);
+            if (!lines.contains(line)) {
+                lines.add(line);
+            }
         }
 
     }
 
-    public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {}
+    public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {
+
+        @SuppressWarnings("SuspiciousNameCombination")
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj == null || obj.getClass() != Line.class) {
+                return false;
+            }
+            Line other = (Line) obj;
+            return (Mth.equal(x1, other.x1) && Mth.equal(y1, other.y1) && Mth.equal(z1, other.z1) && Mth.equal(x2, other.x2) && Mth.equal(y2, other.y2) && Mth.equal(z2, other.z2)) ||
+                   (Mth.equal(x1, other.x2) && Mth.equal(y1, other.y2) && Mth.equal(z1, other.z2) && Mth.equal(x2, other.x1) && Mth.equal(y2, other.y1) && Mth.equal(z2, other.z1));
+        }
+    }
 }
