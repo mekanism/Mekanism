@@ -1,36 +1,34 @@
 package mekanism.client.render.lib;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.IQuadTransformer;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import org.lwjgl.system.MemoryStack;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class Outlines {
 
-    public static List<Line> extract(BakedModel model, BlockState state, RandomSource rand, ModelData modelData) {
+    public static List<Line> extract(BakedModel model, @Nullable BlockState state, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         List<Line> lines = new ArrayList<>();
         VertexExtractor consumer = new VertexExtractor(lines);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            //TODO: Eventually we may want to add support for Model data and maybe render type
-            for (BakedQuad quad : model.getQuads(state, direction, rand, modelData, null)) {
+            for (BakedQuad quad : model.getQuads(state, direction, rand, modelData, renderType)) {
                 consumer.unpack(quad);
             }
         }
 
-        for (BakedQuad quad : model.getQuads(state, null, rand, modelData, null)) {
+        for (BakedQuad quad : model.getQuads(state, null, rand, modelData, renderType)) {
             consumer.unpack(quad);
         }
         return lines;
@@ -41,72 +39,61 @@ public class Outlines {
     private static class VertexExtractor {
 
         final List<Line> lines;
-        final Vec3[] vertices = new Vec3[4];
+        final Vector3f[] vertices = new Vector3f[4];
         int vertexIndex = 0;
 
         private VertexExtractor(List<Line> lines) {
             this.lines = lines;
         }
 
-        public void vertex(double pX, double pY, double pZ) {
-            vertices[vertexIndex++] = new Vec3(pX, pY, pZ);
+        public void vertex(float pX, float pY, float pZ) {
+            vertices[vertexIndex++] = new Vector3f(pX, pY, pZ);
             if (vertexIndex == 4) {
                 vertexIndex = 0;
-                addLine(vertices[0].x, vertices[0].y, vertices[0].z, vertices[1].x, vertices[1].y, vertices[1].z);
-                addLine(vertices[1].x, vertices[1].y, vertices[1].z, vertices[2].x, vertices[2].y, vertices[2].z);
-                addLine(vertices[2].x, vertices[2].y, vertices[2].z, vertices[3].x, vertices[3].y, vertices[3].z);
-                addLine(vertices[3].x, vertices[3].y, vertices[3].z, vertices[0].x, vertices[0].y, vertices[0].z);
+                addLine(vertices[0], vertices[1]);
+                addLine(vertices[1], vertices[2]);
+                addLine(vertices[2], vertices[3]);
+                addLine(vertices[3], vertices[0]);
                 Arrays.fill(vertices, null);
             }
         }
 
-        //slimmed down version of putBulkData
-        public void unpack(BakedQuad pQuad) {
-            int[] quadVertices = pQuad.getVertices();
-            int elementCount = quadVertices.length / 8;
-
-            try (MemoryStack memorystack = MemoryStack.stackPush()) {
-                ByteBuffer bytebuffer = memorystack.malloc(DefaultVertexFormat.BLOCK.getVertexSize());
-                IntBuffer intbuffer = bytebuffer.asIntBuffer();
-
-                for (int k = 0; k < elementCount; ++k) {
-                    intbuffer.clear();
-                    intbuffer.put(quadVertices, k * 8, 8);
-                    float f = bytebuffer.getFloat(0);
-                    float f1 = bytebuffer.getFloat(4);
-                    float f2 = bytebuffer.getFloat(8);
-                    this.vertex(f, f1, f2);
-                }
-            }
-        }
-
-        private void addLine(double x1, double y1, double z1, double x2, double y2, double z2) {
-            double nX = (x2 - x1);
-            double nY = (y2 - y1);
-            double nZ = (z2 - z1);
-            double nLen = Math.sqrt(nX * nX + nY * nY + nZ * nZ);
-
-            nX = nX / nLen;
-            nY = nY / nLen;
-            nZ = nZ / nLen;
-
-            Line line = new Line((float) x1, (float) y1, (float) z1, (float) x2, (float) y2, (float) z2, (float) nX, (float) nY, (float) nZ);
+        private void addLine(Vector3f v1, Vector3f v2) {
+            Line line = new Line(v1, v2);
             if (!lines.contains(line)) {
                 lines.add(line);
             }
         }
 
+        //Based on how QuadTransformers#applying extracts the vertex positions
+        public void unpack(BakedQuad pQuad) {
+            int[] quadVertices = pQuad.getVertices();
+            for (int i = 0; i < 4; i++) {
+                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
+                float x = Float.intBitsToFloat(quadVertices[offset]);
+                float y = Float.intBitsToFloat(quadVertices[offset + 1]);
+                float z = Float.intBitsToFloat(quadVertices[offset + 2]);
+                this.vertex(x, y, z);
+            }
+        }
     }
 
     public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {
+
+        public Line(Vector3f v1, Vector3f v2, Vector3f normal) {
+            this(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, normal.x, normal.y, normal.z);
+        }
+
+        public Line(Vector3f v1, Vector3f v2) {
+            this(v1, v2, v2.sub(v1, new Vector3f()).normalize());
+        }
 
         @SuppressWarnings("SuspiciousNameCombination")
         @Override
         public boolean equals(Object obj) {
             if (obj == this) {
                 return true;
-            }
-            if (obj == null || obj.getClass() != Line.class) {
+            } else if (obj == null || obj.getClass() != Line.class) {
                 return false;
             }
             Line other = (Line) obj;

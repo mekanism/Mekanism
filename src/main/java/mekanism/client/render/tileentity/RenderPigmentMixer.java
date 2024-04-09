@@ -11,7 +11,6 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
-import mekanism.client.render.lib.Vertex;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
@@ -77,7 +76,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
             if (lines.isEmpty()) {
-                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY));
+                lines.addAll(Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(), null, tile.getLevel().random, ModelData.EMPTY, null));
             }
             setupRenderer(mixer, partialTick, matrix);
             Pose pose = matrix.last();

@@ -2,10 +2,10 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,9 +21,6 @@ import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
-import mekanism.client.render.lib.Quad;
-import mekanism.client.render.lib.QuadUtils;
-import mekanism.client.render.lib.Vertex;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
@@ -44,7 +41,6 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
@@ -106,7 +102,7 @@ public class RenderTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    private static final Map<BlockState, List<Line>> cachedWireFrames = new HashMap<>();
+    private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
@@ -473,8 +469,7 @@ public class RenderTickHandler {
         if (lines == null) {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             //TODO: Eventually we may want to add support for Model data and maybe render type
-            ModelData modelData = ModelData.EMPTY;
-            lines = Outlines.extract(bakedModel, state, rand, modelData);
+            lines = Outlines.extract(bakedModel, state, rand, ModelData.EMPTY, null);
             cachedWireFrames.put(state, lines);
         }
         PoseStack.Pose pose = matrix.last();
