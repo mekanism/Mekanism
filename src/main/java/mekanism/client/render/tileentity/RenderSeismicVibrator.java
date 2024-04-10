@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.Set;
+import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
 
     @Nullable
-    private static Set<Line> lines;
+    private static List<Line> lines;
 
     public static void resetCached() {
         lines = null;

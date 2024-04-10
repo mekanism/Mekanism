@@ -4,13 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
@@ -103,7 +103,7 @@ public class RenderTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
-    private static final Map<BlockState, Set<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
+    private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
@@ -466,7 +466,7 @@ public class RenderTickHandler {
     }
 
     private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand) {
-        Set<Line> lines = cachedWireFrames.get(state);
+        List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             //TODO: Eventually we may want to add support for Model data and maybe render type
@@ -477,14 +477,14 @@ public class RenderTickHandler {
         renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
     }
 
-    public static void renderVertexWireFrame(Set<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal) {
+    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal) {
         //tmp variables to avoid allocating each loop
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();
         renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal);
     }
 
-    public static void renderVertexWireFrame(Set<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal) {
+    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal) {
         for (Line line : lines) {
             poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);
 

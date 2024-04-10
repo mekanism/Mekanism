@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import java.util.Set;
+import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
@@ -30,7 +30,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
 
     private static final float SHAFT_SPEED = 5F;
     @Nullable
-    private static Set<Line> lines;
+    private static List<Line> lines;
 
     public static void resetCached() {
         lines = null;

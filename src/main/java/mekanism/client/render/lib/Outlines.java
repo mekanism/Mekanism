@@ -1,8 +1,9 @@
 package mekanism.client.render.lib;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,7 +22,7 @@ import org.joml.Vector3f;
 
 public class Outlines {
 
-    public static Set<Line> extract(BakedModel model, @Nullable BlockState state, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+    public static List<Line> extract(BakedModel model, @Nullable BlockState state, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         Set<Line> lines = new HashSet<>();
         VertexExtractor consumer = new VertexExtractor(lines);
         for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -33,7 +34,7 @@ public class Outlines {
         for (BakedQuad quad : model.getQuads(state, null, rand, modelData, renderType)) {
             consumer.unpack(quad);
         }
-        return lines;
+        return new ArrayList<>(lines);
     }
 
     //modified version of VertexConsumer
