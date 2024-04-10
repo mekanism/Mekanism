@@ -32,7 +32,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,8 +42,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     private static final ResourceLocation EJECT = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
     private static final ResourceLocation INPUT = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
     private static final ResourceLocation SILK = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
-    private static final Tooltip MINER_WELL = Tooltip.create(MekanismLang.MINER_WELL.translate());
-    private static final Tooltip MINER_MISSING_BLOCK = Tooltip.create(MekanismLang.MINER_MISSING_BLOCK.translate());
 
     private MekanismButton startButton;
     private MekanismButton stopButton;
@@ -92,7 +89,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
-              .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? MINER_WELL : MINER_MISSING_BLOCK));
+              .hover(element -> ((GuiDigitalMiner) element.gui()).tile.missingStack.isEmpty() ? List.of(MekanismLang.MINER_WELL.translate()) : List.of(MekanismLang.MINER_MISSING_BLOCK.translate())));
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
             return List.of(

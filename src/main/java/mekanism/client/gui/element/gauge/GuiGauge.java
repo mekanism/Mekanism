@@ -3,7 +3,6 @@ package mekanism.client.gui.element.gauge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
@@ -128,8 +127,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
                 DataType dataType = null;
                 ConfigInfo config = sideConfig.getConfig().getConfig(getTransmission());
                 if (config != null) {
-                    Set<DataType> supportedDataTypes = config.getSupportedDataTypes();
-                    for (DataType type : supportedDataTypes) {
+                    for (DataType type : config.getSupportedDataTypes()) {
                         if (type.getColor() == color) {
                             dataType = type;
                             break;

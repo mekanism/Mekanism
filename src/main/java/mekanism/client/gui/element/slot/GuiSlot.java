@@ -1,21 +1,35 @@
 package mekanism.client.gui.element.slot;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -38,11 +52,15 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     @Nullable
     private SlotOverlay overlay;
     @Nullable
-    private Function<GuiSlot, Tooltip> onHover;
+    private Function<GuiSlot, List<Component>> onHover;
     @Nullable
     private IClickable onClick;
     private boolean renderHover;
     private boolean renderAboveSlots;
+
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
 
     @Nullable
     private IGhostIngredientConsumer ghostHandler;
@@ -73,7 +91,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         return this;
     }
 
-    public GuiSlot hover(Function<GuiSlot, Tooltip> onHover) {
+    public GuiSlot hover(Function<GuiSlot, List<Component>> onHover) {
         this.onHover = onHover;
         return this;
     }
@@ -188,9 +206,30 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
+        ItemStack stack = gui().getCarriedItem();
+        List<Component> list = Collections.emptyList();
         if (onHover != null) {
-            setTooltip(onHover.apply(this));
+            list = onHover.apply(this);
         }
+        if (list.isEmpty() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && gui() instanceof GuiMekanismTile<?, ?> gui &&
+            gui.getTileEntity() instanceof ISideConfiguration config && gui.getSlotUnderMouse() instanceof InventoryContainerSlot slot) {
+            ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
+            if (info != null) {
+                IInventorySlot inventorySlot = slot.getInventorySlot();
+                for (DataType type : info.getSupportedDataTypes()) {
+                    if (info.getSlotInfo(type) instanceof InventorySlotInfo slotInfo && slotInfo.hasSlot(inventorySlot)) {
+                        EnumColor color = type.getColor();
+                        list = List.of(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, type, color.getName()));
+                        break;
+                    }
+                }
+            }
+        }
+        if (!list.equals(lastInfo)) {
+            lastInfo = list;
+            lastTooltip = MultiLineTooltip.createMulti(list);
+        }
+        setTooltip(lastTooltip);
     }
 
     @Override
