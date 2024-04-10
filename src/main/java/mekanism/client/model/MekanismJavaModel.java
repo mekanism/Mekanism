@@ -107,10 +107,10 @@ public abstract class MekanismJavaModel extends Model {
                 quad.vertices[1].pos.div(16, v1);
                 quad.vertices[2].pos.div(16, v2);
                 quad.vertices[3].pos.div(16, v3);
-                lines.add(new Line(v0, v1));
-                lines.add(new Line(v1, v2));
-                lines.add(new Line(v2, v3));
-                lines.add(new Line(v3, v0));
+                lines.add(Line.from(v0, v1));
+                lines.add(Line.from(v1, v2));
+                lines.add(Line.from(v2, v3));
+                lines.add(Line.from(v3, v0));
             }
         }
         RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal);

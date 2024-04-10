@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.IQuadTransformer;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Math;
 import org.joml.Vector3f;
 
 public class Outlines {
@@ -51,10 +52,10 @@ public class Outlines {
             vertices[vertexIndex++] = new Vector3f(pX, pY, pZ);
             if (vertexIndex == 4) {
                 vertexIndex = 0;
-                lines.add(new Line(vertices[0], vertices[1]));
-                lines.add(new Line(vertices[1], vertices[2]));
-                lines.add(new Line(vertices[2], vertices[3]));
-                lines.add(new Line(vertices[3], vertices[0]));
+                lines.add(Line.from(vertices[0], vertices[1]));
+                lines.add(Line.from(vertices[1], vertices[2]));
+                lines.add(Line.from(vertices[2], vertices[3]));
+                lines.add(Line.from(vertices[3], vertices[0]));
                 Arrays.fill(vertices, null);
             }
         }
@@ -74,16 +75,16 @@ public class Outlines {
 
     public record Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ, int hash) {
 
-        public Line(float x1, float y1, float z1, float x2, float y2, float z2, float nX, float nY, float nZ) {
-            this(x1, y1, z1, x2, y2, z2, nX, nY, nZ, calculateHash(x1, y1, z1, x2, y2, z2));
-        }
-
-        public Line(Vector3f v1, Vector3f v2, Vector3f normal) {
-            this(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, normal.x, normal.y, normal.z);
-        }
-
-        public Line(Vector3f v1, Vector3f v2) {
-            this(v1, v2, v2.sub(v1, new Vector3f()).normalize());
+        public static Line from(Vector3f v1, Vector3f v2) {
+            // normalise by the distance between the points
+            float nX = v2.x - v1.x;
+            float nY = v2.y - v1.y;
+            float nZ = v2.z - v1.z;
+            float scalar = Math.invsqrt(Math.fma(nX, nX, Math.fma(nY, nY, nZ * nZ)));
+            nX = nX * scalar;
+            nY = nY * scalar;
+            nZ = nZ * scalar;
+            return new Line(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, nX, nY, nZ, calculateHash(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z));
         }
 
         private static int calculateHash(float x1, float y1, float z1, float x2, float y2, float z2) {
