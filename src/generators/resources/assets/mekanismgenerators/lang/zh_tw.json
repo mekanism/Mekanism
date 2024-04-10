@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "無法成型，缺少電磁線圈。",
   "turbine.mekanismgenerators.invalid_missing_complex": "無法成型，缺少旋轉裝置。",
   "turbine.mekanismgenerators.invalid_missing_disperser": "無法成型，無法在 %1$s 找到原本應有的分壓元件。",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "無法成型, 沒有分壓元件.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "無法成型，轉子無效（不連續）。",
   "turbine.mekanismgenerators.invalid_too_narrow": "無法成型，結構太窄無法支撐目前的渦輪尺寸。",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "無法成型，在分壓元件層下面找到了渦輪排氣口。排氣口必須在分壓元件層的垂直位置或上方。",
