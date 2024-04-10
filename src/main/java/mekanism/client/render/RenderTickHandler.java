@@ -178,6 +178,7 @@ public class RenderTickHandler {
                         doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 }
+                renderer.endLastBatch();
                 transparentRenderers.clear();
                 profiler.pop();
             }
@@ -534,10 +535,7 @@ public class RenderTickHandler {
 
         String profilerSection = transparentRender.getProfilerSection();
         profiler.push(profilerSection);
-        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
         transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
         profiler.pop();
-
-        renderer.endBatch(renderType);
     }
 }
