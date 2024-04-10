@@ -95,7 +95,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                         pose.pushPose();
                         //Offset to fix rendering position
                         pose.translate(-getGuiLeft(), -getGuiTop(), 0);
-                        guiGraphics.renderTooltip(getFont(), GeneratorsLang.FISSION_FORCE_DISABLED.translate(), mouseX, mouseY);
+                        //Tooltip.MAX_WIDTH = 170
+                        guiGraphics.renderTooltip(font, font.split(GeneratorsLang.FISSION_FORCE_DISABLED.translate(), 170), mouseX, mouseY);
                         pose.popPose();
                     }
                     active = false;
