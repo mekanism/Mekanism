@@ -3,15 +3,18 @@ package mekanism.common.lib.math.voxel;
 import mekanism.common.lib.multiblock.Structure.Axis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 
 public class VoxelCuboid implements IShape {
 
     private BlockPos minPos;
     private BlockPos maxPos;
+    private AABB asAABB;
 
     public VoxelCuboid(BlockPos minPos, BlockPos maxPos) {
         this.minPos = minPos;
         this.maxPos = maxPos;
+        this.asAABB = AABB.encapsulatingFullBlocks(minPos, maxPos);
     }
 
     public VoxelCuboid(int length, int height, int width) {
@@ -40,10 +43,12 @@ public class VoxelCuboid implements IShape {
 
     public void setMinPos(BlockPos minPos) {
         this.minPos = minPos;
+        this.asAABB = AABB.encapsulatingFullBlocks(minPos, maxPos);
     }
 
     public void setMaxPos(BlockPos maxPos) {
         this.maxPos = maxPos;
+        this.asAABB = AABB.encapsulatingFullBlocks(minPos, maxPos);
     }
 
     public BlockPos getCenter() {
@@ -161,6 +166,10 @@ public class VoxelCuboid implements IShape {
     @Override
     public String toString() {
         return "Cuboid(start=" + minPos + ", bounds=(" + length() + "," + height() + "," + width() + "))";
+    }
+
+    public AABB asAABB() {
+        return asAABB;
     }
 
     public enum WallRelative {

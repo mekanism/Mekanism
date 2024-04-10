@@ -2,6 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -46,11 +47,11 @@ public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends Multiblock
     public AABB getRenderBoundingBox(TILE tile) {
         if (tile.isMaster()) {
             MULTIBLOCK multiblock = tile.getMultiblock();
-            if (multiblock.isFormed() && multiblock.getBounds() != null) {
-                //TODO: Eventually we may want to look into caching this
+            VoxelCuboid bounds = multiblock.getBounds();
+            if (multiblock.isFormed() && bounds != null) {
                 //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
                 // how the specific multiblock wants to render, that it is being viewed
-                return AABB.encapsulatingFullBlocks(multiblock.getMinPos(), multiblock.getMaxPos());
+                return bounds.asAABB();
             }
         }
         return super.getRenderBoundingBox(tile);
