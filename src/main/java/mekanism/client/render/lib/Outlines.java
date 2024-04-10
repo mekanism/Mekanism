@@ -88,21 +88,14 @@ public class Outlines {
         }
 
         private static int calculateHash(float x1, float y1, float z1, float x2, float y2, float z2) {
-            float minX = Math.min(x1, x2);
-            float minY = Math.min(y1, y2);
-            float minZ = Math.min(z1, z2);
-            float maxX = Math.max(x1, x2);
-            float maxY = Math.max(x1, x2);
-            float maxZ = Math.max(x1, x2);
             //Supports up to a scale of 0.005 in the json (which the miner uses for LEDs)
-            return Objects.hash(
-                  (long) (minX * 3_200),
-                  (long) (minY * 3_200),
-                  (long) (minZ * 3_200),
-                  (long) (maxX * 3_200),
-                  (long) (maxY * 3_200),
-                  (long) (maxZ * 3_200)
-            );
+            int result = Long.hashCode((long) Math.min(x1, x2) * 3_200);
+            result = 31 * result + Long.hashCode((long) Math.min(y1, y2) * 3_200);
+            result = 31 * result + Long.hashCode((long) Math.min(z1, z2) * 3_200);
+            result = 31 * result + Long.hashCode((long) Math.max(x1, x2) * 3_200);
+            result = 31 * result + Long.hashCode((long) Math.max(x1, x2) * 3_200);
+            result = 31 * result + Long.hashCode((long) Math.max(x1, x2) * 3_200);
+            return result;
         }
 
         @Override
