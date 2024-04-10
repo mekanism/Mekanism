@@ -45,11 +45,12 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         super.addGuiElements();
         addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, mouseX, mouseY) -> {
-            ItemStack stack = getCarriedItem();
+            GuiQIORedstoneAdapter gui = (GuiQIORedstoneAdapter) element.gui();
+            ItemStack stack = gui.getCarriedItem();
             if (stack.isEmpty() == hasShiftDown()) {
                 //If the stack is empty and shift is being held, clear it
                 // otherwise if the stack is not empty and shift is not being held set it
-                updateStack(stack);
+                gui.updateStack(stack);
                 return true;
             }
             return false;

@@ -65,7 +65,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 player.closeContainer();
             } else {
                 //If something did go wrong make the teleport button not able to be pressed
-                teleportButton.active = false;
+                element.active = false;
             }
             return true;
         }));

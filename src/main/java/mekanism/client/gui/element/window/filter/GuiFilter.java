@@ -69,8 +69,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, mouseX, mouseY) -> {
                     //Add the window for the filter select dialog to the parent gui
                     IGuiWrapper wrapper = element.gui();
-                    GuiFilter<?, TILE> guiFilter = (GuiFilter<?, TILE>) element;
-                    wrapper.addWindow(guiFilter.getFilterSelect(wrapper, guiFilter.tile));
+                    wrapper.addWindow(getFilterSelect(wrapper, this.tile));
                     //And close the filter
                     return close(element, mouseX, mouseY);
                 })).setTooltip(MekanismLang.BACK);
@@ -124,14 +123,13 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new GuiInnerScreen(gui(), relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, mouseX, mouseY) -> {
-            GuiFilter<FILTER, ?> self = (GuiFilter<FILTER, ?>) element;
-            if (self.origFilter != null) {
-                PacketUtils.sendToServer(new PacketEditFilter<>(self.tile.getBlockPos(), self.origFilter, null));
+            if (origFilter != null) {
+                PacketUtils.sendToServer(new PacketEditFilter<>(this.tile.getBlockPos(), origFilter, null));
             }
-            return self.close(element, mouseX, mouseY);
+            return close(element, mouseX, mouseY);
         }));
         addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (element, mouseX, mouseY) -> {
-            ((GuiFilter<?, ?>) element).validateAndSave();
+            validateAndSave();
             return true;
         }));
         GuiSlot slot = addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));

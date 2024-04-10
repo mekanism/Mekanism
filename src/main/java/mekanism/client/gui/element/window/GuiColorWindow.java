@@ -42,7 +42,6 @@ public class GuiColorWindow extends GuiWindow {
     private final boolean handlesAlpha;
     @Nullable
     private final Consumer<Color> updatePreviewColor;
-    private final Consumer<Color> callback;
     @Nullable
     private final Runnable previewReset;
 
@@ -59,7 +58,6 @@ public class GuiColorWindow extends GuiWindow {
           @Nullable Consumer<Color> updatePreviewColor, @Nullable Runnable previewReset) {
         super(gui, x, y, (handlesAlpha ? 184 : 158) + (armorPreview == null ? 0 : 83), handlesAlpha ? 152 : 140, WindowType.COLOR);
         interactionStrategy = InteractionStrategy.NONE;
-        this.callback = callback;
         this.handlesAlpha = handlesAlpha;
         this.updatePreviewColor = updatePreviewColor;
         this.previewReset = previewReset;
@@ -88,9 +86,8 @@ public class GuiColorWindow extends GuiWindow {
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               .setMaxLength(this.handlesAlpha ? 15 : 11);
         addChild(new TranslationButton(gui, relativeX + 98 + extraWidth, relativeY + height - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, (element, mouseX, mouseY) -> {
-            GuiColorWindow colorWindow = (GuiColorWindow) element;
-            colorWindow.callback.accept(colorWindow.getColor());
-            return colorWindow.close(element, mouseX, mouseY);
+            callback.accept(getColor());
+            return close(element, mouseX, mouseY);
         }));
 
         if (armorPreview != null) {

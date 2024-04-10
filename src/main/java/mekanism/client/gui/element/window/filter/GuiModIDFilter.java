@@ -105,7 +105,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             if (!Screen.hasShiftDown()) {
                 ItemStack stack = element.gui().getCarriedItem();
                 if (!stack.isEmpty()) {
-                    ((GuiModIDFilter<?, ?>) element).setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);
+                    setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);
                     return true;
                 }
             }

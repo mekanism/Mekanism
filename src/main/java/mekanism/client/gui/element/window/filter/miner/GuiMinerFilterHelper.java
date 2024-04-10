@@ -34,7 +34,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
               }));
         childAdder.apply(new TooltipToggleButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> getFilter().requiresReplacement, (element, mouseX, mouseY) -> {
-            MinerFilter<?> filter = ((GuiMinerFilterHelper) element).getFilter();
+            MinerFilter<?> filter = getFilter();
             filter.requiresReplacement = !filter.requiresReplacement;
             return true;
         }, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(true)), MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(false))));

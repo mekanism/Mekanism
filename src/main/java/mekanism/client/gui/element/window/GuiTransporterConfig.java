@@ -42,11 +42,11 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, ((GuiTransporterConfig<?>) element).tile))))
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, this.tile))))
               .setTooltip(MekanismLang.STRICT_INPUT);
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.RIGHT))));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(this.tile.getBlockPos(), MekClickType.RIGHT))));
         addSideDataButton(RelativeSide.BOTTOM, 41, 64 + 16);
         addSideDataButton(RelativeSide.TOP, 41, 34);
         addSideDataButton(RelativeSide.FRONT, 41, 57);

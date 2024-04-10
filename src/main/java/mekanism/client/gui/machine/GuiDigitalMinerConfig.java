@@ -71,7 +71,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new TranslationButton(this, 96, 136, 156, 20, MekanismLang.BUTTON_NEW_FILTER, (element, mouseX, mouseY) -> {
-            addWindow(new GuiMinerFilerSelect(this, tile));
+            GuiDigitalMinerConfig gui = (GuiDigitalMinerConfig) element.gui();
+            gui.addWindow(new GuiMinerFilerSelect(gui, gui.tile));
             return true;
         }));
         addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
@@ -82,13 +83,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               .setTooltip(MekanismLang.MINER_INVERSE);
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 13, 135)).setRenderAboveSlots().setRenderHover(true)
               .stored(() -> new ItemStack(tile.getInverseReplaceTarget())).click((element, mouseX, mouseY) -> {
+                  GuiDigitalMinerConfig gui = (GuiDigitalMinerConfig) element.gui();
                   if (Screen.hasShiftDown()) {
-                      updateInverseReplaceTarget(Items.AIR);
+                      gui.updateInverseReplaceTarget(Items.AIR);
                       return true;
                   } else {
-                      ItemStack stack = getCarriedItem();
+                      ItemStack stack = gui.getCarriedItem();
                       if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
-                          updateInverseReplaceTarget(stack.getItem());
+                          gui.updateInverseReplaceTarget(stack.getItem());
                           return true;
                       }
                   }

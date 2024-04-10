@@ -41,8 +41,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
             maxField = max;
         });
         addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, 14, getButtonLocation("fuzzy"), (element, mouseX, mouseY) -> {
-            GuiSorterItemStackFilter self = (GuiSorterItemStackFilter) element;
-            self.filter.fuzzyMode = !self.filter.fuzzyMode;
+            filter.fuzzyMode = !filter.fuzzyMode;
             return true;
         })).setTooltip(MekanismLang.FUZZY_MODE);
     }

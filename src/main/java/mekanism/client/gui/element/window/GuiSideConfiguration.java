@@ -78,20 +78,16 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             addChild(tab);
             configTabs.add(tab);
         }
-        ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"), (element, mouseX, mouseY) -> {
-            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
-            return PacketUtils.sendToServer(new PacketEjectConfiguration(self.tile.getBlockPos(), self.currentType));
-        })).setTooltip(MekanismLang.AUTO_EJECT);
+        ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType))))
+              .setTooltip(MekanismLang.AUTO_EJECT);
         addChild(new TooltipToggleButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
               () -> getTargetType(DataType::getNext) == DataType.NONE, (element, mouseX, mouseY) -> {
-            //TODO - 1.20.4: Fix how this cast causing a crash because it really is a toggle button
-            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
-            DataType targetType = self.getTargetType(DataType::getNext);
-            return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
+            DataType targetType = getTargetType(DataType::getNext);
+            return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
         }, (element, mouseX, mouseY) -> {
-            GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
-            DataType targetType = self.getTargetType(DataType::getPrevious);
-            return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
+            DataType targetType = getTargetType(DataType::getPrevious);
+            return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
         }, MultiLineTooltip.createMulti(MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate()),
               Tooltip.create(MekanismLang.SIDE_CONFIG_INCREMENT.translate())));
         addSideDataButton(RelativeSide.BOTTOM, 68, 92);
