@@ -67,7 +67,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
               .setTooltip(MekanismLang.ENCODE_FORMULA);
         stockControlButton = addRenderableWidget(new TooltipToggleButton(this, 26, 75, 16, getButtonLocation("stock_control"), tile::getStockControl,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              MekanismLang.STOCK_CONTROL.translate(OnOff.of(true)), MekanismLang.STOCK_CONTROL.translate(OnOff.of(false))));
+              MekanismLang.STOCK_CONTROL.translate(OnOff.ON), MekanismLang.STOCK_CONTROL.translate(OnOff.OFF)));
         fillEmptyButton = addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, getButtonLocation("empty"),
               getButtonLocation("fill"), () -> tile.formula == null, (element, mouseX, mouseY) -> {
             TileEntityFormulaicAssemblicator tile = ((GuiFormulaicAssemblicator) element.gui()).tile;
@@ -82,7 +82,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
               .setTooltip(MekanismLang.CRAFT_AVAILABLE);
         autoModeButton = addRenderableWidget(new TooltipToggleButton(this, 107, 75, 16, getButtonLocation("auto_toggle"), tile::getAutoMode,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              MekanismLang.AUTO_MODE.translate(OnOff.of(true)), MekanismLang.AUTO_MODE.translate(OnOff.of(false))));
+              MekanismLang.AUTO_MODE.translate(OnOff.ON), MekanismLang.AUTO_MODE.translate(OnOff.OFF)));
         updateEnabledButtons();
     }
 

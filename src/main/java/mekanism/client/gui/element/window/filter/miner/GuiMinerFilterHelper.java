@@ -37,7 +37,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
             MinerFilter<?> filter = getFilter();
             filter.requiresReplacement = !filter.requiresReplacement;
             return true;
-        }, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(true)), MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(false))));
+        }, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.YES), MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.NO)));
     }
 
     @Override

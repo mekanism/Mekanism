@@ -84,7 +84,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         drawString(guiGraphics, MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 32, titleTextColor());
         drawString(guiGraphics, MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 44, titleTextColor());
         if (isSingleItem() && filter.sizeMode) {
-            drawString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(true)), relativeX + 161, relativeY + 58, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.ON), relativeX + 161, relativeY + 58, titleTextColor());
         } else {
             drawString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 58, titleTextColor());
         }

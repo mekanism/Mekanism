@@ -17,8 +17,8 @@ import net.minecraft.network.chat.Component;
 
 public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
 
-    private static final Component ON = MekanismLang.VISUALS.translate(OnOff.of(true));
-    private static final Component OFF = MekanismLang.VISUALS.translate(OnOff.of(false));
+    private static final Component ON = MekanismLang.VISUALS.translate(OnOff.ON);
+    private static final Component OFF = MekanismLang.VISUALS.translate(OnOff.OFF);
     private static final Component TOO_BIG = MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED);
     private static final Tooltip VISUALS_ON = Tooltip.create(ON);
     private static final Tooltip VISUALS_OFF = Tooltip.create(OFF);

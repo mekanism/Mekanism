@@ -108,8 +108,8 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                     addRenderableWidget(new TooltipColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
                           () -> tile.isChunkLoadingAt(shiftedX, shiftedZ),
                           (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
-                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(true, true), EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ),
-                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(false, true), EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
+                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.ON_COLORED, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ),
+                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.OFF_COLORED, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
                     ));
                 }
             }

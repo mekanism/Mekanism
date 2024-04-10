@@ -120,7 +120,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                   PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, desk.tile));
                   desk.updateButtons();
                   return true;
-              }, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(true)), MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(false))));
+              }, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.ON), MekanismLang.SECURITY_OVERRIDE.translate(OnOff.OFF)));
         updateButtons();
     }
 

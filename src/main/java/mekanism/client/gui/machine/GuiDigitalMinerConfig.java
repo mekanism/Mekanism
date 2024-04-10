@@ -101,7 +101,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               });
         addRenderableWidget(new TooltipToggleButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"), tile::getInverseRequiresReplacement,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
-              MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(true)), MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(false)));
+              MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.YES), MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.NO)));
         radiusField = addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11));
         radiusField.setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
