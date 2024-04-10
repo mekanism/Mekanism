@@ -21,9 +21,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiScrollList {
@@ -45,6 +47,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     private Component lastInfo = null;
     @Nullable
     private Tooltip lastTooltip;
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
@@ -137,6 +141,12 @@ public class GuiModuleScrollList extends GuiScrollList {
         });
     }
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         if (currentContainer != null && mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
@@ -154,11 +164,13 @@ public class GuiModuleScrollList extends GuiScrollList {
                         lastInfo = info;
                         lastTooltip = Tooltip.create(info);
                     }
+                    cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 1 + multipliedElement, barXShift - 2, elementHeight);
                     setTooltip(lastTooltip);
                     return;
                 }
             }
         }
+        cachedTooltipRect = null;
         lastInfo = null;
         setTooltip(lastTooltip = null);
     }

@@ -11,9 +11,11 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends GuiTexturedElement {
 
@@ -21,6 +23,9 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     private final Consumer<TYPE> handler;
     private final Supplier<TYPE> curType;
     private final TYPE[] options;
+
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     private boolean isOpen;
 
@@ -95,6 +100,12 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         pose.popPose();
     }
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         int index = getHoveredIndex(mouseX, mouseY);
@@ -103,9 +114,11 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
                 Component tooltip = t.getTooltip();
                 return tooltip == null ? null : Tooltip.create(tooltip);
             });
+            cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 12 + index * 10, width - 2, 10);
             setTooltip(text);
         } else {
             clearTooltip();
+            cachedTooltipRect = null;
         }
     }
 

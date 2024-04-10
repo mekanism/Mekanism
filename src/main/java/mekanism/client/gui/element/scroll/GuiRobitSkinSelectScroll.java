@@ -25,6 +25,7 @@ import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -55,6 +56,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private ResourceKey<RobitSkin> lastSkin;
     @Nullable
     private Tooltip lastTooltip;
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
@@ -136,9 +139,15 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         ticks++;
     }
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY);
+        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY, true);
         if (skin == null) {
             lastTooltip = null;
         } else if (lastSkin != skin) {
@@ -156,22 +165,28 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
-        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY);
+        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY, false);
         if (skin != null) {
             selectedSkin = skin;
         }
     }
 
-    private ResourceKey<RobitSkin> getSkin(double mouseX, double mouseY) {
+    private ResourceKey<RobitSkin> getSkin(double mouseX, double mouseY, boolean updateTooltipRect) {
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
             int slotX = (int) ((mouseX - getX()) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - getY()) / SLOT_DIMENSIONS);
             if (slotX >= 0 && slotY >= 0 && slotX < SLOT_COUNT && slotY < SLOT_COUNT) {
                 int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                 if (slot < skins.size()) {
+                    if (updateTooltipRect) {
+                        cachedTooltipRect = new ScreenRectangle(getX() + slotX * SLOT_DIMENSIONS, getY() + slotY * SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
+                    }
                     return skins.get(slot);
                 }
             }
+        }
+        if (updateTooltipRect) {
+            cachedTooltipRect = null;
         }
         return null;
     }

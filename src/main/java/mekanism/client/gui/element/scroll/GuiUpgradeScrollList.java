@@ -16,7 +16,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
@@ -30,6 +32,8 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     private final Runnable onSelectionChange;
     @Nullable
     private Upgrade selectedType;
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     public GuiUpgradeScrollList(IGuiWrapper gui, int x, int y, int width, int height, TileComponentUpgrade component, Runnable onSelectionChange) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
@@ -83,6 +87,12 @@ public class GuiUpgradeScrollList extends GuiScrollList {
               titleTextColor(), 44));
     }
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
@@ -96,11 +106,13 @@ public class GuiUpgradeScrollList extends GuiScrollList {
                 Upgrade upgrade = upgrades[index];
                 int multipliedElement = elementHeight * i;
                 if (mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
+                    cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 1 + multipliedElement, barXShift - 2, elementHeight);
                     setTooltip(tooltips.computeIfAbsent(upgrade, u -> Tooltip.create(u.getDescription())));
                     return;
                 }
             }
         }
+        cachedTooltipRect = null;
         clearTooltip();
     }
 

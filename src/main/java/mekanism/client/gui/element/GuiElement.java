@@ -168,6 +168,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @NotNull
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return getRectangle();
+    }
+
+    @NotNull
     @Override
     public List<GuiElement> children() {
         return children;
@@ -296,7 +301,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         Tooltip tooltip = getTooltip();
         if (tooltip != null) {
             //Note: We only call this method if we are hovering the proper spot
-            tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getRectangle());
+            tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         }
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {

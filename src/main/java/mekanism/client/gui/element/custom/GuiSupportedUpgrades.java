@@ -15,6 +15,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,8 @@ public class GuiSupportedUpgrades extends GuiElement {
     private List<Component> lastInfo = Collections.emptyList();
     @Nullable
     private Tooltip lastTooltip;
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
         super(gui, x, y, 125, ELEMENT_SIZE * calculateNeededRows() + 2);
@@ -71,6 +74,12 @@ public class GuiSupportedUpgrades extends GuiElement {
         drawTextScaledBound(guiGraphics, MekanismLang.UPGRADES_SUPPORTED.translate(), relativeX + 2, relativeY + 3, titleTextColor(), 54);
     }
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
@@ -88,6 +97,8 @@ public class GuiSupportedUpgrades extends GuiElement {
                 if (!info.equals(lastInfo)) {
                     lastInfo = info;
                     lastTooltip = MultiLineTooltip.createMulti(info);
+                    //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
+                    cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
                 }
                 setTooltip(lastTooltip);
                 //We can break once we managed to find a tooltip to render
@@ -95,6 +106,7 @@ public class GuiSupportedUpgrades extends GuiElement {
             }
         }
         lastInfo = Collections.emptyList();
+        cachedTooltipRect = null;
         setTooltip(lastTooltip = null);
     }
 

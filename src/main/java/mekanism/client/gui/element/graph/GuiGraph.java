@@ -13,6 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +31,8 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
     private Component lastInfo = null;
     @Nullable
     private Tooltip lastTooltip;
+    @Nullable
+    private ScreenRectangle cachedTooltipRect;
 
     protected boolean fixedScale = false;
 
@@ -79,6 +82,12 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
 
     protected abstract Component getDataDisplay(int hoverIndex);
 
+    @NotNull
+    @Override
+    protected ScreenRectangle getTooltipRectangle(int mouseX, int mouseY) {
+        return cachedTooltipRect == null ? super.getTooltipRectangle(mouseX, mouseY) : cachedTooltipRect;
+    }
+
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         int hoverIndex = mouseX - getX();
@@ -88,9 +97,11 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
                 lastInfo = info;
                 lastTooltip = Tooltip.create(info);
             }
+            cachedTooltipRect = new ScreenRectangle(getX(), getGuiTop() + getButtonY(), 1, getButtonHeight());
         } else {
             lastInfo = null;
             lastTooltip = null;
+            cachedTooltipRect = null;
         }
         setTooltip(lastTooltip);
     }
