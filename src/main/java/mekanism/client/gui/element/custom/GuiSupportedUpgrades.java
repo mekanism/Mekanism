@@ -1,9 +1,12 @@
 package mekanism.client.gui.element.custom;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.MekanismLang;
@@ -11,9 +14,11 @@ import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiSupportedUpgrades extends GuiElement {
 
@@ -31,6 +36,10 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     private final Set<Upgrade> supportedUpgrades;
+
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
         super(gui, x, y, 125, ELEMENT_SIZE * calculateNeededRows() + 2);
@@ -63,23 +72,30 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             UpgradePos pos = getUpgradePos(i);
             if (mouseX >= getX() + 1 + pos.x && mouseX < getX() + 1 + pos.x + ELEMENT_SIZE &&
                 mouseY >= getY() + 1 + pos.y && mouseY < getY() + 1 + pos.y + ELEMENT_SIZE) {
                 Upgrade upgrade = EnumUtils.UPGRADES[i];
                 Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
+                List<Component> info;
                 if (supportedUpgrades.contains(upgrade)) {
-                    displayTooltips(guiGraphics, mouseX, mouseY, upgradeName, upgrade.getDescription());
+                    info = List.of(upgradeName, upgrade.getDescription());
                 } else {
-                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                    info = List.of(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
                 }
+                if (!info.equals(lastInfo)) {
+                    lastInfo = info;
+                    lastTooltip = MultiLineTooltip.createMulti(info);
+                }
+                setTooltip(lastTooltip);
                 //We can break once we managed to find a tooltip to render
-                break;
+                return;
             }
         }
+        lastInfo = Collections.emptyList();
+        setTooltip(lastTooltip = null);
     }
 
     private UpgradePos getUpgradePos(int index) {

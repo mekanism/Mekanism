@@ -58,11 +58,11 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP, 1.0F));
         });
         addRenderableWidget(new ToggleButton(this, 9, 64, 14, tile::isInverted,
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiQIORedstoneAdapter) element.gui()).tile))))
+              .setTooltip(MekanismLang.REDSTONE_ADAPTER_TOGGLE_SIGNAL);
         addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, ((GuiQIORedstoneAdapter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.FUZZY_MODE.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, ((GuiQIORedstoneAdapter) element.gui()).tile))))
+              .setTooltip(MekanismLang.FUZZY_MODE);
         addRenderableWidget(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, GuiQIOFilterHandler.getFrequencyText(tile))
               .tooltip(GuiQIOFilterHandler.getFrequencyTooltip(tile)));
         addRenderableWidget(new GuiInnerScreen(this, 27, 30, imageWidth - 27 - 8, 64, () -> {

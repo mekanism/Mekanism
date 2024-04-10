@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,21 +13,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class BasicColorButton extends MekanismButton {
 
-    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull IClickable onLeftClick,
-          @Nullable GuiElement.IHoverable onHover) {
-        return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
-    }
-
-    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @NotNull IClickable onLeftClick, @NotNull IClickable onRightClick,
-          @Nullable GuiElement.IHoverable onHover) {
-        return new BasicColorButton(gui, x, y, size, () -> color, onLeftClick, onRightClick, onHover);
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull IClickable onLeftClick) {
+        return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick);
     }
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick,
-          @Nullable GuiElement.IHoverable onHover) {
-        super(gui, x, y, size, size, Component.empty(), onLeftClick, onRightClick, onHover);
+    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick) {
+        super(gui, x, y, size, size, Component.empty(), onLeftClick, onRightClick);
         this.colorSupplier = color;
     }
 

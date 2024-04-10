@@ -101,10 +101,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addRenderableWidget(new GuiTargetDirectionTab(this, menu, 60));
         addRenderableWidget(new GuiToggleClientConfigTab(this, imageHeight - 35, true, getButtonLocation("recipe_viewer_inventory"), getButtonLocation("recipe_viewer_frequency"),
               //Note: This is backwards as it describes what the button will be doing
-              MekanismConfig.client.qioRejectsToInventory, val -> val ? MekanismLang.QIO_REJECTS_TO_INVENTORY : MekanismLang.QIO_REJECTS_TO_FREQUENCY));
+              MekanismConfig.client.qioRejectsToInventory, MekanismLang.QIO_REJECTS_TO_INVENTORY.translate(), MekanismLang.QIO_REJECTS_TO_FREQUENCY.translate()));
         addRenderableWidget(new GuiToggleClientConfigTab(this, 6, false, getButtonLocation("searchbar_autofocus_off"), getButtonLocation("searchbar_autofocus_on"),
               //Note: This is backwards as it describes what the button will be doing
-              MekanismConfig.client.qioAutoFocusSearchBar, val -> val ? MekanismLang.QIO_SEARCH_MANUAL_FOCUS : MekanismLang.QIO_SEARCH_AUTO_FOCUS));
+              MekanismConfig.client.qioAutoFocusSearchBar, MekanismLang.QIO_SEARCH_MANUAL_FOCUS.translate(), MekanismLang.QIO_SEARCH_AUTO_FOCUS.translate()));
         addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - topPos));
         craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }

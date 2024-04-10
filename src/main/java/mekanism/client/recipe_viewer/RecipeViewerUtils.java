@@ -30,7 +30,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.text.TextUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,11 +60,12 @@ public class RecipeViewerUtils {
     }
 
     public static IBarInfoHandler barProgressHandler(int processTime) {
+        Component tooltip = MekanismLang.TICKS_REQUIRED.translate(processTime);
         int time = SharedConstants.MILLIS_PER_TICK * processTime;
         return new IBarInfoHandler() {
             @Override
             public Component getTooltip() {
-                return MekanismLang.PROGRESS.translate(TextUtils.getPercent(getLevel()));
+                return tooltip;
             }
 
             @Override

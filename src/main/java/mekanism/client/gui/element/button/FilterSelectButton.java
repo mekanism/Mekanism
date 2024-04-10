@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class FilterSelectButton extends MekanismButton {
 
@@ -19,8 +18,8 @@ public class FilterSelectButton extends MekanismButton {
 
     private final boolean down;
 
-    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
-        super(gui, x, y, 11, 7, Component.empty(), onPress, onHover);
+    public FilterSelectButton(IGuiWrapper gui, int x, int y, boolean down, @NotNull IClickable onPress) {
+        super(gui, x, y, 11, 7, Component.empty(), onPress);
         this.down = down;
     }
 

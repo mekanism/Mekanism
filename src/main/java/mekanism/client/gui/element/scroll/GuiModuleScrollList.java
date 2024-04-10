@@ -14,16 +14,16 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiScrollList {
@@ -40,6 +40,11 @@ public class GuiModuleScrollList extends GuiScrollList {
     private ModuleContainer currentContainer;
     @Nullable
     private ModuleData<?> selected;
+
+    @Nullable
+    private Component lastInfo = null;
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
@@ -133,17 +138,29 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
-            forEachModule((module, multipliedElement) -> {
-                int installed = currentContainer == null ? 0 : currentContainer.installedCount(module);
-                if (installed > 0 && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
-                    Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.getMaxStackSize());
-                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
+    public void updateTooltip(int mouseX, int mouseY) {
+        if (currentContainer != null && mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
+            for (int i = 0; i < getFocusedElements(); i++) {
+                int index = getCurrentSelection() + i;
+                if (index > currentList.size() - 1) {
+                    break;
                 }
-            });
+                ModuleData<?> module = currentList.get(index);
+                int installed = currentContainer.installedCount(module);
+                int multipliedElement = elementHeight * i;
+                if (installed > 0 && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
+                    Component info = MekanismLang.MODULE_INSTALLED.translate(MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.getMaxStackSize()));
+                    if (!info.equals(lastInfo)) {
+                        lastInfo = info;
+                        lastTooltip = Tooltip.create(info);
+                    }
+                    setTooltip(lastTooltip);
+                    return;
+                }
+            }
         }
+        lastInfo = null;
+        setTooltip(lastTooltip = null);
     }
 
     @Override

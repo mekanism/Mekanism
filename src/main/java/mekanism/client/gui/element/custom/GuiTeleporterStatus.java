@@ -9,7 +9,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +20,11 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     private static final ResourceLocation NO_FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frequency.png");
     private static final ResourceLocation NO_LINK = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_link.png");
     private static final ResourceLocation READY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_ready.png");
+    private static final Tooltip TELEPORTER_READY = Tooltip.create(MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN));
+    private static final Tooltip TELEPORTER_NO_FRAME = Tooltip.create(MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED));
+    private static final Tooltip TELEPORTER_NEEDS_ENERGY = Tooltip.create(MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED));
+    private static final Tooltip TELEPORTER_NO_LINK = Tooltip.create(MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED));
+    private static final Tooltip NO_FREQUENCY_TOOLTIP = Tooltip.create(MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED));
 
     private final BooleanSupplier hasFrequency;
     private final ByteSupplier statusSupplier;
@@ -56,20 +61,19 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, getStatusDisplay());
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(getStatusDisplay());
     }
 
-    private Component getStatusDisplay() {
+    private Tooltip getStatusDisplay() {
         if (hasFrequency.getAsBoolean()) {
             return switch (statusSupplier.getAsByte()) {
-                case 1 -> MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN);
-                case 2 -> MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED);
-                case 4 -> MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED);
-                default -> MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED);
+                case 1 -> TELEPORTER_READY;
+                case 2 -> TELEPORTER_NO_FRAME;
+                case 4 -> TELEPORTER_NEEDS_ENERGY;
+                default -> TELEPORTER_NO_LINK;
             };
         }
-        return MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED);
+        return NO_FREQUENCY_TOOLTIP;
     }
 }

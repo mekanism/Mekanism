@@ -36,7 +36,7 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
             GuiQIOItemStackFilter self = (GuiQIOItemStackFilter) element;
             self.filter.fuzzyMode = !self.filter.fuzzyMode;
             return true;
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.FUZZY_MODE.translate())));
+        })).setTooltip(MekanismLang.FUZZY_MODE);
     }
 
     @Override

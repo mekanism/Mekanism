@@ -49,14 +49,14 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
             return true;
         }));
         addRenderableWidget(new MekanismImageButton(this, 12, 46, 14, getButtonLocation("single"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, ((GuiLogisticalSorter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
+              .setTooltip(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION);
         addRenderableWidget(new MekanismImageButton(this, 12, 76, 14, getButtonLocation("round_robin"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, ((GuiLogisticalSorter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
+              .setTooltip(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION);
         addRenderableWidget(new MekanismImageButton(this, 12, 106, 14, getButtonLocation("auto_eject"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiLogisticalSorter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, ((GuiLogisticalSorter) element.gui()).tile))))
+              .setTooltip(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION);
         addRenderableWidget(new ColorButton(this, 13, 137, 16, 16, () -> tile.color, (element, mouseX, mouseY) -> {
             TileEntityLogisticalSorter tile = ((GuiLogisticalSorter) element.gui()).tile;
             return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile, hasShiftDown() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color))));

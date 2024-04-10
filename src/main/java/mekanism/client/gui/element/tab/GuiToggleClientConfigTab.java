@@ -1,31 +1,32 @@
 package mekanism.client.gui.element.tab;
 
-import it.unimi.dsi.fastutil.booleans.Boolean2ObjectFunction;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper> {
 
-    private final Boolean2ObjectFunction<ILangEntry> langEntry;
+    private final Tooltip falseTooltip;
+    private final Tooltip trueTooltip;
     private final CachedBooleanValue config;
 
-    public GuiToggleClientConfigTab(IGuiWrapper gui, int y, boolean left, ResourceLocation overlay, ResourceLocation flipped, CachedBooleanValue config, Boolean2ObjectFunction<ILangEntry> langEntry) {
+    public GuiToggleClientConfigTab(IGuiWrapper gui, int y, boolean left, ResourceLocation overlay, ResourceLocation flipped, CachedBooleanValue config,
+          Component trueTooltip, Component falseTooltip) {
         super(gui, gui, left ? -26 : gui.getXSize(), y, 26, 18, left, overlay, flipped, config);
         this.config = config;
-        this.langEntry = langEntry;
+        this.falseTooltip = Tooltip.create(falseTooltip);
+        this.trueTooltip = Tooltip.create(trueTooltip);
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, langEntry.apply(config.get()).translate());
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(config.get() ? trueTooltip : falseTooltip);
     }
 
     @Override

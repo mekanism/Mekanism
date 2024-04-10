@@ -8,6 +8,7 @@ import java.util.function.ObjIntConsumer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.FilterManager;
@@ -16,16 +17,18 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MovableFilterButton extends FilterButton {
 
+    private static final Tooltip MOVE_UP = MultiLineTooltip.createMulti(MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate());
+    private static final Tooltip MOVE_DOWN = MultiLineTooltip.createMulti(MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate());
+
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
-    private final IntConsumer upButtonPress;
-    private final IntConsumer downButtonPress;
-
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, IntConsumer upButtonPress,
           IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filterManager, upButtonPress, downButtonPress, onPress, toggleButtonPress, renderStackSupplier);
@@ -35,19 +38,18 @@ public class MovableFilterButton extends FilterButton {
           IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
-        int arrowX = relativeX + width - 14;
-        this.upButtonPress = upButtonPress;
-        this.downButtonPress = downButtonPress;
-        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) - 8, false, (element, mouseX, mouseY) -> {
-            MovableFilterButton self = (MovableFilterButton) element;
-            self.upButtonPress.accept(self.getActualIndex());
+        int arrowX = relativeX + this.width - 14;
+        int halfHeight = this.height / 2;
+        upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (element, mouseX, mouseY) -> {
+            upButtonPress.accept(getActualIndex());
             return true;
-        }, (onHover, guiGraphics, mouseX, mouseY) -> onHover.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate())));
-        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + (height / 2) + 1, true, (element, mouseX, mouseY) -> {
-            MovableFilterButton self = (MovableFilterButton) element;
-            self.downButtonPress.accept(self.getActualIndex());
+        }));
+        upButton.setTooltip(MOVE_UP);
+        downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (element, mouseX, mouseY) -> {
+            downButtonPress.accept(getActualIndex());
             return true;
-        }, (onHover, guiGraphics, mouseX, mouseY) -> onHover.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate())));
+        }));
+        downButton.setTooltip(MOVE_DOWN);
     }
 
     @Override
@@ -56,37 +58,10 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (upButton.isValidClickButton(button) && upButton.isMouseOver(mouseX, mouseY)) {
-            upButton.onClick(mouseX, mouseY, button);
-        } else if (downButton.isValidClickButton(button) && downButton.isMouseOver(mouseX, mouseY)) {
-            downButton.onClick(mouseX, mouseY, button);
-        } else if (super.isValidClickButton(button)) {
-            super.onClick(mouseX, mouseY, button);
-        }
-    }
-
-    @Override
-    public boolean isValidClickButton(int button) {
-        return super.isValidClickButton(button) || upButton.isValidClickButton(button) || downButton.isValidClickButton(button);
-    }
-
-    @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
-        if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
-            upButton.renderToolTip(guiGraphics, xAxis, yAxis);
-        } else if (downButton.isMouseOverCheckWindows(mouseX, mouseY)) {
-            downButton.renderToolTip(guiGraphics, xAxis, yAxis);
-        }
-        super.renderForeground(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
     protected void setVisibility(boolean visible) {
         super.setVisibility(visible);
         if (visible) {
-            updateButtonVisibility();
+            updateButtonVisibility(getFilter());
         } else {
             //Ensure the subcomponents are not marked as visible
             upButton.visible = false;
@@ -94,9 +69,8 @@ public class MovableFilterButton extends FilterButton {
         }
     }
 
-    private void updateButtonVisibility() {
+    private void updateButtonVisibility(@Nullable IFilter<?> filter) {
         int index = getActualIndex();
-        IFilter<?> filter = getFilter();
         upButton.visible = filter != null && index > 0;
         downButton.visible = filter != null && index < filterManager.count() - 1;
     }
@@ -118,10 +92,7 @@ public class MovableFilterButton extends FilterButton {
         if (color != null) {
             GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), MekanismRenderer.getColorARGB(color, 0.3F));
         }
-        updateButtonVisibility();
-        //Render our sub buttons and our slot
-        upButton.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        downButton.onDrawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        updateButtonVisibility(filter);
     }
 
     @Override

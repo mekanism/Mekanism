@@ -24,6 +24,7 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -35,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
 
@@ -49,6 +51,10 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private ResourceKey<RobitSkin> selectedSkin;
     private float rotation;
     private int ticks;
+    @Nullable
+    private ResourceKey<RobitSkin> lastSkin;
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
@@ -131,12 +137,15 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY);
-        if (skin != null) {
-            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(RobitSkin.getTranslatedName(skin)));
+        if (skin == null) {
+            lastTooltip = null;
+        } else if (lastSkin != skin) {
+            lastTooltip = Tooltip.create(MekanismLang.ROBIT_SKIN.translate(RobitSkin.getTranslatedName(skin)));
         }
+        lastSkin = skin;
+        setTooltip(lastTooltip);
     }
 
     @Override

@@ -19,14 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IGuiWrapper extends ContainerEventHandler {
 
-    default void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, Component... components) {
-        this.displayTooltips(guiGraphics, mouseX, mouseY, List.of(components));
-    }
-
-    default void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, List<Component> components) {
-        guiGraphics.renderComponentTooltip(getFont(), components, mouseX, mouseY);
-    }
-
     @NotNull
     default ItemStack getCarriedItem() {
         return ItemStack.EMPTY;

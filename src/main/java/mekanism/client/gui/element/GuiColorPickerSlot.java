@@ -10,14 +10,20 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.gui.components.Tooltip;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiColorPickerSlot extends GuiElement {
 
     private final Supplier<Color> supplier;
     private final Consumer<Color> consumer;
     private final boolean handlesAlpha;
+
+    @Nullable
+    private Tooltip lastTooltip = null;
+    @Nullable
+    private Color lastColor = null;
+
 
     public GuiColorPickerSlot(IGuiWrapper gui, int x, int y, boolean handlesAlpha, Supplier<Color> supplier, Consumer<Color> consumer) {
         super(gui, x, y, 18, 18);
@@ -28,10 +34,13 @@ public class GuiColorPickerSlot extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        Component hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, supplier.get().rgb()));
-        displayTooltips(guiGraphics, mouseX, mouseY, hex);
+    public void updateTooltip(int mouseX, int mouseY) {
+        Color color = supplier.get();
+        if (!color.equals(lastColor)) {
+            lastColor = color;
+            lastTooltip = Tooltip.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, color.rgb())));
+        }
+        setTooltip(lastTooltip);
     }
 
     @Override

@@ -32,8 +32,8 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
         super.addGuiElements();
         addRenderableWidget(new GuiFrequencySelector<>(this, 17));
         addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiQIOTileFrequencySelect) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.BACK.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiQIOTileFrequencySelect) element.gui()).tile))))
+              .setTooltip(MekanismLang.BACK);
     }
 
     @Override

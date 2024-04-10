@@ -40,7 +40,8 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         removeButton = addRenderableWidget(new TranslationButton(this, 34, 96, 108, 17, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
             return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getData(), Screen.hasShiftDown()));
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.REMOVE_ALL_MODULES_TOOLTIP.translate())));
+        }));
+        removeButton.setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
         addRenderableWidget(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));

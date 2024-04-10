@@ -54,7 +54,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
                 return true;
             }
             return false;
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.LAST_ITEM.translate())));
+        })).setTooltip(MekanismLang.LAST_ITEM);
         addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 52, 12, getButtonLocation("right"), (element, mouseX, mouseY) -> {
             GuiOredictionificatorFilter self = (GuiOredictionificatorFilter) element;
             if (self.filter.hasFilter()) {
@@ -63,7 +63,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
                 return true;
             }
             return false;
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.NEXT_ITEM.translate())));
+        })).setTooltip(MekanismLang.NEXT_ITEM);
     }
 
     @Override

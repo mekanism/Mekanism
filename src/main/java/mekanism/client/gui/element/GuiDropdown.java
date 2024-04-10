@@ -1,6 +1,8 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
@@ -8,12 +10,14 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends GuiTexturedElement {
 
+    private final Map<TYPE, Tooltip> typeTooltips;
     private final Consumer<TYPE> handler;
     private final Supplier<TYPE> curType;
     private final TYPE[] options;
@@ -25,6 +29,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         this.curType = curType;
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
+        this.typeTooltips = new EnumMap<>(enumClass);
         this.active = true;
         this.clickSound = MekanismSounds.BEEP;
     }
@@ -91,14 +96,16 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            Component text = options[index].getTooltip();
-            if (text != null) {
-                displayTooltips(guiGraphics, mouseX, mouseY, options[index].getTooltip());
-            }
+            Tooltip text = typeTooltips.computeIfAbsent(options[index], t -> {
+                Component tooltip = t.getTooltip();
+                return tooltip == null ? null : Tooltip.create(tooltip);
+            });
+            setTooltip(text);
+        } else {
+            clearTooltip();
         }
     }
 

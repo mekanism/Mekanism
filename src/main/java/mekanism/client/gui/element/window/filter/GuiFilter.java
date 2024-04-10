@@ -73,7 +73,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                     wrapper.addWindow(guiFilter.getFilterSelect(wrapper, guiFilter.tile));
                     //And close the filter
                     return close(element, mouseX, mouseY);
-                }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.BACK.translate())));
+                })).setTooltip(MekanismLang.BACK);
             } else {
                 super.addCloseButton();
             }

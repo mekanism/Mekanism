@@ -1,11 +1,13 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.BasicColorButton;
+import mekanism.client.gui.element.button.TooltipColorButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
 import mekanism.common.MekanismLang;
@@ -18,10 +20,12 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensionalStabilizer, MekanismTileContainer<TileEntityDimensionalStabilizer>> {
 
@@ -50,7 +54,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                 int shiftedZ = z + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
                 int chunkZ = tileChunkZ + z;
                 if (x == 0 && z == 0) {
-                    addRenderableWidget(BasicColorButton.renderActive(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE, (element, mouseX, mouseY) -> {
+                    addRenderableWidget(new BasicColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, () -> EnumColor.DARK_BLUE, (element, mouseX, mouseY) -> {
                         for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
                             if (hasAtRadius(i, false)) {
                                 return PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENABLE_RADIUS_CHUNKLOAD, tile, i));
@@ -64,39 +68,49 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                             }
                         }
                         return false;
-                    }, (onHover, guiGraphics, mouseX, mouseY) -> {
-                        List<Component> tooltips = new ArrayList<>();
-                        tooltips.add(MekanismLang.STABILIZER_CENTER.translate(EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
-                        //TODO: Can we eventually optimize this further such as if we know that we have 1 enabled as we are enabling either radius 2 or "3" (nothing)
-                        // then even if nothing is enabled at radius 2 currently, we don't have to check radius 1 to know that we should display the text for disabling it
-                        // for now it doesn't really matter as given we only support a radius of two it only checks at most the inner radius (8 extra boolean lookups)
-                        for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
-                            if (hasAtRadius(i, false)) {
-                                //Add an empty line for readability. Must be done by adding a string that just renders a space
-                                tooltips.add(Component.literal(" "));
-                                tooltips.add(MekanismLang.STABILIZER_ENABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
-                                break;
+                    }) {
+                        private List<Component> lastInfo = Collections.emptyList();
+                        @Nullable
+                        private Tooltip lastTooltip;
+
+                        @Override
+                        public void updateTooltip(int mouseX, int mouseY) {
+                            List<Component> tooltips = new ArrayList<>();
+                            tooltips.add(MekanismLang.STABILIZER_CENTER.translate(EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
+                            //TODO: Can we eventually optimize this further such as if we know that we have 1 enabled as we are enabling either radius 2 or "3" (nothing)
+                            // then even if nothing is enabled at radius 2 currently, we don't have to check radius 1 to know that we should display the text for disabling it
+                            // for now it doesn't really matter as given we only support a radius of two it only checks at most the inner radius (8 extra boolean lookups)
+                            for (int i = 1; i <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i++) {
+                                if (hasAtRadius(i, false)) {
+                                    //Add an empty line for readability. Must be done by adding a string that just renders a space
+                                    tooltips.add(Component.literal(" "));
+                                    tooltips.add(MekanismLang.STABILIZER_ENABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
+                                    break;
+                                }
                             }
-                        }
-                        for (int i = TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i > 0; i--) {
-                            if (hasAtRadius(i, true)) {
-                                //Add an empty line for readability. Must be done by adding a string that just renders a space
-                                tooltips.add(Component.literal(" "));
-                                tooltips.add(MekanismLang.STABILIZER_DISABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
-                                break;
+                            for (int i = TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; i > 0; i--) {
+                                if (hasAtRadius(i, true)) {
+                                    //Add an empty line for readability. Must be done by adding a string that just renders a space
+                                    tooltips.add(Component.literal(" "));
+                                    tooltips.add(MekanismLang.STABILIZER_DISABLE_RADIUS.translate(EnumColor.INDIGO, i, EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
+                                    break;
+                                }
                             }
+                            if (!tooltips.equals(lastInfo)) {
+                                lastInfo = tooltips;
+                                lastTooltip = MultiLineTooltip.createMulti(tooltips);
+                            }
+                            setTooltip(lastTooltip);
                         }
-                        onHover.displayTooltips(guiGraphics, mouseX, mouseY, tooltips);
-                    }));
+                    });
                 } else {
                     int packetTarget = shiftedX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + shiftedZ;
-                    addRenderableWidget(BasicColorButton.toggle(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
+                    addRenderableWidget(new TooltipColorButton(this, 63 + 10 * shiftedX, 19 + 10 * shiftedZ, 10, EnumColor.DARK_BLUE,
                           () -> tile.isChunkLoadingAt(shiftedX, shiftedZ),
                           (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_CHUNKLOAD, tile, packetTarget)),
-                          (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY,
-                                MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(tile.isChunkLoadingAt(shiftedX, shiftedZ), true),
-                                EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
-                          )));
+                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(true, true), EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ),
+                          MekanismLang.STABILIZER_TOGGLE_LOADING.translate(OnOff.of(false, true), EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ)
+                    ));
                 }
             }
         }

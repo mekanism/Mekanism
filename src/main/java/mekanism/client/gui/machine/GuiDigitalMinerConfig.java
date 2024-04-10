@@ -6,6 +6,7 @@ import mekanism.client.gui.element.GuiDigitalSwitch;
 import mekanism.client.gui.element.GuiDigitalSwitch.SwitchType;
 import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -74,11 +75,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             return true;
         }));
         addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.BACK.translate())));
-        addRenderableWidget(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, MekanismLang.MINER_INVERSE.translate(),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
-              SwitchType.LEFT_ICON));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile))))
+              .setTooltip(MekanismLang.BACK);
+        addRenderableWidget(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, (element, mouseX, mouseY) ->
+              PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)), SwitchType.LEFT_ICON))
+              .setTooltip(MekanismLang.MINER_INVERSE);
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 13, 135)).setRenderAboveSlots().setRenderHover(true)
               .stored(() -> new ItemStack(tile.getInverseReplaceTarget())).click((element, mouseX, mouseY) -> {
                   if (Screen.hasShiftDown()) {
@@ -96,9 +97,9 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                   updateInverseReplaceTarget(((ItemStack) ingredient).getItem());
                   minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               });
-        addRenderableWidget(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
+        addRenderableWidget(new TooltipToggleButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"), tile::getInverseRequiresReplacement,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(((GuiDigitalMinerConfig) element.gui()).tile.getInverseRequiresReplacement())))));
+              MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(true)), MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(false)));
         radiusField = addRenderableWidget(new GuiTextField(this, 13, 45, 38, 11));
         radiusField.setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);

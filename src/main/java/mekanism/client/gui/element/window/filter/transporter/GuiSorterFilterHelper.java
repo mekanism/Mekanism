@@ -7,6 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -50,8 +51,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
             SorterFilter<?> filter = ((GuiSorterFilterHelper) element).getFilter();
             filter.allowDefault = !filter.allowDefault;
             return true;
-        }, (element, guiGraphics, mouseX, mouseY) -> element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_ALLOW_DEFAULT.translate()
-        )));
+        })).setTooltip(MekanismLang.FILTER_ALLOW_DEFAULT);
         GuiTextField minField = new GuiTextField(gui, this, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
@@ -63,20 +63,12 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         maxField.setText(Integer.toString(getFilter().max));
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
-        childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
-              (element, mouseX, mouseY) -> {
+        childAdder.apply(new TooltipToggleButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
+              () -> isSingleItem() && getFilter().isEnabled(), (element, mouseX, mouseY) -> {
                   SorterFilter<?> filter = ((GuiSorterFilterHelper) element).getFilter();
                   filter.sizeMode = !filter.sizeMode;
                   return true;
-              }, (element, guiGraphics, mouseX, mouseY) -> {
-            GuiSorterFilterHelper self = (GuiSorterFilterHelper) element;
-            SorterFilter<?> filter = self.getFilter();
-            if (self.isSingleItem() && filter.sizeMode) {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate());
-            } else {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE.translate());
-            }
-        }));
+              }, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate(), MekanismLang.SORTER_SIZE_MODE.translate()));
     }
 
     @Override

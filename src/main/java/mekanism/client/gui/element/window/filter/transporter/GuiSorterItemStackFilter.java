@@ -44,7 +44,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
             GuiSorterItemStackFilter self = (GuiSorterItemStackFilter) element;
             self.filter.fuzzyMode = !self.filter.fuzzyMode;
             return true;
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.FUZZY_MODE.translate())));
+        })).setTooltip(MekanismLang.FUZZY_MODE);
     }
 
     @Override

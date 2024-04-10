@@ -1,5 +1,8 @@
 package mekanism.client.gui.element.tab;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -13,6 +16,7 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
 import mekanism.client.render.MekanismRenderer;
@@ -29,6 +33,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -46,6 +51,9 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
     @Nullable
     private final InteractionHand currentHand;
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiSecurityTab(IGuiWrapper gui, BlockEntity tile) {
         this(gui, tile, 34);
@@ -87,19 +95,25 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         ISecurityObject security = dataSource.securityObject();
         if (security != null) {
             SecurityData data = SecurityUtils.get().getFinalData(security, true);
-            Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
-            Component ownerComponent = OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent();
+            List<Component> info = new ArrayList<>(3);
+            info.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
+            info.add(OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent());
             if (data.override()) {
-                displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
-            } else {
-                displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent);
+                info.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
+            if (!info.equals(lastInfo)) {
+                lastInfo = info;
+                lastTooltip = MultiLineTooltip.createMulti(info);
+            }
+        } else {
+            lastTooltip = null;
+            lastInfo = Collections.emptyList();
         }
+        setTooltip(lastTooltip);
     }
 
     @Override

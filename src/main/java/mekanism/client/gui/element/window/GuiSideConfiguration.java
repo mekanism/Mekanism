@@ -9,13 +9,14 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
+import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -35,8 +36,8 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
@@ -80,8 +81,10 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"), (element, mouseX, mouseY) -> {
             GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
             return PacketUtils.sendToServer(new PacketEjectConfiguration(self.tile.getBlockPos(), self.currentType));
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.AUTO_EJECT.translate())));
-        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"), (element, mouseX, mouseY) -> {
+        })).setTooltip(MekanismLang.AUTO_EJECT);
+        addChild(new TooltipToggleButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
+              () -> getTargetType(DataType::getNext) == DataType.NONE, (element, mouseX, mouseY) -> {
+            //TODO - 1.20.4: Fix how this cast causing a crash because it really is a toggle button
             GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
             DataType targetType = self.getTargetType(DataType::getNext);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
@@ -89,14 +92,8 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             GuiSideConfiguration<?> self = (GuiSideConfiguration<?>) element;
             DataType targetType = self.getTargetType(DataType::getPrevious);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(self.tile.getBlockPos(), Screen.hasShiftDown() ? null : self.currentType, targetType));
-        }, (element, guiGraphics, mouseX, mouseY) -> {
-            DataType targetType = ((GuiSideConfiguration<?>) element).getTargetType(DataType::getNext);
-            if (targetType == DataType.NONE) {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate());
-            } else {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG_INCREMENT.translate());
-            }
-        }));
+        }, MultiLineTooltip.createMulti(MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate()),
+              Tooltip.create(MekanismLang.SIDE_CONFIG_INCREMENT.translate())));
         addSideDataButton(RelativeSide.BOTTOM, 68, 92);
         addSideDataButton(RelativeSide.TOP, 68, 46);
         addSideDataButton(RelativeSide.FRONT, 68, 69);
@@ -137,7 +134,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
               () -> tile.getConfig().getDataType(currentType, side), () -> {
             DataType dataType = tile.getConfig().getDataType(currentType, side);
             return dataType == null ? EnumColor.GRAY : dataType.getColor();
-        }, tile, (pos, clickType, inputSide) -> new PacketSideData(pos, clickType, inputSide, currentType), getOnHover(side))));
+        }, tile, (pos, clickType, inputSide) -> new PacketSideData(pos, clickType, inputSide, currentType), true)));
     }
 
     @Override
@@ -145,23 +142,6 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         super.close();
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.SIDE_CONFIG_WINDOW);
-    }
-
-    private IHoverable getOnHover(RelativeSide side) {
-        return (element, guiGraphics, mouseX, mouseY) -> {
-            if (element instanceof SideDataButton button) {
-                DataType dataType = button.getDataType();
-                if (dataType != null) {
-                    List<Component> tooltipLines = new ArrayList<>(3);
-                    tooltipLines.add(TextComponentUtil.build(side));
-                    tooltipLines.add(TextComponentUtil.build(dataType.getColor(), dataType));
-                    if (!button.otherBlockItem.isEmpty()) {
-                        tooltipLines.add(button.otherBlockItem.getHoverName());
-                    }
-                    button.displayTooltips(guiGraphics, mouseX, mouseY, tooltipLines);
-                }
-            }
-        };
     }
 
     public void setCurrentType(TransmissionType type) {

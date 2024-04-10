@@ -14,7 +14,6 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindowCreatorTab<TILE, GuiSideConfigurationTab<TILE>> {
 
@@ -22,12 +21,7 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
 
     public GuiSideConfigurationTab(IGuiWrapper gui, TILE tile, Supplier<GuiSideConfigurationTab<TILE>> elementSupplier) {
         super(MekanismUtils.getResource(ResourceType.GUI, "configuration.png"), gui, tile, -26, 6, 26, 18, true, elementSupplier);
-    }
-
-    @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG.translate());
+        setTooltip(MekanismLang.SIDE_CONFIG);
     }
 
     @Override

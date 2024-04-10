@@ -43,7 +43,6 @@ public class FilterButton extends MekanismButton {
     protected final FilterManager<?> filterManager;
     private final GuiSequencedSlotDisplay slotDisplay;
     private final ObjIntConsumer<IFilter<?>> onPress;
-    private final IntConsumer toggleButtonPress;
     private final IntSupplier filterIndex;
     private final RadioButton toggleButton;
     private final GuiSlot slot;
@@ -65,25 +64,18 @@ public class FilterButton extends MekanismButton {
             int actualIndex = button.filterIndex.getAsInt() + button.index;
             button.onPress.accept(getFilter(button.filterManager, actualIndex), actualIndex);
             return true;
-        }, null);
+        });
         this.index = index;
         this.filterIndex = filterIndex;
         this.filterManager = filterManager;
         this.onPress = onPress;
-        this.toggleButtonPress = toggleButtonPress;
         slot = addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 2, relativeY + 2));
         slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3, () -> renderStackSupplier.apply(getFilter())));
         toggleButton = addChild(new RadioButton(gui, relativeX + this.width - RadioButton.RADIO_SIZE - getToggleXShift(), relativeY + (this.height / 2) - (RadioButton.RADIO_SIZE / 2),
               this::isEnabled, (element, mouseX, mouseY) -> {
-            ((FilterButton) element).toggleButtonPress.accept(getActualIndex());
+            toggleButtonPress.accept(getActualIndex());
             return true;
-        }, (element, guiGraphics, mouseX, mouseY) -> {
-            if (((FilterButton) element).isEnabled()) {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER));
-            } else {
-                element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_STATE.translate(EnumColor.RED, MekanismLang.MODULE_DISABLED_LOWER));
-            }
-        }));
+        }, MekanismLang.FILTER_STATE.translate(EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER), MekanismLang.FILTER_STATE.translate(EnumColor.RED, MekanismLang.MODULE_DISABLED_LOWER)));
         setButtonBackground(ButtonBackground.NONE);
     }
 

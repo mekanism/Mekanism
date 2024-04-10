@@ -37,12 +37,12 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
         super.addGuiElements();
         addRenderableWidget(new GuiElementHolder(this, 16, 31, 130, 90));
         addRenderableWidget(new ToggleButton(this, 16, 19, 11, tile::isActiveCooled,
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFusionReactorLogicAdapter) element.gui()).tile))))
+              .setTooltip(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING);
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
+            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, FusionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
         }
     }
 

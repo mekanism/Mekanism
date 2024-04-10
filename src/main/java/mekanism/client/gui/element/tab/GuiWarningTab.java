@@ -1,21 +1,28 @@
 package mekanism.client.gui.element.tab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiWarningTab extends GuiTexturedElement {
 
     private final IWarningTracker warningTracker;
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiWarningTab(IGuiWrapper gui, IWarningTracker warningTracker, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info.png"), gui, -26, y, 26, 26);
@@ -41,12 +48,15 @@ public class GuiWarningTab extends GuiTexturedElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         //Note: We don't need to check if there are any warnings or not as if there aren't the warning tab goes away
         List<Component> info = new ArrayList<>();
         info.add(MekanismLang.ISSUES.translateColored(EnumColor.YELLOW));
         info.addAll(warningTracker.getWarnings());
-        displayTooltips(guiGraphics, mouseX, mouseY, info);
+        if (!info.equals(lastInfo)) {
+            lastInfo = info;
+            lastTooltip = MultiLineTooltip.createMulti(info);
+        }
+        setTooltip(lastTooltip);
     }
 }

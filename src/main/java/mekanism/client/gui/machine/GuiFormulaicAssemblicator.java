@@ -1,12 +1,12 @@
 package mekanism.client.gui.machine;
 
 import java.util.Optional;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.ToggleButton;
+import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -63,29 +63,26 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).recipeViewerCrafting());
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         encodeFormulaButton = addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.ENCODE_FORMULA.translate())));
-        stockControlButton = addRenderableWidget(new MekanismImageButton(this, 26, 75, 16, getButtonLocation("stock_control"),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, ((GuiFormulaicAssemblicator) element.gui()).tile))))
+              .setTooltip(MekanismLang.ENCODE_FORMULA);
+        stockControlButton = addRenderableWidget(new TooltipToggleButton(this, 26, 75, 16, getButtonLocation("stock_control"), tile::getStockControl,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.STOCK_CONTROL.translate(OnOff.of(((GuiFormulaicAssemblicator) element.gui()).tile.getStockControl())))));
+              MekanismLang.STOCK_CONTROL.translate(OnOff.of(true)), MekanismLang.STOCK_CONTROL.translate(OnOff.of(false))));
         fillEmptyButton = addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, getButtonLocation("empty"),
               getButtonLocation("fill"), () -> tile.formula == null, (element, mouseX, mouseY) -> {
             TileEntityFormulaicAssemblicator tile = ((GuiFormulaicAssemblicator) element.gui()).tile;
             GuiInteraction interaction = tile.formula == null ? GuiInteraction.EMPTY_GRID : GuiInteraction.FILL_GRID;
             return PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile));
-        }, (element, graphics, mouseX, mouseY) -> {
-            ILangEntry langEntry = ((GuiFormulaicAssemblicator) element.gui()).tile.formula == null ? MekanismLang.EMPTY_ASSEMBLICATOR : MekanismLang.FILL_ASSEMBLICATOR;
-            element.displayTooltips(graphics, mouseX, mouseY, langEntry.translate());
-        }));
+        }, MekanismLang.EMPTY_ASSEMBLICATOR.translate(), MekanismLang.FILL_ASSEMBLICATOR.translate()));
         craftSingleButton = addRenderableWidget(new MekanismImageButton(this, 71, 75, 16, getButtonLocation("craft_single"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.CRAFT_SINGLE.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, ((GuiFormulaicAssemblicator) element.gui()).tile))))
+              .setTooltip(MekanismLang.CRAFT_SINGLE);
         craftAvailableButton = addRenderableWidget(new MekanismImageButton(this, 89, 75, 16, getButtonLocation("craft_available"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.CRAFT_AVAILABLE.translate())));
-        autoModeButton = addRenderableWidget(new MekanismImageButton(this, 107, 75, 16, getButtonLocation("auto_toggle"),
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, ((GuiFormulaicAssemblicator) element.gui()).tile))))
+              .setTooltip(MekanismLang.CRAFT_AVAILABLE);
+        autoModeButton = addRenderableWidget(new TooltipToggleButton(this, 107, 75, 16, getButtonLocation("auto_toggle"), tile::getAutoMode,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, ((GuiFormulaicAssemblicator) element.gui()).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY,MekanismLang.AUTO_MODE.translate(OnOff.of(((GuiFormulaicAssemblicator) element.gui()).tile.getAutoMode())))));
+              MekanismLang.AUTO_MODE.translate(OnOff.of(true)), MekanismLang.AUTO_MODE.translate(OnOff.of(false))));
         updateEnabledButtons();
     }
 

@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.button;
 
 import java.util.Objects;
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -16,26 +16,28 @@ import org.lwjgl.glfw.GLFW;
  */
 public class MekanismButton extends GuiElement {
 
-    @Nullable
-    private final IHoverable onHover;
     @NotNull
     private final IClickable onLeftClick;
     @Nullable
     private final IClickable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick, @Nullable IHoverable onHover) {
-        this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick) {
+        this(gui, x, y, width, height, text, onLeftClick, onLeftClick);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick,
-          @Nullable IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull IClickable onLeftClick, @Nullable IClickable onRightClick) {
         super(gui, x, y, width, height, text);
-        this.onHover = onHover;
         this.onLeftClick = Objects.requireNonNull(onLeftClick, "Buttons must have a left click behavior");
         this.onRightClick = onRightClick;
         this.clickSound = SoundEvents.UI_BUTTON_CLICK;
         setButtonBackground(ButtonBackground.DEFAULT);
+    }
+
+    @Override
+    public MekanismButton setTooltip(ILangEntry langEntry) {
+        super.setTooltip(langEntry);
+        return this;
     }
 
     @Override
@@ -65,11 +67,4 @@ public class MekanismButton extends GuiElement {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        if (onHover != null) {
-            onHover.onHover(this, guiGraphics, mouseX, mouseY);
-        }
-    }
 }

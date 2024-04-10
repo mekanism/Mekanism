@@ -25,7 +25,7 @@ public class GuiConfirmationDialog extends GuiWindow {
             GuiConfirmationDialog confirmation = (GuiConfirmationDialog) element;
             confirmation.onConfirm.run();
             return confirmation.close(element, mouseX, mouseY);
-        }, null, type.getColorSupplier()));
+        }, type.getColorSupplier()));
     }
 
     public static void show(IGuiWrapper gui, Component title, Runnable onConfirm, DialogType type) {

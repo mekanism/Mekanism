@@ -35,7 +35,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
+            addRenderableWidget(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, FissionReactorLogic.class, scrollBar::getCurrentSelection, tile::getModes, this::changeLogic));
         }
     }
 

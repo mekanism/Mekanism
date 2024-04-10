@@ -1,13 +1,16 @@
 package mekanism.client.gui.element;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +20,10 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
     public static int SCREEN_SIZE = 32;
+
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
 
     private Supplier<List<Component>> renderStrings;
     private Supplier<List<Component>> tooltipStrings;
@@ -91,14 +98,18 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         if (tooltipStrings != null) {
             List<Component> list = tooltipStrings.get();
-            if (list != null && !list.isEmpty()) {
-                displayTooltips(guiGraphics, mouseX, mouseY, list);
+            if (!list.equals(lastInfo)) {
+                lastInfo = list;
+                lastTooltip = MultiLineTooltip.createMulti(list);
             }
+        } else {
+            lastInfo = Collections.emptyList();
+            lastTooltip = null;
         }
+        setTooltip(lastTooltip);
     }
 
     private void drawText(GuiGraphics guiGraphics, Component text, float x, float y) {

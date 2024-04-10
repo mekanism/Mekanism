@@ -28,6 +28,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
@@ -55,6 +56,8 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     private final Consumer<Set<DictionaryTagType>> tagSetter;
     @Nullable
     private Object target;
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiDictionaryTarget(IGuiWrapper gui, int x, int y, Consumer<Set<DictionaryTagType>> tagSetter) {
         super(gui, x, y, 16, 16);
@@ -63,6 +66,15 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
 
     public boolean hasTarget() {
         return target != null;
+    }
+
+    private void setTarget(@Nullable Object target) {
+        this.target = target;
+        if (target == null || target instanceof ItemStack) {
+            lastTooltip = null;
+        } else {
+            lastTooltip = Tooltip.create(TextComponentUtil.build(this.target));
+        }
     }
 
     @Override
@@ -85,9 +97,12 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
             gui().renderItemTooltip(guiGraphics, stack, mouseX, mouseY);
-        } else if (target != null) {
-            displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(target));
         }
+    }
+
+    @Override
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(lastTooltip);
     }
 
     @Override
@@ -112,13 +127,13 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         //Clear cached tags
         tags.clear();
         if (newTarget == null) {
-            target = null;
+            setTarget(null);
         } else if (newTarget instanceof ItemStack itemStack) {
             if (itemStack.isEmpty()) {
-                target = null;
+                setTarget(null);
             } else {
                 ItemStack stack = itemStack.copyWithCount(1);
-                target = stack;
+                setTarget(stack);
                 Item item = stack.getItem();
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
                 if (item instanceof BlockItem blockItem) {
@@ -180,16 +195,16 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             }
         } else if (newTarget instanceof FluidStack fluidStack) {
             if (fluidStack.isEmpty()) {
-                target = null;
+                setTarget(null);
             } else {
-                target = fluidStack.copy();
+                setTarget(fluidStack.copy());
                 tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
             }
         } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
             if (chemicalStack.isEmpty()) {
-                target = null;
+                setTarget(null);
             } else {
-                target = chemicalStack.copy();
+                setTarget(chemicalStack.copy());
                 List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getType().getTags());
                 if (target instanceof GasStack) {
                     tags.put(DictionaryTagType.GAS, chemicalTags);
@@ -232,7 +247,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
         GuiDictionaryTarget old = (GuiDictionaryTarget) element;
-        target = old.target;
+        setTarget(old.target);
         tags.putAll(old.tags);
     }
 

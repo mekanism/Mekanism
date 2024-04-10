@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.slot;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
@@ -12,6 +13,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +38,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     @Nullable
     private SlotOverlay overlay;
     @Nullable
-    private IHoverable onHover;
+    private Function<GuiSlot, Tooltip> onHover;
     @Nullable
     private IClickable onClick;
     private boolean renderHover;
@@ -71,7 +73,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         return this;
     }
 
-    public GuiSlot hover(IHoverable onHover) {
+    public GuiSlot hover(Function<GuiSlot, Tooltip> onHover) {
         this.onHover = onHover;
         return this;
     }
@@ -185,10 +187,9 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         if (onHover != null) {
-            onHover.onHover(this, guiGraphics, mouseX, mouseY);
+            setTooltip(onHover.apply(this));
         }
     }
 

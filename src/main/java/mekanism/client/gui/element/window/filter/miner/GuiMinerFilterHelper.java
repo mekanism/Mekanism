@@ -3,7 +3,7 @@ package mekanism.client.gui.element.window.filter.miner;
 import java.util.function.UnaryOperator;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.filter.GuiFilter;
@@ -32,12 +32,12 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
                   getFilter().replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
-        childAdder.apply(new MekanismImageButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), (element, mouseX, mouseY) -> {
+        childAdder.apply(new TooltipToggleButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> getFilter().requiresReplacement, (element, mouseX, mouseY) -> {
             MinerFilter<?> filter = ((GuiMinerFilterHelper) element).getFilter();
             filter.requiresReplacement = !filter.requiresReplacement;
             return true;
-        }, (element, guiGraphics, mouseX, mouseY) -> element.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(((GuiMinerFilterHelper) element).getFilter().requiresReplacement)))));
+        }, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(true)), MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(false))));
     }
 
     @Override

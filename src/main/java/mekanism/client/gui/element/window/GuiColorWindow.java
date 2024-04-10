@@ -21,6 +21,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -244,20 +245,29 @@ public class GuiColorWindow extends GuiWindow {
 
     public class GuiColorView extends GuiElement {
 
+        @Nullable
+        private Tooltip lastTooltip = null;
+        @Nullable
+        private Color lastColor = null;
+
         public GuiColorView(IGuiWrapper gui, int x, int y, int width, int height) {
             super(gui, x, y, width, height);
         }
 
         @Override
-        public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-            super.renderToolTip(guiGraphics, mouseX, mouseY);
-            String hex;
-            if (GuiColorWindow.this.handlesAlpha) {
-                hex = TextUtils.hex(false, 4, getColor().argb());
-            } else {
-                hex = TextUtils.hex(false, 3, getColor().rgb());
+        public void updateTooltip(int mouseX, int mouseY) {
+            Color color = getColor();
+            if (!color.equals(lastColor)) {
+                lastColor = color;
+                String hex;
+                if (GuiColorWindow.this.handlesAlpha) {
+                    hex = TextUtils.hex(false, 4, color.argb());
+                } else {
+                    hex = TextUtils.hex(false, 3, color.rgb());
+                }
+                lastTooltip = Tooltip.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, hex));
             }
-            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, hex));
+            setTooltip(lastTooltip);
         }
 
         @Override

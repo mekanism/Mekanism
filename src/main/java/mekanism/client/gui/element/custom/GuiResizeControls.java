@@ -12,11 +12,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiResizeControls extends GuiSideHolder {
+
+    private static final Tooltip COMPENSATE = Tooltip.create(MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
 
     private final MekanismImageButton expandButton, shrinkButton;
 
@@ -42,10 +44,11 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         if (tooltipTicks > 0 && !expandButton.active) {
-            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
+            setTooltip(COMPENSATE);
+        } else {
+            clearTooltip();
         }
     }
 

@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab.window;
 
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,7 +20,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.client.gui.components.Tooltip;
 
 public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
 
@@ -29,6 +31,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
         }
         return List.copyOf(valid);
     });
+    private static final Byte2ObjectMap<Tooltip> tooltips = new Byte2ObjectArrayMap<>(IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS);
 
     private final boolean[] openWindows = new boolean[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
     private final QIOItemViewerContainer container;
@@ -40,9 +43,8 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS));
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(tooltips.computeIfAbsent(currentWindows, c -> Tooltip.create(MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS))));
     }
 
     @Override

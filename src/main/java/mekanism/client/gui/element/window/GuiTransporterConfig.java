@@ -2,8 +2,6 @@ package mekanism.client.gui.element.window;
 
 import java.util.Collections;
 import mekanism.api.RelativeSide;
-import mekanism.api.text.EnumColor;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -24,12 +22,10 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.network.to_server.configuration_update.PacketEjectColor;
 import mekanism.common.network.to_server.configuration_update.PacketInputColor;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 
 public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
@@ -46,8 +42,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, ((GuiTransporterConfig<?>) element).tile)),
-              (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.STRICT_INPUT.translate())));
+              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.STRICT_INPUT, ((GuiTransporterConfig<?>) element).tile))))
+              .setTooltip(MekanismLang.STRICT_INPUT);
         addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16, () -> this.tile.getEjector().getOutputColor(),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()))),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEjectColor(((GuiTransporterConfig<?>) element).tile.getBlockPos(), MekClickType.RIGHT))));
@@ -63,7 +59,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
         SideDataButton button = addChild(new SideDataButton(gui(), relativeX + xPos, relativeY + yPos, side,
-              () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, PacketInputColor::new, getOnHover(side)));
+              () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, PacketInputColor::new, false));
         if (!tile.getEjector().isInputSideEnabled(side)) {
             button.active = false;
         }
@@ -74,19 +70,6 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         super.close();
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW);
-    }
-
-    private IHoverable getOnHover(RelativeSide side) {
-        return (element, guiGraphics, mouseX, mouseY) -> {
-            if (element instanceof SideDataButton button) {
-                DataType dataType = button.getDataType();
-                if (dataType != null) {
-                    EnumColor color = button.getColor();
-                    Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    button.displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(side), colorComponent);
-                }
-            }
-        };
     }
 
     @Override

@@ -82,19 +82,20 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         }));
         activateButton = addRenderableWidget(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
-                    ((GuiFissionReactor) element.gui()).tile, 1)), null, () -> EnumColor.DARK_GREEN) {
+                    ((GuiFissionReactor) element.gui()).tile, 1)), () -> EnumColor.DARK_GREEN) {
             @Override
             public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
                 super.renderForeground(guiGraphics, mouseX, mouseY);
                 if (!active && tile.getMultiblock().isForceDisabled()) {
                     active = true;
                     //Temporarily set active to true, so we can easily check if the mouse is over the button
+                    // Note: We can't just use the delayed tooltip rendering as it doesn't work for inactive buttons
                     if (isMouseOverCheckWindows(mouseX, mouseY)) {
                         PoseStack pose = guiGraphics.pose();
                         pose.pushPose();
                         //Offset to fix rendering position
                         pose.translate(-getGuiLeft(), -getGuiTop(), 0);
-                        displayTooltips(guiGraphics, mouseX, mouseY, GeneratorsLang.FISSION_FORCE_DISABLED.translate());
+                        guiGraphics.renderTooltip(getFont(), GeneratorsLang.FISSION_FORCE_DISABLED.translate(), mouseX, mouseY);
                         pose.popPose();
                     }
                     active = false;
@@ -103,7 +104,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         });
         scramButton = addRenderableWidget(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
-                    ((GuiFissionReactor) element.gui()).tile, 0)), null, () -> EnumColor.DARK_RED));
+                    ((GuiFissionReactor) element.gui()).tile, 0)), () -> EnumColor.DARK_RED));
         addRenderableWidget(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override

@@ -22,6 +22,7 @@ import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -85,6 +86,15 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void updateWidgetNarration(@NotNull NarrationElementOutput output) {
         //TODO: See GuiMekanism#addRenderableWidget for more details, and also figure out how to make this properly support nested narratables
         // as some of our GuiElements have sub GuiElements and those are the ones we actually would want to narrate
+    }
+
+    public GuiElement setTooltip(ILangEntry langEntry) {
+        setTooltip(Tooltip.create(langEntry.translate()));
+        return this;
+    }
+
+    protected void clearTooltip() {
+        setTooltip((Tooltip) null);
     }
 
     public int getRelativeX() {
@@ -154,7 +164,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @NotNull
     @Override
     public ScreenRectangle getRectangle() {
-        return super.getRectangle();
+        return new ScreenRectangle(getGuiLeft() + getButtonX(), getGuiTop() + getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @NotNull
@@ -279,8 +289,16 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         children.forEach(GuiElement::openPinnedWindows);
     }
 
-    //TODO - 1.20: Evaluate new tooltip system and maybe make use of it??
+    //TODO: Evaluate if we can somehow move the remaining uses to the new tooltip system
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        updateTooltip(mouseX, mouseY);
+        //If there is a tooltip, update it for the next render pass
+        Tooltip tooltip = getTooltip();
+        if (tooltip != null) {
+            //Note: We only call this method if we are hovering the proper spot
+            tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getRectangle());
+        }
+        //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
             if (child.isMouseOver(mouseX, mouseY)) {
                 child.renderToolTip(guiGraphics, mouseX, mouseY);
@@ -288,12 +306,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, Component... components) {
-        guiObj.displayTooltips(guiGraphics, mouseX, mouseY, components);
-    }
-
-    public void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, List<Component> components) {
-        guiObj.displayTooltips(guiGraphics, mouseX, mouseY, components);
+    public void updateTooltip(int mouseX, int mouseY) {
+        //TODO: Update child tooltips? Currently sort of is handled by renderTooltip
     }
 
     @Override
@@ -556,7 +570,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public final void renderShifted(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        //Copy of super.render, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
+        if (this.visible) {
+            this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+            renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+        }
     }
 
     @Override
@@ -670,12 +688,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         public ResourceLocation getTexture() {
             return texture;
         }
-    }
-
-    @FunctionalInterface
-    public interface IHoverable {
-
-        void onHover(GuiElement element, GuiGraphics guiGraphics, int mouseX, int mouseY);
     }
 
     @FunctionalInterface

@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.gui.element.GuiElement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
 @NothingNullByDefault
@@ -46,10 +48,15 @@ public class MekanismEmiWidget extends Widget {
 
     @Override
     public List<ClientTooltipComponent> getTooltip(int mouseX, int mouseY) {
-        //TODO - 1.20.4: Figure out how to properly proxy the tooltips and then remove our manual cases where we use widgetHolder.addTooltip
-        /*if (element.isMouseOver(mouseX, mouseY)) {
-            element.renderToolTip(guiGraphics, mouseX, mouseY);
-        }*/
+        //Note: EMI only calls this method if we are over it
+        //Start by updating the tooltip for the element in case it is conditionally dependent on the mouse position
+        element.updateTooltip(mouseX, mouseY);
+        Tooltip tooltip = element.getTooltip();
+        if (tooltip != null) {
+            return tooltip.toCharSequence(Minecraft.getInstance()).stream()
+                  .map(ClientTooltipComponent::create)
+                  .toList();
+        }
         return Collections.emptyList();
     }
 

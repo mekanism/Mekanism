@@ -10,6 +10,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,10 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     protected final boolean horizontal;
     @Nullable
     private BooleanSupplier warningSupplier;
+    @Nullable
+    private Component lastInfo;
+    @Nullable
+    private Tooltip lastTooltip;
 
     public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height, boolean horizontal) {
         super(resource, gui, x, y, width + 2, height + 2);
@@ -76,12 +81,15 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     protected abstract void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel);
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         Component tooltip = handler.getTooltip();
-        if (tooltip != null) {
-            displayTooltips(guiGraphics, mouseX, mouseY, tooltip);
+        if (tooltip == null) {
+            lastTooltip = null;
+        } else if (!tooltip.equals(lastInfo)) {
+            lastTooltip = Tooltip.create(tooltip);
         }
+        lastInfo = tooltip;
+        setTooltip(lastTooltip);
     }
 
     protected static int calculateScaled(double scale, int value) {

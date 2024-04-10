@@ -13,7 +13,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism, GuiUpgradeWindowTab> {
 
@@ -21,12 +20,7 @@ public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism,
 
     public GuiUpgradeWindowTab(IGuiWrapper gui, TileEntityMekanism tile, Supplier<GuiUpgradeWindowTab> elementSupplier) {
         super(MekanismUtils.getResource(ResourceType.GUI, "upgrade.png"), gui, tile, gui.getXSize(), 6, 26, 18, false, elementSupplier);
-    }
-
-    @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.UPGRADES.translate());
+        setTooltip(MekanismLang.UPGRADES);
     }
 
     @Override

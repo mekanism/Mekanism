@@ -69,21 +69,21 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
-              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PUBLIC_MODE.translate())));
+              })).setTooltip(MekanismLang.PUBLIC_MODE);
         trustedButton = addChild(new MekanismImageButton(frequencySelector, 69, yStart, 38, 20, 38, 20, getButtonLocation("trusted"),
               (element, mouseX, mouseY) -> {
                   this.securityMode = SecurityMode.TRUSTED;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
-              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.TRUSTED_MODE.translate())));
+              })).setTooltip(MekanismLang.TRUSTED_MODE);
         privateButton = addChild(new MekanismImageButton(frequencySelector, 111, yStart, 38, 20, 38, 20, getButtonLocation("private"),
               (element, mouseX, mouseY) -> {
                   this.securityMode = SecurityMode.PRIVATE;
                   this.scrollList.clearSelection();
                   updateButtons();
                   return true;
-              }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.PRIVATE_MODE.translate())));
+              })).setTooltip(MekanismLang.PRIVATE_MODE);
         int buttonWidth = hasColor ? 50 : 60;
         setButton = addChild(new TranslationButton(frequencySelector, 27, yStart + 113, buttonWidth, 18, MekanismLang.BUTTON_SET, (element, mouseX, mouseY) -> {
             int selection = this.scrollList.getSelection();

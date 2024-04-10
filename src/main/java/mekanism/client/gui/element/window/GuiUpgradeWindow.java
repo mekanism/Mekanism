@@ -55,7 +55,8 @@ public class GuiUpgradeWindow extends GuiWindow {
                       self.tile, self.scrollList.getSelection().ordinal()));
             }
             return false;
-        }, (element, graphics, mouseX, mouseY) -> element.displayTooltips(graphics, mouseX, mouseY, MekanismLang.UPGRADE_UNINSTALL_TOOLTIP.translate())));
+        }));
+        removeButton.setTooltip(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP);
         MekanismTileContainer<?> container = (MekanismTileContainer<?>) ((GuiMekanism<?>) gui()).getMenu();
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 18, container.getUpgradeSlot()));
         addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));

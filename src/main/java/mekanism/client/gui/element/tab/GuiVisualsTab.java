@@ -3,6 +3,7 @@ package mekanism.client.gui.element.tab;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -11,23 +12,29 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
 public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
+
+    private static final Component ON = MekanismLang.VISUALS.translate(OnOff.of(true));
+    private static final Component OFF = MekanismLang.VISUALS.translate(OnOff.of(false));
+    private static final Component TOO_BIG = MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED);
+    private static final Tooltip VISUALS_ON = Tooltip.create(ON);
+    private static final Tooltip VISUALS_OFF = Tooltip.create(OFF);
+    private static final Tooltip VISUALS_ON_TOO_BIG = MultiLineTooltip.create(ON, TOO_BIG);
+    private static final Tooltip VISUALS_OFF_TOO_BIG = MultiLineTooltip.create(OFF, TOO_BIG);
 
     public GuiVisualsTab(IGuiWrapper gui, IHasVisualization hasVisualization) {
         super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, hasVisualization, -26, 6, 26, 18, true);
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        Component visualsComponent = MekanismLang.VISUALS.translate(OnOff.of(dataSource.isClientRendering()));
+    public void updateTooltip(int mouseX, int mouseY) {
         if (dataSource.canDisplayVisuals()) {
-            displayTooltips(guiGraphics, mouseX, mouseY, visualsComponent);
+            setTooltip(dataSource.isClientRendering() ? VISUALS_ON : VISUALS_OFF);
         } else {
-            displayTooltips(guiGraphics, mouseX, mouseY, visualsComponent, MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED));
+            setTooltip(dataSource.isClientRendering() ? VISUALS_ON_TOO_BIG : VISUALS_OFF_TOO_BIG);
         }
     }
 

@@ -74,12 +74,12 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void updateTooltip(int mouseX, int mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
-            super.renderToolTip(guiGraphics, mouseX, mouseY);
+            super.updateTooltip(mouseX, mouseY);
         } else {
-            currentBar.renderToolTip(guiGraphics, mouseX, mouseY);
+            currentBar.updateTooltip(mouseX, mouseY);
         }
     }
 

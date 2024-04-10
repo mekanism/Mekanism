@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
@@ -9,11 +11,12 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
@@ -21,6 +24,8 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     private static final ResourceLocation OFF = MekanismUtils.getResource(ResourceType.GUI, "amplifier_off.png");
     private static final ResourceLocation ENTITY = MekanismUtils.getResource(ResourceType.GUI, "amplifier_entity.png");
     private static final ResourceLocation CONTENTS = MekanismUtils.getResource(ResourceType.GUI, "amplifier_contents.png");
+
+    private final Map<RedstoneOutput, Tooltip> tooltips = new EnumMap<>(RedstoneOutput.class);
 
     public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile) {
         super(OFF, gui, tile, -26, 138, 26, 18, true);
@@ -36,9 +41,8 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.getOutputMode()));
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(tooltips.computeIfAbsent(dataSource.getOutputMode(), mode -> Tooltip.create(MekanismLang.REDSTONE_OUTPUT.translate(mode))));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.tab;
 
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
@@ -12,6 +14,7 @@ import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -22,14 +25,15 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
 
+    private final Map<RedstoneControl, Tooltip> tooltips = new EnumMap<>(RedstoneControl.class);
+
     public GuiRedstoneControlTab(IGuiWrapper gui, TileEntityMekanism tile) {
         super(DISABLED, gui, tile, gui.getXSize(), 137, 26, 18, false);
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
-        displayTooltips(guiGraphics, mouseX, mouseY, dataSource.getControlType().getTextComponent());
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(tooltips.computeIfAbsent(dataSource.getControlType(), type -> Tooltip.create(type.getTextComponent())));
     }
 
     @Override

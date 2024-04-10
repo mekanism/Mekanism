@@ -1,11 +1,13 @@
 package mekanism.client.gui.element.bar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.bar.GuiTankBar.TankInfoProvider;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
@@ -15,6 +17,7 @@ import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -27,6 +30,10 @@ import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IRecipeViewerIngredientHelper {
 
+    private List<Component> lastInfo = Collections.emptyList();
+    @Nullable
+    private Tooltip lastTooltip;
+
     public GuiTankBar(IGuiWrapper gui, TankInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(TextureAtlas.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
     }
@@ -37,12 +44,17 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TankType getType(STACK stack);
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void updateTooltip(int mouseX, int mouseY) {
         STACK stored = getHandler().getStack();
         if (isEmpty(stored)) {
-            super.renderToolTip(guiGraphics, mouseX, mouseY);
+            super.updateTooltip(mouseX, mouseY);
         } else {
-            displayTooltips(guiGraphics, mouseX, mouseY, getTooltip(stored));
+            List<Component> info = getTooltip(stored);
+            if (!info.equals(lastInfo)) {
+                lastInfo = info;
+                lastTooltip = MultiLineTooltip.createMulti(info);
+            }
+            setTooltip(lastTooltip);
         }
     }
 

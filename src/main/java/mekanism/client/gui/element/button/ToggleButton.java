@@ -4,9 +4,10 @@ import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ToggleButton extends MekanismImageButton {
 
@@ -15,33 +16,38 @@ public class ToggleButton extends MekanismImageButton {
 
     private final ResourceLocation flipped;
     private final BooleanSupplier toggled;
+    private final Tooltip yes;
+    private final Tooltip no;
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
-        this(gui, x, y, 18, toggled, onPress, onHover);
+    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress) {
+        this(gui, x, y, 18, toggled, onPress);
     }
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
-        this(gui, x, y, size, 18, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, onHover);
+    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, @NotNull IClickable onPress) {
+        this(gui, x, y, size, 18, TOGGLE, TOGGLE_FLIPPED, toggled, onPress, null, null);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation toggle, ResourceLocation flipped, BooleanSupplier toggled,
-          @NotNull IClickable onPress, @Nullable IHoverable onHover) {
-        this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, onHover);
+          @NotNull IClickable onPress, Component yes, Component no) {
+        this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, yes, no);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation toggle, ResourceLocation flipped,
-          BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable IHoverable onHover) {
-        super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress, onHover);
+          BooleanSupplier toggled, @NotNull IClickable onPress, Component yes, Component no) {
+        super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress);
         this.toggled = toggled;
         this.flipped = flipped;
+        this.yes = Tooltip.create(yes);
+        this.no = Tooltip.create(no);
     }
 
     @Override
     protected ResourceLocation getResource() {
-        return isToggled() ? flipped : super.getResource();
+        return toggled.getAsBoolean() ? flipped : super.getResource();
     }
 
-    protected boolean isToggled() {
-        return toggled.getAsBoolean();
+    @Override
+    public void updateTooltip(int mouseX, int mouseY) {
+        setTooltip(toggled.getAsBoolean() ? yes : no);
     }
 }

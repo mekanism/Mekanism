@@ -19,6 +19,9 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.navigation.ScreenAxis;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -34,6 +37,11 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
      */
     @Nullable
     private GuiUpgradeWindowTab upgradeWindowTab;
+
+    @Nullable
+    private Component lastInfo = null;
+    @Nullable
+    private Tooltip lastTooltip;
 
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -70,6 +78,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     @Override
     protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
+        //TODO: Can we move this into GuiSlot#updateTooltip to mirror how we do it for GuiGauge?
+        // would potentially let us have an even more accurate screen rectangle, especially for sawmill output
         if (tile instanceof ISideConfiguration) {
             ItemStack stack = getCarriedItem();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
@@ -78,11 +88,22 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     DataType data = getFromSlot(slot);
                     if (data != null) {
                         EnumColor color = data.getColor();
-                        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
+                        Component info = MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName());
+                        if (!info.equals(lastInfo)) {
+                            lastInfo = info;
+                            lastTooltip = Tooltip.create(info);
+                        }
+                        if (lastTooltip != null) {
+                            lastTooltip.refreshTooltipForNextRenderPass(true, true,
+                                  ScreenRectangle.of(ScreenAxis.HORIZONTAL, slot.x, slot.y, 16, 16));
+                            return;
+                        }
                     }
                 }
             }
         }
+        lastInfo = null;
+        lastTooltip = null;
     }
 
     private DataType getFromSlot(Slot slot) {

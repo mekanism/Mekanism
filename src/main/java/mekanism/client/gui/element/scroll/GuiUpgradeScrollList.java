@@ -1,5 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.ObjIntConsumer;
 import mekanism.api.Upgrade;
@@ -13,8 +15,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
@@ -23,6 +25,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     private static final int TEXTURE_WIDTH = 58;
     private static final int TEXTURE_HEIGHT = 36;
 
+    private final Map<Upgrade, Tooltip> tooltips = new EnumMap<>(Upgrade.class);
     private final TileComponentUpgrade component;
     private final Runnable onSelectionChange;
     @Nullable
@@ -81,15 +84,24 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderToolTip(guiGraphics, mouseX, mouseY);
+    public void updateTooltip(int mouseX, int mouseY) {
         if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
-            forEachUpgrade((upgrade, multipliedElement) -> {
-                if (mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
-                    displayTooltips(guiGraphics, mouseX, mouseY, upgrade.getDescription());
+            Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
+            int currentSelection = getCurrentSelection();
+            for (int i = 0; i < getFocusedElements(); i++) {
+                int index = currentSelection + i;
+                if (index > upgrades.length - 1) {
+                    break;
                 }
-            });
+                Upgrade upgrade = upgrades[index];
+                int multipliedElement = elementHeight * i;
+                if (mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
+                    setTooltip(tooltips.computeIfAbsent(upgrade, u -> Tooltip.create(u.getDescription())));
+                    return;
+                }
+            }
         }
+        clearTooltip();
     }
 
     @Override
