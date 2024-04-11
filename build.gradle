@@ -34,6 +34,9 @@ idea {
         for (String excludeDirName in ["run", "runGameTests", "out", "logs", "gradle"]) {
             excludeDirs.add(new File(projectDir, excludeDirName))
         }
+        //Tell IDEA to always download sources/javadoc artifacts from maven.
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
 
