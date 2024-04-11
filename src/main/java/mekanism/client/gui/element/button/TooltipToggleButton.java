@@ -2,6 +2,7 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,8 +18,8 @@ public class TooltipToggleButton extends MekanismImageButton {
           Component yes, Component no) {
         super(gui, x, y, size, resource, onPress);
         this.isToggled = isToggled;
-        this.yes = Tooltip.create(yes);
-        this.no = Tooltip.create(no);
+        this.yes = TooltipUtils.create(yes);
+        this.no = TooltipUtils.create(no);
     }
 
     public TooltipToggleButton(IGuiWrapper gui, int x, int y, int size, ResourceLocation resource, BooleanSupplier isToggled, @NotNull IClickable onLeftClick, @NotNull IClickable onRightClick,
@@ -33,7 +34,7 @@ public class TooltipToggleButton extends MekanismImageButton {
 
     public TooltipToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation resource, BooleanSupplier isToggled, @NotNull IClickable onPress,
           Component yes, Component no) {
-        this(gui, x, y, size, textureSize, resource, isToggled, onPress, Tooltip.create(yes), Tooltip.create(no));
+        this(gui, x, y, size, textureSize, resource, isToggled, onPress, TooltipUtils.create(yes), TooltipUtils.create(no));
     }
 
     public TooltipToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation resource, BooleanSupplier isToggled, @NotNull IClickable onPress,

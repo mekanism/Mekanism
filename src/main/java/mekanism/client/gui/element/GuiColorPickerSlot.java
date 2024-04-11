@@ -6,6 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiColorWindow;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.text.TextUtils;
@@ -38,7 +39,7 @@ public class GuiColorPickerSlot extends GuiElement {
         Color color = supplier.get();
         if (!color.equals(lastColor)) {
             lastColor = color;
-            lastTooltip = Tooltip.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, color.rgb())));
+            lastTooltip = TooltipUtils.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, color.rgb())));
         }
         setTooltip(lastTooltip);
     }

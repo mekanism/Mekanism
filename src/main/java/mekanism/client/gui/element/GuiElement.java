@@ -13,6 +13,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -89,7 +90,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     public GuiElement setTooltip(ILangEntry langEntry) {
-        setTooltip(Tooltip.create(langEntry.translate()));
+        setTooltip(TooltipUtils.create(langEntry));
         return this;
     }
 

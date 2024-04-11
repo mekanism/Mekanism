@@ -11,13 +11,13 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
 import mekanism.client.gui.element.button.TooltipToggleButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
@@ -36,7 +36,6 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,8 +87,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         }, (element, mouseX, mouseY) -> {
             DataType targetType = getTargetType(DataType::getPrevious);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), Screen.hasShiftDown() ? null : currentType, targetType));
-        }, MultiLineTooltip.createMulti(MekanismLang.SIDE_CONFIG_CLEAR.translate(), MekanismLang.SIDE_CONFIG_CLEAR_ALL.translate()),
-              Tooltip.create(MekanismLang.SIDE_CONFIG_INCREMENT.translate())));
+        }, TooltipUtils.create(MekanismLang.SIDE_CONFIG_CLEAR, MekanismLang.SIDE_CONFIG_CLEAR_ALL), TooltipUtils.create(MekanismLang.SIDE_CONFIG_INCREMENT)));
         addSideDataButton(RelativeSide.BOTTOM, 68, 92);
         addSideDataButton(RelativeSide.TOP, 68, 46);
         addSideDataButton(RelativeSide.FRONT, 68, 69);

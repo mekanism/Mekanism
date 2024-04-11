@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -42,7 +43,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        setTooltip(tooltips.computeIfAbsent(dataSource.getContainerEditMode(), mode -> Tooltip.create(mode.getTextComponent())));
+        setTooltip(tooltips.computeIfAbsent(dataSource.getContainerEditMode(), mode -> TooltipUtils.create(mode.getTextComponent())));
     }
 
     @Override

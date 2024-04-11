@@ -10,8 +10,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -227,7 +227,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         }
         if (!list.equals(lastInfo)) {
             lastInfo = list;
-            lastTooltip = MultiLineTooltip.createMulti(list);
+            lastTooltip = TooltipUtils.create(list);
         }
         setTooltip(lastTooltip);
     }

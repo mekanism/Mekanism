@@ -13,6 +13,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.custom.GuiEntityPreview;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
@@ -262,7 +263,7 @@ public class GuiColorWindow extends GuiWindow {
                 } else {
                     hex = TextUtils.hex(false, 3, color.rgb());
                 }
-                lastTooltip = Tooltip.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, hex));
+                lastTooltip = TooltipUtils.create(MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, hex));
             }
             setTooltip(lastTooltip);
         }

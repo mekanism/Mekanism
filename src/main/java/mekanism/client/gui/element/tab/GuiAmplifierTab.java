@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketUtils;
@@ -42,7 +43,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        setTooltip(tooltips.computeIfAbsent(dataSource.getOutputMode(), mode -> Tooltip.create(MekanismLang.REDSTONE_OUTPUT.translate(mode))));
+        setTooltip(tooltips.computeIfAbsent(dataSource.getOutputMode(), mode -> TooltipUtils.create(MekanismLang.REDSTONE_OUTPUT.translate(mode))));
     }
 
     @Override

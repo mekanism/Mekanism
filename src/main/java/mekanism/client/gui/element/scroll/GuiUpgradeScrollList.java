@@ -9,6 +9,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
@@ -107,7 +108,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
                 int multipliedElement = elementHeight * i;
                 if (mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
                     cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 1 + multipliedElement, barXShift - 2, elementHeight);
-                    setTooltip(tooltips.computeIfAbsent(upgrade, u -> Tooltip.create(u.getDescription())));
+                    setTooltip(tooltips.computeIfAbsent(upgrade, u -> TooltipUtils.create(u.getDescription())));
                     return;
                 }
             }

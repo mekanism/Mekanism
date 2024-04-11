@@ -6,9 +6,9 @@ import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
@@ -96,7 +96,7 @@ public class GuiSupportedUpgrades extends GuiElement {
                 }
                 if (!info.equals(lastInfo)) {
                     lastInfo = info;
-                    lastTooltip = MultiLineTooltip.createMulti(info);
+                    lastTooltip = TooltipUtils.create(info);
                     //Note: We only have to update the tooltip rect if the tooltip changed as we know none of the elements share the same tooltips
                     cachedTooltipRect = new ScreenRectangle(getX() + 1 + pos.x, getY() + 1 + pos.y, ELEMENT_SIZE, ELEMENT_SIZE);
                 }

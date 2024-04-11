@@ -8,9 +8,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.ISupportsWarning;
@@ -150,7 +150,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         }
         if (!list.equals(lastInfo)) {
             lastInfo = list;
-            lastTooltip = MultiLineTooltip.createMulti(list);
+            lastTooltip = TooltipUtils.create(list);
         }
         setTooltip(lastTooltip);
     }

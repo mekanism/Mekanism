@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class GuiModificationStation extends GuiMekanismTile<TileEntityModificationStation, MekanismTileContainer<TileEntityModificationStation>> {
 
     private IModule<?> selectedModule;
-    private TranslationButton removeButton;
+    private MekanismButton removeButton;
 
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -40,8 +41,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         removeButton = addRenderableWidget(new TranslationButton(this, 34, 96, 108, 17, MekanismLang.BUTTON_REMOVE, (element, mouseX, mouseY) -> {
             GuiModificationStation gui = (GuiModificationStation) element.gui();
             return PacketUtils.sendToServer(new PacketRemoveModule(gui.tile.getBlockPos(), gui.selectedModule.getData(), Screen.hasShiftDown()));
-        }));
-        removeButton.setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
+        })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
         addRenderableWidget(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));

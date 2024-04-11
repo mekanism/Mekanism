@@ -14,6 +14,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -151,7 +152,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         if (skin == null) {
             lastTooltip = null;
         } else if (lastSkin != skin) {
-            lastTooltip = Tooltip.create(MekanismLang.ROBIT_SKIN.translate(RobitSkin.getTranslatedName(skin)));
+            lastTooltip = TooltipUtils.create(MekanismLang.ROBIT_SKIN.translate(RobitSkin.getTranslatedName(skin)));
         }
         lastSkin = skin;
         setTooltip(lastTooltip);

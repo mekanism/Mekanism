@@ -11,8 +11,8 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -71,7 +71,7 @@ public class GuiEnergyTab extends GuiTexturedElement {
         info.add(MekanismLang.UNIT.translate(EnergyUnit.getConfigured()));
         if (!info.equals(lastInfo)) {
             lastInfo = info;
-            lastTooltip = MultiLineTooltip.createMulti(info);
+            lastTooltip = TooltipUtils.create(info);
         }
         setTooltip(lastTooltip);
     }

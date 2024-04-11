@@ -10,6 +10,7 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.GuiCraftingWindow;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -44,7 +45,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        setTooltip(tooltips.computeIfAbsent(currentWindows, c -> Tooltip.create(MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS))));
+        setTooltip(tooltips.computeIfAbsent(currentWindows, c -> TooltipUtils.create(MekanismLang.CRAFTING_TAB.translate(c, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS))));
     }
 
     @Override

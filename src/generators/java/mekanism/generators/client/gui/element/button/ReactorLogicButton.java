@@ -9,6 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
@@ -84,7 +85,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         if (mode == null) {
             clearTooltip();
         } else {
-            setTooltip(typeTooltips.computeIfAbsent(mode, m -> Tooltip.create(m.getDescription())));
+            setTooltip(typeTooltips.computeIfAbsent(mode, m -> TooltipUtils.create(m.getDescription())));
         }
     }
 }

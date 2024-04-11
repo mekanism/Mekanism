@@ -15,6 +15,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -72,7 +73,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                     wrapper.addWindow(getFilterSelect(wrapper, this.tile));
                     //And close the filter
                     return close(element, mouseX, mouseY);
-                })).setTooltip(MekanismLang.BACK);
+                })).setTooltip(TooltipUtils.BACK);
             } else {
                 super.addCloseButton();
             }

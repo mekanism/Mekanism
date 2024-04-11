@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 import mekanism.api.IIncrementalEnum;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -49,7 +49,7 @@ public class GuiHeatTab extends GuiTexturedElement {
         info.add(MekanismLang.UNIT.translate(MekanismConfig.common.tempUnit.get()));
         if (!info.equals(lastInfo)) {
             lastInfo = info;
-            lastTooltip = MultiLineTooltip.createMulti(info);
+            lastTooltip = TooltipUtils.create(info);
         }
         setTooltip(lastTooltip);
     }

@@ -13,6 +13,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleContainer;
@@ -162,7 +163,7 @@ public class GuiModuleScrollList extends GuiScrollList {
                     Component info = MekanismLang.MODULE_INSTALLED.translate(MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, installed, module.getMaxStackSize()));
                     if (!info.equals(lastInfo)) {
                         lastInfo = info;
-                        lastTooltip = Tooltip.create(info);
+                        lastTooltip = TooltipUtils.create(info);
                     }
                     cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 1 + multipliedElement, barXShift - 2, elementHeight);
                     setTooltip(lastTooltip);

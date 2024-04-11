@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphics;
@@ -112,7 +113,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         if (index != -1) {
             Tooltip text = typeTooltips.computeIfAbsent(options[index], t -> {
                 Component tooltip = t.getTooltip();
-                return tooltip == null ? null : Tooltip.create(tooltip);
+                return tooltip == null ? null : TooltipUtils.create(tooltip);
             });
             cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 12 + index * 10, width - 2, 10);
             setTooltip(text);

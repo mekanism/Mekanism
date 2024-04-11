@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
@@ -86,7 +87,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         if (tooltip == null) {
             lastTooltip = null;
         } else if (!tooltip.equals(lastInfo)) {
-            lastTooltip = Tooltip.create(tooltip);
+            lastTooltip = TooltipUtils.create(tooltip);
         }
         lastInfo = tooltip;
         setTooltip(lastTooltip);

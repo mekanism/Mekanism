@@ -2,6 +2,7 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.components.Tooltip;
@@ -37,8 +38,8 @@ public class ToggleButton extends MekanismImageButton {
         super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress);
         this.toggled = toggled;
         this.flipped = flipped;
-        this.yes = Tooltip.create(yes);
-        this.no = Tooltip.create(no);
+        this.yes = TooltipUtils.create(yes);
+        this.no = TooltipUtils.create(no);
     }
 
     @Override

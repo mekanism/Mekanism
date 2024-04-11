@@ -7,6 +7,7 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.window.GuiSideConfiguration;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
@@ -51,7 +52,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
-        setTooltip(typeTooltips.computeIfAbsent(transmission, trans -> Tooltip.create(TextComponentUtil.build(trans))));
+        setTooltip(typeTooltips.computeIfAbsent(transmission, trans -> TooltipUtils.create(TextComponentUtil.build(trans))));
     }
 
     @Override

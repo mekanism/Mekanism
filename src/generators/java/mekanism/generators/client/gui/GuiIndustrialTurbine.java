@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -13,6 +12,7 @@ import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -111,8 +111,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
         }));
         Component warning = GeneratorsLang.TURBINE_DUMPING_STEAM_WARNING.translateColored(EnumColor.RED);
         addRenderableWidget(new GuiGasMode(this, 159, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0,
-              MultiLineTooltip.createMulti(GeneratorsLang.TURBINE_DUMPING_EXCESS_STEAM.translate(), warning),
-              MultiLineTooltip.createMulti(GeneratorsLang.TURBINE_DUMPING_STEAM.translate(), warning)));
+              TooltipUtils.create(GeneratorsLang.TURBINE_DUMPING_EXCESS_STEAM.translate(), warning),
+              TooltipUtils.create(GeneratorsLang.TURBINE_DUMPING_STEAM.translate(), warning)));
     }
 
     @Override

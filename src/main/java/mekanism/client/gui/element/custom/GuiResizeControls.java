@@ -4,6 +4,7 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -18,7 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class GuiResizeControls extends GuiSideHolder {
 
-    private static final Tooltip COMPENSATE = Tooltip.create(MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
+    private static final Tooltip COMPENSATE = TooltipUtils.create(MekanismLang.QIO_COMPENSATE_TOOLTIP);
 
     private final MekanismImageButton expandButton, shrinkButton;
 

@@ -9,7 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.MekClickType;
@@ -105,7 +105,7 @@ public class SideDataButton extends BasicColorButton {
             }
             if (!tooltipLines.equals(lastInfo)) {
                 lastInfo = tooltipLines;
-                lastTooltip = MultiLineTooltip.createMulti(tooltipLines);
+                lastTooltip = TooltipUtils.create(tooltipLines);
             }
         } else {
             lastTooltip = null;

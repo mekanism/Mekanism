@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
-import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -103,7 +103,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
             List<Component> list = tooltipStrings.get();
             if (!list.equals(lastInfo)) {
                 lastInfo = list;
-                lastTooltip = MultiLineTooltip.createMulti(list);
+                lastTooltip = TooltipUtils.create(list);
             }
         } else {
             lastInfo = Collections.emptyList();

@@ -16,9 +16,9 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.security.SecurityData;
@@ -107,7 +107,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
             }
             if (!info.equals(lastInfo)) {
                 lastInfo = info;
-                lastTooltip = MultiLineTooltip.createMulti(info);
+                lastTooltip = TooltipUtils.create(info);
             }
         } else {
             lastTooltip = null;

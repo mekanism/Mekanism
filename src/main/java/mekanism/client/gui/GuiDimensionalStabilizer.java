@@ -10,6 +10,7 @@ import mekanism.client.gui.element.button.BasicColorButton;
 import mekanism.client.gui.element.button.TooltipColorButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -98,7 +99,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                             }
                             if (!tooltips.equals(lastInfo)) {
                                 lastInfo = tooltips;
-                                lastTooltip = MultiLineTooltip.createMulti(tooltips);
+                                lastTooltip = TooltipUtils.create(tooltips);
                             }
                             setTooltip(lastTooltip);
                         }

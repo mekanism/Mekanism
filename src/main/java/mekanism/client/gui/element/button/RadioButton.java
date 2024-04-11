@@ -2,6 +2,7 @@ package mekanism.client.gui.element.button;
 
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -23,8 +24,8 @@ public class RadioButton extends MekanismButton {
     public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress, Component toggledComponent, Component altComponent) {
         super(gui, x, y, RADIO_SIZE, RADIO_SIZE, Component.empty(), onPress);
         this.toggled = toggled;
-        this.toggledComponent = Tooltip.create(toggledComponent);
-        this.altComponent = Tooltip.create(altComponent);
+        this.toggledComponent = TooltipUtils.create(toggledComponent);
+        this.altComponent = TooltipUtils.create(altComponent);
         this.clickSound = MekanismSounds.BEEP;
     }
 

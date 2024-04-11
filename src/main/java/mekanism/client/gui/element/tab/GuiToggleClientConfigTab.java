@@ -2,6 +2,7 @@ package mekanism.client.gui.element.tab;
 
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -20,8 +21,8 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
           Component trueTooltip, Component falseTooltip) {
         super(gui, gui, left ? -26 : gui.getXSize(), y, 26, 18, left, overlay, flipped, config);
         this.config = config;
-        this.falseTooltip = Tooltip.create(falseTooltip);
-        this.trueTooltip = Tooltip.create(trueTooltip);
+        this.falseTooltip = TooltipUtils.create(falseTooltip);
+        this.trueTooltip = TooltipUtils.create(trueTooltip);
     }
 
     @Override

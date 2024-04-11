@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ColorButton extends MekanismButton {
 
-    private static final Tooltip NONE = Tooltip.create(MekanismLang.NONE.translate());
+    private static final Tooltip NONE = TooltipUtils.create(MekanismLang.NONE);
 
     private final Map<EnumColor, Tooltip> tooltips = new EnumMap<>(EnumColor.class);
     private final Supplier<EnumColor> colorSupplier;
@@ -37,7 +38,7 @@ public class ColorButton extends MekanismButton {
     public void updateTooltip(int mouseX, int mouseY) {
         EnumColor color = colorSupplier.get();
         if (color != null) {
-            setTooltip(tooltips.computeIfAbsent(color, c -> Tooltip.create(c.getColoredName())));
+            setTooltip(tooltips.computeIfAbsent(color, c -> TooltipUtils.create(c.getColoredName())));
         } else {
             setTooltip(NONE);
         }

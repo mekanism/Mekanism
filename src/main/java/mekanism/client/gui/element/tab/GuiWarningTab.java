@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.util.MekanismUtils;
@@ -55,7 +55,7 @@ public class GuiWarningTab extends GuiTexturedElement {
         info.addAll(warningTracker.getWarnings());
         if (!info.equals(lastInfo)) {
             lastInfo = info;
-            lastTooltip = MultiLineTooltip.createMulti(info);
+            lastTooltip = TooltipUtils.create(info);
         }
         setTooltip(lastTooltip);
     }

@@ -7,8 +7,8 @@ import java.util.Optional;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.bar.GuiTankBar.TankInfoProvider;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.item.ItemGaugeDropper;
@@ -52,7 +52,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
             List<Component> info = getTooltip(stored);
             if (!info.equals(lastInfo)) {
                 lastInfo = info;
-                lastTooltip = MultiLineTooltip.createMulti(info);
+                lastTooltip = TooltipUtils.create(info);
             }
             setTooltip(lastTooltip);
         }

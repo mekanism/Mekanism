@@ -3,8 +3,8 @@ package mekanism.client.gui.element.tab;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.tile.interfaces.IHasVisualization;
@@ -20,10 +20,10 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     private static final Component ON = MekanismLang.VISUALS.translate(OnOff.ON);
     private static final Component OFF = MekanismLang.VISUALS.translate(OnOff.OFF);
     private static final Component TOO_BIG = MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED);
-    private static final Tooltip VISUALS_ON = Tooltip.create(ON);
-    private static final Tooltip VISUALS_OFF = Tooltip.create(OFF);
-    private static final Tooltip VISUALS_ON_TOO_BIG = MultiLineTooltip.create(ON, TOO_BIG);
-    private static final Tooltip VISUALS_OFF_TOO_BIG = MultiLineTooltip.create(OFF, TOO_BIG);
+    private static final Tooltip VISUALS_ON = TooltipUtils.create(ON);
+    private static final Tooltip VISUALS_OFF = TooltipUtils.create(OFF);
+    private static final Tooltip VISUALS_ON_TOO_BIG = TooltipUtils.create(ON, TOO_BIG);
+    private static final Tooltip VISUALS_OFF_TOO_BIG = TooltipUtils.create(OFF, TOO_BIG);
 
     public GuiVisualsTab(IGuiWrapper gui, IHasVisualization hasVisualization) {
         super(MekanismUtils.getResource(ResourceType.GUI, "visuals.png"), gui, hasVisualization, -26, 6, 26, 18, true);

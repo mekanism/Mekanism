@@ -8,7 +8,7 @@ import java.util.function.ObjIntConsumer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.MultiLineTooltip;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.FilterManager;
@@ -24,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class MovableFilterButton extends FilterButton {
 
-    private static final Tooltip MOVE_UP = MultiLineTooltip.createMulti(MekanismLang.MOVE_UP.translate(), MekanismLang.MOVE_TO_TOP.translate());
-    private static final Tooltip MOVE_DOWN = MultiLineTooltip.createMulti(MekanismLang.MOVE_DOWN.translate(), MekanismLang.MOVE_TO_BOTTOM.translate());
+    private static final Tooltip MOVE_UP = TooltipUtils.create(MekanismLang.MOVE_UP, MekanismLang.MOVE_TO_TOP);
+    private static final Tooltip MOVE_DOWN = TooltipUtils.create(MekanismLang.MOVE_DOWN, MekanismLang.MOVE_TO_BOTTOM);
 
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;

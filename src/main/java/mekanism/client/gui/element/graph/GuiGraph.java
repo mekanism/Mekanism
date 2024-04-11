@@ -8,6 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.graph.GuiGraph.GraphDataHandler;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -95,7 +96,7 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             Component info = getDataDisplay(hoverIndex);
             if (!info.equals(lastInfo)) {
                 lastInfo = info;
-                lastTooltip = Tooltip.create(info);
+                lastTooltip = TooltipUtils.create(info);
             }
             cachedTooltipRect = new ScreenRectangle(getX(), getGuiTop() + getButtonY(), 1, getButtonHeight());
         } else {

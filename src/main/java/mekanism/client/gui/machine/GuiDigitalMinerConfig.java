@@ -15,6 +15,7 @@ import mekanism.client.gui.element.window.filter.miner.GuiMinerFilerSelect;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerItemStackFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerModIDFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerTagFilter;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
@@ -77,7 +78,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         }));
         addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile))))
-              .setTooltip(MekanismLang.BACK);
+              .setTooltip(TooltipUtils.BACK);
         addRenderableWidget(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, (element, mouseX, mouseY) ->
               PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, ((GuiDigitalMinerConfig) element.gui()).tile)), SwitchType.LEFT_ICON))
               .setTooltip(MekanismLang.MINER_INVERSE);

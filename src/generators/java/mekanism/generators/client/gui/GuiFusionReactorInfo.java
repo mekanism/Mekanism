@@ -5,6 +5,7 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.client.gui.element.tab.GuiHeatTab;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketUtils;
@@ -31,7 +32,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
         super.addGuiElements();
         addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
               (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketTileButtonPress(ClickedTileButton.BACK_BUTTON, ((GuiFusionReactorInfo) element.gui()).tile))))
-              .setTooltip(MekanismLang.BACK);
+              .setTooltip(TooltipUtils.BACK);
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
             return List.of(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),

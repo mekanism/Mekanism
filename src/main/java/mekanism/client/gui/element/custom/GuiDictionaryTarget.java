@@ -19,6 +19,7 @@ import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
+import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -73,7 +74,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         if (target == null || target instanceof ItemStack) {
             lastTooltip = null;
         } else {
-            lastTooltip = Tooltip.create(TextComponentUtil.build(this.target));
+            lastTooltip = TooltipUtils.create(TextComponentUtil.build(this.target));
         }
     }
 
