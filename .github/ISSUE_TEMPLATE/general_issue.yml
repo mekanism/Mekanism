@@ -41,7 +41,8 @@ body:
       label: Mekanism version
       description: What version of Mekanism are you using?
       options:
-        - 10.5.18 (Latest)
+        - 10.5.19 (Latest)
+        - 10.5.18
         - 10.5.17
         - 10.5.16 (broken)
         - 10.5.15
