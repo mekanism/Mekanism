@@ -12,7 +12,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class HandlerTransitRequest extends TransitRequest {
+public class HandlerTransitRequest extends CollectionTransitRequest {
 
     private final IItemHandler handler;
     private Map<HashedItem, HandlerItemData> itemMap = Collections.emptyMap();
@@ -38,13 +38,15 @@ public class HandlerTransitRequest extends TransitRequest {
         return handler;
     }
 
-    public Map<HashedItem, HandlerItemData> getItemMap() {
-        return itemMap;
-    }
-
     @Override
     public Collection<HandlerItemData> getItemData() {
         return itemMap.values();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        //Skip the values call
+        return itemMap.isEmpty();
     }
 
     public class HandlerItemData extends ItemData {

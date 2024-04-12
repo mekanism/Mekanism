@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-23T19:45:40.1108075	Loot Tables
+// 1.20.4	2024-04-12T14:49:14.06478	Loot Tables
 b4a05e7ba50da33988cfbf7827826c6dc5a141d9 data/mekanism/loot_tables/blocks/advanced_bin.json
 cd266e7b4a5bde833aa11e1caf17d86631197626 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 6829ad29ae722d1ef741fc103dfd5704c1874a66 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -118,7 +118,7 @@ ac8c749139a88f16f2cedc0db95868f2b3611d8a data/mekanism/loot_tables/blocks/laser.
 2b01deec8c7285b0d547bff83c96017677d024e0 data/mekanism/loot_tables/blocks/laser_amplifier.json
 c6a9162acef0b96d782673731b24ded6d409269b data/mekanism/loot_tables/blocks/laser_tractor_beam.json
 3deff265b88e591833bee438fbe99d447d41a565 data/mekanism/loot_tables/blocks/lead_ore.json
-b7635eb5c7e8ebd0d9ce528898b568d67a57f5f0 data/mekanism/loot_tables/blocks/logistical_sorter.json
+bc8dedaaf9a8a32a70f484810799914e1423a21b data/mekanism/loot_tables/blocks/logistical_sorter.json
 b98160f90c087eb28f0e08ddec86f369e5977270 data/mekanism/loot_tables/blocks/metallurgic_infuser.json
 b2309045f264fb4c536cc99f565760ab90990ca9 data/mekanism/loot_tables/blocks/modification_station.json
 c93f6d48138eea1ef6219fbe4a261e1219ca0b0c data/mekanism/loot_tables/blocks/nutritional_liquifier.json
@@ -136,7 +136,7 @@ c93f6d48138eea1ef6219fbe4a261e1219ca0b0c data/mekanism/loot_tables/blocks/nutrit
 8264c1d2b3ac806201a2e22573779d0954d6ae84 data/mekanism/loot_tables/blocks/purification_chamber.json
 4b9a5c6c9fe76acc35845a7c717f8386652707e3 data/mekanism/loot_tables/blocks/qio_dashboard.json
 d03909e03fcdcbfeb73e47ade1d18da374efc628 data/mekanism/loot_tables/blocks/qio_drive_array.json
-3753c4dc0ede114e1e828e2fe6984bd77055b7ac data/mekanism/loot_tables/blocks/qio_exporter.json
+9c07144842b598c80f6941de00c28cc9510b944f data/mekanism/loot_tables/blocks/qio_exporter.json
 d26c883389d1ac6139397f6c6ad5dc231bd8b2d3 data/mekanism/loot_tables/blocks/qio_importer.json
 e683f63154bde2c9cc77e26e2714fe6d51223c37 data/mekanism/loot_tables/blocks/qio_redstone_adapter.json
 5f09276294e2367e32102c287f0e2a61facee062 data/mekanism/loot_tables/blocks/quantum_entangloporter.json

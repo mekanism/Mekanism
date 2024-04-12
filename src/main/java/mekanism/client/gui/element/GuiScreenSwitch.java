@@ -42,4 +42,9 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     public void onClick(double mouseX, double mouseY, int button) {
         onToggle.onClick(this, mouseX, mouseY);
     }
+
+    @Override
+    protected int getMaxTextWidth() {
+        return super.getMaxTextWidth() - 2 - GuiDigitalSwitch.BUTTON_SIZE_X;
+    }
 }

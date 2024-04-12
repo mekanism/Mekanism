@@ -15,7 +15,6 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
-import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -26,6 +25,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.Finder;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismAttachmentTypes;
@@ -49,7 +49,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ITileFilterHolder<SorterFilter<?>> {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ITileFilterHolder<SorterFilter<?>>, IAdvancedTransportEjector {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
@@ -73,7 +73,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     private boolean roundRobin;
     private boolean singleItem;
     @Nullable
-    public SidedBlockPos rrTarget;
+    private SidedBlockPos rrTarget;
     private int delayTicks;
     private long nextSound = 0;
 
@@ -89,6 +89,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         //TODO - 1.20.4: Re-evaluate the internal inventory slot and why do we even have a slot on the sorter
         builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.FRONT);
         return builder.build();
+    }
+
+    @Override
+    public boolean persists(ContainerType<?, ?, ?> type) {
+        //Note: We don't persist items because the slot we have is only actually for the transporters to connect visually
+        return type != ContainerType.ITEM && super.persists(type);
     }
 
     @Override
@@ -144,11 +150,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         if (request.isEmpty()) {
             return request.getEmptyResponse();
         } else if (target instanceof CursedTransporterItemHandler cursed) {
-            LogisticalTransporterBase transporter = cursed.getTransporter();
-            if (roundRobin) {
-                return transporter.insertRR(this, request, filterColor, true, min);
-            }
-            return transporter.insert(this, getBlockPos(), request, filterColor, true, min);
+            return cursed.getTransporter().insertMaybeRR(this, getBlockPos(), request, filterColor, true, min);
         }
         return request.addToInventoryUnchecked(target, min);
     }
@@ -156,6 +158,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
+        SidedBlockPos rrTarget = getRoundRobinTarget();
         if (rrTarget != null) {
             nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
         }
@@ -165,7 +168,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
-            rrTarget = SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
+            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET)));
         }
     }
 
@@ -190,6 +193,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         return autoEject;
     }
 
+    @Override
     @ComputerMethod(nameOverride = "isRoundRobin")
     public boolean getRoundRobin() {
         return roundRobin;
@@ -205,12 +209,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         markForSave();
     }
 
-    public void toggleRoundRobin() {
-        roundRobin = !roundRobin;
-        rrTarget = null;
-        markForSave();
-    }
-
     public void toggleSingleItem() {
         singleItem = !singleItem;
         markForSave();
@@ -221,11 +219,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             this.color = color;
             markForSave();
         }
-    }
-
-    public boolean canSendHome(ItemStack stack) {
-        Direction oppositeDirection = getOppositeDirection();
-        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, stack, oppositeDirection, true);
     }
 
     public boolean hasConnectedInventory() {
@@ -250,8 +243,33 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         targetInventory = null;
     }
 
+    @Override
+    public void toggleRoundRobin() {
+        roundRobin = !roundRobin;
+        setRoundRobinTarget((SidedBlockPos) null);
+        markForSave();
+    }
+
+    @Nullable
+    @Override
+    public SidedBlockPos getRoundRobinTarget() {
+        return rrTarget;
+    }
+
+    @Override
+    public void setRoundRobinTarget(@Nullable SidedBlockPos target) {
+        rrTarget = target;
+    }
+
+    @Override
+    public boolean canSendHome(@NotNull ItemStack stack) {
+        Direction oppositeDirection = getOppositeDirection();
+        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, stack, oppositeDirection, true);
+    }
+
     @NotNull
-    public TransitResponse sendHome(TransitRequest request) {
+    @Override
+    public TransitResponse sendHome(@NotNull TransitRequest request) {
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
         //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another

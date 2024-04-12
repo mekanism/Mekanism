@@ -15,6 +15,7 @@ import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
@@ -25,7 +26,6 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.transmitter.PacketTransporterBatch;
 import mekanism.common.network.to_client.transmitter.PacketTransporterSync;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -386,13 +386,15 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, min, doEmit,
-              (stack, req, out, transporter, m, updateFlowing) -> stack.recalculatePath(req, transporter, m, updateFlowing));
+    public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse insertMaybeRR(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        if (outputter != null && outputter.getRoundRobin()) {
+            return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculateRRPath);
+        }
+        return insert(outputter, outputterPos, request, color, doEmit, min);
     }
 
-    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputter.getBlockPos(), request, color, min, doEmit, TransporterStack::recalculateRRPath);
+    public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        return insert(outputter, outputterPos, request, color, min, doEmit, (stack, req, out, transporter, m, updateFlowing) -> stack.recalculatePath(req, transporter, m, updateFlowing));
     }
 
     private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,

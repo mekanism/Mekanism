@@ -10,6 +10,7 @@ import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -414,7 +415,7 @@ public class PacketGuiInteract implements IMekanismPacket<PlayPayloadContext> {
         }),
 
         ROUND_ROBIN_BUTTON((tile, player, extra) -> {
-            if (tile instanceof TileEntityLogisticalSorter sorter) {
+            if (tile instanceof IAdvancedTransportEjector sorter) {
                 sorter.toggleRoundRobin();
             }
         }),

@@ -1428,6 +1428,8 @@
   "pigment.mekanism.yellow": "ʇuǝɯᵷᴉԀ ʍoꞁꞁǝ⅄",
   "qio.mekanism.compensate_tooltip": "¿ɹoɟ ǝʇɐsuǝdɯoɔ oʇ ᵷuᴉʎɹʇ noʎ ǝɹɐ ʇɐɥM",
   "qio.mekanism.export_without_filter": ":ɹǝʇꞁᴉℲ ʇnoɥʇᴉM ʇɹodxƎ",
+  "qio.mekanism.exporter.round_robin": ":uᴉqoɹ punoᴚ",
+  "qio.mekanism.exporter.round_robin.description": "˙sɯǝʇᴉ ᵷuᴉpuǝs uǝɥʍ sǝᴉɹoʇuǝʌuᴉ pǝʇɔǝuuoɔ ꞁꞁɐ uǝǝʍʇǝq sǝꞁɔʎɔ 'ɹǝʇɹodsuɐɹʇ ɐ oʇ pǝʇɔǝuuoɔ uǝɥM",
   "qio.mekanism.fuzzy_mode": "%s :⟘ᗺN ᵷuᴉɹouᵷI",
   "qio.mekanism.import_without_filter": ":ɹǝʇꞁᴉℲ ʇnoɥʇᴉM ʇɹodɯI",
   "qio.mekanism.item_type_undefined": "pǝuᴉɟǝpun ǝdʎʇ ɯǝʇI",

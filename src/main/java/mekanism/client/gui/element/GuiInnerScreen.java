@@ -113,7 +113,11 @@ public class GuiInnerScreen extends GuiScalableElement implements IRecipeViewerR
     }
 
     private void drawText(GuiGraphics guiGraphics, Component text, float x, float y) {
-        drawScaledTextScaledBound(guiGraphics, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
+        drawScaledTextScaledBound(guiGraphics, text, x, y, screenTextColor(), getMaxTextWidth(), textScale);
+    }
+
+    protected int getMaxTextWidth() {
+        return getWidth() - padding * 2;
     }
 
     @NotNull

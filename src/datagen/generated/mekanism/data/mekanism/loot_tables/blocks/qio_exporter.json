@@ -38,6 +38,10 @@
                 {
                   "source": "controlType",
                   "target": "mekanism:redstone_control"
+                },
+                {
+                  "source": "roundRobin",
+                  "target": "mekanism:round_robin"
                 }
               ],
               "source": "block_entity"

@@ -6,8 +6,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.core.BlockPos;
@@ -89,7 +89,7 @@ public final class TransporterUtils {
     }
 
     public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
-        if (force && tile instanceof TileEntityLogisticalSorter sorter) {
+        if (force && tile instanceof IAdvancedTransportEjector sorter) {
             return sorter.canSendHome(itemStack);
         }
         if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {

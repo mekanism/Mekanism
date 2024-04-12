@@ -1,19 +1,16 @@
 package mekanism.common.lib.inventory;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.lib.inventory.HandlerTransitRequest.HandlerItemData;
-import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -24,7 +21,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TransitRequest {
+public abstract class TransitRequest implements Iterable<ItemData> {
 
     private final TransitResponse EMPTY = new TransitResponse(ItemStack.EMPTY, null);
 
@@ -59,16 +56,13 @@ public abstract class TransitRequest {
             }
         }
         // remove items that we don't have enough of
-        //noinspection Java8CollectionRemoveIf - We can't replace it with removeIf as it has a capturing lambda
-        for (Iterator<HandlerItemData> iterator = ret.getItemMap().values().iterator(); iterator.hasNext(); ) {
+        for (Iterator<ItemData> iterator = ret.iterator(); iterator.hasNext(); ) {
             if (iterator.next().getTotalCount() < min) {
                 iterator.remove();
             }
         }
         return ret;
     }
-
-    public abstract Collection<? extends ItemData> getItemData();
 
     @NotNull
     public TransitResponse eject(BlockEntity outputter, @Nullable IItemHandler target, int min, Function<LogisticalTransporterBase, EnumColor> outputColor) {
@@ -91,7 +85,7 @@ public abstract class TransitRequest {
     public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable IItemHandler inventory, int min, boolean force) {
         if (isEmpty()) {//Short circuit if our request is empty
             return getEmptyResponse();
-        } else if (force && WorldUtils.getTileEntity(level, pos) instanceof TileEntityLogisticalSorter sorter) {
+        } else if (force && WorldUtils.getTileEntity(level, pos) instanceof IAdvancedTransportEjector sorter) {
             return sorter.sendHome(this);
         }
         return addToInventoryUnchecked(inventory, min);
@@ -121,7 +115,7 @@ public abstract class TransitRequest {
             }
             // otherwise, continue on to actually sending items to the inventory
         }
-        for (ItemData data : getItemData()) {
+        for (ItemData data : this) {
             ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
             ItemStack toInsert = origInsert.copy();
             for (int i = 0; i < slots; i++) {
@@ -140,7 +134,7 @@ public abstract class TransitRequest {
     }
 
     public boolean isEmpty() {
-        return getItemData().isEmpty();
+        return !iterator().hasNext();
     }
 
     @NotNull
@@ -148,13 +142,12 @@ public abstract class TransitRequest {
         return new TransitResponse(inserted, data);
     }
 
+    @NotNull
     public TransitResponse createSimpleResponse() {
-        Optional<? extends ItemData> first = getItemData().stream().findFirst();
-        if (first.isEmpty()) {
-            return getEmptyResponse();
+        for (ItemData data : this) {
+            return createResponse(data.getStack(), data);
         }
-        ItemData data = first.get();
-        return createResponse(data.itemType.createStack(data.totalCount), data);
+        return getEmptyResponse();
     }
 
     @NotNull
@@ -263,16 +256,16 @@ public abstract class TransitRequest {
                 return false;
             }
             ItemData itemData = (ItemData) o;
-            return totalCount == itemData.totalCount && itemType.equals(itemData.itemType);
+            return getTotalCount() == itemData.getTotalCount() && getItemType().equals(itemData.getItemType());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(itemType, totalCount);
+            return Objects.hash(getItemType(), getTotalCount());
         }
     }
 
-    public static class SimpleTransitRequest extends TransitRequest {
+    public static class SimpleTransitRequest extends CollectionTransitRequest {
 
         private final List<ItemData> slotData;
 
@@ -281,7 +274,7 @@ public abstract class TransitRequest {
         }
 
         @Override
-        public Collection<ItemData> getItemData() {
+        public List<ItemData> getItemData() {
             return slotData;
         }
 

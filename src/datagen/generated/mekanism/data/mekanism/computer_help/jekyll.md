@@ -3803,7 +3803,17 @@ methods:
     returns:
       javaType: boolean
       type: boolean
+  - methodName: isRoundRobin
+    returns:
+      javaType: boolean
+      type: boolean
   - methodName: setExportsWithoutFilter
+    params:
+    - javaType: boolean
+      name: value
+      type: boolean
+    requiresPublicSecurity: true
+  - methodName: setRoundRobin
     params:
     - javaType: boolean
       name: value

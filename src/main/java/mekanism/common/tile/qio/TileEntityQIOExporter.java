@@ -9,10 +9,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
+import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.item.CursedTransporterItemHandler;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.content.qio.filter.QIOFilter;
@@ -24,15 +32,23 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.slot.InternalInventorySlot;
+import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
+import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TransitRequest.ItemData;
+import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -40,9 +56,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
+public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements IAdvancedTransportEjector {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
@@ -50,6 +67,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
     private int delay = 0;
     private boolean exportWithoutFilter;
+    private boolean roundRobin;
+    @Nullable
+    private SidedBlockPos rrTarget;
 
     private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector = new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getLongValue()),
           freq -> getFilterEjectMap(freq).object2LongEntrySet());
@@ -58,6 +78,22 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     public TileEntityQIOExporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_EXPORTER, pos, state);
+    }
+
+    @NotNull
+    @Override
+    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        //TODO - 1.20.4: Re-evaluate the internal inventory slot and why do we even have a slot on the exporter
+        // I think it is so that transporters can connect, but it seems a bit silly
+        builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.BACK);
+        return builder.build();
+    }
+
+    @Override
+    public boolean persists(ContainerType<?, ?, ?> type) {
+        //Note: We don't persist items because the slot we have is only actually for the transporters to connect visually
+        return type != ContainerType.ITEM && super.persists(type);
     }
 
     @Override
@@ -98,7 +134,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         } else {
             return;
         }
-        ejector.eject(freq, backHandler);
+        ejector.eject(this, freq, backHandler);
     }
 
     private Object2LongMap<HashedItem> getFilterEjectMap(QIOFrequency freq) {
@@ -136,24 +172,45 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::getExportWithoutFilter, value -> exportWithoutFilter = value));
+        container.track(SyncableBoolean.create(this::getRoundRobin, value -> roundRobin = value));
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
+        SidedBlockPos rrTarget = getRoundRobinTarget();
+        if (rrTarget != null) {
+            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+        }
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag nbt) {
+        super.load(nbt);
+        if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
+            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET)));
+        }
     }
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
         super.writeSustainedData(dataMap);
         dataMap.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
+        dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         super.readSustainedData(dataMap);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.AUTO, value -> exportWithoutFilter = value);
+        roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
     }
 
     @Override
     public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
         Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
         remap.put(NBTConstants.AUTO, MekanismAttachmentTypes.AUTO);
+        remap.put(NBTConstants.ROUND_ROBIN, MekanismAttachmentTypes.ROUND_ROBIN);
         return remap;
     }
 
@@ -161,12 +218,63 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     public void writeToStack(ItemStack stack) {
         super.writeToStack(stack);
         stack.setData(MekanismAttachmentTypes.AUTO, exportWithoutFilter);
+        stack.setData(MekanismAttachmentTypes.ROUND_ROBIN, roundRobin);
     }
 
     @Override
     public void readFromStack(ItemStack stack) {
         super.readFromStack(stack);
         exportWithoutFilter = stack.getData(MekanismAttachmentTypes.AUTO);
+        roundRobin = stack.getData(MekanismAttachmentTypes.ROUND_ROBIN);
+    }
+
+    @Nullable
+    @Override
+    public SidedBlockPos getRoundRobinTarget() {
+        return rrTarget;
+    }
+
+    @Override
+    public void setRoundRobinTarget(@Nullable SidedBlockPos target) {
+        rrTarget = target;
+    }
+
+    @Override
+    @ComputerMethod(nameOverride = "isRoundRobin")
+    public boolean getRoundRobin() {
+        return roundRobin;
+    }
+
+    @Override
+    public void toggleRoundRobin() {
+        roundRobin = !roundRobin;
+        setRoundRobinTarget((SidedBlockPos) null);
+        markForSave();
+    }
+
+    @Override
+    public boolean canSendHome(@NotNull ItemStack stack) {
+        QIOFrequency frequency = getQIOFrequency();
+        return frequency != null && frequency.massInsert(stack, stack.getCount(), Action.SIMULATE) > 0;
+    }
+
+    @NotNull
+    @Override
+    public TransitRequest.TransitResponse sendHome(@NotNull TransitRequest request) {
+        if (request.isEmpty()) {//Short circuit if our request is empty
+            return request.getEmptyResponse();
+        }
+        QIOFrequency frequency = getQIOFrequency();
+        if (frequency != null) {
+            for (ItemData data : request) {
+                ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
+                ItemStack remainder = frequency.addItem(origInsert);
+                if (TransporterManager.didEmit(origInsert, remainder)) {
+                    return request.createResponse(TransporterManager.getToUse(origInsert, remainder), data);
+                }
+            }
+        }
+        return request.getEmptyResponse();
     }
 
     //Methods relating to IComputerTile
@@ -175,6 +283,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         validateSecurityIsPublic();
         if (exportWithoutFilter != value) {
             toggleExportWithoutFilter();
+        }
+    }
+
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setRoundRobin(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (roundRobin != value) {
+            toggleRoundRobin();
         }
     }
     //End methods IComputerTile
@@ -205,7 +321,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             this.ejectMapCalculator = ejectMapCalculator;
         }
 
-        private void eject(QIOFrequency freq, IItemHandler inventory) {
+        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, IItemHandler inventory) {
             int slots = inventory.getSlots();
             if (slots == 0) {
                 //If the inventory has no slots just exit early and don't even bother calculating the eject map
@@ -215,8 +331,17 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             if (ejectMap.isEmpty()) {
                 return;
             }
+            LogisticalTransporterBase transporter = null;
+            if (inventory instanceof CursedTransporterItemHandler cursed) {
+                transporter = cursed.getTransporter();
+                if (!transporter.hasTransmitterNetwork()) {//Probably will never happen, but if we don't have a network just skip doing anything
+                    return;
+                }
+            }
+            BlockPos exportPos = exporter.getBlockPos();
             RandomSource random = getLevel().getRandom();
             double ejectChance = Math.min(1, MAX_EJECT_ATTEMPTS / ejectMap.size());
+            boolean randomizeEject = ejectChance < 1;
             int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount();
             Object2IntMap<HashedItem> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
@@ -226,24 +351,41 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                     break;
                 }
                 // skip randomly based on our eject chance
-                if (random.nextDouble() > ejectChance) {
+                if (randomizeEject && random.nextDouble() > ejectChance) {
                     continue;
                 }
                 HashedItem type = typeSupplier.apply(obj);
-                ItemStack origInsert = type.createStack(Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj)));
-                ItemStack toInsert = origInsert.copy();
-                for (int i = 0; i < slots; i++) {
-                    // Do insert, this will handle validating the item is valid for the inventory
-                    toInsert = inventory.insertItem(i, toInsert, false);
-                    // If empty, end
-                    if (toInsert.isEmpty()) {
-                        break;
+                int amountToInsert = Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj));
+                ItemStack origInsert = type.createStack(amountToInsert);
+                int toUse;
+                if (transporter == null) {
+                    ItemStack toInsert = origInsert.copy();
+                    for (int i = 0; i < slots; i++) {
+                        // Do insert, this will handle validating the item is valid for the inventory
+                        toInsert = inventory.insertItem(i, toInsert, false);
+                        // If empty, end
+                        if (toInsert.isEmpty()) {
+                            break;
+                        }
                     }
+                    toUse = TransporterManager.getToUse(origInsert, toInsert).getCount();
+                } else {
+                    //Note: We just simplify the logic that we would have when sending to a transporter via the handler
+                    // and add support for also performing round-robin distribution. We don't just use a custom transit request
+                    // as we want to be able to send multiple types at once, which is not that straightforward to do when trying
+                    // to re-use where we currently are in the iteration. Without that extra handling we can easily do a custom
+                    // transit request similar to https://gist.github.com/pupnewfster/d0dac2098a2755dc60220f89873ff461,
+                    // but it means we may not properly respect the maxTypes and maxCount
+                    TransitRequest request = TransitRequest.simple(origInsert);
+                    //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
+                    // destinations, which this doesn't do as it only checks once, rather than trying to check again if we still have some that we
+                    // are able to insert
+                    TransitResponse response = transporter.insertMaybeRR(exporter, exportPos, request, transporter.getColor(), true, 1);
+                    toUse = response.getSendingAmount();
                 }
-                ItemStack toUse = TransporterManager.getToUse(origInsert, toInsert);
-                if (!toUse.isEmpty()) {
-                    amountRemoved += toUse.getCount();
-                    removed.mergeInt(type, toUse.getCount(), Integer::sum);
+                if (toUse > 0) {
+                    amountRemoved += toUse;
+                    removed.mergeInt(type, toUse, Integer::sum);
                 }
             }
             // actually remove the items from the QIO frequency

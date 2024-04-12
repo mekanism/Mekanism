@@ -1431,6 +1431,8 @@
   "pigment.mekanism.yellow": "Yellow Pigment",
   "qio.mekanism.compensate_tooltip": "What are you trying to compensate for?",
   "qio.mekanism.export_without_filter": "Export Without Filter:",
+  "qio.mekanism.exporter.round_robin": "Round robin:",
+  "qio.mekanism.exporter.round_robin.description": "When connected to a transporter, cycles between all connected inventories when sending items.",
   "qio.mekanism.fuzzy_mode": "Ignoring NBT: %1$s",
   "qio.mekanism.import_without_filter": "Import Without Filter:",
   "qio.mekanism.item_type_undefined": "Item type undefined",

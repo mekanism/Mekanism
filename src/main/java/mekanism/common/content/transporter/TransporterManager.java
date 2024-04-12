@@ -246,7 +246,7 @@ public class TransporterManager {
     private static TransitResponse getPredictedInsert(InventoryInfo inventoryInfo, IItemHandler handler, TransitRequest request) {
         //For each of the items in the request, simulate the insert. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (ItemData data : request.getItemData()) {
+        for (ItemData data : request) {
             //Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack stack = data.getStack();
             int numToSend = data.getTotalCount();

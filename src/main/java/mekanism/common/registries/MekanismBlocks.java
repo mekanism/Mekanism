@@ -391,9 +391,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockPersonalBarrel, ItemBlockPersonalStorage<BlockPersonalBarrel>> PERSONAL_BARREL = BLOCKS.register("personal_barrel", BlockPersonalBarrel::new, block -> new ItemBlockPersonalStorage<>(block, Stats.OPEN_BARREL));
     public static final BlockRegistryObject<BlockPersonalChest, ItemBlockPersonalStorage<BlockPersonalChest>> PERSONAL_CHEST = BLOCKS.register("personal_chest", BlockPersonalChest::new, block -> new ItemBlockPersonalStorage<>(block, Stats.OPEN_CHEST));
     public static final BlockRegistryObject<BlockChargepad, ItemBlockTooltip<BlockChargepad>> CHARGEPAD = BLOCKS.register("chargepad", BlockChargepad::new, ItemBlockTooltip::new);
-    public static final BlockRegistryObject<BlockLogisticalSorter, ItemBlockTooltip<BlockLogisticalSorter>> LOGISTICAL_SORTER = BLOCKS.register("logistical_sorter", BlockLogisticalSorter::new, ItemBlockTooltip::new)
-          //TODO - 1.20.4: Re-evaluate this
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> List.of(InternalInventorySlot.create(null))));
+    public static final BlockRegistryObject<BlockLogisticalSorter, ItemBlockTooltip<BlockLogisticalSorter>> LOGISTICAL_SORTER = BLOCKS.register("logistical_sorter", BlockLogisticalSorter::new, ItemBlockTooltip::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityRotaryCondensentrator, Machine<TileEntityRotaryCondensentrator>>, ItemBlockTooltip<BlockTileModel<TileEntityRotaryCondensentrator, Machine<TileEntityRotaryCondensentrator>>>> ROTARY_CONDENSENTRATOR =
           BLOCKS.register("rotary_condensentrator", () -> new BlockTileModel<>(MekanismBlockTypes.ROTARY_CONDENSENTRATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder

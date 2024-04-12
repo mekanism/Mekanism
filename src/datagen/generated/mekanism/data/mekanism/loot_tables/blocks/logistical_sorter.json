@@ -3,6 +3,11 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -19,10 +24,6 @@
             {
               "function": "minecraft:copy_name",
               "source": "block_entity"
-            },
-            {
-              "type": "mekanism:inventory_slots",
-              "function": "mekanism:copy_containers"
             },
             {
               "function": "mekanism:copy_to_attachments",

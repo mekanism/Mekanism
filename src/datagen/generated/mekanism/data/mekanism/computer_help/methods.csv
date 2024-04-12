@@ -642,7 +642,9 @@ QIO Drive Array,getFrequencyItemTypeCount,,Number (long),,false,Requires a frequ
 QIO Drive Array,getFrequencyItemTypePercentage,,Number (double),,false,Requires a frequency to be selected
 QIO Drive Array,getSlotCount,,Number (int),,false,
 QIO Exporter,getExportWithoutFilter,,boolean,,false,
+QIO Exporter,isRoundRobin,,boolean,,false,
 QIO Exporter,setExportsWithoutFilter,value: boolean,,,true,
+QIO Exporter,setRoundRobin,value: boolean,,,true,
 QIO Importer,getImportWithoutFilter,,boolean,,false,
 QIO Importer,setImportsWithoutFilter,value: boolean,,,true,
 QIO Machine,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation

@@ -71,6 +71,8 @@ public enum MekanismLang implements ILangEntry {
     QIO_REJECTS_TO_INVENTORY("qio", "recipe_viewer.to_inventory"),
     QIO_SEARCH_AUTO_FOCUS("qio", "search.focus.auto"),
     QIO_SEARCH_MANUAL_FOCUS("qio", "search.focus.manual"),
+    QIO_EXPORTER_ROUND_ROBIN("qio", "exporter.round_robin"),
+    QIO_EXPORTER_ROUND_ROBIN_DESCRIPTION("qio", "exporter.round_robin.description"),
     LIST_SORT_COUNT("qio", "sort_count"),
     LIST_SORT_NAME("qio", "sort_name"),
     LIST_SORT_MOD("qio", "sort_mod"),

@@ -710,6 +710,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_REJECTS_TO_INVENTORY, "Prioritize moving items left in the crafting grid to the player's inventory when overriding with a recipe viewer");
         add(MekanismLang.QIO_SEARCH_AUTO_FOCUS, "Auto focus the QIO search bar when opening a dashboard.");
         add(MekanismLang.QIO_SEARCH_MANUAL_FOCUS, "Don't automatically focus the QIO search bar when opening a dashboard.");
+        add(MekanismLang.QIO_EXPORTER_ROUND_ROBIN, "Round robin:");
+        add(MekanismLang.QIO_EXPORTER_ROUND_ROBIN_DESCRIPTION, "When connected to a transporter, cycles between all connected inventories when sending items.");
         add(MekanismLang.LIST_SORT_COUNT, "Count");
         add(MekanismLang.LIST_SORT_NAME, "Name");
         add(MekanismLang.LIST_SORT_MOD, "Mod");

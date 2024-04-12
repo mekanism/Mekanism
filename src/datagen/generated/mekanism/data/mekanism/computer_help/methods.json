@@ -5614,7 +5614,25 @@
       }
     },
     {
+      "methodName": "isRoundRobin",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
       "methodName": "setExportsWithoutFilter",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ],
+      "requiresPublicSecurity": true
+    },
+    {
+      "methodName": "setRoundRobin",
       "params": [
         {
           "type": "boolean",

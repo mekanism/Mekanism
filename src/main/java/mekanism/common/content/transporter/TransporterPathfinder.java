@@ -20,10 +20,10 @@ import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.SidedBlockPos;
+import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -116,49 +116,52 @@ public final class TransporterPathfinder {
     }
 
     @Nullable
-    public static Destination getNewRRPath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, TileEntityLogisticalSorter outputter,
+    public static Destination getNewRRPath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, IAdvancedTransportEjector outputter,
           int min) {
         List<Destination> destinations = getPaths(start, stack, request, min, Collections.emptyMap());
         int destinationCount = destinations.size();
         if (destinationCount == 0) {
             return null;
         }
-        if (destinationCount > 1 && outputter.rrTarget != null) {
-            //If we have more than one destination and have a "next" round-robin target stored
-            // go through the different destinations and find one that matches
-            for (int i = 0; i < destinationCount; i++) {
-                Destination destination = destinations.get(i);
-                List<BlockPos> path = destination.getPath();
-                BlockPos pos = path.get(0);
-                if (outputter.rrTarget.pos().equals(pos)) {
-                    Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
-                    if (outputter.rrTarget.side() == sideOfDest) {
-                        //When we find one that matches
-                        if (i == destinationCount - 1) {
-                            // if we are the last element mark that the next target is the first one
-                            // Note: We do this rather than just setting it to null so that if more
-                            // targets get added we still continue in the place we are expecting
-                            outputter.rrTarget = SidedBlockPos.get(destinations.get(0));
-                        } else {
-                            // Otherwise, if we are not the last element mark the next target as
-                            // the next destination
-                            outputter.rrTarget = SidedBlockPos.get(destinations.get(i + 1));
+        if (destinationCount > 1) {
+            SidedBlockPos rrTarget = outputter.getRoundRobinTarget();
+            if (rrTarget != null) {
+                //If we have more than one destination and have a "next" round-robin target stored
+                // go through the different destinations and find one that matches
+                for (int i = 0; i < destinationCount; i++) {
+                    Destination destination = destinations.get(i);
+                    List<BlockPos> path = destination.getPath();
+                    BlockPos pos = path.get(0);
+                    if (rrTarget.pos().equals(pos)) {
+                        Direction sideOfDest = WorldUtils.sideDifference(path.get(1), pos);
+                        if (rrTarget.side() == sideOfDest) {
+                            //When we find one that matches
+                            if (i == destinationCount - 1) {
+                                // if we are the last element mark that the next target is the first one
+                                // Note: We do this rather than just setting it to null so that if more
+                                // targets get added we still continue in the place we are expecting
+                                outputter.setRoundRobinTarget(destinations.get(0));
+                            } else {
+                                // Otherwise, if we are not the last element mark the next target as
+                                // the next destination
+                                outputter.setRoundRobinTarget(destinations.get(i + 1));
+                            }
+                            //We return our matching destination instead of the next one and using rrTarget to
+                            // keep track of what destination we did last as then if we filled it up we would
+                            // not be able to find a match the next iteration and thus be forced to reset
+                            return destination;
                         }
-                        //We return our matching destination instead of the next one and using rrTarget to
-                        // keep track of what destination we did last as then if we filled it up we would
-                        // not be able to find a match the next iteration and thus be forced to reset
-                        return destination;
                     }
                 }
+                //If we could not find our target anywhere, just fallback and reset to the start of the list
+                // this should only happen if the destination gets broken/removed before we send to it
             }
-            //If we could not find our target anywhere, just fallback and reset to the start of the list
-            // this should only happen if the destination gets broken/removed before we send to it
         }
         Destination destination = destinations.get(0);
         if (destinationCount > 1) {
-            outputter.rrTarget = SidedBlockPos.get(destinations.get(1));
+            outputter.setRoundRobinTarget(destinations.get(1));
         } else {
-            outputter.rrTarget = SidedBlockPos.get(destination);
+            outputter.setRoundRobinTarget(destination);
         }
         return destination;
     }
