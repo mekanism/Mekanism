@@ -1431,6 +1431,8 @@
   "pigment.mekanism.yellow": "黄色颜料",
   "qio.mekanism.compensate_tooltip": "你在渴望什么？",
   "qio.mekanism.export_without_filter": "不带过滤器导出：",
+  "qio.mekanism.exporter.round_robin": "循环：",
+  "qio.mekanism.exporter.round_robin.description": "当连接到转运管道时，在所有已连接的容器中循环并发送物品。",
   "qio.mekanism.fuzzy_mode": "忽略NBT：%1$s",
   "qio.mekanism.import_without_filter": "不带过滤器导入：",
   "qio.mekanism.item_type_undefined": "物品类型未定义",
