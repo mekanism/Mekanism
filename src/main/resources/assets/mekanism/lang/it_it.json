@@ -1431,6 +1431,8 @@
   "pigment.mekanism.yellow": "Pigmento Giallo",
   "qio.mekanism.compensate_tooltip": "Cosa stai cercando di compensare?",
   "qio.mekanism.export_without_filter": "Esporta senza filtro:",
+  "qio.mekanism.exporter.round_robin": "Trasferimento circolare:",
+  "qio.mekanism.exporter.round_robin.description": "Quando è collegato a un trasportatore, cicla gli oggetti ricevuti tra tutti gli inventari collegati.",
   "qio.mekanism.fuzzy_mode": "NBT ignorato: %1$s",
   "qio.mekanism.import_without_filter": "Importa senza filtro:",
   "qio.mekanism.item_type_undefined": "Tipo di oggetto non definito",
