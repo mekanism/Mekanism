@@ -17,6 +17,8 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<QIOFilter<?>> filterManager = new SortableFilterManager<QIOFilter<?>>((Class) QIOFilter.class, this::markForSave);
+    private int maxTransitCount = 64;
+    private int maxTransitTypes = 1;
 
     public TileEntityQIOFilterHandler(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -25,6 +27,18 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     @Override
     public SortableFilterManager<QIOFilter<?>> getFilterManager() {
         return filterManager;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.SPEED) {
+            int speedUpgrades = upgradeComponent.getUpgrades(Upgrade.SPEED);
+            // 64 to 320 items
+            maxTransitCount = 64 + 32 * speedUpgrades;
+            // 1 to 5 types
+            maxTransitTypes = Math.round(1F + speedUpgrades / 2F);
+        }
     }
 
     @Override
@@ -46,13 +60,11 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     protected int getMaxTransitCount() {
-        // 64 to 320 items
-        return 64 + 32 * upgradeComponent.getUpgrades(Upgrade.SPEED);
+        return maxTransitCount;
     }
 
     protected int getMaxTransitTypes() {
-        // 1 to 5 types
-        return Math.round(1F + upgradeComponent.getUpgrades(Upgrade.SPEED) / 2F);
+        return maxTransitTypes;
     }
 
     //Methods relating to IComputerTile

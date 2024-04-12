@@ -83,6 +83,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      */
     private static final int BASE_TICKS_REQUIRED = 19;
     public static final int MAX_FLUID = 10_000;
+    private static final int BASE_OUTPUT_RATE = 256;
 
     /**
      * This pump's tank
@@ -101,6 +102,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      */
     public int operatingTicks;
     private boolean usedEnergy = false;
+    private int outputRate = BASE_OUTPUT_RATE;
     /**
      * The nodes that have full sources near them or in them
      */
@@ -179,7 +181,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
             }
-            FluidUtils.emit(fluidHandlerAbove, fluidTank, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
+            FluidUtils.emit(fluidHandlerAbove, fluidTank, outputRate);
         }
         return sendUpdatePacket;
     }
@@ -369,6 +371,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            outputRate = BASE_OUTPUT_RATE * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED));
         }
     }
 

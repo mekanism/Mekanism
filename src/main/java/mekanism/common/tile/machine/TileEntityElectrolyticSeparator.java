@@ -96,6 +96,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
      */
     public static final long MAX_GAS = 2_400;
     public static final int MAX_FLUID = 24_000;
+    private static final int BASE_DUMP_RATE = 8;
     private static final BiFunction<FloatingLong, TileEntityElectrolyticSeparator, FloatingLong> BASE_ENERGY_CALCULATOR =
           (base, tile) -> base.multiply(tile.getRecipeEnergyMultiplier());
 
@@ -124,6 +125,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private FloatingLong recipeEnergyMultiplier = FloatingLong.ONE;
     private int baselineMaxOperations = 1;
+    private long dumpRate = BASE_DUMP_RATE;
 
     private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NotNull FluidStack> inputHandler;
@@ -246,7 +248,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private void handleTank(IGasTank tank, GasMode mode) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
-                tank.shrinkStack(8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), Action.EXECUTE);
+                tank.shrinkStack(dumpRate, Action.EXECUTE);
             } else if (mode == GasMode.DUMPING_EXCESS) {
                 long target = getDumpingExcessTarget(tank);
                 long stored = tank.getStored();
@@ -319,7 +321,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+            double speed = Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+            baselineMaxOperations = (int) speed;
+            dumpRate = (long) (BASE_DUMP_RATE * speed);
         }
     }
 
