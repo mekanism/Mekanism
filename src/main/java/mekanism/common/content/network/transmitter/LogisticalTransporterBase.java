@@ -394,7 +394,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, min, doEmit, (stack, req, out, transporter, m, updateFlowing) -> stack.recalculatePath(req, transporter, m, updateFlowing));
+        return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculatePath);
     }
 
     private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,
@@ -412,6 +412,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     public TransitResponse insertUnchecked(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
         TransporterStack stack = createInsertStack(outputterPos, color);
         return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min, doEmit));
+    }
+
+    public <BE extends BlockEntity> TransitResponse insertUnchecked(BE outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min, PathCalculator<BE> pathCalculator) {
+        TransporterStack stack = createInsertStack(outputter.getBlockPos(), color);
+        return updateTransit(doEmit, stack, pathCalculator.calculate(stack, request, outputter, this, min, doEmit));
     }
 
     public TransporterStack createInsertStack(BlockPos outputterCoord, @Nullable EnumColor color) {
@@ -455,7 +460,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @FunctionalInterface
-    private interface PathCalculator<BE extends BlockEntity> {
+    public interface PathCalculator<BE extends BlockEntity> {
 
         TransitResponse calculate(TransporterStack stack, TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean doEmit);
     }

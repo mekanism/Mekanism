@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -21,6 +22,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
+import mekanism.common.content.network.transmitter.LogisticalTransporterBase.PathCalculator;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.content.qio.filter.QIOFilter;
@@ -28,6 +30,7 @@ import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -61,6 +64,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements IAdvancedTransportEjector {
 
+    private static final EfficientEjector<Object2LongMap.Entry<HashedItem>> FILTER_EJECTOR = new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getLongValue()),
+          (exporter, freq) -> exporter.getFilterEjectMap(freq).object2LongEntrySet());
+    private static final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> FILTERLESS_EJECTOR =
+          new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getValue().getCount()), (exporter, freq) -> freq.getItemDataMap().entrySet());
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
     @Nullable
@@ -70,11 +77,6 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     private boolean roundRobin;
     @Nullable
     private SidedBlockPos rrTarget;
-
-    private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector = new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getLongValue()),
-          freq -> getFilterEjectMap(freq).object2LongEntrySet());
-    private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
-          new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getValue().getCount()), freq -> freq.getItemDataMap().entrySet());
 
     public TileEntityQIOExporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_EXPORTER, pos, state);
@@ -122,15 +124,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
             backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
         }
         IItemHandler backHandler = backInventory.getCapability();
-        //TODO - 1.20.4: Optimize exporting into transporters, maybe by checking if it is a cursed transporter handler??
         if (backHandler == null) {
             return;
         }
         EfficientEjector<?> ejector;
         if (getFilterManager().hasEnabledFilters()) {
-            ejector = filterEjector;
+            ejector = FILTER_EJECTOR;
         } else if (exportWithoutFilter) {
-            ejector = filterlessEjector;
+            ejector = FILTERLESS_EJECTOR;
         } else {
             return;
         }
@@ -307,19 +308,10 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
      *
      * @author aidancbrady
      */
-    private final class EfficientEjector<T> {
+    private record EfficientEjector<T>(Function<T, HashedItem> typeSupplier, ToIntFunction<T> countSupplier,
+                                       BiFunction<TileEntityQIOExporter, QIOFrequency, Collection<T>> ejectMapCalculator) {
 
         private static final double MAX_EJECT_ATTEMPTS = 100;
-
-        private final Function<QIOFrequency, Collection<T>> ejectMapCalculator;
-        private final Function<T, HashedItem> typeSupplier;
-        private final ToIntFunction<T> countSupplier;
-
-        private EfficientEjector(Function<T, HashedItem> typeSupplier, ToIntFunction<T> countSupplier, Function<QIOFrequency, Collection<T>> ejectMapCalculator) {
-            this.typeSupplier = typeSupplier;
-            this.countSupplier = countSupplier;
-            this.ejectMapCalculator = ejectMapCalculator;
-        }
 
         private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, IItemHandler inventory) {
             int slots = inventory.getSlots();
@@ -327,22 +319,28 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 //If the inventory has no slots just exit early and don't even bother calculating the eject map
                 return;
             }
-            Collection<T> ejectMap = ejectMapCalculator.apply(freq);
+            Collection<T> ejectMap = ejectMapCalculator.apply(exporter, freq);
             if (ejectMap.isEmpty()) {
                 return;
             }
             LogisticalTransporterBase transporter = null;
+            PathCalculator<TileEntityQIOExporter> pathCalculator = null;
             if (inventory instanceof CursedTransporterItemHandler cursed) {
                 transporter = cursed.getTransporter();
                 if (!transporter.hasTransmitterNetwork()) {//Probably will never happen, but if we don't have a network just skip doing anything
                     return;
                 }
+                Direction from = exporter.getDirection();
+                if (!transporter.canReceiveFrom(from) || !transporter.canConnectMutual(from, exporter)) {
+                    //Skip if the transporter can't receive from this position or connect to it
+                    return;
+                }
+                pathCalculator = exporter.getRoundRobin() ? TransporterStack::recalculateRRPath : TransporterStack::recalculatePath;
             }
-            BlockPos exportPos = exporter.getBlockPos();
-            RandomSource random = getLevel().getRandom();
+            RandomSource random = exporter.getLevel().getRandom();
             double ejectChance = Math.min(1, MAX_EJECT_ATTEMPTS / ejectMap.size());
             boolean randomizeEject = ejectChance < 1;
-            int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount();
+            int maxTypes = exporter.getMaxTransitTypes(), maxCount = exporter.getMaxTransitCount();
             Object2IntMap<HashedItem> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
             for (T obj : ejectMap) {
@@ -380,7 +378,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                     //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
                     // destinations, which this doesn't do as it only checks once, rather than trying to check again if we still have some that we
                     // are able to insert
-                    TransitResponse response = transporter.insertMaybeRR(exporter, exportPos, request, transporter.getColor(), true, 1);
+                    //Note: We don't use transporter#insertMaybeRR so that we only have to validate the transporter once
+                    TransitResponse response = transporter.insertUnchecked(exporter, request, transporter.getColor(), true, 1, pathCalculator);
                     toUse = response.getSendingAmount();
                 }
                 if (toUse > 0) {

@@ -175,6 +175,10 @@ public class TransporterStack {
         return recalculatePath(request, transporter, min, true);
     }
 
+    public final TransitResponse recalculatePath(TransitRequest request, BlockEntity ignored, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
+        return recalculatePath(request, transporter, min, updateFlowing);
+    }
+
     public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
         return recalculatePath(request, transporter, min, updateFlowing, Collections.emptyMap());
     }
