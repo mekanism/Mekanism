@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -84,9 +85,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
         Component tooltip = handler.getTooltip();
-        if (tooltip == null) {
-            lastTooltip = null;
-        } else if (!tooltip.equals(lastInfo)) {
+        if (!Objects.equals(tooltip, lastInfo)) {
             lastTooltip = TooltipUtils.create(tooltip);
         }
         lastInfo = tooltip;

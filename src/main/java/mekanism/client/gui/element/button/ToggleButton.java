@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ToggleButton extends MekanismImageButton {
 
@@ -17,7 +18,9 @@ public class ToggleButton extends MekanismImageButton {
 
     private final ResourceLocation flipped;
     private final BooleanSupplier toggled;
+    @Nullable
     private final Tooltip yes;
+    @Nullable
     private final Tooltip no;
 
     public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull IClickable onPress) {
@@ -29,12 +32,12 @@ public class ToggleButton extends MekanismImageButton {
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int size, int textureSize, ResourceLocation toggle, ResourceLocation flipped, BooleanSupplier toggled,
-          @NotNull IClickable onPress, Component yes, Component no) {
+          @NotNull IClickable onPress, @Nullable Component yes, @Nullable Component no) {
         this(gui, x, y, size, size, textureSize, textureSize, toggle, flipped, toggled, onPress, yes, no);
     }
 
     public ToggleButton(IGuiWrapper gui, int x, int y, int width, int height, int textureWidth, int textureHeight, ResourceLocation toggle, ResourceLocation flipped,
-          BooleanSupplier toggled, @NotNull IClickable onPress, Component yes, Component no) {
+          BooleanSupplier toggled, @NotNull IClickable onPress, @Nullable Component yes, @Nullable Component no) {
         super(gui, x, y, width, height, textureWidth, textureHeight, toggle, onPress);
         this.toggled = toggled;
         this.flipped = flipped;

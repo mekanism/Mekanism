@@ -6,6 +6,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class TooltipUtils {
@@ -19,8 +20,12 @@ public class TooltipUtils {
         return create(langEntry.translate());
     }
 
-    public static Tooltip create(Component messages) {
-        Tooltip tooltip = Tooltip.create(messages);
+    @Contract("null -> null")
+    public static Tooltip create(@Nullable Component message) {
+        if (message == null) {
+            return null;
+        }
+        Tooltip tooltip = Tooltip.create(message);
         //Set the delay to -1 so that it appears immediately instead of after a single millisecond
         tooltip.setDelay(-1);
         return tooltip;

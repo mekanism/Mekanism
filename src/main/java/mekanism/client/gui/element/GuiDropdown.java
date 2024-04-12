@@ -13,7 +13,6 @@ import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -111,10 +110,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     public void updateTooltip(int mouseX, int mouseY) {
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            Tooltip text = typeTooltips.computeIfAbsent(options[index], t -> {
-                Component tooltip = t.getTooltip();
-                return tooltip == null ? null : TooltipUtils.create(tooltip);
-            });
+            Tooltip text = typeTooltips.computeIfAbsent(options[index], t -> TooltipUtils.create(t.getTooltip()));
             cachedTooltipRect = new ScreenRectangle(getX() + 1, getY() + 12 + index * 10, width - 2, 10);
             setTooltip(text);
         } else {
