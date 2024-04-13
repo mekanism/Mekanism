@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 import mekanism.MergeJars
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
+import net.neoforged.gradle.dsl.common.runs.run.Run
 
 import java.util.function.Consumer
 
@@ -31,7 +32,7 @@ defaultTasks 'build'
 idea {
     module {
         //Exclude directories from being managed
-        for (String excludeDirName in ["run", "runGameTests", "out", "logs", "gradle"]) {
+        for (String excludeDirName in ["runs", "out", "logs", "gradle"]) {
             excludeDirs.add(new File(projectDir, excludeDirName))
         }
         //Tell IDEA to always download sources/javadoc artifacts from maven.
@@ -45,7 +46,7 @@ ext {
                          "emi_version": emi_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
-    extraTypes = ['datagen', 'gameTest']
+    extraTypes = ['datagen']
 }
 
 sourceSets {
@@ -74,6 +75,13 @@ sourceSets {
         compileClasspath += api.output
         runtimeClasspath += api.output
     }
+    gameTest {
+        runs {
+            modIdentifier = "mekanismtests"
+        }
+        compileClasspath += api.output
+        runtimeClasspath += api.output
+    }
 }
 
 configurations {
@@ -82,6 +90,7 @@ configurations {
 
 //Add all extra source sets that the main sourceSet should have
 setupExtraSourceSets(sourceSets.main)
+setupExtraSourceSets(sourceSets.gameTest, false)
 
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
@@ -115,10 +124,14 @@ for (String name : secondaryModules) {
 //Setup the UPDATE_SOURCESET property in case we are doing any remappings
 project.ext."UPDATE_SOURCESETS" = project.sourceSets.collect { it.name }.join(';')
 
-def setupExtraSourceSets(SourceSet base) {
+def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     //Expose the base module to junit
     project.sourceSets.test.compileClasspath += base.output
     project.sourceSets.test.runtimeClasspath += base.output
+    if (base != project.sourceSets.gameTest) {
+        project.sourceSets.gameTest.compileClasspath += base.output
+        project.sourceSets.gameTest.runtimeClasspath += base.output
+    }
     //Setup and extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones
     def baseImplementation = project.configurations.maybeCreate(base.getTaskName(null, "implementation"))
@@ -130,19 +143,21 @@ def setupExtraSourceSets(SourceSet base) {
         baseCompileOnly.extendsFrom(project.configurations.getByName("compileOnly"))
         baseRuntimeOnly.extendsFrom(project.configurations.getByName("runtimeOnly"))
     }
-    //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
-    // properly access the dependency
-    for (String extraType : extraTypes) {
-        //Setup a source set in extraType/$name
-        def extraSourceSet = setupExtraSourceSet(base, extraType)
-        //And then setup the configurations for it
-        def implExtends = [baseImplementation]
-        if (extraType == 'datagen') {
-            implExtends.add(project.configurations.getByName("datagenNonMod"))
+    if (includeExtra) {
+        //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
+        // properly access the dependency
+        for (String extraType : extraTypes) {
+            //Setup a source set in extraType/$name
+            def extraSourceSet = setupExtraSourceSet(base, extraType)
+            //And then setup the configurations for it
+            def implExtends = [baseImplementation]
+            if (extraType == 'datagen') {
+                implExtends.add(project.configurations.getByName("datagenNonMod"))
+            }
+            project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(*implExtends)
+            project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "compileOnly")).extendsFrom(baseCompileOnly)
+            project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "runtimeOnly")).extendsFrom(baseRuntimeOnly)
         }
-        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(*implExtends)
-        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "compileOnly")).extendsFrom(baseCompileOnly)
-        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "runtimeOnly")).extendsFrom(baseRuntimeOnly)
     }
 }
 
@@ -271,21 +286,36 @@ minecraft {
                 file('src/additions/resources/META-INF/accesstransformer.cfg'),
                 //Dev time only ATs so the file name doesn't have to match accesstransformer.cfg
                 file('src/datagen/main/resources/META-INF/datagen_ats.cfg'),
-                file('src/gameTest/main/resources/META-INF/gametest_ats.cfg')
+                file('src/gameTest/resources/META-INF/gametest_ats.cfg')
         )
     }
 }
 
+static void setupClientAcc(Run run) {
+    //The below if statements are to add args to your gradle.properties file in user home
+    // (DO NOT add them directly to the gradle.properties file for this project)
+    // Setting the below properties allows use of your normal Minecraft account in the
+    // dev environment including having your skin load. Each property also has a comment
+    // explaining what information to set the value to/format it expects
+    // One thing to note is because of the caching that goes on, after changing these
+    // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
+    if (run.project.hasProperty('mc_uuid')) {
+        //Your uuid without any dashes in the middle
+        run.programArguments('--uuid', (String) run.project.property('mc_uuid'))
+    }
+    if (run.project.hasProperty('mc_username')) {
+        //Your username/display name, this is the name that shows up in chat
+        // Note: This is not your email, even if you have a Mojang account
+        run.programArguments('--username', (String) run.project.property('mc_username'))
+    }
+    if (run.project.hasProperty('mc_accessToken')) {
+        //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
+        run.programArguments('--accessToken', (String) run.project.property('mc_accessToken'))
+    }
+}
+
 runs {
-    configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
-        run.workingDirectory(file("run"))
-
-        boolean supportsGameTests = !run.isDataGenerator.get()
-        if (supportsGameTests) {
-            //Specify all our mods as domains to look for game tests
-            run.systemProperty('neoforge.enabledGameTestNamespaces', 'mekanism,mekanismadditions,mekanismdefense,mekanismgenerators,mekanismtools')
-        }
-
+    configureEach { Run run ->
         if (run.project.hasProperty('forge_force_ansi')) {
             //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
             // or eclipse's plugin that adds support for ansi escape in console
@@ -294,16 +324,8 @@ runs {
 
         run.modSources(sourceSets.main, sourceSets.api)
 
-        if (supportsGameTests) {
-            run.modSource(sourceSets.gameTestMain)
-        }
-
         for (String name : secondaryModules) {
-            def base = sourceSets.getByName(name)
-            run.modSource(base)
-            if (supportsGameTests) {
-                run.modSource(getExtraSourceSet(base, 'gameTest'))
-            }
+            run.modSource(sourceSets.getByName(name))
         }
 
         //if the selected toolchain is a JBR, enable DCEVM
@@ -311,28 +333,7 @@ runs {
             run.jvmArgument("-XX:+AllowEnhancedClassRedefinition")
         }
     }
-    client {
-        //The below if statements are to add args to your gradle.properties file in user home
-        // (DO NOT add them directly to the gradle.properties file for this project)
-        // Setting the below properties allows use of your normal Minecraft account in the
-        // dev environment including having your skin load. Each property also has a comment
-        // explaining what information to set the value to/format it expects
-        // One thing to note is because of the caching that goes on, after changing these
-        // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
-        if (project.hasProperty('mc_uuid')) {
-            //Your uuid without any dashes in the middle
-            programArguments('--uuid', (String) project.property('mc_uuid'))
-        }
-        if (project.hasProperty('mc_username')) {
-            //Your username/display name, this is the name that shows up in chat
-            // Note: This is not your email, even if you have a Mojang account
-            programArguments('--username', (String) project.property('mc_username'))
-        }
-        if (project.hasProperty('mc_accessToken')) {
-            //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
-            programArguments('--accessToken', (String) project.property('mc_accessToken'))
-        }
-    }
+    client { run -> setupClientAcc(run) }
     clientAlt {
         configure("client")
         if (!project.hasProperty('mc_username')) {
@@ -342,10 +343,14 @@ runs {
         }
     }
     server {
-        programArgument('--nogui')
     }
     gameTestServer {
-        workingDirectory(file("runGameTests"))
+        modSource(sourceSets.gameTest)
+    }
+    gameTestClient { run ->
+        configure("client")
+        setupClientAcc(run)
+        modSource(sourceSets.gameTest)
     }
     data {
         programArguments('--all', '--output', project.file('src/datagen/generated/').getAbsolutePath(),
@@ -413,6 +418,7 @@ dependencies {
     implementation project(":annotation-processor")
     annotationProcessor project(":annotation-processor")
 
+    gameTestImplementation "net.neoforged:testframework:${forge_version}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing

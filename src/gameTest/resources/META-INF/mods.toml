@@ -1,0 +1,8 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="MIT"
+
+[[mods]]
+    modId="mekanismtests"
+    displayName="Mekanism: Tests"
+    description='''Tests for Mekanism to ensure it functions properly'''

@@ -1,15 +1,16 @@
-package mekanism.common.util.test;
+package mekanism.common.tests.util;
 
 import it.unimi.dsi.fastutil.longs.Long2BooleanArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import mekanism.common.Mekanism;
+import mekanism.common.tests.MekanismTests;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 
-@EventBusSubscriber(modid = Mekanism.MODID)
+@EventBusSubscriber(modid = MekanismTests.MODID)
 public class GameTestEventListeners {
 
     //TODO: Do we want to eventually try and make this work for multiple dimensions??

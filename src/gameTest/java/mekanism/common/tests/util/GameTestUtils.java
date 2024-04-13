@@ -1,18 +1,19 @@
-package mekanism.common.util.test;
+package mekanism.common.tests.util;
 
-import java.util.function.UnaryOperator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.GameTestSequence;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,50 +21,38 @@ public class GameTestUtils {
 
     public static final int INACCESSIBLE_LEVEL = ChunkMap.MAX_VIEW_DISTANCE + 1;
     private static final int UNLOAD_LEVEL = ChunkLevel.MAX_LEVEL + 1;
-    private static final Runnable NO_OP_RUNNABLE = () -> {
-    };
 
     static final boolean DEBUG_CHUNK_LOADING = false;
 
-    public static void succeedIfSequence(GameTestHelper helper, UnaryOperator<GameTestSequence> sequence) {
-        helper.ensureSingleFinalCheck();
-        sequence.apply(helper.startSequence()).thenSucceed();
-    }
-
-    public static void succeedIfAfterUnload(GameTestHelper helper, ChunkPos relativePos, Runnable criteria) {
-        succeedIfSequence(helper, sequence -> sequence
+    public static void succeedIfAfterUnload(ExtendedGameTestHelper helper, ChunkPos relativePos, Runnable criteria) {
+        helper.startSequence()
               .thenWaitUntil(() -> unloadChunk(helper, relativePos))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
               .thenWaitUntil(0, criteria)
-        );
+              .thenSucceed();
     }
 
-    public static void succeedIfAfterReload(GameTestHelper helper, ChunkPos relativePos, Runnable criteria) {
-        succeedIfAfterReload(helper, relativePos, NO_OP_RUNNABLE, criteria);
-    }
-
-    public static void succeedIfAfterReload(GameTestHelper helper, ChunkPos relativePos, Runnable afterUnload, Runnable afterReload) {
+    public static void succeedIfAfterReload(ExtendedGameTestHelper helper, ChunkPos relativePos, Runnable afterReload) {
         MutableInt lastLevel = new MutableInt(UNLOAD_LEVEL);
-        succeedIfSequence(helper, sequence -> sequence
+        helper.startSequence()
               .thenWaitUntil(() -> unloadChunk(helper, relativePos, lastLevel))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
-              .thenWaitUntil(0, afterUnload)
               .thenWaitUntil(() -> loadChunk(helper, relativePos, lastLevel))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
               .thenIdle(5)
               .thenWaitUntil(0, afterReload)
-        );
+              .thenSucceed();
     }
 
     //TODO - GameTest: Can we make unloads not cause the game to crash if a player tries to run a test that uses them instead of using game test server?
     // Most likely the answer is no
-    private static void unloadChunk(GameTestHelper helper, ChunkPos relativePos) {
+    private static void unloadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos) {
         unloadChunk(helper, relativePos, new MutableInt());
     }
 
-    private static void unloadChunk(GameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
+    private static void unloadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
         ChunkPos absolutePos = absolutePos(helper, relativePos);
         long absPos = absolutePos.toLong();
         if (GameTestEventListeners.watchedChunks.containsKey(absPos)) {
@@ -102,11 +91,11 @@ public class GameTestUtils {
         }
     }
 
-    private static void loadChunk(GameTestHelper helper, ChunkPos relativePos) {
+    private static void loadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos) {
         loadChunk(helper, relativePos, new MutableInt(ChunkMap.FORCED_TICKET_LEVEL));
     }
 
-    private static void loadChunk(GameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
+    private static void loadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
         ChunkPos absolutePos = absolutePos(helper, relativePos);
         long absPos = absolutePos.toLong();
         if (GameTestEventListeners.watchedChunks.containsKey(absPos)) {
@@ -147,7 +136,7 @@ public class GameTestUtils {
         }
     }
 
-    public static int setChunkLoadLevel(GameTestHelper helper, ChunkPos relativePos, int newLevel) {
+    public static int setChunkLoadLevel(ExtendedGameTestHelper helper, ChunkPos relativePos, int newLevel) {
         ChunkPos absolutePos = absolutePos(helper, relativePos);
         long absPos = absolutePos.toLong();
         ChunkMap chunkMap = helper.getLevel().getChunkSource().chunkMap;
@@ -161,27 +150,41 @@ public class GameTestUtils {
         return oldLevel;
     }
 
-    public static ChunkPos absolutePos(GameTestHelper helper, ChunkPos relativePos) {
+    public static ChunkPos absolutePos(ExtendedGameTestHelper helper, ChunkPos relativePos) {
         BlockPos relativeMiddle = relativePos.getMiddleBlockPosition(0);
         BlockPos absolutePos = helper.absolutePos(relativeMiddle);
         return new ChunkPos(absolutePos);
     }
 
     @Nullable
-    public static BlockEntity getBlockEntity(GameTestHelper helper, BlockPos relativePos) {
+    public static BlockEntity getBlockEntity(ExtendedGameTestHelper helper, BlockPos relativePos) {
         return WorldUtils.getTileEntity(helper.getLevel(), helper.absolutePos(relativePos));
     }
 
     @Nullable
-    public static <T extends BlockEntity> T getBlockEntity(GameTestHelper helper, Class<T> clazz, BlockPos relativePos) {
+    public static <T extends BlockEntity> T getBlockEntity(ExtendedGameTestHelper helper, Class<T> clazz, BlockPos relativePos) {
         return WorldUtils.getTileEntity(clazz, helper.getLevel(), helper.absolutePos(relativePos));
     }
 
-    public static void fail(GameTestHelper helper, String message, ChunkPos relativePos) {
+    //TODO: Make a PR to Neo that adds an overload for `assertContainerContains` to maybe do something like this or at least allow specifying the expected count
+    public static void validateContainerHas(ExtendedGameTestHelper helper, BlockPos relativePos, int slot, ItemStack stack) {
+        IItemHandler handler = helper.requireCapability(Capabilities.ITEM.block(), relativePos, null);
+        ItemStack stored = handler.getStackInSlot(slot);
+        if (!ItemStack.matches(stack, stored)) {
+            if (stored.isEmpty()) {
+                helper.fail("Slot " + slot + " in container should contain " + stack.getCount() + " " + stack.getItem() + ", but is empty", relativePos);
+            } else {
+                helper.fail("Slot " + slot + " in container should contain " + stack.getCount() + " " + stack.getItem() +
+                            ". But instead contains " + stored.getCount() + " " + stored.getItem(), relativePos);
+            }
+        }
+    }
+
+    public static void fail(ExtendedGameTestHelper helper, String message, ChunkPos relativePos) {
         fail(helper, message, absolutePos(helper, relativePos), relativePos);
     }
 
-    public static void fail(GameTestHelper helper, String message, ChunkPos absolutePos, ChunkPos relativePos) {
+    public static void fail(ExtendedGameTestHelper helper, String message, ChunkPos absolutePos, ChunkPos relativePos) {
         helper.fail(message + " at " + absolutePos.x + "," + absolutePos.z + " (relative: " + relativePos.x + "," + relativePos.z + ")");
     }
 }
