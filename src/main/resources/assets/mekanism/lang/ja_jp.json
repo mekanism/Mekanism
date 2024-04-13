@@ -1431,6 +1431,8 @@
   "pigment.mekanism.yellow": "黄色の顔料",
   "qio.mekanism.compensate_tooltip": "何を埋め合わそうとしているんだい?",
   "qio.mekanism.export_without_filter": "フィルタなし搬出: ",
+  "qio.mekanism.exporter.round_robin": "ラウンドロビン:",
+  "qio.mekanism.exporter.round_robin.description": "トランスポーターに接続されている場合、アイテムを送る際に接続された全てのインベントリを巡回します。",
   "qio.mekanism.fuzzy_mode": "NBTを無視: %1$s",
   "qio.mekanism.import_without_filter": "フィルタなし搬入: ",
   "qio.mekanism.item_type_undefined": "アイテムタイプが未定義です",
