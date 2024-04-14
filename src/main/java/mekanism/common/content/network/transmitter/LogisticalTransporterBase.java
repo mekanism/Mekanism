@@ -72,8 +72,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public boolean exposesInsertCap(@NotNull Direction side) {
-        ConnectionType connectionType = getConnectionTypeRaw(side);
-        return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
+        return getConnectionTypeRaw(side).canAccept();
     }
 
     @Nullable
@@ -82,19 +81,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public boolean canEmitTo(Direction side) {
-        if (canConnect(side)) {
-            ConnectionType connectionType = getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
-        }
-        return false;
+        return canConnect(side) && getConnectionType(side).canSendTo();
     }
 
     public boolean canReceiveFrom(Direction side) {
-        if (canConnect(side)) {
-            ConnectionType connectionType = getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
-        }
-        return false;
+        return canConnect(side) && getConnectionType(side).canAccept();
     }
 
     @Override
@@ -221,7 +212,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             if (pathType == Path.DEST || pathType == Path.HOME) {
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
-                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
+                                tryRecalculate = !connectionType.canSendTo() ||
                                                  !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType == Path.HOME);
                             } else {
                                 tryRecalculate = pathType == Path.NONE;
@@ -233,7 +224,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 // in a single length transmitter, in which case we only recalculate it at 50 if it won't
                                 // be able to go into that connection type
                                 ConnectionType connectionType = getConnectionType(stack.getSide(this));
-                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH;
+                                tryRecalculate = !connectionType.canSendTo();
                             } else {
                                 tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, stack.getSide(this), this);
                             }

@@ -350,8 +350,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public boolean canConnectToAcceptor(Direction side) {
-        ConnectionType type = getConnectionTypeRaw(side);
-        return type == ConnectionType.NORMAL || type == ConnectionType.PUSH;
+        return getConnectionTypeRaw(side).canSendTo();
     }
 
     /**

@@ -51,4 +51,18 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
     public static ConnectionType byIndexStatic(int index) {
         return MathUtils.getByIndexMod(TYPES, index);
     }
+
+    /**
+     * @return {@code true} If this connection type allows other things to insert into it.
+     */
+    public boolean canAccept() {
+        return this == NORMAL || this == PULL;
+    }
+
+    /**
+     * @return {@code true} If this connection type can send to other things or allow them to extract from it.
+     */
+    public boolean canSendTo() {
+        return this == NORMAL || this == PUSH;
+    }
 }
