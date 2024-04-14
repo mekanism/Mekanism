@@ -1,0 +1,37 @@
+name: "Run Game Tests"
+
+on:
+  push:
+    branches: [ "1.20.4" ]
+  pull_request:
+    branches: [ "1.20.4" ]
+    types:
+      - synchronize
+      - opened
+      - ready_for_review
+      - reopened
+    paths:
+      - '**.java'
+
+jobs:
+  test:
+    name: Game Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: wrapper
+          arguments: :runGameTestServer
+          cache-read-only: false

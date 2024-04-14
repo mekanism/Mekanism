@@ -1,6 +1,7 @@
 package mekanism.common.tests;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import java.nio.file.Path;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
@@ -13,6 +14,8 @@ import net.neoforged.testframework.conf.ClientConfiguration;
 import net.neoforged.testframework.conf.Feature;
 import net.neoforged.testframework.conf.FrameworkConfiguration;
 import net.neoforged.testframework.impl.MutableTestFramework;
+import net.neoforged.testframework.summary.GitHubActionsStepSummaryDumper;
+import net.neoforged.testframework.summary.JUnitSummaryDumper;
 import org.lwjgl.glfw.GLFW;
 
 @Mod(MekanismTests.MODID)
@@ -29,7 +32,7 @@ public class MekanismTests {
                     .build())
               .enable(Feature.CLIENT_SYNC, Feature.TEST_STORE)
               //TODO: Figure out which dumpers we want to enable and how they work
-              //.dumpers(new JUnitSummaryDumper(Path.of("gameTest/")), new GitHubActionsStepSummaryDumper())
+              .dumpers(new JUnitSummaryDumper(Path.of("gameTest/")), new GitHubActionsStepSummaryDumper())
               .build().create();
 
         framework.init(modBus, container);

@@ -5,8 +5,13 @@ on:
     branches: [ "1.20.4" ]
   pull_request:
     branches: [ "1.20.4" ]
-    paths-ignore:
-      - '**/lang/*.json'
+    types:
+      - synchronize
+      - opened
+      - ready_for_review
+      - reopened
+    paths:
+      - '**.java'
   schedule:
     - cron: "57 19 * * 4"
 
