@@ -92,7 +92,7 @@ public class Builders {
             buildFrame(world, start);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 17, Blocks.AIR);
-            world.setBlockAndUpdate(start.offset(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getBlock().defaultBlockState());
+            world.setBlockAndUpdate(start.offset(1, 1, 0), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.defaultState());
         }
 
         @Override

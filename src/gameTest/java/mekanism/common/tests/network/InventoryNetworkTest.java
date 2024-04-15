@@ -45,12 +45,12 @@ public class InventoryNetworkTest {
           .set(2, 0, 0, Blocks.BARREL.defaultBlockState())
           .set(8, 0, 0, Blocks.BARREL.defaultBlockState())
 
-          .set(3, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), configured(Direction.NORTH))
+          .set(3, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
 
-          .fill(0, 0, 0, 1, 0, 0, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
-          .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
-          .fill(0, 0, 2, 9, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
-          .fill(9, 0, 0, 9, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
+          .fill(0, 0, 0, 1, 0, 0, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+          .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+          .fill(0, 0, 2, 9, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+          .fill(9, 0, 0, 9, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
     );
 
     //TODO: Do we want to somehow test the case of when we add a shorter path to the same destination, as the newly pulled items go via the new shorter path
@@ -82,8 +82,8 @@ public class InventoryNetworkTest {
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), configured(Direction.NORTH))
-              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
         test.onGameTest(helper -> helper.startSequence()
@@ -111,11 +111,11 @@ public class InventoryNetworkTest {
               .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), configured(Direction.NORTH))
-              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
 
-              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
-              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), configured(null, Direction.WEST, ConnectionType.NONE))
+              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(null, Direction.WEST, ConnectionType.NONE))
         );
 
         test.onGameTest(helper -> helper.startSequence()
@@ -143,8 +143,8 @@ public class InventoryNetworkTest {
               .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
               //End barrel
               .set(1, 0, 0, Blocks.BARREL.defaultBlockState())
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), configured(Direction.NORTH))
-              .set(1, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.BLACK))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .set(1, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.BLACK))
         );
 
         //Note: We initialize the starting inventory above
@@ -169,10 +169,10 @@ public class InventoryNetworkTest {
               .set(2, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(2, 0, 3, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.BLACK, Direction.NORTH))
-              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.DARK_BLUE))
-              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.BLACK))
-              .fill(0, 0, 2, 0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.BLACK, Direction.NORTH))
+              .set(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.DARK_BLUE))
+              .set(1, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.BLACK))
+              .fill(0, 0, 2, 0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
         );
 
         test.onGameTest(helper -> helper.startSequence()
@@ -199,9 +199,9 @@ public class InventoryNetworkTest {
               .set(1, 0, 2, Blocks.BARREL.defaultBlockState())
               .set(1, 0, 3, Blocks.BARREL.defaultBlockState())
 
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.BLACK, Direction.NORTH))
-              .set(0, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
-              .set(0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState(), colored(EnumColor.BLACK))
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.BLACK, Direction.NORTH))
+              .set(0, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+              .set(0, 0, 3, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), colored(EnumColor.BLACK))
         );
 
         test.onGameTest(helper -> helper.startSequence()

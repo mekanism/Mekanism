@@ -1,5 +1,6 @@
 package mekanism.common.item.block;
 
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
+public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements IBlockProvider {
 
     public ItemBlockMekanism(@NotNull BLOCK block, Item.Properties properties) {
         super(block, properties);

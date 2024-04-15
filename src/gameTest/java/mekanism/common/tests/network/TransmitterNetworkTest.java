@@ -58,8 +58,7 @@ public class TransmitterNetworkTest {
               .thenExecuteAfter(5, level -> chunkData.updateChunkLoading(helper, true, level))
               .thenWaitUntil(() -> chunkData.waitFor(helper, true))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
-              .thenIdle(5)
-              .thenExecute(new MatchingNetworkValidator(helper))
+              .thenExecuteAfter(5, new MatchingNetworkValidator(helper))
               .thenSucceed()
         );
     }
@@ -89,8 +88,7 @@ public class TransmitterNetworkTest {
               //Set the chunk level back to what it was before (aka loading it fully again)
               .thenExecuteAfter(5, level -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, level))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
-              .thenIdle(5)
-              .thenExecute(new MatchingNetworkValidator(helper))
+              .thenExecuteAfter(5, new MatchingNetworkValidator(helper))
               .thenSucceed();
     }
 

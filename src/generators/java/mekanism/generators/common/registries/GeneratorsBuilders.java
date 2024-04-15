@@ -33,7 +33,7 @@ public class GeneratorsBuilders {
                 buildColumn(world, start, new BlockPos(sizeX / 2, 1, sizeZ / 2), 14, GeneratorsBlocks.TURBINE_ROTOR.getBlock(),
                       TileEntityTurbineRotor.class, rotor -> rotor.blades = 2);
                 buildInteriorLayer(world, start, 15, MekanismBlocks.PRESSURE_DISPERSER.getBlock());
-                world.setBlockAndUpdate(start.offset(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.getBlock().defaultBlockState());
+                world.setBlockAndUpdate(start.offset(sizeX / 2, 15, sizeZ / 2), GeneratorsBlocks.ROTATIONAL_COMPLEX.defaultState());
                 buildInteriorLayer(world, start, 16, GeneratorsBlocks.SATURATING_CONDENSER.getBlock());
                 buildPlane(world, start, 5, 5, 13, 13, 16, GeneratorsBlocks.ELECTROMAGNETIC_COIL.getBlock());
             }
@@ -75,7 +75,7 @@ public class GeneratorsBuilders {
                         if (x % 2 == z % 2) {
                             buildColumn(world, start, mutablePos, 15, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY.getBlock());
                             mutablePos.setWithOffset(start, x, sizeY - 2, z);
-                            world.setBlockAndUpdate(mutablePos, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.getBlock().defaultBlockState());
+                            world.setBlockAndUpdate(mutablePos, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY.defaultState());
                         } else {
                             buildColumn(world, start, mutablePos, 16, Blocks.AIR);
                         }
@@ -106,7 +106,7 @@ public class GeneratorsBuilders {
             buildPartialFrame(world, start, 1);
             buildWalls(world, start);
             buildInteriorLayers(world, start, 1, 3, Blocks.AIR);
-            world.setBlockAndUpdate(start.offset(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.getBlock().defaultBlockState());
+            world.setBlockAndUpdate(start.offset(2, 4, 2), GeneratorsBlocks.FUSION_REACTOR_CONTROLLER.defaultState());
         }
 
         @Override

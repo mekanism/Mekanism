@@ -41,7 +41,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         matrix.mulPose(Axis.YP.rotationDegrees(-90.0F));
         matrix.translate(-0.5, -0.5, 0.5);
         matrix.mulPose(Axis.YP.rotationDegrees(90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderer, AdditionsBlocks.OBSIDIAN_TNT.getBlock().defaultBlockState(), matrix, renderer, light,
+        TntMinecartRenderer.renderWhiteSolidBlock(blockRenderer, AdditionsBlocks.OBSIDIAN_TNT.defaultState(), matrix, renderer, light,
               tnt.getFuse() / 5 % 2 == 0);
         matrix.popPose();
         super.render(tnt, entityYaw, partialTick, matrix, renderer, light);

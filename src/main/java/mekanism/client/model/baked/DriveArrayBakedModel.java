@@ -167,7 +167,7 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
 
             public DriveStatusBakedModel(BakedModel original, ModelData data) {
                 super(original, data);
-                this.targetState = MekanismBlocks.QIO_DRIVE_ARRAY.getBlock().defaultBlockState();
+                this.targetState = MekanismBlocks.QIO_DRIVE_ARRAY.defaultState();
             }
 
             @NotNull

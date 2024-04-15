@@ -117,7 +117,7 @@ public class BlockStateHelper {
         if (newBlockProvider == null) {
             return oldState;
         }
-        return copyStateData(oldState, newBlockProvider.getBlock().defaultBlockState());
+        return copyStateData(oldState, newBlockProvider.defaultState());
     }
 
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {
