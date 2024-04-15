@@ -1,7 +1,10 @@
 package mekanism.common.tests.network;
 
+import static mekanism.common.tests.util.TransporterTestUtils.colored;
+import static mekanism.common.tests.util.TransporterTestUtils.configured;
+import static mekanism.common.tests.util.TransporterTestUtils.containing;
+
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.common.lib.transmitter.ConnectionType;
@@ -9,18 +12,13 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.MekanismTests;
 import mekanism.common.tests.util.GameTestUtils;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.testframework.DynamicTest;
@@ -29,7 +27,6 @@ import net.neoforged.testframework.annotation.RegisterStructureTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
-import org.jetbrains.annotations.Nullable;
 
 @ForEachTest(groups = "network.inventory")
 public class InventoryNetworkTest {
@@ -55,64 +52,6 @@ public class InventoryNetworkTest {
           .fill(0, 0, 2, 9, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
           .fill(9, 0, 0, 9, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().defaultBlockState())
     );
-
-
-    private static CompoundTag containing(ItemLike itemLike) {
-        return containing(new ItemStack(itemLike));
-    }
-
-    private static CompoundTag containing(ItemLike itemLike, int amount) {
-        return containing(new ItemStack(itemLike, amount));
-    }
-
-    private static CompoundTag containing(ItemStack... stacks) {
-        CompoundTag tag = new CompoundTag();
-        ListTag items = new ListTag();
-        for (int i = 0; i < stacks.length; i++) {
-            CompoundTag item = stacks[i].save(new CompoundTag());
-            item.putByte(NBTConstants.SLOT, (byte) i);
-            items.add(item);
-        }
-        tag.put(NBTConstants.ITEMS, items);
-        return tag;
-    }
-
-    @Nullable
-    private static CompoundTag colored(EnumColor color) {
-        return colored(color, null);
-    }
-
-    @Nullable
-    private static CompoundTag colored(@Nullable EnumColor color, @Nullable Direction pull) {
-        return configured(color, pull, ConnectionType.PULL);
-    }
-
-    @Nullable
-    private static CompoundTag configured(Direction side) {
-        return configured(side, ConnectionType.PULL);
-    }
-
-    @Nullable
-    private static CompoundTag configured(Direction side, ConnectionType connectionType) {
-        return configured(null, side, connectionType);
-    }
-
-    @Nullable
-    private static CompoundTag configured(@Nullable EnumColor color, @Nullable Direction side, ConnectionType connectionType) {
-        if (color == null && side == null) {
-            return null;
-        }
-        CompoundTag tag = new CompoundTag();
-        if (color != null) {
-            NBTUtils.writeEnum(tag, NBTConstants.COLOR, color);
-        }
-        if (side != null) {
-            int[] raw = new int[EnumUtils.DIRECTIONS.length];
-            raw[side.ordinal()] = connectionType.ordinal();
-            tag.putIntArray(NBTConstants.CONNECTION, raw);
-        }
-        return tag;
-    }
 
     //TODO: Do we want to somehow test the case of when we add a shorter path to the same destination, as the newly pulled items go via the new shorter path
     // but any already en-route ones continue the original way
