@@ -281,8 +281,8 @@ public class InventoryNetworkTest {
     @GameTest(template = UPGRADEABLE, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
     @TestHolder(description = "Tests that newly pulled items will go to the destination that had its path upgraded, "
                               + "but any items that were already en-route will continue to the destination they had already calculated.")
-    public static void upgradeFurtherPath(final DynamicTest test) {
-        test.onGameTest(helper -> helper.startSequence()
+    public static void upgradeFurtherPath(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> applyAlloyUpgrade(helper, new BlockPos(9, 1, 0), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -293,16 +293,15 @@ public class InventoryNetworkTest {
                   GameTestUtils.validateContainerHas(helper, new BlockPos(8, 1, 0), 0, new ItemStack(Items.STONE, 12));
                   //Validate start is also empty
                   helper.assertContainerEmpty(3, 1, 0);
-              }).thenSucceed()
-        );
+              }).thenSucceed();
     }
 
     @GameTest(template = UPGRADEABLE, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
     @TestHolder(description = "Tests that newly pulled items will go to the destination that had its path upgraded, "
                               + "but any items that were already en-route will continue to the destination they had "
                               + "already calculated as the new destination is slightly \"closer\".")
-    public static void upgradeFurtherOverlapping(final DynamicTest test) {
-        test.onGameTest(helper -> helper.startSequence()
+    public static void upgradeFurtherOverlapping(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> applyAlloyUpgrade(helper, new BlockPos(6, 1, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -313,14 +312,13 @@ public class InventoryNetworkTest {
                   GameTestUtils.validateContainerHas(helper, new BlockPos(8, 1, 0), 0, new ItemStack(Items.STONE, 12));
                   //Validate start is also empty
                   helper.assertContainerEmpty(3, 1, 0);
-              }).thenSucceed()
-        );
+              }).thenSucceed();
     }
 
     @GameTest(template = UPGRADEABLE, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
     @TestHolder(description = "Tests that all items pre- and post-upgrade will go to the original destination.")
-    public static void upgradeExisting(final DynamicTest test) {
-        test.onGameTest(helper -> helper.startSequence()
+    public static void upgradeExisting(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
               .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> applyAlloyUpgrade(helper, new BlockPos(3, 1, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
@@ -331,8 +329,7 @@ public class InventoryNetworkTest {
                   helper.assertContainerEmpty(8, 1, 0);
                   //Validate start is also empty
                   helper.assertContainerEmpty(3, 1, 0);
-              }).thenSucceed()
-        );
+              }).thenSucceed();
     }
 
     private static void applyAlloyUpgrade(ExtendedGameTestHelper helper, BlockPos relativePos, AlloyTier tier) {

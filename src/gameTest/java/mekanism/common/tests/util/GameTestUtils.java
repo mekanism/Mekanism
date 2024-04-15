@@ -14,7 +14,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
 public class GameTestUtils {
@@ -24,22 +23,26 @@ public class GameTestUtils {
 
     static final boolean DEBUG_CHUNK_LOADING = false;
 
-    public static void succeedIfAfterUnload(ExtendedGameTestHelper helper, ChunkPos relativePos, Runnable criteria) {
-        helper.startSequence()
-              .thenWaitUntil(() -> unloadChunk(helper, relativePos))
-              //Wait 5 ticks in case anything needs more time to process after the chunk unloads
-              .thenIdle(5)
-              .thenWaitUntil(0, criteria)
-              .thenSucceed();
-    }
-
     public static void succeedIfAfterReload(ExtendedGameTestHelper helper, ChunkPos relativePos, Runnable afterReload) {
-        MutableInt lastLevel = new MutableInt(UNLOAD_LEVEL);
         helper.startSequence()
-              .thenWaitUntil(() -> unloadChunk(helper, relativePos, lastLevel))
+              .thenMap(() -> unloadChunk(helper, relativePos))
+              .thenWaitUntil(() -> {
+                  ChunkPos absolutePos = absolutePos(helper, relativePos);
+                  long absPos = absolutePos.toLong();
+                  if (GameTestEventListeners.watchedChunks.containsKey(absPos)) {
+                      //Watched chunk
+                      if (GameTestEventListeners.watchedChunks.get(absPos)) {
+                          //Is loaded, but we are watching, throw exception so that we keep waiting for it to unload
+                          fail(helper, "Chunk has not been marked as unloaded yet", absolutePos, relativePos);
+                      } else {
+                          //Remove the watch on the chunk now that it has been unloaded
+                          GameTestEventListeners.watchedChunks.remove(absPos);
+                      }
+                  }
+              })
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
-              .thenWaitUntil(() -> loadChunk(helper, relativePos, lastLevel))
+              .thenWaitUntil(level -> loadChunk(helper, relativePos, level))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
               .thenIdle(5)
               .thenWaitUntil(0, afterReload)
@@ -48,23 +51,11 @@ public class GameTestUtils {
 
     //TODO - GameTest: Can we make unloads not cause the game to crash if a player tries to run a test that uses them instead of using game test server?
     // Most likely the answer is no
-    private static void unloadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos) {
-        unloadChunk(helper, relativePos, new MutableInt());
-    }
-
-    private static void unloadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
+    private static int unloadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos) {
+        int level = UNLOAD_LEVEL;
         ChunkPos absolutePos = absolutePos(helper, relativePos);
         long absPos = absolutePos.toLong();
-        if (GameTestEventListeners.watchedChunks.containsKey(absPos)) {
-            //Watched chunk
-            if (GameTestEventListeners.watchedChunks.get(absPos)) {
-                //Is loaded, but we are watching, throw exception so that we keep waiting for it to unload
-                fail(helper, "Chunk has not been marked as unloaded yet", absolutePos, relativePos);
-            } else {
-                //Remove the watch on the chunk now that it has been unloaded
-                GameTestEventListeners.watchedChunks.remove(absPos);
-            }
-        } else if (WorldUtils.isChunkLoaded(helper.getLevel(), absolutePos)) {
+        if (WorldUtils.isChunkLoaded(helper.getLevel(), absolutePos)) {
             //If the chunk isn't watched and is loaded we want to try and unload it
             ChunkMap chunkMap = helper.getLevel().getChunkSource().chunkMap;
             DistanceManager distanceManager = chunkMap.getDistanceManager();
@@ -77,11 +68,10 @@ public class GameTestUtils {
                     Mekanism.logger.info("Trying to unload chunk at: {}, {}", absolutePos.x, absolutePos.z);
                 }
                 //If it is currently loaded, queue it for unload
-                levelMemory.setValue(holder.getTicketLevel());
-                distanceManager.updateChunkScheduling(absPos, UNLOAD_LEVEL, holder, holder.getTicketLevel());
+                level = holder.getTicketLevel();
+                distanceManager.updateChunkScheduling(absPos, UNLOAD_LEVEL, holder, level);
                 //And then unload it
                 chunkMap.processUnloads(ConstantPredicates.ALWAYS_TRUE);
-                fail(helper, "Chunk queued for unloading", absolutePos, relativePos);
             } else if (DEBUG_CHUNK_LOADING) {
                 //Note: Even with debug logging enabled odds are this case isn't even possible due to the earlier check to skip if unloaded
                 Mekanism.logger.info("Trying to unload already unloaded chunk at: {}, {}", absolutePos.x, absolutePos.z);
@@ -89,13 +79,14 @@ public class GameTestUtils {
         } else if (DEBUG_CHUNK_LOADING) {
             Mekanism.logger.info("Chunk at: {}, {} is already unloaded", absolutePos.x, absolutePos.z);
         }
+        return level;
     }
 
     private static void loadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos) {
-        loadChunk(helper, relativePos, new MutableInt(ChunkMap.FORCED_TICKET_LEVEL));
+        loadChunk(helper, relativePos, ChunkMap.FORCED_TICKET_LEVEL);
     }
 
-    private static void loadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos, MutableInt levelMemory) {
+    private static void loadChunk(ExtendedGameTestHelper helper, ChunkPos relativePos, int level) {
         ChunkPos absolutePos = absolutePos(helper, relativePos);
         long absPos = absolutePos.toLong();
         if (GameTestEventListeners.watchedChunks.containsKey(absPos)) {
@@ -119,7 +110,7 @@ public class GameTestUtils {
                     Mekanism.logger.info("Trying to load chunk at: {}, {}", absolutePos.x, absolutePos.z);
                 }
                 //Load the chunk to the level it was unloaded at
-                holder = distanceManager.updateChunkScheduling(absPos, levelMemory.getValue(), null, UNLOAD_LEVEL);
+                holder = distanceManager.updateChunkScheduling(absPos, level, null, UNLOAD_LEVEL);
                 if (holder == null) {//Should never happen unless start value was unloaded
                     fail(helper, "Error loading chunk", absolutePos, relativePos);
                 } else {
