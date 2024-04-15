@@ -61,7 +61,6 @@ public class InventoryNetworkTest {
     // - Cutting off an existing path -> recalculating pathfinding of currently travelling stacks, for example when setting a side to none or breaking a transporter
     // - Color changing on an existing path??
     // - Diversion transporters?? Might basically be just the same as the cutting off existing path
-    // - destination is removed
     // - destination becomes inaccessible due to side changes
     // - base path becomes disabled but there is a different path to the same destination
     // - Remove destination and source and let it idle for a bit in the transporter then add a new spot and validate it all enters it??
@@ -69,7 +68,31 @@ public class InventoryNetworkTest {
     // - Make destination no longer able to accept item, fill input fully, wait a little, and then allow for room in the destination, validate it makes it there
     // - Single transporter with no destination stays in the transporter, it fails and pops out if there is only a single connection point
     //   Note: We may want to change that behavior so even with a single connection point it just stays idling and only pops out if there are zero connection points
-    // -
+
+    @GameTest(setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
+    @TestHolder(description = "Tests that newly pulled items will go to the new destination that has a shorter path, "
+                              + "but any items that were already en-route will continue to the destination they had already calculated.")
+    public static void sendsBackToHome(final DynamicTest test) {
+        test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
+              //Start barrel
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              //End barrel
+              .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
+
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+        );
+
+        test.onGameTest(helper -> helper.startSequence()
+              //Wait a second for it to pull the item out, and remove the destination
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.AIR))
+              //Make sure the start container is empty
+              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              //And then after a few seconds that the item has transferred back into the destination it was pulled from
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenSucceed()
+        );
+    }
 
     @GameTest(setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
     @TestHolder(description = "Tests that newly pulled items will go to the new destination that has a shorter path, "
@@ -88,7 +111,7 @@ public class InventoryNetworkTest {
 
         test.onGameTest(helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, and add a transporter to create a shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(new BlockPos(1, 1, 2), MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock()))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 1, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock()))
               .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> {
                   //Validate original destination has expected count
                   GameTestUtils.validateContainerHas(helper, new BlockPos(0, 1, 5), 0, new ItemStack(Items.STONE, 8));

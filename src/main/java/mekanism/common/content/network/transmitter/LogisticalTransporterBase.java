@@ -180,7 +180,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 } else if (stack.getPathType().hasTarget()) {
                                     //Otherwise, try to insert it into the destination inventory
                                     //Get the handler we are trying to insert into from the network's acceptor cache
-                                    IItemHandler acceptor = network.getCachedAcceptor(next, stack.getSide(this).getOpposite());
+                                    Direction side = stack.getSide(this).getOpposite();
+                                    IItemHandler acceptor = network.getCachedAcceptor(next, side);
+                                    if (acceptor == null && stack.getPathType().isHome()) {
+                                        //TODO: Cache this capability. The issue is that when we are sending it back home
+                                        // if it pulled the item itself, then it isn't in our cached acceptors, and thus won't be able to insert it
+                                        acceptor = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), next, side);
+                                    }
                                     TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), next, acceptor, 0,
                                           stack.getPathType().isHome());
                                     if (!response.isEmpty()) {
