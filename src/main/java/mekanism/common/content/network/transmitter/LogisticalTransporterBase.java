@@ -217,7 +217,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 tryRecalculate = !connectionType.canSendTo() ||
                                                  !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType.isHome());
                             } else {
-                                tryRecalculate = pathType.isHome();
+                                //Try to recalculate idles once they reach their destination
+                                tryRecalculate = true;
                             }
                         } else {
                             LogisticalTransporterBase nextTransmitter = network.getTransmitter(stack.getNext(this));
