@@ -35,7 +35,7 @@ public class TransporterManager {
         if (stack.hasPath() && stack.getPathType().hasTarget()) {
             GlobalPos pos = GlobalPos.of(world.dimension(), stack.getDest());
             Set<TransporterStack> transporterStacks = flowingStacks.get(pos);
-            if (transporterStacks.remove(stack) && transporterStacks.isEmpty()) {
+            if (transporterStacks != null && transporterStacks.remove(stack) && transporterStacks.isEmpty()) {
                 flowingStacks.remove(pos);
             }
         }

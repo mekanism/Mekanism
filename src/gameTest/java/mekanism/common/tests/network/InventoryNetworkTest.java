@@ -1,5 +1,6 @@
 package mekanism.common.tests.network;
 
+import static mekanism.common.tests.network.TransmitterTestUtils.useConfigurator;
 import static mekanism.common.tests.util.TransporterTestUtils.colored;
 import static mekanism.common.tests.util.TransporterTestUtils.configured;
 import static mekanism.common.tests.util.TransporterTestUtils.containing;
@@ -16,7 +17,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -52,6 +52,18 @@ public class InventoryNetworkTest {
           .fill(0, 0, 2, 9, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
           .fill(9, 0, 0, 9, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
     );
+    private static final String SIMPLE_PATH = MekanismTests.MODID + ":simple_path";
+    //Note: Our template is lazy so that we ensure the transporters are registered
+    @RegisterStructureTemplate(SIMPLE_PATH)
+    public static final Supplier<StructureTemplate> SIMPLE_PATH_TEMPLATE = StructureTemplateBuilder.lazy(1, 1, 6, builder -> builder
+          //Start barrel
+          .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+          //End barrel
+          .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
+
+          .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+          .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+    );
 
     //TODO: Do we want to somehow test the case of when we add a shorter path to the same destination, as the newly pulled items go via the new shorter path
     // but any already en-route ones continue the original way
@@ -61,37 +73,75 @@ public class InventoryNetworkTest {
     // - Cutting off an existing path -> recalculating pathfinding of currently travelling stacks, for example when setting a side to none or breaking a transporter
     // - Color changing on an existing path??
     // - Diversion transporters?? Might basically be just the same as the cutting off existing path
-    // - destination becomes inaccessible due to side changes
-    // - base path becomes disabled but there is a different path to the same destination
-    // - Remove destination and source and let it idle for a bit in the transporter then add a new spot and validate it all enters it??
     // - Make destination no longer able to accept item, validate input doesn't contain stack, and then validate it made its way back to the input
     // - Make destination no longer able to accept item, fill input fully, wait a little, and then allow for room in the destination, validate it makes it there
     // - Single transporter with no destination stays in the transporter, it fails and pops out if there is only a single connection point
     //   Note: We may want to change that behavior so even with a single connection point it just stays idling and only pops out if there are zero connection points
 
-    @GameTest(setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
-    @TestHolder(description = "Tests that newly pulled items will go to the new destination that has a shorter path, "
-                              + "but any items that were already en-route will continue to the destination they had already calculated.")
-    public static void sendsBackToHome(final DynamicTest test) {
-        test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(1, 1, 6)
-              //Start barrel
-              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
-              //End barrel
-              .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
-
-              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
-              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
-        );
-
-        test.onGameTest(helper -> helper.startSequence()
+    @GameTest(template = SIMPLE_PATH, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
+    @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination is removed while the stacks are en-route.")
+    public static void sendsBackToHome(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
               //Wait a second for it to pull the item out, and remove the destination
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.AIR))
               //Make sure the start container is empty
               .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
               .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenSucceed();
+    }
+
+    @GameTest(template = SIMPLE_PATH, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
+    @TestHolder(description = "Tests that items will properly be sent back and inserted into their home if the destination becomes inaccessible "
+                              + "due to side changes while the stacks are en-route.")
+    public static void sendsBackToHomeDisabled(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
+              //Wait a second for it to pull the item out, and disable the path to the destination
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> useConfigurator(helper, 0, 1, 4, Direction.SOUTH, 3))
+              //Make sure the start container is empty
+              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              //And then after a few seconds that the item has transferred back into the destination it was pulled from
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenSucceed();
+    }
+
+    @GameTest(setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
+    @TestHolder(description = "Tests that items will properly get to their destination, even if one of the paths to them is disabled, but another exists.")
+    public static void pathDisabledButStillHasPath(final DynamicTest test) {
+        test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 1, 6)
+              //Start barrel
+              .set(0, 0, 0, Blocks.BARREL.defaultBlockState(), containing(Items.STONE))
+              //End barrels
+              .set(0, 0, 5, Blocks.BARREL.defaultBlockState())
+
+              .set(0, 0, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState(), configured(Direction.NORTH))
+              .fill(0, 0, 2, 0, 0, 4, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+              .fill(1, 0, 4, 1, 0, 5, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+        );
+
+        test.onGameTest(helper -> helper.startSequence()
+              //Wait a second for it to pull the item out, and disable the base path to the destination
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> useConfigurator(helper, 0, 1, 4, Direction.SOUTH, 3))
+              //Make sure the start container is empty
+              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              //And then after a few seconds that the item has transferred back into the destination it was pulled from
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
               .thenSucceed()
         );
+    }
+
+    @GameTest(template = SIMPLE_PATH, setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
+    @TestHolder(description = "Tests that idling items will properly find a destination if both the destination and source are removed "
+                              + "and then later a new destination is added.")
+    public static void findPathFromIdle(final ExtendedGameTestHelper helper) {
+        helper.startSequence()
+              //Wait a second for it to pull the item out, and remove the destination
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.AIR))
+              .thenExecute(() -> helper.setBlock(0, 1, 0, Blocks.AIR))
+              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.BARREL))
+              //And then after a few seconds that the item has transferred back into the destination it was pulled from
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
+              .thenSucceed();
     }
 
     @GameTest(setupTicks = SETUP_TICKS, timeoutTicks = TIMEOUT_TICKS)
@@ -143,11 +193,8 @@ public class InventoryNetworkTest {
 
         test.onGameTest(helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, re-enable a disabled path to make there be a shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> {
-                  Player player = helper.makeMockPlayer();
-                  player.setShiftKeyDown(true);
-                  helper.useOn(new BlockPos(1, 1, 2), MekanismItems.CONFIGURATOR.getItemStack(), player, Direction.WEST);
-              }).thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> {
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> useConfigurator(helper, 1, 1, 2, Direction.WEST))
+              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> {
                   //Validate original destination has expected count
                   GameTestUtils.validateContainerHas(helper, new BlockPos(0, 1, 5), 0, new ItemStack(Items.STONE, 8));
                   //Validate new destination has expected count
