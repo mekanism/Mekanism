@@ -139,6 +139,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 }
             }
             if (!transit.isEmpty()) {
+                BlockPos pos = getBlockPos();
                 InventoryNetwork network = getTransmitterNetwork();
                 //Update stack positions
                 IntSet deletes = new IntOpenHashSet();
@@ -160,7 +161,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (stack.progress >= 100) {
                         BlockPos prevSet = null;
                         if (stack.hasPath()) {
-                            int currentIndex = stack.getPath().indexOf(getBlockPos());
+                            int currentIndex = stack.getPath().indexOf(pos);
                             if (currentIndex == 0) { //Necessary for transition reasons, not sure why
                                 deletes.add(stackId);
                                 continue;
@@ -221,15 +222,20 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 tryRecalculate = true;
                             }
                         } else {
-                            LogisticalTransporterBase nextTransmitter = network.getTransmitter(stack.getNext(this));
-                            if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
-                                //If there is no next transmitter, and it was an idle path, assume that we are idling
-                                // in a single length transmitter, in which case we only recalculate it at 50 if it won't
-                                // be able to go into that connection type
-                                ConnectionType connectionType = getConnectionType(stack.getSide(this));
-                                tryRecalculate = !connectionType.canSendTo();
+                            BlockPos nextPos = stack.getNext(this);
+                            if (nextPos == null) {
+                                tryRecalculate = true;
                             } else {
-                                tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, stack.getSide(this), this);
+                                Direction nextSide = stack.getSide(pos, nextPos);
+                                LogisticalTransporterBase nextTransmitter = network.getTransmitter(nextPos);
+                                if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
+                                    //If there is no next transmitter, and it was an idle path, assume that we are idling
+                                    // in a single length transmitter, in which case we only recalculate it at 50 if it won't
+                                    // be able to go into that connection type
+                                    tryRecalculate = !getConnectionType(nextSide).canSendTo();
+                                } else {
+                                    tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, nextSide, this);
+                                }
                             }
                         }
                         if (tryRecalculate && !recalculate(stackId, stack, null)) {
@@ -240,7 +246,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(getBlockPos(), deletes, needsSync), getTransmitterTile());
+                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(pos, deletes, needsSync), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     OfInt ofInt = deletes.iterator();
                     while (ofInt.hasNext()) {

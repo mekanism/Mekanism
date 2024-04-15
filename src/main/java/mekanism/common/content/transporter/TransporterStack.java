@@ -236,10 +236,12 @@ public class TransporterStack {
         return pathToTarget.indexOf(transporter.getBlockPos()) == (getPathType().hasTarget() ? 1 : 0);
     }
 
+    @Nullable
     public BlockPos getNext(LogisticalTransporterBase transporter) {
         return transporter.isRemote() ? clientNext : getNext(transporter.getBlockPos());
     }
 
+    @Nullable
     private BlockPos getNext(BlockPos pos) {
         int index = pathToTarget.indexOf(pos) - 1;
         if (index < 0) {
@@ -277,6 +279,15 @@ public class TransporterStack {
         //TODO: Look into implications further about what side should be returned.
         // This is mainly to stop a crash I randomly encountered but was unable to reproduce.
         // (I believe the difference returns null when it is the "same" transporter somehow or something)
+        return side == null ? Direction.DOWN : side;
+    }
+
+    public Direction getSide(BlockPos pos, @Nullable BlockPos target) {
+        Direction side = null;
+        if (target != null) {
+            side = WorldUtils.sideDifference(target, pos);
+        }
+        //TODO: See getSide(Transporter) for why we null check and then return down
         return side == null ? Direction.DOWN : side;
     }
 
