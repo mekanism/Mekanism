@@ -45,6 +45,7 @@ public class TransporterStack {
     public BlockPos homeLocation;
     private BlockPos clientNext;
     private BlockPos clientPrev;
+    @Nullable
     private Path pathType;
     private List<BlockPos> pathToTarget = new ArrayList<>();
 
@@ -73,7 +74,7 @@ public class TransporterStack {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
-        buf.writeEnum(pathType);
+        buf.writeEnum(getPathType());
         buf.writeNullable(getNext(pos), FriendlyByteBuf::writeBlockPos);
         buf.writeBlockPos(getPrev(pos));
         buf.writeItem(itemStack);
@@ -98,7 +99,7 @@ public class TransporterStack {
         }
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
-        NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, pathType);
+        NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, getPathType());
         BlockPos next = getNext(transporter);
         if (next != null) {
             updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
@@ -131,7 +132,9 @@ public class TransporterStack {
         if (homeLocation != null) {
             nbtTags.put(NBTConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
         }
-        NBTUtils.writeEnum(nbtTags, NBTConstants.PATH_TYPE, pathType);
+        if (pathType != null) {
+            NBTUtils.writeEnum(nbtTags, NBTConstants.PATH_TYPE, pathType);
+        }
         itemStack.save(nbtTags);
     }
 
@@ -145,22 +148,22 @@ public class TransporterStack {
         itemStack = ItemStack.of(nbtTags);
     }
 
-    private void setPath(Level world, List<BlockPos> path, Path type, boolean updateFlowing) {
+    private void setPath(Level world, @NotNull List<BlockPos> path, @NotNull Path type, boolean updateFlowing) {
         //Make sure old path isn't null
-        if (updateFlowing && pathType != Path.NONE) {
+        if (updateFlowing && (pathType == null || pathType.hasTarget())) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.remove(world, this);
         }
         pathToTarget = path;
         pathType = type;
-        if (updateFlowing && pathType != Path.NONE) {
+        if (updateFlowing && pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.add(world, this);
         }
     }
 
     public boolean hasPath() {
-        return pathToTarget != null && pathToTarget.size() >= 2;
+        return pathToTarget.size() >= 2;
     }
 
     public List<BlockPos> getPath() {
@@ -168,7 +171,7 @@ public class TransporterStack {
     }
 
     public Path getPathType() {
-        return pathType;
+        return pathType == null ? Path.NONE : pathType;
     }
 
     public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min) {
@@ -220,7 +223,7 @@ public class TransporterStack {
         if (newPath == null) {
             return false;
         }
-        if (newPath.type() == Path.HOME) {
+        if (newPath.type().isHome()) {
             idleDir = null;
         }
         setPath(transporter.getLevel(), newPath.path(), newPath.type(), true);
@@ -230,7 +233,7 @@ public class TransporterStack {
     }
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
-        return pathToTarget.indexOf(transporter.getBlockPos()) == (pathType == Path.NONE ? 0 : 1);
+        return pathToTarget.indexOf(transporter.getBlockPos()) == (getPathType().hasTarget() ? 1 : 0);
     }
 
     public BlockPos getNext(LogisticalTransporterBase transporter) {
@@ -316,6 +319,18 @@ public class TransporterStack {
 
         public static Path byIndexStatic(int index) {
             return MathUtils.getByIndexMod(PATHS, index);
+        }
+
+        public boolean hasTarget() {
+            return this != NONE;
+        }
+
+        public boolean noTarget() {
+            return this == NONE;
+        }
+
+        public boolean isHome() {
+            return this == HOME;
         }
     }
 }

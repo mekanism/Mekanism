@@ -148,7 +148,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
                     int stackId = entry.getIntKey();
                     TransporterStack stack = entry.getValue();
-                    if (!stack.initiatedPath) {
+                    if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
                         if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
                             deletes.add(stackId);
                             continue;
@@ -168,6 +168,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             BlockPos next = stack.getPath().get(currentIndex - 1);
                             if (next != null) {
                                 if (!stack.isFinal(this)) {
+                                    //If this is not the final transporter try transferring it to the next one
                                     LogisticalTransporterBase transmitter = network.getTransmitter(next);
                                     if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
                                         transmitter.entityEntering(stack, stack.progress % 100);
@@ -175,11 +176,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                         continue;
                                     }
                                     prevSet = next;
-                                } else if (stack.getPathType() != Path.NONE) {
+                                } else if (stack.getPathType().hasTarget()) {
+                                    //Otherwise, try to insert it into the destination inventory
                                     //Get the handler we are trying to insert into from the network's acceptor cache
                                     IItemHandler acceptor = network.getCachedAcceptor(next, stack.getSide(this).getOpposite());
                                     TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), next, acceptor, 0,
-                                          stack.getPathType() == Path.HOME);
+                                          stack.getPathType().isHome());
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
                                         ItemStack rejected = response.getRejected();
@@ -191,7 +193,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                             continue;
                                         }
                                         //Some portion of the stack got rejected; save the remainder and
-                                        // let the recalculate below sort out what to do next
+                                        // recalculate below to sort out what to do next
                                         stack.itemStack = rejected;
                                     }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
                                     prevSet = next;
@@ -209,17 +211,17 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         boolean tryRecalculate;
                         if (stack.isFinal(this)) {
                             Path pathType = stack.getPathType();
-                            if (pathType == Path.DEST || pathType == Path.HOME) {
+                            if (pathType.hasTarget()) {
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
                                 tryRecalculate = !connectionType.canSendTo() ||
-                                                 !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType == Path.HOME);
+                                                 !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType.isHome());
                             } else {
-                                tryRecalculate = pathType == Path.NONE;
+                                tryRecalculate = pathType.isHome();
                             }
                         } else {
                             LogisticalTransporterBase nextTransmitter = network.getTransmitter(stack.getNext(this));
-                            if (nextTransmitter == null && stack.getPathType() == Path.NONE && stack.getPath().size() == 2) {
+                            if (nextTransmitter == null && stack.getPathType().noTarget() && stack.getPath().size() == 2) {
                                 //If there is no next transmitter, and it was an idle path, assume that we are idling
                                 // in a single length transmitter, in which case we only recalculate it at 50 if it won't
                                 // be able to go into that connection type
@@ -363,7 +365,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
-        boolean noPath = stack.getPathType() == Path.NONE || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
+        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
             return false;

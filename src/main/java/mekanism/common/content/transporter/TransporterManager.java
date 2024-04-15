@@ -1,11 +1,10 @@
 package mekanism.common.content.transporter;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -29,12 +28,16 @@ public class TransporterManager {
     }
 
     public static void add(Level world, TransporterStack stack) {
-        flowingStacks.computeIfAbsent(GlobalPos.of(world.dimension(), stack.getDest()), k -> new ObjectOpenHashSet<>()).add(stack);
+        flowingStacks.computeIfAbsent(GlobalPos.of(world.dimension(), stack.getDest()), k -> new HashSet<>()).add(stack);
     }
 
     public static void remove(Level world, TransporterStack stack) {
-        if (stack.hasPath() && stack.getPathType() != Path.NONE) {
-            flowingStacks.get(GlobalPos.of(world.dimension(), stack.getDest())).remove(stack);
+        if (stack.hasPath() && stack.getPathType().hasTarget()) {
+            GlobalPos pos = GlobalPos.of(world.dimension(), stack.getDest());
+            Set<TransporterStack> transporterStacks = flowingStacks.get(pos);
+            if (transporterStacks.remove(stack) && transporterStacks.isEmpty()) {
+                flowingStacks.remove(pos);
+            }
         }
     }
 
@@ -205,7 +208,7 @@ public class TransporterManager {
         Set<TransporterStack> transporterStacks = flowingStacks.get(position);
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
-                if (stack != null && stack.getPathType() != Path.NONE) {
+                if (stack != null && stack.getPathType().hasTarget()) {
                     //We start by simulating inserting the stack into the handler, regardless of if we
                     // are interacting with the same side of the target as the stack's path is taking.
                     // This is so that in cases where the item handler is shared (chests) or some of

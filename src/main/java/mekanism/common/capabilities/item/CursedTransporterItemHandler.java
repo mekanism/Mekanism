@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import net.minecraft.core.BlockPos;
@@ -97,7 +96,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
             //Just setting the transporter stack's stack is equivalent to LogisticalTransporterBase#updateTransit when simulating
             // as we already know the response is not empty
             stack.itemStack = response.getStack();
-            if (stack.getPathType() != Path.NONE) {
+            if (stack.getPathType().hasTarget()) {
                 //If the stack actually has a path add that simulated insert to a list of locally simulated flowing stacks so that
                 // if the mod simulates against the next slot as well we can give a more accurate result
                 simulatedFlowingStacks.computeIfAbsent(GlobalPos.of(transporter.getLevel().dimension(), stack.getDest()), k -> new ObjectOpenHashSet<>()).add(stack);
