@@ -8,6 +8,7 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
@@ -34,6 +35,14 @@ public class GameTestUtils {
         BlockPos relativeMiddle = relativePos.getMiddleBlockPosition(0);
         BlockPos absolutePos = helper.absolutePos(relativeMiddle);
         return new ChunkPos(absolutePos);
+    }
+
+    public static void validateContainerHas(ExtendedGameTestHelper helper, int x, int y, int z, int slot, ItemLike itemLike, int count) {
+        validateContainerHas(helper, x, y, z, slot, new ItemStack(itemLike, count));
+    }
+
+    public static void validateContainerHas(ExtendedGameTestHelper helper, int x, int y, int z, int slot, ItemStack stack) {
+        validateContainerHas(helper, new BlockPos(x, y, z), slot, stack);
     }
 
     //TODO: Make a PR to Neo that adds an overload for `assertContainerContains` to maybe do something like this or at least allow specifying the expected count

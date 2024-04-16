@@ -1,5 +1,6 @@
-package mekanism.common.tests.network;
+package mekanism.common.tests.util;
 
+import mekanism.api.tier.AlloyTier;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,8 +17,16 @@ public class TransmitterTestUtils {
     }
 
     public static void useConfigurator(ExtendedGameTestHelper helper, int x, int y, int z, Direction side, int times) {
+        useConfigurator(helper, x, y, z, side, times, true);
+    }
+
+    public static void useConfigurator(ExtendedGameTestHelper helper, int x, int y, int z, Direction side, boolean shift) {
+        useConfigurator(helper, x, y, z, side, 1, shift);
+    }
+
+    public static void useConfigurator(ExtendedGameTestHelper helper, int x, int y, int z, Direction side, int times, boolean shift) {
         Player player = helper.makeMockPlayer();
-        player.setShiftKeyDown(true);
+        player.setShiftKeyDown(shift);
         BlockPos pos = new BlockPos(x, y, z);
         //Set the player's look and position as we need accurate information for configurator usage to be applied properly to transmitters
         Direction direction = side.getOpposite();
@@ -29,5 +38,13 @@ public class TransmitterTestUtils {
         for (int i = 0; i < times; i++) {
             helper.useOn(pos, MekanismItems.CONFIGURATOR.getItemStack(), player, side);
         }
+    }
+
+    public static void applyAlloyUpgrade(ExtendedGameTestHelper helper, BlockPos relativePos, AlloyTier tier) {
+        helper.useOn(relativePos, (switch (tier) {
+            case INFUSED -> MekanismItems.INFUSED_ALLOY;
+            case REINFORCED -> MekanismItems.REINFORCED_ALLOY;
+            case ATOMIC -> MekanismItems.ATOMIC_ALLOY;
+        }).getItemStack(), helper.makeMockPlayer(), Direction.UP);
     }
 }

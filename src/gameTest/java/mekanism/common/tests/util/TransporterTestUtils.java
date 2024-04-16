@@ -2,6 +2,7 @@ package mekanism.common.tests.util;
 
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
@@ -37,13 +38,25 @@ public class TransporterTestUtils {
         return tag;
     }
 
-    @Nullable
-    public static CompoundTag colored(EnumColor color) {
-        return colored(color, null);
+    public static CompoundTag containing(ItemStack stack, int slots) {
+        CompoundTag tag = new CompoundTag();
+        ListTag items = new ListTag();
+        for (int i = 0; i < slots; i++) {
+            CompoundTag item = stack.save(new CompoundTag());
+            item.putByte(NBTConstants.SLOT, (byte) i);
+            items.add(item);
+        }
+        tag.put(NBTConstants.ITEMS, items);
+        return tag;
     }
 
     @Nullable
-    public static CompoundTag colored(@Nullable EnumColor color, @Nullable Direction pull) {
+    public static CompoundTag configured(EnumColor color) {
+        return configured(color, null);
+    }
+
+    @Nullable
+    public static CompoundTag configured(@Nullable EnumColor color, @Nullable Direction pull) {
         return configured(color, pull, ConnectionType.PULL);
     }
 
@@ -71,6 +84,34 @@ public class TransporterTestUtils {
             raw[side.ordinal()] = connectionType.ordinal();
             tag.putIntArray(NBTConstants.CONNECTION, raw);
         }
+        return tag;
+    }
+
+    public static CompoundTag diversionMode(Direction side, DiversionControl mode) {
+        CompoundTag tag = new CompoundTag();
+        int[] modes = new int[EnumUtils.DIRECTIONS.length];
+        modes[side.ordinal()] = mode.ordinal();
+        tag.putIntArray(NBTConstants.MODE, modes);
+        return tag;
+    }
+
+    public static CompoundTag diversionModes(DiversionControl down, DiversionControl up, DiversionControl north, DiversionControl south, DiversionControl west, DiversionControl east) {
+        return diversionModes(null, down, up, north, south, west, east);
+    }
+
+    public static CompoundTag diversionModes(@Nullable CompoundTag tag, DiversionControl down, DiversionControl up, DiversionControl north, DiversionControl south,
+          DiversionControl west, DiversionControl east) {
+        if (tag == null) {
+            tag = new CompoundTag();
+        }
+        tag.putIntArray(NBTConstants.MODE, new int[] {
+              down.ordinal(),
+              up.ordinal(),
+              north.ordinal(),
+              south.ordinal(),
+              west.ordinal(),
+              east.ordinal()
+        });
         return tag;
     }
 }

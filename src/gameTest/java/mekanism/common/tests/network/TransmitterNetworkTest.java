@@ -11,7 +11,6 @@ import mekanism.common.tests.MekanismTests;
 import mekanism.common.tests.util.GameTestUtils;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.server.level.ChunkHolder;
@@ -41,10 +40,7 @@ public class TransmitterNetworkTest {
           builder -> builder.fill(0, 0, 0, 3 * 16 - 1, 0, 0, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock())
     );
 
-    //Note: We make all the tests in this class have a base setup time of 5 ticks to make sure everything has had a chance to load properly
-    private static final int SETUP_TICKS = SharedConstants.TICKS_PER_SECOND / 4;
-
-    @GameTest(template = STRAIGHT_CABLE, setupTicks = SETUP_TICKS, batch = "1")
+    @GameTest(template = STRAIGHT_CABLE, batch = "1")
     @TestHolder(description = "Tests that reloading intermediary chunks does not cause a network to break.")
     public static void reloadIntermediary(final DynamicTest test) {
         final ChunkData chunkData = new ChunkData(1, 0);
@@ -67,22 +63,21 @@ public class TransmitterNetworkTest {
      * This test represents the issue that was reported in <a href="https://github.com/mekanism/Mekanism/issues/7428">Issue 7428</a> and most likely is also the last
      * remaining cause of <a href="https://github.com/mekanism/Mekanism/issues/6356">Issue 6356</a>.
      */
-    @GameTest(template = STRAIGHT_CABLE, setupTicks = SETUP_TICKS, batch = "2")
+    @GameTest(template = STRAIGHT_CABLE, batch = "2")
     @TestHolder(description = "Tests that when part of a network becomes inaccessible but still loaded, "
                               + "we are able to properly remove the transmitters and then recover when the chunk becomes accessible again.")
     public static void inaccessibleNotUnloaded(final ExtendedGameTestHelper helper) {
         ChunkPos relativeChunk = new ChunkPos(1, 0);
-        BlockPos relativeTargetTransmitter = new BlockPos(0, 1, 0);
         helper.startSequence()
               .thenMap(() -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, GameTestUtils.INACCESSIBLE_LEVEL))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
-              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(relativeTargetTransmitter))
+              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(new BlockPos(0, 1, 0)))
                     //Force a rebuild of the network by breaking one transmitter
-                    .thenExecute(() -> helper.setBlock(relativeTargetTransmitter, Blocks.AIR))
+                    .thenExecute(() -> helper.setBlock(0, 1, 0, Blocks.AIR))
                     //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
                     //Set the block back to what it was before (the transmitter)
-                    .thenExecuteAfter(5, state -> helper.setBlock(relativeTargetTransmitter, state))
+                    .thenExecuteAfter(5, state -> helper.setBlock(0, 1, 0, state))
               )
               //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
               //Set the chunk level back to what it was before (aka loading it fully again)
