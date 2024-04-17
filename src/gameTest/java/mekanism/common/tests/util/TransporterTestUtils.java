@@ -1,6 +1,7 @@
 package mekanism.common.tests.util;
 
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.lib.transmitter.ConnectionType;
@@ -13,6 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.20.5: PR support to make custom StructureTemplateBuilders to Neo?
+@NothingNullByDefault
 public class TransporterTestUtils {
 
     private TransporterTestUtils() {

@@ -8,16 +8,13 @@ import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tests.MekanismTests;
-import mekanism.common.tests.util.GameTestUtils;
+import mekanism.common.tests.helpers.MekGameTestHelper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -26,7 +23,6 @@ import net.neoforged.testframework.DynamicTest;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.RegisterStructureTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
-import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,8 +43,8 @@ public class TransmitterNetworkTest {
         test.eventListeners().forge().addListener((final ChunkEvent.Unload event) -> chunkData.updateChunk(event, false));
         test.eventListeners().forge().addListener((final ChunkEvent.Load event) -> chunkData.updateChunk(event, true));
 
-        test.onGameTest(helper -> helper.startSequence()
-              .thenMap(() -> chunkData.updateChunkLoading(helper, false, GameTestUtils.UNLOAD_LEVEL))
+        test.onGameTest(MekGameTestHelper.class, helper -> helper.startSequence()
+              .thenMap(() -> chunkData.updateChunkLoading(helper, false, MekGameTestHelper.UNLOAD_LEVEL))
               .thenWaitUntil(() -> chunkData.waitFor(helper, false))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenExecuteAfter(5, level -> chunkData.updateChunkLoading(helper, true, level))
@@ -66,13 +62,13 @@ public class TransmitterNetworkTest {
     @GameTest(template = STRAIGHT_CABLE, batch = "2")
     @TestHolder(description = "Tests that when part of a network becomes inaccessible but still loaded, "
                               + "we are able to properly remove the transmitters and then recover when the chunk becomes accessible again.")
-    public static void inaccessibleNotUnloaded(final ExtendedGameTestHelper helper) {
+    public static void inaccessibleNotUnloaded(final MekGameTestHelper helper) {
         ChunkPos relativeChunk = new ChunkPos(1, 0);
         helper.startSequence()
-              .thenMap(() -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, GameTestUtils.INACCESSIBLE_LEVEL))
+              .thenMap(() -> helper.setChunkLoadLevel(relativeChunk, MekGameTestHelper.INACCESSIBLE_LEVEL))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
-              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(new BlockPos(0, 1, 0)))
+              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(0, 1, 0))
                     //Force a rebuild of the network by breaking one transmitter
                     .thenExecute(() -> helper.setBlock(0, 1, 0, Blocks.AIR))
                     //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
@@ -81,7 +77,7 @@ public class TransmitterNetworkTest {
               )
               //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
               //Set the chunk level back to what it was before (aka loading it fully again)
-              .thenExecuteAfter(5, level -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, level))
+              .thenExecuteAfter(5, level -> helper.setChunkLoadLevel(relativeChunk, level))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
               .thenExecuteAfter(5, new MatchingNetworkValidator(helper))
               .thenSucceed();
@@ -89,17 +85,17 @@ public class TransmitterNetworkTest {
 
     private static class MatchingNetworkValidator implements Runnable {
 
-        private final ExtendedGameTestHelper helper;
+        private final MekGameTestHelper helper;
         private UUID networkUUID;
 
-        public MatchingNetworkValidator(ExtendedGameTestHelper helper) {
+        public MatchingNetworkValidator(MekGameTestHelper helper) {
             this.helper = helper;
         }
 
         @Override
         public void run() {
             helper.forEveryBlockInStructure(relativePos -> {
-                if (WorldUtils.isBlockLoaded(helper.getLevel(), helper.absolutePos(relativePos))) {
+                if (helper.isBlockLoaded(relativePos)) {
                     Transmitter<?, ?, ?> transmitter = helper.requireBlockEntity(relativePos, TileEntityTransmitter.class).getTransmitter();
                     if (!transmitter.hasTransmitterNetwork()) {
                         helper.fail("No transmitter network found", relativePos);
@@ -132,15 +128,14 @@ public class TransmitterNetworkTest {
         }
 
         //TODO - GameTest: Can we make unloads not cause the game to crash if a player tries to run them in world? It crashes as we force unload a chunk that would be near the player and it crashes from a null pointer
-        public int updateChunkLoading(ExtendedGameTestHelper helper, boolean load, int level) {
+        public int updateChunkLoading(MekGameTestHelper helper, boolean load, int level) {
             if (absolutePos == null) {
-                absolutePos = GameTestUtils.absolutePos(helper, relativePos);
+                absolutePos = helper.absolutePos(relativePos);
                 absPos = absolutePos.toLong();
             }
-            ServerLevel serverLevel = helper.getLevel();
-            if (WorldUtils.isChunkLoaded(serverLevel, absolutePos) != load) {
+            if (helper.isChunkLoaded(relativePos) != load) {
                 //If the chunk isn't watched and is loaded we want to try and unload it
-                ChunkMap chunkMap = serverLevel.getChunkSource().chunkMap;
+                ChunkMap chunkMap = helper.getChunkMap();
                 DistanceManager distanceManager = chunkMap.getDistanceManager();
                 ChunkHolder holder = distanceManager.getChunk(absPos);
                 //Watch the chunk and mark whether it is currently loaded or not
@@ -152,9 +147,9 @@ public class TransmitterNetworkTest {
                     }
                     if (load) {
                         //Load the chunk to the level it was unloaded at
-                        holder = distanceManager.updateChunkScheduling(absPos, level, holder, GameTestUtils.UNLOAD_LEVEL);
+                        holder = distanceManager.updateChunkScheduling(absPos, level, holder, MekGameTestHelper.UNLOAD_LEVEL);
                         if (holder == null) {//Should never happen unless start value was unloaded
-                            fail(helper, "Error loading chunk");
+                            helper.fail("Error loading chunk", relativePos);
                         } else {
                             //And ensure we schedule it based on the status (in general this should be ChunkStatus.FULL)
                             chunkMap.schedule(holder, ChunkLevel.generationStatus(holder.getTicketLevel()));
@@ -162,7 +157,7 @@ public class TransmitterNetworkTest {
                     } else {
                         //If it is currently loaded, queue it for unload
                         level = holder.getTicketLevel();
-                        distanceManager.updateChunkScheduling(absPos, GameTestUtils.UNLOAD_LEVEL, holder, level);
+                        distanceManager.updateChunkScheduling(absPos, MekGameTestHelper.UNLOAD_LEVEL, holder, level);
                         //And then unload it
                         chunkMap.processUnloads(ConstantPredicates.ALWAYS_TRUE);
                     }
@@ -190,13 +185,9 @@ public class TransmitterNetworkTest {
             }
         }
 
-        public void fail(ExtendedGameTestHelper helper, String message) {
-            helper.fail(message + " at " + absolutePos + " (relative: " + relativePos + ")");
-        }
-
-        public void waitFor(ExtendedGameTestHelper helper, boolean loaded) {
+        public void waitFor(MekGameTestHelper helper, boolean loaded) {
             if (isLoaded != loaded) {//If our loaded status does not match our desired one, keep throwing an exception until it does
-                fail(helper, "Chunk has not been marked as " + (loaded ? "loaded" : "unloaded") + " yet");
+                helper.fail("Chunk has not been marked as " + (loaded ? "loaded" : "unloaded") + " yet", relativePos);
             }
         }
     }
