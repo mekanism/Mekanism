@@ -83,6 +83,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
                     splitInfo.decrementTargets = true;
                 }
             }
+            //TODO: If we remove buffers maybe we should evaluate not caring if we don't actually send the full excess remainder?
+            // Given ideally we wouldn't attempting to insert the excess remainder to handlers as a second call to the handler on the same tick
             if (!splitInfo.isZero(splitInfo.getUnsent())) {
                 //If we still have some of a remainder after trying to evenly distribute the remainder just send it to the first target willing to accept it
                 // This might happen if one of the destinations was only able to accept part of the remaining amount, though in general that case will be

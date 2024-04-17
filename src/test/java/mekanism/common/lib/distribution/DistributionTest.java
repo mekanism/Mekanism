@@ -86,9 +86,13 @@ class DistributionTest {
     void testCorrectFallbackRemainder() {
         int toSend = 9;
         IntegerTarget availableAcceptors = new IntegerTarget();
-        availableAcceptors.addHandler(new SpecificAmountIntegerHandler(8));
-        availableAcceptors.addHandler(new LyingAmountIntegerHandler(1, 10));
+        IntegerHandler specificHandler = new SpecificAmountIntegerHandler(8);
+        IntegerHandler lyingHandler = new LyingAmountIntegerHandler(1, 10);
+        availableAcceptors.addHandler(specificHandler);
+        availableAcceptors.addHandler(lyingHandler);
         Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(1, lyingHandler.getAccepted());
+        Assertions.assertEquals(8, specificHandler.getAccepted());
     }
 
     @Test
@@ -96,8 +100,12 @@ class DistributionTest {
     void testCorrectFallbackRemainderAltOrder() {
         int toSend = 9;
         IntegerTarget availableAcceptors = new IntegerTarget();
-        availableAcceptors.addHandler(new LyingAmountIntegerHandler(1, 10));
-        availableAcceptors.addHandler(new SpecificAmountIntegerHandler(8));
+        IntegerHandler specificHandler = new SpecificAmountIntegerHandler(8);
+        IntegerHandler lyingHandler = new LyingAmountIntegerHandler(1, 10);
+        availableAcceptors.addHandler(lyingHandler);
+        availableAcceptors.addHandler(specificHandler);
         Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        Assertions.assertEquals(1, lyingHandler.getAccepted());
+        Assertions.assertEquals(8, specificHandler.getAccepted());
     }
 }
