@@ -36,6 +36,20 @@ class DistributionTest {
         int toSend = 10;
         IntegerTarget availableAcceptors = getTargets(toSend, 0, 0);
         Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        for (IntegerHandler handler : availableAcceptors.handlers) {
+            Assertions.assertEquals(1, handler.getAccepted());
+        }
+    }
+
+    @Test
+    @DisplayName("Test sending to targets where the amounts divide evenly with more than 1 each")
+    void testEvenDistribution2() {
+        int toSend = 40;
+        IntegerTarget availableAcceptors = getTargets(toSend / 4, 0, 0);
+        Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        for (IntegerHandler handler : availableAcceptors.handlers) {
+            Assertions.assertEquals(4, handler.getAccepted());
+        }
     }
 
     @Test
@@ -44,6 +58,17 @@ class DistributionTest {
         int toSend = 10;
         IntegerTarget availableAcceptors = getTargets(7, 0, 0);
         Assertions.assertEquals(toSend, EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend));
+        int singleAccepted = 0, twoAccepted = 0;
+        for (IntegerHandler handler : availableAcceptors.handlers) {
+            Assertions.assertTrue(handler.getAccepted() == 1 || handler.getAccepted() == 2);
+            if (handler.getAccepted() == 1) {
+                singleAccepted++;
+            } else {
+                twoAccepted++;
+            }
+        }
+        Assertions.assertEquals(4, singleAccepted);
+        Assertions.assertEquals(3, twoAccepted);
     }
 
     @Test
@@ -57,6 +82,7 @@ class DistributionTest {
         for (IntegerHandler availableAcceptor : availableAcceptors.handlers) {
             if (availableAcceptor.getAccepted() > 0) {
                 destinationsAccepted++;
+                Assertions.assertEquals(1, availableAcceptor.getAccepted());
             } else {
                 destinationsNotAccepted++;
             }
