@@ -5,11 +5,13 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
     private int amountToSplit;
     private int amountPerTarget;
     private int sentSoFar;
+    private int remainder;
 
     public IntegerSplitInfo(int amountToSplit, int totalTargets) {
         super(totalTargets);
         this.amountToSplit = amountToSplit;
         amountPerTarget = toSplitAmong == 0 ? 0 : amountToSplit / toSplitAmong;
+        remainder = toSplitAmong == 0 ? 0 : amountToSplit % toSplitAmong;
     }
 
     @Override
@@ -17,12 +19,22 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
         //If we are giving it, then lower the amount we are checking/splitting
         amountToSplit -= amountNeeded;
         sentSoFar += amountNeeded;
+        if (!decrementTargets) {
+            //If we are not decrementing targets, then don't remove that as a valid target, or update how much there is per target
+            int difference = amountNeeded - amountPerTarget;
+            if (difference > 0) {
+                //If we removed more than we have per target, we need to remove the excess from our remainder
+                remainder -= difference;
+            }
+            return;
+        }
         toSplitAmong--;
         //Only recalculate it if it is not willing to accept/doesn't want the
         // full per side split
         if (amountNeeded != amountPerTarget && toSplitAmong != 0) {
             int amountPerLast = amountPerTarget;
             amountPerTarget = amountToSplit / toSplitAmong;
+            remainder = amountToSplit % toSplitAmong;
             if (!amountPerChanged && amountPerTarget != amountPerLast) {
                 amountPerChanged = true;
             }
@@ -31,15 +43,29 @@ public class IntegerSplitInfo extends SplitInfo<Integer> {
 
     @Override
     public Integer getShareAmount() {
+        //TODO: Should we make this return a + 1 if there is a remainder, so that we can factor out those cases that can accept exactly amountPerTarget + 1
+        // while doing our initial loop rather than handling it via getRemainderAmount?
         return amountPerTarget;
     }
 
     @Override
     public Integer getRemainderAmount() {
-        //Add to the remainder amount the entire remainder so that we try to use it up if we can
-        // The remainder then if it cannot be fully accepted slowly shrinks across each target we are distributing to
-        //TODO: Evaluate making a more even distribution of the remainder
-        return toSplitAmong == 0 ? amountPerTarget : amountPerTarget + (amountToSplit % toSplitAmong);
+        if (toSplitAmong != 0 && remainder > 0) {
+            //If we have a remainder, be willing to provide a single unit as the remainder
+            // so that we split the remainder more evenly across the targets.
+            return amountPerTarget + 1;
+        }
+        return amountPerTarget;
+    }
+
+    @Override
+    public Integer getUnsent() {
+        return amountToSplit;
+    }
+
+    @Override
+    public boolean isZero(Integer value) {
+        return value == 0;
     }
 
     @Override

@@ -61,8 +61,43 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
-        for (HandlerType<HANDLER, TYPE> recipient : needed) {
-            acceptAmount(recipient.handler(), splitInfo, splitInfo.getRemainderAmount());
+        if (!needed.isEmpty() && !splitInfo.isZero(splitInfo.getRemainderAmount())) {
+            Iterator<HandlerType<HANDLER, TYPE>> iterator = needed.iterator();
+            while (iterator.hasNext()) {
+                TYPE remainderAmount = splitInfo.getRemainderAmount();
+                if (splitInfo.isZero(remainderAmount)) {
+                    //We finished inserting everything we wanted to, we can just exit
+                    return;
+                }
+                HandlerType<HANDLER, TYPE> needInfo = iterator.next();
+                //Accept the remaining amount
+                TYPE amountNeeded = needInfo.amount();
+                if (amountNeeded.compareTo(remainderAmount) <= 0) {
+                    acceptAmount(needInfo.handler(), splitInfo, amountNeeded);
+                    //If the amount we needed was the less than or the same as our remaining amount
+                    // we can remove the value as it has now been sent
+                    iterator.remove();
+                } else {
+                    splitInfo.decrementTargets = false;
+                    acceptAmount(needInfo.handler(), splitInfo, remainderAmount);
+                    splitInfo.decrementTargets = true;
+                }
+            }
+            //TODO: If we remove buffers maybe we should evaluate not caring if we don't actually send the full excess remainder?
+            // Given ideally we wouldn't attempting to insert the excess remainder to handlers as a second call to the handler on the same tick
+            if (!splitInfo.isZero(splitInfo.getUnsent())) {
+                //If we still have some of a remainder after trying to evenly distribute the remainder just send it to the first target willing to accept it
+                // This might happen if one of the destinations was only able to accept part of the remaining amount, though in general that case will be
+                // covered by shifting the needed values
+                for (HandlerType<HANDLER, TYPE> recipient : needed) {
+                    TYPE remaining = splitInfo.getUnsent();
+                    if (splitInfo.isZero(remaining)) {
+                        //We finished, exit
+                        return;
+                    }
+                    acceptAmount(recipient.handler(), splitInfo, remaining);
+                }
+            }
         }
     }
 
@@ -96,14 +131,27 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo Information about current overall split.
      */
     public void sendPossible(EXTRA toSend, SplitInfo<TYPE> splitInfo) {
-        for (HANDLER entry : handlers) {
-            TYPE amountNeeded = simulate(entry, toSend);
-            if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
-                //Add the amount, in case something changed from simulation only mark actual sent amount
-                // in split info
-                acceptAmount(entry, splitInfo, amountNeeded);
-            } else {
-                needed.add(new HandlerType<>(entry, amountNeeded));
+        if (splitInfo.isZero(splitInfo.getShareAmount())) {
+            //We are all remainder, just calculate how much each can accept
+            for (HANDLER entry : handlers) {
+                TYPE amountNeeded = simulate(entry, toSend);
+                if (!splitInfo.isZero(amountNeeded)) {
+                    needed.add(new HandlerType<>(entry, amountNeeded));
+                }
+            }
+        } else {
+            for (HANDLER entry : handlers) {
+                TYPE amountNeeded = simulate(entry, toSend);
+                if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
+                    //Add the amount, in case something changed from simulation only mark actual sent amount
+                    // in split info
+                    if (!splitInfo.isZero(amountNeeded)) {
+                        //Note: We can skip actually running it if it doesn't need anything
+                        acceptAmount(entry, splitInfo, amountNeeded);
+                    }
+                } else {
+                    needed.add(new HandlerType<>(entry, amountNeeded));
+                }
             }
         }
     }
@@ -114,6 +162,9 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo The new split to (re)check.
      */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
+        if (splitInfo.isZero(splitInfo.getShareAmount())) {
+            return;
+        }
         Iterator<HandlerType<HANDLER, TYPE>> iterator = needed.iterator();
         //Use an iterator rather than a copy of the keySet of the needed subMap
         // This allows for us to remove it once we find it without  having to
