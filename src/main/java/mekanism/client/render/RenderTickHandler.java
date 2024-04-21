@@ -178,7 +178,7 @@ public class RenderTickHandler {
                         doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
                     }
                 }
-                renderer.endLastBatch();
+                renderer.endBatch();
                 transparentRenderers.clear();
                 profiler.pop();
             }
