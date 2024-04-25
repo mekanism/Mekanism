@@ -60,7 +60,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.CsvOutput;
 import net.minecraft.util.CsvOutput.Builder;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.nodes.Node;
@@ -100,9 +99,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     @NotNull
     private <DATA> CompletableFuture<?> makeJson(CachedOutput pOutput, DATA helpData, Codec<DATA> codec, String path) {
-        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
-            throw new RuntimeException(e);
-        });
+        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow();
         return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, path)));
     }
 
@@ -110,7 +107,7 @@ public class ComputerHelpProvider implements DataProvider {
     private CompletableFuture<?> makeJekyllData(CachedOutput output, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enumValues) {
         return CompletableFuture.runAsync(() -> {
             JekyllData jekyllData = new JekyllData(Mekanism.instance.versionNumber, methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
-            Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(false, Mekanism.logger::error), Comparator.naturalOrder());
+            Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(), Comparator.naturalOrder());
             MekanismDataGenerator.save(output, os -> {
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
                     writer.write("---\n");

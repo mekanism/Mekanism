@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.common.advancements.BaseAdvancementProvider;
@@ -15,6 +16,7 @@ import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -23,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ToolsAdvancementProvider extends BaseAdvancementProvider {
 
-    public ToolsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, MekanismTools.MODID);
+    public ToolsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
+        super(output, provider, existingFileHelper, MekanismTools.MODID);
     }
 
     @Override

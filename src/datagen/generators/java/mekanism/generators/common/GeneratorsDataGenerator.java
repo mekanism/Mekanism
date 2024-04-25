@@ -39,8 +39,8 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output));
-        gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, existingFileHelper));
-        gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output, lookupProvider));
+        gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider, existingFileHelper));
     }
 }

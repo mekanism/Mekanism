@@ -27,13 +27,13 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         //Gravel
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Items.FLINT),
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_NORMAL),
               new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "gravel"));
         //Obsidian
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_OBSIDIAN, 4),
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
               new ItemStack(Blocks.OBSIDIAN)
         ).build(consumer, Mekanism.rl(basePath + "obsidian"));
         //Rooted Dirt

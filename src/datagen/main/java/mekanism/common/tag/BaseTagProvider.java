@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -54,6 +53,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -166,8 +166,8 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(BuiltInRegistries.BLOCK_ENTITY_TYPE, tag);
     }
 
-    protected IntrinsicMekanismTagBuilder<GameEvent> getGameEventBuilder(TagKey<GameEvent> tag) {
-        return getBuilder(Registries.GAME_EVENT, gameEvent -> gameEvent.builtInRegistryHolder().key(), tag);
+    protected MekanismTagBuilder<GameEvent, ?> getGameEventBuilder(TagKey<GameEvent> tag) {
+        return getBuilder(Registries.GAME_EVENT, tag);
     }
 
     protected MekanismTagBuilder<DamageType, ?> getDamageTypeBuilder(TagKey<DamageType> tag) {
@@ -253,8 +253,8 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected final void addToTag(TagKey<GameEvent> tag, Holder<GameEvent>... gameEventROs) {
-        getGameEventBuilder(tag).addTyped(Holder::value, gameEventROs);
+    protected final void addToTag(TagKey<GameEvent> tag, DeferredHolder<GameEvent, GameEvent>... gameEventROs) {
+        getGameEventBuilder(tag).add(DeferredHolder::getId, gameEventROs);
     }
 
     protected void addToTag(TagKey<DamageType> tag, MekanismDamageType... damageTypes) {

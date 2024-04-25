@@ -16,6 +16,7 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -29,12 +30,14 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseAdvancementProvider implements DataProvider {
 
+    private final CompletableFuture<HolderLookup.Provider> registries;
     private final PackOutput.PathProvider pathProvider;
     private final ExistingFileHelper existingFileHelper;
     private final String modid;
 
-    public BaseAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
+    public BaseAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper, String modid) {
         this.modid = modid;
+        this.registries = provider;
         this.existingFileHelper = existingFileHelper;
         this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancements");
     }
@@ -48,17 +51,19 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     @NotNull
     @Override
     public CompletableFuture<?> run(@NotNull CachedOutput cache) {
-        List<CompletableFuture<?>> futures = new ArrayList<>();
-        registerAdvancements(advancement -> {
-            ResourceLocation id = advancement.id();
-            if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
-                throw new IllegalStateException("Duplicate advancement " + id);
-            }
-            Path path = this.pathProvider.json(id);
-            existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
-            futures.add(DataProvider.saveStable(cache, Advancement.CODEC, advancement.value(), path));
+        return this.registries.thenCompose(lookupProvider -> {
+            List<CompletableFuture<?>> futures = new ArrayList<>();
+            registerAdvancements(advancement -> {
+                ResourceLocation id = advancement.id();
+                if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
+                    throw new IllegalStateException("Duplicate advancement " + id);
+                }
+                Path path = this.pathProvider.json(id);
+                existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
+                futures.add(DataProvider.saveStable(cache, lookupProvider, Advancement.CODEC, advancement.value(), path));
+            });
+            return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         });
-        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     protected abstract void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer);

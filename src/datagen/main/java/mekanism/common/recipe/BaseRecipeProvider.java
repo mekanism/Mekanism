@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.resource.PrimaryResource;
@@ -12,6 +13,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -33,8 +35,8 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final ExistingFileHelper existingFileHelper;
 
-    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output);
+    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
+        super(output, provider);
         this.existingFileHelper = existingFileHelper;
     }
 

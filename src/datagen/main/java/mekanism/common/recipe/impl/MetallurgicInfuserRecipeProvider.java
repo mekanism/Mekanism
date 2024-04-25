@@ -129,7 +129,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_podzol"));
         //Sand -> dirt
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(Tags.Items.SAND),
+              IngredientCreatorAccess.item().from(Tags.Items.SANDS),
               IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.BIO, 10),
               new ItemStack(Blocks.DIRT)
         ).build(consumer, Mekanism.rl(basePath + "sand_to_dirt"));

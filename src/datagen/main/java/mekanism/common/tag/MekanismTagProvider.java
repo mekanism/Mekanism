@@ -108,9 +108,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
         addToTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, MekanismItems.MEKASUIT_HELMET);
-        getItemBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONE_NORMAL);
+        getItemBuilder(MekanismTags.Items.STONE_CRAFTING_MATERIALS).add(ItemTags.STONE_CRAFTING_MATERIALS, Tags.Items.COBBLESTONES_NORMAL);
         getItemBuilder(MekanismTags.Items.MUFFLING_CENTER).add(
-              Tags.Items.INGOTS_BRICK,
+              Tags.Items.BRICKS,
               Tags.Items.INGOTS_IRON,
               Tags.Items.INGOTS_GOLD,
               Tags.Items.INGOTS_COPPER,
@@ -274,10 +274,10 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addArmor() {
-        getItemBuilder(Tags.Items.ARMORS_HELMETS).add(MekanismTags.Items.ARMORS_HELMETS_HAZMAT);
-        getItemBuilder(Tags.Items.ARMORS_CHESTPLATES).add(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT);
-        getItemBuilder(Tags.Items.ARMORS_LEGGINGS).add(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT);
-        getItemBuilder(Tags.Items.ARMORS_BOOTS).add(MekanismTags.Items.ARMORS_BOOTS_HAZMAT);
+        getItemBuilder(ItemTags.HEAD_ARMOR).add(MekanismTags.Items.ARMORS_HELMETS_HAZMAT);
+        getItemBuilder(ItemTags.CHEST_ARMOR).add(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT);
+        getItemBuilder(ItemTags.LEG_ARMOR).add(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT);
+        getItemBuilder(ItemTags.FOOT_ARMOR).add(MekanismTags.Items.ARMORS_BOOTS_HAZMAT);
 
         addToTag(MekanismTags.Items.ARMORS_HELMETS_HAZMAT, MekanismItems.HAZMAT_MASK);
         addToTag(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT, MekanismItems.HAZMAT_GOWN);

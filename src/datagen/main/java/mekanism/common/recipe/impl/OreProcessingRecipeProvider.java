@@ -66,11 +66,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
         addOreProcessingGemRecipes(consumer, basePath + "diamond/", Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE, Tags.Items.ORES_DIAMOND,
-              MekanismItems.DIAMOND_DUST, MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONE_NORMAL);
+              MekanismItems.DIAMOND_DUST, MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
         addOreProcessingGemRecipes(consumer, basePath + "emerald/", Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE, Tags.Items.ORES_EMERALD,
-              MekanismItems.EMERALD_DUST, MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONE_NORMAL);
+              MekanismItems.EMERALD_DUST, MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONES_NORMAL);
         addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
-              MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONE_NORMAL);
+              MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONES_NORMAL);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
               MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, IngredientCreatorAccess.item().from(Blocks.NETHERRACK));
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
@@ -194,13 +194,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         // Ore from Dust
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_NORMAL),
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "ore/from_raw"));
         // Deepslate Ore from Dust
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
               new ItemStack(deepslateOre)
         ).build(consumer, Mekanism.rl(basePath + "ore/deepslate_from_raw"));
 
@@ -330,13 +330,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_NORMAL),
               new ItemStack(Blocks.COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
               new ItemStack(Blocks.DEEPSLATE_COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
@@ -375,7 +375,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             //to deepslate ore
             CombinerRecipeBuilder.combining(
                   forOre,
-                  IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+                  IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
                   new ItemStack(deepslateOre)
             ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
         }
@@ -465,13 +465,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_NORMAL),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_NORMAL),
               new ItemStack(Blocks.REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
+              IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONES_DEEPSLATE),
               new ItemStack(Blocks.DEEPSLATE_REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
@@ -565,7 +565,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         OreBlockType fluorite = MekanismBlocks.ORES.get(OreType.FLUORITE);
         addOreProcessingGemRecipes(consumer, basePath, fluorite.stone(), fluorite.deepslate(), MekanismTags.Items.ORES.get(OreType.FLUORITE),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
-              Tags.Items.COBBLESTONE_NORMAL);
+              Tags.Items.COBBLESTONES_NORMAL);
         //Gem from block
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE)

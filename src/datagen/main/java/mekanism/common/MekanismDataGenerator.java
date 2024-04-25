@@ -59,12 +59,12 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeClient(), new MekanismBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new MekanismTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new MekanismLootProvider(output));
+        gen.addProvider(event.includeServer(), new MekanismLootProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new MekanismDataMapsProvider(output, lookupProvider));
-        MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, existingFileHelper);
+        MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, lookupProvider, existingFileHelper);
         gen.addProvider(event.includeServer(), recipeProvider);
-        gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE

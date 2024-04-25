@@ -79,7 +79,8 @@ public class ToolsTagProvider extends BaseTagProvider {
 
     private void addPaxels() {
         getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
-        getItemBuilder(ItemTags.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
+        //TODO - 1.20.5??
+        //getItemBuilder(ItemTags.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
         getItemBuilder(ToolsTags.Items.TOOLS_PAXELS).add(
               //Vanilla Paxels
               ToolsTags.Items.TOOLS_PAXELS_WOOD,
@@ -213,7 +214,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addHelmets() {
-        getItemBuilder(Tags.Items.ARMORS_HELMETS).add(
+        getItemBuilder(ItemTags.HEAD_ARMOR).add(
               ToolsTags.Items.ARMORS_HELMETS_BRONZE,
               ToolsTags.Items.ARMORS_HELMETS_LAPIS_LAZULI,
               ToolsTags.Items.ARMORS_HELMETS_OSMIUM,
@@ -230,7 +231,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addChestplates() {
-        getItemBuilder(Tags.Items.ARMORS_CHESTPLATES).add(
+        getItemBuilder(ItemTags.CHEST_ARMOR).add(
               ToolsTags.Items.ARMORS_CHESTPLATES_BRONZE,
               ToolsTags.Items.ARMORS_CHESTPLATES_LAPIS_LAZULI,
               ToolsTags.Items.ARMORS_CHESTPLATES_OSMIUM,
@@ -247,7 +248,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addLeggings() {
-        getItemBuilder(Tags.Items.ARMORS_LEGGINGS).add(
+        getItemBuilder(ItemTags.LEG_ARMOR).add(
               ToolsTags.Items.ARMORS_LEGGINGS_BRONZE,
               ToolsTags.Items.ARMORS_LEGGINGS_LAPIS_LAZULI,
               ToolsTags.Items.ARMORS_LEGGINGS_OSMIUM,
@@ -264,7 +265,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addBoots() {
-        getItemBuilder(Tags.Items.ARMORS_BOOTS).add(
+        getItemBuilder(ItemTags.FOOT_ARMOR).add(
               ToolsTags.Items.ARMORS_BOOTS_BRONZE,
               ToolsTags.Items.ARMORS_BOOTS_LAPIS_LAZULI,
               ToolsTags.Items.ARMORS_BOOTS_OSMIUM,

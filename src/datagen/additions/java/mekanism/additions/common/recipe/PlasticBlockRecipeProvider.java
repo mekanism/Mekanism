@@ -158,7 +158,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_ROAD)
-              .key(AdditionsRecipeProvider.SAND_CHAR, Tags.Items.SAND)
+              .key(AdditionsRecipeProvider.SAND_CHAR, Tags.Items.SANDS)
               .key(Pattern.CONSTANT, slickPlastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));

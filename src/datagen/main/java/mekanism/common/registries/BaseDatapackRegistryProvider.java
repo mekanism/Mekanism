@@ -10,7 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -37,11 +37,11 @@ public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntrie
         return "Datapack registries: " + modid;
     }
 
-    protected static void registerPlacedFeature(BootstapContext<PlacedFeature> context, ResourceLocation name, Boolean2ObjectFunction<List<PlacementModifier>> placementModifiers) {
+    protected static void registerPlacedFeature(BootstrapContext<PlacedFeature> context, ResourceLocation name, Boolean2ObjectFunction<List<PlacementModifier>> placementModifiers) {
         registerPlacedFeature(context, name, name, placementModifiers);
     }
 
-    protected static void registerPlacedFeature(BootstapContext<PlacedFeature> context, ResourceLocation name, ResourceLocation retrogenName,
+    protected static void registerPlacedFeature(BootstrapContext<PlacedFeature> context, ResourceLocation name, ResourceLocation retrogenName,
           Boolean2ObjectFunction<List<PlacementModifier>> placementModifiers) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 

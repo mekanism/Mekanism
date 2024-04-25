@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.AttachedContainers;
@@ -26,13 +25,10 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -59,7 +55,6 @@ import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -67,9 +62,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseBlockLootTables extends BlockLootSubProvider {
-
-    private static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
-          .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
 
     private final Set<Block> knownBlocks = new ReferenceOpenHashSet<>();
     //Note: We use an array set as we never expect this to have more than a few elements (in reality it only ever has one)
@@ -154,7 +146,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (skipBlock(block)) {
                 continue;
             }
-            TrackingComponentsBuilder componentsBuilder = new TrackingComponentsBuilder(CopyComponentsFunction.Source.BLOCK_ENTITY);
+            boolean hasComponents = false;
+            CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY);
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
@@ -175,7 +168,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 }
             }
             if (tile instanceof TileEntityUpdateable tileEntity) {
-                for (DataComponentType<?> remapEntry : tileEntity.collectComponents().keySet()) {
+                DataComponentMap components = tileEntity.collectComponents();
+                hasComponents = !components.isEmpty();
+                for (DataComponentType<?> remapEntry : components.keySet()) {
                     componentsBuilder.include(remapEntry);
                 }
             }
@@ -221,7 +216,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (attributeInventory != null) {
                 hasContents |= attributeInventory.applyLoot(delayedPool);
             }
-            if (componentsBuilder.hasData) {
+            if (hasComponents) {
                 itemLootPool.apply(componentsBuilder);
             }
             //apply the delayed ones last, so that NBT funcs have happened first
@@ -317,23 +312,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     .otherwise(entry)
               )
         );
-    }
-
-    @MethodsReturnNonnullByDefault
-    @ParametersAreNotNullByDefault
-    private static class TrackingComponentsBuilder extends CopyComponentsFunction.Builder {
-
-        private boolean hasData = false;
-
-        public TrackingComponentsBuilder(CopyComponentsFunction.Source source) {
-            super(source);
-        }
-
-        @Override
-        public CopyComponentsFunction.Builder include(DataComponentType<?> target) {
-            this.hasData = true;
-            return super.include(target);
-        }
     }
 
     @NothingNullByDefault

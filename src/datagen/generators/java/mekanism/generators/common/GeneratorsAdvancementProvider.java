@@ -1,19 +1,21 @@
 package mekanism.generators.common;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
 
-    public GeneratorsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, MekanismGenerators.MODID);
+    public GeneratorsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
+        super(output, provider, existingFileHelper, MekanismGenerators.MODID);
     }
 
     @Override

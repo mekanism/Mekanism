@@ -1,6 +1,7 @@
 package mekanism.common.advancements;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.datagen.recipe.RecipeCriterion;
@@ -37,6 +38,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.advancements.critereon.SummonedEntityTrigger;
 import net.minecraft.advancements.critereon.UsingItemTrigger;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,8 +47,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
-    public MekanismAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, Mekanism.MODID);
+    public MekanismAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
+        super(output, provider, existingFileHelper, Mekanism.MODID);
     }
 
     //TODO - 1.19: xp rewards for any of these?

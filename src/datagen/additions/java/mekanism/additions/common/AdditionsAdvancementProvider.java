@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -17,6 +18,7 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.advancements.critereon.KilledTrigger.TriggerInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
@@ -25,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
-    public AdditionsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, MekanismAdditions.MODID);
+    public AdditionsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
+        super(output, provider, existingFileHelper, MekanismAdditions.MODID);
     }
 
     @Override

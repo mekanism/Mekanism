@@ -316,7 +316,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Painting Recipe that uses 256 mB Red Pigment to convert Clear Sand into Red Sand.")
               .blankLine()
               .recipe(PaintingRecipeManager.INSTANCE)
-              .addExample("paint_sand", IngredientCreatorAccess.item().from(Tags.Items.SAND_COLORLESS),
+              .addExample("paint_sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS_COLORLESS),
                     IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED), 256),
                     new ItemStack(Blocks.RED_SAND))
               .end()
@@ -438,7 +438,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(PressurizedReactionRecipeManager.INSTANCE)
               .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(MekanismTags.Items.SAWDUST), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 350),
                     IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), FloatingLong.createConst(25))
-              .addExample("reaction/sand", IngredientCreatorAccess.item().from(Tags.Items.SAND), IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.CHLORINE, 100),
+              .addExample("reaction/sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.CHLORINE, 100),
                     IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN, 100), 300, MekanismBlocks.SALT_BLOCK.getItemStack())
               .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 25),
                     IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 25), 37, MekanismGases.HYDROGEN.getStack(25))

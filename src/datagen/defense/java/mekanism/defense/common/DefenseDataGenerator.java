@@ -31,7 +31,7 @@ public class DefenseDataGenerator {
         gen.addProvider(event.includeClient(), new DefenseLangProvider(output));
         //Server side data generators
         gen.addProvider(event.includeServer(), new DefenseTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new DefenseLootProvider(output));
-        gen.addProvider(event.includeServer(), new DefenseRecipeProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new DefenseLootProvider(output, lookupProvider));
+        gen.addProvider(event.includeServer(), new DefenseRecipeProvider(output, lookupProvider, existingFileHelper));
     }
 }

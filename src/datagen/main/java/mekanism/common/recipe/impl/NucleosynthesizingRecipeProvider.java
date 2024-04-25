@@ -85,7 +85,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               750
         ).build(consumer, Mekanism.rl(basePath + "enchanted_golden_apple"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Tags.Items.LEATHER),
+              IngredientCreatorAccess.item().from(Tags.Items.LEATHERS),
               IngredientCreatorAccess.gas().from(MekanismGases.ANTIMATTER, 3),
               new ItemStack(Items.PHANTOM_MEMBRANE),
               750
@@ -141,7 +141,7 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               200
         ).build(consumer, Mekanism.rl(basePath + "iron"));
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
-              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIAN),
+              IngredientCreatorAccess.item().from(Tags.Items.OBSIDIANS),
               IngredientCreatorAccess.gas().from(MekanismGases.ANTIMATTER, 1),
               new ItemStack(Blocks.CRYING_OBSIDIAN),
               200

@@ -41,10 +41,10 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new AdditionsTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new AdditionsLootProvider(output));
+        gen.addProvider(event.includeServer(), new AdditionsLootProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new AdditionsDataMapsProvider(output, lookupProvider));
-        gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(output, existingFileHelper));
-        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, lookupProvider, existingFileHelper));
     }
 }
