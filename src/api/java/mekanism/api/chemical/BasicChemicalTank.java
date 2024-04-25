@@ -91,7 +91,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public STACK insert(@NotNull STACK stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getType(), automationType)) {
+        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
             return stack;
         }
@@ -124,7 +124,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public STACK extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1 || !canExtract.test(stored.getType(), automationType)) {
+        if (isEmpty() || amount < 1 || !canExtract.test(stored.getChemical(), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a chemical stored, or the amount being requested is less than one
             return getEmptyStack();
         }
@@ -145,7 +145,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public boolean isValid(STACK stack) {
-        return getAttributeValidator().process(stack) && validator.test(stack.getType());
+        return getAttributeValidator().process(stack) && validator.test(stack.getChemical());
     }
 
     /**
@@ -222,7 +222,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public CHEMICAL getType() {
-        return stored.getType();
+        return stored.getChemical();
     }
 
     /**
@@ -242,7 +242,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public boolean isTypeEqual(CHEMICAL other) {
-        return stored.isTypeEqual(other);
+        return stored.is(other);
     }
 
     @Override
@@ -271,7 +271,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.write(new CompoundTag()));
+            nbt.put(NBTConstants.STORED, stored.save(provider));
         }
         return nbt;
     }
@@ -283,7 +283,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
-        return getClass() == other.getClass() && stored.isStackIdentical(((BasicChemicalTank<CHEMICAL, STACK>) other).stored);
+        return getClass() == other.getClass() && stored.equals(other.getStack());
     }
 
     @Override

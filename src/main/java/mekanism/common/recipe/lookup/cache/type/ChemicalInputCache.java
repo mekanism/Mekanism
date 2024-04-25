@@ -32,7 +32,7 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
 
     @Override
     protected CHEMICAL createKey(STACK stack) {
-        return stack.getType();
+        return stack.getChemical();
     }
 
     @Override

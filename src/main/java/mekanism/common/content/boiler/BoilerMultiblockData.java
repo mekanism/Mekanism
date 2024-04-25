@@ -236,7 +236,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setWaterVolume);
         NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, this::setSteamVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> waterTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
         readValves(tag);
     }
@@ -249,7 +249,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         tag.putInt(NBTConstants.VOLUME, getWaterVolume());
         tag.putInt(NBTConstants.LOWER_VOLUME, getSteamVolume());
         tag.put(NBTConstants.FLUID_STORED, waterTank.getFluid().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED, steamTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED, steamTank.getStack().saveOptional(provider));
         tag.put(NBTConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
         writeValves(tag);
     }

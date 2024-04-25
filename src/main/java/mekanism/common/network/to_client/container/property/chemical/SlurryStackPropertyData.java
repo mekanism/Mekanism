@@ -1,6 +1,5 @@
 package mekanism.common.network.to_client.container.property.chemical;
 
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
@@ -13,7 +12,7 @@ public class SlurryStackPropertyData extends ChemicalStackPropertyData<SlurrySta
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SlurryStackPropertyData> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.SHORT, PropertyData::getProperty,
-          ChemicalUtils.SLURRY_STACK_STREAM_CODEC, data -> data.value,
+          SlurryStack.OPTIONAL_STREAM_CODEC, data -> data.value,
           SlurryStackPropertyData::new
     );
 

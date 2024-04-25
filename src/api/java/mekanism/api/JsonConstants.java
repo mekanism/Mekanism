@@ -3,7 +3,7 @@ package mekanism.api;
 /**
  * Class for storing constants that are used in various JSON serializers we have, to reduce the chances of typos
  */
-public class JsonConstants {
+public class JsonConstants {//TODO - 1.20.5: Combine with NBTConstants into a singular SerializationConstants, and then make all the values snake case
 
     private JsonConstants() {
     }

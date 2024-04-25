@@ -38,12 +38,6 @@ public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, Pigment
         super(getter, setter);
     }
 
-    @NotNull
-    @Override
-    protected PigmentStack createStack(PigmentStack stored, long size) {
-        return new PigmentStack(stored, size);
-    }
-
     @Override
     public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {

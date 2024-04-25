@@ -1,17 +1,15 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiSlurryStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -33,8 +31,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     }
 
     @Override
-    protected ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient> getDeserializer() {
-        return ChemicalIngredientDeserializer.SLURRY;
+    protected SlurryStackIngredient createMultiInternal(List<SlurryStackIngredient> cleanedIngredients) {
+        return new MultiSlurryStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -67,18 +65,13 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static class SingleSlurryStackIngredient extends SingleChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static Codec<SingleSlurryStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.SLURRY_STACK_CODEC, SingleSlurryStackIngredient::new));
+        public static Codec<SingleSlurryStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(SlurryStack.MAP_CODEC, SingleSlurryStackIngredient::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SingleSlurryStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-              makeStreamCodec(ChemicalUtils.SLURRY_STACK_STREAM_CODEC, SingleSlurryStackIngredient::new)
+              makeStreamCodec(SlurryStack.STREAM_CODEC, SingleSlurryStackIngredient::new)
         );
 
         private SingleSlurryStackIngredient(SlurryStack stack) {
             super(stack);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Slurry, SlurryStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.SLURRY;
         }
     }
 
@@ -92,11 +85,6 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
 
         private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
             super(MekanismAPI.SLURRY_REGISTRY.getOrCreateTag(tag), amount);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Slurry, SlurryStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.SLURRY;
         }
     }
 }

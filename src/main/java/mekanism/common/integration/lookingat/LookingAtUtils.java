@@ -2,7 +2,6 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -207,7 +206,7 @@ public class LookingAtUtils {
           ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
         HANDLER handler = capability.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
-            CHEMICAL fallback = handler.getEmptyStack().getType();
+            CHEMICAL fallback = handler.getEmptyStack().getChemical();
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
                 BoxedChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
                 if (!network.lastChemical.isEmpty() && network.lastChemical.getChemicalType() == ChemicalType.getTypeFor(handler)) {
@@ -237,7 +236,7 @@ public class LookingAtUtils {
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
             for (TANK tank : multiBlockToTanks.apply(structure)) {
-                addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, tank.getEmptyStack().getType());
+                addChemicalTankInfo(info, langEntry, tank, matchingCurrent, matchingCurrentType, tank.getEmptyStack().getChemical());
             }
         }
     }
@@ -272,7 +271,7 @@ public class LookingAtUtils {
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalInfo(LookingAtHelper info, ILangEntry langEntry,
           STACK chemicalInTank, long capacity, CHEMICAL fallback) {
         if (!chemicalInTank.isEmpty()) {
-            info.addText(langEntry.translate(chemicalInTank.getType()));
+            info.addText(langEntry.translate(chemicalInTank.getChemical()));
         } else if (!fallback.isEmptyType()) {
             info.addText(langEntry.translate(fallback));
         }

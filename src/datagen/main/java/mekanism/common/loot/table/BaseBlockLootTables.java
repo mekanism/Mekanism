@@ -168,6 +168,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 }
             }
             if (tile instanceof TileEntityUpdateable tileEntity) {
+                //TODO - 1.20.5: Does this work properly given I believe in some places we only conditionally add them
+                // Do we maybe need a secondary thing we can specify ones to add regardless?
                 DataComponentMap components = tileEntity.collectComponents();
                 hasComponents = !components.isEmpty();
                 for (DataComponentType<?> remapEntry : components.keySet()) {

@@ -14,20 +14,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.ChemicalUtils;
 import net.minecraft.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+//TODO - 1.20.5: Update the wiki docs to fix the syntax
 @NothingNullByDefault
 public class SerializerHelper {
 
@@ -48,32 +38,6 @@ public class SerializerHelper {
     public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
-    });
-
-    /**
-     * Fluid Codec which makes extra sure we don't end up with an empty/invalid fluid
-     */
-    private static final Codec<Holder<Fluid>> NON_EMPTY_FLUID_CODEC = BuiltInRegistries.FLUID.holderByNameCodec().validate(holder ->
-          holder.is(Fluids.EMPTY.builtInRegistryHolder()) ? DataResult.error(() -> "Fluid must not be minecraft:empty") : DataResult.success(holder));
-
-    /**
-     * Fluidstack codec to maintain compatibility with our old json
-     */
-    //TODO - 1.20.5: Re-evaluate this and probably switch to just using FluidStack#CODEC even if it changes the key from fluid to id
-    public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluidHolder),
-          ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
-          DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(stack -> stack.getComponents().asPatch())
-    ).apply(instance, FluidStack::new));
-
-    /**
-     * Codec to get any kind of chemical stack, based on a "chemicalType" field. See also {@link ChemicalType}
-     */
-    public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
-        case GAS -> ChemicalUtils.GAS_STACK_CODEC;
-        case INFUSION -> ChemicalUtils.INFUSION_STACK_CODEC;
-        case PIGMENT -> ChemicalUtils.PIGMENT_STACK_CODEC;
-        case SLURRY -> ChemicalUtils.SLURRY_STACK_CODEC;
     });
 
     /**

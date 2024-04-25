@@ -256,9 +256,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
         if (tag.contains(NBTConstants.ASSEMBLIES, Tag.TAG_LIST)) {
@@ -278,9 +278,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
         tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundTag()));
-        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundTag()));
-        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().saveOptional(provider));
+        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
+        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
         writeValves(tag);
         ListTag list = new ListTag();
         for (FormedAssembly assembly : assemblies) {

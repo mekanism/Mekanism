@@ -3,6 +3,7 @@ package mekanism.common.attachments.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.NBTConstants;
@@ -32,6 +33,6 @@ public record AttachedEjector(List<EnumColor> inputColors, boolean strictInput, 
             throw new IllegalArgumentException("Expected there to be an input color for each side");
         }
         //Make the list unmodifiable to ensure we don't accidentally mutate it
-        inputColors = List.copyOf(inputColors);
+        inputColors = Collections.unmodifiableList(inputColors);
     }
 }

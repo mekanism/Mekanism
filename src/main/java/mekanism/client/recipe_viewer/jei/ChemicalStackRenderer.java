@@ -60,7 +60,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             if (desiredHeight > height) {
                 desiredHeight = height;
             }
-            Chemical<?> chemical = stack.getType();
+            Chemical<?> chemical = stack.getChemical();
             MekanismRenderer.color(guiGraphics, chemical);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
             GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
@@ -71,7 +71,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
 
     @Override
     public List<Component> getTooltip(@NotNull STACK stack, TooltipFlag tooltipFlag) {
-        Chemical<?> chemical = stack.getType();
+        Chemical<?> chemical = stack.getChemical();
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
@@ -82,7 +82,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
             tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
         }
-        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getType(), tooltipFlag.isAdvanced());
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getChemical(), tooltipFlag.isAdvanced());
         return tooltips;
     }
 

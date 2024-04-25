@@ -24,7 +24,9 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      *
      * @return A new stack
      */
-    STACK createStack(STACK stored, long size);
+    default STACK createStack(STACK stored, long size) {
+        return (STACK) stored.copyWithAmount(size);
+    }
 
     /**
      * Returns the {@link ChemicalStack} in this tank.
@@ -288,7 +290,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @return chemical type contained
      */
     default CHEMICAL getType() {
-        return getStack().getType();
+        return getStack().getChemical();
     }
 
     /**
@@ -314,7 +316,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isTypeEqual(CHEMICAL other) {
-        return getStack().isTypeEqual(other);
+        return getStack().is(other);
     }
 
     /**
@@ -330,7 +332,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getStack().write(new CompoundTag()));
+            nbt.put(NBTConstants.STORED, getStack().save(provider));
         }
         return nbt;
     }
@@ -345,6 +347,6 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @since 10.5.0
      */
     default boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
-        return getClass() == other.getClass() && getStack().isStackIdentical(other.getStack());
+        return getClass() == other.getClass() && getStack().equals(other.getStack());
     }
 }

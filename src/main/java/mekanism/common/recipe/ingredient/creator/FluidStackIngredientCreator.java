@@ -13,7 +13,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.IngredientType;
@@ -141,7 +140,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static final Codec<SingleFluidStackIngredient> CODEC = Codec.lazyInitialized(() -> SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new,
+        public static final Codec<SingleFluidStackIngredient> CODEC = Codec.lazyInitialized(() -> FluidStack.CODEC.xmap(SingleFluidStackIngredient::new,
               SingleFluidStackIngredient::getInputRaw));
         public static final StreamCodec<RegistryFriendlyByteBuf, SingleFluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
               FluidStack.STREAM_CODEC.map(SingleFluidStackIngredient::new, SingleFluidStackIngredient::getInputRaw)

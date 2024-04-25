@@ -14,14 +14,9 @@ import net.minecraft.nbt.Tag;
 public interface IInfusionTank extends IChemicalTank<InfuseType, InfusionStack>, IEmptyInfusionProvider {
 
     @Override
-    default InfusionStack createStack(InfusionStack stored, long size) {
-        return new InfusionStack(stored, size);
-    }
-
-    @Override
     default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (nbt.contains(NBTConstants.STORED, Tag.TAG_COMPOUND)) {
-            setStackUnchecked(InfusionStack.readFromNBT(nbt.getCompound(NBTConstants.STORED)));
+            setStackUnchecked(InfusionStack.parseOptional(provider, nbt.getCompound(NBTConstants.STORED)));
         }
     }
 }

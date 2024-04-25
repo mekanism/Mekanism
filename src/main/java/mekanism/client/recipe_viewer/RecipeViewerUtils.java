@@ -96,7 +96,7 @@ public class RecipeViewerUtils {
     @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> List<ItemStack> getStacksFor(
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient, boolean displayConversions) {
-        Set<CHEMICAL> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getType).collect(Collectors.toSet());
+        Set<CHEMICAL> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
         if (!displayConversions) {
             return getStacksFor(chemicals, null);
         }
@@ -120,7 +120,7 @@ public class RecipeViewerUtils {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe<CHEMICAL, ?>> recipeHolder : recipeType.getRecipes(null)) {
                 ItemStackToChemicalRecipe<CHEMICAL, ?> recipe = recipeHolder.value();
                 for (ChemicalStack<CHEMICAL> output : recipe.getOutputDefinition()) {
-                    if (supportedTypes.contains(output.getType())) {
+                    if (supportedTypes.contains(output.getChemical())) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                         break;
                     }
@@ -151,7 +151,7 @@ public class RecipeViewerUtils {
     public static List<ItemStack> getDisplayItems(SlurryStackIngredient ingredient) {
         Set<Named<Item>> tags = new HashSet<>();
         for (SlurryStack slurryStack : ingredient.getRepresentations()) {
-            Slurry slurry = slurryStack.getType();
+            Slurry slurry = slurryStack.getChemical();
             if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
                 TagKey<Item> oreTag = slurry.getOreTag();
                 if (oreTag != null) {

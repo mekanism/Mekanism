@@ -1,20 +1,22 @@
 package mekanism.api.chemical.merged;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
+import java.util.Optional;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.IHasTextComponent;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class BoxedChemicalStack implements IHasTextComponent {
 
@@ -24,7 +26,10 @@ public class BoxedChemicalStack implements IHasTextComponent {
     public static final BoxedChemicalStack EMPTY = new BoxedChemicalStack(ChemicalType.GAS, GasStack.EMPTY);
 
     //TODO - 1.20.5: Docs
-    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> STREAM_CODEC = StreamCodec.ofMember(BoxedChemicalStack::write, BoxedChemicalStack::read);
+    //TODO - 1.20.5: Do we want Codec variant of OPTIONAL_CODEC?
+    public static final Codec<BoxedChemicalStack> CODEC = ChemicalStack.BOXED_CODEC.xmap(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> STREAM_CODEC = ChemicalStack.BOXED_STREAM_CODEC.map(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> OPTIONAL_STREAM_CODEC = ChemicalStack.BOXED_OPTIONAL_STREAM_CODEC.map(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
 
     /**
      * Boxes a Chemical Stack.
@@ -35,54 +40,29 @@ public class BoxedChemicalStack implements IHasTextComponent {
      */
     public static BoxedChemicalStack box(ChemicalStack<?> chemicalStack) {
         if (chemicalStack.isEmpty()) {
+            //TODO: Do we care that this can lose the type of chemical as it uses a single instance that always has a type of gas?
             return EMPTY;
         }
         return new BoxedChemicalStack(ChemicalType.getTypeFor(chemicalStack), chemicalStack);
     }
 
     /**
-     * Reads a Boxed Chemical Stack from a CompoundNBT.
+     * Tries to parse a boxed chemical stack. Empty stacks cannot be parsed with this method.
      *
-     * @param nbt NBT.
-     *
-     * @return Boxed Chemical Stack.
+     * @since 10.6.0
      */
-    public static BoxedChemicalStack read(@Nullable CompoundTag nbt) {
-        ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
-        if (chemicalType == null) {
-            return EMPTY;
-        }
-        return new BoxedChemicalStack(chemicalType, switch (chemicalType) {
-            case GAS -> GasStack.readFromNBT(nbt);
-            case INFUSION -> InfusionStack.readFromNBT(nbt);
-            case PIGMENT -> PigmentStack.readFromNBT(nbt);
-            case SLURRY -> SlurryStack.readFromNBT(nbt);
-        });
+    public static Optional<BoxedChemicalStack> parse(HolderLookup.Provider lookupProvider, Tag tag) {
+        return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
+              .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid boxed chemical: '{}'", error));
     }
 
     /**
-     * Reads a Boxed Chemical Stack from a Packet Buffer.
+     * Tries to parse a boxed chemical stack, defaulting to {@link #EMPTY} on parsing failure.
      *
-     * @param buffer Buffer.
-     *
-     * @return Boxed Chemical Stack.
-     *
-     * @since 10.5.0
+     * @since 10.6.0
      */
-    public static BoxedChemicalStack read(FriendlyByteBuf buffer) {
-        //TODO - 1.20.5: Deprecate this in favor of stream codecs?
-        if (!buffer.readBoolean()) {
-            return EMPTY;
-        }
-        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        ChemicalStack<?> stack = switch (chemicalType) {
-            case GAS -> GasStack.readFromPacket(buffer);
-            case INFUSION -> InfusionStack.readFromPacket(buffer);
-            case PIGMENT -> PigmentStack.readFromPacket(buffer);
-            case SLURRY -> SlurryStack.readFromPacket(buffer);
-        };
-        //It should never be empty here as it should have been caught by the initial boolean check
-        return stack.isEmpty() ? EMPTY : new BoxedChemicalStack(chemicalType, stack);
+    public static BoxedChemicalStack parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
+        return tag.isEmpty() ? EMPTY : parse(lookupProvider, tag).orElse(EMPTY);
     }
 
     private final ChemicalType chemicalType;
@@ -100,7 +80,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
         if (isEmpty()) {
             return BoxedChemical.EMPTY;
         }
-        return new BoxedChemical(chemicalType, chemicalStack.getType());
+        return new BoxedChemical(chemicalType, chemicalStack.getChemical());
     }
 
     /**
@@ -120,33 +100,36 @@ public class BoxedChemicalStack implements IHasTextComponent {
     }
 
     /**
-     * Writes this BoxedChemicalStack to a defined tag compound.
+     * Saves this stack to a tag, directly writing the keys into the passed tag.
      *
-     * @param nbt - tag compound to write to
-     *
-     * @return tag compound with this BoxedChemicalStack's data
+     * @throws IllegalStateException if this stack is empty
+     * @since 10.6.0
      */
-    public CompoundTag write(CompoundTag nbt) {
-        chemicalType.write(nbt);
-        chemicalStack.write(nbt);
-        return nbt;
+    public Tag save(Provider lookupProvider, Tag prefix) {
+        if (isEmpty()) {
+            throw new IllegalStateException("Cannot encode empty BoxedChemicalStack");
+        }
+        return CODEC.encode(this, lookupProvider.createSerializationContext(NbtOps.INSTANCE), prefix).getOrThrow();
     }
 
     /**
-     * Writes this BoxedChemicalStack to a Packet Buffer.
+     * Saves this stack to a new tag.
      *
-     * @param buffer - Buffer to write to.
-     *
-     * @since 10.5.0
+     * @throws IllegalStateException if this stack is empty
+     * @since 10.6.0
      */
-    public void write(FriendlyByteBuf buffer) {
+    public Tag save(Provider lookupProvider) {
         if (isEmpty()) {
-            buffer.writeBoolean(false);
-        } else {
-            buffer.writeBoolean(true);
-            buffer.writeEnum(chemicalType);
-            chemicalStack.writeToPacket(buffer);
+            throw new IllegalStateException("Cannot encode empty BoxedChemicalStack");
         }
+        return CODEC.encodeStart(lookupProvider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+    }
+
+    /**
+     * Saves this stack to a new tag. Empty stacks are supported and will be saved as an empty tag.
+     */
+    public Tag saveOptional(HolderLookup.Provider lookupProvider) {
+        return isEmpty() ? new CompoundTag() : save(lookupProvider);
     }
 
     /**

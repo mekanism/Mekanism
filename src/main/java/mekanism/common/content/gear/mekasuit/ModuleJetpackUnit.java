@@ -70,7 +70,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
                 if (!stored.isEmpty()) {
                     long capacity = gasHandler.getTankCapacity(tank);
                     if (stored.getAmount() > capacity) {
-                        gasHandler.setChemicalInTank(tank, new GasStack(stored, capacity));
+                        gasHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
                     }
                 }
             }

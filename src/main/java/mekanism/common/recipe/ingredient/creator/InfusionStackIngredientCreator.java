@@ -1,17 +1,15 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiInfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -33,8 +31,8 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     }
 
     @Override
-    protected ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient> getDeserializer() {
-        return ChemicalIngredientDeserializer.INFUSION;
+    protected InfusionStackIngredient createMultiInternal(List<InfusionStackIngredient> cleanedIngredients) {
+        return new MultiInfusionStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -67,18 +65,13 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     public static class SingleInfusionStackIngredient extends SingleChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static Codec<SingleInfusionStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.INFUSION_STACK_CODEC, SingleInfusionStackIngredient::new));
+        public static Codec<SingleInfusionStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(InfusionStack.MAP_CODEC, SingleInfusionStackIngredient::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SingleInfusionStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-              makeStreamCodec(ChemicalUtils.INFUSION_STACK_STREAM_CODEC, SingleInfusionStackIngredient::new)
+              makeStreamCodec(InfusionStack.STREAM_CODEC, SingleInfusionStackIngredient::new)
         );
 
         private SingleInfusionStackIngredient(InfusionStack stack) {
             super(stack);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<InfuseType, InfusionStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.INFUSION;
         }
     }
 
@@ -92,11 +85,6 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
 
         private TaggedInfusionStackIngredient(TagKey<InfuseType> tag, long amount) {
             super(MekanismAPI.INFUSE_TYPE_REGISTRY.getOrCreateTag(tag), amount);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<InfuseType, InfusionStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.INFUSION;
         }
     }
 }

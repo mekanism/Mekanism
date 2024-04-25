@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
@@ -42,7 +41,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
     @NotNull
     public static NSSInfuseType createInfuseType(@NotNull InfusionStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyways for being empty
-        return createInfuseType(stack.getType());
+        return createInfuseType(stack.getChemical());
     }
 
     /**

@@ -144,7 +144,7 @@ public enum ChemicalType implements StringRepresentable {
      * @return Chemical Type.
      */
     public static ChemicalType getTypeFor(ChemicalStack<?> stack) {
-        return getTypeFor(stack.getType());
+        return getTypeFor(stack.getChemical());
     }
 
     /**

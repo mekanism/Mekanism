@@ -3,7 +3,6 @@ package mekanism.common.integration.lookingat.theoneprobe;
 import mcjty.theoneprobe.api.IElement;
 import mcjty.theoneprobe.api.IElementFactory;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -40,7 +39,8 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        ChemicalUtils.writeChemicalStack(buf, stored);
+        //TODO - 1.20.5: Providers
+        //ChemicalUtils.writeChemicalStack(buf, stored);
         buf.writeVarLong(capacity);
     }
 
@@ -53,7 +53,9 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(getId(), ChemicalUtils.readGasStack(buf), buf.readVarLong());
+            //TODO - 1.20.5: Providers
+            //return new TOPChemicalElement(getId(), ChemicalUtils.readGasStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), GasStack.EMPTY, buf.readVarLong());
         }
 
         @Override
@@ -66,7 +68,9 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(getId(), ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
+            //TODO - 1.20.5: Providers
+            //return new TOPChemicalElement(getId(), ChemicalUtils.readInfusionStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), InfusionStack.EMPTY, buf.readVarLong());
         }
 
         @Override
@@ -79,7 +83,9 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(getId(), ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
+            //TODO - 1.20.5: Providers
+            //return new TOPChemicalElement(getId(), ChemicalUtils.readPigmentStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), PigmentStack.EMPTY, buf.readVarLong());
         }
 
         @Override
@@ -92,7 +98,9 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
 
         @Override
         public TOPChemicalElement createElement(FriendlyByteBuf buf) {
-            return new TOPChemicalElement(getId(), ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
+            //TODO - 1.20.5: Providers
+            //return new TOPChemicalElement(getId(), ChemicalUtils.readSlurryStack(buf), buf.readVarLong());
+            return new TOPChemicalElement(getId(), SlurryStack.EMPTY, buf.readVarLong());
         }
 
         @Override

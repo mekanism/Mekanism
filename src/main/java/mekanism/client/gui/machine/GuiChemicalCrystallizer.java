@@ -85,7 +85,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     private void updateSlotContents() {
         BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
         if (!boxedChemical.isEmpty() && boxedChemical.getChemicalType() == ChemicalType.SLURRY) {
-            Slurry inputSlurry = (Slurry) boxedChemical.getChemicalStack().getType();
+            Slurry inputSlurry = (Slurry) boxedChemical.getChemicalStack().getChemical();
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
                 iterStacks.clear();

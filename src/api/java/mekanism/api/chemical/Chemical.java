@@ -1,9 +1,15 @@
 package mekanism.api.chemical;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import mekanism.api.JsonConstants;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
@@ -11,8 +17,10 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +28,67 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL>, IChemicalAttributeContainer<CHEMICAL> {
+
+    /**
+     * Codec to get any kind of chemical, based on a "chemicalType" field.
+     *
+     * @see ChemicalType
+     * @see mekanism.api.chemical.merged.BoxedChemical
+     * @since 10.6.0
+     */
+    public static final Codec<Chemical<?>> BOXED_OPTIONAL_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
+        case GAS -> MekanismAPI.GAS_REGISTRY.byNameCodec().fieldOf(JsonConstants.GAS);
+        case INFUSION -> MekanismAPI.INFUSE_TYPE_REGISTRY.byNameCodec().fieldOf(JsonConstants.INFUSE_TYPE);
+        case PIGMENT -> MekanismAPI.PIGMENT_REGISTRY.byNameCodec().fieldOf(JsonConstants.PIGMENT);
+        case SLURRY -> MekanismAPI.SLURRY_REGISTRY.byNameCodec().fieldOf(JsonConstants.SLURRY);
+    });
+    /**
+     * Codec to get any kind of chemical (that does not accept empty types), based on a "chemicalType" field.
+     *
+     * @see ChemicalType
+     * @see mekanism.api.chemical.merged.BoxedChemical
+     * @since 10.6.0
+     */
+    public static final Codec<Chemical<?>> BOXED_CODEC = BOXED_OPTIONAL_CODEC.validate(chemical -> chemical.isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
+    /**
+     * StreamCodec to get any kind of chemical stack, based on a "chemicalType" field.
+     *
+     * @see ChemicalType
+     * @see mekanism.api.chemical.merged.BoxedChemical
+     * @since 10.6.0
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, Chemical<?>> BOXED_OPTIONAL_STREAM_CODEC = ChemicalType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
+          .dispatch(ChemicalType::getTypeFor, type -> switch (type) {
+              case GAS -> ByteBufCodecs.registry(MekanismAPI.GAS_REGISTRY_NAME);
+              case INFUSION -> ByteBufCodecs.registry(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME);
+              case PIGMENT -> ByteBufCodecs.registry(MekanismAPI.PIGMENT_REGISTRY_NAME);
+              case SLURRY -> ByteBufCodecs.registry(MekanismAPI.SLURRY_REGISTRY_NAME);
+          });
+    /**
+     * StreamCodec to get any kind of chemical (that does not accept the empty type), based on a "chemicalType" field.
+     *
+     * @see ChemicalType
+     * @see mekanism.api.chemical.merged.BoxedChemical
+     * @since 10.6.0
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, Chemical<?>> BOXED_STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public Chemical<?> decode(RegistryFriendlyByteBuf buf) {
+            Chemical<?> chemical = BOXED_OPTIONAL_STREAM_CODEC.decode(buf);
+            if (chemical.isEmptyType()) {
+                throw new DecoderException("Empty Chemicals are not allowed");
+            }
+            return chemical;
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, Chemical<?> chemical) {
+            if (chemical.isEmptyType()) {
+                throw new EncoderException("Empty Chemicals are not allowed");
+            }
+            BOXED_OPTIONAL_STREAM_CODEC.encode(buf, chemical);
+        }
+    };
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
@@ -115,15 +184,6 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return attributeMap.keySet();
     }
-
-    /**
-     * Writes this Chemical to a defined tag compound.
-     *
-     * @param nbtTags - tag compound to write this Chemical to
-     *
-     * @return the tag compound this Chemical was written to
-     */
-    public abstract CompoundTag write(CompoundTag nbtTags);
 
     /**
      * Gets the default translation key for this chemical.

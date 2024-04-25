@@ -137,7 +137,7 @@ public record ModuleContainer(Map<ModuleData<?>, Module<?>> typedModules, ItemEn
     }
 
     @Override
-    public ItemEnchantments moduleBasedEnchantments() {//TODO - 1.20.5: Change this to returning an Object2IntMap
+    public ItemEnchantments moduleBasedEnchantments() {
         return enchantments;
     }
 

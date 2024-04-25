@@ -73,7 +73,7 @@ public abstract class RenderData {
             if (chemical.isEmpty()) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
-            return new Builder<>(chemical.getType(), FluidStack.EMPTY);
+            return new Builder<>(chemical.getChemical(), FluidStack.EMPTY);
         }
 
         public static Builder<FluidRenderData> create(FluidStack fluid) {

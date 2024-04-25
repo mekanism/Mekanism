@@ -41,7 +41,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
     @NotNull
     public static NSSGas createGas(@NotNull GasStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
-        return createGas(stack.getType());
+        return createGas(stack.getChemical());
     }
 
     /**

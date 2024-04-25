@@ -12,6 +12,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
@@ -49,8 +50,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     protected MultiChemicalStackIngredient(INGREDIENT... ingredients) {
         this.ingredients = ingredients;
     }
-
-    protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
 
     @Override
     public final List<INGREDIENT> getIngredients() {
@@ -95,7 +94,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
                 return matchingInstance;
             }
         }
-        return getIngredientInfo().getEmptyStack();
+        return getEmptyStack();
     }
 
     @Override
@@ -182,14 +181,10 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         public MultiGasStackIngredient(List<GasStackIngredient> ingredients) {
             this(ingredients.toArray(new GasStackIngredient[0]));
         }
-
-        @Override
-        protected ChemicalIngredientInfo<Gas, GasStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.GAS;
-        }
     }
 
-    public static class MultiInfusionStackIngredient extends MultiChemicalStackIngredient<InfuseType, InfusionStack, InfusionStackIngredient> implements InfusionStackIngredient {
+    public static class MultiInfusionStackIngredient extends MultiChemicalStackIngredient<InfuseType, InfusionStack, InfusionStackIngredient> implements
+          InfusionStackIngredient, IEmptyInfusionProvider {
 
         //This must be lazy as the base stream codec isn't initialized until after this line happens
         public static final StreamCodec<RegistryFriendlyByteBuf, MultiInfusionStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
@@ -204,11 +199,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         @Internal
         public MultiInfusionStackIngredient(List<InfusionStackIngredient> ingredients) {
             this(ingredients.toArray(new InfusionStackIngredient[0]));
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<InfuseType, InfusionStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.INFUSION;
         }
     }
 
@@ -228,11 +218,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         public MultiPigmentStackIngredient(List<PigmentStackIngredient> ingredients) {
             this(ingredients.toArray(new PigmentStackIngredient[0]));
         }
-
-        @Override
-        protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.PIGMENT;
-        }
     }
 
     public static class MultiSlurryStackIngredient extends MultiChemicalStackIngredient<Slurry, SlurryStack, SlurryStackIngredient> implements SlurryStackIngredient {
@@ -250,11 +235,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         @Internal
         public MultiSlurryStackIngredient(List<SlurryStackIngredient> ingredients) {
             this(ingredients.toArray(new SlurryStackIngredient[0]));
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Slurry, SlurryStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.SLURRY;
         }
     }
 }

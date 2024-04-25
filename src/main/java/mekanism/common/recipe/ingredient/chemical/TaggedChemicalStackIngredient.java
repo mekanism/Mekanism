@@ -53,8 +53,6 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         this.amount = amount;
     }
 
-    protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
-
     @Override
     public boolean test(STACK chemicalStack) {
         return testType(chemicalStack) && chemicalStack.getAmount() >= amount;
@@ -62,7 +60,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean testType(STACK chemicalStack) {
-        return testType(Objects.requireNonNull(chemicalStack).getType());
+        return testType(Objects.requireNonNull(chemicalStack).getChemical());
     }
 
     @Override
@@ -71,12 +69,13 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public STACK getMatchingInstance(STACK chemicalStack) {
         if (test(chemicalStack)) {
             //Our chemical is in the tag, so we make a new stack with the given amount
-            return getIngredientInfo().createStack(chemicalStack, amount);
+            return (STACK) chemicalStack.copyWithAmount(amount);
         }
-        return getIngredientInfo().getEmptyStack();
+        return getEmptyStack();
     }
 
     @Override
@@ -94,12 +93,12 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<@NotNull STACK> getRepresentations() {
-        ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
         //TODO: Can this be cached somehow
         List<@NotNull STACK> representations = new ArrayList<>();
         for (Holder<CHEMICAL> chemical : tag) {
-            representations.add(ingredientInfo.createStack(chemical.value(), amount));
+            representations.add((STACK) chemical.value().getStack(amount));
         }
         return representations;
     }

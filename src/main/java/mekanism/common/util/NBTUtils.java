@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import it.unimi.dsi.fastutil.shorts.ShortConsumer;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -13,16 +12,11 @@ import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
-import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemical;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
@@ -179,57 +173,33 @@ public class NBTUtils {
         }
     }
 
-    public static void setBoxedChemicalIfPresent(CompoundTag nbt, String key, Consumer<BoxedChemical> setter) {
+    public static void setBoxedChemicalIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<BoxedChemical> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(BoxedChemical.read(nbt.getCompound(key)));
+            setter.accept(BoxedChemical.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setGasIfPresent(CompoundTag nbt, String key, Consumer<Gas> setter) {
+    public static void setGasStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<GasStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(Gas.readFromNBT(nbt.getCompound(key)));
+            setter.accept(GasStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setGasStackIfPresent(CompoundTag nbt, String key, Consumer<GasStack> setter) {
+    public static void setInfusionStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<InfusionStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(GasStack.readFromNBT(nbt.getCompound(key)));
+            setter.accept(InfusionStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setInfuseTypeIfPresent(CompoundTag nbt, String key, Consumer<InfuseType> setter) {
+    public static void setPigmentStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<PigmentStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(InfuseType.readFromNBT(nbt.getCompound(key)));
+            setter.accept(PigmentStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setInfusionStackIfPresent(CompoundTag nbt, String key, Consumer<InfusionStack> setter) {
+    public static void setSlurryStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<SlurryStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(InfusionStack.readFromNBT(nbt.getCompound(key)));
-        }
-    }
-
-    public static void setPigmentIfPresent(CompoundTag nbt, String key, Consumer<Pigment> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(Pigment.readFromNBT(nbt.getCompound(key)));
-        }
-    }
-
-    public static void setPigmentStackIfPresent(CompoundTag nbt, String key, Consumer<PigmentStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(PigmentStack.readFromNBT(nbt.getCompound(key)));
-        }
-    }
-
-    public static void setSlurryIfPresent(CompoundTag nbt, String key, Consumer<Slurry> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(Slurry.readFromNBT(nbt.getCompound(key)));
-        }
-    }
-
-    public static void setSlurryStackIfPresent(CompoundTag nbt, String key, Consumer<SlurryStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(SlurryStack.readFromNBT(nbt.getCompound(key)));
+            setter.accept(SlurryStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 

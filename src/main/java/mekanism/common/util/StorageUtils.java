@@ -94,7 +94,7 @@ public class StorageUtils {
                 STACK chemicalInTank = handler.getChemicalInTank(tank);
                 tooltip.add(storedFunction.apply(chemicalInTank, emptyLangEntry));
                 if (showAttributes) {
-                    ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
+                    ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getChemical());
                 }
             }
         } else if (showMissingCap) {
@@ -194,7 +194,7 @@ public class StorageUtils {
     Optional<STACK> getContainedChemical(HANDLER handler, CHEMICAL type) {
         for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
             STACK chemicalInTank = handler.getChemicalInTank(tank);
-            if (chemicalInTank.isTypeEqual(type)) {
+            if (chemicalInTank.is(type)) {
                 return Optional.of(chemicalInTank);
             }
         }

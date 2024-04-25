@@ -1,6 +1,5 @@
 package mekanism.common.network.to_client.container.property.chemical;
 
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
@@ -13,7 +12,7 @@ public class PigmentStackPropertyData extends ChemicalStackPropertyData<PigmentS
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PigmentStackPropertyData> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.SHORT, PropertyData::getProperty,
-          ChemicalUtils.PIGMENT_STACK_STREAM_CODEC, data -> data.value,
+          PigmentStack.OPTIONAL_STREAM_CODEC, data -> data.value,
           PigmentStackPropertyData::new
     );
 

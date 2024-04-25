@@ -86,17 +86,22 @@ public class JadeTooltipRenderer implements IBlockComponentProvider, IEntityComp
                 } else if (elementData.contains(JadeLookingAtHelper.CHEMICAL_STACK, Tag.TAG_COMPOUND)) {
                     ChemicalStack<?> chemicalStack;
                     CompoundTag chemicalData = elementData.getCompound(JadeLookingAtHelper.CHEMICAL_STACK);
+                    //TODO - 1.20.5: Providers
                     if (chemicalData.contains(NBTConstants.GAS_NAME, Tag.TAG_STRING)) {
-                        chemicalStack = GasStack.readFromNBT(chemicalData);
+                        //chemicalStack = GasStack.readFromNBT(chemicalData);
+                        chemicalStack = GasStack.EMPTY;
                         name = LookingAtUtils.GAS;
                     } else if (chemicalData.contains(NBTConstants.INFUSE_TYPE_NAME, Tag.TAG_STRING)) {
-                        chemicalStack = InfusionStack.readFromNBT(chemicalData);
+                        //chemicalStack = InfusionStack.readFromNBT(chemicalData);
+                        chemicalStack = InfusionStack.EMPTY;
                         name = LookingAtUtils.INFUSE_TYPE;
                     } else if (chemicalData.contains(NBTConstants.PIGMENT_NAME, Tag.TAG_STRING)) {
-                        chemicalStack = PigmentStack.readFromNBT(chemicalData);
+                        //chemicalStack = PigmentStack.readFromNBT(chemicalData);
+                        chemicalStack = PigmentStack.EMPTY;
                         name = LookingAtUtils.PIGMENT;
                     } else if (chemicalData.contains(NBTConstants.SLURRY_NAME, Tag.TAG_STRING)) {
-                        chemicalStack = SlurryStack.readFromNBT(chemicalData);
+                        //chemicalStack = SlurryStack.readFromNBT(chemicalData);
+                        chemicalStack = SlurryStack.EMPTY;
                         name = LookingAtUtils.SLURRY;
                     } else {//Unknown chemical
                         continue;

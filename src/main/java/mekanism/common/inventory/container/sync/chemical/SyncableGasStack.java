@@ -38,12 +38,6 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> imple
         super(getter, setter);
     }
 
-    @NotNull
-    @Override
-    protected GasStack createStack(GasStack stored, long size) {
-        return new GasStack(stored, size);
-    }
-
     @Override
     public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {

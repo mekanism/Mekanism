@@ -114,7 +114,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             BoxedChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(NBTConstants.BOXED_CHEMICAL, network.lastChemical.write(new CompoundTag()));
+            updateTag.put(NBTConstants.BOXED_CHEMICAL, network.lastChemical.saveOptional(provider));
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;

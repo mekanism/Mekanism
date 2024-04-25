@@ -21,7 +21,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
-import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
@@ -33,7 +32,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.BlockItem;
@@ -87,7 +85,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             MekanismRenderer.resetColor(guiGraphics);
         } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(guiGraphics, stack);
-            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getChemical()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor(guiGraphics);
         }
     }
@@ -200,7 +198,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                 setTarget(null);
             } else {
                 setTarget(chemicalStack.copy());
-                List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getType().getTags());
+                List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getChemical().getTags());
                 if (target instanceof GasStack) {
                     tags.put(DictionaryTagType.GAS, chemicalTags);
                 } else if (target instanceof InfusionStack) {
@@ -227,7 +225,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
             tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
                   .mapToObj(handler::getChemicalInTank)
                   .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                  .flatMap(chemicalInTank -> chemicalInTank.getType().getTags())
+                  .flatMap(chemicalInTank -> chemicalInTank.getChemical().getTags())
                   .distinct()
             ));
         }

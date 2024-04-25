@@ -36,7 +36,7 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     private final CHEMICAL chemical;
 
     protected ChemicalEmiStack(ChemicalStack<CHEMICAL> stack) {
-        this(stack.getType(), stack.getAmount());
+        this(stack.getChemical(), stack.getAmount());
     }
 
     protected ChemicalEmiStack(CHEMICAL chemical, long amount) {
@@ -130,7 +130,7 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     }
 
     public static ChemicalEmiStack<?> create(ChemicalStack<?> stack) {
-        return create(stack.getType(), stack.getAmount());
+        return create(stack.getChemical(), stack.getAmount());
     }
 
     public static ChemicalEmiStack<?> create(Chemical<?> chemical, long amount) {

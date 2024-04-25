@@ -2,12 +2,17 @@ package mekanism.api.recipes.ingredients;
 
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IEmptyGasProvider;
+import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.IEmptySlurryProvider;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
  */
-public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NotNull STACK> {
+public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NotNull STACK>,
+      IEmptyStackProvider<CHEMICAL, STACK> {
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -31,7 +37,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * <p>
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
      */
-    interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
+    interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack>, IEmptyGasProvider {
     }
 
     /**
@@ -39,7 +45,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * <p>
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
      */
-    interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
+    interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack>, IEmptyInfusionProvider {
     }
 
     /**
@@ -47,7 +53,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * <p>
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
      */
-    interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
+    interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack>, IEmptyPigmentProvider {
     }
 
     /**
@@ -55,6 +61,6 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * <p>
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
      */
-    interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
+    interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack>, IEmptySlurryProvider {
     }
 }

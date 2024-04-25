@@ -1,6 +1,5 @@
 package mekanism.common.network.to_client.container.property.chemical;
 
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
@@ -13,7 +12,7 @@ public class GasStackPropertyData extends ChemicalStackPropertyData<GasStack> {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, GasStackPropertyData> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.SHORT, PropertyData::getProperty,
-          ChemicalUtils.GAS_STACK_STREAM_CODEC, data -> data.value,
+          GasStack.OPTIONAL_STREAM_CODEC, data -> data.value,
           GasStackPropertyData::new
     );
 

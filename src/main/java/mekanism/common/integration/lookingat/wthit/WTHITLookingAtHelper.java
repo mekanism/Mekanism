@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import mcp.mobius.waila.api.IData;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.lookingat.ChemicalElement;
 import mekanism.common.integration.lookingat.EnergyElement;
@@ -18,22 +21,22 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public class WTHITLookingAtHelper implements LookingAtHelper, IData {
 
-    public static final IData.Serializer<WTHITLookingAtHelper> SERIALIZER = buffer -> {
+    public static final IData.Serializer<WTHITLookingAtHelper> SERIALIZER = buf -> {
         WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
-        int count = buffer.readVarInt();
+        int count = buf.readVarInt();
+        //TODO - 1.20.5: When WTHIT updates this cast will probably not be necessary
+        RegistryFriendlyByteBuf buffer = (RegistryFriendlyByteBuf) buf;
         for (int i = 0; i < count; i++) {
             LookingAtTypes type = buffer.readEnum(LookingAtTypes.class);
             Object element = switch (type) {
                 case UNKNOWN -> null;
                 case ENERGY -> new EnergyElement(FloatingLong.readFromBuffer(buffer), FloatingLong.readFromBuffer(buffer));
-                //TODO - 1.20.5: When WTHIT updates this cast will probably not be necessary
-                case FLUID -> new FluidElement(FluidStack.OPTIONAL_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buffer), buffer.readVarInt());
-                case GAS -> new ChemicalElement(ChemicalUtils.readGasStack(buffer), buffer.readVarLong());
-                case INFUSION -> new ChemicalElement(ChemicalUtils.readInfusionStack(buffer), buffer.readVarLong());
-                case PIGMENT -> new ChemicalElement(ChemicalUtils.readPigmentStack(buffer), buffer.readVarLong());
-                case SLURRY -> new ChemicalElement(ChemicalUtils.readSlurryStack(buffer), buffer.readVarLong());
-                //TODO - 1.20.5: When WTHIT updates this cast will probably not be necessary
-                case COMPONENT -> ComponentSerialization.TRUSTED_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buffer);
+                case FLUID -> new FluidElement(FluidStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarInt());
+                case GAS -> new ChemicalElement(GasStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarLong());
+                case INFUSION -> new ChemicalElement(InfusionStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarLong());
+                case PIGMENT -> new ChemicalElement(PigmentStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarLong());
+                case SLURRY -> new ChemicalElement(SlurryStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarLong());
+                case COMPONENT -> ComponentSerialization.TRUSTED_STREAM_CODEC.decode(buffer);
             };
             if (element != null) {
                 helper.elements.add(element);
@@ -63,7 +66,12 @@ public class WTHITLookingAtHelper implements LookingAtHelper, IData {
                 }
                 case GAS, INFUSION, PIGMENT, SLURRY -> {
                     ChemicalElement chemicalElement = (ChemicalElement) object;
-                    ChemicalUtils.writeChemicalStack(buf, chemicalElement.getStored());
+                    if (chemicalElement.getStored().isEmpty()) {
+                        buffer.writeBoolean(false);
+                    } else {
+                        buffer.writeBoolean(true);
+                        chemicalElement.getStored().writeToPacket(buffer);
+                    }
                     buf.writeVarLong(chemicalElement.getCapacity());
                 }
                 //TODO - 1.20.5: When WTHIT updates this cast will probably not be necessary

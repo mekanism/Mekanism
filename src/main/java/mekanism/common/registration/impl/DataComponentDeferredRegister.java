@@ -79,7 +79,7 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name, long defaultValue) {
-        return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_LONG_CODEC)
+        return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_NONZERO_LONG_CODEC)
               .networkSynchronized(ByteBufCodecs.VAR_LONG));
     }
 

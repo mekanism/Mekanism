@@ -76,7 +76,7 @@ public class ChemicalUtil {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
     MultiTypeCapability<HANDLER> getCapabilityForChemical(STACK stack) {
-        return getCapabilityForChemical(stack.getType());
+        return getCapabilityForChemical(stack.getChemical());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
@@ -111,7 +111,7 @@ public class ChemicalUtil {
         } else if (stack instanceof SlurryStack) {
             return (STACK) SlurryStack.EMPTY;
         } else {
-            throw new IllegalStateException("Unknown Chemical Type: " + stack.getType().getClass().getName());
+            throw new IllegalStateException("Unknown Chemical Type: " + stack.getChemical().getClass().getName());
         }
     }
 
@@ -149,13 +149,12 @@ public class ChemicalUtil {
      *
      * @return Copy of the input stack with the desired size
      */
+    @SuppressWarnings("unchecked")
     public static <STACK extends ChemicalStack<?>> STACK copyWithAmount(STACK stack, long amount) {
         if (stack.isEmpty() || amount <= 0) {
             return getEmptyStack(stack);
         }
-        STACK result = copy(stack);
-        result.setAmount(amount);
-        return result;
+        return (STACK) stack.copyWithAmount(amount);
     }
 
     /**
@@ -247,7 +246,7 @@ public class ChemicalUtil {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean hasChemical(ItemStack stack, CHEMICAL type) {
         MultiTypeCapability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(type);
-        return hasChemical(stack, s -> s.isTypeEqual(type), capability.item());
+        return hasChemical(stack, s -> s.is(type), capability.item());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> boolean hasChemical(

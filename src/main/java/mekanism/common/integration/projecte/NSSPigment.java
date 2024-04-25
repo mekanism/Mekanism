@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IPigmentProvider;
@@ -42,7 +41,7 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
     @NotNull
     public static NSSPigment createPigment(@NotNull PigmentStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
-        return createPigment(stack.getType());
+        return createPigment(stack.getChemical());
     }
 
     /**

@@ -210,7 +210,7 @@ public class TurbineMultiblockData extends MultiblockData {
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> lowerVolume = value);
-        NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> gasTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> gasTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.COMPLEX, value -> complex = value);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> clientRotation = value);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -222,7 +222,7 @@ public class TurbineMultiblockData extends MultiblockData {
         tag.putFloat(NBTConstants.SCALE, prevSteamScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
         tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().saveOptional(provider));
         tag.put(NBTConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
         tag.putFloat(NBTConstants.ROTATION, clientRotation);
     }

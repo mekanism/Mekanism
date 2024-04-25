@@ -17,7 +17,7 @@ public interface IMekanismEmiHelper {
      * Creates an EmiStack for the given chemical stack.
      */
     default EmiStack createEmiStack(ChemicalStack<?> stack) {
-        return createEmiStack(stack.getType(), stack.getAmount());
+        return createEmiStack(stack.getChemical(), stack.getAmount());
     }
 
     /**

@@ -1,21 +1,21 @@
 package mekanism.api.chemical.merged;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalType;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.text.IHasTextComponent;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -28,7 +28,10 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public static final BoxedChemical EMPTY = new BoxedChemical(ChemicalType.GAS, MekanismAPI.EMPTY_GAS);
     //TODO - 1.20.5: Docs
-    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> STREAM_CODEC = StreamCodec.ofMember(BoxedChemical::write, BoxedChemical::read);
+    public static final Codec<BoxedChemical> CODEC = Chemical.BOXED_CODEC.xmap(BoxedChemical::box, BoxedChemical::getChemical);
+    public static final Codec<BoxedChemical> OPTIONAL_CODEC = Chemical.BOXED_OPTIONAL_CODEC.xmap(BoxedChemical::box, BoxedChemical::getChemical);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> STREAM_CODEC = Chemical.BOXED_STREAM_CODEC.map(BoxedChemical::box, BoxedChemical::getChemical);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> OPTIONAL_STREAM_CODEC = Chemical.BOXED_OPTIONAL_STREAM_CODEC.map(BoxedChemical::box, BoxedChemical::getChemical);
 
     /**
      * Boxes a Chemical.
@@ -39,51 +42,29 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public static BoxedChemical box(Chemical<?> chemical) {
         if (chemical.isEmptyType()) {
+            //TODO: Do we care that this can lose the type of chemical as it uses a single instance that always has a type of gas?
             return EMPTY;
         }
         return new BoxedChemical(ChemicalType.getTypeFor(chemical), chemical);
     }
 
     /**
-     * Reads a Boxed Chemical from a Packet Buffer.
+     * Tries to parse a boxed chemical. Empty boxed chemicals cannot be parsed with this method.
      *
-     * @param buffer Buffer.
-     *
-     * @return Boxed Chemical.
+     * @since 10.6.0
      */
-    public static BoxedChemical read(FriendlyByteBuf buffer) {
-        //TODO - 1.20.5: Deprecate this in favor of stream codecs?
-        ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        Chemical<?> c = switch (chemicalType) {
-            case GAS -> buffer.readById(MekanismAPI.GAS_REGISTRY::byId);
-            case INFUSION -> buffer.readById(MekanismAPI.INFUSE_TYPE_REGISTRY::byId);
-            case PIGMENT -> buffer.readById(MekanismAPI.PIGMENT_REGISTRY::byId);
-            case SLURRY -> buffer.readById(MekanismAPI.SLURRY_REGISTRY::byId);
-        };
-        if (c == null || c.isEmptyType()) {
-            return EMPTY;
-        }
-        return new BoxedChemical(chemicalType, c);
+    public static Optional<BoxedChemical> parse(HolderLookup.Provider lookupProvider, Tag tag) {
+        return CODEC.parse(lookupProvider.createSerializationContext(NbtOps.INSTANCE), tag)
+              .resultOrPartial(error -> MekanismAPI.logger.error("Tried to load invalid boxed chemical: '{}'", error));
     }
 
     /**
-     * Reads a Boxed Chemical from a CompoundNBT.
+     * Tries to parse a boxed chemical, defaulting to {@link #EMPTY} on parsing failure.
      *
-     * @param nbt NBT.
-     *
-     * @return Boxed Chemical.
+     * @since 10.6.0
      */
-    public static BoxedChemical read(@Nullable CompoundTag nbt) {
-        ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
-        if (chemicalType == null) {
-            return EMPTY;
-        }
-        return new BoxedChemical(chemicalType, switch (chemicalType) {
-            case GAS -> Gas.readFromNBT(nbt);
-            case INFUSION -> InfuseType.readFromNBT(nbt);
-            case PIGMENT -> Pigment.readFromNBT(nbt);
-            case SLURRY -> Slurry.readFromNBT(nbt);
-        });
+    public static BoxedChemical parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
+        return tag.isEmpty() ? EMPTY : parse(lookupProvider, tag).orElse(EMPTY);
     }
 
     private final ChemicalType chemicalType;
@@ -111,31 +92,36 @@ public class BoxedChemical implements IHasTextComponent {
     }
 
     /**
-     * Writes this BoxedChemical to a defined tag compound.
+     * Saves this boxed chemical to a tag, directly writing the keys into the passed tag.
      *
-     * @param nbt - tag compound to write to
-     *
-     * @return tag compound with this BoxedChemical's data
+     * @throws IllegalStateException if this boxed chemical is empty
+     * @since 10.6.0
      */
-    public CompoundTag write(CompoundTag nbt) {
-        chemicalType.write(nbt);
-        chemical.write(nbt);
-        return nbt;
+    public Tag save(Provider lookupProvider, Tag prefix) {
+        if (isEmpty()) {
+            throw new IllegalStateException("Cannot encode empty BoxedChemical");
+        }
+        return CODEC.encode(this, lookupProvider.createSerializationContext(NbtOps.INSTANCE), prefix).getOrThrow();
     }
 
     /**
-     * Writes this BoxedChemical to a Packet Buffer.
+     * Saves this boxed chemical to a new tag.
      *
-     * @param buffer - Buffer to write to.
+     * @throws IllegalStateException if this boxed chemical is empty
+     * @since 10.6.0
      */
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeEnum(chemicalType);
-        switch (chemicalType) {
-            case GAS -> buffer.writeById(MekanismAPI.GAS_REGISTRY::getId, (Gas) chemical);
-            case INFUSION -> buffer.writeById(MekanismAPI.INFUSE_TYPE_REGISTRY::getId, (InfuseType) chemical);
-            case PIGMENT -> buffer.writeById(MekanismAPI.PIGMENT_REGISTRY::getId, (Pigment) chemical);
-            case SLURRY -> buffer.writeById(MekanismAPI.SLURRY_REGISTRY::getId, (Slurry) chemical);
+    public Tag save(Provider lookupProvider) {
+        if (isEmpty()) {
+            throw new IllegalStateException("Cannot encode empty BoxedChemical");
         }
+        return CODEC.encodeStart(lookupProvider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+    }
+
+    /**
+     * Saves this boxed chemical to a new tag. Empty boxed chemical are supported and will be saved as an empty tag.
+     */
+    public Tag saveOptional(HolderLookup.Provider lookupProvider) {
+        return isEmpty() ? new CompoundTag() : save(lookupProvider);
     }
 
     /**

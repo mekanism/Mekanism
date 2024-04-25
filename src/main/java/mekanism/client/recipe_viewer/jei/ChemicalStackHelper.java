@@ -69,7 +69,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public ItemStack getCheatItemStack(STACK ingredient) {
-        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), ingredient.getType());
+        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), ingredient.getChemical());
     }
 
     @Override
@@ -87,7 +87,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         if (colorHelper == null) {
             return IIngredientHelper.super.getColors(ingredient);
         }
-        CHEMICAL chemical = ingredient.getType();
+        CHEMICAL chemical = ingredient.getChemical();
         return colorHelper.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
     }
 
@@ -98,7 +98,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public Stream<ResourceLocation> getTagStream(STACK ingredient) {
-        return ingredient.getType().getTags().map(TagKey::location);
+        return ingredient.getChemical().getTags().map(TagKey::location);
     }
 
     protected abstract Registry<CHEMICAL> getRegistry();
@@ -109,7 +109,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             return Optional.empty();
         }
         Set<CHEMICAL> values = stacks.stream()
-              .map(ChemicalStack::getType)
+              .map(ChemicalStack::getChemical)
               .collect(Collectors.toSet());
         int expected = values.size();
         if (expected != stacks.size()) {
@@ -130,7 +130,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             ingredient = getEmptyStack();
         }
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(GasStack.class);
-        CHEMICAL chemical = ingredient.getType();
+        CHEMICAL chemical = ingredient.getChemical();
         toStringHelper.add(getType(), chemical.isEmptyType() ? "none" : TextComponentUtil.build(chemical).getString());
         if (!ingredient.isEmpty()) {
             toStringHelper.add("Amount", ingredient.getAmount());

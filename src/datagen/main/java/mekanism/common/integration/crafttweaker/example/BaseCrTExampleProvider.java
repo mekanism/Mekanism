@@ -57,7 +57,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTS
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
@@ -138,13 +137,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addItemStackIngredientSupport();
         addFluidStackIngredientSupport();
         addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,
-              CrTUtils.gasTags(), ChemicalIngredientDeserializer.GAS);
+              CrTUtils.gasTags());
         addSupportedChemical(InfusionStack.class, ICrTInfusionStack.class, InfusionStackIngredient.class, CrTConstants.CLASS_INFUSION_STACK_INGREDIENT,
-              CrTInfusionStack::new, CrTUtils.infuseTypeTags(), ChemicalIngredientDeserializer.INFUSION);
+              CrTInfusionStack::new, CrTUtils.infuseTypeTags());
         addSupportedChemical(PigmentStack.class, ICrTPigmentStack.class, PigmentStackIngredient.class, CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT,
-              CrTPigmentStack::new, CrTUtils.pigmentTags(), ChemicalIngredientDeserializer.PIGMENT);
+              CrTPigmentStack::new, CrTUtils.pigmentTags());
         addSupportedChemical(SlurryStack.class, ICrTSlurryStack.class, SlurryStackIngredient.class, CrTConstants.CLASS_SLURRY_STACK_INGREDIENT,
-              CrTSlurryStack::new, CrTUtils.slurryTags(), ChemicalIngredientDeserializer.SLURRY);
+              CrTSlurryStack::new, CrTUtils.slurryTags());
         if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
             // support multiple instances better but for now this will work
@@ -362,11 +361,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
           Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
-          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager,
-          ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer) {
+          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
         addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
         addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
-              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
+              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), singleDescription, tagManager),
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
                       return singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
@@ -382,8 +380,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     @Nullable
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
-          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
-          Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
+          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription,
+          KnownTagManager<CHEMICAL> tagManager) {
         if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
             String stackRepresentation = singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";
@@ -391,8 +389,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = tagManager.tag(tagged.getTag()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, deserializer,
-                  singleDescription, tagManager));
+            return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, singleDescription, tagManager));
         }
         return null;
     }

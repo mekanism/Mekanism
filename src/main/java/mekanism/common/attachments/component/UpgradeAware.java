@@ -43,6 +43,9 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, ItemStack inputSlot, 
     public UpgradeAware {
         //Make the map unmodifiable to ensure we don't accidentally mutate it
         upgrades = Collections.unmodifiableMap(upgrades);
+        //TODO - 1.20.5: For things like this if we have any that copy, we may want to make it keep existing stack or list instances
+        // rather than wrapping them an extra time. And instead we can just pass in safe stacks, as data components are immutable
+        // so we shouldn't be mutating our stacks regardless
         inputSlot = inputSlot.copy();
         outputSlot = outputSlot.copy();
     }

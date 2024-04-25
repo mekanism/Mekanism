@@ -15,13 +15,16 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -149,10 +152,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         super.write(buffer);
         storedEnergy.getEnergy().writeToBuffer(buffer);
         FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedFluid.getFluid());
-        ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
-        ChemicalUtils.writeChemicalStack(buffer, storedInfusion.getStack());
-        ChemicalUtils.writeChemicalStack(buffer, storedPigment.getStack());
-        ChemicalUtils.writeChemicalStack(buffer, storedSlurry.getStack());
+        GasStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedGas.getStack());
+        InfusionStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedInfusion.getStack());
+        PigmentStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedPigment.getStack());
+        SlurryStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedSlurry.getStack());
         ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedItem.getStack());
         buffer.writeDouble(storedHeat.getHeat());
     }
@@ -163,10 +166,10 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         presetVariables();
         storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
         storedFluid.setStack(FluidStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
-        storedInfusion.setStack(ChemicalUtils.readInfusionStack(dataStream));
-        storedPigment.setStack(ChemicalUtils.readPigmentStack(dataStream));
-        storedSlurry.setStack(ChemicalUtils.readSlurryStack(dataStream));
+        storedGas.setStack(GasStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
+        storedInfusion.setStack(InfusionStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
+        storedPigment.setStack(PigmentStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
+        storedSlurry.setStack(SlurryStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedItem.setStack(ItemStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedHeat.setHeat(dataStream.readDouble());
     }

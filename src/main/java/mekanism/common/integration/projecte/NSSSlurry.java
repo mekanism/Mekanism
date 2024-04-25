@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
@@ -42,7 +41,7 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
     @NotNull
     public static NSSSlurry createSlurry(@NotNull SlurryStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
-        return createSlurry(stack.getType());
+        return createSlurry(stack.getChemical());
     }
 
     /**

@@ -1,6 +1,8 @@
 package mekanism.common.registries;
 
-import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
@@ -57,7 +59,7 @@ public class MekanismRecipeSerializersInternal {
         MekanismRecipeSerializers.ENRICHING = RECIPE_SERIALIZERS.register("enriching", () -> MekanismRecipeSerializer.itemToItem(BasicEnrichingRecipe::new));
         MekanismRecipeSerializers.SMELTING = RECIPE_SERIALIZERS.register("smelting", () -> MekanismRecipeSerializer.itemToItem(BasicSmeltingRecipe::new));
 
-        MekanismRecipeSerializers.CHEMICAL_INFUSING = RECIPE_SERIALIZERS.register("chemical_infusing", () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicChemicalInfuserRecipe::new, IngredientCreatorAccess.gas(), ChemicalUtils.GAS_STACK_CODEC, ChemicalUtils.GAS_STACK_STREAM_CODEC));
+        MekanismRecipeSerializers.CHEMICAL_INFUSING = RECIPE_SERIALIZERS.register("chemical_infusing", () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicChemicalInfuserRecipe::new, IngredientCreatorAccess.gas(), GasStack.MAP_CODEC, GasStack.STREAM_CODEC));
 
         MekanismRecipeSerializers.COMBINING = RECIPE_SERIALIZERS.register("combining", () -> MekanismRecipeSerializer.combining(BasicCombinerRecipe::new));
 
@@ -82,14 +84,14 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.ENERGY_CONVERSION = RECIPE_SERIALIZERS.register("energy_conversion", () -> MekanismRecipeSerializer.itemToEnergy(BasicItemStackToEnergyRecipe::new));
 
-        MekanismRecipeSerializers.GAS_CONVERSION = RECIPE_SERIALIZERS.register("gas_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicGasConversionRecipe::new, ChemicalUtils.GAS_STACK_CODEC, ChemicalUtils.GAS_STACK_STREAM_CODEC));
-        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> MekanismRecipeSerializer.itemToChemical(BasicChemicalOxidizerRecipe::new, ChemicalUtils.GAS_STACK_CODEC, ChemicalUtils.GAS_STACK_STREAM_CODEC));
+        MekanismRecipeSerializers.GAS_CONVERSION = RECIPE_SERIALIZERS.register("gas_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicGasConversionRecipe::new, GasStack.MAP_CODEC, GasStack.STREAM_CODEC));
+        MekanismRecipeSerializers.OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> MekanismRecipeSerializer.itemToChemical(BasicChemicalOxidizerRecipe::new, GasStack.MAP_CODEC, GasStack.STREAM_CODEC));
 
-        MekanismRecipeSerializers.INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicItemStackToInfuseTypeRecipe::new, ChemicalUtils.INFUSION_STACK_CODEC, ChemicalUtils.INFUSION_STACK_STREAM_CODEC));
+        MekanismRecipeSerializers.INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> MekanismRecipeSerializer.itemToChemical(BasicItemStackToInfuseTypeRecipe::new, InfusionStack.MAP_CODEC, InfusionStack.STREAM_CODEC));
 
-        MekanismRecipeSerializers.PIGMENT_EXTRACTING = RECIPE_SERIALIZERS.register("pigment_extracting", () -> MekanismRecipeSerializer.itemToChemical(BasicItemStackToPigmentRecipe::new, ChemicalUtils.PIGMENT_STACK_CODEC, ChemicalUtils.PIGMENT_STACK_STREAM_CODEC));
+        MekanismRecipeSerializers.PIGMENT_EXTRACTING = RECIPE_SERIALIZERS.register("pigment_extracting", () -> MekanismRecipeSerializer.itemToChemical(BasicItemStackToPigmentRecipe::new, PigmentStack.MAP_CODEC, PigmentStack.STREAM_CODEC));
 
-        MekanismRecipeSerializers.PIGMENT_MIXING = RECIPE_SERIALIZERS.register("pigment_mixing", () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicPigmentMixingRecipe::new, IngredientCreatorAccess.pigment(), ChemicalUtils.PIGMENT_STACK_CODEC, ChemicalUtils.PIGMENT_STACK_STREAM_CODEC));
+        MekanismRecipeSerializers.PIGMENT_MIXING = RECIPE_SERIALIZERS.register("pigment_mixing", () -> MekanismRecipeSerializer.chemicalChemicalToChemical(BasicPigmentMixingRecipe::new, IngredientCreatorAccess.pigment(), PigmentStack.MAP_CODEC, PigmentStack.STREAM_CODEC));
 
         MekanismRecipeSerializers.METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> MekanismRecipeSerializer.itemChemicalToItem(BasicMetallurgicInfuserRecipe::new, IngredientCreatorAccess.infusion()));
 

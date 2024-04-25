@@ -38,12 +38,6 @@ public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, Inf
         super(getter, setter);
     }
 
-    @NotNull
-    @Override
-    protected InfusionStack createStack(InfusionStack stored, long size) {
-        return new InfusionStack(stored, size);
-    }
-
     @Override
     public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {

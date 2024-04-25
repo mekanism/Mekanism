@@ -40,8 +40,6 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         this.representations = Collections.singletonList(ChemicalUtil.copy(this.chemicalInstance));
     }
 
-    protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
-
     @Override
     public boolean test(STACK chemicalStack) {
         return testType(chemicalStack) && chemicalStack.getAmount() >= chemicalInstance.getAmount();
@@ -54,16 +52,17 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean testType(CHEMICAL chemical) {
-        return chemicalInstance.isTypeEqual(Objects.requireNonNull(chemical));
+        return chemicalInstance.is(Objects.requireNonNull(chemical));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public STACK getMatchingInstance(STACK chemicalStack) {
         if (test(chemicalStack)) {
             //Note: We manually "implement" the copy to ensure it returns the proper type as ChemicalStack#copy returns ChemicalStack<CHEMICAL> instead of STACK
-            return getIngredientInfo().createStack(chemicalInstance, chemicalInstance.getAmount());
+            return (STACK) chemicalInstance.copy();
         }
-        return getIngredientInfo().getEmptyStack();
+        return getEmptyStack();
     }
 
     @Override
@@ -85,7 +84,7 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
      * For use in recipe input caching.
      */
     public CHEMICAL getInputRaw() {
-        return chemicalInstance.getType();
+        return chemicalInstance.getChemical();
     }
 
     public STACK getChemicalInstance() {

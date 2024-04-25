@@ -1,17 +1,15 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -33,8 +31,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     }
 
     @Override
-    protected ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient> getDeserializer() {
-        return ChemicalIngredientDeserializer.PIGMENT;
+    protected PigmentStackIngredient createMultiInternal(List<PigmentStackIngredient> cleanedIngredients) {
+        return new MultiPigmentStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -67,18 +65,13 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static Codec<SinglePigmentStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new));
+        public static Codec<SinglePigmentStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(PigmentStack.MAP_CODEC, SinglePigmentStackIngredient::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SinglePigmentStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-              makeStreamCodec(ChemicalUtils.PIGMENT_STACK_STREAM_CODEC, SinglePigmentStackIngredient::new)
+              makeStreamCodec(PigmentStack.STREAM_CODEC, SinglePigmentStackIngredient::new)
         );
 
         private SinglePigmentStackIngredient(PigmentStack stack) {
             super(stack);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.PIGMENT;
         }
     }
 
@@ -92,11 +85,6 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
         private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
             super(MekanismAPI.PIGMENT_REGISTRY.getOrCreateTag(tag), amount);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.PIGMENT;
         }
     }
 }

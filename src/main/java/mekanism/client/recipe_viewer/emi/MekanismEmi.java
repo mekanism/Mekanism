@@ -135,12 +135,12 @@ public class MekanismEmi implements EmiPlugin {
             if (tanks == 1) {
                 ChemicalStack<?> chemicalStack = handler.getChemicalInTank(0);
                 if (!chemicalStack.isEmpty()) {
-                    representation.add(chemicalStack.getType());
+                    representation.add(chemicalStack.getChemical());
                 }
             } else if (tanks > 1) {
                 List<Chemical<?>> chemicals = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
-                    chemicals.add(handler.getChemicalInTank(tank).getType());
+                    chemicals.add(handler.getChemicalInTank(tank).getChemical());
                 }
                 representation.add(chemicals);
             }

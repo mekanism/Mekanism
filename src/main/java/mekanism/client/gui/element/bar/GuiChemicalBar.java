@@ -35,7 +35,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Nullable
     @Override
     protected TankType getType(STACK stack) {
-        CHEMICAL type = getHandler().getStack().getType();
+        CHEMICAL type = getHandler().getStack().getChemical();
         if (type instanceof Gas) {
             return TankType.GAS_TANK;
         } else if (type instanceof InfuseType) {
@@ -51,7 +51,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Override
     protected List<Component> getTooltip(STACK stack) {
         List<Component> tooltips = super.getTooltip(stack);
-        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getType(), Minecraft.getInstance().options.advancedItemTooltips);
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getChemical(), Minecraft.getInstance().options.advancedItemTooltips);
         return tooltips;
     }
 
@@ -62,7 +62,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
 
     @Override
     protected TextureAtlasSprite getIcon(STACK stack) {
-        return MekanismRenderer.getChemicalTexture(stack.getType());
+        return MekanismRenderer.getChemicalTexture(stack.getChemical());
     }
 
     public static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> TankInfoProvider<STACK> getProvider(TANK tank, List<TANK> tanks) {

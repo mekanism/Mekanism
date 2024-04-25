@@ -54,7 +54,6 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPig
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
@@ -145,13 +144,13 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         } else if (param instanceof FluidStackIngredient ingredient) {
             return convertIngredient(ingredient);
         } else if (param instanceof GasStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTUtils.gasTags(), ChemicalIngredientDeserializer.GAS, ingredient);
+            return convertIngredient(CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTUtils.gasTags(), ingredient);
         } else if (param instanceof InfusionStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_INFUSION_STACK_INGREDIENT, CrTUtils.infuseTypeTags(), ChemicalIngredientDeserializer.INFUSION, ingredient);
+            return convertIngredient(CrTConstants.CLASS_INFUSION_STACK_INGREDIENT, CrTUtils.infuseTypeTags(), ingredient);
         } else if (param instanceof PigmentStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT, CrTUtils.pigmentTags(), ChemicalIngredientDeserializer.PIGMENT, ingredient);
+            return convertIngredient(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT, CrTUtils.pigmentTags(), ingredient);
         } else if (param instanceof SlurryStackIngredient ingredient) {
-            return convertIngredient(CrTConstants.CLASS_SLURRY_STACK_INGREDIENT, CrTUtils.slurryTags(), ChemicalIngredientDeserializer.SLURRY, ingredient);
+            return convertIngredient(CrTConstants.CLASS_SLURRY_STACK_INGREDIENT, CrTUtils.slurryTags(), ingredient);
         } else if (param instanceof List<?> list) {
             if (list.isEmpty()) {
                 //Shouldn't happen
@@ -231,8 +230,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
-          KnownTagManager<CHEMICAL> tagManager, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
-          ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
+          KnownTagManager<CHEMICAL> tagManager, ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
         if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
             //Note: Handled via implicit casts
             return convertParam(singleChemicalStackIngredient.getChemicalInstance());
@@ -246,7 +244,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            return convertMultiIngredient(crtClass, multiIngredient, i -> convertIngredient(crtClass, tagManager, deserializer, i));
+            return convertMultiIngredient(crtClass, multiIngredient, i -> convertIngredient(crtClass, tagManager, i));
         }
         //Shouldn't happen
         return "Unimplemented chemical stack ingredient: " + ingredient;

@@ -409,7 +409,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
-        builder.set(MekanismDataComponents.EJECTOR, new AttachedEjector(List.of(inputColors), strictInput, Optional.ofNullable(outputColor)));
+        //Note: We have to use Arrays#asList instead of List#of as our inputColors can contain null elements
+        builder.set(MekanismDataComponents.EJECTOR, new AttachedEjector(Arrays.asList(inputColors), strictInput, Optional.ofNullable(outputColor)));
     }
 
     @Override

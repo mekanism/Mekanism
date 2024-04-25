@@ -1,17 +1,15 @@
 package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.serialization.Codec;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -33,8 +31,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     }
 
     @Override
-    protected ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> getDeserializer() {
-        return ChemicalIngredientDeserializer.GAS;
+    protected GasStackIngredient createMultiInternal(List<GasStackIngredient> cleanedIngredients) {
+        return new MultiGasStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -66,18 +64,13 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static class SingleGasStackIngredient extends SingleChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static Codec<SingleGasStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new));
+        public static Codec<SingleGasStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(GasStack.MAP_CODEC, SingleGasStackIngredient::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SingleGasStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-              makeStreamCodec(ChemicalUtils.GAS_STACK_STREAM_CODEC, SingleGasStackIngredient::new)
+              makeStreamCodec(GasStack.STREAM_CODEC, SingleGasStackIngredient::new)
         );
 
         private SingleGasStackIngredient(GasStack stack) {
             super(stack);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Gas, GasStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.GAS;
         }
     }
 
@@ -91,11 +84,6 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
         private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
             super(MekanismAPI.GAS_REGISTRY.getOrCreateTag(tag), amount);
-        }
-
-        @Override
-        protected ChemicalIngredientInfo<Gas, GasStack> getIngredientInfo() {
-            return ChemicalIngredientInfo.GAS;
         }
     }
 }

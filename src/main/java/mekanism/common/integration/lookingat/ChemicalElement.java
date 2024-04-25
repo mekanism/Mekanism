@@ -46,7 +46,7 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored.getType());
+        return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored.getChemical());
     }
 
     @Override
@@ -55,14 +55,14 @@ public class ChemicalElement extends LookingAtElement {
         if (stored.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         } else if (amount == Long.MAX_VALUE) {
-            return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);
+            return MekanismLang.GENERIC_STORED.translate(stored.getChemical(), MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(stored.getType(), TextUtils.format(amount));
+        return MekanismLang.GENERIC_STORED_MB.translate(stored.getChemical(), TextUtils.format(amount));
     }
 
     @Override
     protected boolean applyRenderColor(GuiGraphics guiGraphics) {
-        MekanismRenderer.color(guiGraphics, stored.getType());
+        MekanismRenderer.color(guiGraphics, stored.getChemical());
         return true;
     }
 }

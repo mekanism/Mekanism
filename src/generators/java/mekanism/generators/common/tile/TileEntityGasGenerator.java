@@ -103,7 +103,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             getEnergyContainer().insert(toUseGeneration, Action.EXECUTE, AutomationType.INTERNAL);
             if (!fuelTank.isEmpty()) {
                 //TODO: Improve this as it is sort of hacky
-                fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
+                fuelTank.setStack(fuelTank.getStack().copyWithAmount(total / maxBurnTicks));
             }
             burnTicks = total % maxBurnTicks;
             gasUsedLastTick = toUse / (double) maxBurnTicks;

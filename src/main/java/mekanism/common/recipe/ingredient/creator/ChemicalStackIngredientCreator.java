@@ -2,6 +2,9 @@ package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -10,7 +13,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.IngredientType;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
@@ -62,8 +64,6 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
         });
     }
 
-    protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
-
     @Override
     public Codec<INGREDIENT> codec() {
         return myCodec;
@@ -77,8 +77,27 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
     @Override
     @SafeVarargs
     public final INGREDIENT createMulti(INGREDIENT... ingredients) {
-        return getDeserializer().createMulti(ingredients);
+        Objects.requireNonNull(ingredients, "Cannot create a multi ingredient out of a null array.");
+        if (ingredients.length == 0) {
+            throw new IllegalArgumentException("Cannot create a multi ingredient out of no ingredients.");
+        } else if (ingredients.length == 1) {
+            return ingredients[0];
+        }
+        List<INGREDIENT> cleanedIngredients = new ArrayList<>();
+        for (INGREDIENT ingredient : ingredients) {
+            if (ingredient instanceof MultiChemicalStackIngredient) {
+                //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
+                // creating a multi ingredient, then we are certified they won't be of a higher depth
+                cleanedIngredients.addAll(((MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>) ingredient).getIngredients());
+            } else {
+                cleanedIngredients.add(ingredient);
+            }
+        }
+        //There should be more than a single ingredient, or we would have split out earlier
+        return createMultiInternal(cleanedIngredients);
     }
+
+    protected abstract INGREDIENT createMultiInternal(List<INGREDIENT> cleanedIngredients);
 
     protected final void assertNonEmpty(CHEMICAL chemical) {
         if (chemical.isEmptyType()) {

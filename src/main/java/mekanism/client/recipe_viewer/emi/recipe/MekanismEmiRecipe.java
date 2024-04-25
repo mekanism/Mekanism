@@ -263,7 +263,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         }
         List<ChemicalEmiStack<?>> list = new ArrayList<>(representations.size());
         for (ChemicalStack<?> stack : representations) {
-            list.add(ChemicalEmiStack.create(stack.getType(), stack.getAmount() * scalar));
+            list.add(ChemicalEmiStack.create(stack.getChemical(), stack.getAmount() * scalar));
         }
         return EmiIngredient.of(list);
     }

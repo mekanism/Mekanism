@@ -183,7 +183,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
         if (nbtTags.contains(NBTConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
-            saveShare = BoxedChemicalStack.read(nbtTags.getCompound(NBTConstants.BOXED_CHEMICAL));
+            saveShare = BoxedChemicalStack.parseOptional(provider, nbtTags.getCompound(NBTConstants.BOXED_CHEMICAL));
         } else {
             saveShare = BoxedChemicalStack.EMPTY;
         }
@@ -210,7 +210,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.BOXED_CHEMICAL);
         } else {
-            nbtTags.put(NBTConstants.BOXED_CHEMICAL, saveShare.write(new CompoundTag()));
+            nbtTags.put(NBTConstants.BOXED_CHEMICAL, saveShare.save(provider));
         }
         return nbtTags;
     }
@@ -375,7 +375,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
-        NBTUtils.setBoxedChemicalIfPresent(tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);
+        NBTUtils.setBoxedChemicalIfPresent(provider, tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);
     }
 
     public IGasTank getGasTank() {

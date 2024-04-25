@@ -26,7 +26,9 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     @NotNull
-    protected abstract STACK createStack(STACK stored, long size);
+    protected STACK createStack(STACK stored, long size) {
+        return(STACK) stored.copyWithAmount(size);
+    }
 
     @NotNull
     public STACK get() {

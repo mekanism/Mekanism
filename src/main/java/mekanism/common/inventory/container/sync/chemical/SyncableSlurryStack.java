@@ -38,12 +38,6 @@ public class SyncableSlurryStack extends SyncableChemicalStack<Slurry, SlurrySta
         super(getter, setter);
     }
 
-    @NotNull
-    @Override
-    protected SlurryStack createStack(SlurryStack stored, long size) {
-        return new SlurryStack(stored, size);
-    }
-
     @Override
     public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {

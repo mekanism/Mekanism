@@ -189,7 +189,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
                 setStack(chemicalStack.copy(), chemicalTank.getTankForType(chemical.getChemicalType()));
             } else if (ChemicalUtil.compareTypes(chemical.getChemicalType(), current)) {
                 IChemicalTank<?, ?> tank = chemicalTank.getTankFromCurrent(current);
-                if (chemicalStack.getType() == tank.getType()) {
+                if (chemicalStack.getChemical() == tank.getType()) {
                     long amount = chemicalStack.getAmount();
                     MekanismUtils.logMismatchedStackSize(tank.growStack(amount, Action.EXECUTE), amount);
                 }

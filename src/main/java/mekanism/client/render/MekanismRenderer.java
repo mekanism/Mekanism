@@ -176,7 +176,7 @@ public class MekanismRenderer {
 
     public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack<?> chemicalStack) {
         if (!chemicalStack.isEmpty()) {
-            color(guiGraphics, chemicalStack.getType());
+            color(guiGraphics, chemicalStack.getChemical());
         }
     }
 
@@ -218,7 +218,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull ChemicalStack<?> stack, float scale, boolean gaseous) {
-        return getColorARGB(stack.getType(), scale, gaseous);
+        return getColorARGB(stack.getChemical(), scale, gaseous);
     }
 
     public static int getColorARGB(@NotNull Chemical<?> chemical, float scale, boolean gaseous) {

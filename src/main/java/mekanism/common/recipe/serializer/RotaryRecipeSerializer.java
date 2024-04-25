@@ -8,9 +8,7 @@ import io.netty.handler.codec.DecoderException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -31,15 +29,11 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredientCreator.INSTANCE.codec().validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(JsonConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = SerializerHelper.FLUIDSTACK_CODEC.validate(
-          stack -> stack.isEmpty() ? DataResult.error(() -> "Fluid output may not be empty") : DataResult.success(stack)
-    ).fieldOf(JsonConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(JsonConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
     private final RecordCodecBuilder<BasicRotaryRecipe, GasStackIngredient> GAS_INPUT_FIELD = GasStackIngredientCreator.INSTANCE.codec().validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Gas input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(JsonConstants.GAS_INPUT).forGetter(BasicRotaryRecipe::getGasInputRaw);
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = ChemicalUtils.GAS_STACK_CODEC.validate(
-          stack -> stack.isEmpty() ? DataResult.error(() -> "Gas output may not be empty") : DataResult.success(stack)
-    ).fieldOf(JsonConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getGasOutputRaw);
+    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = GasStack.CODEC.fieldOf(JsonConstants.GAS_OUTPUT).forGetter(BasicRotaryRecipe::getGasOutputRaw);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicRotaryRecipe> streamCodec;
     private final MapCodec<BasicRotaryRecipe> codec;
@@ -100,7 +94,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         //Note: This doesn't need to be optional gas, as we only use this if we have a fluid to gas recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidToGas> STREAM_CODEC = StreamCodec.composite(
               IngredientCreatorAccess.fluid().streamCodec(), FluidToGas::input,
-              ChemicalUtils.GAS_STACK_STREAM_CODEC, FluidToGas::output,
+              GasStack.STREAM_CODEC, FluidToGas::output,
               FluidToGas::new
         );
 

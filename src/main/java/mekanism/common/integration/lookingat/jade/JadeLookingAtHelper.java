@@ -42,7 +42,7 @@ public class JadeLookingAtHelper implements LookingAtHelper {
     public void addFluidElement(FluidStack stored, int capacity) {
         CompoundTag fluidData = new CompoundTag();
         //TODO - 1.20.5: Providers
-        //fluidData.put(NBTConstants.FLUID_STORED, stored.save());
+        //fluidData.put(NBTConstants.FLUID_STORED, stored.saveOptional(provider));
         fluidData.putInt(NBTConstants.MAX, capacity);
         data.add(fluidData);
     }
@@ -50,7 +50,8 @@ public class JadeLookingAtHelper implements LookingAtHelper {
     @Override
     public void addChemicalElement(ChemicalStack<?> stored, long capacity) {
         CompoundTag chemicalData = new CompoundTag();
-        chemicalData.put(CHEMICAL_STACK, stored.write(new CompoundTag()));
+        //TODO - 1.20.5: Providers
+        //chemicalData.put(CHEMICAL_STACK, stored.saveOptional(provider));
         chemicalData.putLong(NBTConstants.MAX, capacity);
         data.add(chemicalData);
     }

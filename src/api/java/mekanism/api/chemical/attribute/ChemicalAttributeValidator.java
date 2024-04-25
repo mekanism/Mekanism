@@ -66,7 +66,7 @@ public interface ChemicalAttributeValidator {
      * @since 10.2.3
      */
     default boolean process(ChemicalStack<?> stack) {
-        return process(stack.getType());
+        return process(stack.getChemical());
     }
 
     /**

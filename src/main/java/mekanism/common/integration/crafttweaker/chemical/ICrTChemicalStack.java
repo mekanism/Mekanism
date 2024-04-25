@@ -165,7 +165,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     @ZenCodeType.Getter("type")
     @ZenCodeType.Caster(implicit = true)
     default CHEMICAL getType() {
-        return getInternal().getType();
+        return getInternal().getChemical();
     }
 
     /**

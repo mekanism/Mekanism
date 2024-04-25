@@ -14,14 +14,9 @@ import net.minecraft.nbt.Tag;
 public interface IGasTank extends IChemicalTank<Gas, GasStack>, IEmptyGasProvider {
 
     @Override
-    default GasStack createStack(GasStack stored, long size) {
-        return new GasStack(stored, size);
-    }
-
-    @Override
     default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (nbt.contains(NBTConstants.STORED, Tag.TAG_COMPOUND)) {
-            setStackUnchecked(GasStack.readFromNBT(nbt.getCompound(NBTConstants.STORED)));
+            setStackUnchecked(GasStack.parseOptional(provider, nbt.getCompound(NBTConstants.STORED)));
         }
     }
 }
