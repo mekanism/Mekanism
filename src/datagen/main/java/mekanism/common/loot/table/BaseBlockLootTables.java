@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -15,29 +14,17 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
-import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
-import mekanism.common.item.loot.CopyAttachmentsLootFunction;
 import mekanism.common.item.loot.CopyContainersLootFunction;
-import mekanism.common.item.loot.CopyFiltersLootFunction;
-import mekanism.common.item.loot.CopyFrequencyLootFunction;
-import mekanism.common.item.loot.CopySecurityLootFunction;
-import mekanism.common.item.loot.CopySideConfigLootFunction;
-import mekanism.common.item.loot.CopyToAttachmentsLootFunction;
-import mekanism.common.item.loot.CopyUpgradesLootFunction;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
@@ -46,6 +33,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ItemStack;
@@ -62,6 +50,7 @@ import net.minecraft.world.level.storage.loot.LootTable.Builder;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -71,12 +60,9 @@ import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
-import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
-import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -120,14 +106,14 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     protected LootTable.Builder createOreDrop(Block block, ItemLike item) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
-              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE))
         ));
     }
 
     protected LootTable.Builder droppingWithFortuneOrRandomly(Block block, ItemLike item, UniformGenerator range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
               .apply(SetItemCountFunction.setCount(range))
-              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE))
         ));
     }
 
@@ -168,8 +154,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (skipBlock(block)) {
                 continue;
             }
-            TrackingNbtToAttachmentBuilder nbtToAttachmentBuilder = new TrackingNbtToAttachmentBuilder(ContextNbtProvider.BLOCK_ENTITY);
-            TrackingAttachmentBuilder attachmentBuilder = new TrackingAttachmentBuilder();
+            TrackingComponentsBuilder componentsBuilder = new TrackingComponentsBuilder(CopyComponentsFunction.Source.BLOCK_ENTITY);
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
@@ -182,32 +167,19 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof IFrequencyHandler frequencyHandler) {
                 Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
-                if (!customFrequencies.isEmpty()) {
-                    itemLootPool.apply(CopyFrequencyLootFunction.builder());
-                    if (stack.getItem() instanceof IFrequencyItem frequencyItem) {
-                        FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
-                        if (!customFrequencies.contains(frequencyType)) {
-                            Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), RegistryUtils.getName(block));
-                        }
+                if (!customFrequencies.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem) {
+                    FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
+                    if (!customFrequencies.contains(frequencyType)) {
+                        Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), RegistryUtils.getName(block));
                     }
                 }
             }
-            if (Attribute.has(block, AttributeSecurity.class)) {
-                itemLootPool.apply(CopySecurityLootFunction.builder());
-            }
-            if (Attribute.has(block, AttributeUpgradeSupport.class)) {
-                itemLootPool.apply(CopyUpgradesLootFunction.builder());
-            }
-            if (tile instanceof ISideConfiguration) {
-                itemLootPool.apply(CopySideConfigLootFunction.builder());
-            }
-            if (tile instanceof ITileFilterHolder<?>) {
-                itemLootPool.apply(CopyFiltersLootFunction.builder());
+            if (tile instanceof TileEntityUpdateable tileEntity) {
+                for (DataComponentType<?> remapEntry : tileEntity.collectComponents().keySet()) {
+                    componentsBuilder.include(remapEntry);
+                }
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
-                for (Map.Entry<String, Holder<AttachmentType<?>>> remapEntry : tileEntity.getTileDataAttachmentRemap().entrySet()) {
-                    nbtToAttachmentBuilder.copy(remapEntry.getKey(), remapEntry.getValue());
-                }
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
@@ -249,15 +221,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (attributeInventory != null) {
                 hasContents |= attributeInventory.applyLoot(delayedPool);
             }
-            if (block instanceof BlockCardboardBox) {
-                //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
-                attachmentBuilder.copy(MekanismAttachmentTypes.BLOCK_DATA);
-            }
-            if (attachmentBuilder.hasData) {
-                itemLootPool.apply(attachmentBuilder);
-            }
-            if (nbtToAttachmentBuilder.hasData) {
-                itemLootPool.apply(nbtToAttachmentBuilder);
+            if (componentsBuilder.hasData) {
+                itemLootPool.apply(componentsBuilder);
             }
             //apply the delayed ones last, so that NBT funcs have happened first
             for (LootItemFunction.Builder function : delayedPool.functions) {
@@ -356,31 +321,18 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
-    private static class TrackingNbtToAttachmentBuilder extends CopyToAttachmentsLootFunction.Builder {
+    private static class TrackingComponentsBuilder extends CopyComponentsFunction.Builder {
 
         private boolean hasData = false;
 
-        public TrackingNbtToAttachmentBuilder(NbtProvider source) {
+        public TrackingComponentsBuilder(CopyComponentsFunction.Source source) {
             super(source);
         }
 
         @Override
-        public CopyToAttachmentsLootFunction.Builder copy(String sourcePath, AttachmentType<?> target) {
+        public CopyComponentsFunction.Builder include(DataComponentType<?> target) {
             this.hasData = true;
-            return super.copy(sourcePath, target);
-        }
-    }
-
-    @MethodsReturnNonnullByDefault
-    @ParametersAreNotNullByDefault
-    private static class TrackingAttachmentBuilder extends CopyAttachmentsLootFunction.Builder {
-
-        private boolean hasData = false;
-
-        @Override
-        public CopyAttachmentsLootFunction.Builder copy(AttachmentType<?> attachmentType) {
-            this.hasData = true;
-            return super.copy(attachmentType);
+            return super.include(target);
         }
     }
 

@@ -1,5 +1,7 @@
 package mekanism.generators.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
+import java.util.function.IntFunction;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -12,23 +14,27 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for informing the server that an action happened in a GUI
  */
-public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition, double extra) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = MekanismGenerators.rl("gui_interact");
-
-    public PacketGeneratorsGuiInteract(FriendlyByteBuf buffer) {
-        this(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
-    }
+    public static final CustomPacketPayload.Type<PacketGeneratorsGuiInteract> TYPE = new CustomPacketPayload.Type<>(MekanismGenerators.rl("gui_interact"));
+    public static final StreamCodec<ByteBuf, PacketGeneratorsGuiInteract> STREAM_CODEC = StreamCodec.composite(
+          GeneratorsGuiInteraction.STREAM_CODEC, PacketGeneratorsGuiInteract::interaction,
+          BlockPos.STREAM_CODEC, PacketGeneratorsGuiInteract::tilePosition,
+          ByteBufCodecs.DOUBLE, PacketGeneratorsGuiInteract::extra,
+          PacketGeneratorsGuiInteract::new
+    );
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile) {
         this(interaction, tile.getBlockPos());
@@ -44,26 +50,17 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketGeneratorsGuiInteract> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
-            if (tile != null) {
-                interaction.consume(tile, player, extra);
-            }
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
+        if (tile != null) {
+            interaction.consume(tile, player, extra);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeEnum(interaction);
-        buffer.writeBlockPos(tilePosition);
-        buffer.writeDouble(extra);
     }
 
     public enum GeneratorsGuiInteraction {
@@ -76,9 +73,9 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
         }),
         LOGIC_TYPE((tile, player, extra) -> {
             if (tile instanceof TileEntityFissionReactorLogicAdapter logicAdapter) {
-                logicAdapter.setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
+                logicAdapter.setLogicTypeFromPacket(FissionReactorLogic.BY_ID.apply((int) Math.round(extra)));
             } else if (tile instanceof TileEntityFusionReactorLogicAdapter logicAdapter) {
-                logicAdapter.setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
+                logicAdapter.setLogicTypeFromPacket(FusionReactorLogic.BY_ID.apply((int) Math.round(extra)));
             }
         }),
         FISSION_ACTIVE((tile, player, extra) -> {
@@ -86,6 +83,9 @@ public record PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, 
                 reactorCasing.setReactorActive(Math.round(extra) == 1);
             }
         });
+
+        public static final IntFunction<GeneratorsGuiInteraction> BY_ID = ByIdMap.continuous(GeneratorsGuiInteraction::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, GeneratorsGuiInteraction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GeneratorsGuiInteraction::ordinal);
 
         private final TriConsumer<TileEntityMekanism, Player, Double> consumerForTile;
 

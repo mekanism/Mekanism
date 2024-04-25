@@ -36,9 +36,9 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +53,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
                 return true;
             }
             ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-            return secondaryOutput.isEmpty() || ItemHandlerHelper.canItemStacksStack(secondaryOutput, extra);
+            return secondaryOutput.isEmpty() || ItemStack.isSameItemSameComponents(secondaryOutput, extra);
         }
         return false;
     };
@@ -161,10 +161,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof SawmillUpgradeData) {
             //Validate we have the correct type of data before passing it upwards
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
@@ -172,8 +172,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @NotNull
     @Override
-    public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
+    public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new SawmillUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
 
     //Methods relating to IComputerTile

@@ -6,7 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -60,7 +60,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
 
     @NotNull
     @Override
-    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
+    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     /**
      * For JEI, gets the output representations to display.

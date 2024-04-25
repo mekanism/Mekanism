@@ -7,23 +7,29 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.IngredientType;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 @NothingNullByDefault
 public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> {
 
     private final Codec<INGREDIENT> myCodec;
+    private final StreamCodec<RegistryFriendlyByteBuf, INGREDIENT> myStreamCodec;
 
     protected <ING_STACKED extends SingleChemicalStackIngredient<CHEMICAL, STACK>,
           ING_TAGGED extends TaggedChemicalStackIngredient<CHEMICAL, STACK>,
           MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>>
     ChemicalStackIngredientCreator(Codec<ING_STACKED> stackCodec, Codec<ING_TAGGED> taggedCodec, Function<Codec<INGREDIENT>, Codec<MULTI>> multiCodecSupplier,
+          StreamCodec<RegistryFriendlyByteBuf, ING_STACKED> singleStreamCodec, StreamCodec<RegistryFriendlyByteBuf, ING_TAGGED> taggedStreamCodec,
+          StreamCodec<RegistryFriendlyByteBuf, MULTI> multiStreamCodec,
           Class<ING_STACKED> stackedClass, Class<ING_TAGGED> taggedClass, Class<MULTI> multiClass, Class<INGREDIENT> ingredientClass) {
         Codec<INGREDIENT> joinedSingle = Codec.either(stackCodec, taggedCodec).xmap(
               either -> either.map(Function.identity(), Function.identity()),
@@ -49,18 +55,23 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
                   return Either.left(ingredientClass.cast(input));
               }
         ).xmap(ingredientClass::cast, Function.identity());
+        myStreamCodec = IngredientType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(InputIngredient::getType, type -> (StreamCodec<RegistryFriendlyByteBuf, INGREDIENT>) switch (type) {
+            case SINGLE -> singleStreamCodec;
+            case TAGGED -> taggedStreamCodec;
+            case MULTI -> multiStreamCodec;
+        });
     }
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
     @Override
-    public INGREDIENT read(FriendlyByteBuf buffer) {
-        return getDeserializer().read(buffer);
+    public Codec<INGREDIENT> codec() {
+        return myCodec;
     }
 
     @Override
-    public Codec<INGREDIENT> codec() {
-        return myCodec;
+    public StreamCodec<RegistryFriendlyByteBuf, INGREDIENT> streamCodec() {
+        return myStreamCodec;
     }
 
     @Override

@@ -135,7 +135,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType pathType) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return false;

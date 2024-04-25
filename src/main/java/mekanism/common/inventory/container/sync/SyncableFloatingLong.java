@@ -6,6 +6,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.network.to_client.container.property.FloatingLongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.ShortPropertyData;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -58,7 +59,7 @@ public class SyncableFloatingLong implements ISyncableData {
     }
 
     @Override
-    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
             return new ShortPropertyData(property, get().getDecimal());

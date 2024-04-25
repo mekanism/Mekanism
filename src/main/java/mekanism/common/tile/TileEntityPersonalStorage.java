@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -13,6 +14,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -109,14 +112,18 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     }
 
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
         if (!isRemote()) {
-            AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryIfPresent(stack).orElse(null);
-            if (storageItemInventory != null) {
-                List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots(null);
-                for (int i = 0; i < inventorySlots.size(); i++) {
-                    setStackInSlot(i, inventorySlots.get(i).getStack().copy());
+            UUID owner = input.get(MekanismDataComponents.OWNER);
+            if (owner != null) {
+                AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(
+                      input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner).orElse(null);
+                if (storageItemInventory != null) {
+                    List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots(null);
+                    for (int i = 0; i < inventorySlots.size(); i++) {
+                        setStackInSlot(i, inventorySlots.get(i).getStack().copy());
+                    }
                 }
             }
         }

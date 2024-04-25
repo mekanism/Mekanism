@@ -41,6 +41,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -179,13 +180,13 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof MetallurgicInfuserUpgradeData data) {
             //Generic factory upgrade data handling
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            infusionTank.deserializeNBT(data.stored.serializeNBT());
-            extraSlot.deserializeNBT(data.infusionSlot.serializeNBT());
+            infusionTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
+            extraSlot.deserializeNBT(provider, data.infusionSlot.serializeNBT(provider));
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
@@ -193,8 +194,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @NotNull
     @Override
-    public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank, extraSlot, energySlot,
+    public MetallurgicInfuserUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new MetallurgicInfuserUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, infusionTank, extraSlot, energySlot,
               inputSlots, outputSlots, isSorting(), getComponents());
     }
 

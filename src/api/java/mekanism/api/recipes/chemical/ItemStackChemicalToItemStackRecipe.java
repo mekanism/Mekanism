@@ -8,7 +8,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
 
     @NotNull
     @Override
-    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
+    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
     public abstract boolean test(ItemStack itemStack, STACK gasStack);

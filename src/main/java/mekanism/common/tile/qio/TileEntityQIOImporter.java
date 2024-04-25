@@ -1,6 +1,7 @@
 package mekanism.common.tile.qio;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -15,21 +16,25 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
@@ -137,35 +142,27 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         dataMap.putBoolean(NBTConstants.AUTO, importWithoutFilter);
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
 
-
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.AUTO, MekanismAttachmentTypes.AUTO);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.AUTO, importWithoutFilter);
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.AUTO, importWithoutFilter);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        importWithoutFilter = stack.getData(MekanismAttachmentTypes.AUTO);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        importWithoutFilter = input.getOrDefault(MekanismDataComponents.AUTO, importWithoutFilter);
     }
 
     //Methods relating to IComputerTile

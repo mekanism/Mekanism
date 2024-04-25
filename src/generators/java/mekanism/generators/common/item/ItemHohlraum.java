@@ -27,7 +27,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
         if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have

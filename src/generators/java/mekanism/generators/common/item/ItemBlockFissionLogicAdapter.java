@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.common.block.prefab.BlockBasicMultiblock;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import net.minecraft.network.chat.Component;
@@ -22,9 +22,9 @@ public class ItemBlockFissionLogicAdapter extends ItemBlockTooltip<BlockBasicMul
     }
 
     @Override
-    protected void addDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.addDetails(stack, world, tooltip, flag);
-        FissionReactorLogic logicType = stack.getData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
+    protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.addDetails(stack, context, tooltip, flag);
+        FissionReactorLogic logicType = stack.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, FissionReactorLogic.DISABLED);
         tooltip.add(GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(logicType.getColor(), logicType));
     }
 }

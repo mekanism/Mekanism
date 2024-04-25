@@ -1,6 +1,6 @@
 package mekanism.api.robit;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -36,7 +36,7 @@ public record BasicRobitSkin(List<ResourceLocation> textures, @Nullable Resource
     }
 
     @Override
-    public Codec<? extends RobitSkin> codec() {
+    public MapCodec<? extends RobitSkin> codec() {
         //Note: Make use of the implementation detail that the network codec is equivalent to the basic skin codec
         return RobitSkinSerializationHelper.NETWORK_CODEC;
     }

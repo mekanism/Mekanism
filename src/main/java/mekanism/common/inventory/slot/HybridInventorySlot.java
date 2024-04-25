@@ -6,17 +6,20 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
@@ -121,8 +124,8 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
 
     @NotNull
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         if (isDraining) {
             nbt.putBoolean(NBTConstants.DRAINING, true);
         }
@@ -142,10 +145,10 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
     }
 
     @Override
-    public void deserializeNBT(@NotNull CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
         //Grab the booleans regardless if they are present as if they aren't that means they are false
         isDraining = nbt.getBoolean(NBTConstants.DRAINING);
         isFilling = nbt.getBoolean(NBTConstants.FILLING);
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 }

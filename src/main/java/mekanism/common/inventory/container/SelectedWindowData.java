@@ -1,13 +1,18 @@
 package mekanism.common.inventory.container;
 
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,6 +121,9 @@ public class SelectedWindowData {
          * For use by windows that don't actually have any server side specific logic required, or don't persist their position.
          */
         UNSPECIFIED(null, false);
+
+        public static final IntFunction<WindowType> BY_ID = ByIdMap.continuous(WindowType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, WindowType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, WindowType::ordinal);
 
         @Nullable
         private final String saveName;

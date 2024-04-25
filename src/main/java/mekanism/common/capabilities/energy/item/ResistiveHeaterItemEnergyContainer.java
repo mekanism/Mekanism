@@ -10,6 +10,7 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 @NothingNullByDefault
@@ -42,8 +43,8 @@ public class ResistiveHeaterItemEnergyContainer extends RateLimitEnergyContainer
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         nbt.putString(NBTConstants.ENERGY_USAGE, energyPerTick.toString());
         return nbt;
     }
@@ -54,8 +55,8 @@ public class ResistiveHeaterItemEnergyContainer extends RateLimitEnergyContainer
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 }

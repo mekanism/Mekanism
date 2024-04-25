@@ -1,7 +1,7 @@
 package mekanism.common.item.loot;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,7 +32,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @ParametersAreNotNullByDefault
 public class CopyContainersLootFunction implements LootItemFunction {
 
-    public static final Codec<CopyContainersLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<CopyContainersLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 NeoForgeExtraCodecs.withAlternative(
                       ContainerType.CODEC.<List<ContainerType<?, ?, ?>>>flatComapMap(List::of, list -> {
                           if (list.size() == 1) {
@@ -52,7 +52,7 @@ public class CopyContainersLootFunction implements LootItemFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootItemFunctionType<CopyContainersLootFunction> getType() {
         return MekanismLootFunctions.COPY_CONTAINERS.get();
     }
 
@@ -61,7 +61,8 @@ public class CopyContainersLootFunction implements LootItemFunction {
         BlockEntity blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof TileEntityMekanism tile) {
             for (ContainerType<?, ?, ?> containerType : this.containerTypes) {
-                containerType.copyTo(tile, stack);
+                //TODO - 1.20.5: Figure out container copying
+                //containerType.copyTo(tile, stack);
             }
             //Skip tiles that have no gas tanks and skip the creative chemical tank
             if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tile.getGasTanks(null).isEmpty()) {

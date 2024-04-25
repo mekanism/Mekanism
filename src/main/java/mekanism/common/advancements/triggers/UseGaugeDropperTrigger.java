@@ -11,7 +11,6 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +44,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
     public record TriggerInstance(Optional<ContextAwarePredicate> player, UseDropperAction action) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, JsonConstants.PLAYER).forGetter(TriggerInstance::player),
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
                     UseDropperAction.CODEC.fieldOf(JsonConstants.ACTION).forGetter(TriggerInstance::action)
               ).apply(instance, TriggerInstance::new)
         );

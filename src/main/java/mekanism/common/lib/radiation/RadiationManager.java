@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,6 +44,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -65,6 +67,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -366,7 +369,7 @@ public class RadiationManager implements IRadiationManager {
         PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, levelAndMaxMagnitude.level());
         if (relevantData != null) {
             playerEnvironmentalExposureMap.put(player.getUUID(), relevantData);
-            PacketUtils.sendTo(new PacketEnvironmentalRadiationData(levelAndMaxMagnitude), player);
+            PacketDistributor.sendToPlayer(player, new PacketEnvironmentalRadiationData(levelAndMaxMagnitude));
         }
     }
 
@@ -438,7 +441,7 @@ public class RadiationManager implements IRadiationManager {
                 PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
                 if (relevantData != null) {
                     playerExposureMap.put(player.getUUID(), relevantData);
-                    PacketUtils.sendTo(new PacketPlayerRadiationData(radiation), player);
+                    PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(radiation));
                 }
             }
         }
@@ -670,7 +673,7 @@ public class RadiationManager implements IRadiationManager {
         }
 
         @Override
-        public void load(@NotNull CompoundTag nbtTags) {
+        public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>();
@@ -688,7 +691,8 @@ public class RadiationManager implements IRadiationManager {
                     if (dimension != null) {
                         //It should be a valid dimension, but validate it just in case
                         ListTag meltdowns = meltdownNBT.getList(dim, Tag.TAG_COMPOUND);
-                        savedMeltdowns.put(dimension, meltdowns.stream().map(nbt -> Meltdown.load((CompoundTag) nbt)).collect(Collectors.toList()));
+                        savedMeltdowns.put(dimension, meltdowns.stream().map(nbt -> Meltdown.load((CompoundTag) nbt))
+                              .filter(Objects::nonNull).collect(Collectors.toList()));
                     }
                 }
             } else {
@@ -698,7 +702,7 @@ public class RadiationManager implements IRadiationManager {
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbtTags) {
+        public CompoundTag save(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             if (manager != null && !manager.radiationTable.isEmpty()) {
                 ListTag list = new ListTag();
                 for (RadiationSource source : manager.radiationTable.values()) {

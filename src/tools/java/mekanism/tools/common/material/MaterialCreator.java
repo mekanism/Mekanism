@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
@@ -115,9 +116,9 @@ public class MaterialCreator implements BaseMekanismMaterial {
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + name + " items.")
               .defineInRange(toolKey + "Enchantability", materialDefaults.getEnchantmentValue(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + name + " armor.")
-              .defineInRange(toolKey + "Toughness", materialDefaults.getToughness(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "Toughness", materialDefaults.toughness(), 0, Float.MAX_VALUE));
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + name + " armor.")
-              .defineInRange(toolKey + "KnockbackResistance", materialDefaults.getKnockbackResistance(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "KnockbackResistance", materialDefaults.knockbackResistance(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " boots.")
               .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForType(ArmorItem.Type.BOOTS), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " leggings.")
@@ -127,13 +128,13 @@ public class MaterialCreator implements BaseMekanismMaterial {
         helmetDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " helmets.")
               .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForType(ArmorItem.Type.HELMET), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " boots.")
-              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForType(ArmorItem.Type.BOOTS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefense(ArmorItem.Type.BOOTS), 0, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " leggings.")
-              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForType(ArmorItem.Type.LEGGINGS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefense(ArmorItem.Type.LEGGINGS), 0, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " chestplates.")
-              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForType(ArmorItem.Type.CHESTPLATE), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefense(ArmorItem.Type.CHESTPLATE), 0, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " helmets.")
-              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForType(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefense(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -227,12 +228,6 @@ public class MaterialCreator implements BaseMekanismMaterial {
         return attackDamage.getOrDefault();
     }
 
-    @Override
-    @Deprecated
-    public int getLevel() {
-        return fallBack.getLevel();
-    }
-
     @Nullable
     @Override
     public TagKey<Block> getTag() {
@@ -244,17 +239,17 @@ public class MaterialCreator implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> bootDurability.getOrDefault();
             case LEGGINGS -> leggingDurability.getOrDefault();
-            case CHESTPLATE -> chestplateDurability.getOrDefault();
+            case CHESTPLATE, BODY -> chestplateDurability.getOrDefault();
             case HELMET -> helmetDurability.getOrDefault();
         };
     }
 
     @Override
-    public int getDefenseForType(ArmorItem.Type armorType) {
+    public int getDefense(ArmorItem.Type armorType) {
         return switch (armorType) {
             case BOOTS -> bootArmor.getOrDefault();
             case LEGGINGS -> leggingArmor.getOrDefault();
-            case CHESTPLATE -> chestplateArmor.getOrDefault();
+            case CHESTPLATE, BODY -> chestplateArmor.getOrDefault();
             case HELMET -> helmetArmor.getOrDefault();
         };
     }
@@ -270,13 +265,13 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getToughness() {
+    public float toughness() {
         return toughness.getOrDefault();
     }
 
     @Override
-    public SoundEvent getEquipSound() {
-        return fallBack.getEquipSound();
+    public Holder<SoundEvent> equipSound() {
+        return fallBack.equipSound();
     }
 
     @Override
@@ -287,14 +282,6 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public String getConfigCommentName() {
         return fallBack.getConfigCommentName();
-    }
-
-    /**
-     * Only used on the client in vanilla
-     */
-    @Override
-    public String getName() {
-        return fallBack.getName();
     }
 
     @Override
@@ -308,7 +295,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getKnockbackResistance() {
+    public float knockbackResistance() {
         return knockbackResistance.getOrDefault();
     }
 }

@@ -10,7 +10,7 @@ import mekanism.api.robit.RobitSkinSerializationHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.DatapackDeferredRegister;
-import mekanism.common.registration.DeferredCodecHolder;
+import mekanism.common.registration.DeferredMapCodecHolder;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -27,11 +27,12 @@ public class MekanismRobitSkins {
     private static final DatapackDeferredRegister<RobitSkin> ROBIT_SKINS = DatapackDeferredRegister.robitSkins(Mekanism.MODID);
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC);
+        //TODO - 1.20.5: Make a PR to neo changing the datapack to maybe take a stream codec??
+        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec());
     }
 
-    public static final DeferredCodecHolder<RobitSkin, RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerCodec("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
-    public static final DeferredCodecHolder<RobitSkin, AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerCodec("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
+    public static final DeferredMapCodecHolder<RobitSkin, RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerCodec("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
+    public static final DeferredMapCodecHolder<RobitSkin, AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerCodec("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
 
     public static final ResourceKey<RobitSkin> BASE = ROBIT_SKINS.dataKey("robit");
     public static final ResourceKey<RobitSkin> ALLAY = ROBIT_SKINS.dataKey("allay");

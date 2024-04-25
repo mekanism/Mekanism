@@ -1,7 +1,7 @@
 package mekanism.api.recipes;
 
 import mekanism.api.inventory.IgnoredIInventory;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -32,7 +32,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @NotNull
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 
@@ -43,7 +43,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @NotNull
     @Override
-    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
         return ItemStack.EMPTY;
     }
 }

@@ -6,12 +6,13 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import org.jetbrains.annotations.NotNull;
 
-public class RadiationOverlay implements IGuiOverlay {
+public class RadiationOverlay implements LayeredDraw.Layer {
 
     public static final RadiationOverlay INSTANCE = new RadiationOverlay();
 
@@ -26,8 +27,8 @@ public class RadiationOverlay implements IGuiOverlay {
     }
 
     @Override
-    public void render(ExtendedGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
-        Player player = gui.getMinecraft().player;
+    public void render(@NotNull GuiGraphics graphics, float partialTicks) {
+        Player player = Minecraft.getInstance().player;
         if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
             double radiation = player.getData(MekanismAttachmentTypes.RADIATION);
             double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
@@ -44,7 +45,7 @@ public class RadiationOverlay implements IGuiOverlay {
             if (severity > RadiationManager.BASELINE) {
                 int effect = (int) (prevRadiation * 255);
                 int color = (0x701E1E << 8) + effect;
-                MekanismRenderer.renderColorOverlay(guiGraphics, 0, 0, color);
+                MekanismRenderer.renderColorOverlay(graphics, 0, 0, color);
             }
         }
     }

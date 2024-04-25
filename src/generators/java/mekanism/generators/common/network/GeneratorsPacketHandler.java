@@ -8,14 +8,14 @@ import net.neoforged.bus.api.IEventBus;
 
 public class GeneratorsPacketHandler extends BasePacketHandler {
 
-    public GeneratorsPacketHandler(IEventBus modEventBus, String modid, Version version) {
-        super(modEventBus, modid, version);
+    public GeneratorsPacketHandler(IEventBus modEventBus, Version version) {
+        super(modEventBus, version);
     }
 
     @Override
     protected void registerClientToServer(PacketRegistrar registrar) {
-        registrar.play(PacketGeneratorsTileButtonPress.ID, PacketGeneratorsTileButtonPress::new);
-        registrar.play(PacketGeneratorsGuiInteract.ID, PacketGeneratorsGuiInteract::new);
+        registrar.play(PacketGeneratorsTileButtonPress.TYPE, PacketGeneratorsTileButtonPress.STREAM_CODEC);
+        registrar.play(PacketGeneratorsGuiInteract.TYPE, PacketGeneratorsGuiInteract.STREAM_CODEC);
     }
 
     @Override

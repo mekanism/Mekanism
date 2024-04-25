@@ -16,8 +16,9 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
@@ -49,16 +50,43 @@ public class PersonalStorageManager {
             Mekanism.logger.error("Storage inventory asked for but stack has no owner! {}", stack, new Exception());
             return Optional.empty();
         }
+        return getInventoryFor(stack, owner);
+    }
+
+    /**
+     * Only call on the server. Gets or creates an inventory for the supplied stack
+     *
+     * @param stack Personal storage ItemStack (type not checked) - will be modified if it didn't have an inventory id
+     * @param owner The owner of the stack
+     *
+     * @return the existing or new inventory
+     */
+    public static Optional<AbstractPersonalStorageItemInventory> getInventoryFor(ItemStack stack, @NotNull UUID owner) {
         UUID invId = getInventoryId(stack);
+        return getInventoryForUnchecked(invId, owner);
+    }
+
+    /**
+     * Only call on the server. Gets an inventory for the supplied stack
+     *
+     * @param inventoryId Personal storage inventory id
+     * @param owner The owner of the stack
+     *
+     * @return the existing or new inventory
+     */
+    public static Optional<AbstractPersonalStorageItemInventory> getInventoryForUnchecked(@Nullable UUID inventoryId, @NotNull UUID owner) {
+        if (inventoryId == null) {
+            return Optional.empty();
+        }
         Optional<PersonalStorageData> data = forOwner(owner);
         //noinspection OptionalIsPresent - Capturing lambda
         if (data.isPresent()) {
-            return Optional.of(data.get().getOrAddInventory(invId));
+            return Optional.of(data.get().getOrAddInventory(inventoryId));
         }
         return Optional.empty();
     }
 
-    public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
+    public static boolean createInventoryFor(HolderLookup.Provider provider, ItemStack stack, List<IInventorySlot> contents) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner == null || contents.size() != 54) {
             //No owner or wrong number of slots, something went wrong
@@ -68,7 +96,7 @@ public class PersonalStorageManager {
         Optional<PersonalStorageData> data = forOwner(owner);
         //noinspection OptionalIsPresent - Capturing lambda
         if (data.isPresent()) {
-            data.get().addInventory(getInventoryId(stack), contents);
+            data.get().addInventory(provider, getInventoryId(stack), contents);
         }
         return true;
     }
@@ -85,13 +113,13 @@ public class PersonalStorageManager {
      */
     public static Optional<AbstractPersonalStorageItemInventory> getInventoryIfPresent(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-        return owner != null && stack.hasData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID) ? getInventoryFor(stack) : Optional.empty();
+        return owner != null && stack.has(MekanismDataComponents.PERSONAL_STORAGE_ID) ? getInventoryFor(stack, owner) : Optional.empty();
     }
 
     public static void deleteInventory(ItemStack stack) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner != null) {
-            UUID storageId = stack.removeData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
+            UUID storageId = stack.remove(MekanismDataComponents.PERSONAL_STORAGE_ID);
             if (storageId != null) {
                 //If there actually was an id stored then remove the corresponding inventory
                 Optional<PersonalStorageData> data = forOwner(owner);
@@ -105,12 +133,11 @@ public class PersonalStorageManager {
 
     @NotNull
     private static UUID getInventoryId(ItemStack stack) {
-        Optional<UUID> existingData = stack.getExistingData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID);
-        if (existingData.isPresent()) {
-            return existingData.get();
+        UUID invId = stack.get(MekanismDataComponents.PERSONAL_STORAGE_ID);
+        if (invId == null) {
+            invId = UUID.randomUUID();
+            stack.set(MekanismDataComponents.PERSONAL_STORAGE_ID, invId);
         }
-        UUID invId = UUID.randomUUID();
-        stack.setData(MekanismAttachmentTypes.PERSONAL_STORAGE_ID, invId);
         return invId;
     }
 

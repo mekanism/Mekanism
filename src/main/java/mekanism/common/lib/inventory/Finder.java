@@ -26,7 +26,7 @@ public interface Finder extends Predicate<ItemStack> {
     }
 
     static Finder strict(ItemStack itemType) {
-        return stack -> ItemHandlerHelper.canItemStacksStack(itemType, stack);
+        return stack -> ItemStack.isSameItemSameComponents(itemType, stack);
     }
 
     static Finder tag(String tagName) {

@@ -29,6 +29,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -222,7 +223,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the damage is more than zero, which should be all cases except for when we are refracting all the energy past the entity
                         // set the entity on fire if it is not damage immune and try to damage it
                         if (!entity.fireImmune()) {
-                            entity.setSecondsOnFire(value.intValue());
+                            entity.setRemainingFireTicks(value.intValue());
                         }
                         int totemTimesUsed = -1;
                         if (entity instanceof ServerPlayer player) {
@@ -355,12 +356,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 int durabilityNeeded = 1 + Mth.floor(effectiveDamage);
                 int activeDurability = activeStack.getMaxDamage() - activeStack.getDamageValue();
                 InteractionHand hand = livingEntity.getUsedItemHand();
-                activeStack.hurtAndBreak(durabilityNeeded, livingEntity, entity -> {
-                    entity.broadcastBreakEvent(hand);
-                    if (livingEntity instanceof Player player) {
-                        EventHooks.onPlayerDestroyItem(player, activeStack, hand);
-                    }
-                });
+                activeStack.hurtAndBreak(durabilityNeeded, livingEntity, LivingEntity.getSlotForHand(hand));
                 if (activeStack.isEmpty()) {
                     if (hand == InteractionHand.MAIN_HAND) {
                         livingEntity.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
@@ -417,28 +413,28 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 

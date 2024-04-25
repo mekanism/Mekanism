@@ -15,6 +15,7 @@ import net.minecraft.world.entity.monster.Stray;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
@@ -111,7 +112,8 @@ public class MobEquipmentHelper {
             ItemStack stack = item.getItemStack();
             if (random.nextFloat() < baseChance * difficultyMultiplier) {
                 //Copy of vanilla's enchant item level logic
-                stack = EnchantmentHelper.enchantItem(random, stack, (int) (5 + difficultyMultiplier * random.nextInt(18)), false);
+                //TODO - 1.20.5: Re-evaluate this and what feature flags we pass
+                stack = EnchantmentHelper.enchantItem(FeatureFlags.VANILLA_SET, random, stack, (int) (5 + difficultyMultiplier * random.nextInt(18)), false);
             }
             entity.setItemSlot(slot, stack);
         }

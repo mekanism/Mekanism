@@ -8,24 +8,33 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
+import net.minecraft.advancements.critereon.ItemSubPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
-public class MaxedModuleContainerItemPredicate implements ICustomItemPredicate {
+public class MaxedModuleContainerItemPredicate implements ItemSubPredicate {
+
+    public static final Codec<MaxedModuleContainerItemPredicate> CODEC = BuiltInRegistries.ITEM.byNameCodec().comapFlatMap(item -> {
+        if (IModuleHelper.INSTANCE.isModuleContainer(item)) {
+            return DataResult.success(new MaxedModuleContainerItemPredicate(item));
+        }
+        return DataResult.error(() -> "Specified item is not a module container item.");
+    }, pred -> pred.item).fieldOf(JsonConstants.ITEM).codec();
+    public static final ItemSubPredicate.Type<MaxedModuleContainerItemPredicate> TYPE = new ItemSubPredicate.Type<>(CODEC);
 
     private final Set<ModuleData<?>> supportedModules;
     private final Item item;
 
-    public MaxedModuleContainerItemPredicate(Item item) {
-        this.item = item;
+    public MaxedModuleContainerItemPredicate(ItemLike itemLike) {
+        this.item = itemLike.asItem();
         this.supportedModules = IModuleHelper.INSTANCE.getSupported(this.item);
     }
 
     @Override
-    public boolean test(@NotNull ItemStack stack) {
+    public boolean matches(@NotNull ItemStack stack) {
         if (stack.is(item)) {
             IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
             if (container != null && container.moduleTypes().containsAll(supportedModules)) {
@@ -38,11 +47,6 @@ public class MaxedModuleContainerItemPredicate implements ICustomItemPredicate {
             }
         }
         return false;
-    }
-
-    @Override
-    public Codec<? extends ICustomItemPredicate> codec() {
-        return MekanismItemPredicates.MAXED_MODULE_CONTAINER_ITEM.get();
     }
 
     static Codec<MaxedModuleContainerItemPredicate> makeCodec() {

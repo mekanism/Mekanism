@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -620,7 +620,7 @@ public class WorldUtils {
             if (isBlockLoaded(world, offset)) {
                 BlockState offsetState = world.getBlockState(offset);
                 offsetState.onNeighborChange(world, offset, pos);
-                offsetState.neighborChanged(world, offset, state.getBlock(), pos, false);
+                offsetState.handleNeighborChanged(world, offset, state.getBlock(), pos, false);
                 if (offsetState.isRedstoneConductor(world, offset)) {
                     //If redstone can be conducted through it, forward the change along an extra spot
                     offset.move(dir);
@@ -647,7 +647,7 @@ public class WorldUtils {
         if (blockState.isPresent() && world != null) {//World can't be null here but double check it
             BlockState state = blockState.get();
             state.onNeighborChange(world, pos, fromPos);
-            state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
+            state.handleNeighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
         }
     }
 

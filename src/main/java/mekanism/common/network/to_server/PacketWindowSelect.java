@@ -1,53 +1,51 @@
 package mekanism.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) implements IMekanismPacket<PlayPayloadContext> {
+@NothingNullByDefault
+public record PacketWindowSelect(@Nullable SelectedWindowData selectedWindow) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("window_select");
+    public static final CustomPacketPayload.Type<PacketWindowSelect> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("window_select"));
+
+    private static final PacketWindowSelect NO_WINDOW = new PacketWindowSelect(null);
+    private static final StreamCodec<ByteBuf, PacketWindowSelect> NO_WINDOW_STREAM_CODEC = StreamCodec.unit(NO_WINDOW);
+
+    public static final StreamCodec<ByteBuf, PacketWindowSelect> STREAM_CODEC = ByteBufCodecs.BYTE.dispatch(
+          packet -> packet.selectedWindow == null ? -1 : packet.selectedWindow.extraData, extraData -> {
+        if (extraData == -1) {
+            return NO_WINDOW_STREAM_CODEC;
+        }
+        return WindowType.STREAM_CODEC.map(
+              windowType -> new PacketWindowSelect(windowType == WindowType.UNSPECIFIED ? SelectedWindowData.UNSPECIFIED : new SelectedWindowData(windowType, extraData)),
+              //Note: We know the selected window is not null here
+              packet -> packet.selectedWindow.type
+        );
+    });
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketWindowSelect> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null && player.containerMenu instanceof MekanismContainer container) {
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        if (player.containerMenu instanceof MekanismContainer container) {
             container.setSelectedWindow(player.getUUID(), selectedWindow);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        //We skip using a boolean to write if it is null or not and just write our byte before our enum so that we can
-        // use -1 as a marker for invalid
-        if (selectedWindow == null) {
-            buffer.writeByte(-1);
-        } else {
-            buffer.writeByte(selectedWindow.extraData);
-            buffer.writeEnum(selectedWindow.type);
-        }
-    }
-
-    public static PacketWindowSelect decode(FriendlyByteBuf buffer) {
-        byte extraData = buffer.readByte();
-        if (extraData == -1) {
-            return new PacketWindowSelect(null);
-        }
-        WindowType windowType = buffer.readEnum(WindowType.class);
-        return new PacketWindowSelect(windowType == WindowType.UNSPECIFIED ? SelectedWindowData.UNSPECIFIED : new SelectedWindowData(windowType, extraData));
     }
 }

@@ -3,14 +3,17 @@ package mekanism.common.util;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.shorts.ShortConsumer;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -25,8 +28,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -40,6 +45,28 @@ import org.jetbrains.annotations.Nullable;
 public class NBTUtils {
 
     private NBTUtils() {
+    }
+
+    public static IntArrayTag writeBlockPositions(Collection<BlockPos> positions) {
+        int[] list = new int[3 * positions.size()];
+        int i = 0;
+        for (BlockPos pos : positions) {
+            list[i++] = pos.getX();
+            list[i++] = pos.getY();
+            list[i++] = pos.getZ();
+        }
+        return new IntArrayTag(list);
+    }
+
+    public static void readBlockPositions(CompoundTag nbt, String key, Collection<BlockPos> positions) {
+        if (nbt.contains(key, Tag.TAG_INT_ARRAY)) {
+            int[] list = nbt.getIntArray(key);
+            if (list.length % 3 == 0) {
+                for (int i = 0; i < list.length;) {
+                    positions.add(new BlockPos(list[i++], list[i++], list[i++]));
+                }
+            }
+        }
     }
 
     public static void setByteIfPresent(CompoundTag nbt, String key, ByteConsumer setter) {
@@ -143,14 +170,12 @@ public class NBTUtils {
     }
 
     public static void setBlockPosIfPresent(CompoundTag nbt, String key, Consumer<BlockPos> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(NbtUtils.readBlockPos(nbt.getCompound(key)));
-        }
+        NbtUtils.readBlockPos(nbt, key).ifPresent(setter);
     }
 
-    public static void setFluidStackIfPresent(CompoundTag nbt, String key, Consumer<FluidStack> setter) {
+    public static void setFluidStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<FluidStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(FluidStack.loadFluidStackFromNBT(nbt.getCompound(key)));
+            setter.accept(FluidStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
@@ -218,15 +243,15 @@ public class NBTUtils {
         }
     }
 
-    public static void setItemStackIfPresent(CompoundTag nbt, String key, Consumer<ItemStack> setter) {
+    public static void setItemStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ItemStack.of(nbt.getCompound(key)));
+            setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));
         }
     }
 
-    public static void setItemStackOrEmpty(CompoundTag nbt, String key, Consumer<ItemStack> setter) {
+    public static void setItemStackOrEmpty(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ItemStack.of(nbt.getCompound(key)));
+            setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));
         } else {
             setter.accept(ItemStack.EMPTY);
         }
@@ -269,7 +294,7 @@ public class NBTUtils {
     }
 
     @Nullable
-    public static <ENUM extends Enum<ENUM>> ENUM getEnum(CompoundTag nbt, String key, Int2ObjectFunction<ENUM> indexLookup) {
+    public static <ENUM extends Enum<ENUM>> ENUM getEnum(CompoundTag nbt, String key, IntFunction<ENUM> indexLookup) {
         if (nbt.contains(key, Tag.TAG_INT)) {
             return indexLookup.apply(nbt.getInt(key));
         }
@@ -277,7 +302,7 @@ public class NBTUtils {
     }
 
     //TODO - 1.20.4: Replace some usages of this with getEnum
-    public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundTag nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
+    public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundTag nbt, String key, IntFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, Tag.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));
         }

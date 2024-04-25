@@ -19,7 +19,9 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.qio.PortableQIODashboardInventory;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -68,7 +70,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
-import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.inventory.slot.ItemSlotsBuilder;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.QIODriveSlot;
@@ -402,7 +403,7 @@ public class MekanismBlocks {
                             ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
                             gas -> MekanismRecipeType.ROTARY.getInputCache().containsInput(null, gas.getStack(1))
                       )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                          BooleanSupplier modeSupplier = () -> stack.getData(MekanismAttachmentTypes.ROTARY_MODE);
+                          BooleanSupplier modeSupplier = () -> stack.getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
                           return ItemSlotsBuilder.builder(stack)
                                 .addGasSlot(0, (tank, listener, x, y) -> GasInventorySlot.rotaryDrain(tank, modeSupplier, listener, x, y))
                                 .addGasSlot(0, (tank, listener, x, y) -> GasInventorySlot.rotaryDrain(tank, modeSupplier, listener, x, y))
@@ -499,12 +500,14 @@ public class MekanismBlocks {
                                   ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
                                   gas -> MekanismRecipeType.DISSOLUTION.getInputCache().containsInputB(null, gas.getStack(1))
                             ),
-                            stack.getData(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER).getGasTank()
-                      )).addMissingMergedTanks(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER, false, false)
+                            //TODO - 1.20.5: Fix this get component call
+                            stack.get(MekanismDataComponents.CDC_CONTENTS_HANDLER).getGasTank()
+                      )).addMissingMergedTanks(MekanismDataComponents.CDC_CONTENTS_HANDLER, false, false)
                       .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
                             .addGasSlotWithConversion(0)
                             .addInput(MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputA)
-                            .addContainerSlot(stack.getData(MekanismAttachmentTypes.CDC_CONTENTS_HANDLER), MergedChemicalInventorySlot::drain)
+                            //TODO - 1.20.5: Fix this get component call
+                            .addContainerSlot(stack.get(MekanismDataComponents.CDC_CONTENTS_HANDLER), MergedChemicalInventorySlot::drain)
                             .addEnergy()
                             .build()
                       )
@@ -534,9 +537,10 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>>> CHEMICAL_CRYSTALLIZER =
           BLOCKS.register("chemical_crystallizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addMissingMergedTanks(MekanismAttachmentTypes.CRYSTALLIZER_CONTENTS_HANDLER, false, false)
+                      .addMissingMergedTanks(MekanismDataComponents.CRYSTALLIZER_CONTENTS_HANDLER, false, false)
                       .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addContainerSlot(stack.getData(MekanismAttachmentTypes.CRYSTALLIZER_CONTENTS_HANDLER), MergedChemicalInventorySlot::fill)
+                            //TODO - 1.20.5: Fix this get component call
+                            .addContainerSlot(stack.get(MekanismDataComponents.CRYSTALLIZER_CONTENTS_HANDLER), MergedChemicalInventorySlot::fill)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -641,7 +645,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityOredictionificator, BlockTypeTile<TileEntityOredictionificator>>, ItemBlockTooltip<BlockTile<TileEntityOredictionificator, BlockTypeTile<TileEntityOredictionificator>>>> OREDICTIONIFICATOR =
           BLOCKS.register("oredictionificator", () -> new BlockTile<>(MekanismBlockTypes.OREDICTIONIFICATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                      .addInput(s -> TileEntityOredictionificator.hasResult(stack.getData(MekanismAttachmentTypes.FILTER_AWARE).getEnabled(OredictionificatorItemFilter.class), s))
+                      .addInput(s -> TileEntityOredictionificator.hasResult(stack.getOrDefault(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY).getEnabled(OredictionificatorItemFilter.class), s))
                       .addOutput()
                       .build()
                 ));
@@ -654,7 +658,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>, ItemBlockTooltip<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>>> FORMULAIC_ASSEMBLICATOR =
           BLOCKS.register("formulaic_assemblicator", () -> new BlockTile<>(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                    BooleanSupplier autoMode = () -> stack.getData(MekanismAttachmentTypes.AUTO);
+                    BooleanSupplier autoMode = () -> stack.getOrDefault(MekanismDataComponents.AUTO, false);
                     return ItemSlotsBuilder.builder(stack)
                           .addSlot((listener, x, y) -> BasicInventorySlot.at(TileEntityFormulaicAssemblicator.FORMULA_SLOT_VALIDATOR, listener, x, y))
                           //Note: We skip making the extra checks based on the formula and just allow all items
@@ -762,7 +766,8 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockQIOComponent> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DASHBOARD, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new)
           //Note: While the attachment is mainly used for the portable dashboard, it is a convenient way to also handle window construction
           // and setting up the proper predicates for the actual dashboard block
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).getSlots()));
+          //TODO - 1.20.5: Fix how we get the slots??
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> new PortableQIODashboardInventory(null, stack).getSlots()));
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockQIOComponent> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_IMPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockQIOComponent> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_EXPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockQIOComponent> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
@@ -887,9 +892,10 @@ public class MekanismBlocks {
           Machine<TileEntityChemicalTank> type) {
         return registerTieredBlock(type, "_chemical_tank", color -> new BlockTileModel<>(type, properties -> properties.mapColor(color)), ItemBlockChemicalTank::new)
               .forItemHolder(holder -> holder
-                    .addMissingMergedTanks(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER, false, true)
+                    .addMissingMergedTanks(MekanismDataComponents.CHEMICAL_TANK_CONTENTS_HANDLER, false, true)
                     .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                        MergedChemicalTank tank = stack.getData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER);
+                        //TODO - 1.20.5: Fix this get component call
+                        MergedChemicalTank tank = stack.get(MekanismDataComponents.CHEMICAL_TANK_CONTENTS_HANDLER);
                         return ItemSlotsBuilder.builder(stack)
                               .addContainerSlot(tank, MergedChemicalInventorySlot::drain)
                               .addContainerSlot(tank, MergedChemicalInventorySlot::fill)

@@ -33,7 +33,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             Upgrade upgradeType = getUpgradeType(stack);
             tooltip.add(upgradeType.getDescription());

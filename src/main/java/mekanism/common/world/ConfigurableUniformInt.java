@@ -1,6 +1,6 @@
 package mekanism.common.world;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import net.minecraft.util.Mth;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class ConfigurableUniformInt extends IntProvider {
 
     public static final ConfigurableUniformInt SALT = new ConfigurableUniformInt();
-    public static final Codec<ConfigurableUniformInt> CODEC = Codec.unit(SALT);
+    public static final MapCodec<ConfigurableUniformInt> CODEC = MapCodec.unit(SALT);
 
     private ConfigurableUniformInt() {
     }

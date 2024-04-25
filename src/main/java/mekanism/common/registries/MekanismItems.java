@@ -10,6 +10,7 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.qio.PortableQIODashboardInventory;
 import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
@@ -94,7 +95,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.registerItem("crafting_formula", ItemCraftingFormula::new);
     public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
-          .addMissingMergedTanks(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER, true, true);
+          .addMissingMergedTanks(MekanismDataComponents.GAUGE_DROPPER_CONTENTS_HANDLER, true, true);
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new)
@@ -105,7 +106,8 @@ public class MekanismItems {
                 fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid())
           ), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new)
-          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).getSlots());
+          //TODO - 1.20.5: Fix this get component call
+          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> new PortableQIODashboardInventory(null, stack).getSlots());
     // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
@@ -146,37 +148,37 @@ public class MekanismItems {
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
 
-    public static final ItemRegistryObject<ItemModule> MODULE_ENERGY = ITEMS.registerModule(MekanismModules.ENERGY_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_COLOR_MODULATION = ITEMS.registerModule(MekanismModules.COLOR_MODULATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_LASER_DISSIPATION = ITEMS.registerModule(MekanismModules.LASER_DISSIPATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_RADIATION_SHIELDING = ITEMS.registerModule(MekanismModules.RADIATION_SHIELDING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_EXCAVATION_ESCALATION = ITEMS.registerModule(MekanismModules.EXCAVATION_ESCALATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_ATTACK_AMPLIFICATION = ITEMS.registerModule(MekanismModules.ATTACK_AMPLIFICATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_FARMING = ITEMS.registerModule(MekanismModules.FARMING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_SHEARING = ITEMS.registerModule(MekanismModules.SHEARING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_SILK_TOUCH = ITEMS.registerModule(MekanismModules.SILK_TOUCH_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_FORTUNE = ITEMS.registerModule(MekanismModules.FORTUNE_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_BLASTING = ITEMS.registerModule(MekanismModules.BLASTING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_VEIN_MINING = ITEMS.registerModule(MekanismModules.VEIN_MINING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_TELEPORTATION = ITEMS.registerModule(MekanismModules.TELEPORTATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_ELECTROLYTIC_BREATHING = ITEMS.registerModule(MekanismModules.ELECTROLYTIC_BREATHING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_INHALATION_PURIFICATION = ITEMS.registerModule(MekanismModules.INHALATION_PURIFICATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_VISION_ENHANCEMENT = ITEMS.registerModule(MekanismModules.VISION_ENHANCEMENT_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_NUTRITIONAL_INJECTION = ITEMS.registerModule(MekanismModules.NUTRITIONAL_INJECTION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_DOSIMETER = ITEMS.registerModule(MekanismModules.DOSIMETER_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_GEIGER = ITEMS.registerModule(MekanismModules.GEIGER_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_JETPACK = ITEMS.registerModule(MekanismModules.JETPACK_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_CHARGE_DISTRIBUTION = ITEMS.registerModule(MekanismModules.CHARGE_DISTRIBUTION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_GRAVITATIONAL_MODULATING = ITEMS.registerModule(MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_ELYTRA = ITEMS.registerModule(MekanismModules.ELYTRA_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_GYROSCOPIC_STABILIZATION = ITEMS.registerModule(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_HYDROSTATIC_REPULSOR = ITEMS.registerModule(MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_LOCOMOTIVE_BOOSTING = ITEMS.registerModule(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_MOTORIZED_SERVO = ITEMS.registerModule(MekanismModules.MOTORIZED_SERVO_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_HYDRAULIC_PROPULSION = ITEMS.registerModule(MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_MAGNETIC_ATTRACTION = ITEMS.registerModule(MekanismModules.MAGNETIC_ATTRACTION_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_FROST_WALKER = ITEMS.registerModule(MekanismModules.FROST_WALKER_UNIT);
-    public static final ItemRegistryObject<ItemModule> MODULE_SOUL_SURFER = ITEMS.registerModule(MekanismModules.SOUL_SURFER_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_ENERGY = ITEMS.registerModule(MekanismModules.ENERGY_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_COLOR_MODULATION = ITEMS.registerModule(MekanismModules.COLOR_MODULATION_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_LASER_DISSIPATION = ITEMS.registerModule(MekanismModules.LASER_DISSIPATION_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_RADIATION_SHIELDING = ITEMS.registerModule(MekanismModules.RADIATION_SHIELDING_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_EXCAVATION_ESCALATION = ITEMS.registerModule(MekanismModules.EXCAVATION_ESCALATION_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_ATTACK_AMPLIFICATION = ITEMS.registerModule(MekanismModules.ATTACK_AMPLIFICATION_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_FARMING = ITEMS.registerModule(MekanismModules.FARMING_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_SHEARING = ITEMS.registerModule(MekanismModules.SHEARING_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_SILK_TOUCH = ITEMS.registerModule(MekanismModules.SILK_TOUCH_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_FORTUNE = ITEMS.registerModule(MekanismModules.FORTUNE_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_BLASTING = ITEMS.registerModule(MekanismModules.BLASTING_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_VEIN_MINING = ITEMS.registerModule(MekanismModules.VEIN_MINING_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_TELEPORTATION = ITEMS.registerModule(MekanismModules.TELEPORTATION_UNIT, Rarity.EPIC);
+    public static final ItemRegistryObject<ItemModule> MODULE_ELECTROLYTIC_BREATHING = ITEMS.registerModule(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_INHALATION_PURIFICATION = ITEMS.registerModule(MekanismModules.INHALATION_PURIFICATION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_VISION_ENHANCEMENT = ITEMS.registerModule(MekanismModules.VISION_ENHANCEMENT_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_NUTRITIONAL_INJECTION = ITEMS.registerModule(MekanismModules.NUTRITIONAL_INJECTION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_DOSIMETER = ITEMS.registerModule(MekanismModules.DOSIMETER_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_GEIGER = ITEMS.registerModule(MekanismModules.GEIGER_UNIT, Rarity.UNCOMMON);
+    public static final ItemRegistryObject<ItemModule> MODULE_JETPACK = ITEMS.registerModule(MekanismModules.JETPACK_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_CHARGE_DISTRIBUTION = ITEMS.registerModule(MekanismModules.CHARGE_DISTRIBUTION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_GRAVITATIONAL_MODULATING = ITEMS.registerModule(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, Rarity.EPIC);
+    public static final ItemRegistryObject<ItemModule> MODULE_ELYTRA = ITEMS.registerModule(MekanismModules.ELYTRA_UNIT, Rarity.EPIC);
+    public static final ItemRegistryObject<ItemModule> MODULE_LOCOMOTIVE_BOOSTING = ITEMS.registerModule(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_GYROSCOPIC_STABILIZATION = ITEMS.registerModule(MekanismModules.GYROSCOPIC_STABILIZATION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_HYDROSTATIC_REPULSOR = ITEMS.registerModule(MekanismModules.HYDROSTATIC_REPULSOR_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_MOTORIZED_SERVO = ITEMS.registerModule(MekanismModules.MOTORIZED_SERVO_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_HYDRAULIC_PROPULSION = ITEMS.registerModule(MekanismModules.HYDRAULIC_PROPULSION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_MAGNETIC_ATTRACTION = ITEMS.registerModule(MekanismModules.MAGNETIC_ATTRACTION_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_FROST_WALKER = ITEMS.registerModule(MekanismModules.FROST_WALKER_UNIT, Rarity.RARE);
+    public static final ItemRegistryObject<ItemModule> MODULE_SOUL_SURFER = ITEMS.registerModule(MekanismModules.SOUL_SURFER_UNIT, Rarity.RARE);
 
     public static final ItemRegistryObject<ItemUpgrade> SPEED_UPGRADE = registerUpgrade(Upgrade.SPEED);
     public static final ItemRegistryObject<ItemUpgrade> ENERGY_UPGRADE = registerUpgrade(Upgrade.ENERGY);
@@ -294,7 +296,7 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<ItemUpgrade> registerUpgrade(Upgrade type) {
-        return ITEMS.registerItem("upgrade_" + type.getRawName(), properties -> new ItemUpgrade(type, properties));
+        return ITEMS.registerItem("upgrade_" + type.getSerializedName(), properties -> new ItemUpgrade(type, properties));
     }
 
     private static ItemRegistryObject<ItemQIODrive> registerQIODrive(QIODriveTier tier) {

@@ -57,8 +57,8 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -71,10 +71,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -343,39 +345,31 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_LEFT, dumpLeft);
         NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
-        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.DUMP_LEFT, MekanismAttachmentTypes.DUMP_MODE);
-        remap.put(NBTConstants.DUMP_RIGHT, MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.DUMP_MODE, dumpLeft);
+        builder.set(MekanismDataComponents.SECONDARY_DUMP_MODE, dumpRight);
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.DUMP_MODE, dumpLeft);
-        stack.setData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE, dumpRight);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        dumpLeft = stack.getData(MekanismAttachmentTypes.DUMP_MODE);
-        dumpRight = stack.getData(MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        dumpLeft = input.getOrDefault(MekanismDataComponents.DUMP_MODE, dumpLeft);
+        dumpRight = input.getOrDefault(MekanismDataComponents.SECONDARY_DUMP_MODE, dumpRight);
     }
 
     @Override
@@ -391,8 +385,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
-        container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
+        container.track(SyncableEnum.create(GasMode.BY_ID, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
+        container.track(SyncableEnum.create(GasMode.BY_ID, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 

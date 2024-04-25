@@ -41,18 +41,4 @@ public sealed interface ModuleConfigData<TYPE> permits ModuleBooleanData, Module
      * @param tag  Data to store the value in.
      */
     void write(String name, CompoundTag tag);
-
-    /**
-     * Checks if this config data is equivalent to another one.
-     *
-     * @param other Config data to compare to
-     *
-     * @return {@code true} If this config data can be considered equivalent and compatible with the other config data.
-     *
-     * @implNote Only checks set values and not other potential things like valid values. For those please use {@link Object#equals(Object)}
-     * @since 10.5.0
-     */
-    default boolean isCompatible(ModuleConfigData<?> other) {
-        return equals(other);
-    }
 }

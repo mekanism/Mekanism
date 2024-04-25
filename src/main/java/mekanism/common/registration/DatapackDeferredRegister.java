@@ -1,6 +1,7 @@
 package mekanism.common.registration;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-public class DatapackDeferredRegister<T> extends DeferredCodecRegister<T> {
+public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
 
     public static DatapackDeferredRegister<RobitSkin> robitSkins(String modid) {
         return new DatapackDeferredRegister<>(modid, MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY_NAME, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
@@ -30,13 +31,13 @@ public class DatapackDeferredRegister<T> extends DeferredCodecRegister<T> {
 
     private final ResourceKey<Registry<T>> datapackRegistryName;
 
-    public DatapackDeferredRegister(String modid, ResourceKey<? extends Registry<Codec<? extends T>>> serializerRegistryName,
+    public DatapackDeferredRegister(String modid, ResourceKey<? extends Registry<MapCodec<? extends T>>> serializerRegistryName,
           ResourceKey<Registry<T>> datapackRegistryName) {
-        this(modid, serializerRegistryName, datapackRegistryName, DeferredCodecHolder::new);
+        this(modid, serializerRegistryName, datapackRegistryName, DeferredMapCodecHolder::new);
     }
 
-    public DatapackDeferredRegister(String modid, ResourceKey<? extends Registry<Codec<? extends T>>> serializerRegistryName,
-          ResourceKey<Registry<T>> datapackRegistryName, Function<ResourceKey<Codec<? extends T>>, ? extends DeferredCodecHolder<T, ? extends T>> holderCreator) {
+    public DatapackDeferredRegister(String modid, ResourceKey<? extends Registry<MapCodec<? extends T>>> serializerRegistryName,
+          ResourceKey<Registry<T>> datapackRegistryName, Function<ResourceKey<MapCodec<? extends T>>, ? extends DeferredMapCodecHolder<T, ? extends T>> holderCreator) {
         super(serializerRegistryName, modid, holderCreator);
         this.datapackRegistryName = datapackRegistryName;
     }

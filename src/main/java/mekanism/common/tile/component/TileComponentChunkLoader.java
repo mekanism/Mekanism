@@ -15,6 +15,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -188,16 +189,16 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void deserialize(CompoundTag componentTag) {
+    public void deserialize(CompoundTag componentTag, HolderLookup.Provider provider) {
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         return new CompoundTag();
     }
 
     @Override
-    public void read(CompoundTag nbtTags) {
+    public void read(CompoundTag nbtTags, HolderLookup.Provider provider) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
             if (tile.hasLevel() && !tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
@@ -215,7 +216,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
+    public void write(CompoundTag nbtTags, HolderLookup.Provider provider) {
         if (!chunkSet.isEmpty()) {
             nbtTags.putLongArray(NBTConstants.CHUNK_SET, chunkSet.toLongArray());
         }

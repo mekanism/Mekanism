@@ -226,7 +226,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             outputSlot.setStack(stackToMove);
         } else {
             ItemStack outputStack = outputSlot.getStack();
-            if (!ItemHandlerHelper.canItemStacksStack(outputStack, stackToMove) || outputStack.getCount() >= outputSlot.getLimit(outputStack)) {
+            if (!ItemStack.isSameItemSameComponents(outputStack, stackToMove) || outputStack.getCount() >= outputSlot.getLimit(outputStack)) {
                 //We won't be able to move our container to the output slot so exit
                 return false;
             }

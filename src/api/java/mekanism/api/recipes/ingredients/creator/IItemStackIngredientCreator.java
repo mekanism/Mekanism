@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -33,14 +33,13 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created using the empty stack.");
         }
-        //Copy the stack to ensure it doesn't get modified afterwards
+        //Copy the stack to ensure it doesn't get modified afterward
         stack = stack.copy();
-        //Support NBT that is on the stack in case it matters
-        // Note: Only bother making it an NBT ingredient if the stack has NBT or attachments, otherwise there is no point in doing the extra checks
-        if (stack.hasTag() || stack.serializeAttachments() != null) {
-            //Note: We check if the serialized attachments is not null rather than if the stack has attachments as we only care about
-            // ones that can be compared
-            return from(NBTIngredient.of(false, stack), amount);
+        //Support Components that are on the stack in case it matters
+        // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
+        //TODO - 1.20.5: Do we want to only do this if there are components that are not equal to the default on the item??
+        if (!stack.getComponents().isEmpty()) {
+            return from(DataComponentIngredient.of(false, stack), amount);
         }
         return from(Ingredient.of(stack), amount);
     }

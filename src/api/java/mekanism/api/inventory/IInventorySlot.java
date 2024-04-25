@@ -5,14 +5,15 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -78,7 +79,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(getStack(), stack))) {
+        if (isEmpty() || (sameType = ItemStack.isSameItemSameComponents(getStack(), stack))) {
             int toAdd = Math.min(stack.getCount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -288,12 +289,11 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
     }
 
     @Override
-    default CompoundTag serializeNBT() {
+    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            CompoundTag stackTag = new CompoundTag();
             ItemStack current = getStack();
-            current.save(stackTag);
+            Tag stackTag = current.save(provider);
             nbt.put(NBTConstants.ITEM, stackTag);
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());

@@ -34,7 +34,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredFluid(stack, tooltip, true, MekanismLang.EMPTY);
     }
 

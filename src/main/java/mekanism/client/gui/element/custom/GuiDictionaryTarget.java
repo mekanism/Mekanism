@@ -21,29 +21,28 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -146,34 +145,29 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                 }
                 //Entity type tags
                 if (item instanceof SpawnEggItem spawnEggItem) {
-                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack.getTag()).getTags()));
+                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack).getTags()));
                 }
                 //Enchantment tags
-                Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+                ItemEnchantments enchantments = stack.getEnchantments();
                 if (!enchantments.isEmpty()) {
-                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream()
-                          .flatMap(enchantment -> enchantment.builtInRegistryHolder().tags())
-                          .distinct()
-                    ));
+                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream().flatMap(Holder::tags).distinct()));
                 }
                 //Get any potion tags
-                Potion potion = PotionUtils.getPotion(itemStack);
-                if (potion != Potions.EMPTY) {
-                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.builtInRegistryHolder()));
-                    tags.put(DictionaryTagType.MOB_EFFECT, TagCache.getTagsAsStrings(potion.getEffects().stream()
-                          .flatMap(effect -> effect.getEffect().builtInRegistryHolder().tags())
-                          .distinct()
-                    ));
+                PotionContents potionContents = itemStack.get(DataComponents.POTION_CONTENTS);
+                if (potionContents != null) {
+                    potionContents.potion().ifPresent(potionHolder -> tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potionHolder)));
+                    Set<String> effectTags = new HashSet<>();
+                    for (MobEffectInstance effect : potionContents.getAllEffects()) {
+                        effectTags.addAll(TagCache.getTagsAsStrings(effect.getEffect().tags()));
+                    }
+                    tags.put(DictionaryTagType.MOB_EFFECT, List.copyOf(effectTags));
                 }
                 //Get any attribute tags
-                Set<Attribute> attributes = new HashSet<>();
-                for (EquipmentSlot slot : EnumUtils.EQUIPMENT_SLOT_TYPES) {
-                    attributes.addAll(itemStack.getAttributeModifiers(slot).keySet());
-                }
-                if (!attributes.isEmpty()) {
+                ItemAttributeModifiers modifiers = itemStack.get(DataComponents.ATTRIBUTE_MODIFIERS);
+                if (modifiers != null && !modifiers.modifiers().isEmpty()) {
                     //Only add them though if it has any attributes at all
-                    tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(attributes.stream()
-                          .flatMap(attribute -> BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute).tags())
+                    tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(modifiers.modifiers().stream()
+                          .flatMap(attribute -> attribute.attribute().tags())
                           .distinct()
                     ));
                 }
@@ -254,7 +248,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
 
     @Nullable
     @Override
-    public IGhostIngredientConsumer getGhostHandler() {
+    public IRecipeViewerGhostTarget.IGhostIngredientConsumer getGhostHandler() {
         return new IGhostIngredientConsumer() {
             @Nullable
             @Override

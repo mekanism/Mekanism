@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.PrimitiveCodec;
+import io.netty.buffer.ByteBuf;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -13,7 +14,8 @@ import java.util.Locale;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
@@ -32,12 +34,19 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return ops.createNumeric(value);
         }
     };
-    public static final Codec<FloatingLong> NONZERO_CODEC = ExtraCodecs.validate(CODEC, f -> {
+    public static final Codec<FloatingLong> NONZERO_CODEC = CODEC.validate(f -> {
         if (f.isZero()) {
             return DataResult.error(() -> "Value must be greater than zero");
         }
         return DataResult.success(f);
     });
+    //TODO - 1.20.5: Docs and maybe deprecate the non stream codec methods
+    public static final StreamCodec<ByteBuf, FloatingLong> STREAM_CODEC = StreamCodec.composite(
+          //TODO - 1.20.5: Non var long variant so that when it wraps we don't use extra space??
+          ByteBufCodecs.VAR_LONG, FloatingLong::getValue,
+          ByteBufCodecs.SHORT, FloatingLong::getDecimal,
+          FloatingLong::create
+    );
     private static final DecimalFormat df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value

@@ -2,6 +2,7 @@ package mekanism.api;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
@@ -51,7 +52,7 @@ public class MekanismAPI {
         return ResourceKey.createRegistryKey(rl(path));
     }
 
-    private static <T> ResourceKey<Registry<Codec<? extends T>>> codecRegistryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {
+    private static <T> ResourceKey<Registry<MapCodec<? extends T>>> codecRegistryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {
         return ResourceKey.createRegistryKey(rl(path));
     }
 
@@ -104,7 +105,7 @@ public class MekanismAPI {
      * get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
-    public static final ResourceKey<Registry<Codec<? extends RobitSkin>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
+    public static final ResourceKey<Registry<MapCodec<? extends RobitSkin>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
 
     /**
      * Gets the Registry for {@link Gas}.
@@ -161,7 +162,7 @@ public class MekanismAPI {
      * @see #ROBIT_SKIN_SERIALIZER_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<Codec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME).create();
+    public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME).create();
 
     //TODO: Potentially define these with DeferredHolder for purposes of fully defining them outside of the API
     // would have some minor issues with how the empty stacks are declared

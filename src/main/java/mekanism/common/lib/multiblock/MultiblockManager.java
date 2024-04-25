@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.MekanismSavedData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -160,7 +161,7 @@ public class MultiblockManager<T extends MultiblockData> {
     private class MultiblockCacheDataHandler extends MekanismSavedData {
 
         @Override
-        public void load(@NotNull CompoundTag nbt) {
+        public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
             if (nbt.contains(NBTConstants.CACHE, Tag.TAG_LIST)) {
                 ListTag cachesNbt = nbt.getList(NBTConstants.CACHE, Tag.TAG_COMPOUND);
                 for (int i = 0; i < cachesNbt.size(); i++) {
@@ -168,7 +169,7 @@ public class MultiblockManager<T extends MultiblockData> {
                     if (cacheTags.hasUUID(NBTConstants.INVENTORY_ID)) {
                         UUID id = cacheTags.getUUID(NBTConstants.INVENTORY_ID);
                         MultiblockCache<T> cachedData = cacheSupplier.get();
-                        cachedData.load(cacheTags);
+                        cachedData.load(provider, cacheTags);
                         caches.put(id, cachedData);
                     }
                 }
@@ -177,14 +178,14 @@ public class MultiblockManager<T extends MultiblockData> {
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbt) {
+        public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
             ListTag cachesNbt = new ListTag();
             for (Map.Entry<UUID, MultiblockCache<T>> entry : caches.entrySet()) {
                 CompoundTag cacheTags = new CompoundTag();
                 //Note: We can just store the inventory id in the same compound tag as the rest of the cache data
                 // as none of the caches save anything to this tag
                 cacheTags.putUUID(NBTConstants.INVENTORY_ID, entry.getKey());
-                entry.getValue().save(cacheTags);
+                entry.getValue().save(provider, cacheTags);
                 cachesNbt.add(cacheTags);
             }
             nbt.put(NBTConstants.CACHE, cachesNbt);

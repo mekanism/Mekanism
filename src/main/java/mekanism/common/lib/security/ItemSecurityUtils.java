@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IItemSecurityUtils#INSTANCE}
@@ -89,7 +90,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
             if (!level.isClientSide) {
                 ownerObject.setOwnerUUID(player.getUUID());
-                PacketUtils.sendToAll(new PacketSyncSecurity(player.getUUID()));
+                PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
             }
             return true;

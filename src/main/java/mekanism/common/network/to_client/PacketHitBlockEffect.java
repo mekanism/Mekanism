@@ -2,36 +2,30 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketHitBlockEffect(BlockHitResult result) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("hit_block");
-
-    public PacketHitBlockEffect(FriendlyByteBuf buffer) {
-        this(buffer.readBlockHitResult());
-    }
+    public static final CustomPacketPayload.Type<PacketHitBlockEffect> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("hit_block"));
+    public static final StreamCodec<FriendlyByteBuf, PacketHitBlockEffect> STREAM_CODEC = PacketUtils.BLOCK_HIT_RESULT_STREAM_CODEC.map(
+          PacketHitBlockEffect::new, PacketHitBlockEffect::result
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketHitBlockEffect> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        if (context.level().isPresent()) {
-            Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
-        }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockHitResult(result);
+    public void handle(IPayloadContext context) {
+        Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
     }
 }

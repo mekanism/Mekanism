@@ -8,6 +8,7 @@ import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
@@ -173,32 +174,32 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         blades = nbt.getInt(NBTConstants.BLADES);
         position = nbt.getInt(NBTConstants.POSITION);
         updateRadius();
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         nbtTags.putInt(NBTConstants.POSITION, getPosition());
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putInt(NBTConstants.BLADES, blades);
         updateTag.putInt(NBTConstants.POSITION, position);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         int prevBlades = blades;
         int prevPosition = position;
         NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);

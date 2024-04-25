@@ -20,8 +20,8 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -47,28 +47,20 @@ public class SpecialConverters {
         return null;
     }
 
-    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawNBT, @Nullable String rawAttachments) throws ComputerException {
+    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawComponents) throws ComputerException {
         Item item = tryCreateItem(rawName);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack;
-        if (rawAttachments != null) {
+        ItemStack stack = new ItemStack(item);
+        //TODO - 1.20.5: Add support for components
+        /*if (rawComponents != null) {
             try {
-                stack = new ItemStack(item, 1, NbtUtils.snbtToStructure(rawAttachments));
-            } catch (CommandSyntaxException ex) {
-                throw new ComputerException("Invalid Attachment SNBT: " + ex.getMessage());
-            }
-        } else {
-            stack = new ItemStack(item);
-        }
-        if (rawNBT != null) {
-            try {
-                stack.setTag(NbtUtils.snbtToStructure(rawNBT));
+                stack.setTag(NbtUtils.snbtToStructure(rawComponents));
             } catch (CommandSyntaxException ex) {
                 throw new ComputerException("Invalid SNBT: " + ex.getMessage());
             }
-        }
+        }*/
         return stack;
     }
 
@@ -216,36 +208,31 @@ public class SpecialConverters {
     }
 
     private static void decodeItemStackFilter(@NotNull Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
-        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemNBT"), (String) map.get("itemAttachments"));
+        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemComponents"));
         if (stack.isEmpty()) {
             throw new ComputerException("Invalid or missing item specified for ItemStack filter");
         }
         itemFilter.setItemStack(stack);
     }
 
-    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @Nullable CompoundTag tag, @Nullable CompoundTag attachments) {
+    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @NotNull DataComponentMap components) {
         int elements = 2;
-        boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
-        if (hasTag) {
-            elements++;
-        }
-        boolean hasAttachments = attachments != null && !attachments.isEmpty() && amount > 0;
-        if (hasAttachments) {
+        boolean hasComponents = !components.isEmpty() && amount > 0;
+        if (hasComponents) {
             elements++;
         }
         Map<String, Object> wrapped = new HashMap<>(elements);
         wrapped.put("name", name == null ? "unknown" : name.toString());
         wrapped.put(sizeKey, amount);
-        if (hasTag) {
-            wrapped.put("nbt", wrapNBT(tag));
-        }
-        if (hasAttachments) {
-            wrapped.put("attachments", wrapNBT(attachments));
+        if (hasComponents) {
+            wrapped.put("nbt", wrapComponents(components));
         }
         return wrapped;
     }
 
-    static String wrapNBT(@NotNull CompoundTag nbt) {
-        return NbtUtils.structureToSnbt(nbt);
+    static String wrapComponents(@NotNull DataComponentMap components) {
+        //TODO - 1.20.5: Add support for components
+        //return NbtUtils.structureToSnbt(components);
+        return "";
     }
 }

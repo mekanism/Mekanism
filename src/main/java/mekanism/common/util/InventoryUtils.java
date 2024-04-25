@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -19,7 +18,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.damagesource.DamageSource;
@@ -68,11 +67,10 @@ public final class InventoryUtils {
             } else if (ContainerType.ITEM.supports(stack)) {
                 dropItemContents(level, blockPos, ContainerType.ITEM.getAttachmentContainersIfPresent(stack), scalar, dropper);
             }
-            Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
-            if (existingUpgrades.isPresent()) {
-                UpgradeAware upgradeAware = existingUpgrades.get();
-                dropItemContents(level, blockPos, upgradeAware.getInventorySlots(null), scalar, dropper);
-                dropItemContents(level, blockPos, upgradeAware.getUpgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+            UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+            if (upgradeAware != null) {
+                dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, ItemStack::copy);
+                dropItemContents(level, blockPos, upgradeAware.upgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
             if (moduleContainer != null) {
@@ -140,7 +138,7 @@ public final class InventoryUtils {
     }
 
     /**
-     * Like {@link ItemHandlerHelper#canItemStacksStack(ItemStack, ItemStack)} but empty stacks mean equal (either param). Thiakil: not sure why.
+     * Like {@link ItemStack#isSameItemSameComponents(ItemStack, ItemStack)} but empty stacks mean equal (either param). Thiakil: not sure why.
      *
      * @param toInsert stack a
      * @param inSlot   stack b
@@ -151,7 +149,7 @@ public final class InventoryUtils {
         if (toInsert.isEmpty() || inSlot.isEmpty()) {
             return true;
         }
-        return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
+        return ItemStack.isSameItemSameComponents(inSlot, toInsert);
     }
 
     public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {

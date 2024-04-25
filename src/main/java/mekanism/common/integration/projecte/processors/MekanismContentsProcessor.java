@@ -1,8 +1,10 @@
 package mekanism.common.integration.projecte.processors;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
@@ -11,7 +13,7 @@ import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.nbt.INBTProcessor;
@@ -43,13 +45,12 @@ public class MekanismContentsProcessor implements INBTProcessor {
         if (personalStorage.isPresent()) {//Items stored in a personal chest or barrel
             currentEMC = addEmc(emcProxy, currentEMC, personalStorage.get().getInventorySlots(null));
         }
-        Optional<UpgradeAware> existingUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
-        if (existingUpgrades.isPresent()) {//Stored upgrades
-            UpgradeAware upgradeAware = existingUpgrades.get();
-            for (Map.Entry<Upgrade, Integer> entry : upgradeAware.getUpgrades().entrySet()) {
+        UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+        if (upgradeAware != null) {//Stored upgrades
+            for (Map.Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
                 currentEMC = addEmc(emcProxy, currentEMC, UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
-            currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.getInventorySlots(null));
+            currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.asInventorySlots());
         }
         //Stored modules
         for (IModule<?> module : IModuleHelper.INSTANCE.loadAll(stack)) {

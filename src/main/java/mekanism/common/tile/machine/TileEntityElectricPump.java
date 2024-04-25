@@ -49,10 +49,8 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -305,7 +303,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     private boolean validFluid(@NotNull FluidStack fluidStack) {
-        if (!fluidStack.isEmpty() && (activeType.isEmpty() || activeType.isFluidEqual(fluidStack))) {
+        if (!fluidStack.isEmpty() && (activeType.isEmpty() || FluidStack.isSameFluidSameComponents(activeType, fluidStack))) {
             if (fluidTank.isEmpty()) {
                 return true;
             } else if (fluidTank.isFluidEqual(fluidStack)) {
@@ -321,32 +319,23 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            nbtTags.put(NBTConstants.FLUID_STORED, activeType.writeToNBT(new CompoundTag()));
+            nbtTags.put(NBTConstants.FLUID_STORED, activeType.save(provider));
         }
         if (!recurringNodes.isEmpty()) {
-            ListTag recurringList = new ListTag();
-            for (BlockPos nodePos : recurringNodes) {
-                recurringList.add(NbtUtils.writeBlockPos(nodePos));
-            }
-            nbtTags.put(NBTConstants.RECURRING_NODES, recurringList);
+            nbtTags.put(NBTConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
         }
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setFluidStackIfPresent(nbt, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
-        if (nbt.contains(NBTConstants.RECURRING_NODES, Tag.TAG_LIST)) {
-            ListTag tagList = nbt.getList(NBTConstants.RECURRING_NODES, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                recurringNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
-            }
-        }
+        NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
+        NBTUtils.readBlockPositions(nbt, NBTConstants.RECURRING_NODES, recurringNodes);
     }
 
     @Override

@@ -1,6 +1,12 @@
 package mekanism.common.content.filter;
 
+import com.mojang.datafixers.Products.P1;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
+import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
@@ -12,13 +18,29 @@ import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
+
+    public static final Codec<IFilter<?>> GENERIC_CODEC = FilterType.CODEC.dispatch(IFilter::getFilterType, FilterType::codec);
+    public static final StreamCodec<RegistryFriendlyByteBuf, IFilter<?>> GENERIC_STREAM_CODEC = FilterType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
+          .dispatch(IFilter::getFilterType, FilterType::streamCodec);
+
+    protected static <FILTER extends BaseFilter<FILTER>> P1<Mu<FILTER>, Boolean> baseCodec(Instance<FILTER> instance) {
+        return instance.group(
+              Codec.BOOL.optionalFieldOf(NBTConstants.ENABLED, true).forGetter(BaseFilter::isEnabled)
+        );
+    }
+
+    protected static <FILTER extends BaseFilter<FILTER>> StreamCodec<ByteBuf, FILTER> baseStreamCodec(Supplier<FILTER> constructor) {
+        return ByteBufCodecs.BOOL.map(val -> {
+            FILTER filter = constructor.get();
+            filter.setEnabled(val);
+            return filter;
+        }, BaseFilter::isEnabled);
+    }
 
     //Enabled by default
     private boolean enabled = true;
@@ -26,8 +48,12 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     protected BaseFilter() {
     }
 
+    protected BaseFilter(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     protected BaseFilter(FILTER filter) {
-        this.enabled = filter.isEnabled();
+        this(filter.isEnabled());
     }
 
     //Mark it as abstract, so it does not think clone is being implemented by Object
@@ -62,45 +88,6 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     @Override
     public final void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        NBTUtils.writeEnum(nbtTags, NBTConstants.TYPE, getFilterType());
-        nbtTags.putBoolean(NBTConstants.ENABLED, isEnabled());
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        NBTUtils.setBooleanIfPresentElse(nbtTags, NBTConstants.ENABLED, true, this::setEnabled);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeEnum(getFilterType());
-        buffer.writeBoolean(isEnabled());
-    }
-
-    @Override
-    public void read(FriendlyByteBuf buffer) {
-        setEnabled(buffer.readBoolean());
-    }
-
-    @Nullable
-    public static IFilter<?> readFromNBT(CompoundTag nbt) {
-        if (nbt.contains(NBTConstants.TYPE, Tag.TAG_INT)) {
-            IFilter<?> filter = fromType(FilterType.byIndexStatic(nbt.getInt(NBTConstants.TYPE)));
-            filter.read(nbt);
-            return filter;
-        }
-        return null;
-    }
-
-    public static IFilter<?> readFromPacket(FriendlyByteBuf dataStream) {
-        IFilter<?> filter = fromType(dataStream.readEnum(FilterType.class));
-        filter.read(dataStream);
-        return filter;
     }
 
     public static IFilter<?> fromType(FilterType filterType) {

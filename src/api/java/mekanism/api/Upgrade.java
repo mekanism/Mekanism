@@ -1,12 +1,14 @@
 package mekanism.api;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -14,11 +16,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public enum Upgrade implements IHasTranslationKey {
+public enum Upgrade implements IHasTranslationKey, StringRepresentable {
     SPEED("speed", APILang.UPGRADE_SPEED, APILang.UPGRADE_SPEED_DESCRIPTION, 8, EnumColor.RED),
     ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
     FILTER("filter", APILang.UPGRADE_FILTER, APILang.UPGRADE_FILTER_DESCRIPTION, 1, EnumColor.DARK_AQUA),
@@ -27,7 +32,16 @@ public enum Upgrade implements IHasTranslationKey {
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN),
     STONE_GENERATOR("stone_generator", APILang.UPGRADE_STONE_GENERATOR, APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, 1, EnumColor.ORANGE);
 
-    private static final Upgrade[] UPGRADES = values();
+    //TODO - 1.20.5: DOCS
+    public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
+    /**
+     * Gets an upgrade by index.
+     *
+     * @since 10.6.0
+     */
+    public static final IntFunction<Upgrade> BY_ID = ByIdMap.continuous(Upgrade::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    //TODO - 1.20.5: DOCS
+    public static final StreamCodec<ByteBuf, Upgrade> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Upgrade::ordinal);
 
     private final String name;
     private final APILang langKey;
@@ -58,7 +72,7 @@ public enum Upgrade implements IHasTranslationKey {
             ListTag list = nbtTags.getList(NBTConstants.UPGRADES, Tag.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundTag compound = list.getCompound(tagCount);
-                Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
+                Upgrade upgrade = BY_ID.apply(compound.getInt(NBTConstants.TYPE));
                 //Validate the nbt isn't malformed with a negative or zero amount
                 int installed = Math.max(compound.getInt(NBTConstants.AMOUNT), 0);
                 if (installed > 0) {
@@ -103,7 +117,8 @@ public enum Upgrade implements IHasTranslationKey {
     /**
      * Gets the "raw" name of this upgrade for use in registry names.
      */
-    public String getRawName() {
+    @Override
+    public String getSerializedName() {
         return name;
     }
 
@@ -131,15 +146,6 @@ public enum Upgrade implements IHasTranslationKey {
      */
     public EnumColor getColor() {
         return color;
-    }
-
-    /**
-     * Gets an upgrade by index.
-     *
-     * @param index Index of the upgrade.
-     */
-    public static Upgrade byIndexStatic(int index) {
-        return MathUtils.getByIndexMod(UPGRADES, index);
     }
 
     public interface IUpgradeInfoHandler {

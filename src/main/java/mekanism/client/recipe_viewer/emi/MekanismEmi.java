@@ -108,7 +108,8 @@ public class MekanismEmi implements EmiPlugin {
     //TODO - 1.20.4: I believe this doesn't work because of https://github.com/emilyploszaj/emi/issues/475
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
         ItemStack stack = emiStack.getItemStack();
-        if (stack.hasTag() || stack.hasAttachments()) {
+        //TODO - 1.20.5: Re-evaluate if we want the components check or if it should check it slightly differently?
+        if (!stack.getComponents().isEmpty()) {
             Set<Object> representation = new HashSet<>();
             addChemicalComponent(representation, stack, ContainerType.GAS, Capabilities.GAS.item());
             addChemicalComponent(representation, stack, ContainerType.INFUSION, Capabilities.INFUSION.item());

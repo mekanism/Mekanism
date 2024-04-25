@@ -1,7 +1,8 @@
 package mekanism.common.recipe.upgrade;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,8 +21,8 @@ public class SortingRecipeData implements RecipeUpgradeData<SortingRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
-        stack.setData(MekanismAttachmentTypes.SORTING, true);
+    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+        stack.set(MekanismDataComponents.SORTING, true);
         return true;
     }
 }

@@ -1,6 +1,8 @@
 package mekanism.generators.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
@@ -11,47 +13,42 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Used for informing the server that a click happened in a GUI and the gui window needs to change
  */
-public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton buttonClicked, BlockPos pos) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton buttonClicked, BlockPos pos) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = MekanismGenerators.rl("tile_button");
-
-    public PacketGeneratorsTileButtonPress(FriendlyByteBuf buffer) {
-        this(buffer.readEnum(ClickedGeneratorsTileButton.class), buffer.readBlockPos());
-    }
+    public static final CustomPacketPayload.Type<PacketGeneratorsTileButtonPress> TYPE = new CustomPacketPayload.Type<>(MekanismGenerators.rl("tile_button"));
+    public static final StreamCodec<ByteBuf, PacketGeneratorsTileButtonPress> STREAM_CODEC = StreamCodec.composite(
+          ClickedGeneratorsTileButton.STREAM_CODEC, PacketGeneratorsTileButtonPress::buttonClicked,
+          BlockPos.STREAM_CODEC, PacketGeneratorsTileButtonPress::pos,
+          PacketGeneratorsTileButtonPress::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketGeneratorsTileButtonPress> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
-            if (tile != null) {
-                player.openMenu(buttonClicked.getProvider(tile), pos);
-            }
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        //If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
+        if (tile != null) {
+            player.openMenu(buttonClicked.getProvider(tile), pos);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeEnum(buttonClicked);
-        buffer.writeBlockPos(pos);
     }
 
     public enum ClickedGeneratorsTileButton {
@@ -75,6 +72,9 @@ public record PacketGeneratorsTileButtonPress(ClickedGeneratorsTileButton button
             }
             return null;
         });
+
+        public static final IntFunction<ClickedGeneratorsTileButton> BY_ID = ByIdMap.continuous(ClickedGeneratorsTileButton::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, ClickedGeneratorsTileButton> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ClickedGeneratorsTileButton::ordinal);
 
         private final Function<TileEntityMekanism, @Nullable MenuProvider> providerFromTile;
 

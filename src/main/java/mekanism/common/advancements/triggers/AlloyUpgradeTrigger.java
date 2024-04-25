@@ -11,7 +11,6 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
 public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrigger.TriggerInstance> {
@@ -29,7 +28,7 @@ public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrig
     public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, JsonConstants.PLAYER).forGetter(TriggerInstance::player)
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player)
               ).apply(instance, TriggerInstance::new)
         );
 

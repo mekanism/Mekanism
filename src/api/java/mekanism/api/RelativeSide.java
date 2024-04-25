@@ -1,14 +1,21 @@
 package mekanism.api;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.core.Direction;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 
 @NothingNullByDefault
-public enum RelativeSide implements IHasTranslationKey {
+public enum RelativeSide implements IHasTranslationKey, StringRepresentable {
     FRONT(APILang.FRONT),
     LEFT(APILang.LEFT),
     RIGHT(APILang.RIGHT),
@@ -16,20 +23,22 @@ public enum RelativeSide implements IHasTranslationKey {
     TOP(APILang.TOP),
     BOTTOM(APILang.BOTTOM);
 
-    private static final RelativeSide[] SIDES = values();
-
+    //TODO - 1.20.5: DOCS
+    public static final Codec<RelativeSide> CODEC = StringRepresentable.fromEnum(RelativeSide::values);
     /**
      * Gets a side by index.
      *
-     * @param index Index of the side.
+     * @since 10.6.0
      */
-    public static RelativeSide byIndex(int index) {
-        return MathUtils.getByIndexMod(SIDES, index);
-    }
+    public static final IntFunction<RelativeSide> BY_ID = ByIdMap.continuous(RelativeSide::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    //TODO - 1.20.5: DOCS
+    public static final StreamCodec<ByteBuf, RelativeSide> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RelativeSide::ordinal);
 
+    private final String serializedName;
     private final ILangEntry langEntry;
 
     RelativeSide(ILangEntry langEntry) {
+        this.serializedName = name().toLowerCase(Locale.ROOT);
         this.langEntry = langEntry;
     }
 
@@ -98,5 +107,10 @@ public enum RelativeSide implements IHasTranslationKey {
         }
         //Fall back to front, should never get here
         return FRONT;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return serializedName;
     }
 }

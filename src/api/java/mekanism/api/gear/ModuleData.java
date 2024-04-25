@@ -23,7 +23,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     private final Supplier<@NotNull MODULE> supplier;
     private final IItemProvider itemProvider;
     private final int maxStackSize;
-    private final Rarity rarity;
     private final int exclusive;
     private final boolean handlesModeChange;
     private final boolean modeChangeDisabledByDefault;
@@ -41,7 +40,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
         this.supplier = builder.supplier;
         this.itemProvider = builder.itemProvider;
-        this.rarity = builder.rarity;
         this.maxStackSize = builder.maxStackSize;
         this.exclusive = builder.exclusive;
         this.handlesModeChange = builder.handlesModeChange;
@@ -71,13 +69,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     @NotNull
     public final MODULE get() {
         return supplier.get();
-    }
-
-    /**
-     * Gets the rarity of this module type.
-     */
-    public final Rarity getRarity() {
-        return rarity;
     }
 
     /**
@@ -219,7 +210,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
         private final Supplier<@NotNull MODULE> supplier;
         private final IItemProvider itemProvider;
-        private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
         private int exclusive;
         private boolean handlesModeChange;
@@ -231,16 +221,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         private ModuleDataBuilder(Supplier<@NotNull MODULE> supplier, IItemProvider itemProvider) {
             this.supplier = Objects.requireNonNull(supplier, "Supplier cannot be null.");
             this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
-        }
-
-        /**
-         * Sets the rarity of this module type.
-         *
-         * @param rarity Rarity of the module type.
-         */
-        public ModuleDataBuilder<MODULE> rarity(Rarity rarity) {
-            this.rarity = Objects.requireNonNull(rarity, "Rarity cannot be null.");
-            return this;
         }
 
         /**

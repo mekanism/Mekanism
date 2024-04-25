@@ -1,22 +1,30 @@
 package mekanism.common.item.interfaces;
 
-import java.util.Optional;
+import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.IColorableFrequency;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import org.jetbrains.annotations.Nullable;
 
 public interface IColoredItem {
 
-    default void syncColorWithFrequency(ItemStack stack) {
-        if (stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE).getFrequency() instanceof IColorableFrequency frequency) {
-            stack.setData(MekanismAttachmentTypes.COLORABLE, Optional.of(frequency.getColor()));
-        } else {
-            stack.removeData(MekanismAttachmentTypes.COLORABLE);
-        }
+    @Nullable
+    default DataComponentType<? extends FrequencyAware<?>> getFrequencyComponent() {
+        return null;
     }
 
-    static boolean supports(IAttachmentHolder attachmentHolder) {
-        return attachmentHolder instanceof ItemStack stack && stack.getItem() instanceof IColoredItem;
+    @SuppressWarnings("unchecked")
+    default <FREQ extends Frequency> void syncColorWithFrequency(ItemStack stack) {
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = (DataComponentType<FrequencyAware<FREQ>>) getFrequencyComponent();
+        if (frequencyComponent != null) {
+            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+            if (frequencyAware != null && frequencyAware.getFrequency(stack, frequencyComponent) instanceof IColorableFrequency frequency) {
+                stack.set(MekanismDataComponents.COLOR, frequency.getColor());
+            } else {
+                stack.remove(MekanismDataComponents.COLOR);
+            }
+        }
     }
 }

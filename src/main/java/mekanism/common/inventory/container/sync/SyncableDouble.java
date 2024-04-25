@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import mekanism.common.network.to_client.container.property.DoublePropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling doubles
@@ -24,7 +25,7 @@ public abstract class SyncableDouble implements ISyncableData {
     }
 
     @Override
-    public DoublePropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public DoublePropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new DoublePropertyData(property, get());
     }
 

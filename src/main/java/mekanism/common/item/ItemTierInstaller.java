@@ -77,7 +77,7 @@ public class ItemTierInstaller extends Item {
                     if (tile instanceof TileEntityMekanism tileMek && !tileMek.playersUsing.isEmpty()) {
                         return InteractionResult.FAIL;
                     }
-                    IUpgradeData upgradeData = tierUpgradable.getUpgradeData();
+                    IUpgradeData upgradeData = tierUpgradable.getUpgradeData(world.registryAccess());
                     if (upgradeData == null) {
                         if (tierUpgradable.canBeUpgraded()) {
                             Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
@@ -94,7 +94,7 @@ public class ItemTierInstaller extends Item {
                             if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
                                 upgradedTile.setFacing(directional.getDirection(), false);
                             }
-                            upgradedTile.parseUpgradeData(upgradeData);
+                            upgradedTile.parseUpgradeData(world.registryAccess(), upgradeData);
                             upgradedTile.sendUpdatePacket();
                             upgradedTile.setChanged();
                             //Notify the level that the caps at the position are no longer valid

@@ -24,9 +24,4 @@ public class AttachedHeatCapacitors extends AttachedContainers<IHeatCapacitor> i
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return containers;
     }
-
-    @Override
-    protected boolean isContainerCompatible(IHeatCapacitor a, IHeatCapacitor b) {
-        return a.isCompatible(b);
-    }
 }

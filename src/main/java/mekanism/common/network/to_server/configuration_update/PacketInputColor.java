@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.configuration_update;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.RelativeSide;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
@@ -8,27 +9,29 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketInputColor(BlockPos pos, MekClickType clickType, RelativeSide inputSide) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketInputColor(BlockPos pos, MekClickType clickType, RelativeSide inputSide) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("input_color");
-
-    public PacketInputColor(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readEnum(MekClickType.class), buffer.readEnum(RelativeSide.class));
-    }
+    public static final CustomPacketPayload.Type<PacketInputColor> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("input_color"));
+    public static final StreamCodec<ByteBuf, PacketInputColor> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketInputColor::pos,
+          MekClickType.STREAM_CODEC, PacketInputColor::clickType,
+          RelativeSide.STREAM_CODEC, PacketInputColor::inputSide,
+          PacketInputColor::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketInputColor> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         TileComponentEjector ejector = PacketUtils.ejector(context, pos);
         if (ejector != null) {
             ejector.setInputColor(inputSide, switch (clickType) {
@@ -37,12 +40,5 @@ public record PacketInputColor(BlockPos pos, MekClickType clickType, RelativeSid
                 case SHIFT_LEFT -> null;
             });
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeEnum(clickType);
-        buffer.writeEnum(inputSide);
     }
 }

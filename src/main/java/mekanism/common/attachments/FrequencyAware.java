@@ -1,87 +1,97 @@
 package mekanism.common.attachments;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.frequency.IColorableFrequency;
-import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
-import mekanism.common.registries.MekanismAttachmentTypes;
-import net.minecraft.nbt.CompoundTag;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<CompoundTag> {
+public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity> identity, Optional<FREQ> frequency) {
 
-    public static FrequencyAware<?> create(IAttachmentHolder holder) {
-        if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem) {
-            return new FrequencyAware<>(stack, frequencyItem.getFrequencyType());
-        }
-        throw new IllegalArgumentException("Attempted to attach frequency awareness to an object that does not support frequencies.");
+    public static <FREQ extends Frequency> Codec<FrequencyAware<FREQ>> codec(FrequencyType<FREQ> frequencyType) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+              //TODO - 1.20.5: Validate this is equivalent to Frequency#serializeIdentityWithOwner??
+              frequencyType.getIdentitySerializer().codec().optionalFieldOf(NBTConstants.IDENTITY).forGetter(FrequencyAware::identity)
+        ).apply(instance, identity -> {
+            FREQ frequency = null;
+            if (identity.isPresent() && EffectiveSide.get().isServer()) {
+                //Only try to look up the frequency on the server
+                frequency = frequencyType.getManager(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
+            }
+            return new FrequencyAware<>(identity, Optional.ofNullable(frequency));
+        }));
     }
 
-    private final FrequencyType<FREQ> frequencyType;
-    private final ItemStack attachmentHolder;
-    @Nullable
-    private FrequencyIdentity identity;
-    @Nullable
-    private FREQ frequency;
-
-    private FrequencyAware(ItemStack stack, FrequencyType<FREQ> frequencyType) {
-        this(stack, frequencyType, null, null);
+    public static <FREQ extends Frequency> StreamCodec<ByteBuf, FrequencyAware<FREQ>> streamCodec(FrequencyType<FREQ> frequencyType) {
+        return ByteBufCodecs.optional(frequencyType.getIdentitySerializer().streamCodec()).map(identity -> {
+            FREQ frequency = null;
+            if (identity.isPresent() && EffectiveSide.get().isServer()) {
+                //Only try to look up the frequency on the server
+                //Note: This will almost always be false
+                //TODO - 1.20.5: Do we want to remove this branch and have the optional always be empty when transmitting via stream?
+                frequency = frequencyType.getManager(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
+            }
+            return new FrequencyAware<>(identity, Optional.ofNullable(frequency));
+        }, FrequencyAware::identity);
     }
 
-    private FrequencyAware(ItemStack attachmentHolder, FrequencyType<FREQ> frequencyType, @Nullable FrequencyIdentity identity, @Nullable FREQ frequency) {
-        this.attachmentHolder = attachmentHolder;
-        this.frequencyType = frequencyType;
-        this.frequency = frequency;
-        this.identity = identity;
+    public static final StreamCodec<ByteBuf, DriveMetadata> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.VAR_LONG, DriveMetadata::count,
+          ByteBufCodecs.VAR_INT, DriveMetadata::types,
+          DriveMetadata::new
+    );
+
+    public FrequencyAware(@Nullable FREQ freq) {
+        this(freq == null ? Optional.empty() : Optional.of(freq.getIdentity()), Optional.ofNullable(freq));
     }
 
     @Nullable
     public UUID getOwner() {
-        return identity == null ? null : identity.ownerUUID();
+        return identity.map(FrequencyIdentity::ownerUUID).orElse(null);
     }
 
     @Nullable
-    public FrequencyIdentity getIdentity() {
-        return identity;
-    }
-
-    public FrequencyType<FREQ> getFrequencyType() {
-        return frequencyType;
-    }
-
-    @Nullable
-    public FREQ getFrequency() {
+    public FREQ getFrequency(ItemStack stack, DataComponentType<FrequencyAware<FREQ>> type) {
+        FREQ frequency = frequency().orElse(null);
         if (frequency != null && frequency.getSecurity() == SecurityMode.TRUSTED && EffectiveSide.get().isServer()) {
             //If it is a trusted frequency, and we are on the server, validate whether the owner of the item can actually access the frequency
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(attachmentHolder);
+            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
                 SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
-                    setFrequency(null);
+                    //TODO - 1.20.5: Re-evaluate this
+                    stack.remove(type);
+                    if (stack.getItem() instanceof IColoredItem) {
+                        stack.remove(MekanismDataComponents.COLOR);
+                    }
                 }
             }
         }
         return frequency;
     }
 
-    public void setFrequency(FrequencyIdentity data, UUID player) {
+    public static <FREQ extends Frequency> FrequencyAware<FREQ> create(FrequencyType<FREQ> frequencyType, FrequencyIdentity data, UUID player) {
         //Note: We don't bother validating if the frequency is public or not here, as if it isn't then
         // a new private frequency will just be created for the player who sent a packet they shouldn't
         // have been able to send due to not knowing what private frequencies exist for other players
@@ -100,75 +110,6 @@ public class FrequencyAware<FREQ extends Frequency> implements INBTSerializable<
             manager = frequencyType.getManager(data, player);
             freq = manager.getOrCreateFrequency(data, player);
         }
-        setFrequency(freq);
-    }
-
-    public void removeFrequency(FrequencyIdentity data, UUID player) {
-        FrequencyManager<FREQ> manager = frequencyType.getManager(data, data.ownerUUID() == null ? player : data.ownerUUID());
-        if (manager.remove(data.key(), player)) {
-            FrequencyIdentity current = getIdentity();
-            if (current != null && current.equals(data)) {
-                //If the frequency we are removing matches the stored frequency, remove it
-                setFrequency(null);
-            }
-        }
-    }
-
-    public void setFrequency(@Nullable FREQ frequency) {
-        this.frequency = frequency;
-        this.identity = this.frequency == null ? null : this.frequency.getIdentity();
-        if (IColoredItem.supports(attachmentHolder)) {
-            if (this.frequency == null) {
-                attachmentHolder.removeData(MekanismAttachmentTypes.COLORABLE);
-            } else {
-                attachmentHolder.setData(MekanismAttachmentTypes.COLORABLE, Optional.of(((IColorableFrequency) this.frequency).getColor()));
-            }
-        }
-    }
-
-    public void copyFrom(TileComponentFrequency component) {
-        setFrequency(component.getFrequency(frequencyType));
-    }
-
-    public boolean isCompatible(FrequencyAware<?> other) {
-        if (other == this) {
-            return true;
-        }
-        if (frequency == null) {
-            return other.frequency == null;
-        } else if (other.frequency == null) {
-            return false;
-        }
-        return Objects.equals(identity, other.identity);
-    }
-
-    @Nullable
-    @Override
-    public CompoundTag serializeNBT() {
-        if (frequency == null) {
-            //If we have no frequency, try to serialize it based on a stored identity (such as if we are on the client)
-            return identity == null ? null : frequencyType.getIdentitySerializer().serialize(identity);
-        }
-        return frequency.serializeIdentityWithOwner();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        identity = FrequencyIdentity.load(frequencyType, nbt);
-        if (identity != null && EffectiveSide.get().isServer()) {
-            //Only try to look up the frequency on the server
-            frequency = frequencyType.getManager(identity, identity.ownerUUID()).getFrequency(identity.key());
-        }
-    }
-
-    @Nullable
-    public FrequencyAware<FREQ> copy(IAttachmentHolder holder) {
-        if (frequency == null && identity == null) {
-            return null;
-        } else if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem &&
-                   frequencyItem.getFrequencyType() == frequencyType) {
-            return new FrequencyAware<>(stack, frequencyType, identity, frequency);
-        }
-        return null;
+        return new FrequencyAware<>(Optional.of(freq.getIdentity()), Optional.of(freq));
     }
 }

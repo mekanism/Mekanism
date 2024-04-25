@@ -18,6 +18,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.ChemicalUtils;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
@@ -51,22 +53,18 @@ public class SerializerHelper {
     /**
      * Fluid Codec which makes extra sure we don't end up with an empty/invalid fluid
      */
-    private static final Codec<Fluid> NON_EMPTY_FLUID_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(),
-          fluid -> fluid == Fluids.EMPTY ? DataResult.error(() -> "Invalid fluid type") : DataResult.success(fluid));
+    private static final Codec<Holder<Fluid>> NON_EMPTY_FLUID_CODEC = BuiltInRegistries.FLUID.holderByNameCodec().validate(holder ->
+          holder.is(Fluids.EMPTY.builtInRegistryHolder()) ? DataResult.error(() -> "Fluid must not be minecraft:empty") : DataResult.success(holder));
 
     /**
      * Fluidstack codec to maintain compatibility with our old json
      */
+    //TODO - 1.20.5: Re-evaluate this and probably switch to just using FluidStack#CODEC even if it changes the key from fluid to id
     public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluid),
+          NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluidHolder),
           ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
-          CraftingHelper.TAG_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
-    ).apply(instance, (fluid, amount, tag) -> {
-        //Note: We don't use the constructor that accepts a tag to avoid having to copy it
-        FluidStack stack = new FluidStack(fluid, amount);
-        tag.ifPresent(stack::setTag);
-        return stack;
-    }));
+          DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(stack -> stack.getComponents().asPatch())
+    ).apply(instance, FluidStack::new));
 
     /**
      * Codec to get any kind of chemical stack, based on a "chemicalType" field. See also {@link ChemicalType}

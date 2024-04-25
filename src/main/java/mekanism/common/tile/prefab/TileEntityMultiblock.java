@@ -33,9 +33,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -204,11 +206,18 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return openGui(player);
+        InteractionResult result = openGui(player);
+        return switch (result) {
+            case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
+            case CONSUME -> ItemInteractionResult.CONSUME;
+            case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
+            case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            case FAIL -> ItemInteractionResult.FAIL;
+        };
     }
 
     @Override
@@ -243,26 +252,26 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putBoolean(NBTConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
         if (multiblock.isFormed() && isMaster()) {
-            multiblock.writeUpdateTag(updateTag);
+            multiblock.writeUpdateTag(updateTag, provider);
         }
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
         T multiblock = getMultiblock();
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, multiblock::setFormedForce);
         if (isMaster()) {
             if (multiblock.isFormed()) {
-                multiblock.readUpdateTag(tag);
+                multiblock.readUpdateTag(tag, provider);
                 doMultiblockSparkle(multiblock);
             } else {
                 // this will consecutively be set on the server
@@ -292,16 +301,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> cachedID = id);
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         if (cachedID != null) {
             //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
             // at which point it will gracefully handle multiblock tiles with stale ids and clear them

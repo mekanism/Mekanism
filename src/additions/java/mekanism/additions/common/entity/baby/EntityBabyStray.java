@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityBabyStray extends Stray implements IBabyEntity {
 
     private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabyStray.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDimensions BABY_DIMENSIONS = EntityType.STRAY.getDimensions().scale(0.5F).withEyeHeight(0.93F);
 
     //Copy of stray spawn restrictions
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
@@ -42,9 +43,9 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(IS_CHILD, false);
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHILD, true);
     }
 
     @Override
@@ -77,8 +78,9 @@ public class EntityBabyStray extends Stray implements IBabyEntity {
         return super.getExperienceReward();
     }
 
+    @NotNull
     @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return this.isBaby() ? BABY_DIMENSIONS : super.getDefaultDimensions(pose);
     }
 }

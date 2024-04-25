@@ -156,9 +156,9 @@ import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
@@ -196,6 +196,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -205,17 +206,17 @@ import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.SeparateTransformsModel;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
-@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
@@ -244,16 +245,16 @@ public class ClientRegistration {
                 ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
             }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
-                  (stack, world, entity, seed) -> stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) ? 1 : 0);
+                  (stack, world, entity, seed) -> stack.has(MekanismDataComponents.BLOCK_DATA) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) ->
                   FormulaAttachment.existingFormula(stack)
-                        .filter(attachment -> attachment.hasItems() && attachment.isInvalid())
+                        .filter(attachment -> attachment.hasItems() && attachment.invalid())
                         .isPresent() ? 1 : 0
             );
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) ->
                   FormulaAttachment.existingFormula(stack)
-                        .filter(attachment -> attachment.hasItems() && attachment.isValid())
+                        .filter(attachment -> attachment.hasItems() && !attachment.invalid())
                         .isPresent() ? 1 : 0
             );
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
@@ -295,13 +296,13 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+    public static void registerOverlays(RegisterGuiLayersEvent event) {
         //Note: We don't need to include our modid in the id as the active context is grabbed for making an RL inside the event
         event.registerBelowAll(Mekanism.rl("radiation_overlay"), RadiationOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), Mekanism.rl("energy_level"), MekaSuitEnergyLevel.INSTANCE);
+        event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, Mekanism.rl("energy_level"), MekaSuitEnergyLevel.INSTANCE);
         //Render status overlay after item name rather than action bar (record_overlay) so that things like the sleep fade will render in front of our overlay
-        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), Mekanism.rl("status_overlay"), MekanismStatusOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), Mekanism.rl("hud"), MekanismHUD.INSTANCE);
+        event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, Mekanism.rl("status_overlay"), MekanismStatusOverlay.INSTANCE);
+        event.registerAbove(VanillaGuiLayers.HOTBAR, Mekanism.rl("hud"), MekanismHUD.INSTANCE);
     }
 
     @SubscribeEvent

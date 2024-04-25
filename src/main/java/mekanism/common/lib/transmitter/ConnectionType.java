@@ -1,6 +1,8 @@
 package mekanism.common.lib.transmitter;
 
+import io.netty.buffer.ByteBuf;
 import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -9,7 +11,11 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 
 @NothingNullByDefault
@@ -19,7 +25,9 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
     PULL(MekanismLang.CONNECTION_PULL, EnumColor.YELLOW),
     NONE(MekanismLang.CONNECTION_NONE, EnumColor.WHITE);
 
-    private static final ConnectionType[] TYPES = values();
+    public static final IntFunction<ConnectionType> BY_ID = ByIdMap.continuous(ConnectionType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final StreamCodec<ByteBuf, ConnectionType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConnectionType::ordinal);
+
     private final ILangEntry langEntry;
     private final EnumColor color;
 
@@ -45,11 +53,7 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, StringRe
 
     @Override
     public ConnectionType byIndex(int index) {
-        return byIndexStatic(index);
-    }
-
-    public static ConnectionType byIndexStatic(int index) {
-        return MathUtils.getByIndexMod(TYPES, index);
+        return BY_ID.apply(index);
     }
 
     /**

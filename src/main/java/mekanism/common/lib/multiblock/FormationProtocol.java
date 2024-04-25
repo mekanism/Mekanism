@@ -136,7 +136,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 cache = manager.createCache();
             }
 
-            cache.apply(structureFound);
+            cache.apply(world.registryAccess(), structureFound);
             structureFound.inventoryID = idToUse;
             structureFound.onCreated(world);
             if (trackCache) {

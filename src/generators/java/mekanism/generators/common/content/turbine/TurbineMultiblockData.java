@@ -37,6 +37,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
@@ -204,8 +205,8 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag) {
-        super.readUpdateTag(tag);
+    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.readUpdateTag(tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> lowerVolume = value);
@@ -216,8 +217,8 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
+    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.writeUpdateTag(tag, provider);
         tag.putFloat(NBTConstants.SCALE, prevSteamScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
         tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);

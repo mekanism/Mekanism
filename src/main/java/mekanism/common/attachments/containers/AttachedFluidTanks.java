@@ -27,11 +27,6 @@ public class AttachedFluidTanks extends AttachedContainers<IExtendedFluidTank> i
         return containers;
     }
 
-    @Override
-    protected boolean isContainerCompatible(IExtendedFluidTank a, IExtendedFluidTank b) {
-        return a.isCompatible(b);
-    }
-
     public static class AttachedItemFluidTanks extends AttachedFluidTanks implements IFluidHandlerItem {
 
         private final ItemStack stack;

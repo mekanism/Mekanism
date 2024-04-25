@@ -1,6 +1,7 @@
 package mekanism.additions.common.world.modifier;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.additions.common.config.AdditionsConfig;
@@ -54,12 +55,12 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
     }
 
     @Override
-    public Codec<? extends BiomeModifier> codec() {
+    public MapCodec<? extends BiomeModifier> codec() {
         return AdditionsBiomeModifierSerializers.SPAWN_BABIES.get();
     }
 
-    public static Codec<BabyEntitySpawnBiomeModifier> makeCodec() {
-        return RecordCodecBuilder.create(builder -> builder.group(
+    public static MapCodec<BabyEntitySpawnBiomeModifier> makeCodec() {
+        return RecordCodecBuilder.mapCodec(builder -> builder.group(
               BabyType.CODEC.fieldOf("babyType").forGetter(BabyEntitySpawnBiomeModifier::babyType)
         ).apply(builder, BabyEntitySpawnBiomeModifier::new));
     }

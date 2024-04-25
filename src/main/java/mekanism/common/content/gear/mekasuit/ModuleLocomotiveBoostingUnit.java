@@ -1,5 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
+import io.netty.buffer.ByteBuf;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -13,7 +15,11 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.filter.FilterType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -87,7 +93,8 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         HIGH(0.25F),
         ULTRA(0.5F);
 
-        private static final SprintBoost[] MODES = values();
+        public static final IntFunction<SprintBoost> BY_ID = ByIdMap.continuous(SprintBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, SprintBoost> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SprintBoost::ordinal);
 
         private final float boost;
         private final Component label;
@@ -99,7 +106,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
         @Override
         public SprintBoost byIndex(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
 
         @Override

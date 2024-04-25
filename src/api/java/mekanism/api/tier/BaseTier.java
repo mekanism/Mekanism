@@ -1,9 +1,15 @@
 package mekanism.api.tier;
 
+import io.netty.buffer.ByteBuf;
 import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.SupportsColorMap;
+import mekanism.api.Upgrade;
 import mekanism.api.math.MathUtils;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +26,14 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     ULTIMATE("Ultimate", new int[]{247, 135, 255}, MapColor.COLOR_MAGENTA),
     CREATIVE("Creative", new int[]{88, 88, 88}, MapColor.TERRACOTTA_CYAN);
 
-    private static final BaseTier[] TIERS = values();
+    /**
+     * Gets a tier by index.
+     *
+     * @since 10.6.0
+     */
+    public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    //TODO - 1.20.5: DOCS
+    public static final StreamCodec<ByteBuf, BaseTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BaseTier::ordinal);
 
     private final String name;
     private final MapColor mapColor;
@@ -91,14 +104,5 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Gets a tier by index.
-     *
-     * @param index Index of the tier.
-     */
-    public static BaseTier byIndexStatic(int index) {
-        return MathUtils.getByIndexMod(TIERS, index);
     }
 }

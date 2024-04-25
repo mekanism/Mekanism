@@ -12,6 +12,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.recipe.upgrade.RecipeUpgradeData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
     protected abstract ContainerType<TANK, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>, ?> getContainerType();
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
         if (this.tanks.isEmpty()) {
             return true;
         }

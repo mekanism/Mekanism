@@ -1,10 +1,13 @@
 package mekanism.common.item.interfaces;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.IHasModeIcon;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.CommonPlayerTickHandler;
@@ -14,7 +17,11 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -33,19 +40,24 @@ public interface IJetpackItem {
     void useJetpackFuel(ItemStack stack);
 
     @NothingNullByDefault
-    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon {
+    enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasModeIcon, StringRepresentable {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, "jetpack_normal.png"),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, "jetpack_hover.png"),
         VECTOR(MekanismLang.JETPACK_VECTOR, EnumColor.ORANGE, "jetpack_vector.png"),
         DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED, "jetpack_off.png");
 
-        private static final JetpackMode[] MODES = values();
+        public static final Codec<JetpackMode> CODEC = StringRepresentable.fromEnum(JetpackMode::values);
+        public static final IntFunction<JetpackMode> BY_ID = ByIdMap.continuous(JetpackMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, JetpackMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, JetpackMode::ordinal);
+
+        private final String serializedName;
         private final ILangEntry langEntry;
         private final EnumColor color;
         private final ResourceLocation hudIcon;
         private final ResourceLocation modeIcon;
 
         JetpackMode(ILangEntry langEntry, EnumColor color, String icon) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.color = color;
             this.hudIcon = MekanismUtils.getResource(ResourceType.GUI_HUD, icon);
@@ -59,20 +71,21 @@ public interface IJetpackItem {
 
         @Override
         public JetpackMode byIndex(int index) {
-            return byIndexStatic(index);
+            return BY_ID.apply(index);
         }
 
         public ResourceLocation getHUDIcon() {
             return hudIcon;
         }
 
-        public static JetpackMode byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
-        }
-
         @Override
         public ResourceLocation getModeIcon() {
             return modeIcon;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 

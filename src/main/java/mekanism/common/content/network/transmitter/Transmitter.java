@@ -24,6 +24,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionResult;
@@ -404,7 +405,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @NotNull
-    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         updateTag.putIntArray(NBTConstants.CONNECTION, getRawConnections());
@@ -415,7 +416,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return updateTag;
     }
 
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(tag);
@@ -430,7 +431,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 NETWORK network = createEmptyNetworkWithID(networkID);
                 network.register();
                 setTransmitterNetwork(network);
-                handleContentsUpdateTag(network, tag);
+                handleContentsUpdateTag(network, tag, provider);
             } else {
                 //TODO: Validate network type?
                 updateClientNetwork((NETWORK) clientNetwork);
@@ -443,10 +444,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         setTransmitterNetwork(network);
     }
 
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
     }
 
-    public void read(@NotNull CompoundTag nbtTags) {
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
         NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
@@ -454,7 +455,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @NotNull
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
         nbtTags.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         nbtTags.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
@@ -474,7 +475,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (tag.contains(NBTConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
             int[] raw = tag.getIntArray(NBTConstants.CONNECTION);
             for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
-                setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.byIndexStatic(raw[i]));
+                setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
             }
         }
     }

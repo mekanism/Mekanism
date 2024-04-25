@@ -1,10 +1,11 @@
 package mekanism.common.content.network.transmitter;
 
+import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -15,9 +16,13 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +86,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         if (tag.contains(NBTConstants.MODE, Tag.TAG_INT_ARRAY)) {
             int[] modeIndices = tag.getIntArray(NBTConstants.MODE);
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
-                modes[i] = DiversionControl.byIndexStatic(modeIndices[i]);
+                modes[i] = DiversionControl.BY_ID.apply(modeIndices[i]);
             }
         }
     }
@@ -97,26 +102,26 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void read(@NotNull CompoundTag nbtTags) {
-        super.read(nbtTags);
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
         readModes(nbtTags);
     }
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
-        return writeModes(super.write(nbtTags));
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        return writeModes(super.write(provider, nbtTags));
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
-        return writeModes(super.getReducedUpdateTag(updateTag));
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
+        return writeModes(super.getReducedUpdateTag(provider, updateTag));
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         readModes(tag);
     }
 
@@ -190,7 +195,9 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         HIGH(MekanismLang.DIVERSION_CONTROL_HIGH),
         LOW(MekanismLang.DIVERSION_CONTROL_LOW);
 
-        private static final DiversionControl[] MODES = values();
+        public static final IntFunction<DiversionControl> BY_ID = ByIdMap.continuous(DiversionControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, DiversionControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DiversionControl::ordinal);
+
         private final ILangEntry langEntry;
 
         DiversionControl(ILangEntry langEntry) {
@@ -204,11 +211,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
 
         @Override
         public DiversionControl byIndex(int index) {
-            return byIndexStatic(index);
-        }
-
-        public static DiversionControl byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
     }
 }

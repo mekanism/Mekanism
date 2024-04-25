@@ -1,6 +1,7 @@
 package mekanism.common.tile.machine;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -25,19 +26,21 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
@@ -213,8 +216,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
@@ -225,8 +228,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
         byte[] chunksToLoad = dataMap.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
@@ -253,19 +256,16 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, MekanismAttachmentTypes.STABILIZER_CHUNKS);
-        return remap;
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
         //TODO - 1.20.4: Deduplicate this and the from nbt
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        boolean[] chunksToLoad = stack.getData(MekanismAttachmentTypes.STABILIZER_CHUNKS);
+        boolean[] chunksToLoad = input.get(MekanismDataComponents.STABILIZER_CHUNKS);
+        if (chunksToLoad == null) {
+            //Skip if we don't have any data
+            return;
+        }
         if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
             //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
             // where to position our values
@@ -289,15 +289,15 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
         boolean[] chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
                 chunksToLoad[x * MAX_LOAD_DIAMETER + z] = isChunkLoadingAt(x, z);
             }
         }
-        stack.setData(MekanismAttachmentTypes.STABILIZER_CHUNKS, chunksToLoad);
+        builder.set(MekanismDataComponents.STABILIZER_CHUNKS, chunksToLoad);
     }
 
     @Override

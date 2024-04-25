@@ -29,7 +29,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         BinInventorySlot slot = BinInventorySlot.getForStack(stack);
         BinTier tier = getTier();
         if (slot != null && tier != null) {

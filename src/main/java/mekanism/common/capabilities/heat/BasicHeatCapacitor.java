@@ -7,6 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,14 +111,14 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setDoubleIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
         NBTUtils.setDoubleIfPresent(nbt, NBTConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = IHeatCapacitor.super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = IHeatCapacitor.super.serializeNBT(provider);
         nbt.putDouble(NBTConstants.HEAT_CAPACITY, getHeatCapacity());
         return nbt;
     }

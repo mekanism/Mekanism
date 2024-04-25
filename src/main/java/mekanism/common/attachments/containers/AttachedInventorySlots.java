@@ -24,9 +24,4 @@ public class AttachedInventorySlots extends AttachedContainers<IInventorySlot> i
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return containers;
     }
-
-    @Override
-    protected boolean isContainerCompatible(IInventorySlot a, IInventorySlot b) {
-        return a.isCompatible(b);
-    }
 }

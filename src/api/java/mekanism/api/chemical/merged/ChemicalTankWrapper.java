@@ -10,6 +10,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
@@ -156,8 +157,8 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        return internal.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return internal.serializeNBT(provider);
     }
 
     @Override
@@ -169,7 +170,7 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        internal.deserializeNBT(nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        internal.deserializeNBT(provider, nbt);
     }
 }

@@ -1,8 +1,10 @@
 package mekanism.common.content.filter;
 
+import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -11,9 +13,12 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import org.jetbrains.annotations.Nullable;
 
 public class FilterManager<FILTER extends IFilter<?>> {
@@ -155,25 +160,30 @@ public class FilterManager<FILTER extends IFilter<?>> {
         }));
     }
 
-    public void writeToNBT(CompoundTag nbt) {
+    public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (!filters.isEmpty()) {
             ListTag filterTags = new ListTag();
+            RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
             for (FILTER filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
+                filterTags.add(BaseFilter.GENERIC_CODEC.encodeStart(serializationContext, filter).getOrThrow());
             }
             nbt.put(NBTConstants.FILTERS, filterTags);
         }
     }
 
-    public void readFromNBT(CompoundTag nbt) {
+    public void readFromNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         filters.clear();
         //Instantiate an empty cache for enabled filters so that when we add enabled filters
         // we can also add them to the enabled ones, and also overwrite our old cache
         enabledFilters = new ArrayList<>();
         NBTUtils.setListIfPresent(nbt, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
+            RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0, size = tagList.size(); i < size; i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                tryAddFilter(filter, false);
+                Optional<Pair<IFilter<?>, Tag>> result = BaseFilter.GENERIC_CODEC.decode(serializationContext, tagList.getCompound(i)).result();
+                //noinspection OptionalIsPresent - Capturing lambda
+                if (result.isPresent()) {
+                    tryAddFilter(result.get().getFirst(), false);
+                }
             }
         });
     }

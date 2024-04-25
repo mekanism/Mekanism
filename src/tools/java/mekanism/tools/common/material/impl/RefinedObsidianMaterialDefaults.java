@@ -3,6 +3,7 @@ package mekanism.tools.common.material.impl;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -44,7 +45,8 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         return 8;
     }
 
-    @Override
+    //TODO - 1.20.5: ??
+    //@Override
     public int getLevel() {
         return 4;
     }
@@ -60,7 +62,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getToughness() {
+    public float toughness() {
         return 5;
     }
 
@@ -69,17 +71,17 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 975;
             case LEGGINGS -> 1_125;
-            case CHESTPLATE -> 1_200;
+            case CHESTPLATE, BODY -> 1_200;
             case HELMET -> 825;
         };
     }
 
     @Override
-    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+    public int getDefense(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
             case BOOTS -> 5;
             case LEGGINGS -> 8;
-            case CHESTPLATE -> 12;
+            case CHESTPLATE, BODY -> 12;
             case HELMET -> 6;
         };
     }
@@ -104,7 +106,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public SoundEvent getEquipSound() {
+    public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
@@ -115,7 +117,7 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getKnockbackResistance() {
+    public float knockbackResistance() {
         return 0.2F;
     }
 }

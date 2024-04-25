@@ -39,6 +39,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -142,8 +143,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     @NotNull
     @Override
-    public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot,
+    public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new SawmillUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot,
               getComponents());
     }
 

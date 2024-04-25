@@ -11,8 +11,9 @@ import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,25 +102,25 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     }
 
     @Override
-    protected void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
+    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
     }
 
     @Override
-    protected void read(FriendlyByteBuf dataStream) {
+    protected void read(RegistryFriendlyByteBuf dataStream) {
         super.read(dataStream);
         this.color = dataStream.readEnum(EnumColor.class);
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeEnum(color);
     }

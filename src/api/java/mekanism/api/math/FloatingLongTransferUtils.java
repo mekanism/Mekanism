@@ -1,11 +1,11 @@
 package mekanism.api.math;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -29,7 +29,7 @@ public class FloatingLongTransferUtils {
      * @deprecated Please use {@link #insert(FloatingLong, Direction, Action, ToIntFunction, InContainerGetter, ContainerInteraction)} to avoid capturing lambdas.
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FloatingLong insert(FloatingLong stack, Action action, IntSupplier containerCount, Int2ObjectFunction<FloatingLong> inContainerGetter,
+    public static FloatingLong insert(FloatingLong stack, Action action, IntSupplier containerCount, IntFunction<FloatingLong> inContainerGetter,
           InsertFloatingLong insert) {
         if (stack.isZero()) {
             //Short circuit if nothing is actually being inserted

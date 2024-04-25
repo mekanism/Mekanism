@@ -64,6 +64,6 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
     }
 
     private String getSaveName(ItemRegistryObject<ItemUpgrade> upgrade) {
-        return upgrade.asItem().getUpgradeType(upgrade.getItemStack()).getRawName();
+        return upgrade.asItem().getUpgradeType(upgrade.getItemStack()).getSerializedName();
     }
 }

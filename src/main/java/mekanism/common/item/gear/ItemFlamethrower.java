@@ -1,12 +1,15 @@
 package mekanism.common.item.gear;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -19,13 +22,19 @@ import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -40,10 +49,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
 
@@ -57,7 +64,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
@@ -148,8 +155,13 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @Override
-    public AttachmentType<FlamethrowerMode> getModeAttachment() {
-        return MekanismAttachmentTypes.FLAMETHROWER_MODE.get();
+    public DataComponentType<FlamethrowerMode> getModeDataType() {
+        return MekanismDataComponents.FLAMETHROWER_MODE.get();
+    }
+
+    @Override
+    public FlamethrowerMode getDefaultMode() {
+        return FlamethrowerMode.COMBAT;
     }
 
     @Override
@@ -208,16 +220,21 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @NothingNullByDefault
-    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
+    public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent, StringRepresentable {
         COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
         INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);
 
-        private static final FlamethrowerMode[] MODES = values();
+        public static final Codec<FlamethrowerMode> CODEC = StringRepresentable.fromEnum(FlamethrowerMode::values);
+        public static final IntFunction<FlamethrowerMode> BY_ID = ByIdMap.continuous(FlamethrowerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, FlamethrowerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FlamethrowerMode::ordinal);
+
         private final ILangEntry langEntry;
+        private final String serializedName;
         private final EnumColor color;
 
         FlamethrowerMode(ILangEntry langEntry, EnumColor color) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.color = color;
         }
@@ -229,7 +246,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
 
         @Override
         public FlamethrowerMode byIndex(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

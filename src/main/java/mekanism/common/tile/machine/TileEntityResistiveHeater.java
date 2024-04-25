@@ -32,6 +32,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -139,15 +140,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public CompoundTag getConfigurationData(Player player) {
-        CompoundTag data = super.getConfigurationData(player);
+    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
+        CompoundTag data = super.getConfigurationData(provider, player);
         data.putString(NBTConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick().toString());
         return data;
     }
 
     @Override
-    public void setConfigurationData(Player player, CompoundTag data) {
-        super.setConfigurationData(player, data);
+    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
+        super.setConfigurationData(provider, player, data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
     }
 
@@ -161,15 +162,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putFloat(NBTConstants.SOUND_SCALE, soundScale);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SOUND_SCALE, value -> soundScale = value);
     }
 

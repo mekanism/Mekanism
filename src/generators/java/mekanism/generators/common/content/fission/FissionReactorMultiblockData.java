@@ -50,6 +50,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -247,14 +248,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag) {
-        super.readUpdateTag(tag);
+    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.readUpdateTag(tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
-        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
@@ -269,14 +270,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
+    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.writeUpdateTag(tag, provider);
         tag.putFloat(NBTConstants.SCALE, prevCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
         tag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundTag()));
+        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().saveOptional(provider));
         tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundTag()));
         tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundTag()));
         tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundTag()));

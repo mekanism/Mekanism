@@ -12,7 +12,6 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamageTrigger.TriggerInstance> {
@@ -38,7 +37,7 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
                                   boolean killed) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, JsonConstants.PLAYER).forGetter(TriggerInstance::player),
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
                     MekanismDamageTypes.CODEC.fieldOf(JsonConstants.DAMAGE).forGetter(TriggerInstance::damageType),
                     Codec.BOOL.fieldOf(JsonConstants.KILLED).forGetter(TriggerInstance::killed)
               ).apply(instance, TriggerInstance::new)

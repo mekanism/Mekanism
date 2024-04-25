@@ -29,6 +29,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +38,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
@@ -87,7 +87,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.setStack(result);
                     didProcess = true;
-                } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputSlot.getLimit(outputStack)) {
+                } else if (ItemStack.isSameItemSameComponents(outputStack, result) && outputStack.getCount() < outputSlot.getLimit(outputStack)) {
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.growStack(1, Action.EXECUTE);
                     didProcess = true;
@@ -167,15 +167,15 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
-        filterManager.writeToNBT(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
+        filterManager.writeToNBT(provider, dataMap);
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
-        filterManager.readFromNBT(dataMap);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
+        filterManager.readFromNBT(provider, dataMap);
     }
 
     @Override

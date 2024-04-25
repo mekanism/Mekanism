@@ -15,7 +15,9 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +62,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (isEmpty()) {
-            if (isLocked() && !ItemHandlerHelper.canItemStacksStack(lockStack, stack)) {
+            if (isLocked() && !ItemStack.isSameItemSameComponents(lockStack, stack)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return stack;
             } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
@@ -152,11 +154,10 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         if (isLocked()) {
-            CompoundTag stackTag = new CompoundTag();
-            lockStack.save(stackTag);
+            Tag stackTag = lockStack.save(provider);
             nbt.put(NBTConstants.LOCK_STACK, stackTag);
         }
         return nbt;
@@ -168,8 +169,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        NBTUtils.setItemStackOrEmpty(nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
-        super.deserializeNBT(nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        NBTUtils.setItemStackOrEmpty(provider, nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
+        super.deserializeNBT(provider, nbt);
     }
 }

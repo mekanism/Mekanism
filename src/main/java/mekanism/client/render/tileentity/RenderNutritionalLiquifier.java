@@ -77,7 +77,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             Pose entry = matrix.last();
             VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
             for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getQuads(tile.getLevel().random)) {
-                bladeBuffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
+                bladeBuffer.putBulkData(entry, quad, 1, 1, 1, 1, light, overlayLight);
             }
             matrix.popPose();
         }

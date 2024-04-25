@@ -1,8 +1,8 @@
 package mekanism.common.recipe;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -31,7 +31,7 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public abstract ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess);
+    public abstract ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider);
 
     @Override
     public boolean matches(CraftingContainer inv, Level world) {
@@ -46,8 +46,8 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
-        return internal.getResultItem(registryAccess);
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return internal.getResultItem(provider);
     }
 
     @Override
@@ -76,13 +76,13 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public int getRecipeWidth() {
-        return internal.getRecipeWidth();
+    public int getWidth() {
+        return internal.getWidth();
     }
 
     @Override
-    public int getRecipeHeight() {
-        return internal.getRecipeHeight();
+    public int getHeight() {
+        return internal.getHeight();
     }
 
     @Override

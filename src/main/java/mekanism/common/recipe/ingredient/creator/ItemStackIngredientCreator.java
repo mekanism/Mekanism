@@ -14,15 +14,20 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.ingredients.IngredientType;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.contents.PlainTextContents;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -30,7 +35,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     public static final ItemStackIngredientCreator INSTANCE = new ItemStackIngredientCreator();
 
-    private final Codec<ItemStackIngredient> CODEC = Codec.either(SingleItemStackIngredient.CODEC, MultiItemStackIngredient.CODEC)
+    private static final Codec<ItemStackIngredient> CODEC = Codec.either(SingleItemStackIngredient.CODEC, MultiItemStackIngredient.CODEC)
           .xmap(
                 either -> either.map(Function.identity(), multi -> {
                     //unbox if we only got one
@@ -46,6 +51,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                     return Either.right((MultiItemStackIngredient) stackIngredient);
                 }
           );
+    private static final StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> STREAM_CODEC = IngredientType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(InputIngredient::getType, type -> switch (type) {
+        case SINGLE -> SingleItemStackIngredient.STREAM_CODEC;
+        case MULTI -> MultiItemStackIngredient.STREAM_CODEC;
+        case TAGGED -> throw new IllegalStateException("Unable to process tagged item stack ingredients");
+    });
 
     private ItemStackIngredientCreator() {
     }
@@ -53,6 +63,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @Override
     public Codec<ItemStackIngredient> codec() {
         return CODEC;
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> streamCodec() {
+        return STREAM_CODEC;
     }
 
     @Override
@@ -65,15 +80,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             throw new IllegalArgumentException("ItemStackIngredients must have an amount of at least one. Received size was: " + amount);
         }
         return new SingleItemStackIngredient(ingredient, amount);
-    }
-
-    @Override
-    public ItemStackIngredient read(FriendlyByteBuf buffer) {
-        Objects.requireNonNull(buffer, "ItemStackIngredients cannot be read from a null packet buffer.");
-        return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
-            case MULTI -> createMulti(buffer.readArray(ItemStackIngredient[]::new, this::read));
-        };
     }
 
     /**
@@ -102,7 +108,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             }
         }
         //There should be more than a single item, or we would have split out earlier
-        return new MultiItemStackIngredient(cleanedIngredients.toArray(new SingleItemStackIngredient[0]));
+        return new MultiItemStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -114,10 +120,15 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     public static class SingleItemStackIngredient extends ItemStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static final Codec<SingleItemStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(i -> i.group(
+        public static final Codec<SingleItemStackIngredient> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(i -> i.group(
               Ingredient.CODEC.fieldOf(JsonConstants.INGREDIENT).forGetter(SingleItemStackIngredient::getInputRaw),
               ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
         ).apply(i, SingleItemStackIngredient::new)));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SingleItemStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> StreamCodec.composite(
+              Ingredient.CONTENTS_STREAM_CODEC, SingleItemStackIngredient::getInputRaw,
+              ByteBufCodecs.VAR_INT, SingleItemStackIngredient::getAmountRaw,
+              SingleItemStackIngredient::new
+        ));
 
         private final Ingredient ingredient;
         private final int amount;
@@ -189,25 +200,25 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
-            buffer.writeEnum(IngredientType.SINGLE);
-            ingredient.toNetwork(buffer);
-            buffer.writeVarInt(amount);
+        public IngredientType getType() {
+            return IngredientType.SINGLE;
         }
     }
 
     @NothingNullByDefault
     public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, SingleItemStackIngredient> {
 
-        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(
-              lst -> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])),
-              MultiItemStackIngredient::getIngredients
+        public static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(
+              MultiItemStackIngredient::new, MultiItemStackIngredient::getIngredients
+        );
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiItemStackIngredient> STREAM_CODEC = SingleItemStackIngredient.STREAM_CODEC.apply(ByteBufCodecs.list()).map(
+              MultiItemStackIngredient::new, MultiItemStackIngredient::getIngredients
         );
 
         private final SingleItemStackIngredient[] ingredients;
 
-        private MultiItemStackIngredient(SingleItemStackIngredient... ingredients) {
-            this.ingredients = ingredients;
+        private MultiItemStackIngredient(List<SingleItemStackIngredient> ingredients) {
+            this.ingredients = ingredients.toArray(new SingleItemStackIngredient[0]);
         }
 
         @Override
@@ -294,11 +305,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             return List.of(ingredients);
         }
 
-        @Override
-        public void write(FriendlyByteBuf buffer) {
-            buffer.writeEnum(IngredientType.MULTI);
-            buffer.writeArray(ingredients, (buf, ingredient) -> ingredient.write(buf));
-        }
 
         @Override
         public boolean equals(Object o) {
@@ -314,10 +320,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public int hashCode() {
             return Arrays.hashCode(ingredients);
         }
-    }
 
-    private enum IngredientType {
-        SINGLE,
-        MULTI
+        @Override
+        public IngredientType getType() {
+            return IngredientType.MULTI;
+        }
     }
 }

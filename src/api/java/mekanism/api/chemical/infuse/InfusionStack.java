@@ -78,7 +78,7 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
     }
 
     public static InfusionStack readFromPacket(FriendlyByteBuf buf) {
-        InfuseType infuseType = buf.readById(MekanismAPI.INFUSE_TYPE_REGISTRY);
+        InfuseType infuseType = buf.readById(MekanismAPI.INFUSE_TYPE_REGISTRY::byId);
         if (infuseType == null || infuseType.isEmptyType()) {
             return EMPTY;
         }

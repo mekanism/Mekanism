@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +27,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
+import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
@@ -63,8 +63,8 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -79,9 +79,10 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -98,15 +99,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -673,7 +673,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         //Try to simulate inserting into slots that are not currently empty
         for (int i = 0; i < slots; i++) {
             ItemCount cachedItem = cachedStacks.get(i);
-            if (cachedItem != null && ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
+            if (cachedItem != null && ItemStack.isSameItemSameComponents(stack, cachedItem.stack)) {
                 //Ensure that our stack can stack with the item that is already in the slot
                 IInventorySlot slot = mainSlots.get(i);
                 int limit = slot.getLimit(stack);
@@ -817,12 +817,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public static boolean isSavedReplaceTarget(ItemStack stack, Item target) {
         //This method is here to make it easier to maintain parity if we change the logic of isReplaceTarget
-        if (stack.getData(MekanismAttachmentTypes.INVERSE)) {
-            Item inverseReplaceTarget = stack.getData(MekanismAttachmentTypes.REPLACE_STACK);
+        if (stack.getOrDefault(MekanismDataComponents.INVERSE, false)) {
+            Item inverseReplaceTarget = stack.getOrDefault(MekanismDataComponents.REPLACE_STACK, Items.AIR);
             return inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
         }
-        return stack.getData(MekanismAttachmentTypes.FILTER_AWARE)
-              .anyEnabledMatch(MinerFilter.class, filter -> filter.replaceTargetMatches(target));
+        FilterAware filterAware = stack.get(MekanismDataComponents.FILTER_AWARE);
+        return filterAware != null && filterAware.anyEnabledMatch(MinerFilter.class, filter -> filter.replaceTargetMatches(target));
     }
 
     public boolean isReplaceTarget(Item target) {
@@ -844,12 +844,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         running = nbt.getBoolean(NBTConstants.RUNNING);
         delay = nbt.getInt(NBTConstants.DELAY);
         numPowering = nbt.getInt(NBTConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State::byIndexStatic, s -> {
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State.BY_ID, s -> {
             if (!initCalc && s == State.SEARCHING) {
                 //If we loaded and haven't started yet, but we were searching when we saved
                 // pretend we had finished searching so that we will start again on the first tick
@@ -872,15 +872,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putBoolean(NBTConstants.RUNNING, running);
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         NBTUtils.writeEnum(nbtTags, NBTConstants.STATE, searcher.state);
         if (!overflow.isEmpty()) {
             //Persist any items that are stored as overflow
-            nbtTags.put(NBTConstants.OVERFLOW, OverflowAware.writeOverflow(overflow));
+            nbtTags.put(NBTConstants.OVERFLOW, OverflowAware.writeOverflow(provider, overflow));
         }
     }
 
@@ -976,8 +976,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         dataMap.putInt(NBTConstants.RADIUS, getRadius());
         dataMap.putInt(NBTConstants.MIN, getMinY());
         dataMap.putInt(NBTConstants.MAX, getMaxY());
@@ -989,12 +989,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, inverseReplaceTarget);
         }
         dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        filterManager.writeToNBT(dataMap);
+        filterManager.writeToNBT(provider, dataMap);
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
         setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, newMinY -> {
             if (hasLevel() && !isRemote()) {
@@ -1016,14 +1016,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, inverse -> this.inverse = inverse);
         inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, Items.AIR);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
-        filterManager.readFromNBT(dataMap);
+        filterManager.readFromNBT(provider, dataMap);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
         // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
         // as opposed to the writeSustainedData method to ensure that configuration cards do not copy overflow data from one miner to another
         NBTUtils.setListIfPresent(dataMap, NBTConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
-            OverflowAware.readOverflow(overflow, overflowTag);
+            OverflowAware.readOverflow(provider, overflow, overflowTag);
             hasOverflow = !overflow.isEmpty();
             //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
             // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
@@ -1033,44 +1033,28 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.RADIUS, MekanismAttachmentTypes.RADIUS);
-        remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_Y);
-        remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_Y);
-        remap.put(NBTConstants.EJECT, MekanismAttachmentTypes.EJECT);
-        remap.put(NBTConstants.PULL, MekanismAttachmentTypes.PULL);
-        remap.put(NBTConstants.SILK_TOUCH, MekanismAttachmentTypes.SILK_TOUCH);
-        remap.put(NBTConstants.INVERSE, MekanismAttachmentTypes.INVERSE);
-        remap.put(NBTConstants.REPLACE_STACK, MekanismAttachmentTypes.REPLACE_STACK);
-        remap.put(NBTConstants.INVERSE_REQUIRES_REPLACE, MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
-        remap.put(NBTConstants.OVERFLOW, MekanismAttachmentTypes.OVERFLOW_AWARE);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.RADIUS, getRadius());
+        builder.set(MekanismDataComponents.MIN_Y, getMinY());
+        builder.set(MekanismDataComponents.MAX_Y, getMaxY());
+        builder.set(MekanismDataComponents.EJECT, doEject);
+        builder.set(MekanismDataComponents.PULL, doPull);
+        builder.set(MekanismDataComponents.SILK_TOUCH, getSilkTouch());
+        builder.set(MekanismDataComponents.INVERSE, inverse);
+        builder.set(MekanismDataComponents.REPLACE_STACK, inverseReplaceTarget);
+        builder.set(MekanismDataComponents.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        builder.set(MekanismDataComponents.OVERFLOW_AWARE, new OverflowAware(new Object2IntLinkedOpenHashMap<>(overflow)));
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.RADIUS, getRadius());
-        stack.setData(MekanismAttachmentTypes.MIN_Y, getMinY());
-        stack.setData(MekanismAttachmentTypes.MAX_Y, getMaxY());
-        stack.setData(MekanismAttachmentTypes.EJECT, doEject);
-        stack.setData(MekanismAttachmentTypes.PULL, doPull);
-        stack.setData(MekanismAttachmentTypes.SILK_TOUCH, getSilkTouch());
-        stack.setData(MekanismAttachmentTypes.INVERSE, inverse);
-        stack.setData(MekanismAttachmentTypes.REPLACE_STACK, inverseReplaceTarget);
-        stack.setData(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        stack.getData(MekanismAttachmentTypes.OVERFLOW_AWARE).setOverflow(overflow);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
         //TODO - 1.20.4: Can we deduplicate this code from the read sustained data?
         // maybe by using the tile data to attachment remap and then pass in a method that gets the proper object?
-        setRadius(Math.min(stack.getData(MekanismAttachmentTypes.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        int newMinY = stack.getData(MekanismAttachmentTypes.MIN_Y);
-        int newMaxY = stack.getData(MekanismAttachmentTypes.MAX_Y);
+        setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, radius), MekanismConfig.general.minerMaxRadius.get()));
+        int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, minY);
+        int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, minY);
         if (level != null && !isRemote()) {
             setMinY(Math.max(newMinY, level.getMinBuildHeight()));
             setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
@@ -1078,15 +1062,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             setMinY(newMinY);
             setMaxY(newMaxY);
         }
-        doEject = stack.getData(MekanismAttachmentTypes.EJECT);
-        doPull = stack.getData(MekanismAttachmentTypes.PULL);
-        setSilkTouch(stack.getData(MekanismAttachmentTypes.SILK_TOUCH));
-        inverse = stack.getData(MekanismAttachmentTypes.INVERSE);
-        inverseReplaceTarget = stack.getData(MekanismAttachmentTypes.REPLACE_STACK);
-        inverseRequiresReplacement = stack.getData(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
+        doEject = input.getOrDefault(MekanismDataComponents.EJECT, doEject);
+        doPull = input.getOrDefault(MekanismDataComponents.PULL, doPull);
+        setSilkTouch(input.getOrDefault(MekanismDataComponents.SILK_TOUCH, silkTouch));
+        inverse = input.getOrDefault(MekanismDataComponents.INVERSE, inverse);
+        inverseReplaceTarget = input.getOrDefault(MekanismDataComponents.REPLACE_STACK, inverseReplaceTarget);
+        inverseRequiresReplacement = input.getOrDefault(MekanismDataComponents.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         //Clear any existing overflow and read what is the actual overflow from the stack
         overflow.clear();
-        overflow.putAll(stack.getData(MekanismAttachmentTypes.OVERFLOW_AWARE).getOverflow());
+        overflow.putAll(input.getOrDefault(MekanismDataComponents.OVERFLOW_AWARE, OverflowAware.EMPTY).overflow());
         hasOverflow = !overflow.isEmpty();
         //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
         // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
@@ -1244,7 +1228,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         container.track(SyncableBoolean.create(this::getDoPull, value -> doPull = value));
         container.track(SyncableBoolean.create(this::isRunning, value -> running = value));
         container.track(SyncableBoolean.create(this::getSilkTouch, this::setSilkTouch));
-        container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
+        container.track(SyncableEnum.create(State.BY_ID, State.IDLE, () -> searcher.state, value -> searcher.state = value));
         container.track(SyncableInt.create(this::getToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
         container.track(SyncableBoolean.create(this::hasOverflow, value -> hasOverflow = value));
@@ -1262,8 +1246,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putInt(NBTConstants.RADIUS, getRadius());
         updateTag.putInt(NBTConstants.MIN, getMinY());
         updateTag.putInt(NBTConstants.MAX, getMaxY());
@@ -1271,8 +1255,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);

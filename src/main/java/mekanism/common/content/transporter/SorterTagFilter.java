@@ -1,18 +1,45 @@
 package mekanism.common.content.transporter;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import mekanism.api.NBTConstants;
+import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
+
+    public static final MapCodec<SorterTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
+          .and(Codec.STRING.fieldOf(NBTConstants.TAG_NAME).forGetter(SorterTagFilter::getTagName))
+          .apply(instance, SorterTagFilter::new));
+    public static final StreamCodec<ByteBuf, SorterTagFilter> STREAM_CODEC = StreamCodec.composite(
+          baseSorterStreamCodec(SorterTagFilter::new), Function.identity(),
+          ByteBufCodecs.STRING_UTF8, SorterTagFilter::getTagName,
+          (filter, tagName) -> {
+              filter.tagName = tagName;
+              return filter;
+          }
+    );
 
     private String tagName;
 
     public SorterTagFilter() {
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    protected SorterTagFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, Optional<EnumColor> color, String tagName) {
+        super(enabled, allowDefault, sizeMode, min, max, color.orElse(null));
+        this.tagName = tagName;
     }
 
     public SorterTagFilter(SorterTagFilter filter) {
@@ -23,31 +50,6 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     @Override
     public Finder getFinder() {
         return Finder.tag(tagName);
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeUtf(tagName);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        tagName = dataStream.readUtf();
     }
 
     @Override

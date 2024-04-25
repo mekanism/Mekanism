@@ -77,7 +77,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
                 setActive(true);
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 if (ticker % (2 * SharedConstants.TICKS_PER_SECOND) == 0) {//Every two seconds allow for a new vibration to be sent
-                    level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION.get(), worldPosition);
+                    level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION, worldPosition);
                 }
             } else {
                 setActive(false);

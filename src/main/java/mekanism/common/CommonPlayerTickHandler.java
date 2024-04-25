@@ -122,7 +122,7 @@ public class CommonPlayerTickHandler {
                     }
                     ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
                     if (player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-                        player.gameEvent(MekanismGameEvents.JETPACK_BURN.get());
+                        player.gameEvent(MekanismGameEvents.JETPACK_BURN);
                     }
                 }
             }

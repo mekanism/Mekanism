@@ -26,6 +26,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -148,20 +149,20 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof BinUpgradeData data) {
             redstone = data.redstone();
             BinInventorySlot previous = data.binSlot();
             binSlot.setStack(previous.getStack());
             binSlot.setLockStack(previous.getLockStack());
         } else {
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
         }
     }
 
     @NotNull
     @Override
-    public BinUpgradeData getUpgradeData() {
+    public BinUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new BinUpgradeData(redstone, getBinSlot());
     }
 
@@ -175,16 +176,16 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+        updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT(provider));
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(provider, nbt));
     }
 
     //Methods relating to IComputerTile

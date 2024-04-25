@@ -51,10 +51,10 @@ jobs:
             build/neoForm
             ~/.gradle
             .gradle
-      - name: Set up JDK 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: 21
           distribution: 'temurin'
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 

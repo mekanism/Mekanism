@@ -12,7 +12,7 @@ import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformati
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.ItemRobit;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import net.minecraft.client.Minecraft;
@@ -90,7 +90,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
                     }
                     registryAccess = level.registryAccess();
                 }
-                ResourceKey<RobitSkin> skinKey = stack.getData(MekanismAttachmentTypes.ROBIT_SKIN);
+                ResourceKey<RobitSkin> skinKey = stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE);
                 SkinLookup skinLookup = MekanismRobitSkins.lookup(registryAccess, skinKey);
                 RobitSkin skin = skinLookup.skin();
                 if (skin.customModel() != null) {

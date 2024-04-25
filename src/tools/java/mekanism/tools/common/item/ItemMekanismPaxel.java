@@ -1,7 +1,5 @@
 package mekanism.tools.common.item;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -24,8 +22,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -33,7 +31,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -41,11 +41,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
 public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttributeRefresher {
@@ -62,25 +60,30 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
     private final AttributeCache attributeCache;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material, material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
+        //TODO - 1.20.5: Figure this out
+        super(Tiers.IRON, properties);
+        //super(material, material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
+        //TODO - 1.20.5: Figure this out
+        super(Tiers.IRON, properties);
+        //super(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
         this.material = material;
         //Don't add the material's damage as a listener as the vanilla component is not configurable
         this.attributeCache = new AttributeCache(this, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, world, tooltip, flag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
-    @Override
+    //TODO - 1.20.5: ??
+    //@Override
     public float getAttackDamage() {
         return material.getPaxelDamage() + getTier().getAttackDamageBonus();
     }
@@ -141,7 +144,7 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
             }
             world.setBlock(blockpos, resultToSet, Block.UPDATE_ALL_IMMEDIATE);
             if (player != null) {
-                stack.hurtAndBreak(1, player, onBroken -> onBroken.broadcastBreakEvent(context.getHand()));
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);
@@ -163,25 +166,29 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
         return material.getPaxelMaxUses();
     }
 
-    @Override
-    public boolean canBeDepleted() {
-        return material.getPaxelMaxUses() > 0;
-    }
-
     @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? attributeCache.get() : ImmutableMultimap.of();
+    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+        return attributeCache.get();
     }
 
     @Override
-    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getPaxelAtkSpeed(), Operation.ADDITION));
+    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_DAMAGE,
+              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_SPEED,
+              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getPaxelAtkSpeed(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
     }
 
     // Need to override both method as DiggerItem performs two different behaviors
-    @Override
+    //TODO - 1.20.5: Figure this out
+    /*@Override
     public boolean isCorrectToolForDrops(BlockState state) {
         return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
     }
@@ -189,5 +196,5 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         return this.isCorrectToolForDrops(state);
-    }
+    }*/
 }

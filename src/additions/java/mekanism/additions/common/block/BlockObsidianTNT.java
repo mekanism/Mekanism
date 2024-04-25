@@ -99,7 +99,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         return false;
     }
 

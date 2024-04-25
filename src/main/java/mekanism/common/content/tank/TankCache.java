@@ -4,6 +4,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class TankCache extends MultiblockCache<TankMultiblockData> {
@@ -17,8 +18,8 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     }
 
     @Override
-    public void apply(TankMultiblockData data) {
-        super.apply(data);
+    public void apply(HolderLookup.Provider provider, TankMultiblockData data) {
+        super.apply(provider, data);
         data.editMode = editMode;
     }
 
@@ -29,14 +30,14 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     }
 
     @Override
-    public void load(CompoundTag nbtTags) {
-        super.load(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
+    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.load(provider, nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override
-    public void save(CompoundTag nbtTags) {
-        super.save(nbtTags);
+    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.save(provider, nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.EDIT_MODE, editMode);
     }
 }

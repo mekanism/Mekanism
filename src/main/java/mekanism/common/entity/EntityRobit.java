@@ -66,9 +66,9 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
@@ -83,6 +83,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -272,15 +273,15 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         //Default before it has a brief chance to get set the owner to mekanism's fake player
-        entityData.define(OWNER_UUID, Mekanism.gameProfile.getId());
-        entityData.define(OWNER_NAME, "");
-        entityData.define(SECURITY, SecurityMode.PUBLIC);
-        entityData.define(FOLLOW, false);
-        entityData.define(DROP_PICKUP, false);
-        entityData.define(SKIN, MekanismRobitSkins.BASE);
+        builder.define(OWNER_UUID, Mekanism.gameProfile.getId());
+        builder.define(OWNER_NAME, "");
+        builder.define(SECURITY, SecurityMode.PUBLIC);
+        builder.define(FOLLOW, false);
+        builder.define(DROP_PICKUP, false);
+        builder.define(SKIN, MekanismRobitSkins.BASE);
     }
 
     private FloatingLong getRoundedTravelEnergy() {
@@ -376,7 +377,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                         }
                         ItemStack itemStack = slot.getStack();
                         int maxSize = slot.getLimit(itemStack);
-                        if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
+                        if (ItemStack.isSameItemSameComponents(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
                             int needed = maxSize - itemStack.getCount();
                             int toAdd = Math.min(needed, item.getItem().getCount());
                             MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
@@ -468,16 +469,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ContainerType.ITEM.copyTo(getInventorySlots(null), stack);
+        ContainerType.ITEM.copyTo(level().registryAccess(), getInventorySlots(null), stack);
         if (hasCustomName()) {
-            stack.setData(MekanismAttachmentTypes.ROBIT_NAME, getName());
+            stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }
         ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
         }
-        stack.setData(MekanismAttachmentTypes.ROBIT_SKIN, getSkin());
+        stack.set(MekanismDataComponents.ROBIT_SKIN, getSkin());
         return stack;
     }
 
@@ -504,6 +505,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
+        HolderLookup.Provider provider = registryAccess();
         nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
         NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, getSecurityMode());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
@@ -515,8 +517,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 nbtTags.put(NBTConstants.HOME_LOCATION, result.get());
             }
         }
-        ContainerType.ITEM.saveTo(nbtTags, getInventorySlots(null));
-        ContainerType.ENERGY.saveTo(nbtTags, getEnergyContainers(null));
+        ContainerType.ITEM.saveTo(provider, nbtTags, getInventorySlots(null));
+        ContainerType.ENERGY.saveTo(provider, nbtTags, getEnergyContainers(null));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         NBTUtils.writeResourceKey(nbtTags, NBTConstants.SKIN, getSkin());
     }
@@ -524,13 +526,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
+        HolderLookup.Provider provider = registryAccess();
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, this::setSecurityMode);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result().orElse(null));
-        ContainerType.ITEM.readFrom(nbtTags, getInventorySlots(null));
-        ContainerType.ENERGY.readFrom(nbtTags, getEnergyContainers(null));
+        ContainerType.ITEM.readFrom(provider, nbtTags, getInventorySlots(null));
+        ContainerType.ENERGY.readFrom(provider, nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));

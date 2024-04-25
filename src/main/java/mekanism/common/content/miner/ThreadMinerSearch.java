@@ -1,15 +1,18 @@
 package mekanism.common.content.miner;
 
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import java.util.BitSet;
+import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit.ExcavationMode;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
@@ -17,6 +20,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.block.BedBlock;
@@ -127,7 +133,8 @@ public class ThreadMinerSearch extends Thread {
         PAUSED(MekanismLang.MINER_PAUSED),
         FINISHED(MekanismLang.MINER_READY);
 
-        private static final State[] MODES = values();
+        public static final IntFunction<State> BY_ID = ByIdMap.continuous(State::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, State> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, State::ordinal);
 
         private final ILangEntry langEntry;
 
@@ -138,10 +145,6 @@ public class ThreadMinerSearch extends Thread {
         @Override
         public Component getTextComponent() {
             return langEntry.translate();
-        }
-
-        public static State byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

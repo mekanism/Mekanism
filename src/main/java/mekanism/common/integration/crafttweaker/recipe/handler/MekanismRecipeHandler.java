@@ -15,6 +15,7 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -62,13 +63,12 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -168,19 +168,24 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     @Nullable
-    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized) {
-        if (serialized.isJsonObject()) {
-            return basicImplicitIngredient(vanillaIngredient, amount, serialized.getAsJsonObject());
-        }
-        return null;
+    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount) {
+        return basicImplicitIngredient(vanillaIngredient, amount, false);
     }
 
     @Nullable
-    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonObject serializedIngredient) {
-        if (vanillaIngredient.getClass() == Ingredient.class && serializedIngredient.has(JsonConstants.TAG)) {
+    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, boolean skipTags) {
+        Optional<JsonElement> result = Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, vanillaIngredient).result().filter(JsonElement::isJsonObject);
+        if (result.isEmpty()) {
+            return null;
+        }
+        JsonObject serializedIngredient = result.get().getAsJsonObject();
+        if (serializedIngredient.has(JsonConstants.TAG)) {
+            if (skipTags) {
+                return null;
+            }
             KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
             return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
-        } else if (vanillaIngredient.synchronizeWithContents() || vanillaIngredient instanceof NBTIngredient) {
+        } else if (vanillaIngredient.isSimple() || vanillaIngredient.getCustomIngredient() instanceof DataComponentIngredient) {//TODO - 1.20.5: Is this even necessary/useful anymore?
             //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
             // we also handle any ingredients that are synchronized by just writing their contents
             // as then we can build a grouped ingredient for them
@@ -195,10 +200,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     private String convertIngredient(ItemStackIngredient ingredient) {
         if (ingredient instanceof SingleItemStackIngredient single) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
             Ingredient vanillaIngredient = single.getInputRaw();
-            int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
-            String rep = basicImplicitIngredient(vanillaIngredient, amount, serialized.get(JsonConstants.INGREDIENT));
+            int amount = single.getAmountRaw();
+            String rep = basicImplicitIngredient(vanillaIngredient, amount);
             if (rep == null) {
                 rep = IIngredient.fromIngredient(vanillaIngredient).getCommandString();
                 if (amount > 1) {
@@ -217,11 +221,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     private String convertIngredient(FluidStackIngredient ingredient) {
         if (ingredient instanceof SingleFluidStackIngredient singleFluidStackIngredient) {
             return IFluidStack.of(singleFluidStackIngredient.getInputRaw()).getCommandString();
-        } else if (ingredient instanceof TaggedFluidStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
+        } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
             //Note: Handled via implicit casts
-            return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
-                  .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
+            return CrTUtils.fluidTags().tag(tagged.getTag()).withAmount(tagged.getRawAmount()).getCommandString();
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             return convertMultiIngredient(CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }
@@ -234,10 +236,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
             //Note: Handled via implicit casts
             return convertParam(singleChemicalStackIngredient.getChemicalInstance());
-        } else if (ingredient instanceof TaggedChemicalStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            KnownTag<CHEMICAL> tag = tagManager.tag(serialized.get(JsonConstants.TAG).getAsString());
-            long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
+        } else if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
+            KnownTag<CHEMICAL> tag = tagManager.tag(tagged.getTag());
+            long amount = tagged.getRawAmount();
             if (amount > 0 && amount <= Integer.MAX_VALUE) {
                 //Note: Handled via implicit casts
                 return tag.withAmount((int) amount).getCommandString();

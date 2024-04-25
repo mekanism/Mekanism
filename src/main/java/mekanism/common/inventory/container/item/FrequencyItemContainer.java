@@ -9,7 +9,8 @@ import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,7 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     private List<FREQ> publicCache = Collections.emptyList();
     private List<FREQ> privateCache = Collections.emptyList();
     private List<FREQ> trustedCache = Collections.emptyList();
-    private FrequencyAware<FREQ> frequencyAware;
+    private FREQ freq;
 
     protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(type, id, inv, hand, stack);
@@ -30,10 +31,11 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
         return hand;
     }
 
+    protected abstract FrequencyType<FREQ> getFrequencyType();
+
     @Nullable
     public FREQ getFrequency() {
-        //Should not be null, but if it is, don't crash
-        return frequencyAware == null ? null : frequencyAware.getFrequency();
+        return freq;
     }
 
     public List<FREQ> getPublicCache() {
@@ -51,10 +53,19 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
-        frequencyAware = (FrequencyAware<FREQ>) stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
-        FrequencyType<FREQ> frequencyType = frequencyAware.getFrequencyType();
-        track(SyncableFrequency.create(frequencyAware));
-        if (isRemote()) {
+        FrequencyType<FREQ> frequencyType = getFrequencyType();
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyType);
+        if (frequencyComponent != null) {
+            //Note: It should never be null, but we check just in case
+            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+            if (frequencyAware != null) {
+                //Start it out at what the value on the stack is
+                freq = frequencyAware.getFrequency(stack, frequencyComponent);
+            }
+            //TODO - 1.20.5: Test this still works properly
+            track(SyncableFrequency.create(frequencyType, this::getFrequency, f -> freq = f));
+        }
+        if (getLevel().isClientSide()) {
             //Client side sync handling
             track(SyncableFrequencyList.create(frequencyType, this::getPublicCache, value -> publicCache = value));
             track(SyncableFrequencyList.create(frequencyType, this::getPrivateCache, value -> privateCache = value));

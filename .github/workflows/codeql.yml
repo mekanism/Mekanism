@@ -2,9 +2,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "1.20.4" ]
+    branches: [ "1.20.5" ]
   pull_request:
-    branches: [ "1.20.4" ]
+    branches: [ "1.20.5" ]
     types:
       - synchronize
       - opened
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3

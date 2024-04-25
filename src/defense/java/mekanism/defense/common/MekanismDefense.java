@@ -45,7 +45,7 @@ public class MekanismDefense implements IModModule {
         DefenseContainerTypes.CONTAINER_TYPES.register(modEventBus);
         DefenseTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 
-        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
     }
 

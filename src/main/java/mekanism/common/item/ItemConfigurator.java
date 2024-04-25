@@ -1,14 +1,17 @@
 package mekanism.common.item;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -26,7 +29,7 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -39,8 +42,13 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +61,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,8 +75,8 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, world, tooltip, flag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
@@ -199,12 +206,17 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public AttachmentType<ConfiguratorMode> getModeAttachment() {
-        return MekanismAttachmentTypes.CONFIGURATOR_MODE.get();
+    public DataComponentType<ConfiguratorMode> getModeDataType() {
+        return MekanismDataComponents.CONFIGURATOR_MODE.get();
+    }
+
+    @Override
+    public ConfiguratorMode getDefaultMode() {
+        return ConfiguratorMode.CONFIGURATE_ITEMS;
     }
 
     @NothingNullByDefault
-    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent, IRadialMode {
+    public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent, IRadialMode, StringRepresentable {
         CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true, null),
         CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true, null),
@@ -217,7 +229,11 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "rotate.png")),
         WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "wrench.png"));
 
-        private static final ConfiguratorMode[] MODES = values();
+        public static final Codec<ConfiguratorMode> CODEC = StringRepresentable.fromEnum(ConfiguratorMode::values);
+        public static final IntFunction<ConfiguratorMode> BY_ID = ByIdMap.continuous(ConfiguratorMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, ConfiguratorMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ConfiguratorMode::ordinal);
+
+        private final String serializedName;
         private final ILangEntry langEntry;
         @Nullable
         private final TransmissionType transmissionType;
@@ -226,6 +242,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         private final ResourceLocation icon;
 
         ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating, @Nullable ResourceLocation icon) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.transmissionType = transmissionType;
             this.color = color;
@@ -262,7 +279,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @NotNull
         @Override
         public ConfiguratorMode byIndex(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
 
         @NotNull
@@ -275,6 +292,11 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         @Override
         public ResourceLocation icon() {
             return icon;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

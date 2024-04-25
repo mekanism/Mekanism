@@ -56,6 +56,7 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -64,7 +65,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,18 +103,18 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv) {
         super(type.get(), id);
         this.inv = inv;
-        if (!isRemote()) {
+        if (!getLevel().isClientSide()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
             selectedWindows = new HashMap<>(1);
         }
     }
 
-    public boolean isRemote() {
-        return inv.player.level().isClientSide;
-    }
-
     public UUID getPlayerUUID() {
         return inv.player.getUUID();
+    }
+
+    public Level getLevel() {
+        return inv.player.level();
     }
 
     @NotNull
@@ -174,7 +177,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
             }
-            SelectedWindowData selectedWindow = isRemote() ? getSelectedWindow() : getSelectedWindow(getPlayerUUID());
+            SelectedWindowData selectedWindow = getLevel().isClientSide() ? getSelectedWindow() : getSelectedWindow(getPlayerUUID());
             return insertableSlot.exists(selectedWindow) && super.canTakeItemForPickAll(stack, slot);
         }
         return super.canTakeItemForPickAll(stack, slot);
@@ -641,11 +644,11 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (data instanceof SyncableByteArray syncable) {
             syncable.set(value);
         } else if (data instanceof SyncableFrequency<?> syncable) {
-            syncable.set(value);
+            syncable.set(getLevel().registryAccess(), value);
         } else if (data instanceof SyncableList<?> syncable) {
-            syncable.set(value);
+            syncable.set(getLevel().registryAccess(), value);
         } else if (data instanceof SyncableCollection<?> syncable) {
-            syncable.set(value);
+            syncable.set(getLevel().registryAccess(), value);
         } else {
             Mekanism.logger.error("Unknown byte value type: {}, please report", data.getClass().getName());
         }
@@ -667,15 +670,16 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (inv.player instanceof ServerPlayer player) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();
+            RegistryAccess registryAccess = player.level().registryAccess();
             for (short i = 0; i < trackedData.size(); i++) {
                 ISyncableData data = trackedData.get(i);
                 DirtyType dirtyType = data.isDirty();
                 if (dirtyType != DirtyType.CLEAN) {
-                    dirtyData.add(data.getPropertyData(i, dirtyType));
+                    dirtyData.add(data.getPropertyData(registryAccess, i, dirtyType));
                 }
             }
             if (!dirtyData.isEmpty()) {
-                PacketUtils.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
+                PacketDistributor.sendToPlayer(player, new PacketUpdateContainer((short) containerId, dirtyData));
             }
         }
     }
@@ -690,16 +694,17 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (inv.player instanceof ServerPlayer player) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();
+            RegistryAccess registryAccess = player.level().registryAccess();
             for (short i = 0; i < syncableData.size(); i++) {
                 ISyncableData data = syncableData.get(i);
                 //Query if the data is dirty or not so that we update our last known value to the initial values
                 data.isDirty();
                 //And then add the property data as if it was dirty regardless of if it was in case the value is the same as the default
                 // as the client may not actually know about it
-                dirtyData.add(data.getPropertyData(propertyIndex.apply(i), DirtyType.DIRTY));
+                dirtyData.add(data.getPropertyData(registryAccess, propertyIndex.apply(i), DirtyType.DIRTY));
             }
             if (!dirtyData.isEmpty()) {
-                PacketUtils.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);
+                PacketDistributor.sendToPlayer(player, new PacketUpdateContainer((short) containerId, dirtyData));
             }
         }
     }

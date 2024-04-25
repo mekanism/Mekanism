@@ -1,9 +1,18 @@
 package mekanism.common.network.to_client.container.property;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public class BooleanPropertyData extends PropertyData {
+
+    public static final StreamCodec<ByteBuf, BooleanPropertyData> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.SHORT, PropertyData::getProperty,
+          ByteBufCodecs.BOOL, data -> data.value,
+          BooleanPropertyData::new
+    );
 
     private final boolean value;
 
@@ -15,11 +24,5 @@ public class BooleanPropertyData extends PropertyData {
     @Override
     public void handleWindowProperty(MekanismContainer container) {
         container.handleWindowProperty(getProperty(), value);
-    }
-
-    @Override
-    public void writeToPacket(FriendlyByteBuf buffer) {
-        super.writeToPacket(buffer);
-        buffer.writeBoolean(value);
     }
 }

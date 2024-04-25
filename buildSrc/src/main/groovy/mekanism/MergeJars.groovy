@@ -24,7 +24,7 @@ class MergeJars {
 
     static List<String> getGeneralPathsToExclude(Project project, List<SourceSet> sourceSets) {
         List<String> toExclude = new ArrayList<>()
-        toExclude.add('META-INF/mods.toml')
+        toExclude.add('META-INF/neoforge.mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
         //This file doesn't exist until compile time
         toExclude.add('META-INF/services/mekanism.common.integration.computer.IComputerMethodRegistry')
@@ -57,7 +57,7 @@ class MergeJars {
     }
 
     static void merge(Project project, List<SourceSet> sourceSets) {
-        //Generate folders, merge the access transformers and mods.toml files
+        //Generate folders, merge the access transformers and neoforge.mods.toml files
         project.mkdir("$project.buildDir/generated/META-INF")
         mergeBasic(project, sourceSets, 'META-INF/accesstransformer.cfg', (text, fileText) -> text + "\n" + fileText)
         mergeModsTOML(project, sourceSets)
@@ -77,7 +77,7 @@ class MergeJars {
     static List<Closure> getGeneratedClosures(Map<String, ?> versionProperties) {
         List<Closure> generated = new ArrayList<>()
         generated.add({ CopySpec c ->
-            c.include('META-INF/mods.toml')
+            c.include('META-INF/neoforge.mods.toml')
             c.expand(versionProperties)
         })
         generated.add({ CopySpec c ->
@@ -87,7 +87,7 @@ class MergeJars {
     }
 
     private static void mergeModsTOML(Project project, List<SourceSet> sourceSets) {
-        mergeBasic(project, sourceSets, 'META-INF/mods.toml', (text, fileText) -> {
+        mergeBasic(project, sourceSets, 'META-INF/neoforge.mods.toml', (text, fileText) -> {
             //Add all but the first four lines (which are duplicated between the files)
             String[] lines = fileText.split("\n")
             for (int i = 4; i < lines.length; i++) {

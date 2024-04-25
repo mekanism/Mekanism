@@ -4,69 +4,69 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.attachment.AttachmentType;
 
 //TODO - 1.20.4: Somehow represent this recipe in JEI??
 @NothingNullByDefault
 public class ClearConfigurationRecipe extends CustomRecipe {
 
     //TODO: Evaluate supporting some of these in some sort of generic way in RecipeUpgradeType?
-    private static final Set<Holder<AttachmentType<?>>> CLEARABLE_ATTACHMENTS = Util.make(new HashSet<>(), set -> {
-        set.add(MekanismAttachmentTypes.EDIT_MODE);
-        set.add(MekanismAttachmentTypes.DUMP_MODE);
-        set.add(MekanismAttachmentTypes.SECONDARY_DUMP_MODE);
-        set.add(MekanismAttachmentTypes.REDSTONE_CONTROL);
-        set.add(MekanismAttachmentTypes.REDSTONE_OUTPUT);
-        set.add(MekanismAttachmentTypes.TRANSPORTER_COLOR);
-        set.add(MekanismAttachmentTypes.BUCKET_MODE);
-        set.add(MekanismAttachmentTypes.ROTARY_MODE);
-        set.add(MekanismAttachmentTypes.AUTO);
-        set.add(MekanismAttachmentTypes.SORTING);
-        set.add(MekanismAttachmentTypes.EJECT);
-        set.add(MekanismAttachmentTypes.PULL);
-        set.add(MekanismAttachmentTypes.ROUND_ROBIN);
-        set.add(MekanismAttachmentTypes.SINGLE_ITEM);
-        set.add(MekanismAttachmentTypes.FUZZY);
-        set.add(MekanismAttachmentTypes.SILK_TOUCH);
-        set.add(MekanismAttachmentTypes.INVERSE);
-        set.add(MekanismAttachmentTypes.INVERSE_REQUIRES_REPLACE);
-        set.add(MekanismAttachmentTypes.FROM_RECIPE);
-        set.add(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
-        set.add(MekanismAttachmentTypes.RADIUS);
-        set.add(MekanismAttachmentTypes.MIN_Y);
-        set.add(MekanismAttachmentTypes.MAX_Y);
-        set.add(MekanismAttachmentTypes.DELAY);
-        set.add(MekanismAttachmentTypes.LONG_AMOUNT);
-        set.add(MekanismAttachmentTypes.MIN_THRESHOLD);
-        set.add(MekanismAttachmentTypes.MAX_THRESHOLD);
-        set.add(MekanismAttachmentTypes.EJECTOR);
-        set.add(MekanismAttachmentTypes.SIDE_CONFIG);
-        set.add(MekanismAttachmentTypes.REPLACE_STACK);
-        set.add(MekanismAttachmentTypes.ITEM_TARGET);
-        set.add(MekanismAttachmentTypes.STABILIZER_CHUNKS);
-        set.add(MekanismAttachmentTypes.FILTER_AWARE);
-        set.add(MekanismAttachmentTypes.CONFIGURATION_DATA);
+    private static final Set<Holder<DataComponentType<?>>> CLEARABLE_ATTACHMENTS = Util.make(new HashSet<>(), set -> {
+        set.add(MekanismDataComponents.EDIT_MODE);
+        set.add(MekanismDataComponents.DUMP_MODE);
+        set.add(MekanismDataComponents.SECONDARY_DUMP_MODE);
+        set.add(MekanismDataComponents.REDSTONE_CONTROL);
+        set.add(MekanismDataComponents.REDSTONE_OUTPUT);
+        set.add(MekanismDataComponents.COLOR);
+        set.add(MekanismDataComponents.BUCKET_MODE);
+        set.add(MekanismDataComponents.ROTARY_MODE);
+        set.add(MekanismDataComponents.AUTO);
+        set.add(MekanismDataComponents.SORTING);
+        set.add(MekanismDataComponents.EJECT);
+        set.add(MekanismDataComponents.PULL);
+        set.add(MekanismDataComponents.ROUND_ROBIN);
+        set.add(MekanismDataComponents.SINGLE_ITEM);
+        set.add(MekanismDataComponents.FUZZY);
+        set.add(MekanismDataComponents.SILK_TOUCH);
+        set.add(MekanismDataComponents.INVERSE);
+        set.add(MekanismDataComponents.INVERSE_REQUIRES_REPLACE);
+        set.add(MekanismDataComponents.FROM_RECIPE);
+        set.add(MekanismDataComponents.INSERT_INTO_FREQUENCY);
+        set.add(MekanismDataComponents.RADIUS);
+        set.add(MekanismDataComponents.MIN_Y);
+        set.add(MekanismDataComponents.MAX_Y);
+        set.add(MekanismDataComponents.DELAY);
+        set.add(MekanismDataComponents.LONG_AMOUNT);
+        set.add(MekanismDataComponents.MIN_THRESHOLD);
+        set.add(MekanismDataComponents.MAX_THRESHOLD);
+        set.add(MekanismDataComponents.EJECTOR);
+        set.add(MekanismDataComponents.SIDE_CONFIG);
+        set.add(MekanismDataComponents.REPLACE_STACK);
+        set.add(MekanismDataComponents.ITEM_TARGET);
+        set.add(MekanismDataComponents.STABILIZER_CHUNKS);
+        set.add(MekanismDataComponents.FILTER_AWARE);
+        set.add(MekanismDataComponents.CONFIGURATION_DATA);
 
-        set.add(MekanismAttachmentTypes.HEAT_CAPACITORS);
+        set.add(MekanismDataComponents.HEAT_CAPACITORS);
         //TODO: Do we want to clear frequencies?
-        //set.add(MekanismAttachmentTypes.FREQUENCY_AWARE);
-        //set.add(MekanismAttachmentTypes.FREQUENCY_COMPONENT);
+        //set.add(MekanismDataComponents.FREQUENCY_AWARE);
+        //set.add(MekanismDataComponents.FREQUENCY_COMPONENT);
     });
 
     @SafeVarargs
-    public static void addAttachments(Holder<AttachmentType<?>>... attachments) {
-        Collections.addAll(CLEARABLE_ATTACHMENTS, attachments);
+    public static void addAttachments(Holder<DataComponentType<?>>... components) {
+        Collections.addAll(CLEARABLE_ATTACHMENTS, components);
     }
 
     public ClearConfigurationRecipe(CraftingBookCategory category) {
@@ -81,8 +81,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
             return false;
         }
         //Only match the recipe if it has at least one attachment that we can clear
-        for (Holder<AttachmentType<?>> clearableAttachment : CLEARABLE_ATTACHMENTS) {
-            if (target.hasData(clearableAttachment.value())) {
+        for (Holder<DataComponentType<?>> clearableAttachment : CLEARABLE_ATTACHMENTS) {
+            if (target.has(clearableAttachment.value())) {
                 return true;
             }
         }
@@ -90,7 +90,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer container, HolderLookup.Provider provider) {
         ItemStack target = getTargetStack(container);
         if (target.isEmpty()) {
             //If we didn't find a singular block item our recipe can't possibly match
@@ -98,8 +98,8 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         }
         ItemStack output = target.copyWithCount(1);
         //Only match the recipe if it has at least one attachment that we can clear
-        for (Holder<AttachmentType<?>> clearableAttachment : CLEARABLE_ATTACHMENTS) {
-            output.removeData(clearableAttachment.value());
+        for (Holder<DataComponentType<?>> clearableAttachment : CLEARABLE_ATTACHMENTS) {
+            output.remove(clearableAttachment.value());
         }
         return output;
     }
@@ -110,16 +110,15 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         for (int i = 0, slots = container.getContainerSize(); i < slots; ++i) {
             ItemStack stackInSlot = container.getItem(i);
             if (!stackInSlot.isEmpty()) {
-                if (stackInSlot.hasAttachments()) {
-                    if (!target.isEmpty()) {
-                        //If we already have a stack, then this is not a valid recipe match
-                        return ItemStack.EMPTY;
-                    }
-                    target = stackInSlot;
-                } else {
-                    //We currently only want to target block items that have at least one attachment
+                if (stackInSlot.getComponents().isEmpty()) {
+                    //We currently only want to target block items that have at least one component
                     return ItemStack.EMPTY;
                 }
+                if (!target.isEmpty()) {
+                    //If we already have a stack, then this is not a valid recipe match
+                    return ItemStack.EMPTY;
+                }
+                target = stackInSlot;
             }
         }
         return target;

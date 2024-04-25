@@ -1,10 +1,9 @@
 package mekanism.api.inventory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an "item type" for comparing {@link ItemStack ItemStack's} without size.
@@ -57,10 +56,6 @@ public interface IHashedItem {
      *
      * @apiNote Do not modify the returned tag.
      */
-    @Nullable
-    default CompoundTag getInternalTag() {
-        return getInternalStack().getTag();
-    }
 
     /**
      * Helper to serialize the attachments of the internal {@link ItemStack} that backs this item type.
@@ -69,8 +64,8 @@ public interface IHashedItem {
      *
      * @since 10.5.0
      */
-    @Nullable
-    default CompoundTag serializeAttachments() {
-        return getInternalStack().serializeAttachments();
+    //TODO - 1.20.5: Docs and re-evaluate this
+    default DataComponentMap getInternalComponents() {
+        return getInternalStack().getComponents();
     }
 }

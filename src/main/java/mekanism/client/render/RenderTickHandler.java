@@ -82,12 +82,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
@@ -190,8 +190,8 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderCrosshair(RenderGuiOverlayEvent.Pre event) {
-        if (event.getOverlay() == VanillaGuiOverlay.CROSSHAIR.type() && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
+    public void renderCrosshair(RenderGuiLayerEvent.Pre event) {
+        if (event.getName().equals(VanillaGuiLayers.CROSSHAIR) && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
             //Hide the crosshair if we have a radial menu open and are drawing the back button
             event.setCanceled(true);
         }
@@ -325,7 +325,9 @@ public class RenderTickHandler {
                 flameYCoord -= 0.65;
                 flameZCoord -= 0.15;
             } else if (vehicle != null) {
-                flameYCoord -= player.getMyRidingOffset(vehicle) + 0.1;
+                //TODO - 1.20.5: Should we also be updating the x and z based on the attachment point?
+                Vec3 attachmentPoint = player.getVehicleAttachmentPoint(vehicle);
+                flameYCoord -= attachmentPoint.y + 0.1;
             }
             flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(player.yBodyRot);
         }

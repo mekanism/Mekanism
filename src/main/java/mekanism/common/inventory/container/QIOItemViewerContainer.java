@@ -51,6 +51,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -179,7 +180,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void openInventory(@NotNull Inventory inv) {
         super.openInventory(inv);
-        if (isRemote()) {
+        if (getLevel().isClientSide()) {
             Mekanism.packetHandler().requestQIOData();
         }
     }
@@ -393,7 +394,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
         sortItemList();
         if (!searchQuery.isEmpty()) {
-            updateSearch(searchQuery);
+            updateSearch(getLevel(), searchQuery);
         }
     }
 
@@ -499,9 +500,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return stack;
     }
 
-    public void updateSearch(String queryText) {
+    public void updateSearch(@Nullable Level level, String queryText) {
         // searches should only be updated on the client-side
-        if (!isRemote() || itemList == null) {
+        if (level == null || !level.isClientSide() || itemList == null) {
             return;
         }
         searchQuery = queryText;
@@ -510,7 +511,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             searchList = new ArrayList<>();
             ISearchQuery query = SearchQueryParser.parse(queryText);
             for (IScrollableSlot slot : itemList) {
-                if (query.test(slot.item().getInternalStack())) {
+                if (query.test(level, slot.item().getInternalStack())) {
                     searchList.add(slot);
                 }
             }

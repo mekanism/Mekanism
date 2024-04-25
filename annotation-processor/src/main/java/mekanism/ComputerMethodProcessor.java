@@ -23,7 +23,7 @@ import mekanism.builder.ComputerHandlerBuilder;
  * <p>
  * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper, a manually triggered full rebuild should catch it.
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_17)
+@SupportedSourceVersion(SourceVersion.RELEASE_21)
 @SupportedAnnotationTypes({
       MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
       MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,

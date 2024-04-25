@@ -1,6 +1,8 @@
 package mekanism.common.attachments;
 
-import java.util.Objects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -9,51 +11,48 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
+import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class BlockData implements INBTSerializable<CompoundTag> {
+public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntityTag) {
 
-    public static BlockData create(BlockState state, @Nullable BlockEntity blockEntity) {
-        return new BlockData(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata());
-    }
+    public static final Codec<BlockData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          BlockState.CODEC.fieldOf(NBTConstants.STATE).forGetter(BlockData::blockState),
+          CompoundTag.CODEC.optionalFieldOf(NBTConstants.BE_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
+    ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
+    //TODO - 1.20.5: Test this and see if there is a proper stream codec for block states
+    public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.TRUSTED_COMPOUND_TAG, data -> (CompoundTag) BlockState.CODEC.encodeStart(NbtOps.INSTANCE, data.blockState()).getOrThrow(),
+          ByteBufCodecs.optional(ByteBufCodecs.TRUSTED_COMPOUND_TAG), data -> Optional.ofNullable(data.blockEntityTag()),
+          (state, tag) -> new BlockData(BlockState.CODEC.parse(NbtOps.INSTANCE, state).result().orElseThrow(), tag.orElse(null))
+    );
 
-    public static BlockData create() {
-        return new BlockData(Blocks.AIR.defaultBlockState(), null);
-    }
-
-    private BlockState blockState;
-    @Nullable
-    private CompoundTag blockEntityTag;
-
-    private BlockData(BlockState state, @Nullable CompoundTag blockEntityTag) {
-        this.blockState = state;
-        this.blockEntityTag = blockEntityTag;
+    public BlockData(HolderLookup.Provider provider, BlockState state, @Nullable BlockEntity blockEntity) {
+        this(state, blockEntity == null ? null : blockEntity.saveWithFullMetadata(provider));
     }
 
     public boolean tryPlaceIntoWorld(Level level, BlockPos pos, @Nullable Player player) {
@@ -92,7 +91,7 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
             //And get the block entity and load it from the data
             BlockEntity tile = WorldUtils.getTileEntity(level, pos);
             if (tile != null) {
-                tile.load(blockEntityTag);
+                tile.loadWithComponents(blockEntityTag, level.registryAccess());
             }
         }
         if (tryPickup != null) {
@@ -117,9 +116,9 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
                           .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
                           .ifPresent(consumer);
                 } else if (block instanceof DecoratedPotBlock) {
-                    DecoratedPotBlockEntity.Decorations decorations = DecoratedPotBlockEntity.Decorations.load(blockEntityTag);
+                    PotDecorations decorations = PotDecorations.load(blockEntityTag);
                     //Copy from DecoratedPotBlock#appendHoverText
-                    if (!decorations.equals(DecoratedPotBlockEntity.Decorations.EMPTY)) {
+                    if (!decorations.equals(PotDecorations.EMPTY)) {
                         consumer.accept(MekanismLang.BLOCK_ENTITY_DECORATION.translateColored(EnumColor.INDIGO));
                         Stream.of(decorations.front(), decorations.left(), decorations.right(), decorations.back())
                               .map(decoration -> MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration))
@@ -128,39 +127,5 @@ public final class BlockData implements INBTSerializable<CompoundTag> {
                 }
             }
         }
-    }
-
-    public boolean isCompatible(BlockData other) {
-        if (other == this) {
-            return true;
-        }
-        return blockState == other.blockState && Objects.equals(blockEntityTag, other.blockEntityTag);
-    }
-
-    @Nullable
-    @Override
-    public CompoundTag serializeNBT() {
-        if (blockState.isAir()) {
-            return null;
-        }
-        CompoundTag nbt = NbtUtils.writeBlockState(blockState);
-        if (blockEntityTag != null) {
-            nbt.put(NBTConstants.BE_TAG, blockEntityTag);
-        }
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        blockState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), nbt);
-        NBTUtils.setCompoundIfPresent(nbt, NBTConstants.BE_TAG, tag -> blockEntityTag = tag);
-    }
-
-    @Nullable
-    public BlockData copy(IAttachmentHolder holder) {
-        if (blockState.isAir()) {
-            return null;
-        }
-        return new BlockData(blockState, blockEntityTag == null ? null : blockEntityTag.copy());
     }
 }

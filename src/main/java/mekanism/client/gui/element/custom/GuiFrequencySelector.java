@@ -254,7 +254,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         default void sendColorUpdate(boolean next) {
             FREQ freq = getFrequency();
             if (freq != null) {
-                PacketUtils.sendToServer(new PacketSetFrequencyColor<>(freq, next));
+                PacketUtils.sendToServer(new PacketSetFrequencyColor(freq, next));
             }
         }
     }
@@ -274,7 +274,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         }
 
         private void sendSetFrequency(FrequencyIdentity identity, boolean set) {
-            PacketUtils.sendToServer(new PacketSetTileFrequency<>(set, getFrequencyType(), identity, getTileEntity().getBlockPos()));
+            PacketUtils.sendToServer(new PacketSetTileFrequency(set, getFrequencyType(), identity, getTileEntity().getBlockPos()));
         }
 
         @Nullable
@@ -314,7 +314,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         }
 
         private void sendSetFrequency(FrequencyIdentity identity, boolean set) {
-            PacketUtils.sendToServer(new PacketSetItemFrequency<>(set, getFrequencyType(), identity, getFrequencyContainer().getHand()));
+            PacketUtils.sendToServer(new PacketSetItemFrequency(set, getFrequencyType(), identity, getFrequencyContainer().getHand()));
         }
 
         @Nullable

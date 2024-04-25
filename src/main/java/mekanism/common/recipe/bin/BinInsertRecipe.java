@@ -9,8 +9,9 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
@@ -46,7 +47,7 @@ public class BinInsertRecipe extends BinRecipe {
                     binStack = stackInSlot;
                 } else if (foundType.isEmpty()) {
                     foundType = stackInSlot;
-                } else if (!ItemHandlerHelper.canItemStacksStack(foundType, stackInSlot)) {
+                } else if (!ItemStack.isSameItemSameComponents(foundType, stackInSlot)) {
                     //If we have types that don't stack in the grid at once,
                     // then we cannot combine them both into the bin
                     return false;
@@ -64,7 +65,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();
@@ -81,7 +82,7 @@ public class BinInsertRecipe extends BinRecipe {
                     continue;
                 } else if (foundType.isEmpty()) {
                     foundType = stackInSlot;
-                } else if (!ItemHandlerHelper.canItemStacksStack(foundType, stackInSlot)) {
+                } else if (!ItemStack.isSameItemSameComponents(foundType, stackInSlot)) {
                     //If we have types that don't stack in the grid at once,
                     // then we cannot combine them both into the bin
                     return ItemStack.EMPTY;
@@ -116,7 +117,7 @@ public class BinInsertRecipe extends BinRecipe {
             }
         }
         //TODO: I think we can just skip this when handling it as a SpecialQIORecipe
-        binStack.setData(MekanismAttachmentTypes.FROM_RECIPE, true);
+        binStack.set(MekanismDataComponents.FROM_RECIPE, true);
         return binStack;
     }
 
@@ -139,7 +140,7 @@ public class BinInsertRecipe extends BinRecipe {
                     continue;
                 } else if (foundType.isEmpty()) {
                     foundType = stackInSlot;
-                } else if (!ItemHandlerHelper.canItemStacksStack(foundType, stackInSlot)) {
+                } else if (!ItemStack.isSameItemSameComponents(foundType, stackInSlot)) {
                     //If we have types that don't stack in the grid at once,
                     // then we cannot combine them both into the bin
                     return remainingItems;
@@ -183,7 +184,7 @@ public class BinInsertRecipe extends BinRecipe {
         ItemStack result = event.getCrafting();
         if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin) {
             //Remove the marker that the bin was crafted from a bin recipe
-            Boolean fromRecipe = result.removeData(MekanismAttachmentTypes.FROM_RECIPE);
+            Boolean fromRecipe = result.remove(MekanismDataComponents.FROM_RECIPE);
             if (fromRecipe != null && fromRecipe) {
                 //And if it was try to move extra items from the container into it
                 BinInventorySlot slot = convertToSlot(result);
@@ -193,7 +194,7 @@ public class BinInsertRecipe extends BinRecipe {
                     for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
                         ItemStack stack = craftingMatrix.getItem(i);
                         //Check remaining items
-                        if (stack.getCount() > 1 && ItemHandlerHelper.canItemStacksStack(storedStack, stack)) {
+                        if (stack.getCount() > 1 && ItemStack.isSameItemSameComponents(storedStack, stack)) {
                             //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
                             ItemStack toInsert = stack.copyWithCount(stack.getCount() - 1);
                             ItemStack remaining = slot.insertItem(toInsert, Action.EXECUTE, AutomationType.MANUAL);

@@ -168,7 +168,7 @@ public class GearConfig extends BaseMekanismConfig {
         disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The bonus attack damage of the Atomic Disassembler when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
               .defineInRange("maxDamage", 20, 1, 10_000));
         disassemblerAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Atomic Disassembler.")
-              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.value().getDefaultValue(), 100));
         disassemblerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
               "maxEnergy", FloatingLong.createConst(1_000_000));
         disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
@@ -296,7 +296,7 @@ public class GearConfig extends BaseMekanismConfig {
         mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base bonus damage applied by the Meka-Tool without using any energy.")
               .defineInRange("baseDamage", 4, 0, 100_000));
         mekaToolAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Meka-Tool.")
-              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.value().getDefaultValue(), 100));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
               .defineInRange("baseEfficiency", 4, 0.1, 100));
         mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",
@@ -359,17 +359,17 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
         mekaSuitHelmetArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Helmets.")
-              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
+              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.value().defense().get(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
         mekaSuitBodyArmorArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit BodyArmor.")
-              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.CHESTPLATE), 0, Integer.MAX_VALUE));
+              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.value().defense().get(ArmorItem.Type.CHESTPLATE), 0, Integer.MAX_VALUE));
         mekaSuitPantsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Pants.")
-              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.LEGGINGS), 0, Integer.MAX_VALUE));
+              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.value().defense().get(ArmorItem.Type.LEGGINGS), 0, Integer.MAX_VALUE));
         mekaSuitBootsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Boots.")
-              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.BOOTS), 0, Integer.MAX_VALUE));
+              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.value().defense().get(ArmorItem.Type.BOOTS), 0, Integer.MAX_VALUE));
         mekaSuitToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the MekaSuit.")
-              .defineInRange("toughness", ArmorMaterials.NETHERITE.getToughness(), 0, Float.MAX_VALUE));
+              .defineInRange("toughness", ArmorMaterials.NETHERITE.value().toughness(), 0, Float.MAX_VALUE));
         mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
-              .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.getKnockbackResistance(), 0, Float.MAX_VALUE));
+              .defineInRange("knockbackResistance", ArmorMaterials.NETHERITE.value().knockbackResistance(), 0, Float.MAX_VALUE));
         builder.push(MEKASUIT_DAMAGE_CATEGORY);
         mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));

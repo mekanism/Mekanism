@@ -207,7 +207,7 @@ def setupTasks(SourceSet sourceSet) {
         outputs.upToDateWhen { false }
         def modsToml = copySpec {
             from(sourceSet.resources) {
-                include "META-INF/mods.toml"
+                include "META-INF/neoforge.mods.toml"
                 expand versionProperties
             }
         }
@@ -234,7 +234,7 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure { ProcessResources process ->
         setGroup("process resources")
         process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-        process.exclude('META-INF/mods.toml')
+        process.exclude('META-INF/neoforge.mods.toml')
         process.from("${projectDir}") { include 'logo.png' }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
@@ -274,7 +274,8 @@ project.base.archivesName = "Mekanism"
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of("${java_version}"))
-        vendor.set(JvmVendorSpec.JETBRAINS)
+        //TODO - 1.20.5: Figure out why jetbrains jdk isn't found by foojay when requesting java 21 even though they have a release for JDK 21
+        //vendor.set(JvmVendorSpec.JETBRAINS)
     }
     withSourcesJar()
 }
@@ -424,16 +425,17 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == "jei" || recipe_viewer == "hybrid") {
-        runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+        //TODO - 1.20.5: Re-enable when JEI updates
+        //runtimeOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
 
     if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
-        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}")
     }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
@@ -448,14 +450,16 @@ dependencies {
         transitive = false
     }*/
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    runtimeOnly("curse.maven:jade-324717:${jade_id}")
+    //TODO - 1.20.5: Re-enable when Jade updates
+    //runtimeOnly("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
-    implementation("com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}")
+    //TODO - 1.20.5: Switch back to implementation when it updates
+    compileOnly("com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}")
     //TODO - 1.20.2: move back to implementation
     compileOnly("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -464,15 +468,17 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
     //runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
-    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
-    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
+    //TODO - 1.20.5: Switch back to datagenMainImplementation
+    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
+    //TODO - 1.20.5: Switch back to datagenMainImplementation
+    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
+    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
+    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation

@@ -12,7 +12,7 @@ public interface IBabyEntity {
 
     //COPY of Zombie SPEED_MODIFIER_BABY_UUID and SPEED_MODIFIER_BABY
     UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.MULTIPLY_BASE);
+    AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.ADD_MULTIPLIED_BASE);
 
     default void setChild(EntityDataAccessor<Boolean> childParameter, boolean child) {
         LivingEntity entity = (LivingEntity) this;

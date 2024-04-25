@@ -1,9 +1,10 @@
 package mekanism.common.inventory.container.sync;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,18 +12,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
 
-    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(Int2ObjectFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter,
+    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(IntFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter,
           Consumer<@NotNull ENUM> setter) {
         return new SyncableEnum<>(decoder, defaultValue, getter, setter);
     }
 
-    private final Int2ObjectFunction<ENUM> decoder;
+    private final IntFunction<ENUM> decoder;
     private final Supplier<@NotNull ENUM> getter;
     private final Consumer<@NotNull ENUM> setter;
     @NotNull
     private ENUM lastKnownValue;
 
-    private SyncableEnum(Int2ObjectFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter, Consumer<@NotNull ENUM> setter) {
+    private SyncableEnum(IntFunction<ENUM> decoder, @NotNull ENUM defaultValue, Supplier<@NotNull ENUM> getter, Consumer<@NotNull ENUM> setter) {
         this.decoder = decoder;
         this.lastKnownValue = defaultValue;
         this.getter = getter;
@@ -51,7 +52,7 @@ public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
     }
 
     @Override
-    public IntPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public IntPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new IntPropertyData(property, get().ordinal());
     }
 }

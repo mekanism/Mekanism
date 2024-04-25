@@ -24,8 +24,6 @@ class MultiLineTooltip extends Tooltip {
         super(message.get(0), narration.get(0));
         this.message = message;
         this.narration = narration;
-        //Set the delay to -1 so that it appears immediately instead of after a single millisecond
-        setDelay(-1);
     }
 
     @Override

@@ -50,6 +50,7 @@ import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -212,9 +213,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @NotNull
     @Override
-    public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot, energySlot,
-              inputSlot, outputSlot, getComponents());
+    public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot,
+              energySlot, inputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
@@ -233,14 +234,14 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         usedSoFar = nbt.getLong(NBTConstants.USED_SO_FAR);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putLong(NBTConstants.USED_SO_FAR, usedSoFar);
     }
 

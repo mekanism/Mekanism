@@ -15,20 +15,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -252,26 +258,62 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void deserialize(CompoundTag frequencyNBT) {
-        if (securityFrequency != null) {
-            deserializeFrequency(frequencyNBT, FrequencyType.SECURITY, securityFrequency);
-        }
-        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-            FrequencyType<?> type = entry.getKey();
-            deserializeFrequency(frequencyNBT, type, entry.getValue());
+    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        //TODO - 1.20.5: Implement this
+    }
+
+    @Override
+    public void collectImplicitComponents(DataComponentMap.Builder builder) {
+        if (hasCustomFrequencies()) {
+            CompoundTag serializedComponent = serialize();
+            if (serializedComponent.contains(FrequencyType.SECURITY.getName(), Tag.TAG_COMPOUND)) {
+                //Don't persist security frequency to items as that is instead stored from the security component to the SecurityObject
+                serializedComponent.remove(FrequencyType.SECURITY.getName());
+            }
+            builder.set(MekanismDataComponents.FREQUENCY_COMPONENT, serializedComponent);
+            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+                collectFrequencyComponents(builder, entry.getKey(), entry.getValue());
+            }
         }
     }
 
-    private static void deserializeFrequency(CompoundTag frequencyNBT, FrequencyType<?> type, FrequencyData frequencyData) {
+    private <FREQ extends Frequency> void collectFrequencyComponents(DataComponentMap.Builder builder, FrequencyType<FREQ> type, FrequencyData frequencyData) {
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
+        if (frequencyComponent != null) {
+            builder.set(frequencyComponent, new FrequencyAware<>((FREQ) frequencyData.selectedFrequency));
+            //TODO: Do we want to support multiple frequency types each having a colored frequency?
+            if (frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
+                //TODO - 1.20.5: Validate the item is IColoredItem???
+                builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
+            }
+        }
+    }
+
+    @Override
+    public void deserialize(CompoundTag frequencyNBT, HolderLookup.Provider provider) {
+        if (securityFrequency != null) {
+            deserializeFrequency(provider, frequencyNBT, FrequencyType.SECURITY, securityFrequency);
+        }
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            FrequencyType<?> type = entry.getKey();
+            deserializeFrequency(provider, frequencyNBT, type, entry.getValue());
+        }
+    }
+
+    private static void deserializeFrequency(HolderLookup.Provider provider, CompoundTag frequencyNBT, FrequencyType<?> type, FrequencyData frequencyData) {
         if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-            Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
+            Frequency frequency = type.create(provider, frequencyNBT.getCompound(type.getName()));
             frequency.setValid(false);
             frequencyData.setFrequency(frequency);
         }
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
+        return serialize();
+    }
+
+    private CompoundTag serialize() {
         CompoundTag frequencyNBT = new CompoundTag();
         if (securityFrequency != null) {
             serializeFrequency(securityFrequency, frequencyNBT);
@@ -382,7 +424,7 @@ public class TileComponentFrequency implements ITileComponent {
         Consumer<@NotNull List<FREQ>> trustedSetter = getSetter(SecurityMode.TRUSTED, type);
 
         //Simplify out the is remote check. Note: It is important the client and server trackers are in the same order
-        if (container.isRemote()) {
+        if (container.getLevel().isClientSide()) {
             container.track(SyncableFrequencyList.create(type, () -> getPublicCache(type), publicSetter));
             container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), privateSetter));
             container.track(SyncableFrequencyList.create(type, () -> getTrustedCache(type), trustedSetter));

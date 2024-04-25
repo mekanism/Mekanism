@@ -10,6 +10,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,20 +27,19 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
         if (tile == null) {
-            return InteractionResult.PASS;
+            //No tile, we can just skip trying to use without an item
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, tile);
+            return genericClientActivated(stack, tile);
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
-        if (wrenchResult != InteractionResult.PASS) {
+        ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult.result() != InteractionResult.PASS) {
             return wrenchResult;
         }
-        ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (tile.addBlade(true)) {
@@ -65,6 +65,6 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                 }
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

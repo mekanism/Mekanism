@@ -1,10 +1,9 @@
 package mekanism.common.lib.attribute;
 
-import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import java.util.List;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public interface IAttributeRefresher {
 
-    void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder);
+    void addToBuilder(List<ItemAttributeModifiers.Entry> builder);
 }

@@ -25,6 +25,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
@@ -116,8 +117,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    public void read(@NotNull CompoundTag nbtTags) {
-        super.read(nbtTags);
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
         if (nbtTags.contains(NBTConstants.ENERGY_STORED, Tag.TAG_STRING)) {
             try {
                 lastWrite = FloatingLong.parseFloatingLong(nbtTags.getString(NBTConstants.ENERGY_STORED));
@@ -132,8 +133,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
         }
@@ -217,8 +218,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag) {
-        super.handleContentsUpdateTag(network, tag);
+    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
     }

@@ -18,9 +18,9 @@ public class GeneratorsModules {
 
     //Helmet
     public static final ModuleRegistryObject<ModuleSolarRechargingUnit> SOLAR_RECHARGING_UNIT = MODULES.register("solar_recharging_unit",
-          ModuleSolarRechargingUnit::new, () -> GeneratorsItems.MODULE_SOLAR_RECHARGING.asItem(), builder -> builder.maxStackSize(8).rarity(Rarity.RARE));
+          ModuleSolarRechargingUnit::new, () -> GeneratorsItems.MODULE_SOLAR_RECHARGING.asItem(), builder -> builder.maxStackSize(8));
 
     //Pants
     public static final ModuleRegistryObject<ModuleGeothermalGeneratorUnit> GEOTHERMAL_GENERATOR_UNIT = MODULES.register("geothermal_generator_unit",
-          ModuleGeothermalGeneratorUnit::new, () -> GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR.asItem(), builder -> builder.maxStackSize(8).rarity(Rarity.RARE));
+          ModuleGeothermalGeneratorUnit::new, () -> GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR.asItem(), builder -> builder.maxStackSize(8));
 }

@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.qio;
 
+import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -7,32 +8,33 @@ import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("qio_take");
-
-    public PacketQIOItemViewerSlotTake(FriendlyByteBuf buffer) {
-        this(buffer.readUUID(), buffer.readVarInt());
-    }
+    public static final CustomPacketPayload.Type<PacketQIOItemViewerSlotTake> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("qio_take"));
+    public static final StreamCodec<ByteBuf, PacketQIOItemViewerSlotTake> STREAM_CODEC = StreamCodec.composite(
+          UUIDUtil.STREAM_CODEC, PacketQIOItemViewerSlotTake::typeUUID,
+          ByteBufCodecs.VAR_INT, PacketQIOItemViewerSlotTake::count,
+          PacketQIOItemViewerSlotTake::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketQIOItemViewerSlotTake> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class);
-        if (container != null) {
+    public void handle(IPayloadContext context) {
+        if (context.player().containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
                 HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
@@ -61,11 +63,5 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeUUID(typeUUID);
-        buffer.writeVarInt(count);
     }
 }

@@ -36,7 +36,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
@@ -46,6 +47,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -375,7 +377,7 @@ public final class MekanismUtils {
     }
 
     public static BlockHitResult rayTrace(Player player, ClipContext.Fluid fluidMode) {
-        return rayTrace(player, player.getBlockReach(), fluidMode);
+        return rayTrace(player, player.blockInteractionRange(), fluidMode);
     }
 
     public static BlockHitResult rayTrace(Player player, double reach) {
@@ -408,21 +410,27 @@ public final class MekanismUtils {
      * @apiNote Only call on the client.
      */
     public static void addFrequencyItemTooltip(ItemStack stack, List<Component> tooltip) {
-        if (stack.isEmpty()) {//Note: This shouldn't be empty, but we validate it just in case
+        if (stack.isEmpty() || !(stack.getItem() instanceof IFrequencyItem frequencyItem)) {//Note: This shouldn't be empty, but we validate it just in case
             return;
         }
-        FrequencyAware<?> frequencyAware = stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
-        FrequencyIdentity identity = frequencyAware.getIdentity();
-        if (identity != null) {
-            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
-            UUID ownerUUID = frequencyAware.getOwner();
-            if (ownerUUID != null) {
-                String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyAware.getOwner(), null);
-                if (owner != null) {
-                    tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+        DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyItem.getFrequencyType());
+        if (frequencyComponent == null) {
+            return;
+        }
+        FrequencyAware<?> frequencyAware = stack.get(frequencyComponent);
+        if (frequencyAware != null) {
+            FrequencyIdentity identity = frequencyAware.identity().orElse(null);
+            if (identity != null) {
+                tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
+                UUID ownerUUID = frequencyAware.getOwner();
+                if (ownerUUID != null) {
+                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyAware.getOwner(), null);
+                    if (owner != null) {
+                        tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+                    }
                 }
+                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.securityMode()));
             }
-            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.securityMode()));
         }
     }
 
@@ -528,7 +536,7 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().builtInRegistryHolder().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().getDelegate().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
     /**
@@ -537,7 +545,7 @@ public final class MekanismUtils {
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
         if (reapply && !entity.level().isClientSide) {
-            MobEffect effect = effectInstance.getEffect();
+            MobEffect effect = effectInstance.getEffect().value();
             effect.removeAttributeModifiers(entity.getAttributes());
             effect.addAttributeModifiers(entity.getAttributes(), effectInstance.getAmplifier());
             entity.refreshDirtyAttributes();
@@ -546,7 +554,7 @@ public final class MekanismUtils {
             entity.sendEffectToPassengers(effectInstance);
         }
         if (entity instanceof ServerPlayer player) {
-            player.connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance));
+            player.connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance, false));
             CriteriaTriggers.EFFECTS_CHANGED.trigger(player, null);
         }
     }

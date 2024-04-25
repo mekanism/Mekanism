@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -92,16 +93,27 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return InteractionResult.FAIL;
         }
         BlockState mainState = world.getBlockState(mainPos);
         //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return mainState.getBlock().use(mainState, world, mainPos, player, hand, hit);
+        return mainState.useWithoutItem(world, player, hit.withPosition(mainPos));
+    }
+
+    @NotNull
+    @Override
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return ItemInteractionResult.FAIL;
+        }
+        BlockState mainState = world.getBlockState(mainPos);
+        //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
+        return mainState.useItemOn(stack, world, player, hand, hit.withPosition(mainPos));
     }
 
     @Override
@@ -205,7 +217,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
-            world.getBlockState(mainPos).neighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
+            world.getBlockState(mainPos).handleNeighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
         }
     }
 
@@ -340,7 +352,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
         return false;
     }

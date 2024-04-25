@@ -80,8 +80,12 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
     }
 
     public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
+        return registerModule(moduleDataSupplier, Rarity.COMMON);
+    }
+
+    public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier, Rarity rarity) {
         //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
-        return register("module_" + moduleDataSupplier.getName(), () -> ModuleHelper.get().createModuleItem(moduleDataSupplier, new Item.Properties()));
+        return register("module_" + moduleDataSupplier.getName(), () -> ModuleHelper.get().createModuleItem(moduleDataSupplier, new Item.Properties().rarity(rarity)));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerItem(String name, Function<Item.Properties, ITEM> sup) {

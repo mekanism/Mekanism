@@ -12,6 +12,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.lib.MekanismSavedData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -26,14 +27,14 @@ class PersonalStorageData extends MekanismSavedData {
         return inventoriesById.computeIfAbsent(id, unused -> createInventory());
     }
 
-    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
+    PersonalStorageItemInventory addInventory(HolderLookup.Provider provider, UUID id, List<IInventorySlot> contents) {
         PersonalStorageItemInventory inventory = inventoriesById.get(id);
         if (inventory == null) {
             inventory = createInventory();
             inventoriesById.put(id, inventory);
             List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
             for (int i = 0, slots = contents.size(); i < slots; i++) {
-                inventorySlots.get(i).deserializeNBT(contents.get(i).serializeNBT());
+                inventorySlots.get(i).deserializeNBT(provider, contents.get(i).serializeNBT(provider));
             }
             setDirty();
         }
@@ -62,23 +63,23 @@ class PersonalStorageData extends MekanismSavedData {
      * }
      */
     @Override
-    public void load(@NotNull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         ListTag entries = nbt.getList(NBTConstants.DATA, Tag.TAG_COMPOUND);
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag entry = entries.getCompound(i);
             PersonalStorageItemInventory inv = createInventory();
-            ContainerType.ITEM.readFrom(entry, inv.getInventorySlots(null));
+            ContainerType.ITEM.readFrom(provider, entry, inv.getInventorySlots(null));
             inventoriesById.put(entry.getUUID(NBTConstants.PERSONAL_STORAGE_ID), inv);
         }
     }
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
         ListTag entries = new ListTag();
         for (Entry<UUID, PersonalStorageItemInventory> entry : inventoriesById.entrySet()) {
             CompoundTag nbtEntry = new CompoundTag();
             nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, entry.getKey());
-            ContainerType.ITEM.saveTo(nbtEntry, entry.getValue().getInventorySlots(null));
+            ContainerType.ITEM.saveTo(provider, nbtEntry, entry.getValue().getInventorySlots(null));
             entries.add(nbtEntry);
         }
         compoundTag.put(NBTConstants.DATA, entries);
@@ -86,13 +87,13 @@ class PersonalStorageData extends MekanismSavedData {
     }
 
     @Override
-    public void save(File file) {
+    public void save(File file, @NotNull HolderLookup.Provider provider) {
         if (isDirty()) {
             File folder = file.getParentFile();
             if (!folder.exists() && !folder.mkdirs()) {
                 Mekanism.logger.error("Could not create personal storage directory, saves may fail");
             }
         }
-        super.save(file);
+        super.save(file, provider);
     }
 }

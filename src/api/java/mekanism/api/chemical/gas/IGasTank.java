@@ -3,6 +3,7 @@ package mekanism.api.chemical.gas;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -18,7 +19,7 @@ public interface IGasTank extends IChemicalTank<Gas, GasStack>, IEmptyGasProvide
     }
 
     @Override
-    default void deserializeNBT(CompoundTag nbt) {
+    default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         if (nbt.contains(NBTConstants.STORED, Tag.TAG_COMPOUND)) {
             setStackUnchecked(GasStack.readFromNBT(nbt.getCompound(NBTConstants.STORED)));
         }

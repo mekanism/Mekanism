@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,23 +56,23 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         if (lastColor != null) {
             NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, lastColor);
         }
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
-        lastColor = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(dataMap.getInt(NBTConstants.COLOR)) : null;
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
+        lastColor = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(dataMap.getInt(NBTConstants.COLOR)) : null;
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         if (lastColor != null) {
             NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, lastColor);
         }
@@ -79,9 +80,9 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        EnumColor color = tag.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR)) : null;
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        EnumColor color = tag.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(tag.getInt(NBTConstants.COLOR)) : null;
         if (lastColor != color) {
             lastColor = color;
             WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());

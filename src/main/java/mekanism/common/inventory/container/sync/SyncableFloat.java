@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.common.network.to_client.container.property.FloatPropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling floats
@@ -24,7 +25,7 @@ public abstract class SyncableFloat implements ISyncableData {
     }
 
     @Override
-    public FloatPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public FloatPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new FloatPropertyData(property, get());
     }
 

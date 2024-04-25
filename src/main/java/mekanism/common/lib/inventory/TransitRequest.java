@@ -209,14 +209,8 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
         @Override
         public int hashCode() {
-            int code = 1;
-            code = 31 * code + inserted.getItem().hashCode();
+            int code = ItemStack.hashItemAndComponents(inserted);
             code = 31 * code + inserted.getCount();
-            if (inserted.hasTag()) {
-                code = 31 * code + inserted.getTag().hashCode();
-            }
-            //Note: We intentionally do not include attachments in the hashcode as we don't want to have to serialize them every time,
-            // and they will be caught by the equals check
             code = 31 * code + slotData.hashCode();
             return code;
         }

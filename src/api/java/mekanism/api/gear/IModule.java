@@ -43,17 +43,6 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean isEnabled();
 
     /**
-     * Checks if this module is equivalent to another one.
-     *
-     * @param other Module to compare to
-     *
-     * @return {@code true} If this module can be considered equivalent and compatible with the other module.
-     *
-     * @since 10.5.0
-     */
-    boolean isCompatible(IModule<?> other);
-
-    /**
      * {@return the config item with the given name}
      *
      * @param name Config to look up.

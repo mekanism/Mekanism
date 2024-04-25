@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync;
 import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import mekanism.api.functions.ByteSupplier;
 import mekanism.common.network.to_client.container.property.BytePropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling bytes
@@ -24,7 +25,7 @@ public abstract class SyncableByte implements ISyncableData {
     }
 
     @Override
-    public BytePropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public BytePropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new BytePropertyData(property, get());
     }
 

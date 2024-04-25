@@ -1,33 +1,28 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import mekanism.common.registries.MekanismArmorMaterials;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttributeRefresher {
 
-    private static final ArmoredFreeRunnerMaterial ARMORED_FREE_RUNNER_MATERIAL = new ArmoredFreeRunnerMaterial();
-
     private final AttributeCache attributeCache;
 
     public ItemArmoredFreeRunners(Properties properties) {
-        super(ARMORED_FREE_RUNNER_MATERIAL, properties);
+        super(MekanismArmorMaterials.ARMORED_FREE_RUNNERS, properties);
         this.attributeCache = new AttributeCache(this, MekanismConfig.gear.armoredFreeRunnerArmor, MekanismConfig.gear.armoredFreeRunnerToughness,
               MekanismConfig.gear.armoredFreeRunnerKnockbackResistance);
     }
@@ -39,50 +34,37 @@ public class ItemArmoredFreeRunners extends ItemFreeRunners implements IAttribut
 
     @Override
     public int getDefense() {
-        return getMaterial().getDefenseForType(getType());
+        return MekanismConfig.gear.armoredFreeRunnerArmor.getOrDefault();
     }
 
     @Override
     public float getToughness() {
-        return getMaterial().getToughness();
+        return MekanismConfig.gear.armoredFreeRunnerToughness.getOrDefault();
     }
 
     @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == getEquipmentSlot() ? attributeCache.get() : ImmutableMultimap.of();
+    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+        return attributeCache.get();
     }
 
     @Override
-    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
         UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
-        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
-        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
-              Operation.ADDITION));
-    }
-
-    @NothingNullByDefault
-    private static class ArmoredFreeRunnerMaterial extends FreeRunnerMaterial {
-
-        @Override
-        public int getDefenseForType(ArmorItem.Type armorType) {
-            return armorType == ArmorItem.Type.BOOTS ? MekanismConfig.gear.armoredFreeRunnerArmor.getOrDefault() : 0;
-        }
-
-        @Override
-        public String getName() {
-            return Mekanism.MODID + ":free_runners_armored";
-        }
-
-        @Override
-        public float getToughness() {
-            return MekanismConfig.gear.armoredFreeRunnerToughness.getOrDefault();
-        }
-
-        @Override
-        public float getKnockbackResistance() {
-            return MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.getOrDefault();
-        }
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR,
+              new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR_TOUGHNESS,
+              new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.KNOCKBACK_RESISTANCE,
+              new AttributeModifier(modifier, "Armor knockback resistance", MekanismConfig.gear.armoredFreeRunnerKnockbackResistance.getOrDefault(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
     }
 }

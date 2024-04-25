@@ -17,7 +17,8 @@ public class TOPFluidElement extends FluidElement implements IElement {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeFluidStack(stored);
+        //TODO - 1.20.5: Providers
+        //buf.writeFluidStack(stored);
         buf.writeVarInt(capacity);
     }
 
@@ -30,7 +31,9 @@ public class TOPFluidElement extends FluidElement implements IElement {
 
         @Override
         public TOPFluidElement createElement(FriendlyByteBuf buf) {
-            return new TOPFluidElement(buf.readFluidStack(), buf.readVarInt());
+            //TODO - 1.20.5: Providers
+            //return new TOPFluidElement(buf.readFluidStack(), buf.readVarInt());
+            return new TOPFluidElement(FluidStack.EMPTY, buf.readVarInt());
         }
 
         @Override

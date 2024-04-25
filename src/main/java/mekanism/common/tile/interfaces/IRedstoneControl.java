@@ -1,12 +1,19 @@
 package mekanism.common.tile.interfaces;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 
 public interface IRedstoneControl {
 
@@ -42,16 +49,21 @@ public interface IRedstoneControl {
     boolean supportsMode(RedstoneControl mode);
 
     @NothingNullByDefault
-    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTextComponent {
+    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTextComponent, StringRepresentable {
         DISABLED(MekanismLang.REDSTONE_CONTROL_DISABLED),
         HIGH(MekanismLang.REDSTONE_CONTROL_HIGH),
         LOW(MekanismLang.REDSTONE_CONTROL_LOW),
         PULSE(MekanismLang.REDSTONE_CONTROL_PULSE);
 
-        private static final RedstoneControl[] MODES = values();
+        public static final Codec<RedstoneControl> CODEC = StringRepresentable.fromEnum(RedstoneControl::values);
+        public static final IntFunction<RedstoneControl> BY_ID = ByIdMap.continuous(RedstoneControl::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, RedstoneControl> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneControl::ordinal);
+
+        private final String serializedName;
         private final ILangEntry langEntry;
 
         RedstoneControl(ILangEntry langEntry) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
         }
 
@@ -62,11 +74,12 @@ public interface IRedstoneControl {
 
         @Override
         public RedstoneControl byIndex(int index) {
-            return byIndexStatic(index);
+            return BY_ID.apply(index);
         }
 
-        public static RedstoneControl byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

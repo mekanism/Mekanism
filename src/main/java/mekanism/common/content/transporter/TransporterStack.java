@@ -1,13 +1,16 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntFunction;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
+import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
@@ -20,9 +23,14 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,19 +57,19 @@ public class TransporterStack {
     private Path pathType;
     private List<BlockPos> pathToTarget = new ArrayList<>();
 
-    public static TransporterStack readFromNBT(CompoundTag nbtTags) {
+    public static TransporterStack readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         TransporterStack stack = new TransporterStack();
-        stack.read(nbtTags);
+        stack.read(provider, nbtTags);
         return stack;
     }
 
-    public static TransporterStack readFromUpdate(CompoundTag nbtTags) {
+    public static TransporterStack readFromUpdate(HolderLookup.Provider provider, CompoundTag nbtTags) {
         TransporterStack stack = new TransporterStack();
-        stack.readFromUpdateTag(nbtTags);
+        stack.readFromUpdateTag(provider, nbtTags);
         return stack;
     }
 
-    public static TransporterStack readFromPacket(FriendlyByteBuf dataStream) {
+    public static TransporterStack readFromPacket(RegistryFriendlyByteBuf dataStream) {
         TransporterStack stack = new TransporterStack();
         stack.read(dataStream);
         if (stack.progress == 0) {
@@ -70,17 +78,17 @@ public class TransporterStack {
         return stack;
     }
 
-    public void write(FriendlyByteBuf buf, BlockPos pos) {
+    public void write(RegistryFriendlyByteBuf buf, BlockPos pos) {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
         buf.writeEnum(getPathType());
-        buf.writeNullable(getNext(pos), FriendlyByteBuf::writeBlockPos);
+        buf.writeNullable(getNext(pos), (b, p) -> b.writeBlockPos(p));
         buf.writeBlockPos(getPrev(pos));
-        buf.writeItem(itemStack);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemStack);
     }
 
-    public void read(FriendlyByteBuf dataStream) {
+    public void read(RegistryFriendlyByteBuf dataStream) {
         color = TransporterUtils.readColor(dataStream.readVarInt());
         progress = dataStream.readVarInt();
         originalLocation = dataStream.readBlockPos();
@@ -88,12 +96,12 @@ public class TransporterStack {
         //TODO - 1.20.4: SP: The clientNext and clientPrev have issues in single player as they won't get set
         // though in all our use cases we are forcing a read/write to prevent mutation or leaking from one side to another
         // so at least for now it doesn't fully matter
-        clientNext = dataStream.readNullable(FriendlyByteBuf::readBlockPos);
+        clientNext = dataStream.readNullable(buf -> buf.readBlockPos());
         clientPrev = dataStream.readBlockPos();
-        itemStack = dataStream.readItem();
+        itemStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(dataStream);
     }
 
-    public void writeToUpdateTag(LogisticalTransporterBase transporter, CompoundTag updateTag) {
+    public void writeToUpdateTag(HolderLookup.Provider provider, LogisticalTransporterBase transporter, CompoundTag updateTag) {
         if (color != null) {
             NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
         }
@@ -105,20 +113,22 @@ public class TransporterStack {
             updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
         }
         updateTag.put(NBTConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
-        itemStack.save(updateTag);
+        if (!itemStack.isEmpty()) {
+            itemStack.save(provider, updateTag);
+        }
     }
 
-    public void readFromUpdateTag(CompoundTag updateTag) {
+    public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
         this.color = NBTUtils.getEnum(updateTag, NBTConstants.COLOR, TransporterUtils::readColor);
         progress = updateTag.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
-        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
+        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
-        itemStack = ItemStack.of(updateTag);
+        itemStack = ItemStack.parseOptional(provider, updateTag);
     }
 
-    public void write(CompoundTag nbtTags) {
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
         if (color != null) {
             NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
         }
@@ -135,17 +145,19 @@ public class TransporterStack {
         if (pathType != null) {
             NBTUtils.writeEnum(nbtTags, NBTConstants.PATH_TYPE, pathType);
         }
-        itemStack.save(nbtTags);
+        if (!itemStack.isEmpty()) {
+            itemStack.save(provider, nbtTags);
+        }
     }
 
-    public void read(CompoundTag nbtTags) {
+    public void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
         this.color = NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
-        itemStack = ItemStack.of(nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
+        itemStack = ItemStack.parseOptional(provider, nbtTags);
     }
 
     private void setPath(Level world, @NotNull List<BlockPos> path, @NotNull Path type, boolean updateFlowing) {
@@ -326,11 +338,8 @@ public class TransporterStack {
         HOME,
         NONE;
 
-        private static final Path[] PATHS = values();
-
-        public static Path byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(PATHS, index);
-        }
+        public static final IntFunction<Path> BY_ID = ByIdMap.continuous(Path::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, Path> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Path::ordinal);
 
         public boolean hasTarget() {
             return this != NONE;

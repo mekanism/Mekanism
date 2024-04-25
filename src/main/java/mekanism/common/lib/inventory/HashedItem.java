@@ -1,13 +1,18 @@
 package mekanism.common.lib.inventory;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
+import mekanism.common.attachments.OverflowAware;
 import mekanism.common.util.StackUtils;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +23,10 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class HashedItem implements IHashedItem {
+
+    //TODO - 1.20.5: Some sort of note that this doesn't handle the uuid based ones?
+    public static final Codec<HashedItem> CODEC = ItemStack.CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
+    public static final StreamCodec<RegistryFriendlyByteBuf, HashedItem> STREAM_CODEC = ItemStack.STREAM_CODEC.map(HashedItem::raw, HashedItem::getInternalStack);
 
     public static HashedItem create(ItemStack stack) {
         return new HashedItem(stack.copyWithCount(1));
@@ -38,7 +47,7 @@ public class HashedItem implements IHashedItem {
 
     protected HashedItem(ItemStack stack) {
         this.itemStack = stack;
-        this.hashCode = initHashCode();
+        this.hashCode = ItemStack.hashItemAndComponents(itemStack);
     }
 
     protected HashedItem(HashedItem other) {
@@ -72,10 +81,8 @@ public class HashedItem implements IHashedItem {
      * Helper to serialize the internal stack to nbt.
      */
     @NotNull
-    public CompoundTag internalToNBT() {
-        CompoundTag stackTag = new CompoundTag();
-        itemStack.save(stackTag);
-        return stackTag;
+    public Tag internalToNBT(HolderLookup.Provider provider) {
+        return itemStack.save(provider);
     }
 
     @Override
@@ -83,24 +90,12 @@ public class HashedItem implements IHashedItem {
         if (obj == this) {
             return true;
         }
-        return obj instanceof IHashedItem other && ItemHandlerHelper.canItemStacksStack(itemStack, other.getInternalStack());
+        return obj instanceof IHashedItem other && ItemStack.isSameItemSameComponents(itemStack, other.getInternalStack());
     }
 
     @Override
     public int hashCode() {
         return hashCode;
-    }
-
-    private int initHashCode() {
-        int code = itemStack.getItem().hashCode();
-        if (itemStack.hasTag()) {
-            code = 31 * code + itemStack.getTag().hashCode();
-        }
-        CompoundTag attachments = itemStack.serializeAttachments();
-        if (attachments != null) {
-            code = 31 * code + attachments.hashCode();
-        }
-        return code;
     }
 
     public static class UUIDAwareHashedItem extends HashedItem {

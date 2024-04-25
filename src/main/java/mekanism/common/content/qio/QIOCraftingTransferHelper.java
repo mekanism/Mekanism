@@ -26,7 +26,6 @@ import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -325,7 +324,7 @@ public class QIOCraftingTransferHelper {
                 int currentAmount = stackSizes[slot];
                 int max = slotLimits[slot];
                 //If the slot has any room left, and our stack is able to stack with it
-                if (currentAmount < max && ItemHandlerHelper.canItemStacksStack(inventory[slot], stack)) {
+                if (currentAmount < max && ItemStack.isSameItemSameComponents(inventory[slot], stack)) {
                     int toPlace = Math.min(max - currentAmount, amount);
                     stackSizes[slot] = currentAmount + toPlace;
                     amount -= toPlace;

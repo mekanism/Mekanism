@@ -1,6 +1,6 @@
 package mekanism.api.robit;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -44,7 +44,7 @@ public record AdvancementBasedRobitSkin(List<ResourceLocation> textures, @Nullab
     }
 
     @Override
-    public Codec<? extends RobitSkin> codec() {
+    public MapCodec<? extends RobitSkin> codec() {
         return RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC;
     }
 

@@ -1,6 +1,8 @@
 package mekanism.common.util;
 
+import io.netty.buffer.ByteBuf;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
@@ -18,6 +20,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -167,7 +172,8 @@ public class UnitDisplayUtils {
               //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
               () -> !MekanismConfig.general.blacklistForge.getOrDefault());
 
-        private static final EnergyUnit[] TYPES = values();
+        public static final IntFunction<EnergyUnit> BY_ID = ByIdMap.continuous(EnergyUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, EnergyUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnergyUnit::ordinal);
 
         private final Supplier<CachedFloatingLongValue> conversion;
         private final Supplier<FloatingLongSupplier> inverseConversion;
@@ -243,7 +249,7 @@ public class UnitDisplayUtils {
         @NotNull
         @Override
         public EnergyUnit byIndex(int index) {
-            return MathUtils.getByIndexMod(TYPES, index);
+            return BY_ID.apply(index);
         }
 
         public String getTabName() {
@@ -269,7 +275,8 @@ public class UnitDisplayUtils {
         FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, MekanismLang.TEMPERATURE_FAHRENHEIT_SHORT, "°F", "f", 459.67, 1.8),
         AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, MekanismLang.TEMPERATURE_AMBIENT_SHORT, "+STP", "stp", 300, 1);
 
-        private static final TemperatureUnit[] TYPES = values();
+        public static final IntFunction<TemperatureUnit> BY_ID = ByIdMap.continuous(TemperatureUnit::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, TemperatureUnit> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TemperatureUnit::ordinal);
 
         private final ILangEntry langEntry;
         private final ILangEntry shortName;
@@ -316,7 +323,7 @@ public class UnitDisplayUtils {
 
         @Override
         public TemperatureUnit byIndex(int index) {
-            return MathUtils.getByIndexMod(TYPES, index);
+            return BY_ID.apply(index);
         }
     }
 

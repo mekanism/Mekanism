@@ -2,11 +2,11 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
+import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,10 +14,6 @@ import org.jetbrains.annotations.Nullable;
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling frequencies
  */
 public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncableData {
-
-    public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyAware<FREQUENCY> frequencyAware) {
-        return create(frequencyAware.getFrequencyType(), frequencyAware::getFrequency, frequencyAware::setFrequency);
-    }
 
     public static <FREQUENCY extends Frequency> SyncableFrequency<FREQUENCY> create(FrequencyType<FREQUENCY> type, Supplier<FREQUENCY> getter, Consumer<FREQUENCY> setter) {
         return new SyncableFrequency<>(type, getter, setter);
@@ -39,8 +35,8 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
         return getter.get();
     }
 
-    public void set(byte[] rawData) {
-        setter.accept(PacketUtils.read(rawData, buffer -> buffer.readNullable(type::create)));
+    public void set(RegistryAccess registryAccess, byte[] rawData) {
+        setter.accept(PacketUtils.read(registryAccess, rawData, buffer -> buffer.readNullable(buf -> type.create(buffer))));
     }
 
     @Override
@@ -55,10 +51,10 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
     }
 
     @Override
-    public ByteArrayPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public ByteArrayPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
         // whenever we send this as a packet rather than potentially allowing the frequency to leak from one side to the other in single player
-        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeNullable(get(), (buf, val) -> val.write(buf)));
+        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeNullable(get(), (buf, val) -> val.write(buffer)), registryAccess);
         return new ByteArrayPropertyData(property, rawData);
     }
 }

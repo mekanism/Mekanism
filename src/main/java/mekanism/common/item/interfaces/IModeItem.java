@@ -5,12 +5,12 @@ import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,14 +79,16 @@ public interface IModeItem {
 
     interface IAttachmentBasedModeItem<MODE> extends IModeItem {
 
-        AttachmentType<MODE> getModeAttachment();
+        DataComponentType<MODE> getModeDataType();
+
+        MODE getDefaultMode();
 
         default MODE getMode(ItemStack stack) {
-            return stack.getData(getModeAttachment());
+            return stack.getOrDefault(getModeDataType(), getDefaultMode());
         }
 
         default void setMode(ItemStack stack, Player player, MODE mode) {
-            stack.setData(getModeAttachment(), mode);
+            stack.set(getModeDataType(), mode);
         }
     }
 }

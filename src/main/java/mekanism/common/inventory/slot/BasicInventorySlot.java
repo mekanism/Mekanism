@@ -16,11 +16,10 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,7 +138,7 @@ public class BasicInventorySlot implements IInventorySlot {
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            throw new RuntimeException("Invalid stack for slot: " + RegistryUtils.getName(stack.getItem()) + " " + stack.getCount() + " " + stack.getTag() + " " + stack.serializeAttachments());
+            throw new RuntimeException("Invalid stack for slot: " + stack + " " + stack.getComponents());
         }
         onContentsChanged();
     }
@@ -157,7 +156,7 @@ public class BasicInventorySlot implements IInventorySlot {
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
+        if (isEmpty() || (sameType = ItemStack.isSameItemSameComponents(current, stack))) {
             int toAdd = Math.min(stack.getCount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -328,12 +327,10 @@ public class BasicInventorySlot implements IInventorySlot {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            CompoundTag stackTag = new CompoundTag();
-            current.save(stackTag);
-            nbt.put(NBTConstants.ITEM, stackTag);
+            nbt.put(NBTConstants.ITEM, current.save(provider));
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }
@@ -352,10 +349,10 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         ItemStack stack = ItemStack.EMPTY;
         if (nbt.contains(NBTConstants.ITEM, Tag.TAG_COMPOUND)) {
-            stack = ItemStack.of(nbt.getCompound(NBTConstants.ITEM));
+            stack = ItemStack.parseOptional(provider, nbt.getCompound(NBTConstants.ITEM));
             NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up

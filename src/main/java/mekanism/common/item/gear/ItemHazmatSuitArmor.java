@@ -1,14 +1,12 @@
 package mekanism.common.item.gear;
 
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
+import mekanism.common.registries.MekanismArmorMaterials;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -16,24 +14,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
 
-    private static final HazmatMaterial HAZMAT_MATERIAL = new HazmatMaterial();
-
-    public ItemHazmatSuitArmor(ArmorItem.Type armorType, Properties properties) {
-        super(HAZMAT_MATERIAL, armorType, properties.rarity(Rarity.UNCOMMON));
+    public ItemHazmatSuitArmor(Type armorType, Properties properties) {
+        super(MekanismArmorMaterials.HAZMAT, armorType, properties.rarity(Rarity.UNCOMMON));
     }
 
-    public static double getShieldingByArmor(ArmorItem.Type type) {
+    public static double getShieldingByArmor(Type type) {
         return switch (type) {
             case HELMET -> 0.25;
             case CHESTPLATE -> 0.4;
             case LEGGINGS -> 0.2;
             case BOOTS -> 0.15;
+            case BODY -> 0.0;
         };
-    }
-
-    @Override
-    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
-        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override
@@ -44,7 +36,7 @@ public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
 
     @Override
     public boolean isEnchantable(@NotNull ItemStack stack) {
-        return material.getEnchantmentValue() > 0 && super.isEnchantable(stack);
+        return material.value().enchantmentValue() > 0 && super.isEnchantable(stack);
     }
 
     @Override
@@ -55,14 +47,5 @@ public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return isEnchantable(stack) && super.canApplyAtEnchantingTable(stack, enchantment);
-    }
-
-    @NothingNullByDefault
-    protected static class HazmatMaterial extends BaseSpecialArmorMaterial {
-
-        @Override
-        public String getName() {
-            return Mekanism.MODID + ":hazmat";
-        }
     }
 }

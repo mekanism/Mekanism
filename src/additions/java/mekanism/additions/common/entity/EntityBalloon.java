@@ -16,7 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,11 +24,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -48,7 +46,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Integer> LATCHED_Y = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> LATCHED_Z = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> LATCHED_ID = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
-    private static final double OFFSET = -0.275;
+    public static final float OFFSET = -0.275F;
 
     private EnumColor color = EnumColor.DARK_BLUE;
     private BlockPos latched;
@@ -64,12 +62,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         blocksBuilding = true;
         setPos(getX() + 0.5F, getY() + 3F, getZ() + 0.5F);
         setDeltaMovement(getDeltaMovement().x(), 0.04, getDeltaMovement().z());
-
-        entityData.define(IS_LATCHED, (byte) 0);
-        entityData.define(LATCHED_X, 0);
-        entityData.define(LATCHED_Y, 0);
-        entityData.define(LATCHED_Z, 0);
-        entityData.define(LATCHED_ID, -1);
     }
 
     @Nullable
@@ -275,12 +267,17 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        builder.define(IS_LATCHED, (byte) 0);
+        builder.define(LATCHED_X, 0);
+        builder.define(LATCHED_Y, 0);
+        builder.define(LATCHED_Z, 0);
+        builder.define(LATCHED_ID, -1);
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.LATCHED, pos -> latched = pos);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> {
             hasCachedEntity = true;
@@ -309,7 +306,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void writeSpawnData(FriendlyByteBuf data) {
+    public void writeSpawnData(RegistryFriendlyByteBuf data) {
         data.writeEnum(color);
         if (latched != null) {
             data.writeByte((byte) 1);
@@ -323,7 +320,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void readSpawnData(FriendlyByteBuf data) {
+    public void readSpawnData(RegistryFriendlyByteBuf data) {
         color = data.readEnum(EnumColor.class);
         byte type = data.readByte();
         if (type == 1) {
@@ -379,12 +376,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     public boolean isLatchedToEntity() {
         return entityData.get(IS_LATCHED) == 2 && latchedEntity != null;
-    }
-
-    //Adjust various bounding boxes/eye height so that the balloon gets interacted with properly
-    @Override
-    protected float getEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return (float) (size.height - OFFSET);
     }
 
     @NotNull

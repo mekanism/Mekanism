@@ -1,15 +1,18 @@
 package mekanism.common.recipe.upgrade;
 
+import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap.Entry;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.DriveMetadata;
+import mekanism.common.attachments.qio.DriveContents;
+import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,15 +24,15 @@ import org.jetbrains.annotations.Nullable;
 public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
 
     //Note: We just keep track of the UUID as we know it is unique by type so there is no reason to look up the stacks for merging purposes
-    private final Object2LongMap<UUID> itemMap;
+    private final Object2LongSortedMap<UUID> itemMap;
     private final long itemCount;
 
-    QIORecipeData(DriveMetadata data) {
+    QIORecipeData(DriveMetadata data, DriveContents contents) {
         itemCount = data.count();
-        itemMap = data.namedItemMap();
+        itemMap = contents.namedItemMap();
     }
 
-    private QIORecipeData(Object2LongMap<UUID> itemMap, long itemCount) {
+    private QIORecipeData(Object2LongSortedMap<UUID> itemMap, long itemCount) {
         this.itemMap = itemMap;
         this.itemCount = itemCount;
     }
@@ -46,7 +49,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
                 largerMap = other.itemMap;
             }
             //Add smaller to larger, so we have to iterate fewer elements
-            Object2LongMap<UUID> fullItemMap = new Object2LongOpenHashMap<>(largerMap);
+            Object2LongSortedMap<UUID> fullItemMap = new Object2LongLinkedOpenHashMap<>(largerMap);
             for (Entry<UUID> entry : smallerMap.object2LongEntrySet()) {
                 fullItemMap.mergeLong(entry.getKey(), entry.getLongValue(), Long::sum);
             }
@@ -56,7 +59,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
         if (itemMap.isEmpty()) {
             //If we have nothing present then it is a success, but if we have data that says we should
             // have items, but we don't then fail
@@ -68,7 +71,9 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             // then return that we are not able to actually apply them to the stack
             return false;
         }
-        stack.getData(MekanismAttachmentTypes.DRIVE_METADATA).update(itemMap, itemCount);
+        stack.set(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(itemCount, itemMap.size()));
+        //Note: We just directly pass the item map to it, as we don't need it anymore so the drive contents can take it over
+        stack.set(MekanismDataComponents.DRIVE_CONTENTS, new DriveContents(itemMap));
         return true;
     }
 }

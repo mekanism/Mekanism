@@ -3,6 +3,7 @@ package mekanism.common.attachments.containers;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -25,14 +26,14 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
 
     @Nullable
     @Override
-    public ListTag serializeNBT() {
-        ListTag serialized = getContainerType().save(this.containers);
+    public ListTag serializeNBT(HolderLookup.Provider provider) {
+        ListTag serialized = getContainerType().save(provider, this.containers);
         return serialized.isEmpty() ? null : serialized;
     }
 
     @Override
-    public void deserializeNBT(ListTag nbt) {
-        getContainerType().read(this.containers, nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, ListTag nbt) {
+        getContainerType().read(provider, this.containers, nbt);
     }
 
     @Override
@@ -44,29 +45,5 @@ public abstract class AttachedContainers<CONTAINER extends INBTSerializable<Comp
 
     public List<CONTAINER> getContainers() {
         return containers;
-    }
-
-    /**
-     * @implNote This only needs a basic check of contents as that is what would happen if the stacks were serialized. Checking the capacity of the containers can be
-     * skipped.
-     */
-    protected abstract boolean isContainerCompatible(CONTAINER a, CONTAINER b);
-
-    public boolean isCompatible(AttachedContainers<CONTAINER> other) {
-        if (other == this) {
-            return true;
-        } else if (getClass() != other.getClass()) {
-            return false;
-        }
-        int containerCount = containers.size();
-        if (containerCount != other.containers.size()) {
-            return false;
-        }
-        for (int i = 0; i < containerCount; i++) {
-            if (!isContainerCompatible(containers.get(i), other.containers.get(i))) {
-                return false;
-            }
-        }
-        return true;
     }
 }

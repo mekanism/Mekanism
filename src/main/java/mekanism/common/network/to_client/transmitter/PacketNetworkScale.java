@@ -1,24 +1,27 @@
 package mekanism.common.network.to_client.transmitter;
 
+import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketNetworkScale(UUID networkID, float scale) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketNetworkScale(UUID networkID, float scale) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("network_scale");
-
-    public PacketNetworkScale(FriendlyByteBuf buffer) {
-        this(buffer.readUUID(), buffer.readFloat());
-    }
+    public static final CustomPacketPayload.Type<PacketNetworkScale> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("network_scale"));
+    public static final StreamCodec<ByteBuf, PacketNetworkScale> STREAM_CODEC = StreamCodec.composite(
+          UUIDUtil.STREAM_CODEC, PacketNetworkScale::networkID,
+          ByteBufCodecs.FLOAT, PacketNetworkScale::scale,
+          PacketNetworkScale::new
+    );
 
     public PacketNetworkScale(DynamicBufferedNetwork<?, ?, ?, ?> network) {
         this(network.getUUID(), network.currentScale);
@@ -26,24 +29,17 @@ public record PacketNetworkScale(UUID networkID, float scale) implements IMekani
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketNetworkScale> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
         // so that they will have the proper information to then render
         DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
         if (clientNetwork instanceof DynamicBufferedNetwork<?, ?, ?, ?> network) {
             network.currentScale = scale;
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeUUID(networkID);
-        buffer.writeFloat(scale);
-        PacketUtils.log("Sending scale '{}' update message for network with id {}", scale, networkID);
     }
 }

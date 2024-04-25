@@ -11,7 +11,7 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
@@ -47,7 +47,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     @NotNull
     @Override
-    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
         return output.copy();
     }
 
@@ -106,6 +106,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
      * @return the chemical type of the input
      */
     public ChemicalType getChemicalType() {
+        //TODO - 1.20.5: Depending how we handle serialization maybe we want to just remove this?
         return chemicalType;
     }
 

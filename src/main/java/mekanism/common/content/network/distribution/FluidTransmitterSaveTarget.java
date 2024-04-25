@@ -55,14 +55,14 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         }
 
         protected Integer simulate(@NotNull FluidStack fluidStack) {
-            if (!currentStored.isEmpty() && !currentStored.isFluidEqual(fluidStack)) {
+            if (!currentStored.isEmpty() && !FluidStack.isSameFluidSameComponents(currentStored, fluidStack)) {
                 return 0;
             }
             return Math.min(fluidStack.getAmount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
         }
 
         protected void saveShare() {
-            if (currentStored.isEmpty() != transmitter.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(transmitter.saveShare))) {
+            if (currentStored.isEmpty() != transmitter.saveShare.isEmpty() || (!currentStored.isEmpty() && !FluidStack.matches(currentStored, transmitter.saveShare))) {
                 transmitter.saveShare = currentStored;
                 transmitter.getTransmitterTile().markForSave();
             }

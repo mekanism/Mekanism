@@ -1,7 +1,6 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -53,8 +52,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -62,10 +61,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -235,34 +236,27 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    public void readSustainedData(CompoundTag data) {
-        super.readSustainedData(data);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
+        super.readSustainedData(provider, data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.MODE, value -> mode = value);
     }
 
     @Override
-    public void writeSustainedData(CompoundTag data) {
-        super.writeSustainedData(data);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
+        super.writeSustainedData(provider, data);
         data.putBoolean(NBTConstants.MODE, mode);
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.MODE, MekanismAttachmentTypes.ROTARY_MODE);
-        return remap;
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        mode = input.getOrDefault(MekanismDataComponents.ROTARY_MODE, mode);
     }
 
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        mode = stack.getData(MekanismAttachmentTypes.ROTARY_MODE);
-    }
-
-    @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.ROTARY_MODE, mode);
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.ROTARY_MODE, mode);
     }
 
     @Override

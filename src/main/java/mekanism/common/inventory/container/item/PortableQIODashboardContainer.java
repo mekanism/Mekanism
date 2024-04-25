@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.common.attachments.PortableQIODashboardInventory;
+import mekanism.common.attachments.qio.PortableQIODashboardInventory;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -9,8 +9,8 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
 import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteraction;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,7 +32,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     public PortableQIODashboardContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean remote) {
-        this(id, inv, hand, stack, remote, stack.getData(MekanismAttachmentTypes.QIO_DASHBOARD).updateLevel(inv.player.level()));
+        this(id, inv, hand, stack, remote, new PortableQIODashboardInventory(inv.player.level(), stack));
     }
 
     public InteractionHand getHand() {
@@ -48,15 +48,6 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         PortableQIODashboardContainer container = new PortableQIODashboardContainer(containerId, inv, hand, stack, true, craftingWindowHolder);
         sync(container);
         return container;
-    }
-
-    @Override
-    protected void closeInventory(@NotNull Player player) {
-        super.closeInventory(player);
-        if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory) {
-            //Clear the level, this should only be called on close as recreating doesn't cause closeInventory to be called
-            inventory.updateLevel(null);
-        }
     }
 
     @Override
@@ -126,13 +117,13 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     @Override
     public boolean shiftClickIntoFrequency() {
         //Shouldn't be empty but validate it
-        return !this.stack.isEmpty() && stack.getData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY);
+        return !this.stack.isEmpty() && stack.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, true);
     }
 
     @Override
     public void toggleTargetDirection() {
         //Change the data client side so that it is reflected in the gui as we don't handle updating client side data
         PacketUtils.sendToServer(new PacketItemGuiInteract(ItemGuiInteraction.TARGET_DIRECTION_BUTTON, this.hand));
-        //stack.setData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY, !stack.getData(MekanismAttachmentTypes.INSERT_INTO_FREQUENCY));
+        //stack.set(MekanismDataComponents.INSERT_INTO_FREQUENCY, !stack.getData(MekanismDataComponents.INSERT_INTO_FREQUENCY));
     }
 }

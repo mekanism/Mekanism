@@ -1,10 +1,8 @@
 package mekanism.api.recipes.ingredients;
 
-import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -60,17 +58,6 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      */
     List<TYPE> getRepresentations();
 
-    /**
-     * Writes this ingredient to a PacketBuffer.
-     *
-     * @param buffer The buffer to write to.
-     */
-    void write(FriendlyByteBuf buffer);
-
-    /**
-     * Serializes this ingredient to a JsonElement
-     *
-     * @return JsonElement representation of this ingredient.
-     */
-    JsonElement serialize();
+    //TODO - 1.20.5: JavaDocs
+    IngredientType getType();
 }

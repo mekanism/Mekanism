@@ -20,6 +20,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -77,9 +78,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundTag updateTag = super.getUpdateTag();
+        CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
             updateTag.putString(NBTConstants.ENERGY_STORED, network.energyContainer.getEnergy().toString());

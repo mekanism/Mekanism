@@ -12,6 +12,7 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 @NothingNullByDefault
@@ -50,16 +51,16 @@ public class MergedTank extends MergedChemicalTank {
         return fluidTank;
     }
 
-    public void addToUpdateTag(CompoundTag updateTag) {
-        updateTag.put(NBTConstants.FLUID_STORED, getFluidTank().getFluid().writeToNBT(new CompoundTag()));
+    public void addToUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
+        updateTag.put(NBTConstants.FLUID_STORED, getFluidTank().getFluid().saveOptional(provider));
         updateTag.put(NBTConstants.GAS_STORED, getGasTank().getStack().write(new CompoundTag()));
         updateTag.put(NBTConstants.INFUSE_TYPE_NAME, getInfusionTank().getStack().write(new CompoundTag()));
         updateTag.put(NBTConstants.PIGMENT_STORED, getPigmentTank().getStack().write(new CompoundTag()));
         updateTag.put(NBTConstants.SLURRY_STORED, getSlurryTank().getStack().write(new CompoundTag()));
     }
 
-    public void readFromUpdateTag(CompoundTag tag) {
-        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> getFluidTank().setStack(value));
+    public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag tag) {
+        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> getFluidTank().setStack(value));
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> getGasTank().setStack(value));
         NBTUtils.setInfusionStackIfPresent(tag, NBTConstants.INFUSE_TYPE_NAME, value -> getInfusionTank().setStack(value));
         NBTUtils.setPigmentStackIfPresent(tag, NBTConstants.PIGMENT_STORED, value -> getPigmentTank().setStack(value));

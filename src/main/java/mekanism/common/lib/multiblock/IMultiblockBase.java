@@ -2,7 +2,7 @@ package mekanism.common.lib.multiblock;
 
 import mekanism.common.tile.interfaces.ITileWrapper;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +22,7 @@ public interface IMultiblockBase extends ITileWrapper {
 
     MultiblockData getDefaultData();
 
-    InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack);
+    ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack);
 
     Structure getStructure(MultiblockManager<?> manager);
 

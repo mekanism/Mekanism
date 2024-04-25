@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,12 +21,12 @@ public class SyncableStringList extends SyncableList<String> {
     }
 
     @Override
-    protected List<String> deserializeList(FriendlyByteBuf buffer) {
+    protected List<String> deserializeList(RegistryFriendlyByteBuf buffer) {
         return buffer.readList(FriendlyByteBuf::readUtf);
     }
 
     @Override
-    protected void serializeListElement(FriendlyByteBuf buffer, String value) {
+    protected void serializeListElement(RegistryFriendlyByteBuf buffer, String value) {
         buffer.writeUtf(value);
     }
 }

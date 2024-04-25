@@ -1,6 +1,7 @@
 package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import mekanism.common.config.MekanismConfig;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ConfigurableConstantInt extends IntProvider {
 
-    public static final Codec<ConfigurableConstantInt> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<ConfigurableConstantInt> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           OreVeinType.CODEC.optionalFieldOf("oreVeinType").forGetter(config -> Optional.ofNullable(config.oreVeinType))
     ).apply(builder, oreType -> {
         if (oreType.isPresent()) {

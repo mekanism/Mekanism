@@ -1,6 +1,7 @@
 package mekanism.common.recipe.condition;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import net.neoforged.fml.ModContainer;
@@ -22,12 +23,12 @@ public record ModVersionLoadedCondition(String modid, String minVersion) impleme
     }
 
     @Override
-    public Codec<? extends ICondition> codec() {
+    public MapCodec<? extends ICondition> codec() {
         return MekanismRecipeConditions.MOD_VERSION_LOADED.get();
     }
 
-    public static Codec<ModVersionLoadedCondition> makeCodec() {
-        return RecordCodecBuilder.create(instance -> instance.group(
+    public static MapCodec<ModVersionLoadedCondition> makeCodec() {
+        return RecordCodecBuilder.mapCodec(instance -> instance.group(
               Codec.STRING.fieldOf("modid").forGetter(ModVersionLoadedCondition::modid),
               Codec.STRING.fieldOf("minVersion").forGetter(ModVersionLoadedCondition::minVersion)
         ).apply(instance, ModVersionLoadedCondition::new));

@@ -5,58 +5,65 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketSetItemFrequency<FREQ extends Frequency> extends PacketSetFrequency<FREQ> {
+public record PacketSetItemFrequency(boolean set, TypedIdentity data, InteractionHand currentHand) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("set_item_frequency");
+    public static final CustomPacketPayload.Type<PacketSetItemFrequency> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_item_frequency"));
+    public static final StreamCodec<FriendlyByteBuf, PacketSetItemFrequency> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.BOOL, PacketSetItemFrequency::set,
+          TypedIdentity.STREAM_CODEC, PacketSetItemFrequency::data,
+          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketSetItemFrequency::currentHand,
+          PacketSetItemFrequency::new
+    );
 
-    private final InteractionHand currentHand;
-
-    public PacketSetItemFrequency(FriendlyByteBuf buf) {
-        super(buf);
-        this.currentHand = buf.readEnum(InteractionHand.class);
-    }
-
-    public PacketSetItemFrequency(boolean set, FrequencyType<FREQ> type, FrequencyIdentity data, InteractionHand currentHand) {
-        super(set, type, data);
-        this.currentHand = currentHand;
+    public PacketSetItemFrequency(boolean set, FrequencyType<?> frequencyType, FrequencyIdentity data, InteractionHand currentHand) {
+        this(set, new TypedIdentity(frequencyType, data), currentHand);
     }
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketSetItemFrequency> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            ItemStack stack = player.getItemInHand(currentHand);
-            if (stack.getItem() instanceof IFrequencyItem && IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
-                FrequencyAware<FREQ> frequencyAware = (FrequencyAware<FREQ>) stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
-                if (set) {
-                    frequencyAware.setFrequency(data, player.getUUID());
-                } else {
-                    frequencyAware.removeFrequency(data, player.getUUID());
-                }
-            }
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        ItemStack stack = player.getItemInHand(currentHand);
+        if (stack.getItem() instanceof IFrequencyItem frequencyItem && IItemSecurityUtils.INSTANCE.canAccess(player, stack)) {
+            updateFrequency(player, stack, frequencyItem.getFrequencyType());
         }
     }
 
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeEnum(currentHand);
+    private <FREQ extends Frequency> void updateFrequency(Player player, ItemStack stack, FrequencyType<FREQ> frequencyType) {
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyType);
+        if (frequencyComponent != null) {
+            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
+            if (set) {
+                stack.set(frequencyComponent, FrequencyAware.create(frequencyType, data.data(), player.getUUID()));
+            } else {
+                FrequencyManager<?> manager = frequencyType.getManager(data.data(), data.data().ownerUUID() == null ? player.getUUID() : data.data().ownerUUID());
+                if (manager.remove(data.data().key(), player.getUUID()) && frequencyAware != null && frequencyAware.identity().filter(data.data()::equals).isPresent()) {
+                    //If the frequency we are removing matches the stored frequency, remove it
+                    stack.remove(frequencyComponent);
+                }
+            }
+        }
     }
 }

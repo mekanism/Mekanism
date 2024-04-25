@@ -1,7 +1,5 @@
 package mekanism.tools.common.item;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.util.List;
 import java.util.UUID;
 import mekanism.common.capabilities.ICapabilityAware;
@@ -13,20 +11,19 @@ import mekanism.tools.common.integration.gender.ToolsGenderCapabilityHelper;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAttributeRefresher, ICapabilityAware {
 
@@ -34,41 +31,43 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     private final AttributeCache attributeCache;
 
     public ItemMekanismArmor(MaterialCreator material, ArmorItem.Type armorType, Item.Properties properties) {
-        super(material, armorType, properties);
+        //TODO - 1.20.5: Figure this out
+        super(ArmorMaterials.IRON, armorType, properties);
+        //super(material, armorType, properties);
         this.material = material;
         CachedIntValue armorConfig = switch (armorType) {
             case BOOTS -> material.bootArmor;
             case LEGGINGS -> material.leggingArmor;
-            case CHESTPLATE -> material.chestplateArmor;
+            case CHESTPLATE, BODY -> material.chestplateArmor;
             case HELMET -> material.helmetArmor;
         };
         this.attributeCache = new AttributeCache(this, material.toughness, material.knockbackResistance, armorConfig);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, world, tooltip, flag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @NotNull
     @Override
     public Ingredient getRepairMaterial() {
-        return getMaterial().getRepairIngredient();
+        return getMaterial().value().repairIngredient().get();
     }
 
     @Override
     public int getDefense() {
-        return getMaterial().getDefenseForType(getType());
+        return getMaterial().value().getDefense(getType());
     }
 
     @Override
     public float getToughness() {
-        return getMaterial().getToughness();
+        return getMaterial().value().toughness();
     }
 
-    public float getKnockbackResistance() {
-        return getMaterial().getKnockbackResistance();
+    public float knockbackResistance() {
+        return getMaterial().value().knockbackResistance();
     }
 
     @Override
@@ -76,23 +75,30 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
         return material.getDurabilityForType(getType());
     }
 
-    @Override
-    public boolean canBeDepleted() {
-        return material.getDurabilityForType(getType()) > 0;
-    }
-
     @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == getEquipmentSlot() ? attributeCache.get() : ImmutableMultimap.of();
+    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+        return attributeCache.get();
     }
 
     @Override
-    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
         UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
-        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
-        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR,
+              new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR_TOUGHNESS,
+              new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.KNOCKBACK_RESISTANCE,
+              new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().value().knockbackResistance(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.FEET
+        ));
     }
 
     @Override

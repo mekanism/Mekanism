@@ -3,14 +3,11 @@ package mekanism.common.tile.base;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -35,15 +32,11 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
-import mekanism.api.security.IItemSecurityUtils;
-import mekanism.api.security.IOwnerObject;
-import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
-import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -102,7 +95,7 @@ import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -131,13 +124,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -146,8 +140,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -566,8 +558,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         level.updateNeighbourForOutputSignal(worldPosition, getBlockType());
     }
 
-    public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
-        ItemStack stack = player.getItemInHand(hand);
+    public WrenchResult tryWrench(BlockState state, Player player, ItemStack stack) {
         if (MekanismUtils.canUseAsWrench(stack)) {
             if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
                 return WrenchResult.NO_SECURITY;
@@ -734,16 +725,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         NBTUtils.setBooleanIfPresent(nbt, NBTConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
-            component.read(nbt);
+            component.read(nbt, provider);
         }
-        readSustainedData(nbt);
+        readSustainedData(provider, nbt);
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
-                type.readFrom(nbt, this);
+                type.readFrom(provider, nbt, this);
             }
         }
         if (isActivatable()) {
@@ -754,22 +745,22 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
         if (isNameable()) {
-            NBTUtils.setStringIfPresent(nbt, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value));
+            NBTUtils.setStringIfPresent(nbt, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value, provider));
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
-            component.write(nbtTags);
+            component.write(nbtTags, provider);
         }
-        writeSustainedData(nbtTags);
+        writeSustainedData(provider, nbtTags);
 
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (type.canHandle(this) && persists(type)) {
-                type.saveTo(nbtTags, this);
+                type.saveTo(provider, nbtTags, this);
             }
         }
 
@@ -783,118 +774,78 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         // Save the custom name, only if it exists and the tile can be named
         if (this.customName != null && isNameable()) {
-            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName));
+            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName, provider));
         }
     }
 
-    public void writeSustainedData(CompoundTag data) {
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
         }
     }
 
-    public void readSustainedData(CompoundTag data) {
+    public void readSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = supportedOrNextType(type));
+            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
         }
     }
 
-    //Key is tile save string, value is the attachment target
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        //Ordering is enforced by the copy function
-        Map<String, Holder<AttachmentType<?>>> remap = new HashMap<>();
-        if (supportsRedstone()) {
-            remap.put(NBTConstants.CONTROL_TYPE, MekanismAttachmentTypes.REDSTONE_CONTROL);
-        }
-        return remap;
-    }
-
+    //TODO - 1.20.5: We used to only do frequencies if on the server, does this get called on server and client or just server?
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        if (supportsRedstone()) {
-            updatePower();
-        }
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
         // Check if the stack has a custom name, and if the tile supports naming, name it
-        if (isNameable() && stack.hasCustomHoverName()) {
-            setCustomName(stack.getHoverName());
+        if (isNameable()) {
+            setCustomName(input.get(DataComponents.CUSTOM_NAME));
+        }
+
+        for (ITileComponent component : components) {
+            component.applyImplicitComponents(input);
         }
 
         //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
-        if (!isRemote() && getFrequencyComponent().hasCustomFrequencies()) {
-            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyTo(getFrequencyComponent());
-        }
-        if (hasSecurity()) {
-            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-            if (security != null) {
-                setSecurityMode(security.getSecurityMode());
-            }
-            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-            if (ownerUUID != null) {
-                setOwnerUUID(ownerUUID);
-            }
-        }
-        if (supportsUpgrades()) {
-            //The read method validates that data is stored
-            Optional<UpgradeAware> storedUpgrades = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
-            //noinspection OptionalIsPresent - Capturing lambda
-            if (storedUpgrades.isPresent()) {
-                storedUpgrades.get().copyTo(getComponent());
-            }
-        }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
-                type.copyFrom(stack, this);
+                //TODO - 1.20.5: Figure out container copying
+                //type.copyFrom(stack, this);
             }
         }
         if (this instanceof ITileFilterHolder<?> filterHolder) {
-            Optional<FilterAware> filterAware = stack.getExistingData(MekanismAttachmentTypes.FILTER_AWARE);
-            //noinspection OptionalIsPresent - Capturing lambda
-            if (filterAware.isPresent()) {
-                filterAware.get().copyTo(filterHolder.getFilterManager());
+            FilterAware filterAware = input.get(MekanismDataComponents.FILTER_AWARE);
+            if (filterAware != null) {
+                //TODO - 1.20.4: Do we need to copy these or can we just pass the raw instance?
+                filterHolder.getFilterManager().trySetFilters(filterAware.filters());
             }
         }
         if (supportsRedstone()) {
-            setControlType(stack.getData(MekanismAttachmentTypes.REDSTONE_CONTROL));
+            setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, getControlType()));
         }
     }
 
-    @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
+    @Override//TODO - 1.20.5: Do we need to override removeComponentsFromTag??
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
         // the server doesn't bother syncing the data to the client. For example with what frequencies there are
-        if (getFrequencyComponent().hasCustomFrequencies()) {
-            stack.getData(MekanismAttachmentTypes.FREQUENCY_COMPONENT).copyFrom(getFrequencyComponent());
+        for (ITileComponent component : components) {
+            component.collectImplicitComponents(builder);
         }
-        if (hasSecurity()) {
-            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
-            if (ownerObject != null) {
-                ownerObject.setOwnerUUID(getOwnerUUID());
-                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-                if (securityObject != null) {
-                    securityObject.setSecurityMode(getSecurityMode());
-                }
+        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+            if (persists(type)) {
+                //TODO - 1.20.5: Figure out container copying
+                //type.copyTo(this, stack);
             }
-        }
-        if (supportsUpgrades()) {
-            stack.getData(MekanismAttachmentTypes.UPGRADES).copyFrom(getComponent());
         }
         if (this instanceof ITileFilterHolder<?> filterHolder) {
             FilterManager<?> filterManager = filterHolder.getFilterManager();
             if (!filterManager.getFilters().isEmpty()) {
-                stack.getData(MekanismAttachmentTypes.FILTER_AWARE).copyFrom(filterManager);
+                builder.set(MekanismDataComponents.FILTER_AWARE, new FilterAware(List.copyOf(filterManager.getFilters())));
             }
         }
         if (supportsRedstone()) {
-            stack.setData(MekanismAttachmentTypes.REDSTONE_CONTROL, controlType);
-        }
-        for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-            if (persists(type)) {
-                type.copyTo(this, stack);
-            }
+            builder.set(MekanismDataComponents.REDSTONE_CONTROL, controlType);
         }
     }
 
@@ -907,7 +858,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.trackForMainContainer(container);
         }
         if (supportsRedstone()) {
-            container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
+            container.track(SyncableEnum.create(RedstoneControl.BY_ID, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         boolean isClient = isRemote();
         if (canHandleGas() && syncs(ContainerType.GAS)) {
@@ -971,8 +922,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         for (ITileComponent component : components) {
             component.addToUpdateTag(updateTag);
         }
@@ -981,8 +932,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
@@ -1010,7 +961,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     //Methods pertaining to IUpgradeableTile
-    public void parseUpgradeData(@NotNull IUpgradeData data) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData data) {
         Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
     }
     //End methods IUpgradeableTile
@@ -1363,16 +1314,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IConfigCardAccess
     @Override
-    public CompoundTag getConfigurationData(Player player) {
+    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
         CompoundTag data = new CompoundTag();
-        writeSustainedData(data);
+        writeSustainedData(provider, data);
         getFrequencyComponent().writeConfiguredFrequencies(data);
         return data;
     }
 
     @Override
-    public void setConfigurationData(Player player, CompoundTag data) {
-        readSustainedData(data);
+    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
+        readSustainedData(provider, data);
         getFrequencyComponent().readConfiguredFrequencies(player, data);
     }
 

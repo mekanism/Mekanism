@@ -1,9 +1,5 @@
 package mekanism.tools.common;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import java.util.ArrayList;
-import java.util.Collection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
@@ -14,8 +10,6 @@ import mekanism.tools.common.registries.ToolsCreativeTabs;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -23,7 +17,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 
 @Mod(MekanismTools.MODID)
 public class MekanismTools implements IModModule {
@@ -48,7 +41,7 @@ public class MekanismTools implements IModModule {
         ToolsItems.ITEMS.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
-        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
     }
 
@@ -74,7 +67,8 @@ public class MekanismTools implements IModModule {
 
     @SuppressWarnings("deprecation")
     private void registerTiers(BaseMekanismMaterial... tiers) {
-        Multimap<Integer, Tier> vanillaTiers = HashMultimap.create();
+        //TODO - 1.20.5: Figure this out
+        /*Multimap<Integer, Tier> vanillaTiers = HashMultimap.create();
         for (Tiers vanillaTier : Tiers.values()) {
             vanillaTiers.put(vanillaTier.getLevel(), vanillaTier);
         }
@@ -86,7 +80,7 @@ public class MekanismTools implements IModModule {
             // and if it is equivalent to a vanilla tier (like all ours are when equivalent), the next tier
             // should also specify the next tier in the before list
             TierSortingRegistry.registerTier(tier, rl(tier.getRegistryPrefix()), new ArrayList<>(equivalent), new ArrayList<>(vanillaNext));
-        }
+        }*/
     }
 
     @Override

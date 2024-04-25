@@ -25,10 +25,7 @@ public class TooltipUtils {
         if (message == null) {
             return null;
         }
-        Tooltip tooltip = Tooltip.create(message);
-        //Set the delay to -1 so that it appears immediately instead of after a single millisecond
-        tooltip.setDelay(-1);
-        return tooltip;
+        return Tooltip.create(message);
     }
 
     public static Tooltip create(ILangEntry... langEntries) {

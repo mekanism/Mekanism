@@ -15,7 +15,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -60,28 +60,30 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (stack.isEmpty()) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         TileEntityLogisticalSorter tile = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
-            return InteractionResult.PASS;
+            //No tile, we can just skip trying to use without an item
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, tile);
+            return genericClientActivated(stack, tile);
         }
         //TODO: Make this be moved into the logistical sorter tile
-        ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                return InteractionResult.FAIL;
+                return ItemInteractionResult.FAIL;
             }
             if (player.isShiftKeyDown()) {
                 if (IRadiationManager.INSTANCE.isRadiationEnabled() && tile.getRadiationScale() > 0) {
                     //Note: This should always be false for the logistical sorter, but we keep it here for good measure
-                    return InteractionResult.FAIL;
+                    return ItemInteractionResult.FAIL;
                 }
                 WorldUtils.dismantleBlock(state, world, pos, player);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
             Direction change = tile.getDirection().getClockWise();
             if (!tile.hasConnectedInventory()) {
@@ -95,9 +97,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
             }
             tile.setFacing(change);
             world.updateNeighborsAt(pos, this);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return tile.openGui(player);
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @NotNull

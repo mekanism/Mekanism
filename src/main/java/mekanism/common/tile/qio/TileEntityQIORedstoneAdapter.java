@@ -1,6 +1,6 @@
 package mekanism.common.tile.qio;
 
-import java.util.Map;
+import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
@@ -11,20 +11,23 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -110,10 +113,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         if (itemType != null) {
-            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.internalToNBT());
+            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.internalToNBT(provider));
         }
         dataMap.putLong(NBTConstants.AMOUNT, count);
         dataMap.putBoolean(NBTConstants.FUZZY_MODE, fuzzy);
@@ -121,9 +124,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
-        NBTUtils.setItemStackIfPresent(dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
+        NBTUtils.setItemStackIfPresent(provider, dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, value -> inverted = value);
@@ -140,15 +143,15 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putBoolean(NBTConstants.EMITTING, isEmitting);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         boolean emitting = tag.getBoolean(NBTConstants.EMITTING);
         if (isEmitting != emitting) {
             isEmitting = emitting;
@@ -157,36 +160,28 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.SINGLE_ITEM, MekanismAttachmentTypes.ITEM_TARGET);
-        remap.put(NBTConstants.AMOUNT, MekanismAttachmentTypes.LONG_AMOUNT);
-        remap.put(NBTConstants.FUZZY_MODE, MekanismAttachmentTypes.FUZZY);
-        remap.put(NBTConstants.INVERSE, MekanismAttachmentTypes.INVERSE);
-        return remap;
-    }
-
-    @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
         if (itemType != null) {
-            stack.setData(MekanismAttachmentTypes.ITEM_TARGET, itemType.getInternalStack());
+            builder.set(MekanismDataComponents.ITEM_TARGET, itemType.getInternalStack());
         }
-        stack.setData(MekanismAttachmentTypes.LONG_AMOUNT, count);
-        stack.setData(MekanismAttachmentTypes.FUZZY, fuzzy);
-        stack.setData(MekanismAttachmentTypes.INVERSE, inverted);
+        builder.set(MekanismDataComponents.LONG_AMOUNT, count);
+        builder.set(MekanismDataComponents.FUZZY, fuzzy);
+        builder.set(MekanismDataComponents.INVERSE, inverted);
     }
 
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        itemType = stack.getExistingData(MekanismAttachmentTypes.ITEM_TARGET)
-              .filter(type -> !type.isEmpty())
-              .map(HashedItem::create)
-              .orElse(null);
-        count = stack.getData(MekanismAttachmentTypes.LONG_AMOUNT);
-        fuzzy = stack.getData(MekanismAttachmentTypes.FUZZY);
-        inverted = stack.getData(MekanismAttachmentTypes.INVERSE);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        ItemStack target = input.get(MekanismDataComponents.ITEM_TARGET);
+        if (target != null && !target.isEmpty()) {
+            itemType = HashedItem.create(target);
+        } else {
+            itemType = null;
+        }
+        count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
+        fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
+        inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

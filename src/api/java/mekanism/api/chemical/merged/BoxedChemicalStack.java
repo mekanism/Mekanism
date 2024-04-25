@@ -10,7 +10,9 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +22,9 @@ public class BoxedChemicalStack implements IHasTextComponent {
      * Empty Boxed Chemical Stack instance.
      */
     public static final BoxedChemicalStack EMPTY = new BoxedChemicalStack(ChemicalType.GAS, GasStack.EMPTY);
+
+    //TODO - 1.20.5: Docs
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> STREAM_CODEC = StreamCodec.ofMember(BoxedChemicalStack::write, BoxedChemicalStack::read);
 
     /**
      * Boxes a Chemical Stack.
@@ -65,6 +70,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
      * @since 10.5.0
      */
     public static BoxedChemicalStack read(FriendlyByteBuf buffer) {
+        //TODO - 1.20.5: Deprecate this in favor of stream codecs?
         if (!buffer.readBoolean()) {
             return EMPTY;
         }

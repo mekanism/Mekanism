@@ -82,7 +82,7 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
             //Validate the provider isn't null, it shouldn't be but just in case
             player.openMenu(provider, buf -> {
                 buf.writeEnum(hand);
-                buf.writeItem(stack);
+                ItemStack.STREAM_CODEC.encode(buf, stack);
             });
         }
     }

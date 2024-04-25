@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,12 +39,12 @@ public class SyncableFrequencyList<FREQUENCY extends Frequency> extends Syncable
     }
 
     @Override
-    protected List<FREQUENCY> deserializeList(FriendlyByteBuf buffer) {
-        return buffer.readList(type::create);
+    protected List<FREQUENCY> deserializeList(RegistryFriendlyByteBuf buffer) {
+        return buffer.readList(buf -> type.create(buffer));
     }
 
     @Override
-    protected void serializeListElement(FriendlyByteBuf buffer, FREQUENCY frequency) {
+    protected void serializeListElement(RegistryFriendlyByteBuf buffer, FREQUENCY frequency) {
         frequency.write(buffer);
     }
 }

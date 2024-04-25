@@ -54,6 +54,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
@@ -76,6 +77,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -383,7 +385,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             if (persistMovement && entity instanceof ServerPlayer player && !(player instanceof FakePlayer)) {
                 player.setDeltaMovement(deltaMovement);
                 //Force sync the delta movement to the client so that they don't stop moving due to the teleport and movement being client sided
-                PacketUtils.sendTo(new PacketSetDeltaMovement(deltaMovement), player);
+                PacketDistributor.sendToPlayer(player, new PacketSetDeltaMovement(deltaMovement));
             }
             return entity;
         }
@@ -678,8 +680,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
         if (color != null) {
             NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
@@ -688,11 +690,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
         if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
-            color = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
+            color = EnumColor.BY_ID.apply(tag.getInt(NBTConstants.COLOR));
         } else {
             color = null;
         }

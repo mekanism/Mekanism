@@ -32,7 +32,7 @@ public class InsertableSlot extends Slot implements IInsertableSlot {
             //Fail if we are a full slot
             return stack;
         }
-        if (current.isEmpty() || ItemHandlerHelper.canItemStacksStack(current, stack)) {
+        if (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack)) {
             int toAdd = Math.min(stack.getCount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item

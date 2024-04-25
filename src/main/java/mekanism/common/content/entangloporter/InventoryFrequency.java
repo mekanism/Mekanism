@@ -57,9 +57,11 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -117,55 +119,55 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT());
-        nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
-        nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT());
-        nbtTags.put(NBTConstants.INFUSE_TYPE_STORED, storedInfusion.serializeNBT());
-        nbtTags.put(NBTConstants.PIGMENT_STORED, storedPigment.serializeNBT());
-        nbtTags.put(NBTConstants.SLURRY_STORED, storedSlurry.serializeNBT());
-        nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT());
-        nbtTags.put(NBTConstants.HEAT_STORED, storedHeat.serializeNBT());
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
+        nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT(provider));
+        nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT(provider));
+        nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT(provider));
+        nbtTags.put(NBTConstants.INFUSE_TYPE_STORED, storedInfusion.serializeNBT(provider));
+        nbtTags.put(NBTConstants.PIGMENT_STORED, storedPigment.serializeNBT(provider));
+        nbtTags.put(NBTConstants.SLURRY_STORED, storedSlurry.serializeNBT(provider));
+        nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT(provider));
+        nbtTags.put(NBTConstants.HEAT_STORED, storedHeat.serializeNBT(provider));
     }
 
     @Override
-    protected void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        storedEnergy.deserializeNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
-        storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
-        storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
-        storedInfusion.deserializeNBT(nbtTags.getCompound(NBTConstants.INFUSE_TYPE_STORED));
-        storedPigment.deserializeNBT(nbtTags.getCompound(NBTConstants.PIGMENT_STORED));
-        storedSlurry.deserializeNBT(nbtTags.getCompound(NBTConstants.SLURRY_STORED));
-        storedItem.deserializeNBT(nbtTags.getCompound(NBTConstants.ITEM));
-        storedHeat.deserializeNBT(nbtTags.getCompound(NBTConstants.HEAT_STORED));
+    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
+        storedEnergy.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.ENERGY_STORED));
+        storedFluid.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.FLUID_STORED));
+        storedGas.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.GAS_STORED));
+        storedInfusion.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.INFUSE_TYPE_STORED));
+        storedPigment.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.PIGMENT_STORED));
+        storedSlurry.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.SLURRY_STORED));
+        storedItem.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.ITEM));
+        storedHeat.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.HEAT_STORED));
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
         storedEnergy.getEnergy().writeToBuffer(buffer);
-        buffer.writeFluidStack(storedFluid.getFluid());
+        FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedFluid.getFluid());
         ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
         ChemicalUtils.writeChemicalStack(buffer, storedInfusion.getStack());
         ChemicalUtils.writeChemicalStack(buffer, storedPigment.getStack());
         ChemicalUtils.writeChemicalStack(buffer, storedSlurry.getStack());
-        buffer.writeNbt(storedItem.serializeNBT());
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedItem.getStack());
         buffer.writeDouble(storedHeat.getHeat());
     }
 
     @Override
-    protected void read(FriendlyByteBuf dataStream) {
+    protected void read(RegistryFriendlyByteBuf dataStream) {
         super.read(dataStream);
         presetVariables();
         storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
-        storedFluid.setStack(dataStream.readFluidStack());
+        storedFluid.setStack(FluidStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedInfusion.setStack(ChemicalUtils.readInfusionStack(dataStream));
         storedPigment.setStack(ChemicalUtils.readPigmentStack(dataStream));
         storedSlurry.setStack(ChemicalUtils.readSlurryStack(dataStream));
-        storedItem.deserializeNBT(dataStream.readNbt());
+        storedItem.setStack(ItemStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedHeat.setHeat(dataStream.readDouble());
     }
 

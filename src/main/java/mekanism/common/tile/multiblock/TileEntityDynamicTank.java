@@ -11,6 +11,7 @@ import mekanism.common.util.FluidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,18 +28,25 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 if (manageInventory(multiblock, player, hand, stack)) {
                     player.getInventory().setChanged();
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
-                return openGui(player);
+                InteractionResult result = openGui(player);
+                return switch (result) {
+                    case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
+                    case CONSUME -> ItemInteractionResult.CONSUME;
+                    case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
+                    case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    case FAIL -> ItemInteractionResult.FAIL;
+                };
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @NotNull

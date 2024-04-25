@@ -1,18 +1,42 @@
 package mekanism.common.content.qio.filter;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
+import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
+
+    public static final MapCodec<QIOTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
+          .and(Codec.STRING.fieldOf(NBTConstants.TAG_NAME).forGetter(QIOTagFilter::getTagName))
+          .apply(instance, QIOTagFilter::new));
+    public static final StreamCodec<ByteBuf, QIOTagFilter> STREAM_CODEC = StreamCodec.composite(
+          baseQIOStreamCodec(QIOTagFilter::new), Function.identity(),
+          ByteBufCodecs.STRING_UTF8, QIOTagFilter::getTagName,
+          (filter, tagName) -> {
+              filter.tagName = tagName;
+              return filter;
+          }
+    );
 
     private String tagName;
 
     public QIOTagFilter() {
+    }
+
+    protected QIOTagFilter(boolean enabled, String tagName) {
+        super(enabled);
+        this.tagName = tagName;
     }
 
     public QIOTagFilter(QIOTagFilter filter) {
@@ -23,31 +47,6 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     @Override
     public Finder getFinder() {
         return Finder.tag(tagName);
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeUtf(tagName);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        tagName = dataStream.readUtf();
     }
 
     @Override

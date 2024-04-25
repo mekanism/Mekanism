@@ -6,42 +6,36 @@ import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
-import mekanism.common.util.RegistryUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("fluid_network");
-
-    public PacketFluidNetworkContents(FriendlyByteBuf buffer) {
-        this(buffer.readUUID(), FluidStack.readFromPacket(buffer));
-    }
+    public static final CustomPacketPayload.Type<PacketFluidNetworkContents> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fluid_network"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketFluidNetworkContents> STREAM_CODEC = StreamCodec.composite(
+          UUIDUtil.STREAM_CODEC, PacketFluidNetworkContents::networkID,
+          FluidStack.OPTIONAL_STREAM_CODEC, PacketFluidNetworkContents::fluid,
+          PacketFluidNetworkContents::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketFluidNetworkContents> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         //Note: We set the information even if opaque transmitters is true in case the client turns the config setting off
         // so that they will have the proper information to then render
         DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getInstance().getClientNetwork(networkID);
         if (clientNetwork instanceof FluidNetwork network) {
             network.setLastFluid(fluid);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeUUID(networkID);
-        fluid.writeToPacket(buffer);
-        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(fluid.getFluid()), networkID);
     }
 }

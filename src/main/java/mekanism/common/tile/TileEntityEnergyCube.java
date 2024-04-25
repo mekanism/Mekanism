@@ -29,6 +29,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -115,19 +116,19 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             chargeSlot.setStack(data.chargeSlot.getStack());
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            dischargeSlot.deserializeNBT(data.dischargeSlot.serializeNBT());
+            dischargeSlot.deserializeNBT(provider, data.dischargeSlot.serializeNBT(provider));
             for (ITileComponent component : getComponents()) {
-                component.read(data.components);
+                component.read(data.components, provider);
             }
         } else {
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
         }
     }
 
@@ -137,8 +138,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @NotNull
     @Override
-    public EnergyCubeUpgradeData getUpgradeData() {
-        return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents());
+    public EnergyCubeUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new EnergyCubeUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents());
     }
 
     public float getEnergyScale() {
@@ -147,14 +148,14 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putFloat(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         ConfigInfo config = getConfig().getConfig(TransmissionType.ENERGY);
         DataType[] currentConfig = new DataType[EnumUtils.SIDES.length];
         if (config != null) {
@@ -162,7 +163,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
                 currentConfig[side.ordinal()] = config.getDataType(side);
             }
         }
-        super.handleUpdateTag(tag);
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
         if (config != null) {
             for (RelativeSide side : EnumUtils.SIDES) {

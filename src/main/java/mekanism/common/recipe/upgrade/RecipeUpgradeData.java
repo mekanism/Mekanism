@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -14,9 +13,10 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.DriveMetadata;
+import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.content.qio.IQIODriveItem;
@@ -29,8 +29,9 @@ import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -48,7 +49,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     /**
      * @return {@code false} if it failed to apply to the stack due to being invalid
      */
-    boolean applyToStack(ItemStack stack);
+    boolean applyToStack(HolderLookup.Provider provider, ItemStack stack);
 
     @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {
@@ -144,13 +145,12 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
-            case SORTING -> stack.getData(MekanismAttachmentTypes.SORTING) ? SortingRecipeData.SORTING : null;
+            case SORTING -> stack.getOrDefault(MekanismDataComponents.SORTING, false) ? SortingRecipeData.SORTING : null;
             case UPGRADE -> {
-                Optional<UpgradeAware> existingData = stack.getExistingData(MekanismAttachmentTypes.UPGRADES);
-                if (existingData.isPresent()) {
-                    UpgradeAware upgradeAware = existingData.get();
-                    Map<Upgrade, Integer> upgrades = upgradeAware.getUpgrades();
-                    List<IInventorySlot> slots = upgradeAware.getInventorySlots(null);
+                UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+                if (upgradeAware != null) {
+                    Map<Upgrade, Integer> upgrades = upgradeAware.upgrades();
+                    List<IInventorySlot> slots = upgradeAware.asInventorySlots();
                     if (!upgrades.isEmpty() || slots.stream().anyMatch(slot -> !slot.isEmpty())) {
                         yield new UpgradesRecipeData(upgrades, slots);
                     }
@@ -158,10 +158,13 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield null;
             }
             case QIO_DRIVE -> {
-                DriveMetadata data = stack.getData(MekanismAttachmentTypes.DRIVE_METADATA);
+                DriveMetadata data = stack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
                 if (data.count() > 0 && data.types() > 0) {
                     //If we don't have any stored items don't actually grab any recipe data
-                    yield new QIORecipeData(data);
+                    DriveContents contents = stack.get(MekanismDataComponents.DRIVE_CONTENTS);
+                    if (contents != null) {
+                        yield new QIORecipeData(data, contents);
+                    }
                 }
                 yield null;
             }

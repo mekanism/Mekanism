@@ -6,55 +6,50 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
+import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketSetTileFrequency<FREQ extends Frequency> extends PacketSetFrequency<FREQ> {
+public record PacketSetTileFrequency(boolean set, TypedIdentity data, BlockPos pos) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("set_tile_frequency");
+    public static final CustomPacketPayload.Type<PacketSetTileFrequency> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_tile_frequency"));
+    public static final StreamCodec<FriendlyByteBuf, PacketSetTileFrequency> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.BOOL, PacketSetTileFrequency::set,
+          TypedIdentity.STREAM_CODEC, PacketSetTileFrequency::data,
+          BlockPos.STREAM_CODEC, PacketSetTileFrequency::pos,
+          PacketSetTileFrequency::new
+    );
 
-    private final BlockPos pos;
-
-    public PacketSetTileFrequency(FriendlyByteBuf buf) {
-        super(buf);
-        this.pos = buf.readBlockPos();
-    }
-
-    public PacketSetTileFrequency(boolean set, FrequencyType<FREQ> type, FrequencyIdentity data, BlockPos pos) {
-        super(set, type, data);
-        this.pos = pos;
+    public PacketSetTileFrequency(boolean set, FrequencyType<?> type, FrequencyIdentity data, BlockPos pos) {
+        this(set, new TypedIdentity(type, data), pos);
     }
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketSetTileFrequency> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            BlockEntity tile = WorldUtils.getTileEntity(player.level(), pos);
-            if (tile instanceof IFrequencyHandler frequencyHandler && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, tile)) {
-                if (set) {
-                    frequencyHandler.setFrequency(type, data, player.getUUID());
-                } else {
-                    frequencyHandler.removeFrequency(type, data, player.getUUID());
-                }
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        BlockEntity tile = WorldUtils.getTileEntity(player.level(), pos);
+        if (tile instanceof IFrequencyHandler frequencyHandler && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), pos, tile)) {
+            if (set) {
+                frequencyHandler.setFrequency(data.type(), data.data(), player.getUUID());
+            } else {
+                frequencyHandler.removeFrequency(data.type(), data.data(), player.getUUID());
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeBlockPos(pos);
     }
 }

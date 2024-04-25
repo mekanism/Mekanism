@@ -62,14 +62,14 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
-            Direction side = Direction.getNearestStable(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
+            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
         }
     }
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType type) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         return false;
     }
 
@@ -147,7 +147,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
                 //Unpack the ordinal of the connection type (shift so that significant bits are the two rightmost
                 // and then read those two bits
                 int index = (packed >> (side.ordinal() * 2)) & 0b11;
-                ConnectionType connectionType = ConnectionType.byIndexStatic(index);
+                ConnectionType connectionType = ConnectionType.BY_ID.apply(index);
                 if (connectionType != ConnectionType.NONE) {
                     shapes.add(getSide(connectionType, side));
                 }

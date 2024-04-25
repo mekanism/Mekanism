@@ -65,8 +65,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     fluid = liquidBlock.getFluid();
                 } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
                     fluid = fluidBlock.getFluid();
-                } else if (state.getBlock() instanceof BubbleColumnBlock bubbleColumn) {
-                    fluid = bubbleColumn.getFluidState(state).getType();
+                } else if (state.getBlock() instanceof BubbleColumnBlock) {
+                    fluid = level.getFluidState(p).getType();
                 }
                 if (fluid == Fluids.EMPTY) {
                     blockList.add(new BlockInfo<>(state, state, null));

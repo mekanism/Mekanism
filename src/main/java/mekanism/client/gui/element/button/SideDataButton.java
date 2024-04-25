@@ -117,6 +117,6 @@ public class SideDataButton extends BasicColorButton {
     @FunctionalInterface
     public interface SideDataPacketCreator {
 
-        IMekanismPacket<?> create(BlockPos pos, MekClickType clickType, RelativeSide inputSide);
+        IMekanismPacket create(BlockPos pos, MekClickType clickType, RelativeSide inputSide);
     }
 }

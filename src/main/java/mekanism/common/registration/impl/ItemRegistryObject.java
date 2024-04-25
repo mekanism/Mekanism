@@ -15,12 +15,12 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -87,15 +87,16 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     }
 
     @Internal
-    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedTanks(Supplier<AttachmentType<TANK>> backingAttachment, boolean supportsFluid,
+    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedTanks(Supplier<DataComponentType<TANK>> backingAttachment, boolean supportsFluid,
           boolean exposeCapability) {
-        int added = addMissingTankType(ContainerType.GAS, exposeCapability, stack -> stack.getData(backingAttachment).getGasTank());
-        added += addMissingTankType(ContainerType.INFUSION, exposeCapability, stack -> stack.getData(backingAttachment).getInfusionTank());
-        added += addMissingTankType(ContainerType.PIGMENT, exposeCapability, stack -> stack.getData(backingAttachment).getPigmentTank());
-        added += addMissingTankType(ContainerType.SLURRY, exposeCapability, stack -> stack.getData(backingAttachment).getSlurryTank());
+        //TODO - 1.20.5: Fix all these stack.get(component) calls
+        int added = addMissingTankType(ContainerType.GAS, exposeCapability, stack -> stack.get(backingAttachment).getGasTank());
+        added += addMissingTankType(ContainerType.INFUSION, exposeCapability, stack -> stack.get(backingAttachment).getInfusionTank());
+        added += addMissingTankType(ContainerType.PIGMENT, exposeCapability, stack -> stack.get(backingAttachment).getPigmentTank());
+        added += addMissingTankType(ContainerType.SLURRY, exposeCapability, stack -> stack.get(backingAttachment).getSlurryTank());
         if (supportsFluid) {
-            Supplier<AttachmentType<MergedTank>> attachment = (Supplier) backingAttachment;
-            added += addMissingTankType(ContainerType.FLUID, exposeCapability, stack -> stack.getData(attachment).getFluidTank());
+            Supplier<DataComponentType<MergedTank>> attachment = (Supplier) backingAttachment;
+            added += addMissingTankType(ContainerType.FLUID, exposeCapability, stack -> stack.get(attachment).getFluidTank());
         }
         if (added == 0) {
             throw new IllegalStateException("Unnecessary addMissingMergedTanks call");
@@ -118,6 +119,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Internal
     void registerCapabilities(RegisterCapabilitiesEvent event) {
         if (asItem() instanceof ICapabilityAware capabilityAware) {
+            //TODO - 1.20.5: Re-evaluate how we are handling item capabilities. Should we cache the capability wrapper somewhere somehow?
             capabilityAware.attachCapabilities(event);
         }
         if (containerCapabilities != null) {

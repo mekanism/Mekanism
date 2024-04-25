@@ -62,7 +62,6 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return ejecting;
     }
 
-    @Override
     public void setEjecting(boolean ejecting) {
         this.ejecting = ejecting;
     }
@@ -94,9 +93,14 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return sideConfig.entrySet();
     }
 
-    @Override
     public boolean setDataType(@NotNull DataType dataType, @NotNull RelativeSide side) {
         return isSideEnabled(side) && sideConfig.put(side, dataType) != dataType;
+    }
+
+    public void setDataType(@NotNull DataType dataType, @NotNull RelativeSide... sides) {
+        for (RelativeSide side : sides) {
+            setDataType(dataType, side);
+        }
     }
 
     @NotNull

@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -28,20 +29,20 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-        ItemStack resultItem = getResultItem(registryAccess);
+    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
+        ItemStack resultItem = getResultItem(provider);
         if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
         }
         ItemStack toReturn = resultItem.copy();
-        List<ItemStack> attachmentInputs = new ArrayList<>();
+        List<ItemStack> componentInputs = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (!stack.isEmpty() && stack.hasAttachments()) {
-                attachmentInputs.add(stack);
+            if (!stack.isEmpty() && !stack.getComponents().isEmpty()) {
+                componentInputs.add(stack);
             }
         }
-        if (attachmentInputs.isEmpty()) {
+        if (componentInputs.isEmpty()) {
             //If none of our items have NBT we can skip checking what data can be transferred
             return toReturn;
         }
@@ -52,7 +53,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
         }
         Map<RecipeUpgradeType, List<RecipeUpgradeData<?>>> upgradeInfo = new EnumMap<>(RecipeUpgradeType.class);
         //Only bother checking input items that have NBT as ones that do not, don't have any data they may need to transfer
-        for (ItemStack stack : attachmentInputs) {
+        for (ItemStack stack : componentInputs) {
             Set<RecipeUpgradeType> stackSupportedTypes = RecipeUpgradeData.getSupportedTypes(stack);
             for (RecipeUpgradeType supportedType : stackSupportedTypes) {
                 if (supportedTypes.contains(supportedType)) {
@@ -69,7 +70,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             if (!upgradeData.isEmpty()) {
                 //Skip any empty data, even though we should never have any
                 RecipeUpgradeData<?> data = RecipeUpgradeData.mergeUpgradeData(upgradeData);
-                if (data == null || !data.applyToStack(toReturn)) {
+                if (data == null || !data.applyToStack(provider, toReturn)) {
                     //Fail, incompatible data
                     return ItemStack.EMPTY;
                 }

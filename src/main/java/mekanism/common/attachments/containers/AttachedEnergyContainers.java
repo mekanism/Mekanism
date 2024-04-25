@@ -24,9 +24,4 @@ public class AttachedEnergyContainers extends AttachedContainers<IEnergyContaine
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return containers;
     }
-
-    @Override
-    protected boolean isContainerCompatible(IEnergyContainer a, IEnergyContainer b) {
-        return a.isCompatible(b);
-    }
 }

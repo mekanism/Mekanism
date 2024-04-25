@@ -1,6 +1,14 @@
 package mekanism.common.content.transporter;
 
+import com.mojang.datafixers.Products.P6;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
@@ -9,16 +17,46 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
-import mekanism.common.util.NBTUtils;
-import mekanism.common.util.TransporterUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
 
     public static final int MAX_LENGTH = 48;
 
+    protected static <FILTER extends SorterFilter<FILTER>> P6<Mu<FILTER>, Boolean, Boolean, Boolean, Integer, Integer, Optional<EnumColor>> baseSorterCodec(Instance<FILTER> instance) {
+        return baseCodec(instance)
+              .and(Codec.BOOL.optionalFieldOf(NBTConstants.ALLOW_DEFAULT, false).forGetter(filter -> filter.allowDefault))
+              .and(Codec.BOOL.optionalFieldOf(NBTConstants.SIZE_MODE, false).forGetter(filter -> filter.sizeMode))
+              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(NBTConstants.MIN, 0).forGetter(filter -> filter.min))
+              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(NBTConstants.MAX, 0).forGetter(filter -> filter.max))
+              .and(EnumColor.CODEC.optionalFieldOf(NBTConstants.COLOR).forGetter(filter -> Optional.ofNullable(filter.color)))
+              ;
+    }
+
+    protected static <FILTER extends SorterFilter<FILTER>> StreamCodec<ByteBuf, FILTER> baseSorterStreamCodec(Supplier<FILTER> constructor) {
+        return StreamCodec.composite(
+              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              ByteBufCodecs.BOOL, filter -> filter.allowDefault,
+              ByteBufCodecs.BOOL, filter -> filter.sizeMode,
+              ByteBufCodecs.VAR_INT, filter -> filter.min,
+              ByteBufCodecs.VAR_INT, filter -> filter.max,
+              ByteBufCodecs.optional(EnumColor.STREAM_CODEC), filter -> Optional.ofNullable(filter.color),
+              (filter, allowDefault, sizeMode, min, max, color) -> {
+                  filter.allowDefault = allowDefault;
+                  filter.color = color.orElse(null);
+                  filter.sizeMode = sizeMode;
+                  filter.min = min;
+                  filter.max = max;
+                  return filter;
+              }
+        );
+    }
+
+    @Nullable
     @SyntheticComputerMethod(getter = "getColor", setter = "setColor", threadSafeGetter = true, threadSafeSetter = true)
     public EnumColor color;
     @SyntheticComputerMethod(getter = "getAllowDefault", setter = "setAllowDefault", threadSafeGetter = true, threadSafeSetter = true)
@@ -31,6 +69,15 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     public int max;
 
     protected SorterFilter() {
+    }
+
+    protected SorterFilter(boolean enabled, boolean allowDefault, boolean sizeMode, int min, int max, @Nullable EnumColor color) {
+        super(enabled);
+        this.allowDefault = allowDefault;
+        this.sizeMode = sizeMode;
+        this.min = min;
+        this.max = max;
+        this.color = color;
     }
 
     protected SorterFilter(FILTER filter) {
@@ -49,49 +96,6 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
             return TransitRequest.definedItem(itemHandler, min, max, getFinder());
         }
         return TransitRequest.definedItem(itemHandler, singleItem ? 1 : 64, getFinder());
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putBoolean(NBTConstants.ALLOW_DEFAULT, allowDefault);
-        if (color != null) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
-        }
-        nbtTags.putBoolean(NBTConstants.SIZE_MODE, sizeMode);
-        nbtTags.putInt(NBTConstants.MIN, min);
-        nbtTags.putInt(NBTConstants.MAX, max);
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ALLOW_DEFAULT, value -> allowDefault = value);
-        this.color = NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SIZE_MODE, value -> sizeMode = value);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, value -> min = value);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, value -> max = value);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeBoolean(allowDefault);
-        buffer.writeVarInt(TransporterUtils.getColorIndex(color));
-        buffer.writeBoolean(sizeMode);
-        buffer.writeVarInt(min);
-        buffer.writeVarInt(max);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        allowDefault = dataStream.readBoolean();
-        color = TransporterUtils.readColor(dataStream.readVarInt());
-        sizeMode = dataStream.readBoolean();
-        min = dataStream.readVarInt();
-        max = dataStream.readVarInt();
     }
 
     @Override

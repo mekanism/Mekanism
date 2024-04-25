@@ -1,7 +1,6 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -10,7 +9,7 @@ import mekanism.common.attachments.BlockData;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.RegistryUtils;
@@ -18,6 +17,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,12 +39,11 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        Optional<BlockData> existingData = stack.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
-        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData.isPresent(), true)));
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (existingData.isPresent()) {
-            existingData.get().addToTooltip(tooltip::add);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        BlockData existingData = stack.get(MekanismDataComponents.BLOCK_DATA);
+        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
+        if (existingData != null) {
+            existingData.addToTooltip(tooltip::add);
         }
     }
 
@@ -71,7 +70,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        if (!stack.hasData(MekanismAttachmentTypes.BLOCK_DATA) && !player.isShiftKeyDown()) {
+        if (!stack.has(MekanismDataComponents.BLOCK_DATA) && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(world, pos) != -1) {
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
@@ -90,7 +89,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     return InteractionResult.FAIL;
                 }
                 if (!world.isClientSide) {
-                    BlockData data = BlockData.create(state, tile);
+                    BlockData data = new BlockData(world.registryAccess(), state, tile);
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
@@ -102,7 +101,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
-                        box.setData(MekanismAttachmentTypes.BLOCK_DATA, data);
+                        DataComponentMap blockData = DataComponentMap.builder()
+                              .set(MekanismDataComponents.BLOCK_DATA, data)
+                              .build();
+                        if (box.components().isEmpty()) {
+                            box.setComponents(blockData);
+                        } else {
+                            box.setComponents(DataComponentMap.composite(blockData, box.components()));
+                        }
                     }
                 }
                 return InteractionResult.SUCCESS;

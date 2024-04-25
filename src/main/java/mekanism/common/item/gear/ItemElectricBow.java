@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -9,13 +8,15 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,14 +28,15 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +47,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getMode(stack))));
     }
@@ -63,7 +65,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
                     return;
                 }
             }
-            boolean infinity = player.isCreative() || stack.getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0;
+            boolean infinity = player.isCreative() || stack.getEnchantmentLevel(Enchantments.INFINITY) > 0;
             ItemStack ammo = player.getProjectile(stack);
             int charge = EventHooks.onArrowLoose(stack, world, player, getUseDuration(stack) - timeLeft, !ammo.isEmpty() || infinity);
             if (charge < 0) {
@@ -86,16 +88,16 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
                     if (velocity == 1) {
                         arrowEntity.setCritArrow(true);
                     }
-                    int power = stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                    int power = stack.getEnchantmentLevel(Enchantments.POWER);
                     if (power > 0) {
                         arrowEntity.setBaseDamage(arrowEntity.getBaseDamage() + 0.5 * power + 0.5);
                     }
-                    int punch = stack.getEnchantmentLevel(Enchantments.PUNCH_ARROWS);
+                    int punch = stack.getEnchantmentLevel(Enchantments.PUNCH);
                     if (punch > 0) {
                         arrowEntity.setKnockback(punch);
                     }
-                    if (stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
-                        arrowEntity.setSecondsOnFire(5 * SharedConstants.TICKS_PER_SECOND);
+                    if (stack.getEnchantmentLevel(Enchantments.FLAME) > 0) {
+                        arrowEntity.setRemainingFireTicks(5 * SharedConstants.TICKS_PER_SECOND);
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
                     if (energyContainer != null) {
@@ -123,31 +125,39 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
         // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
-        return enchantment != Enchantments.FLAMING_ARROWS && super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment != Enchantments.FLAME && super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) {
             return 0;
-        } else if (enchantment == Enchantments.FLAMING_ARROWS && getMode(stack)) {
+        } else if (enchantment == Enchantments.FLAME && getMode(stack)) {
             return Math.max(1, super.getEnchantmentLevel(stack, enchantment));
         }
         return super.getEnchantmentLevel(stack, enchantment);
     }
 
+    @NotNull
     @Override
-    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
-        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        if (getMode(stack)) {
-            enchantments.merge(Enchantments.FLAMING_ARROWS, 1, Math::max);
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack);
+        if (getMode(stack) && enchantments.getLevel(Enchantments.FLAME) == 0) {
+            ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
+            mutable.set(Enchantments.FLAME, 1);
+            return mutable.toImmutable();
         }
         return enchantments;
     }
 
     @Override
-    public AttachmentType<Boolean> getModeAttachment() {
-        return MekanismAttachmentTypes.ELECTRIC_BOW_MODE.get();
+    public DataComponentType<Boolean> getModeDataType() {
+        return MekanismDataComponents.ELECTRIC_BOW_MODE.get();
+    }
+
+    @Override
+    public Boolean getDefaultMode() {
+        return Boolean.FALSE;
     }
 
     @Override

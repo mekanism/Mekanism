@@ -32,6 +32,7 @@ import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -252,7 +253,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(pos, deletes, needsSync), getTransmitterTile());
+                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(getLevel().registryAccess(), pos, deletes, needsSync), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     OfInt ofInt = deletes.iterator();
                     while (ofInt.hasNext()) {
@@ -291,13 +292,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
-        updateTag = super.getReducedUpdateTag(updateTag);
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
+        updateTag = super.getReducedUpdateTag(provider, updateTag);
         ListTag stacks = new ListTag();
         for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
             CompoundTag tagCompound = new CompoundTag();
             tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
-            entry.getValue().writeToUpdateTag(this, tagCompound);
+            entry.getValue().writeToUpdateTag(provider, this, tagCompound);
             stacks.add(tagCompound);
         }
         if (!stacks.isEmpty()) {
@@ -307,49 +308,49 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         transit.clear();
         if (tag.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
             ListTag tagList = tag.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 CompoundTag compound = tagList.getCompound(i);
-                TransporterStack stack = TransporterStack.readFromUpdate(compound);
+                TransporterStack stack = TransporterStack.readFromUpdate(provider, compound);
                 addStack(compound.getInt(NBTConstants.INDEX), stack);
             }
         }
     }
 
     @Override
-    public void read(@NotNull CompoundTag nbtTags) {
-        super.read(nbtTags);
-        readFromNBT(nbtTags);
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
+        readFromNBT(provider, nbtTags);
     }
 
-    protected void readFromNBT(CompoundTag nbtTags) {
+    protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         if (nbtTags.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
             ListTag tagList = nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                addStack(nextId++, TransporterStack.readFromNBT(tagList.getCompound(i)));
+                addStack(nextId++, TransporterStack.readFromNBT(provider, tagList.getCompound(i)));
             }
         }
     }
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
-        super.write(nbtTags);
-        writeToNBT(nbtTags);
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
+        writeToNBT(provider, nbtTags);
         return nbtTags;
     }
 
-    public void writeToNBT(CompoundTag nbtTags) {
+    public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         Collection<TransporterStack> transit = getTransit();
         if (!transit.isEmpty()) {
             ListTag stacks = new ListTag();
             for (TransporterStack stack : transit) {
                 CompoundTag tagCompound = new CompoundTag();
-                stack.write(tagCompound);
+                stack.write(provider, tagCompound);
                 stacks.add(tagCompound);
             }
             nbtTags.put(NBTConstants.ITEMS, stacks);
@@ -440,7 +441,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);
-                PacketUtils.sendToAllTracking(new PacketTransporterSync(getBlockPos(), stackId, stack), getTransmitterTile());
+                PacketUtils.sendToAllTracking(new PacketTransporterSync(getLevel().registryAccess(), getBlockPos(), stackId, stack), getTransmitterTile());
                 getTransmitterTile().markForSave();
             }
         }

@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server;
 
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -19,8 +18,9 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -29,30 +29,27 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("portable_teleport");
-
-    public PacketPortableTeleporterTeleport(FriendlyByteBuf buffer) {
-        this(buffer.readEnum(InteractionHand.class), FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer));
-    }
+    public static final CustomPacketPayload.Type<PacketPortableTeleporterTeleport> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("portable_teleport"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketPortableTeleporterTeleport> STREAM_CODEC = StreamCodec.composite(
+          PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketPortableTeleporterTeleport::currentHand,
+          FrequencyType.TELEPORTER.getIdentitySerializer().streamCodec(), PacketPortableTeleporterTeleport::identity,
+          PacketPortableTeleporterTeleport::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketPortableTeleporterTeleport> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Optional<ServerPlayer> sender = PacketUtils.asServerPlayer(context);
-        if (sender.isEmpty()) {
-            return;
-        }
-        ServerPlayer player = sender.get();
+    public void handle(IPayloadContext context) {
+        ServerPlayer player = (ServerPlayer) context.player();
         ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
             TeleporterFrequency found = FrequencyType.TELEPORTER.getFrequency(identity, player.getUUID());
@@ -113,11 +110,5 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeEnum(currentHand);
-        FrequencyType.TELEPORTER.getIdentitySerializer().write(buffer, identity);
     }
 }

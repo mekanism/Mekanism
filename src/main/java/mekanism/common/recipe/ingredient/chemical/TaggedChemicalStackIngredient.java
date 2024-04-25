@@ -8,18 +8,23 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
+import mekanism.api.recipes.ingredients.IngredientType;
+import mekanism.common.network.PacketUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
@@ -31,11 +36,19 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         ).apply(instance, constructor));
     }
 
-    @NotNull
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CLAZZ extends TaggedChemicalStackIngredient<CHEMICAL, STACK>>
+    StreamCodec<RegistryFriendlyByteBuf, CLAZZ> makeStreamCodec(ResourceKey<? extends Registry<CHEMICAL>> registry, BiFunction<TagKey<CHEMICAL>, Long, CLAZZ> constructor) {
+        return StreamCodec.composite(
+              PacketUtils.tagKeyCodec(registry), TaggedChemicalStackIngredient::getTag,
+              ByteBufCodecs.VAR_LONG, TaggedChemicalStackIngredient::getRawAmount,
+              constructor
+        );
+    }
+
     private final HolderSet.Named<CHEMICAL> tag;
     private final long amount;
 
-    protected TaggedChemicalStackIngredient(@NotNull HolderSet.Named<CHEMICAL> tag, long amount) {
+    protected TaggedChemicalStackIngredient(HolderSet.Named<CHEMICAL> tag, long amount) {
         this.tag = tag;
         this.amount = amount;
     }
@@ -43,23 +56,22 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
 
     @Override
-    public boolean test(@NotNull STACK chemicalStack) {
+    public boolean test(STACK chemicalStack) {
         return testType(chemicalStack) && chemicalStack.getAmount() >= amount;
     }
 
     @Override
-    public boolean testType(@NotNull STACK chemicalStack) {
+    public boolean testType(STACK chemicalStack) {
         return testType(Objects.requireNonNull(chemicalStack).getType());
     }
 
     @Override
-    public boolean testType(@NotNull CHEMICAL chemical) {
+    public boolean testType(CHEMICAL chemical) {
         return Objects.requireNonNull(chemical).is(getTag());
     }
 
-    @NotNull
     @Override
-    public STACK getMatchingInstance(@NotNull STACK chemicalStack) {
+    public STACK getMatchingInstance(STACK chemicalStack) {
         if (test(chemicalStack)) {
             //Our chemical is in the tag, so we make a new stack with the given amount
             return getIngredientInfo().createStack(chemicalStack, amount);
@@ -68,7 +80,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @Override
-    public long getNeededAmount(@NotNull STACK stack) {
+    public long getNeededAmount(STACK stack) {
         return testType(stack) ? amount : 0;
     }
 
@@ -81,7 +93,6 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return tag.size() == 0;
     }
 
-    @NotNull
     @Override
     public List<@NotNull STACK> getRepresentations() {
         ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
@@ -105,10 +116,8 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeEnum(IngredientType.TAGGED);
-        buffer.writeResourceLocation(getTag().location());
-        buffer.writeVarLong(amount);
+    public IngredientType getType() {
+        return IngredientType.TAGGED;
     }
 
     @Override

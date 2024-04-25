@@ -33,6 +33,7 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -52,7 +53,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
-    public void apply(T data) {
+    public void apply(HolderLookup.Provider provider, T data) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
             List<? extends INBTSerializable<CompoundTag>> containers = type.getContainerList(data);
             if (containers != null) {
@@ -60,7 +61,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
                 for (int i = 0; i < cacheContainers.size(); i++) {
                     if (i < containers.size()) {
                         //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                        containers.get(i).deserializeNBT(cacheContainers.get(i).serializeNBT());
+                        containers.get(i).deserializeNBT(provider, cacheContainers.get(i).serializeNBT(provider));
                     }
                 }
             }
@@ -82,15 +83,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
     }
 
-    public void load(CompoundTag nbtTags) {
+    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            type.readFrom(nbtTags, this);
+            type.readFrom(provider, nbtTags, this);
         }
     }
 
-    public void save(CompoundTag nbtTags) {
+    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            type.saveTo(nbtTags, this);
+            type.saveTo(provider, nbtTags, this);
         }
     }
 
@@ -366,21 +367,21 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             return containerType.getTag() + "_stored";
         }
 
-        public void readFrom(CompoundTag tag, MultiblockCache<?> cache) {
+        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> cache) {
             int stored = tag.getInt(getStoredTagKey());
             if (stored > 0) {
                 prefab(cache, stored);
-                containerType.readFrom(tag, getContainerList(cache));
+                containerType.readFrom(provider, tag, getContainerList(cache));
             }
         }
 
-        public void saveTo(CompoundTag tag, MultiblockCache<?> holder) {
+        public void saveTo(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> holder) {
             List<ELEMENT> containers = getContainerList(holder);
             if (!containers.isEmpty()) {
                 //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
                 // because getInt will default to 0 for keys that aren't present
                 tag.putInt(getStoredTagKey(), containers.size());
-                containerType.saveTo(tag, getContainerList(holder));
+                containerType.saveTo(provider, tag, getContainerList(holder));
             }
         }
     }

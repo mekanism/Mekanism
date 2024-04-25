@@ -16,8 +16,11 @@ import java.util.function.Predicate;
 import mekanism.common.base.TagCache;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.TriPredicate;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SearchQueryParser {
 
-    private static final ISearchQuery INVALID = stack -> false;
+    private static final ISearchQuery INVALID = (level, stack) -> false;
     private static final Set<Character> TERMINATORS = Set.of('|', '(', '\"', '\'');
 
     public static ISearchQuery parse(String query) {
@@ -182,10 +185,10 @@ public class SearchQueryParser {
 
     public enum QueryType {
         // ~ is a dummy char, not actually used by parser
-        NAME('~', (key, stack) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        MOD_ID('@', (key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        TOOLTIP('$', (key, stack) -> {
-            List<Component> tooltipLines = stack.getTooltipLines(null, Default.NORMAL);
+        NAME('~', (level, key, stack) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        MOD_ID('@', (level, key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        TOOLTIP('$', (level, key, stack) -> {
+            List<Component> tooltipLines = stack.getTooltipLines(Item.TooltipContext.of(level), null, Default.NORMAL);
             if (!tooltipLines.isEmpty()) {
                 String lowerKey = key.toLowerCase(Locale.ROOT);
                 for (Component tooltipLine : tooltipLines) {
@@ -197,7 +200,7 @@ public class SearchQueryParser {
             }
             return false;
         }),
-        TAG('#', (key, stack) -> {
+        TAG('#', (level, key, stack) -> {
             List<String> itemTags = TagCache.getItemTags(stack);
             if (!itemTags.isEmpty()) {
                 String lowerKey = key.toLowerCase(Locale.ROOT);
@@ -229,15 +232,15 @@ public class SearchQueryParser {
         }
 
         private final char prefix;
-        private final BiPredicate<String, ItemStack> checker;
+        private final TriPredicate<@Nullable Level, String, ItemStack> checker;
 
-        QueryType(char prefix, BiPredicate<String, ItemStack> checker) {
+        QueryType(char prefix, TriPredicate<@Nullable Level, String, ItemStack> checker) {
             this.prefix = prefix;
             this.checker = checker;
         }
 
-        public boolean matches(String key, ItemStack stack) {
-            return checker.test(key, stack);
+        public boolean matches(@Nullable Level level, String key, ItemStack stack) {
+            return checker.test(level, key, stack);
         }
     }
 
@@ -246,11 +249,11 @@ public class SearchQueryParser {
         private final Map<QueryType, List<String>> queryStrings = new LinkedHashMap<>();
 
         @Override
-        public boolean test(ItemStack stack) {
+        public boolean test(@Nullable Level level, ItemStack stack) {
             for (Entry<QueryType, List<String>> entry : queryStrings.entrySet()) {
                 boolean hasMatch = true;
                 for (String key : entry.getValue()) {
-                    if (entry.getKey().matches(key, stack)) {
+                    if (entry.getKey().matches(level, key, stack)) {
                         hasMatch = false;
                         break;
                     }
@@ -285,13 +288,13 @@ public class SearchQueryParser {
         }
 
         @Override
-        public boolean test(ItemStack stack) {
+        public boolean test(@Nullable Level level, ItemStack stack) {
             // allow empty query lists to match all stacks
             if (queries.isEmpty()) {
                 return true;
             }
             for (SearchQuery query : queries) {
-                if (query.test(stack)) {
+                if (query.test(level, stack)) {
                     return true;
                 }
             }
@@ -309,7 +312,7 @@ public class SearchQueryParser {
     }
 
     @FunctionalInterface
-    public interface ISearchQuery extends Predicate<ItemStack> {
+    public interface ISearchQuery extends BiPredicate<@Nullable Level, ItemStack> {
 
         default boolean isInvalid() {
             return this == INVALID;

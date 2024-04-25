@@ -7,38 +7,34 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.20.4: SP: Validate this doesn't have any issues in single player, I believe the filter is always new on the client and then the gui is closed
 // and the referenced removed, so we can use that implementation detail to not require any copying or stuff
-public record PacketNewFilter(BlockPos pos, IFilter<?> filter) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketNewFilter(BlockPos pos, IFilter<?> filter) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("new_filter");
-
-    public PacketNewFilter(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), BaseFilter.readFromPacket(buffer));
-    }
+    public static final CustomPacketPayload.Type<PacketNewFilter> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("new_filter"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketNewFilter> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketNewFilter::pos,
+          BaseFilter.GENERIC_STREAM_CODEC, PacketNewFilter::filter,
+          PacketNewFilter::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketNewFilter> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         FilterManager<?> filterManager = PacketUtils.filterManager(context, pos);
         if (filterManager != null) {
             filterManager.tryAddFilter(filter, true);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        filter.write(buffer);
     }
 }

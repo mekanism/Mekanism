@@ -10,6 +10,7 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongTransferUtils;
 import mekanism.common.attachments.containers.ContainerType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +32,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(ItemStack stack) {
+    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
         if (energyContainers.isEmpty()) {
             return true;
         }

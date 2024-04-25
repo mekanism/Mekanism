@@ -47,7 +47,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         Pose entry = matrix.last();
         VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
         for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
-            buffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
+            buffer.putBulkData(entry, quad, 1, 1, 1, 1, light, overlayLight);
         }
         matrix.popPose();
     }

@@ -1,16 +1,17 @@
 package mekanism.common.item.gear;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -20,37 +21,40 @@ import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismArmorMaterials;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>, IAttachmentAware {
 
-    private static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
-
     public ItemFreeRunners(Properties properties) {
-        this(FREE_RUNNER_MATERIAL, properties);
+        this(MekanismArmorMaterials.FREE_RUNNERS, properties);
     }
 
-    public ItemFreeRunners(ArmorMaterial material, Properties properties) {
+    public ItemFreeRunners(Holder<ArmorMaterial> material, Properties properties) {
         super(material, ArmorItem.Type.BOOTS, properties.rarity(Rarity.RARE).setNoRepair());
     }
 
@@ -60,7 +64,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
@@ -104,9 +108,14 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @NotNull
     @Override
-    public Map<Enchantment, Integer> getAllEnchantments(@NotNull ItemStack stack) {
-        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
-        enchantments.merge(Enchantments.SOUL_SPEED, getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED), Math::max);
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack);
+        int fakeLevel = getFakeEnchantmentLevel(stack, Enchantments.SOUL_SPEED);
+        if (enchantments.getLevel(Enchantments.SOUL_SPEED) < fakeLevel) {
+            ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
+            mutable.set(Enchantments.SOUL_SPEED, fakeLevel);
+            return mutable.toImmutable();
+        }
         return enchantments;
     }
 
@@ -119,8 +128,13 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @Override
-    public AttachmentType<FreeRunnerMode> getModeAttachment() {
-        return MekanismAttachmentTypes.FREE_RUNNER_MODE.get();
+    public DataComponentType<FreeRunnerMode> getModeDataType() {
+        return MekanismDataComponents.FREE_RUNNER_MODE.get();
+    }
+
+    @Override
+    public FreeRunnerMode getDefaultMode() {
+        return FreeRunnerMode.NORMAL;
     }
 
     @Override
@@ -146,28 +160,24 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         return slotType == getEquipmentSlot();
     }
 
-    @Override
-    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
-        if (this instanceof ItemArmoredFreeRunners) {
-            return super.getDefaultTooltipHideFlags(stack);
-        }
-        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
-    }
-
     @NothingNullByDefault
-    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
+    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent, StringRepresentable {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN, true, true),
         SAFETY(MekanismLang.FREE_RUNNER_SAFETY, EnumColor.ORANGE, true, false),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED, false, false);
 
-        private static final FreeRunnerMode[] MODES = values();
+        public static final Codec<FreeRunnerMode> CODEC = StringRepresentable.fromEnum(FreeRunnerMode::values);
+        public static final IntFunction<FreeRunnerMode> BY_ID = ByIdMap.continuous(FreeRunnerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, FreeRunnerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FreeRunnerMode::ordinal);
 
+        private final String serializedName;
         private final boolean preventsFallDamage;
         private final boolean providesStepBoost;
         private final ILangEntry langEntry;
         private final EnumColor color;
 
         FreeRunnerMode(ILangEntry langEntry, EnumColor color, boolean preventsFallDamage, boolean providesStepBoost) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.preventsFallDamage = preventsFallDamage;
             this.providesStepBoost = providesStepBoost;
             this.langEntry = langEntry;
@@ -189,16 +199,12 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
         @Override
         public FreeRunnerMode byIndex(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
-    }
-
-    @NothingNullByDefault
-    protected static class FreeRunnerMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public String getName() {
-            return Mekanism.MODID + ":free_runners";
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

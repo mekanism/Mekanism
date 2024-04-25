@@ -162,6 +162,6 @@ public class ParamNameMapper extends AbstractProcessor {
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_17;
+        return SourceVersion.RELEASE_21;
     }
 }

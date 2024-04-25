@@ -28,7 +28,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -302,9 +301,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleItemStackIngredient single) {
-                      JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1),
-                            serialized.get(JsonConstants.INGREDIENT));
+                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), single.getAmountRaw());
                   }
                   return null;
               });
@@ -313,16 +310,12 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
         if (ingredient instanceof SingleItemStackIngredient single) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
             Ingredient vanillaIngredient = single.getInputRaw();
-            int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
+            int amount = single.getAmountRaw();
             String representation = null;
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
-                JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
-                if (vanillaIngredient.getClass() != Ingredient.class || !serializedIngredient.has(JsonConstants.TAG)) {
-                    representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, serializedIngredient);
-                }
+                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, true);
                 if (representation != null) {
                     amount = 1;
                 }
@@ -346,10 +339,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleFluidStackIngredient single) {
                       return IFluidStack.of(single.getInputRaw()).getCommandString();
-                  } else if (ingredient instanceof TaggedFluidStackIngredient) {
-                      JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
-                            .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
+                  } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
+                      return CrTUtils.fluidTags().tag(tagged.getTag()).withAmount(tagged.getRawAmount()).getCommandString();
                   }
                   return null;
               });
@@ -360,10 +351,9 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         if (ingredient instanceof SingleFluidStackIngredient single) {
             String stackRepresentation = IFluidStack.of(single.getInputRaw()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof TaggedFluidStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String tagRepresentation = CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
-            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
+        } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
+            String tagRepresentation = CrTUtils.fluidTags().tag(tagged.getTag()).getCommandString();
+            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
@@ -380,11 +370,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
                       return singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
-                  } else if (ingredient instanceof TaggedChemicalStackIngredient) {
-                      JsonObject serialized = (JsonObject) ingredient.serialize();
-                      long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
+                  } else if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
+                      long amount = tagged.getRawAmount();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return tagManager.tag(serialized.get(JsonConstants.TAG).getAsString()).withAmount((int) amount).getCommandString();
+                          return tagManager.tag(tagged.getTag()).withAmount((int) amount).getCommandString();
                       }
                   }
                   return null;
@@ -398,10 +387,9 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
             String stackRepresentation = singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof TaggedChemicalStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String tagRepresentation = tagManager.tag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
-            return ingredientType + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
+        } else if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
+            String tagRepresentation = tagManager.tag(tagged.getTag()).getCommandString();
+            return ingredientType + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
             return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, deserializer,
                   singleDescription, tagManager));

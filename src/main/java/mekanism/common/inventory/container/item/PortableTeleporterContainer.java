@@ -7,6 +7,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
@@ -32,10 +33,15 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
     }
 
     @Override
+    protected FrequencyType<TeleporterFrequency> getFrequencyType() {
+        return FrequencyType.TELEPORTER;
+    }
+
+    @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
         //Relies on super being called first
-        if (isRemote()) {
+        if (getLevel().isClientSide()) {
             //Client side sync handling
             track(SyncableByte.create(() -> status, value -> status = value));
         } else {
@@ -51,7 +57,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                         if (energyContainer == null) {
                             status = 4;
                         } else {
-                            GlobalPos coords = freq.getClosestCoords(GlobalPos.of(inv.player.level().dimension(), inv.player.blockPosition()));
+                            GlobalPos coords = freq.getClosestCoords(GlobalPos.of(getLevel().dimension(), inv.player.blockPosition()));
                             if (coords != null) {
                                 FloatingLong energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
                                 if (energyNeeded != null && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {

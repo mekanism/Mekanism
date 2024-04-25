@@ -1,6 +1,7 @@
 package mekanism.common.recipe.condition;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
@@ -20,12 +21,12 @@ public record ConditionExistsCondition(@Nullable ICondition condition) implement
     }
 
     @Override
-    public Codec<? extends ICondition> codec() {
+    public MapCodec<? extends ICondition> codec() {
         return MekanismRecipeConditions.CONDITION_EXISTS.get();
     }
 
-    public static Codec<ConditionExistsCondition> makeCodec() {
-        return RecordCodecBuilder.create(instance -> instance.group(
+    public static MapCodec<ConditionExistsCondition> makeCodec() {
+        return RecordCodecBuilder.mapCodec(instance -> instance.group(
               ICondition.CODEC.fieldOf("condition").orElse(DOES_NOT_EXIST).forGetter(ConditionExistsCondition::condition)
         ).apply(instance, ConditionExistsCondition::new));
     }

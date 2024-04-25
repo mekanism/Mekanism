@@ -10,11 +10,12 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 public class SecurityFrequency extends Frequency {
@@ -44,8 +45,8 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
         if (!trusted.isEmpty()) {
             ListTag trustedList = new ListTag();
@@ -57,8 +58,8 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    protected void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
+    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.OVERRIDE, value -> override = value);
         if (nbtTags.contains(NBTConstants.TRUSTED, Tag.TAG_LIST)) {
             ListTag trustedList = nbtTags.getList(NBTConstants.TRUSTED, Tag.TAG_INT_ARRAY);
@@ -70,14 +71,14 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(override);
         buffer.writeCollection(trustedCache, (buf, name) -> buf.writeUtf(name, PacketUtils.LAST_USERNAME_LENGTH));
     }
 
     @Override
-    protected void read(FriendlyByteBuf dataStream) {
+    protected void read(RegistryFriendlyByteBuf dataStream) {
         super.read(dataStream);
         override = dataStream.readBoolean();
         trustedCache = dataStream.readCollection(HashList::new, buf -> buf.readUtf(PacketUtils.LAST_USERNAME_LENGTH));

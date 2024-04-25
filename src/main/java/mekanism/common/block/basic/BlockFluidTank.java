@@ -10,6 +10,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -44,30 +45,31 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (stack.isEmpty()) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
-            return InteractionResult.PASS;
+            //No tile, we can just skip trying to use without an item
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, tile);
+            return genericClientActivated(stack, tile);
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
-        if (wrenchResult != InteractionResult.PASS) {
+        ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult.result() != InteractionResult.PASS) {
             return wrenchResult;
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                return InteractionResult.FAIL;
-            }
-            ItemStack stack = player.getItemInHand(hand);
-            if (!stack.isEmpty() && FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
+                return ItemInteractionResult.FAIL;
+            } else if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
                 player.getInventory().setChanged();
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return tile.openGui(player);
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

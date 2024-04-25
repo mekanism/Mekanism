@@ -1,6 +1,8 @@
 package mekanism.common.lib.frequency;
 
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.DecoderException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,9 +17,13 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +32,17 @@ public class FrequencyType<FREQ extends Frequency> {
     private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
     private static int maxNameLength = 0;
 
-    public static final Codec<FrequencyType<?>> CODEC = ExtraCodecs.stringResolverCodec(FrequencyType::getName, registryMap::get);
+    public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, registryMap::get);
+    //Note: This is lazy so that we ensure we don't call it until after maxNameLength has been set
+    public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(maxNameLength).map(
+          name -> {
+              FrequencyType<?> type = registryMap.get(name);
+              if (type == null) {
+                  throw new DecoderException("Unable to find frequency type for name: " + name);
+              }
+              return type;
+          }, FrequencyType::getName
+    ));
 
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),
@@ -79,9 +95,9 @@ public class FrequencyType<FREQ extends Frequency> {
         return name;
     }
 
-    public FREQ create(CompoundTag tag) {
+    public FREQ create(HolderLookup.Provider provider, CompoundTag tag) {
         FREQ freq = baseCreationFunction.get();
-        freq.read(tag);
+        freq.read(provider, tag);
         return freq;
     }
 
@@ -89,7 +105,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return creationFunction.apply(key, ownerUUID);
     }
 
-    public FREQ create(FriendlyByteBuf packet) {
+    public FREQ create(RegistryFriendlyByteBuf packet) {
         FREQ freq = baseCreationFunction.get();
         freq.read(packet);
         return freq;
@@ -141,14 +157,6 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public IdentitySerializer getIdentitySerializer() {
         return identitySerializer;
-    }
-
-    public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(name, maxNameLength);
-    }
-
-    public static <FREQ extends Frequency> FrequencyType<FREQ> load(FriendlyByteBuf buf) {
-        return (FrequencyType<FREQ>) registryMap.get(buf.readUtf(maxNameLength));
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {

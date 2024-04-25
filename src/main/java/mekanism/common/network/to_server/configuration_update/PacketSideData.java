@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.configuration_update;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.RelativeSide;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -10,27 +11,30 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide inputSide, TransmissionType transmission) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide inputSide, TransmissionType transmission) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("side_data");
-
-    public PacketSideData(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readEnum(MekClickType.class), buffer.readEnum(RelativeSide.class), buffer.readEnum(TransmissionType.class));
-    }
+    public static final CustomPacketPayload.Type<PacketSideData> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("side_data"));
+    public static final StreamCodec<ByteBuf, PacketSideData> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketSideData::pos,
+          MekClickType.STREAM_CODEC, PacketSideData::clickType,
+          RelativeSide.STREAM_CODEC, PacketSideData::inputSide,
+          TransmissionType.STREAM_CODEC, PacketSideData::transmission,
+          PacketSideData::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketSideData> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         TileComponentConfig configComponent = PacketUtils.config(context, pos);
         if (configComponent != null) {
             ConfigInfo info = configComponent.getConfig(transmission);
@@ -52,13 +56,5 @@ public record PacketSideData(BlockPos pos, MekClickType clickType, RelativeSide 
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeEnum(clickType);
-        buffer.writeEnum(inputSide);
-        buffer.writeEnum(transmission);
     }
 }

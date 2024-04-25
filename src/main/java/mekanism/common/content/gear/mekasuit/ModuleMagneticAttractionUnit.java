@@ -23,6 +23,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @ParametersAreNotNullByDefault
 public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneticAttractionUnit> {
@@ -72,8 +73,8 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         Vec3 motionNeeded = new Vec3(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
         Vec3 motionDiff = motionNeeded.subtract(player.getDeltaMovement());
         item.setDeltaMovement(motionDiff.scale(0.2));
-        PacketUtils.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
-              player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)), player);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
+              player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)));
     }
 
     @Override

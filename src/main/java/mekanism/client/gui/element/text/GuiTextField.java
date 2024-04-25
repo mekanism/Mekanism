@@ -20,6 +20,7 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -410,7 +411,7 @@ public class GuiTextField extends GuiElement {
         private static String filterText(String text) {
             StringBuilder builder = new StringBuilder();
             for (char c : text.toCharArray()) {
-                if (SharedConstants.isAllowedChatCharacter(c) || c == 167) {
+                if (StringUtil.isAllowedChatCharacter(c) || c == 167) {
                     builder.append(c);
                 }
             }

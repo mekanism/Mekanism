@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
 import mekanism.common.network.to_client.container.property.BooleanPropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling booleans
@@ -24,7 +25,7 @@ public abstract class SyncableBoolean implements ISyncableData {
     }
 
     @Override
-    public BooleanPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public BooleanPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new BooleanPropertyData(property, get());
     }
 

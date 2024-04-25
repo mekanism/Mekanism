@@ -10,6 +10,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -18,14 +19,19 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.interfaces.IUpgradeItem;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
 public class TileComponentUpgrade implements ITileComponent, ISpecificContainerTracker {
@@ -187,24 +193,41 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(CompoundTag upgradeNBT) {
+    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        UpgradeAware upgradeAware = input.get(MekanismDataComponents.UPGRADES);
+        if (upgradeAware != null) {
+            upgrades.clear();
+            upgrades.putAll(upgradeAware.upgrades());
+            upgradeSlot.setStack(upgradeAware.inputSlot());
+            upgradeOutputSlot.setStack(upgradeAware.outputSlot());
+        }
+    }
+
+    @Override
+    public void collectImplicitComponents(DataComponentMap.Builder builder) {
+        //Note: UpgradeAware will copy the stacks
+        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.getStack(), upgradeOutputSlot.getStack()));
+    }
+
+    @Override
+    public void deserialize(CompoundTag upgradeNBT, HolderLookup.Provider provider) {
         upgrades.clear();
         upgrades.putAll(Upgrade.buildMap(upgradeNBT));
         for (Upgrade upgrade : getSupportedTypes()) {
             tile.recalculateUpgrades(upgrade);
         }
         //Load the inventory
-        ContainerType.ITEM.readFrom(upgradeNBT, getSlots());
+        ContainerType.ITEM.readFrom(provider, upgradeNBT, getSlots());
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag upgradeNBT = new CompoundTag();
         if (!upgrades.isEmpty()) {
             Upgrade.saveMap(upgrades, upgradeNBT);
         }
         //Save the inventory
-        ContainerType.ITEM.saveTo(upgradeNBT, getSlots());
+        ContainerType.ITEM.saveTo(provider, upgradeNBT, getSlots());
         return upgradeNBT;
     }
 

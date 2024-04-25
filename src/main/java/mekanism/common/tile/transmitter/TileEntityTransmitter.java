@@ -37,6 +37,7 @@ import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -107,33 +108,33 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        return getTransmitter().getReducedUpdateTag(super.getReducedUpdateTag());
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        return getTransmitter().getReducedUpdateTag(provider, super.getReducedUpdateTag(provider));
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        getTransmitter().handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        getTransmitter().handleUpdateTag(tag, provider);
     }
 
     @Override
-    public void handleUpdatePacket(@NotNull CompoundTag tag) {
-        super.handleUpdatePacket(tag);
+    public void handleUpdatePacket(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdatePacket(tag, provider);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         updateModelData();
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
-        getTransmitter().read(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
+        getTransmitter().read(provider, nbt);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
-        getTransmitter().write(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
+        getTransmitter().write(provider, nbtTags);
     }
 
     public void onNeighborBlockChange(Direction side) {

@@ -204,7 +204,7 @@ public class StorageUtils {
     public static FluidStack getContainedFluid(@NotNull IFluidHandlerItem fluidHandlerItem, FluidStack type) {
         for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
             FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
-            if (fluidInTank.isFluidEqual(type)) {
+            if (FluidStack.isSameFluidSameComponents(fluidInTank, type)) {
                 return fluidInTank;
             }
         }

@@ -83,7 +83,7 @@ public final class GasStack extends ChemicalStack<Gas> {
     }
 
     public static GasStack readFromPacket(FriendlyByteBuf buf) {
-        Gas gas = buf.readById(MekanismAPI.GAS_REGISTRY);
+        Gas gas = buf.readById(MekanismAPI.GAS_REGISTRY::byId);
         if (gas == null || gas.isEmptyType()) {
             return EMPTY;
         }

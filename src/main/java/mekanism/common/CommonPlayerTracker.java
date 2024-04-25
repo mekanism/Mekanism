@@ -28,6 +28,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerChangedDimen
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CommonPlayerTracker {
 
@@ -58,23 +59,23 @@ public class CommonPlayerTracker {
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
-        PacketUtils.sendTo(new PacketPlayerRadiationData(player), player);
+        PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
         RadiationManager.get().updateClientRadiation(player);
     }
 
     @SubscribeEvent
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof Player player && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            PacketUtils.sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
+            PacketDistributor.sendToPlayer(serverPlayer, new PacketPlayerData(player.getUUID()));
         }
     }
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        PacketUtils.sendTo(new PacketPlayerRadiationData(player), player);
+        PacketDistributor.sendToPlayer(player, new PacketPlayerRadiationData(player));
         RadiationManager.get().updateClientRadiation(player);
-        PacketUtils.sendToAll(new PacketResetPlayerClient(player.getUUID()));
+        PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(player.getUUID()));
     }
 
     /**

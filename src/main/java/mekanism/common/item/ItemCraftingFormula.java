@@ -6,13 +6,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,11 +29,11 @@ public class ItemCraftingFormula extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         Map<HashedItem, Integer> stacks = FormulaAttachment.existingFormula(itemStack)
-              .stream().flatMap(attachment -> attachment.getItems().stream())
-              .filter(slot -> !slot.isEmpty())
-              .collect(Collectors.toMap(slot -> HashedItem.raw(slot.getStack()), IInventorySlot::getCount, Integer::sum, LinkedHashMap::new));
+              .stream().flatMap(attachment -> attachment.inventory().stream())
+              .filter(stack -> !stack.isEmpty())
+              .collect(Collectors.toMap(HashedItem::raw, ItemStack::getCount, Integer::sum, LinkedHashMap::new));
         if (!stacks.isEmpty()) {
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
             for (Entry<HashedItem, Integer> entry : stacks.entrySet()) {
@@ -49,7 +48,7 @@ public class ItemCraftingFormula extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                stack.removeData(MekanismAttachmentTypes.FORMULA_HOLDER);
+                stack.remove(MekanismDataComponents.FORMULA_HOLDER);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
@@ -63,7 +62,7 @@ public class ItemCraftingFormula extends Item {
               .filter(FormulaAttachment::hasItems);
         if (formulaAttachment.isPresent()) {
             FormulaAttachment attachment = formulaAttachment.get();
-            if (attachment.isInvalid()) {
+            if (attachment.invalid()) {
                 return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
             }
             return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);

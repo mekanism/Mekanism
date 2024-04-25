@@ -32,7 +32,7 @@ public final class TransporterUtils {
         if (inputColor < 0) {
             return null;
         }
-        return EnumColor.byIndexStatic(inputColor);
+        return EnumColor.BY_ID.apply(inputColor);
     }
 
     public static int getColorIndex(@Nullable EnumColor color) {

@@ -2,26 +2,36 @@ package mekanism.common.tile.component;
 
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public interface ITileComponent {
 
     String getComponentKey();
 
-    default void read(CompoundTag nbtTags) {
-        NBTUtils.setCompoundIfPresent(nbtTags, getComponentKey(), this::deserialize);
+    default void read(CompoundTag nbtTags, HolderLookup.Provider provider) {
+        NBTUtils.setCompoundIfPresent(nbtTags, getComponentKey(), tag -> deserialize(tag, provider));
     }
 
-    default void write(CompoundTag nbtTags) {
-        CompoundTag componentTag = serialize();
+    default void write(CompoundTag nbtTags, HolderLookup.Provider provider) {
+        CompoundTag componentTag = serialize(provider);
         if (!componentTag.isEmpty()) {
             nbtTags.put(getComponentKey(), componentTag);
         }
     }
 
-    void deserialize(CompoundTag componentTag);
+    void deserialize(CompoundTag componentTag, HolderLookup.Provider provider);
 
-    CompoundTag serialize();
+    CompoundTag serialize(HolderLookup.Provider provider);
+
+    default void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    }
+
+    default void collectImplicitComponents(DataComponentMap.Builder builder) {
+    }
 
     /**
      * Called when the tile is removed, both permanently and during unloads.

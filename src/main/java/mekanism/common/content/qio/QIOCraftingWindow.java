@@ -48,7 +48,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -110,7 +109,7 @@ public class QIOCraftingWindow implements IContentsListener {
      * Checks if the stack is equivalent to the current output.
      */
     public boolean isOutput(@NotNull ItemStack stack) {
-        return ItemHandlerHelper.canItemStacksStack(outputSlot.getStack(), stack);
+        return ItemStack.isSameItemSameComponents(outputSlot.getStack(), stack);
     }
 
     @Override
@@ -866,8 +865,8 @@ public class QIOCraftingWindow implements IContentsListener {
                         ItemStack stack = slot.insertItem(removed, Action.EXECUTE, AutomationType.INTERNAL);
                         if (!stack.isEmpty()) {
                             //Note: This should never happen as we pre-validate attempting to insert, but in case it does, log it
-                            Mekanism.logger.error("Failed to insert item ({} with NBT: {} and Attachments: {}) into crafting window: {}.", removed.getItem(),
-                                  removed.getTag(), removed.serializeAttachments(), windowIndex);
+                            Mekanism.logger.error("Failed to insert item ({} with components: {}) into crafting window: {}.", removed.getItem(),
+                                  removed.getComponents(), windowIndex);
                         }
                         //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player
                         // that something about the slot changed.
@@ -920,8 +919,8 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         private void mapShapedRecipe(IShapedRecipe<?> shapedRecipe, NonNullList<Ingredient> ingredients, int index, ItemStack used) {
-            int recipeWidth = shapedRecipe.getRecipeWidth();
-            int recipeHeight = shapedRecipe.getRecipeHeight();
+            int recipeWidth = shapedRecipe.getWidth();
+            int recipeHeight = shapedRecipe.getHeight();
             for (int columnStart = 0; columnStart <= 3 - recipeWidth; columnStart++) {
                 for (int rowStart = 0; rowStart <= 3 - recipeHeight; rowStart++) {
                     //Note: Even though some shaped recipe implementations might not support a mirrored recipe as a match

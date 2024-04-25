@@ -39,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.20.5: Do we need to override equals and hashcode?
 @ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
@@ -289,7 +290,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public ItemStack getContainerStack() {
-        return getContainer().container;
+        return getContainer().container();
     }
 
     @Override
@@ -418,26 +419,5 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.DARK_RED, MekanismLang.MODULE_DISABLED_LOWER);
         }
         player.sendSystemMessage(MekanismUtils.logFormat(message));
-    }
-
-    @Override
-    public boolean isCompatible(IModule<?> o) {
-        if (o == this) {
-            return true;
-        }
-        //Note: The data comparison is technically already validated by when the ModuleContainers are compared,
-        // but we check it here anyway for consistency and to provide a more accurate return value if an addon calls this method
-        if (installed != o.getInstalledCount() || data != o.getData() || !(o instanceof Module<?> other) || configItems.size() != other.configItems.size()) {
-            return false;
-        }
-        for (ModuleConfigItem<?> configItem : getConfigItems()) {
-            ModuleConfigItem<?> otherConfigItem = other.getConfigItem(configItem.getName());
-            if (otherConfigItem == null) {
-                return false;
-            } else if (configItem != otherConfigItem && !configItem.getData().isCompatible(otherConfigItem.getData())) {
-                return false;
-            }
-        }
-        return true;
     }
 }

@@ -5,6 +5,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -66,7 +67,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = stack.isFluidEqual(getFluid()))) {
+        if (isEmpty() || (sameType = FluidStack.isSameFluidSameComponents(stack, getFluid()))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid
@@ -220,7 +221,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * @implNote If your implementation of {@link #getFluid()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isFluidEqual(FluidStack other) {
-        return getFluid().isFluidEqual(other);
+        return FluidStack.isSameFluidSameComponents(getFluid(), other);
     }
 
     /**
@@ -233,10 +234,10 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     @Override
-    default CompoundTag serializeNBT() {
+    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getFluid().writeToNBT(new CompoundTag()));
+            nbt.put(NBTConstants.STORED, getFluid().save(provider));
         }
         return nbt;
     }
@@ -251,7 +252,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * @since 10.5.0
      */
     default boolean isCompatible(IExtendedFluidTank other) {
-        return getClass() == other.getClass() && getFluid().isFluidStackIdentical(other.getFluid());
+        return getClass() == other.getClass() && FluidStack.matches(getFluid(), other.getFluid());
     }
 
     /**

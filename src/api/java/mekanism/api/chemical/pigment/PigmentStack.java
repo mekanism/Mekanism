@@ -78,7 +78,7 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
     }
 
     public static PigmentStack readFromPacket(FriendlyByteBuf buf) {
-        Pigment pigment = buf.readById(MekanismAPI.PIGMENT_REGISTRY);
+        Pigment pigment = buf.readById(MekanismAPI.PIGMENT_REGISTRY::byId);
         if (pigment == null || pigment.isEmptyType()) {
             return EMPTY;
         }

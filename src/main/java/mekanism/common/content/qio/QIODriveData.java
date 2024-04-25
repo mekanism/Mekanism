@@ -2,12 +2,12 @@ package mekanism.common.content.qio;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.DriveMetadata;
+import mekanism.common.attachments.qio.DriveContents;
+import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,10 +27,9 @@ public class QIODriveData {
         countCapacity = driveItem.getCountCapacity(driveStack);
         typeCapacity = driveItem.getTypeCapacity(driveStack);
         // load item map from drive stack
-        Optional<DriveMetadata> existingData = driveStack.getExistingData(MekanismAttachmentTypes.DRIVE_METADATA);
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (existingData.isPresent()) {
-            existingData.get().loadItemMap(this);
+        DriveContents driveContents = driveStack.get(MekanismDataComponents.DRIVE_CONTENTS);
+        if (driveContents != null) {
+            driveContents.loadItemMap(this);
         }
         // update cached item count value
         itemCount = itemMap.values().longStream().sum();
@@ -112,7 +111,7 @@ public class QIODriveData {
         public void updateMetadata(QIODriveData data) {
             ItemStack stack = getDriveStack();
             if (stack.getItem() instanceof IQIODriveItem) {
-                stack.getData(MekanismAttachmentTypes.DRIVE_METADATA).update(data);
+                stack.set(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
             } else {
                 Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack ({}). Something has gone very wrong!", RegistryUtils.getName(stack.getItem()));
             }

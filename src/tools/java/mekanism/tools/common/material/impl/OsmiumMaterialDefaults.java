@@ -5,6 +5,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -46,7 +47,8 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         return 4;
     }
 
-    @Override
+    //TODO - 1.20.5: ??
+    //@Override
     public int getLevel() {
         return 2;
     }
@@ -57,7 +59,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getToughness() {
+    public float toughness() {
         return 3;
     }
 
@@ -66,17 +68,17 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 390;
             case LEGGINGS -> 450;
-            case CHESTPLATE -> 480;
+            case CHESTPLATE, BODY -> 480;
             case HELMET -> 330;
         };
     }
 
     @Override
-    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+    public int getDefense(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
             case BOOTS -> 3;
             case LEGGINGS -> 6;
-            case CHESTPLATE -> 8;
+            case CHESTPLATE, BODY -> 8;
             case HELMET -> 4;
         };
     }
@@ -101,7 +103,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public SoundEvent getEquipSound() {
+    public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
@@ -112,7 +114,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getKnockbackResistance() {
+    public float knockbackResistance() {
         return 0.1F;
     }
 }

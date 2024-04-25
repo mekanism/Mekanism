@@ -15,7 +15,7 @@ public class InputValidator {
     public static final CharPredicate DIGIT_OR_NEGATIVE = DIGIT.or(c -> c == '-');
     public static final CharPredicate LETTER = c -> (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     public static final CharPredicate LETTER_OR_DIGIT = LETTER.or(DIGIT);
-    //Note: This is stricter than Player#isValidUsername, but follows what is valid based on mojang's support site
+    //Note: This is stricter than StringUtil#isValidPlayerName, but follows what is valid based on mojang's support site
     public static final CharPredicate USERNAME = InputValidator.LETTER_OR_DIGIT.or(c -> c == '_');
     public static final CharPredicate RL_NAMESPACE = ResourceLocation::validNamespaceChar;
     public static final CharPredicate RL_PATH = ResourceLocation::validPathChar;

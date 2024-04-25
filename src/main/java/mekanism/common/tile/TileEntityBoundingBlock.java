@@ -14,6 +14,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -129,16 +130,16 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         NBTUtils.setBlockPosIfPresent(nbt, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbt.getInt(NBTConstants.REDSTONE);
         receivedCoords = nbt.getBoolean(NBTConstants.RECEIVED_COORDS);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         if (receivedCoords) {
             nbtTags.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
         }
@@ -148,8 +149,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         if (receivedCoords) {
             updateTag.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
         }
@@ -159,8 +160,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
         receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);

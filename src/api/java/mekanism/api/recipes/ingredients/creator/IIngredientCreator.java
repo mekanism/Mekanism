@@ -1,16 +1,14 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {
@@ -62,47 +60,14 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
     INGREDIENT from(TagKey<TYPE> tag, int amount);
 
     /**
-     * Reads an Ingredient from a Packet Buffer.
-     *
-     * @param buffer Buffer to read from.
-     *
-     * @throws NullPointerException if the given buffer is null.
-     */
-    INGREDIENT read(FriendlyByteBuf buffer);
-
-    /**
-     * Helper to deserialize a Json Object into an Ingredient.
-     *
-     * @param json Json object to deserialize.
-     *
-     * @throws com.google.gson.JsonSyntaxException if the ingredient failed to deserialize or was invalid.
-     */
-    @Deprecated(forRemoval = true)
-    default INGREDIENT deserialize(@Nullable JsonElement json) {
-        return codec().parse(JsonOps.INSTANCE, json).getOrThrow(false, e -> {
-        });
-    }
-
-    /**
-     * Helper to serialize into a Json object
-     *
-     * @param ingredient the ingredient to serialize
-     *
-     * @return the serialized ingredient
-     *
-     * @throws RuntimeException if encoding failed
-     */
-    default JsonElement serialize(INGREDIENT ingredient) {
-        return codec().encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, unused -> {
-        });
-    }
-
-    /**
      * Retrieve a codec which can (de)encode a single or multi ingredient of this type.
      *
      * @return a codec for this ingredient type
      */
     Codec<INGREDIENT> codec();
+
+    //TODO - 1.20.5: Docs
+    StreamCodec<RegistryFriendlyByteBuf, INGREDIENT> streamCodec();
 
     /**
      * Combines multiple Ingredients into a single Ingredient.

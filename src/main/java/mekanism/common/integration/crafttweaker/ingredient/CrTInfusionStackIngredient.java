@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
 import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -96,7 +97,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(InfusionStackIngredient _this) {
-        return JSONConverter.convert(_this.serialize());
+        return IngredientCreatorAccess.infusion().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**

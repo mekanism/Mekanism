@@ -1,7 +1,7 @@
 package mekanism.generators.common.slot;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue,
-          Int2ObjectFunction<@NotNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
+          IntFunction<@NotNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
@@ -47,10 +47,10 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         }, fillPredicate.or(stack -> fuelValue.applyAsInt(stack) > 0), listener, x, y);
     }
 
-    private final Int2ObjectFunction<@NotNull FluidStack> fuelCreator;
+    private final IntFunction<@NotNull FluidStack> fuelCreator;
     private final ToIntFunction<@NotNull ItemStack> fuelValue;
 
-    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue, Int2ObjectFunction<@NotNull FluidStack> fuelCreator,
+    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue, IntFunction<@NotNull FluidStack> fuelCreator,
           Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelCreator = fuelCreator;

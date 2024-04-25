@@ -1,34 +1,33 @@
 package mekanism.common.network.to_server.qio;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.network.PacketUtils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("qio_place");
-
-    public PacketQIOItemViewerSlotPlace(FriendlyByteBuf buffer) {
-        this(buffer.readVarInt());
-    }
+    public static final CustomPacketPayload.Type<PacketQIOItemViewerSlotPlace> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("qio_place"));
+    public static final StreamCodec<ByteBuf, PacketQIOItemViewerSlotPlace> STREAM_CODEC = ByteBufCodecs.VAR_INT.map(
+          PacketQIOItemViewerSlotPlace::new, PacketQIOItemViewerSlotPlace::count
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketQIOItemViewerSlotPlace> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        QIOItemViewerContainer container = PacketUtils.container(context, QIOItemViewerContainer.class);
-        if (container != null) {
+    public void handle(IPayloadContext context) {
+        if (context.player().containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
                 ItemStack curStack = container.getCarried();
@@ -50,10 +49,5 @@ public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeVarInt(count);
     }
 }

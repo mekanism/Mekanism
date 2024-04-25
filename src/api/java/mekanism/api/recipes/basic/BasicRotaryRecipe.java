@@ -215,19 +215,4 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     public RecipeSerializer<BasicRotaryRecipe> getSerializer() {
         return MekanismRecipeSerializers.ROTARY.get();
     }
-
-    public static class Factory {
-
-        public BasicRotaryRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {
-            return new BasicRotaryRecipe(fluidInput, gasOutput);
-        }
-
-        public BasicRotaryRecipe create(GasStackIngredient gasInput, FluidStack fluidOutput) {
-            return new BasicRotaryRecipe(gasInput, fluidOutput);
-        }
-
-        public BasicRotaryRecipe create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
-            return new BasicRotaryRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
-        }
-    }
 }

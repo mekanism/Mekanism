@@ -3,6 +3,7 @@ package mekanism.api.heat;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
@@ -69,7 +70,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundTag>, IContents
     void handleHeat(double transfer);
 
     @Override
-    default CompoundTag serializeNBT() {
+    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putDouble(NBTConstants.STORED, getHeat());
         return nbt;

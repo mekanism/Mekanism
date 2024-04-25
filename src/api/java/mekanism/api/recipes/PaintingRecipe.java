@@ -9,7 +9,7 @@ import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -45,7 +45,7 @@ public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<
 
     @NotNull
     @Override
-    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
+    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @Override
     public abstract boolean test(ItemStack itemStack, PigmentStack gasStack);

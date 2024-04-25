@@ -72,10 +72,12 @@ import mekanism.common.network.to_client.transmitter.PacketFluidNetworkContents;
 import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
+import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismCreativeTabs;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -205,10 +207,12 @@ public class Mekanism {
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
+        MekanismArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         MekanismAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);
         MekanismCriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);
+        MekanismDataComponents.DATA_COMPONENTS.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismGameEvents.GAME_EVENTS.register(modEventBus);
@@ -233,9 +237,9 @@ public class Mekanism {
         MekanismDataMapTypes.REGISTER.register(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         modEventBus.addListener(this::registerRegistries);
-        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
-        packetHandler = new PacketHandler(modEventBus, MODID, versionNumber);
+        packetHandler = new PacketHandler(modEventBus, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);
     }
@@ -406,10 +410,14 @@ public class Mekanism {
     }
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
+        //TODO - 1.20.5: ??
+        //PacketUtils.log("Sending type '{}' update message for chemical network with id {}", chemical.getChemical().getRegistryName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(event.network.getUUID(), event.transferType));
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
+        //TODO - 1.20.5:??
+        //PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(fluid.getFluid()), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(event.network.getUUID(), event.fluidType));
     }
 

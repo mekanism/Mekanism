@@ -29,6 +29,7 @@ import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -134,12 +135,12 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof CombinerUpgradeData data) {
             //Generic factory upgrade data handling
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
             //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
-            extraSlot.deserializeNBT(data.extraSlot.serializeNBT());
+            extraSlot.deserializeNBT(provider, data.extraSlot.serializeNBT(provider));
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
@@ -147,7 +148,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @NotNull
     @Override
-    public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
+    public CombinerUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
 }

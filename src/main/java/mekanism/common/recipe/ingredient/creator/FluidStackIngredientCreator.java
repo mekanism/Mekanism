@@ -16,18 +16,24 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.IngredientType;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.FluidTags;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -61,12 +67,23 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
           }
     );
 
+    private static final StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> STREAM_CODEC = IngredientType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(InputIngredient::getType, type -> switch (type) {
+        case SINGLE -> SingleFluidStackIngredient.STREAM_CODEC;
+        case TAGGED -> TaggedFluidStackIngredient.STREAM_CODEC;
+        case MULTI -> MultiFluidStackIngredient.STREAM_CODEC;
+    });
+
     private FluidStackIngredientCreator() {
     }
 
     @Override
     public Codec<FluidStackIngredient> codec() {
         return CODEC;
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> streamCodec() {
+        return STREAM_CODEC;
     }
 
     @Override
@@ -86,16 +103,6 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             throw new IllegalArgumentException("FluidStackIngredients must have an amount of at least one. Received size was: " + amount);
         }
         return new TaggedFluidStackIngredient(tag, amount);
-    }
-
-    @Override
-    public FluidStackIngredient read(FriendlyByteBuf buffer) {
-        Objects.requireNonNull(buffer, "FluidStackIngredients cannot be read from a null packet buffer.");
-        return switch (buffer.readEnum(IngredientType.class)) {
-            case SINGLE -> from(FluidStack.readFromPacket(buffer));
-            case TAGGED -> from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
-            case MULTI -> createMulti(buffer.readArray(FluidStackIngredient[]::new, this::read));
-        };
     }
 
     /**
@@ -122,7 +129,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
         }
         //There should be more than a single fluid, or we would have split out earlier
-        return new MultiFluidStackIngredient(cleanedIngredients.toArray(new FluidStackIngredient[0]));
+        return new MultiFluidStackIngredient(cleanedIngredients);
     }
 
     @Override
@@ -134,8 +141,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static final Codec<SingleFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new,
+        public static final Codec<SingleFluidStackIngredient> CODEC = Codec.lazyInitialized(() -> SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new,
               SingleFluidStackIngredient::getInputRaw));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SingleFluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              FluidStack.STREAM_CODEC.map(SingleFluidStackIngredient::new, SingleFluidStackIngredient::getInputRaw)
+        );
 
         private final List<@NotNull FluidStack> representations;
         private final FluidStack fluidInstance;
@@ -154,7 +164,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).isFluidEqual(fluidInstance);
+            Objects.requireNonNull(fluidStack);
+            return FluidStack.isSameFluidSameComponents(fluidStack, fluidInstance);
         }
 
         @Override
@@ -185,9 +196,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
-            buffer.writeEnum(IngredientType.SINGLE);
-            fluidInstance.writeToPacket(buffer);
+        public IngredientType getType() {
+            return IngredientType.SINGLE;
         }
 
         @Override
@@ -199,7 +209,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
             SingleFluidStackIngredient other = (SingleFluidStackIngredient) o;
             //Need to use this over equals to ensure we compare amounts
-            return fluidInstance.isFluidStackIdentical(other.fluidInstance);
+            return FluidStack.matches(fluidInstance, other.fluidInstance);
         }
 
         @Override
@@ -212,10 +222,15 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance -> instance.group(
+        public static final Codec<TaggedFluidStackIngredient> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
               TagKey.codec(Registries.FLUID).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
               ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
         ).apply(instance, TaggedFluidStackIngredient::new)));
+        public static final StreamCodec<RegistryFriendlyByteBuf, TaggedFluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> StreamCodec.composite(
+              PacketUtils.tagKeyCodec(Registries.FLUID), TaggedFluidStackIngredient::getTag,
+              ByteBufCodecs.VAR_INT, TaggedFluidStackIngredient::getRawAmount,
+              TaggedFluidStackIngredient::new
+        ));
 
         private final HolderSet.Named<Fluid> tag;
         private final int amount;
@@ -284,10 +299,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
-            buffer.writeEnum(IngredientType.TAGGED);
-            buffer.writeResourceLocation(getTag().location());
-            buffer.writeVarInt(amount);
+        public IngredientType getType() {
+            return IngredientType.TAGGED;
         }
 
         @Override
@@ -310,15 +323,19 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
 
-        static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(
-              lst -> new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])),
-              MultiFluidStackIngredient::getIngredients
+        public static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(
+              MultiFluidStackIngredient::new, MultiFluidStackIngredient::getIngredients
         );
+        //This must be lazy as the base stream codec isn't initialized until after this line happens
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiFluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              IngredientCreatorAccess.fluid().streamCodec().apply(ByteBufCodecs.list()).map(
+                    MultiFluidStackIngredient::new, MultiFluidStackIngredient::getIngredients
+              ));
 
         private final FluidStackIngredient[] ingredients;
 
-        private MultiFluidStackIngredient(FluidStackIngredient... ingredients) {
-            this.ingredients = ingredients;
+        private MultiFluidStackIngredient(List<FluidStackIngredient> ingredients) {
+            this.ingredients = ingredients.toArray(new FluidStackIngredient[0]);
         }
 
         @Override
@@ -406,9 +423,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer) {
-            buffer.writeEnum(IngredientType.MULTI);
-            buffer.writeArray(ingredients, (buf, ingredient) -> ingredient.write(buf));
+        public IngredientType getType() {
+            return IngredientType.MULTI;
         }
 
         @Override
@@ -425,11 +441,5 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public int hashCode() {
             return Arrays.hashCode(ingredients);
         }
-    }
-
-    private enum IngredientType {
-        SINGLE,
-        TAGGED,
-        MULTI
     }
 }

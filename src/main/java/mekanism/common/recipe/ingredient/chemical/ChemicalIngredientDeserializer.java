@@ -23,6 +23,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.IngredientType;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
@@ -49,12 +50,12 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
           MekanismAPI.SLURRY_REGISTRY_NAME, SlurryStack::readFromPacket, IngredientCreatorAccess.slurry(), MultiSlurryStackIngredient::new, SlurryStackIngredient[]::new);
 
     private final ResourceKey<? extends Registry<CHEMICAL>> registry;
-    private final FriendlyByteBuf.Reader<STACK> fromPacket;
+    private final Function<FriendlyByteBuf, STACK> fromPacket;
     private final IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator;
     private final IntFunction<INGREDIENT[]> arrayCreator;
     private final Function<INGREDIENT[], INGREDIENT> multiCreator;
 
-    private ChemicalIngredientDeserializer(ResourceKey<? extends Registry<CHEMICAL>> registry, FriendlyByteBuf.Reader<STACK> fromPacket,
+    private ChemicalIngredientDeserializer(ResourceKey<? extends Registry<CHEMICAL>> registry, Function<FriendlyByteBuf, STACK> fromPacket,
           IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator, Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
         this.fromPacket = fromPacket;
         this.registry = registry;
@@ -112,11 +113,5 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
 
     public Codec<INGREDIENT> codec() {
         return ingredientCreator.codec();
-    }
-
-    enum IngredientType {
-        SINGLE,
-        TAGGED,
-        MULTI
     }
 }

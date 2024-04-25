@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.GasStackPropertyData;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -44,7 +45,7 @@ public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> imple
     }
 
     @Override
-    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
             return new LongPropertyData(property, get().getAmount());

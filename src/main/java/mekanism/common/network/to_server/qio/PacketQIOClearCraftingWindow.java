@@ -1,33 +1,36 @@
 package mekanism.common.network.to_server.qio;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("clear_qio");
-
-    public PacketQIOClearCraftingWindow(FriendlyByteBuf buffer) {
-        this(buffer.readByte(), buffer.readBoolean());
-    }
+    public static final CustomPacketPayload.Type<PacketQIOClearCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("clear_qio"));
+    public static final StreamCodec<ByteBuf, PacketQIOClearCraftingWindow> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.BYTE, PacketQIOClearCraftingWindow::window,
+          ByteBufCodecs.BOOL, PacketQIOClearCraftingWindow::toPlayerInv,
+          PacketQIOClearCraftingWindow::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketQIOClearCraftingWindow> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        if (player.containerMenu instanceof QIOItemViewerContainer container) {
             byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received clear request from: {}, but they do not currently have a crafting window open.", player);
@@ -38,11 +41,5 @@ public record PacketQIOClearCraftingWindow(byte window, boolean toPlayerInv) imp
                 craftingWindow.emptyTo(toPlayerInv, container.getHotBarSlots(), container.getMainInventorySlots());
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeByte(window);
-        buffer.writeBoolean(toPlayerInv);
     }
 }

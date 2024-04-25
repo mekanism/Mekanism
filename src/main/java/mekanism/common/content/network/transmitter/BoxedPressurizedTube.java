@@ -44,6 +44,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
@@ -179,8 +180,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public void read(@NotNull CompoundTag nbtTags) {
-        super.read(nbtTags);
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
         if (nbtTags.contains(NBTConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
             saveShare = BoxedChemicalStack.read(nbtTags.getCompound(NBTConstants.BOXED_CHEMICAL));
         } else {
@@ -201,8 +202,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
         }
@@ -371,8 +372,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag) {
-        super.handleContentsUpdateTag(network, tag);
+    protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleContentsUpdateTag(network, tag, provider);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
         NBTUtils.setBoxedChemicalIfPresent(tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);
     }

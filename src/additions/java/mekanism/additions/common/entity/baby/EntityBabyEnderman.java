@@ -3,7 +3,6 @@ package mekanism.additions.common.entity.baby;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
@@ -14,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityBabyEnderman extends EnderMan implements IBabyEntity {
 
     private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabyEnderman.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDimensions BABY_DIMENSIONS = EntityType.ENDERMAN.getDimensions().scale(0.5F).withEyeHeight(1.3F);
 
     public EntityBabyEnderman(EntityType<EntityBabyEnderman> type, Level world) {
         super(type, world);
@@ -21,9 +21,9 @@ public class EntityBabyEnderman extends EnderMan implements IBabyEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(IS_CHILD, false);
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHILD, true);
     }
 
     @Override
@@ -56,13 +56,15 @@ public class EntityBabyEnderman extends EnderMan implements IBabyEntity {
         return super.getExperienceReward();
     }
 
-    @Override
+    //TODO - 1.20.5: Figure out what controls this now
+    /*@Override
     public float ridingOffset(@NotNull Entity other) {
         return -1.3F;
-    }
+    }*/
 
+    @NotNull
     @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return this.isBaby() ? 1.3F : super.getStandingEyeHeight(pose, size);
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return this.isBaby() ? BABY_DIMENSIONS : super.getDefaultDimensions(pose);
     }
 }

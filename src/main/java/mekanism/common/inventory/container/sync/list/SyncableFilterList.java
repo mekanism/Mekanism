@@ -1,13 +1,12 @@
 package mekanism.common.inventory.container.sync.list;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.collection.HashList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,12 +24,12 @@ public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableColle
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<FILTER> deserializeList(FriendlyByteBuf buffer) {
-        return buffer.readCollection(HashList::new, buf -> (FILTER) BaseFilter.readFromPacket(buf));
+    protected Collection<FILTER> deserializeList(RegistryFriendlyByteBuf buffer) {
+        return buffer.readCollection(HashList::new, buf -> (FILTER) BaseFilter.GENERIC_STREAM_CODEC.decode(buffer));
     }
 
     @Override
-    protected void serializeListElement(FriendlyByteBuf buffer, FILTER filter) {
-        filter.write(buffer);
+    protected void serializeListElement(RegistryFriendlyByteBuf buffer, FILTER filter) {
+        BaseFilter.GENERIC_STREAM_CODEC.encode(buffer, filter);
     }
 }

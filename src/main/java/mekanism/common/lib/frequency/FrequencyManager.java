@@ -15,6 +15,7 @@ import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -209,25 +210,25 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
 
         @Override
-        public void load(@NotNull CompoundTag nbtTags) {
+        public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
             ListTag list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
             for (int i = 0; i < list.size(); i++) {
-                loadedFrequencies.add(frequencyType.create(list.getCompound(i)));
+                loadedFrequencies.add(frequencyType.create(provider, list.getCompound(i)));
             }
         }
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbtTags) {
+        public CompoundTag save(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             if (ownerUUID != null) {
                 nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }
             ListTag list = new ListTag();
             for (FREQ freq : frequencies.values()) {
                 CompoundTag compound = new CompoundTag();
-                freq.write(compound);
+                freq.write(provider, compound);
                 list.add(compound);
             }
             nbtTags.put(NBTConstants.FREQUENCY_LIST, list);

@@ -3,7 +3,6 @@ package mekanism.common.block.prefab;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeParticleFX.Particle;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
@@ -19,7 +18,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -47,20 +48,28 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
+            //No tile, we can just skip trying to use without an item
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        } else if (world.isClientSide) {
+            return genericClientActivated(stack, tile);
+        }
+        return tile.tryWrench(state, player, stack).getInteractionResult();
+    }
+
+    @NotNull
+    @Override
+    protected InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, tile);
+            return genericClientActivated(tile);
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
-        if (wrenchResult != InteractionResult.PASS) {
-            return wrenchResult;
-        }
-        return type.has(AttributeGui.class) ? tile.openGui(player) : InteractionResult.PASS;
+        return tile.openGui(player);
     }
 
     @Override

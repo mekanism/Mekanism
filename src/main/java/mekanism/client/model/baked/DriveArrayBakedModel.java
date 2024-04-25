@@ -10,15 +10,16 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
-import mekanism.common.attachments.DriveMetadata;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -58,7 +59,7 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
         Direction side = key.getSide();
         List<BakedQuad> driveQuads = new ArrayList<>();
         for (int i = 0; i < driveStatus.length; i++) {
-            DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
+            DriveStatus status = DriveStatus.BY_ID.apply(driveStatus[i]);
             if (status != DriveStatus.NONE) {
                 float[] translation = DRIVE_PLACEMENTS[i];
                 QuadTransformation transformation = QuadTransformation.translate(translation[0], translation[1], 0);
@@ -122,11 +123,12 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
                     } else {
                         driveStack = ItemStack.EMPTY;
                     }
-                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem) || !driveStack.hasData(MekanismAttachmentTypes.DRIVE_METADATA)) {
+                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem) || !driveStack.has(MekanismDataComponents.DRIVE_METADATA)) {
                         status = DriveStatus.NONE;
                     } else if (hasFrequency) {
                         allEmpty = false;
-                        DriveMetadata metadata = driveStack.getData(MekanismAttachmentTypes.DRIVE_METADATA);
+                        //Note: Should never be able to get here if it isn't present
+                        DriveMetadata metadata = driveStack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
                         long countCapacity = driveItem.getCountCapacity(driveStack);
                         if (metadata.count() == countCapacity) {
                             //If we are at max item capacity: Full
@@ -155,8 +157,8 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
 
         private boolean hasFrequency(ItemStack stack) {
             if (stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == FrequencyType.QIO) {
-                FrequencyAware<?> frequencyAware = stack.getData(MekanismAttachmentTypes.FREQUENCY_AWARE);
-                return frequencyAware.getIdentity() != null && frequencyAware.getOwner() != null;
+                FrequencyAware<QIOFrequency> frequencyAware = stack.get(MekanismDataComponents.QIO_FREQUENCY);
+                return frequencyAware != null && frequencyAware.identity().isPresent() && frequencyAware.getOwner() != null;
             }
             return false;
         }

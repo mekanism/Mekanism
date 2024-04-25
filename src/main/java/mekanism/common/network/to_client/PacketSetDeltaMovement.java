@@ -1,39 +1,30 @@
 package mekanism.common.network.to_client;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import mekanism.common.network.PacketUtils;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketSetDeltaMovement(Vec3 deltaMovement) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketSetDeltaMovement(Vec3 deltaMovement) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("set_delta_movement");
-
-    public PacketSetDeltaMovement(FriendlyByteBuf buffer) {
-        this(buffer.readVec3());
-    }
+    public static final CustomPacketPayload.Type<PacketSetDeltaMovement> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_delta_movement"));
+    public static final StreamCodec<ByteBuf, PacketSetDeltaMovement> STREAM_CODEC = PacketUtils.VEC3_STREAM_CODEC.map(
+          PacketSetDeltaMovement::new, PacketSetDeltaMovement::deltaMovement
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketSetDeltaMovement> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        //noinspection SimplifyOptionalCallChains - Capturing lambda
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            player.lerpMotion(deltaMovement.x, deltaMovement.y, deltaMovement.z);
-        }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeVec3(deltaMovement);
+    public void handle(IPayloadContext context) {
+        context.player().lerpMotion(deltaMovement.x, deltaMovement.y, deltaMovement.z);
     }
 }

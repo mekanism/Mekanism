@@ -3,15 +3,14 @@ package mekanism.common.tile.prefab;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeSideConfig;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration {
@@ -35,33 +34,18 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        //The read methods validate that data is stored
-        stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyTo(configComponent);
-        stack.getData(MekanismAttachmentTypes.EJECTOR).copyTo(ejectorComponent);
-    }
-
-    @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).copyFrom(configComponent);
-        stack.getData(MekanismAttachmentTypes.EJECTOR).copyFrom(ejectorComponent);
-    }
-
-    @Override
-    public CompoundTag getConfigurationData(Player player) {
-        CompoundTag data = super.getConfigurationData(player);
-        configComponent.write(data);
-        ejectorComponent.write(data);
+    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
+        CompoundTag data = super.getConfigurationData(provider, player);
+        configComponent.write(data, provider);
+        ejectorComponent.write(data, provider);
         return data;
     }
 
     @Override
-    public void setConfigurationData(Player player, CompoundTag data) {
-        super.setConfigurationData(player, data);
-        configComponent.read(data);
-        ejectorComponent.read(data);
+    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
+        super.setConfigurationData(provider, player, data);
+        configComponent.read(data, provider);
+        ejectorComponent.read(data, provider);
     }
 
     @Override

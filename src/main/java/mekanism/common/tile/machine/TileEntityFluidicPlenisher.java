@@ -37,15 +37,14 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -235,43 +234,25 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(NBTConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
-            ListTag activeList = new ListTag();
-            for (BlockPos wrapper : activeNodes) {
-                activeList.add(NbtUtils.writeBlockPos(wrapper));
-            }
-            nbtTags.put(NBTConstants.ACTIVE_NODES, activeList);
+            nbtTags.put(NBTConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
         }
         if (!usedNodes.isEmpty()) {
-            ListTag usedList = new ListTag();
-            for (BlockPos obj : usedNodes) {
-                usedList.add(NbtUtils.writeBlockPos(obj));
-            }
-            nbtTags.put(NBTConstants.USED_NODES, usedList);
+            nbtTags.put(NBTConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
         }
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
         finishedCalc = nbt.getBoolean(NBTConstants.FINISHED);
-        if (nbt.contains(NBTConstants.ACTIVE_NODES, Tag.TAG_LIST)) {
-            ListTag tagList = nbt.getList(NBTConstants.ACTIVE_NODES, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                activeNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
-            }
-        }
-        if (nbt.contains(NBTConstants.USED_NODES, Tag.TAG_LIST)) {
-            ListTag tagList = nbt.getList(NBTConstants.USED_NODES, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                usedNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
-            }
-        }
+        NBTUtils.readBlockPositions(nbt, NBTConstants.ACTIVE_NODES, activeNodes);
+        NBTUtils.readBlockPositions(nbt, NBTConstants.USED_NODES, usedNodes);
     }
 
     public void reset() {

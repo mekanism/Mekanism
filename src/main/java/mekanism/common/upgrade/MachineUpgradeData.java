@@ -9,6 +9,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class MachineUpgradeData implements IUpgradeData {
@@ -24,14 +25,14 @@ public class MachineUpgradeData implements IUpgradeData {
     public final CompoundTag components;
 
     //Machine Constructor
-    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
+    public MachineUpgradeData(HolderLookup.Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
           InputInventorySlot inputSlot, OutputInventorySlot outputSlot, List<ITileComponent> components) {
-        this(redstone, controlType, energyContainer, new int[]{operatingTicks}, energySlot, Collections.singletonList(inputSlot), Collections.singletonList(outputSlot),
-              false, components);
+        this(provider, redstone, controlType, energyContainer, new int[]{operatingTicks}, energySlot, Collections.singletonList(inputSlot),
+              Collections.singletonList(outputSlot), false, components);
     }
 
     //Machine Factory Constructor
-    public MachineUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, EnergyInventorySlot energySlot,
+    public MachineUpgradeData(HolderLookup.Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, EnergyInventorySlot energySlot,
           List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, List<ITileComponent> components) {
         this.redstone = redstone;
         this.controlType = controlType;
@@ -43,7 +44,7 @@ public class MachineUpgradeData implements IUpgradeData {
         this.sorting = sorting;
         this.components = new CompoundTag();
         for (ITileComponent component : components) {
-            component.write(this.components);
+            component.write(this.components, provider);
         }
     }
 }

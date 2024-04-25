@@ -3,6 +3,7 @@ package mekanism.tools.common.material.impl;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -44,7 +45,8 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
         return 3;
     }
 
-    @Override
+    //TODO - 1.20.5: ??
+    //@Override
     public int getLevel() {
         return 3;
     }
@@ -55,7 +57,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getToughness() {
+    public float toughness() {
         return 2;
     }
 
@@ -64,17 +66,17 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 260;
             case LEGGINGS -> 300;
-            case CHESTPLATE -> 320;
+            case CHESTPLATE, BODY -> 320;
             case HELMET -> 220;
         };
     }
 
     @Override
-    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+    public int getDefense(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 3;
             case LEGGINGS -> 6;
-            case CHESTPLATE -> 8;
+            case CHESTPLATE, BODY -> 8;
         };
     }
 
@@ -98,7 +100,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public SoundEvent getEquipSound() {
+    public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
@@ -109,7 +111,7 @@ public class SteelMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getKnockbackResistance() {
+    public float knockbackResistance() {
         return 0;
     }
 }

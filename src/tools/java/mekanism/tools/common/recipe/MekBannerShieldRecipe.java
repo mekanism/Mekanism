@@ -1,10 +1,9 @@
 package mekanism.tools.common.recipe;
 
-import mekanism.api.NBTConstants;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import org.jetbrains.annotations.NotNull;
 
 public class MekBannerShieldRecipe extends CustomRecipe {
@@ -33,7 +33,11 @@ public class MekBannerShieldRecipe extends CustomRecipe {
                     }
                     bannerStack = stackInSlot;
                 } else {
-                    if (!(stackInSlot.getItem() instanceof ItemMekanismShield) || !shieldStack.isEmpty() || stackInSlot.getTagElement(NBTConstants.BLOCK_ENTITY_TAG) != null) {
+                    if (!(stackInSlot.getItem() instanceof ItemMekanismShield) || !shieldStack.isEmpty()) {
+                        return false;
+                    }
+                    BannerPatternLayers bannerpatternlayers = stackInSlot.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
+                    if (!bannerpatternlayers.layers().isEmpty()) {
                         return false;
                     }
                     shieldStack = stackInSlot;
@@ -45,7 +49,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
 
     @NotNull
     @Override
-    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull HolderLookup.Provider provider) {
         ItemStack bannerStack = ItemStack.EMPTY;
         ItemStack shieldStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -61,10 +65,8 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         if (shieldStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        CompoundTag blockEntityTag = bannerStack.getTagElement(NBTConstants.BLOCK_ENTITY_TAG);
-        CompoundTag tag = blockEntityTag == null ? new CompoundTag() : blockEntityTag.copy();
-        tag.putInt(NBTConstants.BASE, ((BannerItem) bannerStack.getItem()).getColor().getId());
-        shieldStack.addTagElement(NBTConstants.BLOCK_ENTITY_TAG, tag);
+        shieldStack.set(DataComponents.BANNER_PATTERNS, bannerStack.get(DataComponents.BANNER_PATTERNS));
+        shieldStack.set(DataComponents.BASE_COLOR, ((BannerItem) bannerStack.getItem()).getColor());
         return shieldStack;
     }
 

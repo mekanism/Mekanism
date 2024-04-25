@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -31,6 +32,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -144,16 +146,16 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag) {
-        super.readUpdateTag(tag);
+    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.readUpdateTag(tag, provider);
         coilData.read(tag);
         lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
         lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag) {
-        super.writeUpdateTag(tag);
+    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.writeUpdateTag(tag, provider);
         coilData.write(tag);
         tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
         tag.putDouble(NBTConstants.LAST_PROCESSED, lastProcessed);
@@ -274,11 +276,13 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             ListTag list = tags.getList(NBTConstants.COILS, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 CompoundTag tag = list.getCompound(i);
-                BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(NBTConstants.POSITION));
-                Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
-                CoilData data = new CoilData(pos, side);
-                data.prevLevel = tag.getInt(NBTConstants.LEVEL);
-                coilMap.put(data.coilPos, data);
+                Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, NBTConstants.POSITION);
+                if (pos.isPresent()) {
+                    Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
+                    CoilData data = new CoilData(pos.get(), side);
+                    data.prevLevel = tag.getInt(NBTConstants.LEVEL);
+                    coilMap.put(data.coilPos, data);
+                }
             }
         }
     }

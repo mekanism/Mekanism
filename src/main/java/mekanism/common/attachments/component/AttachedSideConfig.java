@@ -1,66 +1,62 @@
 package mekanism.common.attachments.component;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
-import mekanism.common.util.EnumUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class AttachedSideConfig implements IAttachedComponent<TileComponentConfig> {
+public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
 
-    public static AttachedSideConfig create(IAttachmentHolder attachmentHolder) {
-        if (attachmentHolder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof BlockItem blockItem) {
-            AttributeSideConfig sideConfig = Attribute.get(blockItem.getBlock(), AttributeSideConfig.class);
-            if (sideConfig != null) {
-                return new AttachedSideConfig(sideConfig.supportedTypes());
+    public static final Codec<AttachedSideConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          Codec.unboundedMap(TransmissionType.CODEC, LightConfigInfo.CODEC).fieldOf(NBTConstants.CONFIG).forGetter(AttachedSideConfig::configInfo)
+    ).apply(instance, AttachedSideConfig::new));
+    public static final StreamCodec<ByteBuf, AttachedSideConfig> STREAM_CODEC = ByteBufCodecs.<ByteBuf, TransmissionType, LightConfigInfo, Map<TransmissionType, LightConfigInfo>>map(
+                i -> new EnumMap<>(TransmissionType.class), TransmissionType.STREAM_CODEC, LightConfigInfo.STREAM_CODEC)
+          .map(AttachedSideConfig::new, AttachedSideConfig::configInfo);
+
+    public static AttachedSideConfig create(Map<TransmissionType, ConfigInfo> configInfo) {
+        Map<TransmissionType, LightConfigInfo> lightConfigInfo = new EnumMap<>(TransmissionType.class);
+        for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
+            ConfigInfo info = entry.getValue();
+            Map<RelativeSide, DataType> sideConfig = new EnumMap<>(RelativeSide.class);
+            for (Map.Entry<RelativeSide, DataType> sideConfigEntry : info.getSideConfig()) {
+                sideConfig.put(sideConfigEntry.getKey(), sideConfigEntry.getValue());
             }
+            lightConfigInfo.put(entry.getKey(), new LightConfigInfo(sideConfig, info.isEjecting()));
         }
-        throw new IllegalArgumentException("Attempted to attach side config awareness to an object that does not support having a side config.");
+        return new AttachedSideConfig(lightConfigInfo);
+    }
+
+    public AttachedSideConfig {
+        //Make the map unmodifiable to ensure we don't accidentally mutate it
+        configInfo = Collections.unmodifiableMap(configInfo);
     }
 
     @Nullable
     public static IPersistentConfigInfo getStoredConfigInfo(ItemStack stack, TransmissionType transmissionType) {
-        Optional<AttachedSideConfig> existingData = stack.getExistingData(MekanismAttachmentTypes.SIDE_CONFIG);
-        if (existingData.isEmpty()) {
+        AttachedSideConfig existingData = stack.get(MekanismDataComponents.SIDE_CONFIG);
+        if (existingData == null) {
             return null;
         }
-        LightConfigInfo config = existingData.get().configInfo.get(transmissionType);
+        LightConfigInfo config = existingData.configInfo.get(transmissionType);
         return config.sideConfig.isEmpty() ? null : config;
-    }
-
-    private final Map<TransmissionType, LightConfigInfo> configInfo;
-
-    private AttachedSideConfig(Set<TransmissionType> types) {
-        this(new EnumMap<>(TransmissionType.class));
-        for (TransmissionType type : types) {
-            configInfo.put(type, new LightConfigInfo());
-        }
-    }
-
-    private AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
-        this.configInfo = configInfo;
-    }
-
-    public boolean isCompatible(AttachedSideConfig other) {
-        return other == this || configInfo.equals(other.configInfo);
     }
 
     @Nullable
@@ -68,57 +64,21 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
         return this.configInfo.get(transmissionType);
     }
 
-    @Nullable
-    @Override
-    public CompoundTag serializeNBT() {
-        //Note: We can't just use TileComponentConfig#write as we don't want to write defaulted data so that fresh stacks don't set anything
-        CompoundTag configNBT = new CompoundTag();
-        for (Map.Entry<TransmissionType, LightConfigInfo> entry : configInfo.entrySet()) {
-            TransmissionType type = entry.getKey();
-            LightConfigInfo info = entry.getValue();
-            if (info.ejecting != null) {
-                configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
-            }
-            if (!info.sideConfig.isEmpty()) {
-                int[] sideData = new int[EnumUtils.SIDES.length];
-                for (int i = 0; i < EnumUtils.SIDES.length; i++) {
-                    sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
-                }
-                configNBT.putIntArray(NBTConstants.CONFIG + type.ordinal(), sideData);
-            }
-        }
-        return configNBT.isEmpty() ? null : configNBT;
-    }
+    public record LightConfigInfo(Map<RelativeSide, DataType> sideConfig, @Nullable Boolean ejecting) implements IPersistentConfigInfo {
 
-    @Override
-    public void deserializeNBT(CompoundTag configNBT) {
-        TileComponentConfig.read(configNBT, configInfo);
-    }
+        public static final Codec<LightConfigInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              Codec.unboundedMap(RelativeSide.CODEC, DataType.CODEC).fieldOf(NBTConstants.SIDE).forGetter(LightConfigInfo::sideConfig),
+              Codec.BOOL.optionalFieldOf(NBTConstants.EJECT).forGetter(c -> Optional.ofNullable(c.ejecting()))
+        ).apply(instance, (sideConfig, ejecting) -> new LightConfigInfo(sideConfig, ejecting.orElse(null))));
+        public static final StreamCodec<ByteBuf, LightConfigInfo> STREAM_CODEC = StreamCodec.composite(
+              ByteBufCodecs.map(i -> new EnumMap<>(RelativeSide.class), RelativeSide.STREAM_CODEC, DataType.STREAM_CODEC), LightConfigInfo::sideConfig,
+              ByteBufCodecs.optional(ByteBufCodecs.BOOL), c -> Optional.ofNullable(c.ejecting()),
+              (sideConfig, ejecting) -> new LightConfigInfo(sideConfig, ejecting.orElse(null))
+        );
 
-    @Nullable
-    public AttachedSideConfig copy(IAttachmentHolder holder) {
-        boolean hasData = false;
-        Map<TransmissionType, LightConfigInfo> sideConfigCopy = new EnumMap<>(TransmissionType.class);
-        for (Map.Entry<TransmissionType, LightConfigInfo> entry : configInfo.entrySet()) {
-            LightConfigInfo info = entry.getValue();
-            LightConfigInfo infoCopy = new LightConfigInfo();
-            sideConfigCopy.put(entry.getKey(), infoCopy);
-            if (info.ejecting != null || !info.sideConfig.isEmpty()) {
-                infoCopy.ejecting = info.ejecting;
-                infoCopy.sideConfig.putAll(info.sideConfig);
-                hasData = true;
-            }
-        }
-        return hasData ? new AttachedSideConfig(sideConfigCopy) : null;
-    }
-
-    private static class LightConfigInfo implements IPersistentConfigInfo {
-
-        private final Map<RelativeSide, DataType> sideConfig = new EnumMap<>(RelativeSide.class);
-        @Nullable
-        private Boolean ejecting;
-
-        public LightConfigInfo() {
+        public LightConfigInfo {
+            //Make the map unmodifiable to ensure we don't accidentally mutate it
+            sideConfig = Collections.unmodifiableMap(sideConfig);
         }
 
         @NotNull
@@ -128,34 +88,8 @@ public final class AttachedSideConfig implements IAttachedComponent<TileComponen
         }
 
         @Override
-        public boolean setDataType(@NotNull DataType dataType, @NotNull RelativeSide side) {
-            return sideConfig.put(side, dataType) != dataType;
-        }
-
-        @Override
         public boolean isEjecting() {
             return ejecting != null && ejecting;
-        }
-
-        @Override
-        public void setEjecting(boolean ejecting) {
-            this.ejecting = ejecting;
-        }
-
-        @Override
-        public boolean equals(Object object) {
-            if (this == object) {
-                return true;
-            } else if (object == null || getClass() != object.getClass()) {
-                return false;
-            }
-            LightConfigInfo other = (LightConfigInfo) object;
-            return Objects.equals(ejecting, other.ejecting) && Objects.equals(sideConfig, other.sideConfig);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(sideConfig, ejecting);
         }
     }
 }

@@ -2,6 +2,7 @@ package mekanism.tools.common.material.impl;
 
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -44,7 +45,8 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return 1;
     }
 
-    @Override
+    //TODO - 1.20.5: ??
+    //@Override
     public int getLevel() {
         return 1;
     }
@@ -55,7 +57,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getToughness() {
+    public float toughness() {
         return 0;
     }
 
@@ -64,17 +66,17 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 130;
             case LEGGINGS -> 150;
-            case CHESTPLATE -> 160;
+            case CHESTPLATE, BODY -> 160;
             case HELMET -> 110;
         };
     }
 
     @Override
-    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+    public int getDefense(@NotNull ArmorItem.Type armorType) {
         return switch (armorType) {
             case BOOTS, HELMET -> 1;
             case LEGGINGS -> 3;
-            case CHESTPLATE -> 4;
+            case CHESTPLATE, BODY -> 4;
         };
     }
 
@@ -98,7 +100,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public SoundEvent getEquipSound() {
+    public Holder<SoundEvent> equipSound() {
         return SoundEvents.ARMOR_EQUIP_DIAMOND;
     }
 
@@ -109,7 +111,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public float getKnockbackResistance() {
+    public float knockbackResistance() {
         return 0;
     }
 }

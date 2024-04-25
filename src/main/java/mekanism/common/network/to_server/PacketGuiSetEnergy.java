@@ -1,6 +1,8 @@
 package mekanism.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
 import java.util.function.BiConsumer;
+import java.util.function.IntFunction;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
@@ -9,48 +11,34 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.ByIdMap;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketGuiSetEnergy implements IMekanismPacket<PlayPayloadContext> {
+public record PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, FloatingLong value) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("set_energy");
-
-    private final GuiEnergyValue interaction;
-    private final BlockPos pos;
-    private final FloatingLong value;
-
-    public PacketGuiSetEnergy(FriendlyByteBuf buffer) {
-        this(buffer.readEnum(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
-    }
-
-    public PacketGuiSetEnergy(GuiEnergyValue interaction, BlockPos pos, FloatingLong value) {
-        this.interaction = interaction;
-        this.pos = pos;
-        this.value = value;
-    }
+    public static final CustomPacketPayload.Type<PacketGuiSetEnergy> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_energy"));
+    public static final StreamCodec<ByteBuf, PacketGuiSetEnergy> STREAM_CODEC = StreamCodec.composite(
+          GuiEnergyValue.STREAM_CODEC, PacketGuiSetEnergy::interaction,
+          BlockPos.STREAM_CODEC, PacketGuiSetEnergy::pos,
+          FloatingLong.STREAM_CODEC, PacketGuiSetEnergy::value,
+          PacketGuiSetEnergy::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketGuiSetEnergy> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        TileEntityMekanism tile = PacketUtils.blockEntity(context, pos, TileEntityMekanism.class);
-        if (tile != null) {
+    public void handle(IPayloadContext context) {
+        if (PacketUtils.blockEntity(context, pos) instanceof TileEntityMekanism tile) {
             interaction.consume(tile, value);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeEnum(interaction);
-        buffer.writeBlockPos(pos);
-        value.writeToBuffer(buffer);
     }
 
     public enum GuiEnergyValue {
@@ -69,6 +57,9 @@ public class PacketGuiSetEnergy implements IMekanismPacket<PlayPayloadContext> {
                 heater.setEnergyUsageFromPacket(value);
             }
         });
+
+        public static final IntFunction<GuiEnergyValue> BY_ID = ByIdMap.continuous(GuiEnergyValue::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, GuiEnergyValue> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, GuiEnergyValue::ordinal);
 
         private final BiConsumer<TileEntityMekanism, FloatingLong> consumerForTile;
 

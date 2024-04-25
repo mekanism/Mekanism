@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +41,8 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         nbt.putString(NBTConstants.ENERGY_USAGE, getEnergyPerTick().toString());
         return nbt;
     }
@@ -52,8 +53,8 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 }

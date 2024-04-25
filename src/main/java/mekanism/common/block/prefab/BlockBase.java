@@ -19,8 +19,9 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -89,10 +90,10 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType pathType) {
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
-        return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, world, pos, pathType);
+        return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, pathType);
     }
 
     @NotNull
@@ -115,17 +116,16 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
-        if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
             //Note: We don't handle checking if it is radioactive here, as the assumption is it doesn't have a tile so won't have that information
             if (!world.isClientSide) {
                 WorldUtils.dismantleBlock(state, world, pos, player);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {

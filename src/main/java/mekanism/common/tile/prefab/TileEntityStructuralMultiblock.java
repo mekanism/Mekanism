@@ -13,9 +13,11 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -134,10 +136,10 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!structuralGuiAccessAllowed()) {
             //If we don't have any structures that allow gui access, just short circuit and pass
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         for (Structure structure : structures.values()) {
             //If we already have an interaction that has been handled with one of our multiblocks just pass
@@ -148,15 +150,15 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
                     // make sure this block is on the structure first
                     if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                        InteractionResult result = master.onActivate(player, hand, stack);
-                        if (result != InteractionResult.PASS) {
+                        ItemInteractionResult result = master.onActivate(player, hand, stack);
+                        if (result.result() != InteractionResult.PASS) {
                             return result;
                         }
                     }
                 }
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -209,16 +211,16 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putBoolean(NBTConstants.FORMED, hasFormedMultiblock);
         updateTag.putBoolean(NBTConstants.GUI, canAccessGui);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         hasFormedMultiblock = tag.getBoolean(NBTConstants.FORMED);
         canAccessGui = tag.getBoolean(NBTConstants.GUI);
     }

@@ -1,20 +1,20 @@
 package mekanism.common.lib.attribute;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
-import com.google.common.collect.Multimap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import mekanism.common.config.listener.ConfigBasedCachedSupplier;
 import mekanism.common.config.value.CachedValue;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public class AttributeCache extends ConfigBasedCachedSupplier<Multimap<Attribute, AttributeModifier>> {
+public class AttributeCache extends ConfigBasedCachedSupplier<ItemAttributeModifiers> {
 
     public AttributeCache(IAttributeRefresher attributeRefresher, CachedValue<?>... configValues) {
         super(() -> {
-            Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+            List<ItemAttributeModifiers.Entry> builder = new ArrayList<>();
             attributeRefresher.addToBuilder(builder);
-            return builder.build();
+            //TODO - 1.20.5: Do we want these to show in the tooltip?
+            return new ItemAttributeModifiers(Collections.unmodifiableList(builder), true);
         }, configValues);
     }
 }

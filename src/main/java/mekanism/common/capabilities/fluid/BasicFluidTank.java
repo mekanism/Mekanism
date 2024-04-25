@@ -12,6 +12,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -187,7 +188,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = stored.isFluidEqual(stack))) {
+        if (isEmpty() || (sameType = FluidStack.isSameFluidSameComponents(stored, stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid
@@ -295,7 +296,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
      */
     @Override
     public boolean isFluidEqual(FluidStack other) {
-        return stored.isFluidEqual(other);
+        return FluidStack.isSameFluidSameComponents(stored, other);
     }
 
     /**
@@ -319,10 +320,10 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.writeToNBT(new CompoundTag()));
+            nbt.put(NBTConstants.STORED, stored.save(provider));
         }
         return nbt;
     }
@@ -334,11 +335,11 @@ public class BasicFluidTank implements IExtendedFluidTank {
      */
     @Override
     public boolean isCompatible(IExtendedFluidTank other) {
-        return getClass() == other.getClass() && stored.isFluidStackIdentical(((BasicFluidTank) other).stored);
+        return getClass() == other.getClass() && FluidStack.matches(stored, ((BasicFluidTank) other).stored);
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        NBTUtils.setFluidStackIfPresent(nbt, NBTConstants.STORED, this::setStackUnchecked);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.STORED, this::setStackUnchecked);
     }
 }

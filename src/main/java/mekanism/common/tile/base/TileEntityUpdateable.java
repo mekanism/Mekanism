@@ -1,10 +1,6 @@
 package mekanism.common.tile.base;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import mekanism.api.Chunk3D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
@@ -14,19 +10,14 @@ import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,30 +28,12 @@ import org.jetbrains.annotations.Nullable;
 public abstract class TileEntityUpdateable extends BlockEntity implements ITileWrapper {
 
     @Nullable
-    private BiMap<AttachmentType<? extends INBTSerializable<?>>, String> syncableAttachmentTypes;
-    @Nullable
     private GlobalPos cachedCoord;
     private boolean cacheCoord;
     private long lastSave;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
-    }
-
-    /**
-     * Call this to mark specific attachments as syncing when on this block
-     */
-    protected <SERIALIZABLE extends INBTSerializable<?>> void syncAttachmentType(DeferredHolder<AttachmentType<?>, AttachmentType<SERIALIZABLE>> holder) {
-        if (syncableAttachmentTypes == null) {
-            syncableAttachmentTypes = HashBiMap.create();
-        }
-        syncableAttachmentTypes.put(holder.value(), holder.getId().toString());
-    }
-
-    public void readFromStack(ItemStack stack) {
-    }
-
-    public void writeToStack(ItemStack stack) {
     }
 
     /**
@@ -139,62 +112,40 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
+    /*@Override
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
         super.load(tag);
-    }
+        //TODO - 1.20.5: ?? load is equivalent to loadAdditional, but the default impl now does loadWithComponents?
+    }*/
 
     @NotNull
     @Override
-    public CompoundTag getUpdateTag() {
-        return getReducedUpdateTag();
+    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+        return getReducedUpdateTag(provider);
     }
 
     /**
-     * Similar to {@link #getUpdateTag()} but with reduced information for when we are doing our own syncing.
+     * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
      */
     @NotNull
-    public CompoundTag getReducedUpdateTag() {
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         //Add the base update tag information
-        CompoundTag updateTag = super.getUpdateTag();
-        if (syncableAttachmentTypes != null) {
-            CompoundTag serializedAttachments;
-            if (updateTag.contains(ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
-                //Maybe someone mixed in and is already syncing some attachment, so we don't want to overwrite it
-                serializedAttachments = updateTag.getCompound(ATTACHMENTS_NBT_KEY);
-            } else {
-                serializedAttachments = new CompoundTag();
-            }
-            //Serialize our subset of attachments that we know need to be sync'd
-            for (Entry<AttachmentType<? extends INBTSerializable<?>>, String> entry : syncableAttachmentTypes.entrySet()) {
-                Optional<Tag> tag = getExistingData(entry.getKey()).map(INBTSerializable::serializeNBT);
-                //noinspection OptionalIsPresent : allocating lambda
-                if (tag.isPresent()) {
-                    serializedAttachments.put(entry.getValue(), tag.get());
-                }
-            }
-            if (!serializedAttachments.isEmpty()) {
-                updateTag.put(ATTACHMENTS_NBT_KEY, serializedAttachments);
-            }
-        }
-        return updateTag;
+        return super.getUpdateTag(provider);
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if (isRemote() && net.getDirection() == PacketFlow.CLIENTBOUND) {
-            //Handle the update tag when we are on the client
-            CompoundTag tag = pkt.getTag();
-            if (tag != null) {
-                handleUpdatePacket(tag);
-            }
+    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider provider) {
+        //Handle the update tag when we are on the client
+        CompoundTag tag = pkt.getTag();
+        if (!tag.isEmpty()) {
+            handleUpdatePacket(tag, provider);
         }
     }
 
-    public void handleUpdatePacket(@NotNull CompoundTag tag) {
-        handleUpdateTag(tag);
+    public void handleUpdatePacket(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        handleUpdateTag(tag, provider);
     }
 
     public void sendUpdatePacket() {
@@ -220,8 +171,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         updateCoord();
     }
 

@@ -1,15 +1,19 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMaps;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
@@ -17,7 +21,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -36,35 +39,44 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.lib.radial.IRadialModeItem;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IAttributeRefresher {
 
@@ -73,6 +85,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
           ToolActions.SWORD_DIG);
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
+    //Allow harvesting everything, things that are unbreakable are caught elsewhere
+    public static final Tool MINE_ANY_TOOL = new Tool(
+          //TODO - 1.20.5: Can speed be empty like it is here?
+          List.of(new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))),
+          //TODO - 1.20.5: Figure out what these values are meant to be
+          1, 0
+    );
 
     /**
      * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
@@ -84,7 +103,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     private final AttributeCache attributeCache;
 
     public ItemAtomicDisassembler(Properties properties) {
-        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair());
+        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair()
+              .component(DataComponents.TOOL, MINE_ANY_TOOL));
         this.attributeCache = new AttributeCache(this, MekanismConfig.gear.disassemblerMaxDamage, MekanismConfig.gear.disassemblerAttackSpeed);
     }
 
@@ -94,14 +114,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean isCorrectToolForDrops(@NotNull BlockState state) {
-        //Allow harvesting everything, things that are unbreakable are caught elsewhere
-        return true;
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, world, tooltip, flag);
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
         DisassemblerMode mode = getMode(stack);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, mode));
         tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.INDIGO, mode.getEfficiency()));
@@ -198,8 +212,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public AttachmentType<DisassemblerMode> getModeAttachment() {
-        return MekanismAttachmentTypes.DISASSEMBLER_MODE.get();
+    public DataComponentType<DisassemblerMode> getModeDataType() {
+        return MekanismDataComponents.DISASSEMBLER_MODE.get();
+    }
+
+    @Override
+    public DisassemblerMode getDefaultMode() {
+        return DisassemblerMode.NORMAL;
     }
 
     @NotNull
@@ -210,32 +229,45 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        if (slot == EquipmentSlot.MAINHAND) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-            FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
-            FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
-            if (energy.greaterOrEqual(energyCost)) {
-                //If we have enough energy to act at full damage, use the cached multimap rather than creating a new one
-                // This will be the case the vast majority of the time
-                return attributeCache.get();
-            }
-            //If we don't have enough power use it at a reduced power level
-            int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
-            int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
-            double damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", damage, Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADDITION));
-            return builder.build();
+    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+        FloatingLong energyCost = MekanismConfig.gear.disassemblerEnergyUsageWeapon.get();
+        if (energy.greaterOrEqual(energyCost)) {
+            //If we have enough energy to act at full damage, use the cached multimap rather than creating a new one
+            // This will be the case the vast majority of the time
+            return attributeCache.get();
         }
-        return super.getAttributeModifiers(slot, stack);
+        //If we don't have enough power use it at a reduced power level
+        int minDamage = MekanismConfig.gear.disassemblerMinDamage.get();
+        int damageDifference = MekanismConfig.gear.disassemblerMaxDamage.get() - minDamage;
+        double damage = minDamage + damageDifference * energy.divideToLevel(energyCost);
+        ImmutableList.Builder<ItemAttributeModifiers.Entry> builder = ImmutableList.builder();
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_DAMAGE,
+              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", damage, Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_SPEED,
+              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
+        return new ItemAttributeModifiers(builder.build(), true);
     }
 
     @Override
-    public void addToBuilder(Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADDITION));
+    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_DAMAGE,
+              new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerMaxDamage.get(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ATTACK_SPEED,
+              new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", MekanismConfig.gear.disassemblerAttackSpeed.get(), Operation.ADD_VALUE),
+              EquipmentSlotGroup.MAINHAND
+        ));
     }
 
     @Override
@@ -278,7 +310,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @NothingNullByDefault
-    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTextComponent, IRadialMode {
+    public enum DisassemblerMode implements IDisableableEnum<DisassemblerMode>, IHasTextComponent, IRadialMode, StringRepresentable {
         NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 20, ConstantPredicates.ALWAYS_TRUE, EnumColor.BRIGHT_GREEN, ExcavationMode.NORMAL.icon()),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.PINK, ExcavationMode.SLOW.icon()),
         //Note: Uses extreme icon as both are efficiency 128
@@ -286,8 +318,14 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         VEIN(MekanismLang.RADIAL_VEIN_NORMAL, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.AQUA, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, "vein_normal.png")),
         OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, ConstantPredicates.ALWAYS_TRUE, EnumColor.WHITE, ExcavationMode.OFF.icon());
 
-        private static final DisassemblerMode[] MODES = values();
+        //We only allow deserializing to enabled modes
+        public static final Codec<DisassemblerMode> CODEC = StringRepresentable.fromEnum(DisassemblerMode::values)
+              .xmap(mode -> mode.isEnabled() ? mode : DisassemblerMode.NORMAL, Function.identity());
+        public static final IntFunction<DisassemblerMode> BY_ID = ByIdMap.continuous(DisassemblerMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        //Though we allow network handling to sync it whether it is enabled or not
+        public static final StreamCodec<ByteBuf, DisassemblerMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DisassemblerMode::ordinal);
 
+        private final String serializedName;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry langEntry;
         private final int efficiency;
@@ -295,6 +333,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         private final ResourceLocation icon;
 
         DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, ResourceLocation icon) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.checkEnabled = checkEnabled;
@@ -304,8 +343,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         @Override
         public DisassemblerMode byIndex(int index) {
-            //Note: We can't just use byIndexStatic, as we want to be able to return disabled modes
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
 
         @Override
@@ -337,6 +375,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         @Override
         public EnumColor color() {
             return color;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

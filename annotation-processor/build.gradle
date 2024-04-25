@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
     //Version of GSON used by vanilla (and thus packed and already downloaded)
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     implementation "com.squareup:javapoet:1.13.0"

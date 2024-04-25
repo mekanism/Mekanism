@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
@@ -48,6 +49,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
@@ -292,15 +294,18 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public void meltdownHappened(Level world) {
     }
 
-    public void readUpdateTag(CompoundTag tag) {
+    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
-        bounds = new VoxelCuboid(NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MIN)),
-              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)));
+        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, NBTConstants.MIN);
+        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, NBTConstants.MAX);
+        if (minPos.isPresent() && maxPos.isPresent()) {
+            bounds = new VoxelCuboid(minPos.get(), maxPos.get());
+        }
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.INVENTORY_ID, value -> inventoryID = value, () -> inventoryID = null);
     }
 
-    public void writeUpdateTag(CompoundTag tag) {
+    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         tag.putInt(NBTConstants.VOLUME, getVolume());
         if (renderLocation != null) {//In theory this shouldn't be null here but check it anyway
             tag.put(NBTConstants.RENDER_LOCATION, NbtUtils.writeBlockPos(renderLocation));

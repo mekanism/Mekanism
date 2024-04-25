@@ -8,6 +8,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 
@@ -174,7 +175,8 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleContentsUpdateTag(network, tag, provider);
         network.updateCapacity();
     }
 

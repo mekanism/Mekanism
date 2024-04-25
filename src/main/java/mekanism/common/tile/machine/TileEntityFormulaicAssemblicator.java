@@ -48,6 +48,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -59,6 +60,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -68,7 +70,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -167,7 +168,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     } else if (stockControl) {
                         HashedItem stockItem = stockControlMap[index];
                         if (stockItem != null) {
-                            return ItemHandlerHelper.canItemStacksStack(stockItem.getInternalStack(), stack);
+                            return ItemStack.isSameItemSameComponents(stockItem.getInternalStack(), stack);
                         }
                     }
                     return formula.isValidIngredient(level, stack);
@@ -271,10 +272,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private void checkFormula() {
         ItemStack formulaStack = formulaSlot.getStack();
         Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.existingFormula(formulaStack)
-              .filter(FormulaAttachment::isValid);
+              .filter(attachment -> !attachment.invalid());
         if (formulaAttachment.isPresent()) {
             if (formula == null || lastFormulaStack != formulaStack) {
-                loadFormula(formulaAttachment.get());
+                loadFormula(formulaStack, formulaAttachment.get());
             }
         } else {
             formula = null;
@@ -283,8 +284,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Note: Assumes attachment is not invalid
-    private void loadFormula(FormulaAttachment attachment) {
-        RecipeFormula recipe = new RecipeFormula(level, attachment.getItems());
+    private void loadFormula(ItemStack formulaStack, FormulaAttachment attachment) {
+        RecipeFormula recipe = new RecipeFormula(level, attachment);
         if (recipe.isValidFormula()) {
             if (formula == null) {
                 formula = recipe;
@@ -294,7 +295,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
         } else {
             formula = null;
-            attachment.setInvalid();
+            formulaStack = formulaStack.copy();
+            formulaStack.set(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid());
         }
     }
 
@@ -664,21 +666,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaSlot.isEmpty()) {
             return;
         }
-        ItemStack stack = formulaSlot.getStack().copy();
-        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.formula(stack)
-              .filter(FormulaAttachment::isEmpty);
-        if (formulaAttachment.isPresent()) {
+        FormulaAttachment formulaAttachment = formulaSlot.getStack().get(MekanismDataComponents.FORMULA_HOLDER);
+        if (formulaAttachment == null || formulaAttachment.isEmpty()) {
             RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
             if (formula.isValidFormula()) {
-                formulaAttachment.get().setItems(formula.input);
+                ItemStack stack = formulaSlot.getStack().copy();
+                stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula));
                 formulaSlot.setStack(stack);
             }
         }
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         autoMode = nbt.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
         pulseOperations = nbt.getInt(NBTConstants.PULSE);
@@ -686,8 +687,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
@@ -801,10 +802,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
-        Optional<FormulaAttachment> formulaAttachment = FormulaAttachment.formula(formulaSlot.getStack());
-        if (formulaAttachment.isEmpty()) {
+        FormulaAttachment formulaAttachment = formulaSlot.getStack().get(MekanismDataComponents.FORMULA_HOLDER);
+        if (formulaAttachment == null) {
             throw new ComputerException("No formula found.");
-        } else if (hasValidFormula() || formulaAttachment.get().hasItems()) {
+        } else if (hasValidFormula() || formulaAttachment.hasItems()) {
             throw new ComputerException("Formula has already been encoded.");
         } else if (!hasRecipe()) {
             throw new ComputerException("Encoding formulas require that there is a valid recipe to actually encode.");

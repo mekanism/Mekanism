@@ -49,6 +49,8 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -132,10 +134,10 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     public static boolean isValidInput(ItemStack stack) {
-        if (stack.getItem().isEdible()) {//Double-check the stack is food
+        if (stack.has(DataComponents.FOOD)) {//Double-check the stack is food
             FoodProperties food = stack.getFoodProperties(null);
             //And only allow inserting foods that actually would provide paste
-            return food != null && food.getNutrition() > 0;
+            return food != null && food.nutrition() > 0;
         }
         return false;
     }
@@ -182,16 +184,16 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public ItemStackToFluidRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty() || !stack.getItem().isEdible()) {
+        if (stack.isEmpty() || !stack.has(DataComponents.FOOD)) {
             return null;
         }
         FoodProperties food = stack.getFoodProperties(null);
-        if (food == null || food.getNutrition() == 0) {
+        if (food == null || food.nutrition() == 0) {
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
         return new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack, 1),
-              MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50));
+              MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50));
     }
 
     @NotNull
@@ -223,26 +225,26 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT());
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT(provider));
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
-            lastPasteItem.getInternalStack().save(item);
+            lastPasteItem.getInternalStack().save(provider, item);
         }
         updateTag.put(NBTConstants.ITEM, item);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(nbt));
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(provider, nbt));
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {
             if (nbt.isEmpty()) {
                 lastPasteItem = null;
             } else {
-                lastPasteItem = HashedItem.raw(ItemStack.of(nbt));
+                lastPasteItem = HashedItem.raw(ItemStack.parseOptional(provider, nbt));
             }
         });
     }

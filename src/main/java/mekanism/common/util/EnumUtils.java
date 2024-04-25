@@ -23,6 +23,7 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
+import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.core.Direction;
@@ -184,4 +185,9 @@ public class EnumUtils {
      * Cached value of {@link RobitPrideSkinData#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final RobitPrideSkinData[] PRIDE_SKINS = RobitPrideSkinData.values();
+
+    /**
+     * Cached value of {@link DriveStatus#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final DriveStatus[] DRIVE_STATUSES = DriveStatus.values();
 }

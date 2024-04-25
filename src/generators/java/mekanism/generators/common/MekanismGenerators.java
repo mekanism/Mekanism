@@ -24,7 +24,7 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
-import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
@@ -78,7 +78,7 @@ public class MekanismGenerators implements IModModule {
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
 
-        GeneratorsAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
+        GeneratorsDataComponents.DATA_COMPONENTS.register(modEventBus);
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsFluids.FLUIDS.register(modEventBus);
@@ -88,9 +88,9 @@ public class MekanismGenerators implements IModModule {
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsGases.GASES.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
-        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(modContainer);
-        packetHandler = new GeneratorsPacketHandler(modEventBus, MODID, versionNumber);
+        packetHandler = new GeneratorsPacketHandler(modEventBus, versionNumber);
     }
 
     public static GeneratorsPacketHandler packetHandler() {
@@ -112,7 +112,7 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
 
-            ClearConfigurationRecipe.addAttachments(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE, GeneratorsAttachmentTypes.FUSION_LOGIC_TYPE, GeneratorsAttachmentTypes.ACTIVE_COOLED);
+            ClearConfigurationRecipe.addAttachments(GeneratorsDataComponents.FISSION_LOGIC_TYPE, GeneratorsDataComponents.FUSION_LOGIC_TYPE, GeneratorsDataComponents.ACTIVE_COOLED);
         });
 
         //Finalization

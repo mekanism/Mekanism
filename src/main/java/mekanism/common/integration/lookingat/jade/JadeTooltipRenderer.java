@@ -79,7 +79,9 @@ public class JadeTooltipRenderer implements IBlockComponentProvider, IEntityComp
                           FloatingLong.parseFloatingLong(elementData.getString(NBTConstants.MAX), true));
                     name = LookingAtUtils.ENERGY;
                 } else if (elementData.contains(NBTConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
-                    element = new FluidElement(FluidStack.loadFluidStackFromNBT(elementData.getCompound(NBTConstants.FLUID_STORED)), elementData.getInt(NBTConstants.MAX));
+                    //TODO - 1.20.5: Providers
+                    //element = new FluidElement(FluidStack.loadFluidStackFromNBT(elementData.getCompound(NBTConstants.FLUID_STORED)), elementData.getInt(NBTConstants.MAX));
+                    element = new FluidElement(FluidStack.EMPTY, elementData.getInt(NBTConstants.MAX));
                     name = LookingAtUtils.FLUID;
                 } else if (elementData.contains(JadeLookingAtHelper.CHEMICAL_STACK, Tag.TAG_COMPOUND)) {
                     ChemicalStack<?> chemicalStack;

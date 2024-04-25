@@ -29,6 +29,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -123,10 +124,10 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public void read(@NotNull CompoundTag nbtTags) {
-        super.read(nbtTags);
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
         if (nbtTags.contains(NBTConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
-            saveShare = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
+            saveShare = FluidStack.parseOptional(provider, nbtTags.getCompound(NBTConstants.FLUID_STORED));
         } else {
             saveShare = FluidStack.EMPTY;
         }
@@ -135,15 +136,15 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.FLUID_STORED);
         } else {
-            nbtTags.put(NBTConstants.FLUID_STORED, saveShare.writeToNBT(new CompoundTag()));
+            nbtTags.put(NBTConstants.FLUID_STORED, saveShare.save(provider));
         }
         return nbtTags;
     }
@@ -164,7 +165,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
             if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 otherBuffer = other.getTransmitterNetwork().lastFluid;
             }
-            return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
+            return buffer.isEmpty() || otherBuffer.isEmpty() || FluidStack.isSameFluidSameComponents(buffer, otherBuffer);
         }
         return false;
     }
@@ -257,9 +258,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull CompoundTag tag) {
-        super.handleContentsUpdateTag(network, tag);
-        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, network::setLastFluid);
+    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleContentsUpdateTag(network, tag, provider);
+        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, network::setLastFluid);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

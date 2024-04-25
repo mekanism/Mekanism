@@ -6,13 +6,15 @@ import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -247,7 +249,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     private void burn(Entity entity) {
         if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
             //Only actually burn the entity if it is not an item, or we allow destroying items
-            entity.setSecondsOnFire(20);
+            entity.setRemainingFireTicks(20);
             entity.hurt(damageSources().thrown(this, getOwner()), DAMAGE);
         }
     }
@@ -267,16 +269,16 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
     }
 
     @Override
-    public void writeSpawnData(FriendlyByteBuf dataStream) {
+    public void writeSpawnData(RegistryFriendlyByteBuf dataStream) {
         dataStream.writeEnum(getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
     }
 
     @Override
-    public void readSpawnData(FriendlyByteBuf dataStream) {
+    public void readSpawnData(RegistryFriendlyByteBuf dataStream) {
         setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, dataStream.readEnum(FlamethrowerMode.class));
     }
 }

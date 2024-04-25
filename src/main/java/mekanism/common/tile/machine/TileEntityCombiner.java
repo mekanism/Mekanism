@@ -38,6 +38,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -147,8 +148,8 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
 
     @NotNull
     @Override
-    public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
+    public CombinerUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityCombiner> getEnergyContainer() {

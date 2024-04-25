@@ -1,5 +1,9 @@
 package mekanism.api.security;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -8,6 +12,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Simple security enum for defining different access levels.
@@ -15,7 +23,7 @@ import net.minecraft.network.chat.Component;
  * @since 10.2.1
  */
 @NothingNullByDefault
-public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent {
+public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent, StringRepresentable {
     /**
      * Public Security: Everyone is allowed access.
      */
@@ -29,12 +37,22 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComp
      */
     TRUSTED(APILang.TRUSTED, EnumColor.INDIGO);
 
-    private static final SecurityMode[] MODES = values();
+    //TODO - 1.20.5: DOCS
+    public static final Codec<SecurityMode> CODEC = StringRepresentable.fromEnum(SecurityMode::values);
+    /**
+     * Gets a security mode by index.
+     *
+     * @since 10.6.0
+     */
+    public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final StreamCodec<ByteBuf, SecurityMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SecurityMode::ordinal);
 
+    private final String serializedName;
     private final ILangEntry langEntry;
     private final EnumColor color;
 
     SecurityMode(ILangEntry langEntry, EnumColor color) {
+        this.serializedName = name().toLowerCase(Locale.ROOT);
         this.langEntry = langEntry;
         this.color = color;
     }
@@ -46,15 +64,11 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComp
 
     @Override
     public SecurityMode byIndex(int index) {
-        return byIndexStatic(index);
+        return BY_ID.apply(index);
     }
 
-    /**
-     * Gets a security mode by index.
-     *
-     * @param index Index of the security mode.
-     */
-    public static SecurityMode byIndexStatic(int index) {
-        return MathUtils.getByIndexMod(MODES, index);
+    @Override
+    public String getSerializedName() {
+        return serializedName;
     }
 }

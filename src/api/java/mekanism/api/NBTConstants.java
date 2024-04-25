@@ -148,6 +148,10 @@ public final class NBTConstants {
     public static final String HEAT_CAPACITY = "heatCapacity";
     public static final String HEAT_STORED = "heat";
     public static final String HOME_LOCATION = "homeLocation";
+    /**
+     * @since 10.6.0
+     */
+    public static final String IDENTITY = "identity";
     public static final String IDLE_DIR = "idleDir";
     public static final String INDEX = "index";
     public static final String INFUSE_TYPE_NAME = "infuseTypeName";
@@ -243,6 +247,10 @@ public final class NBTConstants {
     public static final String STRICT_INPUT = "strictInput";
     public static final String TAG_NAME = "tagName";
     public static final String TANK = "Tank";
+    /**
+     * @since 10.6.0
+     */
+    public static final String TARGET_STACK = "target_stack";
     public static final String TEMPERATURE = "temperature";
     public static final String TIME = "time";
     public static final String TRUSTED = "trusted";

@@ -1,6 +1,6 @@
 package mekanism.api.robit;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -28,7 +28,7 @@ public interface RobitSkin {
      * @implNote The returned codec should be registered in the {@link MekanismAPI#ROBIT_SKIN_SERIALIZER_REGISTRY robit skin serializer registry}.
      * @since 10.4.0
      */
-    Codec<? extends RobitSkin> codec();
+    MapCodec<? extends RobitSkin> codec();
 
 
     /**

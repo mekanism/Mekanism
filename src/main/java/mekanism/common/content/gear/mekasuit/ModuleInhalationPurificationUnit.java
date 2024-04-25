@@ -101,7 +101,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     }
 
     private boolean canHandle(MobEffectInstance effectInstance) {
-        return MekanismUtils.shouldSpeedUpEffect(effectInstance) && switch (effectInstance.getEffect().getCategory()) {
+        return MekanismUtils.shouldSpeedUpEffect(effectInstance) && switch (effectInstance.getEffect().value().getCategory()) {
             case BENEFICIAL -> beneficialEffects.get();
             case HARMFUL -> harmfulEffects.get();
             case NEUTRAL -> neutralEffects.get();

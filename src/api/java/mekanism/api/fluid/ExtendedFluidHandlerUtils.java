@@ -1,11 +1,11 @@
 package mekanism.api.fluid;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -26,7 +26,7 @@ public class ExtendedFluidHandlerUtils {
      * @deprecated Please use {@link #insert(FluidStack, Direction, Action, ToIntFunction, InContainerGetter, ContainerInteraction)} to avoid capturing lambdas.
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, InsertFluid insertFluid) {
+    public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, InsertFluid insertFluid) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return FluidStack.EMPTY;
@@ -58,7 +58,7 @@ public class ExtendedFluidHandlerUtils {
             FluidStack inTank = inTankGetter.getStored(tank, side);
             if (inTank.isEmpty()) {
                 emptyTanks.add(tank);
-            } else if (inTank.isFluidEqual(stack)) {
+            } else if (FluidStack.isSameFluidSameComponents(inTank, stack)) {
                 FluidStack remainder = insertFluid.interact(tank, toInsert, side, action);
                 if (remainder.isEmpty()) {
                     //If we have no remaining fluid, return that we fit it all
@@ -131,7 +131,7 @@ public class ExtendedFluidHandlerUtils {
      * @deprecated Please use {@link #extract(int, Direction, Action, ToIntFunction, InContainerGetter, IntContainerInteraction)} to avoid capturing lambdas.
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack extract(int amount, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
+    public static FluidStack extract(int amount, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
         if (amount == 0) {
             return FluidStack.EMPTY;
         }
@@ -157,7 +157,7 @@ public class ExtendedFluidHandlerUtils {
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = amount;
         for (int tank = 0; tank < tanks; tank++) {
-            if (extracted.isEmpty() || extracted.isFluidEqual(inTankGetter.getStored(tank, side))) {
+            if (extracted.isEmpty() || FluidStack.isSameFluidSameComponents(extracted, inTankGetter.getStored(tank, side))) {
                 //If there is fluid in the tank that matches the type we have started draining, or we haven't found a type yet
                 FluidStack drained = extractFluid.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
@@ -228,7 +228,7 @@ public class ExtendedFluidHandlerUtils {
      * @deprecated Please use {@link #extract(FluidStack, Direction, Action, ToIntFunction, InContainerGetter, IntContainerInteraction)} to avoid capturing lambdas.
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack extract(FluidStack stack, Action action, IntSupplier tankCount, Int2ObjectFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
+    public static FluidStack extract(FluidStack stack, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
         if (stack.isEmpty()) {
             return FluidStack.EMPTY;
         }
@@ -250,7 +250,7 @@ public class ExtendedFluidHandlerUtils {
             return FluidStack.EMPTY;
         } else if (tanks == 1) {
             FluidStack inTank = inTankGetter.getStored(0, side);
-            if (inTank.isEmpty() || !inTank.isFluidEqual(stack)) {
+            if (inTank.isEmpty() || !FluidStack.isSameFluidSameComponents(inTank, stack)) {
                 return FluidStack.EMPTY;
             }
             return extractFluid.interact(0, stack.getAmount(), side, action);
@@ -258,7 +258,7 @@ public class ExtendedFluidHandlerUtils {
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
-            if (stack.isFluidEqual(inTankGetter.getStored(tank, side))) {
+            if (FluidStack.isSameFluidSameComponents(stack, inTankGetter.getStored(tank, side))) {
                 //If there is fluid in the tank that matches the type we are trying to drain, try to drain from it
                 FluidStack drained = extractFluid.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {

@@ -19,6 +19,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.component.AttachedSideConfig;
+import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -27,6 +29,7 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -44,8 +47,11 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -273,7 +279,39 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void deserialize(CompoundTag configNBT) {
+    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        AttachedSideConfig sideConfig = input.get(MekanismDataComponents.SIDE_CONFIG);
+        if (sideConfig != null) {
+            //TODO - 1.20.5: Test this
+            for (Entry<TransmissionType, LightConfigInfo> entry : sideConfig.configInfo().entrySet()) {
+                TransmissionType type = entry.getKey();
+                ConfigInfo info = configInfo.get(type);
+                if (configInfo.containsKey(type)) {
+                    LightConfigInfo lightInfo = entry.getValue();
+                    if (lightInfo.ejecting() != null) {
+                        info.setEjecting(lightInfo.ejecting());
+                    }
+                    for (Map.Entry<RelativeSide, DataType> sideEntry : lightInfo.sideConfig().entrySet()) {
+                        RelativeSide side = sideEntry.getKey();
+                        if (info.setDataType(sideEntry.getValue(), side)) {
+                            if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
+                                Direction direction = side.getDirection(tile.getDirection());
+                                sideChangedBasic(type, direction);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void collectImplicitComponents(DataComponentMap.Builder builder) {
+        builder.set(MekanismDataComponents.SIDE_CONFIG, AttachedSideConfig.create(configInfo));
+    }
+
+    @Override
+    public void deserialize(CompoundTag configNBT, HolderLookup.Provider provider) {
         read(configNBT, configInfo, (type, side) -> {
             if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                 Direction direction = side.getDirection(tile.getDirection());
@@ -282,22 +320,22 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         });
     }
 
-    public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo) {
+    public static void read(CompoundTag configNBT, Map<TransmissionType, ConfigInfo> configInfo) {
         read(configNBT, configInfo, (type, side) -> {
         });
     }
 
-    public static void read(CompoundTag configNBT, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
-        for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
+    public static void read(CompoundTag configNBT, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
+        for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
-            IPersistentConfigInfo info = entry.getValue();
+            ConfigInfo info = entry.getValue();
             NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
             String configKey = NBTConstants.CONFIG + type.ordinal();
             if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
                 int[] sideData = configNBT.getIntArray(configKey);
                 for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
                     RelativeSide side = EnumUtils.SIDES[i];
-                    if (info.setDataType(DataType.byIndexStatic(sideData[i]), side)) {
+                    if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
                         onChange.accept(type, side);
                     }
                 }
@@ -306,7 +344,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         return write(configInfo, true);
     }
 

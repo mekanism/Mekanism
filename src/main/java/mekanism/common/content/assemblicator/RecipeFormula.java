@@ -3,6 +3,7 @@ package mekanism.common.content.assemblicator;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
@@ -13,7 +14,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeFormula {
@@ -24,6 +24,16 @@ public class RecipeFormula {
     private final CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
 
     public RecipeFormula() {
+    }
+
+    public RecipeFormula(Level world, FormulaAttachment attachment) {
+        //Should always be 9 for the size
+        for (int i = 0; i < 9; i++) {
+            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
+            input.set(i, attachment.inventory().get(i).copyWithCount(1));
+        }
+        resetToRecipe();
+        recipe = getRecipeFromGrid(dummy, world);
     }
 
     public RecipeFormula(Level world, List<IInventorySlot> craftingGridSlots) {
@@ -82,7 +92,7 @@ public class RecipeFormula {
         if (lastItem.isEmpty()) {
             //We expect it to be empty, fail because it isn't
             return false;
-        } else if (ItemHandlerHelper.canItemStacksStack(stack, lastItem)) {
+        } else if (ItemStack.isSameItemSameComponents(stack, lastItem)) {
             //We are the same as the last item and the one we expect for that slot of the recipe
             return true;
         }
@@ -96,7 +106,7 @@ public class RecipeFormula {
         if (recipe != null) {
             for (ItemStack inputItem : input) {
                 //Short circuit if it is one of the items we already know about
-                if (!inputItem.isEmpty() && ItemHandlerHelper.canItemStacksStack(inputItem, stack)) {
+                if (!inputItem.isEmpty() && ItemStack.isSameItemSameComponents(inputItem, stack)) {
                     return true;
                 }
             }

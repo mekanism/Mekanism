@@ -1,34 +1,30 @@
 package mekanism.common.network.to_client.player_data;
 
+import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketResetPlayerClient(UUID uuid) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketResetPlayerClient(UUID uuid) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("reset_client");
-
-    public PacketResetPlayerClient(FriendlyByteBuf buffer) {
-        this(buffer.readUUID());
-    }
+    public static final CustomPacketPayload.Type<PacketResetPlayerClient> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("reset_client"));
+    public static final StreamCodec<ByteBuf, PacketResetPlayerClient> STREAM_CODEC = UUIDUtil.STREAM_CODEC.map(
+          PacketResetPlayerClient::new, PacketResetPlayerClient::uuid
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketResetPlayerClient> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         Mekanism.playerState.clearPlayer(uuid, true);
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeUUID(uuid);
     }
 }

@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
@@ -127,7 +127,7 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(FluidStackIngredient _this) {
-        return JSONConverter.convert(_this.serialize());
+        return IngredientCreatorAccess.fluid().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**

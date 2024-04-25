@@ -4,7 +4,10 @@ import java.util.List;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -12,12 +15,13 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -45,11 +49,11 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
-        super.appendHoverText(stack, world, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @NotNull
@@ -78,6 +82,11 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.OWNER_ONLY), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new OwnerObject(stack), this);
+    }
+
+    @Override
+    public DataComponentType<FrequencyAware<QIOFrequency>> getFrequencyComponent() {
+        return MekanismDataComponents.QIO_FREQUENCY.get();
     }
 }

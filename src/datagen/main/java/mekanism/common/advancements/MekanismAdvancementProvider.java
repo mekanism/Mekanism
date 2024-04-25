@@ -18,9 +18,10 @@ import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -288,7 +289,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.value())))
               .save(consumer);
         ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
-        skinnedRobit.setData(MekanismAttachmentTypes.ROBIT_SKIN, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
+        skinnedRobit.set(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
         advancement(MekanismAdvancements.ROBIT_AESTHETICS)
               .display(skinnedRobit, null, AdvancementType.TASK, true, false, true)
               .addCriterion("change_skin", ChangeRobitSkinTrigger.TriggerInstance.toAny())
@@ -327,7 +328,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                                 MekanismItems.MEKASUIT_PANTS,
                                 MekanismItems.MEKASUIT_BOOTS,
                                 MekanismItems.MEKA_TOOL
-                          ).map(item -> new MaxedModuleContainerItemPredicate(item.asItem()).toVanilla())
+                          ).map(item -> ItemPredicate.Builder.item().withSubPredicate(MekanismItemPredicates.MAXED_MODULE_CONTAINER_ITEM.value(),
+                                new MaxedModuleContainerItemPredicate(item)).build())
                           .toArray(ItemPredicate[]::new)
               )).save(consumer);
 
@@ -414,7 +416,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, AdvancementType.GOAL, true, true, true)
-              .addCriterion("full_canteen", hasItems(FullCanteenItemPredicate.INSTANCE.toVanilla()))
+              .addCriterion("full_canteen", hasItems(ItemPredicate.Builder.item().withSubPredicate(MekanismItemPredicates.FULL_CANTEEN.value(), FullCanteenItemPredicate.INSTANCE).build()))
               .save(consumer);
     }
 }

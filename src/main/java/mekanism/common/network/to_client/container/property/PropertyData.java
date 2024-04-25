@@ -1,9 +1,13 @@
 package mekanism.common.network.to_client.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public abstract class PropertyData {
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, PropertyData> GENERIC_STREAM_CODEC = PropertyType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
+          .dispatch(PropertyData::getType, PropertyType::streamCodec);
 
     private final PropertyType type;
     private final short property;
@@ -22,15 +26,4 @@ public abstract class PropertyData {
     }
 
     public abstract void handleWindowProperty(MekanismContainer container);
-
-    public void writeToPacket(FriendlyByteBuf buffer) {
-        buffer.writeEnum(type);
-        buffer.writeShort(property);
-    }
-
-    public static PropertyData fromBuffer(FriendlyByteBuf buffer) {
-        PropertyType type = buffer.readEnum(PropertyType.class);
-        short property = buffer.readShort();
-        return type.createData(property, buffer);
-    }
 }

@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
@@ -17,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -29,7 +29,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
@@ -45,7 +45,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
@@ -88,13 +87,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(getBlock().getDescription().translate());
         } else if (hasDetails && MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addDetails(stack, world, tooltip, flag);
+            addDetails(stack, context, tooltip, flag);
         } else {
-            addStats(stack, world, tooltip, flag);
+            addStats(stack, context, tooltip, flag);
             if (hasDetails) {
                 tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
             }
@@ -102,13 +101,13 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
     }
 
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
     }
 
-    protected void addDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        addTypeDetails(stack, world, tooltip, flag);
+        addTypeDetails(stack, context, tooltip, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
         FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (!fluidStack.isEmpty()) {
@@ -118,13 +117,16 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
-            for (Entry<Upgrade, Integer> entry : stack.getData(MekanismAttachmentTypes.UPGRADES).getUpgrades().entrySet()) {
-                tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+            UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
+            if (upgradeAware != null) {
+                for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
+                    tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+                }
             }
         }
     }
 
-    protected void addTypeDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCap()) {
             StorageUtils.addStoredEnergy(stack, tooltip, false);
@@ -179,8 +181,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         if (Attribute.has(getBlock(), AttributeSecurity.class)) {
-            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
-            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.SECURITY), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new SecurityObject(stack), this);
+            event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new SecurityObject(stack), this);
         }
     }
 
@@ -198,13 +200,14 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //TODO: Eventually fix this, ideally we want this to update the overall cached value if this changes because of the config
         // for how much energy a machine can store changes
         private final FloatingLongSupplier baseStorage;
-        private final UpgradeAware upgradeAware;
+        private final ItemStack stack;
         private int lastInstalled;
         private FloatingLong value;
 
         private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
-            this.upgradeAware = stack.getData(MekanismAttachmentTypes.UPGRADES);
-            this.lastInstalled = this.upgradeAware.getUpgradeCount(Upgrade.ENERGY);
+            this.stack = stack;
+            UpgradeAware upgradeAware = this.stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
+            this.lastInstalled = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             this.baseStorage = baseStorage;
             this.value = MekanismUtils.getMaxEnergy(this.lastInstalled, this.baseStorage.get());
         }
@@ -212,6 +215,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         @NotNull
         @Override
         public FloatingLong get() {
+            UpgradeAware upgradeAware = stack.getOrDefault(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             int installed = upgradeAware.getUpgradeCount(Upgrade.ENERGY);
             if (installed != lastInstalled) {
                 lastInstalled = installed;

@@ -1,6 +1,6 @@
 package mekanism.common.tile.base;
 
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 
 //TODO: Move this to a different package
 public enum WrenchResult {
@@ -10,11 +10,11 @@ public enum WrenchResult {
     NO_SECURITY,
     RADIOACTIVE;
 
-    public InteractionResult getInteractionResult() {
+    public ItemInteractionResult getInteractionResult() {
         return switch (this) {
-            case PASS -> InteractionResult.PASS;
-            case RADIOACTIVE -> InteractionResult.FAIL;
-            default -> InteractionResult.SUCCESS;
+            case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            case RADIOACTIVE -> ItemInteractionResult.FAIL;
+            default -> ItemInteractionResult.SUCCESS;
         };
     }
 }

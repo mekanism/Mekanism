@@ -1,8 +1,10 @@
 package mekanism.common.tile.qio;
 
+import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
@@ -17,9 +19,14 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -93,13 +100,13 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         QIOFrequency freq = getQIOFrequency();
         if (freq != null) {
             // save all item data before we save
             freq.saveAll();
         }
-        super.saveAdditional(nbtTags);
+        super.saveAdditional(nbtTags, provider);
     }
 
     @NotNull
@@ -110,15 +117,15 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         updateTag.putByteArray(NBTConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         byte[] status = tag.getByteArray(NBTConstants.DRIVES);
         if (!Arrays.equals(status, driveStatus)) {
             driveStatus = status;
@@ -158,7 +165,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @ComputerMethod
     DriveStatus getDriveStatus(int slot) throws ComputerException {
         validateSlot(slot);
-        return DriveStatus.byIndexStatic(driveStatus[slot]);
+        return DriveStatus.BY_ID.apply(driveStatus[slot]);
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
@@ -201,13 +208,14 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         NEAR_FULL(Mekanism.rl("block/qio_drive/qio_drive_partial")),
         FULL(Mekanism.rl("block/qio_drive/qio_drive_full"));
 
+        public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
+
         private final ResourceLocation model;
 
         DriveStatus(ResourceLocation model) {
             this.model = model;
         }
-
-        public static final DriveStatus[] STATUSES = values();
 
         public int ledIndex() {
             return ordinal() - READY.ordinal();
@@ -219,10 +227,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
         public byte status() {
             return (byte) ordinal();
-        }
-
-        public static DriveStatus byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(STATUSES, index);
         }
     }
 }

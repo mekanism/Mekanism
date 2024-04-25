@@ -4,6 +4,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
@@ -17,8 +18,8 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     }
 
     @Override
-    public void apply(TurbineMultiblockData data) {
-        super.apply(data);
+    public void apply(HolderLookup.Provider provider, TurbineMultiblockData data) {
+        super.apply(provider, data);
         data.dumpMode = dumpMode;
     }
 
@@ -29,14 +30,14 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     }
 
     @Override
-    public void load(CompoundTag nbtTags) {
-        super.load(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumpMode = mode);
+    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.load(provider, nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumpMode = mode);
     }
 
     @Override
-    public void save(CompoundTag nbtTags) {
-        super.save(nbtTags);
+    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.save(provider, nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.DUMP_MODE, dumpMode);
     }
 }

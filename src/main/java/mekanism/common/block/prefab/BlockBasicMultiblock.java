@@ -9,7 +9,9 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,25 +30,24 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+          @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         } else if (world.isClientSide) {
             if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
                     //If the block doesn't have a gui (frames of things like the evaporation plant), or the multiblock is not formed then pass
-                    return InteractionResult.PASS;
+                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        InteractionResult wrenchResult = tile.tryWrench(state, player, hand, hit).getInteractionResult();
-        if (wrenchResult != InteractionResult.PASS) {
+        ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult.result() != InteractionResult.PASS) {
             return wrenchResult;
         }
-        return tile.onActivate(player, hand, player.getItemInHand(hand));
+        return tile.onActivate(player, hand, stack);
     }
 }

@@ -12,7 +12,9 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,6 +27,8 @@ public class BoxedChemical implements IHasTextComponent {
      * Empty Boxed Chemical instance.
      */
     public static final BoxedChemical EMPTY = new BoxedChemical(ChemicalType.GAS, MekanismAPI.EMPTY_GAS);
+    //TODO - 1.20.5: Docs
+    public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> STREAM_CODEC = StreamCodec.ofMember(BoxedChemical::write, BoxedChemical::read);
 
     /**
      * Boxes a Chemical.
@@ -48,12 +52,13 @@ public class BoxedChemical implements IHasTextComponent {
      * @return Boxed Chemical.
      */
     public static BoxedChemical read(FriendlyByteBuf buffer) {
+        //TODO - 1.20.5: Deprecate this in favor of stream codecs?
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
         Chemical<?> c = switch (chemicalType) {
-            case GAS -> buffer.readById(MekanismAPI.GAS_REGISTRY);
-            case INFUSION -> buffer.readById(MekanismAPI.INFUSE_TYPE_REGISTRY);
-            case PIGMENT -> buffer.readById(MekanismAPI.PIGMENT_REGISTRY);
-            case SLURRY -> buffer.readById(MekanismAPI.SLURRY_REGISTRY);
+            case GAS -> buffer.readById(MekanismAPI.GAS_REGISTRY::byId);
+            case INFUSION -> buffer.readById(MekanismAPI.INFUSE_TYPE_REGISTRY::byId);
+            case PIGMENT -> buffer.readById(MekanismAPI.PIGMENT_REGISTRY::byId);
+            case SLURRY -> buffer.readById(MekanismAPI.SLURRY_REGISTRY::byId);
         };
         if (c == null || c.isEmptyType()) {
             return EMPTY;
@@ -126,10 +131,10 @@ public class BoxedChemical implements IHasTextComponent {
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         switch (chemicalType) {
-            case GAS -> buffer.writeId(MekanismAPI.GAS_REGISTRY, (Gas) chemical);
-            case INFUSION -> buffer.writeId(MekanismAPI.INFUSE_TYPE_REGISTRY, (InfuseType) chemical);
-            case PIGMENT -> buffer.writeId(MekanismAPI.PIGMENT_REGISTRY, (Pigment) chemical);
-            case SLURRY -> buffer.writeId(MekanismAPI.SLURRY_REGISTRY, (Slurry) chemical);
+            case GAS -> buffer.writeById(MekanismAPI.GAS_REGISTRY::getId, (Gas) chemical);
+            case INFUSION -> buffer.writeById(MekanismAPI.INFUSE_TYPE_REGISTRY::getId, (InfuseType) chemical);
+            case PIGMENT -> buffer.writeById(MekanismAPI.PIGMENT_REGISTRY::getId, (Pigment) chemical);
+            case SLURRY -> buffer.writeById(MekanismAPI.SLURRY_REGISTRY::getId, (Slurry) chemical);
         }
     }
 

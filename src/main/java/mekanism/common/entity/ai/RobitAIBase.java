@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 public abstract class RobitAIBase extends Goal {
@@ -46,14 +46,14 @@ public abstract class RobitAIBase extends Goal {
     @Override
     public void start() {
         timeToRecalcPath = 0;
-        oldWaterCost = theRobit.getPathfindingMalus(BlockPathTypes.WATER);
-        theRobit.setPathfindingMalus(BlockPathTypes.WATER, 0);
+        oldWaterCost = theRobit.getPathfindingMalus(PathType.WATER);
+        theRobit.setPathfindingMalus(PathType.WATER, 0);
     }
 
     @Override
     public void stop() {
         getNavigator().stop();
-        theRobit.setPathfindingMalus(BlockPathTypes.WATER, oldWaterCost);
+        theRobit.setPathfindingMalus(PathType.WATER, oldWaterCost);
     }
 
     protected void updateTask(Entity target) {
@@ -90,8 +90,8 @@ public abstract class RobitAIBase extends Goal {
 
     private boolean canNavigate(BlockPos pos) {
         Level world = getWorld();
-        BlockPathTypes pathnodetype = WalkNodeEvaluator.getBlockPathTypeStatic(world, pos.mutable());
-        if (pathnodetype == BlockPathTypes.WALKABLE) {
+        PathType pathnodetype = WalkNodeEvaluator.getPathTypeStatic(theRobit, pos);
+        if (pathnodetype == PathType.WALKABLE) {
             BlockPos blockpos = pos.subtract(theRobit.blockPosition());
             return world.noCollision(theRobit, theRobit.getBoundingBox().move(blockpos));
         }

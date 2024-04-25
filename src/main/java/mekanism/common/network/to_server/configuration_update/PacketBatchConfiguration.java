@@ -1,5 +1,7 @@
 package mekanism.common.network.to_server.configuration_update;
 
+import io.netty.buffer.ByteBuf;
+import java.util.Optional;
 import mekanism.api.RelativeSide;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -10,28 +12,31 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType transmission, DataType targetType) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType transmission, DataType targetType) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("batch_configuration");
-
-    public PacketBatchConfiguration(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readNullable(buf -> buf.readEnum(TransmissionType.class)), buffer.readEnum(DataType.class));
-    }
+    public static final CustomPacketPayload.Type<PacketBatchConfiguration> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("batch_configuration"));
+    public static final StreamCodec<ByteBuf, PacketBatchConfiguration> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketBatchConfiguration::pos,
+          ByteBufCodecs.optional(TransmissionType.STREAM_CODEC), packet -> Optional.ofNullable(packet.transmission()),
+          DataType.STREAM_CODEC, PacketBatchConfiguration::targetType,
+          (pos, transmission, type) -> new PacketBatchConfiguration(pos, transmission.orElse(null), type)
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketBatchConfiguration> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         TileComponentConfig configComponent = PacketUtils.config(context, pos);
         if (configComponent != null) {
             if (transmission == null) {
@@ -56,12 +61,5 @@ public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType 
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeNullable(transmission, FriendlyByteBuf::writeEnum);
-        buffer.writeEnum(targetType);
     }
 }

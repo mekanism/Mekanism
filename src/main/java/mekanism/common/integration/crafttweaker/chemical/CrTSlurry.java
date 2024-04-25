@@ -58,6 +58,6 @@ public class CrTSlurry {
         if (oreTag == null) {
             return null;
         }
-        return CrTUtils.itemTags().tag(oreTag.location());
+        return CrTUtils.itemTags().tag(oreTag);
     }
 }

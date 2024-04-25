@@ -3,6 +3,7 @@ package mekanism.client;
 import java.lang.ref.WeakReference;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
 import mekanism.client.render.MekanismRenderer;
@@ -12,7 +13,7 @@ import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.client.KeyMapping;
@@ -65,11 +66,12 @@ public class ClientRegistrationUtil {
     private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
         if (tintIndex == 1 && item instanceof IColoredItem) {
-            return stack.getData(MekanismAttachmentTypes.COLORABLE)
-                  .map(color -> {
-                      int[] rgbCode = color.getRgbCode();
-                      return FastColor.ARGB32.color(255, rgbCode[0], rgbCode[1], rgbCode[2]);
-                  }).orElse(0xFF555555);
+            EnumColor color = stack.get(MekanismDataComponents.COLOR);
+            if (color == null) {
+                return 0xFF555555;
+            }
+            int[] rgbCode = color.getRgbCode();
+            return FastColor.ARGB32.color(255, rgbCode[0], rgbCode[1], rgbCode[2]);
         }
         return -1;
     };

@@ -8,8 +8,9 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -128,14 +129,14 @@ public abstract class Frequency implements IFrequency {
         NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, securityMode);
     }
 
-    public void write(CompoundTag nbtTags) {
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
         writeComponentData(nbtTags);
     }
 
-    protected void read(CompoundTag nbtTags) {
+    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
         name = nbtTags.getString(NBTConstants.NAME);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
     }
 
     private void setOwnerUUID(@Nullable UUID uuid) {
@@ -144,16 +145,16 @@ public abstract class Frequency implements IFrequency {
         ownerName = MekanismUtils.getLastKnownUsername(ownerUUID);
     }
 
-    public void write(FriendlyByteBuf buffer) {
+    public void write(RegistryFriendlyByteBuf buffer) {
         buffer.writeUtf(name);
-        buffer.writeNullable(ownerUUID, FriendlyByteBuf::writeUUID);
+        buffer.writeNullable(ownerUUID, (buf, uuid) -> buf.writeUUID(uuid));
         buffer.writeUtf(ownerName, PacketUtils.LAST_USERNAME_LENGTH);
         buffer.writeEnum(securityMode);
     }
 
-    protected void read(FriendlyByteBuf dataStream) {
+    protected void read(RegistryFriendlyByteBuf dataStream) {
         name = dataStream.readUtf();
-        ownerUUID = dataStream.readNullable(FriendlyByteBuf::readUUID);
+        ownerUUID = dataStream.readNullable(buf -> buf.readUUID());
         ownerName = dataStream.readUtf(PacketUtils.LAST_USERNAME_LENGTH);
         securityMode = dataStream.readEnum(SecurityMode.class);
     }
@@ -211,10 +212,6 @@ public abstract class Frequency implements IFrequency {
             serializedIdentity.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         return serializedIdentity;
-    }
-
-    public static <FREQ extends Frequency> FREQ readFromPacket(FriendlyByteBuf dataStream) {
-        return FrequencyType.<FREQ>load(dataStream).create(dataStream);
     }
 
     public record FrequencyIdentity(Object key, SecurityMode securityMode, @Nullable UUID ownerUUID) {

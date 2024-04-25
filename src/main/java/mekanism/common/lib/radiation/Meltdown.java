@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.util.MekanismUtils;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.Nullable;
 
 public class Meltdown {
 
@@ -51,10 +53,16 @@ public class Meltdown {
         this.ticksExisted = ticksExisted;
     }
 
+    @Nullable
     public static Meltdown load(CompoundTag tag) {
+        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, NBTConstants.MIN);
+        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, NBTConstants.MAX);
+        if (minPos.isEmpty() || maxPos.isEmpty()) {
+            return null;
+        }
         return new Meltdown(
-              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MIN)),
-              NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)),
+              minPos.get(),
+              maxPos.get(),
               tag.getDouble(NBTConstants.MAGNITUDE),
               tag.getDouble(NBTConstants.CHANCE),
               tag.getFloat(NBTConstants.RADIUS),

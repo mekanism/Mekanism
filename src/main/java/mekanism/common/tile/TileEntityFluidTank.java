@@ -26,7 +26,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
@@ -41,16 +41,18 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -157,34 +159,27 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void writeSustainedData(CompoundTag data) {
-        super.writeSustainedData(data);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
+        super.writeSustainedData(provider, data);
         NBTUtils.writeEnum(data, NBTConstants.EDIT_MODE, editMode);
     }
 
     @Override
-    public void readSustainedData(CompoundTag data) {
-        super.writeSustainedData(data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
+        super.readSustainedData(provider, data);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.EDIT_MODE, MekanismAttachmentTypes.EDIT_MODE);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.EDIT_MODE, editMode);
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.EDIT_MODE, editMode);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        editMode = stack.getData(MekanismAttachmentTypes.EDIT_MODE);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        editMode = input.getOrDefault(MekanismDataComponents.EDIT_MODE, editMode);
     }
 
     @Override
@@ -256,7 +251,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
@@ -264,40 +259,40 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             editMode = data.editMode;
             fluidTank.setStack(data.stored);
             for (ITileComponent component : getComponents()) {
-                component.read(data.components);
+                component.read(data.components, provider);
             }
         } else {
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
         }
     }
 
     @NotNull
     @Override
-    public FluidTankUpgradeData getUpgradeData() {
-        return new FluidTankUpgradeData(redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
+    public FluidTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
+        container.track(SyncableEnum.create(ContainerEditMode.BY_ID, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().writeToNBT(new CompoundTag()));
-        updateTag.put(NBTConstants.VALVE, valveFluid.writeToNBT(new CompoundTag()));
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().saveOptional(provider));
+        updateTag.put(NBTConstants.VALVE, valveFluid.saveOptional(provider));
         updateTag.putFloat(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
-        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
+        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> {
             if (prevScale != scale) {
                 if (prevScale == 0 || scale == 0) {

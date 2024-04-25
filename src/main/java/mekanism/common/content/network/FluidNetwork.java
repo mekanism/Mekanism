@@ -236,7 +236,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     public void onContentsChanged() {
         markDirty();
         FluidStack type = fluidTank.getFluid();
-        if (!lastFluid.isFluidEqual(type)) {
+        if (!FluidStack.isSameFluidSameComponents(lastFluid, type)) {
             //If the fluid type does not match update it, and mark that we need an update
             if (!type.isEmpty()) {
                 lastFluid = type.copyWithAmount(1);

@@ -7,14 +7,13 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -37,8 +36,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @NotNull
     @Override
     @Deprecated
-    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
-          @NotNull BlockHitResult hit) {
+    public InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!canReplace(world, player, pos, state)) {
@@ -46,7 +44,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         }
         if (!world.isClientSide) {
             Optional<BlockData> blockData = Optional.ofNullable(WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos))
-                  .flatMap(box -> box.getExistingData(MekanismAttachmentTypes.BLOCK_DATA));
+                  .map(box -> box.components().get(MekanismDataComponents.BLOCK_DATA.value()));
             if (blockData.isPresent()) {
                 if (!blockData.get().tryPlaceIntoWorld(world, pos, player)) {
                     //Can't place it into the world, skip
@@ -77,7 +75,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        if (state != null && context.getItemInHand().hasData(MekanismAttachmentTypes.BLOCK_DATA)) {
+        if (state != null && context.getItemInHand().has(MekanismDataComponents.BLOCK_DATA)) {
             return state.setValue(BlockStateHelper.storageProperty, true);
         }
         return state;

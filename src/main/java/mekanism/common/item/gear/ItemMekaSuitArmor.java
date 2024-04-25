@@ -1,12 +1,9 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -32,7 +29,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.CommonPlayerTickHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -57,6 +53,7 @@ import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
+import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismDataMapTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
@@ -66,6 +63,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -75,8 +73,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -86,10 +84,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
@@ -103,8 +104,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents,
       IAttachmentAware {
 
-    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(UUID.fromString("018e6622-7fc7-7334-af44-9f13564edb84"), "mekasuit_gravitational_modulation", 1D, Operation.ADDITION);
-    private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
+    private static final AttributeModifier CREATIVE_FLIGHT_MODIFIER = new AttributeModifier(UUID.fromString("018e6622-7fc7-7334-af44-9f13564edb84"), "mekasuit_gravitational_modulation", 1D, Operation.ADD_VALUE);
 
     private final AttributeCache attributeCache;
     private final AttributeCache attributeCacheWithFlight;
@@ -119,7 +119,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private final double laserRefraction;
 
     public ItemMekaSuitArmor(ArmorItem.Type armorType, Properties properties) {
-        super(MEKASUIT_MATERIAL, armorType, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
+        super(MekanismArmorMaterials.MEKASUIT, armorType, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
         CachedIntValue armorConfig;
         switch (armorType) {
             case HELMET -> {
@@ -158,7 +158,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         this.attributeCache = new AttributeCache(this, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
         this.attributeCacheWithFlight = new AttributeCache(builder -> {
             this.addToBuilder(builder);
-            builder.put(NeoForgeMod.CREATIVE_FLIGHT.value(), CREATIVE_FLIGHT_MODIFIER);
+            builder.add(new ItemAttributeModifiers.Entry(
+                  NeoForgeMod.CREATIVE_FLIGHT,
+                  CREATIVE_FLIGHT_MODIFIER,
+                  EquipmentSlotGroup.CHEST
+            ));
         }, armorConfig, MekanismConfig.gear.mekaSuitToughness, MekanismConfig.gear.mekaSuitKnockbackResistance);
     }
 
@@ -168,7 +172,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+    public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Runnable onBroken) {
         // safety check
         return 0;
     }
@@ -179,7 +183,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltip);
         } else {
@@ -238,13 +242,19 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 
+    @NotNull
     @Override
-    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
-        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
+    public ItemEnchantments getAllEnchantments(@NotNull ItemStack stack) {
+        ItemEnchantments enchantments = super.getAllEnchantments(stack);
         IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
         if (container != null) {
-            for (Entry<Enchantment, Integer> entry : container.moduleBasedEnchantments().entrySet()) {
-                enchantments.merge(entry.getKey(), entry.getValue(), Math::max);
+            ItemEnchantments moduleEnchantments = container.moduleBasedEnchantments();
+            if (!moduleEnchantments.isEmpty()) {
+                ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
+                for (Object2IntMap.Entry<Holder<Enchantment>> entry : moduleEnchantments.entrySet()) {
+                    mutable.upgrade(entry.getKey().value(), entry.getIntValue());
+                }
+                return mutable.toImmutable();
             }
         }
         return enchantments;
@@ -419,33 +429,42 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        if (slot == getEquipmentSlot()) {
-            if (slot == EquipmentSlot.CHEST && CommonPlayerTickHandler.isGravitationalModulationReady(stack)) {
-                return attributeCacheWithFlight.get();
-            }
-            return attributeCache.get();
+    public ItemAttributeModifiers getAttributeModifiers(@NotNull ItemStack stack) {
+        if (getEquipmentSlot() == EquipmentSlot.CHEST && CommonPlayerTickHandler.isGravitationalModulationReady(stack)) {
+            return attributeCacheWithFlight.get();
         }
-        return ImmutableMultimap.of();
+        return attributeCache.get();
     }
 
     @Override
-    public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
+    public void addToBuilder(List<ItemAttributeModifiers.Entry> builder) {
         UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
-        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
-        builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
-              Operation.ADDITION));
+        EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(getEquipmentSlot());
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR,
+              new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADD_VALUE),
+              group
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.ARMOR_TOUGHNESS,
+              new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADD_VALUE),
+              group
+        ));
+        builder.add(new ItemAttributeModifiers.Entry(
+              Attributes.KNOCKBACK_RESISTANCE,
+              new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().value().knockbackResistance(), Operation.ADD_VALUE),
+              group
+        ));
     }
 
     @Override
     public int getDefense() {
-        return getMaterial().getDefenseForType(getType());
+        return getMaterial().value().getDefense(getType());
     }
 
     @Override
     public float getToughness() {
-        return getMaterial().getToughness();
+        return getMaterial().value().toughness();
     }
 
     @Override
@@ -623,36 +642,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         public EnergyUsageInfo(FloatingLong energyAvailable) {
             //Copy it so we can just use minusEquals without worry
             this.energyAvailable = energyAvailable.copy();
-        }
-    }
-
-    // This is unused for the most part; toughness / damage reduction is handled manually, though it can fall back to netherite values
-    protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
-
-        @Override
-        public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
-            return switch (armorType) {
-                case BOOTS -> MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault();
-                case LEGGINGS -> MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault();
-                case CHESTPLATE -> MekanismConfig.gear.mekaSuitBodyArmorArmor.getOrDefault();
-                case HELMET -> MekanismConfig.gear.mekaSuitHelmetArmor.getOrDefault();
-            };
-        }
-
-        @Override
-        public float getToughness() {
-            return MekanismConfig.gear.mekaSuitToughness.getOrDefault();
-        }
-
-        @Override
-        public float getKnockbackResistance() {
-            return MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault();
-        }
-
-        @NotNull
-        @Override
-        public String getName() {
-            return Mekanism.MODID + ":mekasuit";
         }
     }
 }

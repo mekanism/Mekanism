@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling byte arrays
@@ -32,7 +33,7 @@ public class SyncableByteArray implements ISyncableData {
     }
 
     @Override
-    public ByteArrayPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public ByteArrayPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
         // whenever we send this as a packet rather than potentially allowing the array to leak from one side to the other in single player
         byte[] bytes = get();

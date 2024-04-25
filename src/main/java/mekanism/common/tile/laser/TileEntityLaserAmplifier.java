@@ -1,12 +1,15 @@
 package mekanism.common.tile.laser;
 
-import java.util.Map;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
@@ -21,17 +24,24 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
@@ -164,17 +174,17 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void readSustainedData(CompoundTag data) {
-        super.readSustainedData(data);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
+        super.readSustainedData(provider, data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }
 
     @Override
-    public void writeSustainedData(CompoundTag data) {
-        super.writeSustainedData(data);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
+        super.writeSustainedData(provider, data);
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());
         data.putInt(NBTConstants.TIME, delay);
@@ -182,31 +192,21 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.MIN, MekanismAttachmentTypes.MIN_THRESHOLD);
-        remap.put(NBTConstants.MAX, MekanismAttachmentTypes.MAX_THRESHOLD);
-        remap.put(NBTConstants.TIME, MekanismAttachmentTypes.DELAY);
-        remap.put(NBTConstants.OUTPUT_MODE, MekanismAttachmentTypes.REDSTONE_OUTPUT);
-        return remap;
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        updateMinThreshold(input.getOrDefault(MekanismDataComponents.MIN_THRESHOLD, minThreshold));
+        updateMaxThreshold(input.getOrDefault(MekanismDataComponents.MAX_THRESHOLD, maxThreshold));
+        setDelay(input.getOrDefault(MekanismDataComponents.DELAY, delay));
+        outputMode = input.getOrDefault(MekanismDataComponents.REDSTONE_OUTPUT, outputMode);
     }
 
     @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        updateMinThreshold(stack.getData(MekanismAttachmentTypes.MIN_THRESHOLD));
-        updateMaxThreshold(stack.getData(MekanismAttachmentTypes.MAX_THRESHOLD));
-        setDelay(stack.getData(MekanismAttachmentTypes.DELAY));
-        outputMode = stack.getData(MekanismAttachmentTypes.REDSTONE_OUTPUT);
-    }
-
-    @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.MIN_THRESHOLD, minThreshold);
-        stack.setData(MekanismAttachmentTypes.MAX_THRESHOLD, maxThreshold);
-        stack.setData(MekanismAttachmentTypes.DELAY, delay);
-        stack.setData(MekanismAttachmentTypes.REDSTONE_OUTPUT, outputMode);
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(MekanismDataComponents.MIN_THRESHOLD, minThreshold);
+        builder.set(MekanismDataComponents.MAX_THRESHOLD, maxThreshold);
+        builder.set(MekanismDataComponents.DELAY, delay);
+        builder.set(MekanismDataComponents.REDSTONE_OUTPUT, outputMode);
     }
 
     @Override
@@ -240,7 +240,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         container.track(SyncableFloatingLong.create(this::getMinThreshold, value -> minThreshold = value));
         container.track(SyncableFloatingLong.create(this::getMaxThreshold, value -> maxThreshold = value));
         container.track(SyncableInt.create(this::getDelay, value -> delay = value));
-        container.track(SyncableEnum.create(RedstoneOutput::byIndexStatic, RedstoneOutput.OFF, this::getOutputMode, value -> outputMode = value));
+        container.track(SyncableEnum.create(RedstoneOutput.BY_ID, RedstoneOutput.OFF, this::getOutputMode, value -> outputMode = value));
     }
 
     //Methods relating to IComputerTile
@@ -276,15 +276,20 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     //End methods IComputerTile
 
     @NothingNullByDefault
-    public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey {
+    public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey, StringRepresentable {
         OFF(MekanismLang.OFF),
         ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),
         ENERGY_CONTENTS(MekanismLang.ENERGY_CONTENTS);
 
-        private static final RedstoneOutput[] MODES = values();
+        public static final Codec<RedstoneOutput> CODEC = StringRepresentable.fromEnum(RedstoneOutput::values);
+        public static final IntFunction<RedstoneOutput> BY_ID = ByIdMap.continuous(RedstoneOutput::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, RedstoneOutput> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneOutput::ordinal);
+
+        private final String serializedName;
         private final ILangEntry langEntry;
 
         RedstoneOutput(ILangEntry langEntry) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
         }
 
@@ -295,11 +300,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
         @Override
         public RedstoneOutput byIndex(int index) {
-            return byIndexStatic(index);
+            return BY_ID.apply(index);
         }
 
-        public static RedstoneOutput byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

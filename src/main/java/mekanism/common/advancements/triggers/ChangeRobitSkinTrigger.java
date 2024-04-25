@@ -31,8 +31,8 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
     public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<RobitSkin>> skin) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, JsonConstants.PLAYER).forGetter(TriggerInstance::player),
-                    ExtraCodecs.strictOptionalField(ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME), JsonConstants.SKIN).forGetter(TriggerInstance::skin)
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
+                    ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME).optionalFieldOf(JsonConstants.SKIN).forGetter(TriggerInstance::skin)
               ).apply(instance, TriggerInstance::new)
         );
 

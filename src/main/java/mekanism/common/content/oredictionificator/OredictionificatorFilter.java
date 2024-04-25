@@ -1,9 +1,15 @@
 package mekanism.common.content.oredictionificator;
 
+import com.mojang.datafixers.Products.P3;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
+import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
@@ -12,10 +18,13 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -24,17 +33,52 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> extends BaseFilter<FILTER> {
 
+    protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> P3<Mu<FILTER>, Boolean, Optional<TagKey<TYPE>>, Holder<TYPE>> baseOredictionificatorCodec(
+          Instance<FILTER> instance, ResourceKey<? extends Registry<TYPE>> registryName, Registry<TYPE> registry) {
+        return baseCodec(instance)
+              .and(TagKey.codec(registryName).optionalFieldOf(NBTConstants.FILTER).forGetter(filter -> Optional.ofNullable(filter.filterLocation)))
+              .and(registry.holderByNameCodec().fieldOf(NBTConstants.SELECTED).forGetter(filter -> filter.selectedOutput))
+              ;
+    }
+
+    protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> StreamCodec<RegistryFriendlyByteBuf, FILTER>
+    baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
+        return StreamCodec.composite(
+              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              //Realistically the filter location shouldn't be null except when the filter is first being created
+              // but handle it being null just in case
+              ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), filter -> Optional.ofNullable(filter.filterLocation).map(TagKey::location),
+              ByteBufCodecs.holderRegistry(registry), filter -> filter.selectedOutput,
+              ByteBufCodecs.BOOL, filter -> filter.isValid,
+              (filter, filterLocation, selected, valid) -> {
+                  filter.setFilter(filterLocation.orElse(null));
+                  filter.setSelectedOutput(selected);
+                  filter.isValid = valid;
+                  return filter;
+              }
+        );
+    }
+
     @Nullable
-    private TagKey<TYPE> filterLocation;
+    TagKey<TYPE> filterLocation;
     @Nullable
     private HolderSet.Named<TYPE> filterTag;
     @NotNull
-    private Holder<TYPE> selectedOutput = getFallbackElement();
+    Holder<TYPE> selectedOutput = getFallbackElement();
     @Nullable
     private STACK cachedSelectedStack;
-    private boolean isValid;
+    boolean isValid;
 
     protected OredictionificatorFilter() {
+    }
+
+    protected OredictionificatorFilter(boolean enabled, @Nullable TagKey<TYPE> filterLocation, Holder<TYPE> selectedOutput) {
+        super(enabled);
+        this.filterLocation = filterLocation;
+        flushCachedTag();
+        setSelectedOutput(selectedOutput);
+        //Recheck filter validity after reading
+        checkValidity();
     }
 
     protected OredictionificatorFilter(FILTER other) {
@@ -111,43 +155,6 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     public boolean filterMatches(ResourceLocation location) {
         return filterLocation != null && filterLocation.location().equals(location);
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putString(NBTConstants.FILTER, getFilterText());
-        if (selectedOutput != getFallbackElement()) {
-            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SELECTED, getRegistry(), selectedOutput);
-        }
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        NBTUtils.setResourceLocationIfPresentElse(nbtTags, NBTConstants.FILTER, this::setFilter, () -> setFilter(null));
-        NBTUtils.setResourceLocationIfPresent(nbtTags, NBTConstants.SELECTED, this::setSelectedOrFallback);
-        //Recheck filter validity after reading from nbt
-        checkValidity();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        //Realistically the filter location shouldn't be null except when the filter is first being created
-        // but handle it being null just in case
-        buffer.writeNullable(filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
-        buffer.writeResourceKey(selectedOutput.unwrapKey().orElseThrow());
-        buffer.writeBoolean(isValid);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf buffer) {
-        super.read(buffer);
-        setFilter(buffer.readNullable(FriendlyByteBuf::readResourceLocation));
-        setSelectedOrFallback(buffer.readResourceLocation());
-        isValid = buffer.readBoolean();
     }
 
     private void setToFallback() {

@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -9,13 +10,13 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -30,10 +31,10 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
-        super.appendHoverText(stack, world, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override
@@ -54,6 +55,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> stack.getData(MekanismAttachmentTypes.OWNER_ONLY), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new OwnerObject(stack), this);
     }
 }

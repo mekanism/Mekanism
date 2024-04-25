@@ -25,6 +25,7 @@ import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -103,29 +104,29 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @NotNull
     @Override
-    public CompoundTag write(@NotNull CompoundTag tag) {
-        super.write(tag);
-        ContainerType.HEAT.saveTo(tag, getHeatCapacitors(null));
+    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag tag) {
+        super.write(provider, tag);
+        ContainerType.HEAT.saveTo(provider, tag, getHeatCapacitors(null));
         return tag;
     }
 
     @Override
-    public void read(@NotNull CompoundTag tag) {
-        super.read(tag);
-        ContainerType.HEAT.readFrom(tag, getHeatCapacitors(null));
+    public void read(HolderLookup.Provider provider, @NotNull CompoundTag tag) {
+        super.read(provider, tag);
+        ContainerType.HEAT.readFrom(provider, tag, getHeatCapacitors(null));
     }
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
-        updateTag = super.getReducedUpdateTag(updateTag);
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
+        updateTag = super.getReducedUpdateTag(provider, updateTag);
         updateTag.putDouble(NBTConstants.TEMPERATURE, buffer.getHeat());
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, buffer::setHeat);
     }
 

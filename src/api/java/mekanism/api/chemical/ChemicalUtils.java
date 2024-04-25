@@ -1,13 +1,13 @@
 package mekanism.api.chemical;
 
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -29,6 +29,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,10 +39,16 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalUtils {
 
     //nb: these can't be in their respective classes as they init before the custom registries are created, thus the EMPTY init fails
-    public static final Codec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
-    public static final Codec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
-    public static final Codec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
-    public static final Codec<SlurryStack> SLURRY_STACK_CODEC = ChemicalStack.codec(Slurry.CODEC, JsonConstants.SLURRY, SlurryStack::new);
+    public static final MapCodec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
+    public static final MapCodec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
+    public static final MapCodec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
+    public static final MapCodec<SlurryStack> SLURRY_STACK_CODEC = ChemicalStack.codec(Slurry.CODEC, JsonConstants.SLURRY, SlurryStack::new);
+
+    //TODO - 1.20.5: Replace these with more direct codecs and also add an optional variant to mimic the other types?
+    public static final StreamCodec<RegistryFriendlyByteBuf, GasStack> GAS_STACK_STREAM_CODEC = StreamCodec.ofMember(GasStack::writeToPacket, GasStack::readFromPacket);
+    public static final StreamCodec<RegistryFriendlyByteBuf, InfusionStack> INFUSION_STACK_STREAM_CODEC = StreamCodec.ofMember(InfusionStack::writeToPacket, InfusionStack::readFromPacket);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PigmentStack> PIGMENT_STACK_STREAM_CODEC = StreamCodec.ofMember(PigmentStack::writeToPacket, PigmentStack::readFromPacket);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SlurryStack> SLURRY_STACK_STREAM_CODEC = StreamCodec.ofMember(SlurryStack::writeToPacket, SlurryStack::readFromPacket);
 
     private ChemicalUtils() {
     }
@@ -113,7 +121,7 @@ public class ChemicalUtils {
      *
      * @return Chemical Stack.
      */
-    private static <STACK extends ChemicalStack<?>> STACK readStack(FriendlyByteBuf buffer, FriendlyByteBuf.Reader<STACK> reader, STACK empty) {
+    private static <STACK extends ChemicalStack<?>> STACK readStack(FriendlyByteBuf buffer, Function<FriendlyByteBuf, STACK> reader, STACK empty) {
         return buffer.readBoolean() ? reader.apply(buffer) : empty;
     }
 
@@ -162,7 +170,7 @@ public class ChemicalUtils {
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK insert(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
+          IntSupplier tankCount, IntFunction<@NotNull STACK> inTankGetter, InsertChemical<STACK> insertChemical) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return empty;
@@ -270,7 +278,7 @@ public class ChemicalUtils {
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(long amount, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
+          IntSupplier tankCount, IntFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         if (amount == 0) {
             return empty;
         }
@@ -370,7 +378,7 @@ public class ChemicalUtils {
      */
     @Deprecated(forRemoval = true, since = "10.5.13")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK extract(STACK stack, Action action, STACK empty,
-          IntSupplier tankCount, Int2ObjectFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
+          IntSupplier tankCount, IntFunction<@NotNull STACK> inTankGetter, ExtractChemical<STACK> extractChemical) {
         if (stack.isEmpty()) {
             return empty;
         }

@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveInputCache<Item, HashedItem, ItemStack, ItemStackIngredient, RECIPE> {
 
@@ -35,15 +35,16 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
                     addInputCache(item.getItem(), recipe);
                 }
             }
-        } else if (input instanceof CompoundIngredient compoundIngredient) {
-            //Special handling for neo's compound ingredient to map all children
+        } else if (input.getCustomIngredient() instanceof CompoundIngredient compoundIngredient) {
+            //Special handling for neo's compound ingredient to map all children as best as we can
+            // as maybe some of them are simple
             boolean result = false;
-            for (Ingredient child : compoundIngredient.getChildren()) {
+            for (Ingredient child : compoundIngredient.children()) {
                 result |= mapIngredient(recipe, child);
             }
             return result;
-        } else if (input instanceof NBTIngredient nbtIngredient && nbtIngredient.isStrict()) {
-            //Special handling for neo's NBT Ingredient as it requires an exact NBT or attachment match
+        } else if (input.getCustomIngredient() instanceof DataComponentIngredient componentIngredient && componentIngredient.isStrict()) {
+            //Special handling for neo's NBT Ingredient as it requires an exact component match
             for (ItemStack item : input.getItems()) {
                 addNbtInputCache(HashedItem.create(item), recipe);
             }

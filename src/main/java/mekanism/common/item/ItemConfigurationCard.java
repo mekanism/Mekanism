@@ -9,7 +9,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ public class ItemConfigurationCard extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
     }
 
@@ -65,10 +65,10 @@ public class ItemConfigurationCard extends Item {
             if (player.isShiftKeyDown()) {
                 if (!world.isClientSide) {
                     String translationKey = configCardAccess.getConfigCardName();
-                    CompoundTag data = configCardAccess.getConfigurationData(player);
+                    CompoundTag data = configCardAccess.getConfigurationData(world.registryAccess(), player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
                     NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
-                    stack.setData(MekanismAttachmentTypes.CONFIGURATION_DATA, data);
+                    stack.set(MekanismDataComponents.CONFIGURATION_DATA, data);
                     player.displayClientMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)), true);
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
                 }
@@ -80,7 +80,7 @@ public class ItemConfigurationCard extends Item {
                 }
                 if (!world.isClientSide) {
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
-                        configCardAccess.setConfigurationData(player, data);
+                        configCardAccess.setConfigurationData(world.registryAccess(), player, data);
                         configCardAccess.configurationDataSet();
                         player.displayClientMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
                               getConfigCardName(data)), true);
@@ -101,7 +101,7 @@ public class ItemConfigurationCard extends Item {
         if (player.isShiftKeyDown()) {
             ItemStack configCard = player.getItemInHand(usedHand);
             if (!level.isClientSide) {
-                configCard.removeData(MekanismAttachmentTypes.CONFIGURATION_DATA);
+                configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
                 player.displayClientMessage(MekanismLang.CONFIG_CARD_CLEARED.translate(), true);
             }
             return InteractionResultHolder.sidedSuccess(configCard, level.isClientSide);
@@ -111,9 +111,11 @@ public class ItemConfigurationCard extends Item {
 
     @Nullable
     private CompoundTag getData(ItemStack stack) {
-        return stack.getExistingData(MekanismAttachmentTypes.CONFIGURATION_DATA)
-              .filter(data -> !data.isEmpty())
-              .orElse(null);
+        CompoundTag data = stack.get(MekanismDataComponents.CONFIGURATION_DATA);
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+        return data;
     }
 
     @Nullable

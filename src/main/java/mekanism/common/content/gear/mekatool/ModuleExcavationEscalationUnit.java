@@ -1,8 +1,10 @@
 package mekanism.common.content.gear.mekatool;
 
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -11,7 +13,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -25,7 +26,10 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -37,7 +41,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("excavation_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {
-        int types = ExcavationMode.MODES.length - 2;
+        int types = ExcavationMode.values().length - 2;
         Int2ObjectMap<Lazy<NestedRadialMode>> map = new Int2ObjectArrayMap<>(types);
         for (int type = 1; type <= types; type++) {
             int accessibleValues = type + 2;
@@ -127,7 +131,8 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         SUPER_FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, 64, EnumColor.ORANGE, "speed_super"),
         EXTREME(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, 128, EnumColor.RED, "speed_extreme");
 
-        private static final ExcavationMode[] MODES = values();
+        public static final IntFunction<ExcavationMode> BY_ID = ByIdMap.continuous(ExcavationMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, ExcavationMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationMode::ordinal);
 
         private final ResourceLocation icon;
         private final ILangEntry langEntry;
@@ -145,7 +150,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
 
         @Override
         public ExcavationMode byIndex(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+            return BY_ID.apply(index);
         }
 
         @Override

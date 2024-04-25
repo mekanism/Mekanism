@@ -11,6 +11,7 @@ import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -38,14 +39,14 @@ public class MekanismModelCache extends BaseModelCache {
     public final JSONModelData LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
     public final JSONModelData VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
-    public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
+    public final JSONModelData[] QIO_DRIVES = new JSONModelData[EnumUtils.DRIVE_STATUSES.length];
     private final Map<ResourceLocation, JSONModelData> CUSTOM_ROBIT_MODELS = new HashMap<>();
     private final Map<ResourceLocation, JSONModelData> ROBIT_SKINS = new HashMap<>();
     private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
         super(Mekanism.MODID);
-        for (DriveStatus status : DriveStatus.STATUSES) {
+        for (DriveStatus status : EnumUtils.DRIVE_STATUSES) {
             if (status != DriveStatus.NONE) {
                 QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());
             }

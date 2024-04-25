@@ -250,7 +250,7 @@ public class ComputerHelpProvider implements DataProvider {
         return CLASS_NAME_SPLITTER.splitAsStream(simpleName).collect(Collectors.joining(" "));
     }
 
-    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = ExtraCodecs.stringResolverCodec(ComputerHelpProvider::getFriendlyName, p -> null);
+    private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = Codec.stringResolver(ComputerHelpProvider::getFriendlyName, p -> null);
     private static final Codec<Map<Class<?>, List<MethodHelpData>>> METHODS_DATA_CODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
     private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MekCodecs.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
 
@@ -298,7 +298,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     record JekyllData(Version version, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums, Map<Class<?>, TableType> builtInTables) {
 
-        static Codec<Version> VERSION_CODEC = ExtraCodecs.stringResolverCodec(Version::toString, Version::get);
+        static Codec<Version> VERSION_CODEC = Codec.stringResolver(Version::toString, Version::get);
         static Codec<JekyllData> CODEC = RecordCodecBuilder.create(instance ->
               instance.group(
                     VERSION_CODEC.fieldOf("version").forGetter(JekyllData::version),

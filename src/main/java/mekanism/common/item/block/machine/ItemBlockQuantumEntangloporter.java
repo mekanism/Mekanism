@@ -9,6 +9,7 @@ import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileMo
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
     }
 

@@ -18,6 +18,10 @@ public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<
         super(MekanismAPI.MODULE_REGISTRY_NAME, modid, ModuleRegistryObject::new);
     }
 
+    public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider) {
+        return registerMarker(name, itemProvider, UnaryOperator.identity());
+    }
+
     public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
         return register(name, builderModifier.apply(ModuleDataBuilder.marker(itemProvider)));
     }

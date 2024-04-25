@@ -1,32 +1,33 @@
 package mekanism.common.attachments;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.lib.collection.HashList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 @NothingNullByDefault
-public final class FilterAware implements INBTSerializable<ListTag> {
+public record FilterAware(List<IFilter<?>> filters) {
 
-    private final HashList<IFilter<?>> filters = new HashList<>();
+    public static final FilterAware EMPTY = new FilterAware(Collections.emptyList());
 
-    public void copyTo(FilterManager<?> filterManager) {
-        //TODO - 1.20.4: Do we need to copy these or can we just pass the raw instance?
-        filterManager.trySetFilters(filters);
-    }
+    public static final Codec<FilterAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          BaseFilter.GENERIC_CODEC.listOf().fieldOf(NBTConstants.FILTERS).forGetter(FilterAware::filters)
+    ).apply(instance, FilterAware::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, FilterAware> STREAM_CODEC = BaseFilter.GENERIC_STREAM_CODEC.apply(ByteBufCodecs.list())
+          .map(FilterAware::new, FilterAware::filters);
 
-    public void copyFrom(FilterManager<?> filterManager) {
-        filters.clear();
-        filters.addAll(filterManager.getFilters());
+    public FilterAware {
+        //Make the list unmodifiable to ensure we don't accidentally mutate it
+        filters = List.copyOf(filters);
     }
 
     private <FILTER extends IFilter<?>> Stream<FILTER> getEnabledStream(Class<FILTER> filterClass) {
@@ -43,45 +44,5 @@ public final class FilterAware implements INBTSerializable<ListTag> {
 
     public <FILTER extends IFilter<?>> boolean anyEnabledMatch(Class<FILTER> filterClass, Predicate<FILTER> validator) {
         return getEnabledStream(filterClass).anyMatch(validator);
-    }
-
-    public boolean isCompatible(FilterAware other) {
-        return other == this || filters.equals(other.filters);
-    }
-
-    @Nullable
-    @Override
-    public ListTag serializeNBT() {
-        if (this.filters.isEmpty()) {
-            return null;
-        }
-        ListTag filterTags = new ListTag();
-        for (IFilter<?> filter : filters) {
-            filterTags.add(filter.write(new CompoundTag()));
-        }
-        return filterTags;
-    }
-
-    @Override
-    public void deserializeNBT(ListTag tagList) {
-        filters.clear();
-        for (int i = 0, size = tagList.size(); i < size; i++) {
-            IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-            if (filter != null) {
-                filters.add(filter);
-            }
-        }
-    }
-
-    @Nullable
-    public FilterAware copy(IAttachmentHolder holder) {
-        if (filters.isEmpty()) {
-            return null;
-        }
-        FilterAware copy = new FilterAware();
-        for (IFilter<?> filter : filters) {
-            copy.filters.add(filter.clone());
-        }
-        return copy;
     }
 }

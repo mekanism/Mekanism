@@ -45,11 +45,11 @@ public class FluidRenderData extends RenderData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fluidType.getFluid(), fluidType.getTag());
+        return Objects.hash(super.hashCode(), FluidStack.hashFluidAndComponents(fluidType));
     }
 
     @Override
     public boolean equals(Object data) {
-        return super.equals(data) && data instanceof FluidRenderData other && fluidType.isFluidEqual(other.fluidType);
+        return super.equals(data) && data instanceof FluidRenderData other && FluidStack.isSameFluidSameComponents(fluidType, other.fluidType);
     }
 }

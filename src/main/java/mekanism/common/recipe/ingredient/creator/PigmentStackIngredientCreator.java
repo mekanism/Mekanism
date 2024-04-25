@@ -12,11 +12,14 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 @NothingNullByDefault
 public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> {
@@ -24,7 +27,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static final PigmentStackIngredientCreator INSTANCE = new PigmentStackIngredientCreator();
 
     private PigmentStackIngredientCreator() {
-        super(SinglePigmentStackIngredient.CODEC, TaggedPigmentStackIngredient.CODEC, codec -> MultiPigmentStackIngredient.makeCodec(codec, MultiPigmentStackIngredient::new),
+        super(SinglePigmentStackIngredient.CODEC, TaggedPigmentStackIngredient.CODEC, codec -> MultiChemicalStackIngredient.makeCodec(codec, MultiPigmentStackIngredient::new),
+              SinglePigmentStackIngredient.STREAM_CODEC, TaggedPigmentStackIngredient.STREAM_CODEC, MultiPigmentStackIngredient.STREAM_CODEC,
               SinglePigmentStackIngredient.class, TaggedPigmentStackIngredient.class, MultiPigmentStackIngredient.class, PigmentStackIngredient.class);
     }
 
@@ -63,7 +67,10 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<SinglePigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new));
+        public static Codec<SinglePigmentStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SinglePigmentStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(ChemicalUtils.PIGMENT_STACK_STREAM_CODEC, SinglePigmentStackIngredient::new)
+        );
 
         private SinglePigmentStackIngredient(PigmentStack stack) {
             super(stack);
@@ -78,7 +85,10 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedPigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.PIGMENT_REGISTRY_NAME, TaggedPigmentStackIngredient::new));
+        public static Codec<TaggedPigmentStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(MekanismAPI.PIGMENT_REGISTRY_NAME, TaggedPigmentStackIngredient::new));
+        public static StreamCodec<RegistryFriendlyByteBuf, TaggedPigmentStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(MekanismAPI.PIGMENT_REGISTRY_NAME, TaggedPigmentStackIngredient::new)
+        );
 
         private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
             super(MekanismAPI.PIGMENT_REGISTRY.getOrCreateTag(tag), amount);

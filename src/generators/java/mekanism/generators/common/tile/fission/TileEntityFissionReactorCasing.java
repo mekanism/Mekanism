@@ -11,6 +11,7 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
@@ -85,8 +86,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
 
     @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        CompoundTag updateTag = super.getReducedUpdateTag(provider);
         FissionReactorMultiblockData multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
         if (multiblock.isFormed()) {
@@ -96,11 +97,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         FissionReactorMultiblockData multiblock = getMultiblock();
         //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
         //UUID previousID = multiblock.inventoryID;
-        super.handleUpdateTag(tag);
+        super.handleUpdateTag(tag, provider);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         //boolean formedMaster = false;
         //boolean wasBurning = false;

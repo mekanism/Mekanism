@@ -12,11 +12,14 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiSlurryStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 @NothingNullByDefault
 public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> {
@@ -24,7 +27,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static final SlurryStackIngredientCreator INSTANCE = new SlurryStackIngredientCreator();
 
     private SlurryStackIngredientCreator() {
-        super(SingleSlurryStackIngredient.CODEC, TaggedSlurryStackIngredient.CODEC, codec -> MultiSlurryStackIngredient.makeCodec(codec, MultiSlurryStackIngredient::new),
+        super(SingleSlurryStackIngredient.CODEC, TaggedSlurryStackIngredient.CODEC, codec -> MultiChemicalStackIngredient.makeCodec(codec, MultiSlurryStackIngredient::new),
+              SingleSlurryStackIngredient.STREAM_CODEC, TaggedSlurryStackIngredient.STREAM_CODEC, MultiSlurryStackIngredient.STREAM_CODEC,
               SingleSlurryStackIngredient.class, TaggedSlurryStackIngredient.class, MultiSlurryStackIngredient.class, SlurryStackIngredient.class);
     }
 
@@ -63,7 +67,10 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static class SingleSlurryStackIngredient extends SingleChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<SingleSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.SLURRY_STACK_CODEC, SingleSlurryStackIngredient::new));
+        public static Codec<SingleSlurryStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.SLURRY_STACK_CODEC, SingleSlurryStackIngredient::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SingleSlurryStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(ChemicalUtils.SLURRY_STACK_STREAM_CODEC, SingleSlurryStackIngredient::new)
+        );
 
         private SingleSlurryStackIngredient(SlurryStack stack) {
             super(stack);
@@ -78,7 +85,10 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static class TaggedSlurryStackIngredient extends TaggedChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.SLURRY_REGISTRY_NAME, TaggedSlurryStackIngredient::new));
+        public static Codec<TaggedSlurryStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(MekanismAPI.SLURRY_REGISTRY_NAME, TaggedSlurryStackIngredient::new));
+        public static StreamCodec<RegistryFriendlyByteBuf, TaggedSlurryStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(MekanismAPI.SLURRY_REGISTRY_NAME, TaggedSlurryStackIngredient::new)
+        );
 
         private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
             super(MekanismAPI.SLURRY_REGISTRY.getOrCreateTag(tag), amount);

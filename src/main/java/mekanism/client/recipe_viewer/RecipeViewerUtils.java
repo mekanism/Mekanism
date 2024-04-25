@@ -32,6 +32,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -131,15 +132,16 @@ public class RecipeViewerUtils {
 
     public static Map<ResourceLocation, ItemStackToFluidRecipe> getLiquificationRecipes() {
         Map<ResourceLocation, ItemStackToFluidRecipe> liquification = new HashMap<>();
+        //TODO - 1.20.5: Do we want to loop creative tabs or something instead?
         for (Item item : BuiltInRegistries.ITEM) {
-            if (item.isEdible()) {
-                ItemStack stack = new ItemStack(item);
+            ItemStack stack = new ItemStack(item);
+            if (stack.has(DataComponents.FOOD)) {
                 //TODO: If any mods adds presets to the creative menu we may want to consider gathering all
                 FoodProperties food = stack.getFoodProperties(null);
                 //Only display consuming foods that provide healing as otherwise no paste will be made
-                if (food != null && food.getNutrition() > 0) {
+                if (food != null && food.nutrition() > 0) {
                     ResourceLocation id = RecipeViewerUtils.synthetic(RegistryUtils.getName(stack.getItem()), "liquification", Mekanism.MODID);
-                    liquification.put(id, new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
+                    liquification.put(id, new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.nutrition() * 50)));
                 }
             }
         }

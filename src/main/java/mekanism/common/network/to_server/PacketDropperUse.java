@@ -1,6 +1,8 @@
 package mekanism.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
 import java.util.List;
+import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.Chemical;
@@ -33,48 +35,38 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
+public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tankType, int tankId) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("use_dropper");
-
-    private final BlockPos pos;
-    private final DropperAction action;
-    private final TankType tankType;
-    private final int tankId;
-
-    public PacketDropperUse(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readEnum(DropperAction.class), buffer.readEnum(TankType.class), buffer.readVarInt());
-    }
-
-    public PacketDropperUse(BlockPos pos, DropperAction action, TankType tankType, int tankId) {
-        this.pos = pos;
-        this.action = action;
-        this.tankType = tankType;
-        this.tankId = tankId;
-    }
+    public static final CustomPacketPayload.Type<PacketDropperUse> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("use_dropper"));
+    public static final StreamCodec<ByteBuf, PacketDropperUse> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketDropperUse::pos,
+          DropperAction.STREAM_CODEC, PacketDropperUse::action,
+          TankType.STREAM_CODEC, PacketDropperUse::tankType,
+          ByteBufCodecs.VAR_INT, PacketDropperUse::tankId,
+          PacketDropperUse::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketDropperUse> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        if (tankId < 0) {
-            return;
-        }
-        Player optionalPlayer = context.player().orElse(null);
-        if (optionalPlayer instanceof ServerPlayer player) {
+    public void handle(IPayloadContext context) {
+        if (tankId >= 0 && context.player() instanceof ServerPlayer player) {
             ItemStack stack = player.containerMenu.getCarried();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), pos);
@@ -221,18 +213,13 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
         }
     }
 
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeEnum(action);
-        buffer.writeEnum(tankType);
-        buffer.writeVarInt(tankId);
-    }
-
     public enum DropperAction {
         FILL_DROPPER,
         DRAIN_DROPPER,
-        DUMP_TANK
+        DUMP_TANK;
+
+        public static final IntFunction<DropperAction> BY_ID = ByIdMap.continuous(DropperAction::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, DropperAction> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DropperAction::ordinal);
     }
 
     public enum TankType {
@@ -240,6 +227,9 @@ public class PacketDropperUse implements IMekanismPacket<PlayPayloadContext> {
         FLUID_TANK,
         INFUSION_TANK,
         PIGMENT_TANK,
-        SLURRY_TANK
+        SLURRY_TANK;
+
+        public static final IntFunction<TankType> BY_ID = ByIdMap.continuous(TankType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, TankType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, TankType::ordinal);
     }
 }

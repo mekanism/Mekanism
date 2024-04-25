@@ -40,20 +40,21 @@ import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
@@ -388,7 +389,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         for (QIOItemTypeData data : itemDataMap.values()) {
             map.put(new UUIDAwareHashedItem(data.itemType, QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(data.itemType)), data.count);
         }
-        PacketUtils.sendTo(new PacketBatchItemViewerSync(totalCountCapacity, totalTypeCapacity, map), player);
+        PacketDistributor.sendToPlayer(player, new PacketBatchItemViewerSync(totalCountCapacity, totalTypeCapacity, map));
     }
 
     public void closeItemViewer(ServerPlayer player) {
@@ -484,7 +485,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             for (Iterator<ServerPlayer> viewingIterator = playersViewingItems.iterator(); viewingIterator.hasNext(); ) {
                 ServerPlayer player = viewingIterator.next();
                 if (player.containerMenu instanceof QIOItemViewerContainer) {
-                    PacketUtils.sendTo(lazyPacket.get(), player);
+                    PacketDistributor.sendToPlayer(player, lazyPacket.get());
                 } else {
                     //flush players that somehow didn't send a container close packet
                     viewingIterator.remove();
@@ -566,7 +567,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         super.write(buf);
         buf.writeVarLong(totalCount);
         buf.writeVarLong(totalCountCapacity);
@@ -576,7 +577,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public void read(FriendlyByteBuf buf) {
+    public void read(RegistryFriendlyByteBuf buf) {
         super.read(buf);
         totalCount = buf.readVarLong();
         totalCountCapacity = buf.readVarLong();
@@ -588,15 +589,15 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public void write(CompoundTag nbtTags) {
-        super.write(nbtTags);
+    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.write(provider, nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
     }
 
     @Override
-    protected void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
+    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.read(provider, nbtTags);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
     }
 
     public void addDrive(QIODriveKey key) {

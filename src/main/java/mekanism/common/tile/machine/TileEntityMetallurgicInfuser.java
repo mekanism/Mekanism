@@ -48,6 +48,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -170,8 +171,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     @NotNull
     @Override
-    public MetallurgicInfuserUpgradeData getUpgradeData() {
-        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank, infusionSlot, energySlot,
+    public MetallurgicInfuserUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new MetallurgicInfuserUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), infusionTank, infusionSlot, energySlot,
               inputSlot, outputSlot, getComponents());
     }
 

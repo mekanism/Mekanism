@@ -219,7 +219,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         // so that we aren't having to transform the quads directly
         quads = QuadUtils.transformBakedQuads(quads, rotation);
         for (BakedQuad quad : quads) {
-            builder.putBulkData(matrixEntry, quad, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 

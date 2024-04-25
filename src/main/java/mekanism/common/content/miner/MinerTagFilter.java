@@ -1,20 +1,43 @@
 package mekanism.common.content.miner;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
+import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.WildcardMatcher;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
+    public static final MapCodec<MinerTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
+          .and(Codec.STRING.fieldOf(NBTConstants.TAG_NAME).forGetter(MinerTagFilter::getTagName))
+          .apply(instance, MinerTagFilter::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MinerTagFilter> STREAM_CODEC = StreamCodec.composite(
+          baseMinerStreamCodec(MinerTagFilter::new), Function.identity(),
+          ByteBufCodecs.STRING_UTF8, MinerTagFilter::getTagName,
+          (filter, tagName) -> {
+              filter.tagName = tagName;
+              return filter;
+          }
+    );
+
     private String tagName;
 
     public MinerTagFilter() {
+    }
+
+    protected MinerTagFilter(boolean enabled, Item replaceTarget, boolean requiresReplacement, String tagName) {
+        super(enabled, replaceTarget, requiresReplacement);
+        this.tagName = tagName;
     }
 
     public MinerTagFilter(MinerTagFilter filter) {
@@ -30,31 +53,6 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     @Override
     public boolean hasBlacklistedElement() {
         return TagCache.tagHasMinerBlacklisted(tagName);
-    }
-
-    @Override
-    public CompoundTag write(CompoundTag nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundTag nbtTags) {
-        super.read(nbtTags);
-        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeUtf(tagName);
-    }
-
-    @Override
-    public void read(FriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        tagName = dataStream.readUtf();
     }
 
     @Override

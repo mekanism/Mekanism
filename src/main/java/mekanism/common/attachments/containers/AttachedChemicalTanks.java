@@ -39,11 +39,6 @@ public abstract class AttachedChemicalTanks<CHEMICAL extends Chemical<CHEMICAL>,
         return containers;
     }
 
-    @Override
-    protected boolean isContainerCompatible(TANK a, TANK b) {
-        return a.isCompatible(b);
-    }
-
     public static class AttachedGasTanks extends AttachedChemicalTanks<Gas, GasStack, IGasTank> implements IMekanismGasHandler {
 
         AttachedGasTanks(List<IGasTank> tanks, @Nullable IContentsListener listener) {

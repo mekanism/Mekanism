@@ -31,6 +31,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -119,8 +120,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     @NotNull
     @Override
-    public MachineUpgradeData getUpgradeData() {
-        return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
+    public MachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new MachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityElectricMachine> getEnergyContainer() {

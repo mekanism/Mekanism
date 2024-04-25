@@ -12,11 +12,14 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 @NothingNullByDefault
 public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> {
@@ -24,7 +27,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static final GasStackIngredientCreator INSTANCE = new GasStackIngredientCreator();
 
     private GasStackIngredientCreator() {
-        super(SingleGasStackIngredient.CODEC, TaggedGasStackIngredient.CODEC, codec -> MultiGasStackIngredient.makeCodec(codec, MultiGasStackIngredient::new),
+        super(SingleGasStackIngredient.CODEC, TaggedGasStackIngredient.CODEC, codec -> MultiChemicalStackIngredient.makeCodec(codec, MultiGasStackIngredient::new),
+              SingleGasStackIngredient.STREAM_CODEC, TaggedGasStackIngredient.STREAM_CODEC, MultiGasStackIngredient.STREAM_CODEC,
               SingleGasStackIngredient.class, TaggedGasStackIngredient.class, MultiGasStackIngredient.class, GasStackIngredient.class);
     }
 
@@ -62,7 +66,10 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static class SingleGasStackIngredient extends SingleChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<SingleGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new));
+        public static Codec<SingleGasStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SingleGasStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(ChemicalUtils.GAS_STACK_STREAM_CODEC, SingleGasStackIngredient::new)
+        );
 
         private SingleGasStackIngredient(GasStack stack) {
             super(stack);
@@ -77,7 +84,10 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static class TaggedGasStackIngredient extends TaggedChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.GAS_REGISTRY_NAME, TaggedGasStackIngredient::new));
+        public static Codec<TaggedGasStackIngredient> CODEC = Codec.lazyInitialized(() -> makeCodec(MekanismAPI.GAS_REGISTRY_NAME, TaggedGasStackIngredient::new));
+        public static StreamCodec<RegistryFriendlyByteBuf, TaggedGasStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              makeStreamCodec(MekanismAPI.GAS_REGISTRY_NAME, TaggedGasStackIngredient::new)
+        );
 
         private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
             super(MekanismAPI.GAS_REGISTRY.getOrCreateTag(tag), amount);

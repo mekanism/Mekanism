@@ -16,7 +16,6 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.lib.security.ISecurityTile;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -27,8 +26,8 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +49,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,10 +87,11 @@ public abstract class BlockMekanism extends Block {
     @Override
     public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
         ItemStack stack = new ItemStack(this);
-        TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
+        //TODO - 1.20.5: Figure this out, we want to make sure we copy components
+        /*TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
         if (tile != null) {
             tile.writeToStack(stack);
-        }
+        }*/
         return stack;
     }
 
@@ -164,7 +165,6 @@ public abstract class BlockMekanism extends Block {
         }
         TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
         if (tile != null) {
-            tile.readFromStack(stack);
             //Note: We call onAdded here rather than in onPlace so that we make sure we can run any client side code and that the
             // tile is present
             tile.onAdded();
@@ -173,7 +173,7 @@ public abstract class BlockMekanism extends Block {
                 securityTile.setOwnerUUID(placer.getUUID());
                 if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
-                    PacketUtils.sendToAll(new PacketSyncSecurity(placer.getUUID()));
+                    PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(placer.getUUID()));
                 }
             }
         }
@@ -283,15 +283,20 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    protected InteractionResult genericClientActivated(@NotNull Player player, @NotNull InteractionHand hand, BlockEntity blockEntity) {
+    protected InteractionResult genericClientActivated(BlockEntity blockEntity) {
         if (Attribute.has(this, AttributeGui.class)) {
-            return InteractionResult.SUCCESS;
-        } else if (MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
-            if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
-                return InteractionResult.FAIL;
-            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    protected ItemInteractionResult genericClientActivated(ItemStack stack, BlockEntity blockEntity) {
+        if (!Attribute.has(this, AttributeGui.class) && MekanismUtils.canUseAsWrench(stack)) {
+            if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
+                return ItemInteractionResult.FAIL;
+            }
+            return ItemInteractionResult.SUCCESS;
+        }
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

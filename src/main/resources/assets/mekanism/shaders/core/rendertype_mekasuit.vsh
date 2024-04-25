@@ -17,7 +17,6 @@ uniform sampler2D Sampler2;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform mat3 IViewRotMat;
 uniform int FogShape;
 
 uniform vec3 Light0_Direction;
@@ -37,7 +36,7 @@ void main() {
     //Calculate theactual tint to apply based on the passed in alpha value
     vec4 tint = vec4(mix(MEKANISM_NO_COLOR.rgb, Color.rgb, Color.a), MEKANISM_NO_COLOR.a);
 
-    vertexDistance = fog_distance(ModelViewMat, IViewRotMat * Position, FogShape);
+    vertexDistance = fog_distance(Position, FogShape);
     vertexColor = minecraft_mix_light(Light0_Direction, Light1_Direction, Normal, MEKANISM_NO_COLOR);
     shadedVertexColor = minecraft_mix_light(Light0_Direction, Light1_Direction, Normal, tint);
     lightMapColor = texelFetch(Sampler2, UV2 / 16, 0);

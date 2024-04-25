@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,12 +27,12 @@ public class SyncableResourceKeyList<V> extends SyncableList<ResourceKey<V>> {
     }
 
     @Override
-    protected List<ResourceKey<V>> deserializeList(FriendlyByteBuf buffer) {
+    protected List<ResourceKey<V>> deserializeList(RegistryFriendlyByteBuf buffer) {
         return buffer.readList(buf -> buf.readResourceKey(registry));
     }
 
     @Override
-    protected void serializeListElement(FriendlyByteBuf buffer, ResourceKey<V> value) {
+    protected void serializeListElement(RegistryFriendlyByteBuf buffer, ResourceKey<V> value) {
         buffer.writeResourceKey(value);
     }
 }

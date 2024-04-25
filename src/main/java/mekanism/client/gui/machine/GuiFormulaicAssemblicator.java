@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import java.util.Optional;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -22,7 +21,7 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
@@ -137,11 +136,8 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         if (!tile.hasValidFormula()) {
             ItemStack stack = tile.getFormulaSlot().getStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
-                Optional<FormulaAttachment> existingFormula = stack.getExistingData(MekanismAttachmentTypes.FORMULA_HOLDER);
-                if (existingFormula.isEmpty()) {
-                    return true;
-                }
-                return existingFormula.filter(FormulaAttachment::isEmpty).isPresent();
+                FormulaAttachment existingFormula = stack.get(MekanismDataComponents.FORMULA_HOLDER);
+                return existingFormula == null || !existingFormula.isEmpty();
             }
         }
         return false;

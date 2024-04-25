@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.BlockPosPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncableBlockPos implements ISyncableData {
@@ -43,7 +44,7 @@ public class SyncableBlockPos implements ISyncableData {
     }
 
     @Override
-    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new BlockPosPropertyData(property, get());
     }
 }

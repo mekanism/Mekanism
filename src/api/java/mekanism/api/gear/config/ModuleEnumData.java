@@ -130,16 +130,6 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     }
 
     @Override
-    public boolean isCompatible(ModuleConfigData<?> other) {
-        if (other == this) {
-            return true;
-        } else if (getClass() != other.getClass()) {
-            return false;
-        }
-        return value == ((ModuleEnumData<?>) other).value;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

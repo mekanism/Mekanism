@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,6 +26,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
+import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
@@ -39,6 +41,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -58,9 +61,12 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -390,7 +396,24 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(CompoundTag ejectorNBT) {
+    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        AttachedEjector ejector = input.get(MekanismDataComponents.EJECTOR);
+        if (ejector != null) {
+            for (int i = 0; i < inputColors.length; i++) {
+                inputColors[i] = ejector.inputColors().get(i);
+            }
+            strictInput = ejector.strictInput();
+            outputColor = ejector.outputColor().orElse(null);
+        }
+    }
+
+    @Override
+    public void collectImplicitComponents(DataComponentMap.Builder builder) {
+        builder.set(MekanismDataComponents.EJECTOR, new AttachedEjector(List.of(inputColors), strictInput, Optional.ofNullable(outputColor)));
+    }
+
+    @Override
+    public void deserialize(CompoundTag ejectorNBT, HolderLookup.Provider provider) {
         deserialize(ejectorNBT, strict -> strictInput = strict, output -> outputColor = output, inputColors);
     }
 
@@ -409,7 +432,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(HolderLookup.Provider provider) {
         return serialize(strictInput, inputColors, outputColor);
     }
 

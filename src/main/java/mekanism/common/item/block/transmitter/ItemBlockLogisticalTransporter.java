@@ -9,6 +9,7 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -28,12 +29,12 @@ public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEnt
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.addStats(stack, world, tooltip, flag);
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.addStats(stack, context, tooltip, flag);
         TransporterTier tier = getTier();
         int speed = tier.getSpeed();
         int pull = tier.getPullAmount();
-        float tickRate = world == null ? SharedConstants.TICKS_PER_SECOND : world.tickRateManager().tickrate();
+        float tickRate = context.tickRate();
         if (tickRate > 0) {
             //TODO: Validate these calculations
             speed = (int) (speed / (100 / tickRate));

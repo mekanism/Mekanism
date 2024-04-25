@@ -14,13 +14,16 @@ import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerState {
 
@@ -54,7 +57,7 @@ public class PlayerState {
         }
         RadiationManager.get().resetPlayer(uuid);
         if (!isRemote) {
-            PacketUtils.sendToAll(new PacketResetPlayerClient(uuid));
+            PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(uuid));
         }
     }
 
@@ -145,7 +148,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.value(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", CommonPlayerTickHandler::getStepBoost);
+        updateAttribute(player, Attributes.STEP_HEIGHT, STEP_ASSIST_MODIFIER_UUID, "Step Assist", CommonPlayerTickHandler::getStepBoost);
     }
 
     // ----------------------
@@ -155,17 +158,17 @@ public class PlayerState {
     // ----------------------
 
     public void updateSwimBoost(Player player) {
-        updateAttribute(player, NeoForgeMod.SWIM_SPEED.value(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", CommonPlayerTickHandler::getSwimBoost);
+        updateAttribute(player, NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER_UUID, "Swim Boost", CommonPlayerTickHandler::getSwimBoost);
     }
 
     //Note: The attributes that currently use this cannot be converted to just being attributes on the items, as they can be disabled based on the player state
-    private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, ToFloatFunction<Player> additionalSupplier) {
+    private void updateAttribute(Player player, Holder<Attribute> attribute, UUID uuid, String name, ToFloatFunction<Player> additionalSupplier) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
             AttributeModifier existing = attributeInstance.getModifier(uuid);
             float additional = additionalSupplier.applyAsFloat(player);
             if (existing != null) {
-                if (existing.getAmount() == additional) {
+                if (existing.amount() == additional) {
                     //If we already have it set to the correct value just exit
                     //Note: We don't need to check for if it is equal to zero as we should never have the attribute applied then
                     return;
@@ -175,7 +178,7 @@ public class PlayerState {
             }
             if (additional > 0) {
                 //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update
-                attributeInstance.addTransientModifier(new AttributeModifier(uuid, name, additional, Operation.ADDITION));
+                attributeInstance.addTransientModifier(new AttributeModifier(uuid, name, additional, Operation.ADD_VALUE));
             }
         }
     }

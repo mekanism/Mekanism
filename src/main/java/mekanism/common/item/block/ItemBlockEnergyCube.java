@@ -1,34 +1,53 @@
 package mekanism.common.item.block;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+import mekanism.api.RelativeSide;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.component.AttachedSideConfig;
+import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.energy.item.EnergyCubeRateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
+
+    private static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
+        Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
+        for (RelativeSide side : EnumUtils.SIDES) {
+            sideData.put(side, DataType.INPUT);
+        }
+        return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
+    });
+    private static final AttachedSideConfig ALL_OUTPUT = Util.make(() -> {
+        Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
+        for (RelativeSide side : EnumUtils.SIDES) {
+            sideData.put(side, DataType.OUTPUT);
+        }
+        return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
+    });
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
         super(block);
@@ -46,14 +65,14 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
-        super.appendHoverText(stack, world, tooltip, flag);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Don't call super so that we can exclude the stored energy from being shown as we show it in hover text
     }
 
@@ -78,8 +97,8 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
-            tabOutput.accept(withEnergyCubeSideConfig(DataType.INPUT));
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(DataType.OUTPUT)));
+            tabOutput.accept(withEnergyCubeSideConfig(ALL_INPUT));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(ALL_OUTPUT)));
         } else {
             tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
         }
@@ -90,12 +109,9 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return getTier() != EnergyCubeTier.CREATIVE;
     }
 
-    private ItemStack withEnergyCubeSideConfig(DataType dataType) {
+    private ItemStack withEnergyCubeSideConfig(AttachedSideConfig config) {
         ItemStack stack = new ItemStack(this);
-        IPersistentConfigInfo config = stack.getData(MekanismAttachmentTypes.SIDE_CONFIG).getConfig(TransmissionType.ENERGY);
-        if (config != null) {
-            config.setDataType(dataType, EnumUtils.SIDES);
-        }
+        stack.set(MekanismDataComponents.SIDE_CONFIG, config);
         return stack;
     }
 

@@ -10,6 +10,7 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -28,12 +29,12 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
         AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
         if (factoryType != null) {
             tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
         }
-        super.addTypeDetails(stack, world, tooltip, flag);
+        super.addTypeDetails(stack, context, tooltip, flag);
     }
 }

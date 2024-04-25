@@ -52,7 +52,8 @@ public class EmiGhostIngredientHandler implements EmiDragDropHandler<Screen> {
             if (emiStack.getKey() instanceof Item) {
                 raw = emiStack.getItemStack();
             } else if (emiStack.getKey() instanceof Fluid fluid) {
-                raw = new FluidStack(fluid, FluidType.BUCKET_VOLUME, emiStack.getNbt());
+                //TODO - 1.20.5: Components
+                raw = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
             } else if (emiStack.getKey() instanceof Chemical<?> chemical) {
                 raw = chemical.getStack(emiStack.getAmount());
             }

@@ -40,6 +40,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -183,23 +184,18 @@ public abstract class BaseComputerHelper {
         try {
             Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get("name")));
             int count = SpecialConverters.getIntFromRaw(map.get("count"));
-            String nbt = (String) map.get("nbt");
-            String attachments = (String) map.get("attachments");
-            ItemStack stack;
-            if (attachments == null) {
-                stack = new ItemStack(item, count);
-            } else {
-                stack = new ItemStack(item, count, NbtUtils.snbtToStructure(attachments));
-            }
-            if (nbt != null) {
-                stack.setTag(NbtUtils.snbtToStructure(nbt));
-            }
+            ItemStack stack = new ItemStack(item, count);
+            //TODO - 1.20.5: Add support for Components
+            String components = (String) map.get("components");
+            /*if (components != null) {
+                stack.setTag(NbtUtils.snbtToStructure(components));
+            }*/
             return stack;
         } catch (ClassCastException ex) {
             throw new ComputerException("Invalid ItemStack at index " + param);
-        } catch (CommandSyntaxException e) {
+        }/* catch (CommandSyntaxException e) {
             throw new ComputerException("Invalid NBT or Attachment data");
-        }
+        }*/
     }
 
     /**
@@ -273,14 +269,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getTag(), null);
+        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getComponents());
     }
 
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getTag(), stack.serializeAttachments());
+        return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getComponents());
     }
 
     public Object convert(@Nullable BlockState state) {
@@ -355,13 +351,9 @@ public abstract class BaseComputerHelper {
             ItemStack stack = itemFilter.getItemStack();
             wrapped.put("item", convert(stack.getItem()));
             if (!stack.isEmpty()) {
-                CompoundTag tag = stack.getTag();
-                if (tag != null && !tag.isEmpty()) {
-                    wrapped.put("itemNBT", SpecialConverters.wrapNBT(tag));
-                }
-                CompoundTag attachments = stack.serializeAttachments();
-                if (attachments != null && !attachments.isEmpty()) {
-                    wrapped.put("itemAttachments", SpecialConverters.wrapNBT(attachments));
+                DataComponentMap components = stack.getComponents();
+                if (!components.isEmpty()) {
+                    wrapped.put("itemComponents", SpecialConverters.wrapComponents(components));
                 }
             }
         } else if (result instanceof IModIDFilter<?> modIDFilter) {
@@ -516,14 +508,15 @@ public abstract class BaseComputerHelper {
         TableType.builder(ItemStack.class, "A stack of Item(s)")
               .addField("name", Item.class, "The Item's registered name")
               .addField("count", int.class, "The count of items in the stack")
-              .addField("nbt", String.class, "Any NBT of the item, in Command JSON format")
-              .addField("attachments", String.class, "Any Attachment NBT of the item, in Command JSON format")
+              //TODO - 1.20.5: Update the description
+              .addField("components", String.class, "Any NBT of the item, in Command JSON format")
               .build(types);
 
         TableType.builder(FluidStack.class, "An amount of fluid")
               .addField("name", ResourceLocation.class, "The Fluid's registered name, e.g. minecraft:water")
               .addField("amount", int.class, "The amount in mB")
-              .addField("nbt", String.class, "Any NBT of the fluid, in Command JSON format")
+              //TODO - 1.20.5: Update the description
+              .addField("components", String.class, "Any NBT of the fluid, in Command JSON format")
               .build(types);
 
         TableType.builder(ChemicalStack.class, "An amount of Gas/Fluid/Slurry/Pigment")
@@ -582,8 +575,7 @@ public abstract class BaseComputerHelper {
         Builder itemstackBuilder = TableType.builder(itemStackFilterClass, deviceName + " filter with ItemStack filter properties")
               .extendedFrom(deviceFilterType)
               .addField("item", Item.class, "The filtered item's registered name")
-              .addField("itemNBT", String.class, "The NBT data of the filtered item, optional")
-              .addField("itemAttachments", String.class, "The Attachment NBT data of the filtered item, optional");
+              .addField("itemComponents", String.class, "The Component data of the filtered item, optional");
         if (hasFuzzyItem) {
             itemstackBuilder.addField("fuzzy", boolean.class, "Whether Fuzzy mode is enabled (checks only the item name/type)");
         }

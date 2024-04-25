@@ -12,10 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
 
@@ -32,8 +30,8 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, world, tooltip, flag);//Add the banner type description
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);//Add the banner type description
         ToolsUtils.addDurability(tooltip, stack);
     }
 
@@ -46,11 +44,6 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     @Override
     public int getMaxDamage(ItemStack stack) {
         return material.getShieldDurability();
-    }
-
-    @Override
-    public boolean canBeDepleted() {
-        return material.getShieldDurability() > 0;
     }
 
     @Override

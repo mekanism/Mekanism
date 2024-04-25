@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.configuration_update;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.IMekanismPacket;
@@ -7,27 +8,28 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketEjectConfiguration(BlockPos pos, TransmissionType transmission) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketEjectConfiguration(BlockPos pos, TransmissionType transmission) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("eject_configuration");
-
-    public PacketEjectConfiguration(FriendlyByteBuf buffer) {
-        this(buffer.readBlockPos(), buffer.readEnum(TransmissionType.class));
-    }
+    public static final CustomPacketPayload.Type<PacketEjectConfiguration> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("eject_configuration"));
+    public static final StreamCodec<ByteBuf, PacketEjectConfiguration> STREAM_CODEC = StreamCodec.composite(
+          BlockPos.STREAM_CODEC, PacketEjectConfiguration::pos,
+          TransmissionType.STREAM_CODEC, PacketEjectConfiguration::transmission,
+          PacketEjectConfiguration::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketEjectConfiguration> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
+    public void handle(IPayloadContext context) {
         TileComponentConfig configComponent = PacketUtils.config(context, pos);
         if (configComponent != null) {
             ConfigInfo info = configComponent.getConfig(transmission);
@@ -36,11 +38,5 @@ public record PacketEjectConfiguration(BlockPos pos, TransmissionType transmissi
                 configComponent.tile.markForSave();
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(pos);
-        buffer.writeEnum(transmission);
     }
 }

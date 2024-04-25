@@ -14,6 +14,7 @@ import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -177,7 +178,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public void useBlock(BlockPos relativePos, Player player, ItemStack item, Direction direction) {
         player.setItemInHand(InteractionHand.MAIN_HAND, item);
         BlockHitResult hit = createHitResult(relativePos, direction, true);
-        InteractionResult result = getBlockState(relativePos).use(getLevel(), player, InteractionHand.MAIN_HAND, hit);
+        ItemInteractionResult result = getBlockState(relativePos).useItemOn(item, getLevel(), player, InteractionHand.MAIN_HAND, hit);
         if (!result.consumesAction()) {
             item.useOn(new UseOnContext(getLevel(), player, InteractionHand.MAIN_HAND, item, hit));
         }

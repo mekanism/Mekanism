@@ -77,7 +77,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
                 buffer = otherBuffer;
                 return true;
             }
-            return otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
+            return otherBuffer.isEmpty() || FluidStack.isSameFluidSameComponents(buffer, otherBuffer);
         }
 
         @Override

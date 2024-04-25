@@ -78,7 +78,7 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
     }
 
     public static SlurryStack readFromPacket(FriendlyByteBuf buf) {
-        Slurry slurry = buf.readById(MekanismAPI.SLURRY_REGISTRY);
+        Slurry slurry = buf.readById(MekanismAPI.SLURRY_REGISTRY::byId);
         if (slurry == null || slurry.isEmptyType()) {
             return EMPTY;
         }

@@ -133,7 +133,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         IShearable target = (IShearable) entity;
         if (target.isShearable(stack, world, pos)) {
             if (!world.isClientSide) {
-                for (ItemStack drop : target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE))) {
+                for (ItemStack drop : target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.FORTUNE))) {
                     target.spawnShearedDrop(world, pos, drop);
                 }
                 entity.gameEvent(GameEvent.SHEAR, player);

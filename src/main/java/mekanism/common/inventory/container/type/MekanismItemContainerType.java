@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.type;
 
 import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekanismItemContainerFactory;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -47,11 +47,11 @@ public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends Abst
     }
 
     @NotNull
-    private static <ITEM extends Item> ItemStack getStackFromBuffer(FriendlyByteBuf buf, Class<ITEM> type) {
+    private static <ITEM extends Item> ItemStack getStackFromBuffer(RegistryFriendlyByteBuf buf, Class<ITEM> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
         }
-        ItemStack stack = buf.readItem();
+        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
         if (type.isInstance(stack.getItem())) {
             return stack;
         }

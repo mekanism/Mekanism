@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEntity {
 
     private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabyWitherSkeleton.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDimensions BABY_DIMENSIONS = EntityType.WITHER_SKELETON.getDimensions().scale(0.5F).withEyeHeight(1.12F);
 
     public EntityBabyWitherSkeleton(EntityType<EntityBabyWitherSkeleton> type, Level world) {
         super(type, world);
@@ -20,9 +21,9 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEnt
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(IS_CHILD, false);
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHILD, true);
     }
 
     @Override
@@ -55,8 +56,9 @@ public class EntityBabyWitherSkeleton extends WitherSkeleton implements IBabyEnt
         return super.getExperienceReward();
     }
 
+    @NotNull
     @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return this.isBaby() ? 1.12F : super.getStandingEyeHeight(pose, size);
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return this.isBaby() ? BABY_DIMENSIONS : super.getDefaultDimensions(pose);
     }
 }

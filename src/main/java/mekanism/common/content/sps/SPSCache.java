@@ -4,6 +4,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
@@ -25,8 +26,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void apply(SPSMultiblockData data) {
-        super.apply(data);
+    public void apply(HolderLookup.Provider provider, SPSMultiblockData data) {
+        super.apply(provider, data);
         data.progress = progress;
         data.inputProcessed = inputProcessed;
         data.couldOperate = couldOperate;
@@ -45,8 +46,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void load(CompoundTag nbtTags) {
-        super.load(nbtTags);
+    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.load(provider, nbtTags);
         NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.PROGRESS, val -> progress = val);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.PROCESSED, val -> inputProcessed = val);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.COULD_OPERATE, val -> couldOperate = val);
@@ -55,8 +56,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void save(CompoundTag nbtTags) {
-        super.save(nbtTags);
+    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
+        super.save(provider, nbtTags);
         nbtTags.putDouble(NBTConstants.PROGRESS, progress);
         nbtTags.putInt(NBTConstants.PROCESSED, inputProcessed);
         nbtTags.putBoolean(NBTConstants.COULD_OPERATE, couldOperate);

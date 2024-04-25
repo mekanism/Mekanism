@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -18,13 +19,18 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.IngredientType;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
 
@@ -40,7 +46,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     private final INGREDIENT[] ingredients;
 
     @SafeVarargs
-    protected MultiChemicalStackIngredient(@NotNull INGREDIENT... ingredients) {
+    protected MultiChemicalStackIngredient(INGREDIENT... ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -52,7 +58,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public boolean test(@NotNull STACK stack) {
+    public boolean test(STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             if (ingredient.test(stack)) {
                 return true;
@@ -62,7 +68,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public boolean testType(@NotNull STACK stack) {
+    public boolean testType(STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             if (ingredient.testType(stack)) {
                 return true;
@@ -72,7 +78,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public boolean testType(@NotNull CHEMICAL chemical) {
+    public boolean testType(CHEMICAL chemical) {
         for (INGREDIENT ingredient : ingredients) {
             if (ingredient.testType(chemical)) {
                 return true;
@@ -81,9 +87,8 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return false;
     }
 
-    @NotNull
     @Override
-    public STACK getMatchingInstance(@NotNull STACK stack) {
+    public STACK getMatchingInstance(STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             STACK matchingInstance = ingredient.getMatchingInstance(stack);
             if (!matchingInstance.isEmpty()) {
@@ -94,7 +99,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public long getNeededAmount(@NotNull STACK stack) {
+    public long getNeededAmount(STACK stack) {
         for (INGREDIENT ingredient : ingredients) {
             long amount = ingredient.getNeededAmount(stack);
             if (amount > 0) {
@@ -114,7 +119,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return true;
     }
 
-    @NotNull
     @Override
     public List<@NotNull STACK> getRepresentations() {
         List<@NotNull STACK> representations = new ArrayList<>();
@@ -143,9 +147,8 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeEnum(IngredientType.MULTI);
-        buffer.writeArray(ingredients, (buf, ingredient) -> ingredient.write(buf));
+    public IngredientType getType() {
+        return IngredientType.MULTI;
     }
 
     @Override
@@ -165,6 +168,12 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
     public static class MultiGasStackIngredient extends MultiChemicalStackIngredient<Gas, GasStack, GasStackIngredient> implements GasStackIngredient {
 
+        //This must be lazy as the base stream codec isn't initialized until after this line happens
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiGasStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              IngredientCreatorAccess.gas().streamCodec().apply(ByteBufCodecs.list()).map(
+                    MultiGasStackIngredient::new, MultiGasStackIngredient::getIngredients
+              ));
+
         MultiGasStackIngredient(GasStackIngredient... ingredients) {
             super(ingredients);
         }
@@ -181,6 +190,12 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     public static class MultiInfusionStackIngredient extends MultiChemicalStackIngredient<InfuseType, InfusionStack, InfusionStackIngredient> implements InfusionStackIngredient {
+
+        //This must be lazy as the base stream codec isn't initialized until after this line happens
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiInfusionStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              IngredientCreatorAccess.infusion().streamCodec().apply(ByteBufCodecs.list()).map(
+                    MultiInfusionStackIngredient::new, MultiInfusionStackIngredient::getIngredients
+              ));
 
         MultiInfusionStackIngredient(InfusionStackIngredient... ingredients) {
             super(ingredients);
@@ -199,6 +214,12 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
     public static class MultiPigmentStackIngredient extends MultiChemicalStackIngredient<Pigment, PigmentStack, PigmentStackIngredient> implements PigmentStackIngredient {
 
+        //This must be lazy as the base stream codec isn't initialized until after this line happens
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiPigmentStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              IngredientCreatorAccess.pigment().streamCodec().apply(ByteBufCodecs.list()).map(
+                    MultiPigmentStackIngredient::new, MultiPigmentStackIngredient::getIngredients
+              ));
+
         MultiPigmentStackIngredient(PigmentStackIngredient... ingredients) {
             super(ingredients);
         }
@@ -215,6 +236,12 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     public static class MultiSlurryStackIngredient extends MultiChemicalStackIngredient<Slurry, SlurryStack, SlurryStackIngredient> implements SlurryStackIngredient {
+
+        //This must be lazy as the base stream codec isn't initialized until after this line happens
+        public static final StreamCodec<RegistryFriendlyByteBuf, MultiSlurryStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              IngredientCreatorAccess.slurry().streamCodec().apply(ByteBufCodecs.list()).map(
+                    MultiSlurryStackIngredient::new, MultiSlurryStackIngredient::getIngredients
+              ));
 
         MultiSlurryStackIngredient(SlurryStackIngredient... ingredients) {
             super(ingredients);

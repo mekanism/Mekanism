@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.qio;
 
+import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
@@ -7,31 +8,31 @@ import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("qio_shift_take");
-
-    public PacketQIOItemViewerSlotShiftTake(FriendlyByteBuf buffer) {
-        this(buffer.readUUID());
-    }
+    public static final CustomPacketPayload.Type<PacketQIOItemViewerSlotShiftTake> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("qio_shift_take"));
+    public static final StreamCodec<ByteBuf, PacketQIOItemViewerSlotShiftTake> STREAM_CODEC = UUIDUtil.STREAM_CODEC.map(
+          PacketQIOItemViewerSlotShiftTake::new, PacketQIOItemViewerSlotShiftTake::typeUUID
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketQIOItemViewerSlotShiftTake> type() {
+        return TYPE;
     }
 
     @Override
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        if (player.containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
                 HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
@@ -58,10 +59,5 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
                 }
             }
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeUUID(typeUUID);
     }
 }

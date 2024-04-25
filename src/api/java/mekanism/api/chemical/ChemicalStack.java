@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collection;
 import java.util.Objects;
@@ -23,9 +24,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack<CHEMICAL>> {
 
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField,
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> MapCodec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField,
           BiFunction<CHEMICAL, Long, STACK> constructor) {
-        return RecordCodecBuilder.create(i -> i.group(
+        return RecordCodecBuilder.mapCodec(i -> i.group(
               chemicalCodec.fieldOf(chemicalField).forGetter(ChemicalStack::getRaw),
               SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
         ).apply(i, constructor));
@@ -37,9 +38,10 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     protected ChemicalStack(CHEMICAL chemical, long amount) {
         Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical");
-        if (!getRegistry().containsValue(chemical)) {
+        //TODO - 1.20.5: Update based on changes to FluidStack to mirror them more appropriately
+        /*if (!getRegistry().containsValue(chemical)) {
             throw new IllegalArgumentException("Cannot create a ChemicalStack from an unregistered Chemical");
-        }
+        }*/
         this.chemical = chemical;
         this.amount = amount;
         updateEmpty();
@@ -293,7 +295,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @param buffer - Buffer to write to.
      */
     public void writeToPacket(FriendlyByteBuf buffer) {
-        buffer.writeId(getRegistry(), getType());
+        buffer.writeById(getRegistry()::getId, getType());
         if (!isEmpty()) {
             buffer.writeVarLong(getAmount());
         }

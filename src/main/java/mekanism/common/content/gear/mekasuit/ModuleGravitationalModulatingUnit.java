@@ -93,7 +93,7 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
 
     private static void gravUnitGameEvent(Player player, Holder<GameEvent> gameEvent) {
         if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
-            player.gameEvent(gameEvent.value());
+            player.gameEvent(gameEvent);
         }
     }
 

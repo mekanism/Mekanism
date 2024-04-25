@@ -34,7 +34,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -115,10 +115,9 @@ public class LookingAtUtils {
 
     private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         if (tile != null) {
-            Optional<BlockData> blockData = tile.getExistingData(MekanismAttachmentTypes.BLOCK_DATA);
-            //noinspection OptionalIsPresent - Capturing lambda
-            if (blockData.isPresent()) {
-                blockData.get().addToTooltip(info::addText);
+            BlockData blockData = tile.components().get(MekanismDataComponents.BLOCK_DATA.value());
+            if (blockData != null) {
+                blockData.addToTooltip(info::addText);
             }
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
                 info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));

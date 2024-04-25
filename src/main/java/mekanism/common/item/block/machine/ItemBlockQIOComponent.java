@@ -1,20 +1,24 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
+import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> implements IColoredItem, IFrequencyItem {
 
@@ -23,7 +27,7 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
     }
 
@@ -38,5 +42,10 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     @Override
     public FrequencyType<?> getFrequencyType() {
         return FrequencyType.QIO;
+    }
+
+    @Override
+    public DataComponentType<FrequencyAware<QIOFrequency>> getFrequencyComponent() {
+        return MekanismDataComponents.QIO_FREQUENCY.get();
     }
 }

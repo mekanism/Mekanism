@@ -1,8 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -28,8 +26,8 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
-import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
@@ -37,13 +35,14 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -156,8 +155,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         SidedBlockPos rrTarget = getRoundRobinTarget();
         if (rrTarget != null) {
             nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
@@ -165,8 +164,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
             setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET)));
         }
@@ -283,53 +282,45 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public void writeSustainedData(CompoundTag dataMap) {
-        super.writeSustainedData(dataMap);
+    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.writeSustainedData(provider, dataMap);
         if (color != null) {
             NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, color);
         }
         dataMap.putBoolean(NBTConstants.EJECT, autoEject);
         dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         dataMap.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
-        filterManager.writeToNBT(dataMap);
+        filterManager.writeToNBT(provider, dataMap);
     }
 
     @Override
-    public void readSustainedData(CompoundTag dataMap) {
-        super.readSustainedData(dataMap);
+    public void readSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
+        super.readSustainedData(provider, dataMap);
         this.color = NBTUtils.getEnum(dataMap, NBTConstants.COLOR, TransporterUtils::readColor);
         autoEject = dataMap.getBoolean(NBTConstants.EJECT);
         roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
-        filterManager.readFromNBT(dataMap);
+        filterManager.readFromNBT(provider, dataMap);
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.COLOR, MekanismAttachmentTypes.TRANSPORTER_COLOR);
-        remap.put(NBTConstants.EJECT, MekanismAttachmentTypes.EJECT);
-        remap.put(NBTConstants.ROUND_ROBIN, MekanismAttachmentTypes.ROUND_ROBIN);
-        remap.put(NBTConstants.SINGLE_ITEM, MekanismAttachmentTypes.SINGLE_ITEM);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        if (color != null) {
+            builder.set(MekanismDataComponents.COLOR, color);
+        }
+        builder.set(MekanismDataComponents.EJECT, autoEject);
+        builder.set(MekanismDataComponents.ROUND_ROBIN, roundRobin);
+        builder.set(MekanismDataComponents.SINGLE_ITEM, singleItem);
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(MekanismAttachmentTypes.TRANSPORTER_COLOR, Optional.ofNullable(color));
-        stack.setData(MekanismAttachmentTypes.EJECT, autoEject);
-        stack.setData(MekanismAttachmentTypes.ROUND_ROBIN, roundRobin);
-        stack.setData(MekanismAttachmentTypes.SINGLE_ITEM, singleItem);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        color = stack.getData(MekanismAttachmentTypes.TRANSPORTER_COLOR).orElse(null);
-        autoEject = stack.getData(MekanismAttachmentTypes.EJECT);
-        roundRobin = stack.getData(MekanismAttachmentTypes.ROUND_ROBIN);
-        singleItem = stack.getData(MekanismAttachmentTypes.SINGLE_ITEM);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        color = input.get(MekanismDataComponents.COLOR);
+        autoEject = input.getOrDefault(MekanismDataComponents.EJECT, autoEject);
+        roundRobin = input.getOrDefault(MekanismDataComponents.ROUND_ROBIN, roundRobin);
+        singleItem = input.getOrDefault(MekanismDataComponents.SINGLE_ITEM, singleItem);
     }
 
     @Override

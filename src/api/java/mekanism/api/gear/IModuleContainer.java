@@ -7,13 +7,12 @@ import java.util.Set;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.UnknownNullability;
  * @since 10.5.0
  */
 @NothingNullByDefault
-public interface IModuleContainer extends INBTSerializable<CompoundTag> {
+public interface IModuleContainer {
 
     /**
      * {@return all the modules currently installed on this container mapped by their type}
@@ -47,13 +46,13 @@ public interface IModuleContainer extends INBTSerializable<CompoundTag> {
     /**
      * {@return all the enchantments provided by installed modules}
      */
-    Map<Enchantment, Integer> moduleBasedEnchantments();
+    ItemEnchantments moduleBasedEnchantments();
 
     /**
      * {@return the level provided by modules for the given enchantment, or zero if the enchantment isn't provided by any modules}
      */
     default int getModuleEnchantmentLevel(Enchantment enchantment) {
-        return moduleBasedEnchantments().getOrDefault(enchantment, 0);
+        return moduleBasedEnchantments().getLevel(enchantment);
     }
 
     /**
@@ -146,7 +145,9 @@ public interface IModuleContainer extends INBTSerializable<CompoundTag> {
      *
      * @param typeProvider Module type.
      */
-    boolean has(IModuleDataProvider<?> typeProvider);
+    default boolean has(IModuleDataProvider<?> typeProvider) {
+        return typedModules().containsKey(typeProvider.getModuleData());
+    }
 
     /**
      * {@return whether the given module is installed in this container and is enabled}
@@ -186,13 +187,4 @@ public interface IModuleContainer extends INBTSerializable<CompoundTag> {
      * @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike {@link #getHUDElements(Player)}.
      */
     List<Component> getHUDStrings(Player player);
-
-    /**
-     * Checks if this module container is equivalent to another one.
-     *
-     * @param other Module container to compare to
-     *
-     * @return {@code true} If this module container can be considered equivalent and compatible with the other module container.
-     */
-    boolean isCompatible(IModuleContainer other);
 }

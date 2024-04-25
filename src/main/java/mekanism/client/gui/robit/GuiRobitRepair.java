@@ -6,6 +6,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -60,7 +61,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     private void onNameChanged(String newText) {
         if (!newText.isEmpty()) {
             Slot slot = menu.getSlot(0);
-            if (slot.hasItem() && !slot.getItem().hasCustomHoverName() && newText.equals(slot.getItem().getHoverName().getString())) {
+            if (slot.hasItem() && !slot.getItem().has(DataComponents.CUSTOM_NAME) && newText.equals(slot.getItem().getHoverName().getString())) {
                 newText = "";
             }
             menu.setItemName(newText);

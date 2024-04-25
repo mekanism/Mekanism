@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
 
     private static final EntityDataAccessor<Boolean> IS_CHILD = SynchedEntityData.defineId(EntityBabySkeleton.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDimensions BABY_DIMENSIONS = EntityType.SKELETON.getDimensions().scale(0.5F).withEyeHeight(0.93F);
 
     public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, Level world) {
         super(type, world);
@@ -22,9 +23,9 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        getEntityData().define(IS_CHILD, false);
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_CHILD, true);
     }
 
     @Override
@@ -57,9 +58,10 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
         return super.getExperienceReward();
     }
 
+    @NotNull
     @Override
-    protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-        return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
+    public EntityDimensions getDefaultDimensions(@NotNull Pose pose) {
+        return this.isBaby() ? BABY_DIMENSIONS : super.getDefaultDimensions(pose);
     }
 
     @Override

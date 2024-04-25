@@ -1,11 +1,19 @@
 package mekanism.api.text;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.math.MathUtils;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author AidanBrady
  */
-public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap {
+public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, StringRepresentable {
     BLACK("§0", APILang.COLOR_BLACK, "Black", "black", new int[]{64, 64, 64}, DyeColor.BLACK),
     DARK_BLUE("§1", APILang.COLOR_DARK_BLUE, "Blue", "blue", new int[]{54, 107, 208}, DyeColor.BLUE),
     DARK_GREEN("§2", APILang.COLOR_DARK_GREEN, "Green", "green", new int[]{89, 193, 95}, DyeColor.GREEN),
@@ -37,7 +45,16 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap {
     BROWN("§6", APILang.COLOR_BROWN, "Brown", "brown", new int[]{161, 118, 73}, DyeColor.BROWN),
     BRIGHT_PINK("§d", APILang.COLOR_BRIGHT_PINK, "Pink", "pink", new int[]{255, 188, 196}, DyeColor.PINK);
 
-    private static final EnumColor[] COLORS = values();
+    //TODO - 1.20.5: DOCS
+    public static final Codec<EnumColor> CODEC = StringRepresentable.fromEnum(EnumColor::values);
+    /**
+     * Gets a color by index.
+     *
+     * @since 10.6.0
+     */
+    public static final IntFunction<EnumColor> BY_ID = ByIdMap.continuous(EnumColor::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    //TODO - 1.20.5: DOCS
+    public static final StreamCodec<ByteBuf, EnumColor> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnumColor::ordinal);
     /**
      * The color code that will be displayed
      */
@@ -132,19 +149,10 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap {
         return code;
     }
 
-    /**
-     * Gets a color by index.
-     *
-     * @param index Index of the color.
-     */
-    public static EnumColor byIndexStatic(int index) {
-        return MathUtils.getByIndexMod(COLORS, index);
-    }
-
     @NotNull
     @Override
     public EnumColor byIndex(int index) {
-        return byIndexStatic(index);
+        return BY_ID.apply(index);
     }
 
     /**
@@ -166,5 +174,11 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap {
     @Override
     public int[] getRgbCode() {
         return rgbCode;
+    }
+
+    @NotNull
+    @Override
+    public String getSerializedName() {
+        return registryPrefix;
     }
 }

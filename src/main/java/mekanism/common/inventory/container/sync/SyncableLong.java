@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.sync;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 import mekanism.common.network.to_client.container.property.LongPropertyData;
+import net.minecraft.core.RegistryAccess;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling longs
@@ -24,7 +25,7 @@ public abstract class SyncableLong implements ISyncableData {
     }
 
     @Override
-    public LongPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public LongPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         return new LongPropertyData(property, get());
     }
 

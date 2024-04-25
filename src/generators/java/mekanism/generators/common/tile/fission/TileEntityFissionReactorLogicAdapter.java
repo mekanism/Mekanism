@@ -1,10 +1,12 @@
 package mekanism.generators.common.tile.fission;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
-import java.util.Map;
+import java.util.Locale;
+import java.util.function.IntFunction;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -17,19 +19,24 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
-import mekanism.generators.common.registries.GeneratorsAttachmentTypes;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -144,41 +151,34 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public void readSustainedData(@NotNull CompoundTag nbt) {
-        super.readSustainedData(nbt);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FissionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
+    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
+        super.readSustainedData(provider, nbt);
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
     }
 
     @Override
-    public void writeSustainedData(@NotNull CompoundTag nbtTags) {
-        super.writeSustainedData(nbtTags);
+    public void writeSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+        super.writeSustainedData(provider, nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
     }
 
     @Override
-    public Map<String, Holder<AttachmentType<?>>> getTileDataAttachmentRemap() {
-        Map<String, Holder<AttachmentType<?>>> remap = super.getTileDataAttachmentRemap();
-        remap.put(NBTConstants.LOGIC_TYPE, GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
-        return remap;
+    protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
     }
 
     @Override
-    public void writeToStack(ItemStack stack) {
-        super.writeToStack(stack);
-        stack.setData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE, logicType);
-    }
-
-    @Override
-    public void readFromStack(ItemStack stack) {
-        super.readFromStack(stack);
-        logicType = stack.getData(GeneratorsAttachmentTypes.FISSION_LOGIC_TYPE);
+    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        logicType = input.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(FissionReactorLogic::byIndexStatic, FissionReactorLogic.DISABLED, this::getMode, value -> logicType = value));
-        container.track(SyncableEnum.create(RedstoneStatus::byIndexStatic, RedstoneStatus.IDLE, () -> prevStatus, value -> prevStatus = value));
+        container.track(SyncableEnum.create(FissionReactorLogic.BY_ID, FissionReactorLogic.DISABLED, this::getMode, value -> logicType = value));
+        container.track(SyncableEnum.create(RedstoneStatus.BY_ID, RedstoneStatus.IDLE, () -> prevStatus, value -> prevStatus = value));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @NothingNullByDefault
-    public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasTranslationKey {
+    public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasTranslationKey, StringRepresentable {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER), EnumColor.DARK_GRAY),
         ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, new ItemStack(Items.FLINT_AND_STEEL), EnumColor.AQUA),
         TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, new ItemStack(Items.REDSTONE), EnumColor.RED),
@@ -195,18 +195,22 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         DAMAGED(GeneratorsLang.REACTOR_LOGIC_DAMAGED, GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, new ItemStack(Items.REDSTONE), EnumColor.RED),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE), EnumColor.RED);
 
-        private static final FissionReactorLogic[] MODES = values();
+        public static final Codec<FissionReactorLogic> CODEC = StringRepresentable.fromEnum(FissionReactorLogic::values);
+        public static final IntFunction<FissionReactorLogic> BY_ID = ByIdMap.continuous(FissionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, FissionReactorLogic> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FissionReactorLogic::ordinal);
 
         private final ILangEntry name;
         private final ILangEntry description;
         private final ItemStack renderStack;
         private final EnumColor color;
+        private final String serializedName;
 
         FissionReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack, EnumColor color) {
             this.name = name;
             this.description = description;
-            renderStack = stack;
+            this.renderStack = stack;
             this.color = color;
+            this.serializedName = name().toLowerCase(Locale.ROOT);
         }
 
         @Override
@@ -229,8 +233,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
             return color;
         }
 
-        public static FissionReactorLogic byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 
@@ -240,7 +245,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         OUTPUTTING(GeneratorsLang.REACTOR_LOGIC_OUTPUTTING),
         POWERED(GeneratorsLang.REACTOR_LOGIC_POWERED);
 
-        private static final RedstoneStatus[] MODES = values();
+        public static final IntFunction<RedstoneStatus> BY_ID = ByIdMap.continuous(RedstoneStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, RedstoneStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RedstoneStatus::ordinal);
 
         private final ILangEntry name;
 
@@ -251,10 +257,6 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         @Override
         public String getTranslationKey() {
             return name.getTranslationKey();
-        }
-
-        public static RedstoneStatus byIndexStatic(int index) {
-            return MathUtils.getByIndexMod(MODES, index);
         }
     }
 }

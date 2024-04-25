@@ -33,14 +33,8 @@ public class ItemModule extends Item implements IModuleItem {
         return moduleData.getModuleData();
     }
 
-    @NotNull
     @Override
-    public Rarity getRarity(@NotNull ItemStack stack) {
-        return getModuleData().getRarity();
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
             for (Item item : IModuleHelper.INSTANCE.getSupported(getModuleData())) {

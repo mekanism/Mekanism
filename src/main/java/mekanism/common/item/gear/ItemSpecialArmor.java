@@ -2,8 +2,7 @@ package mekanism.common.item.gear;
 
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
@@ -13,18 +12,14 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemSpecialArmor extends ArmorItem implements ICapabilityAware {
 
-    protected ItemSpecialArmor(ArmorMaterial material, ArmorItem.Type armorType, Properties properties) {
+    //TODO - 1.20.5: Override getDefaultAttributeModifiers for the ones that actually have config based stuff??
+    protected ItemSpecialArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
         super(material, armorType, properties);
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return "mekanism:render/null_armor.png";
-    }
-
-    @Override
     public boolean isEnchantable(@NotNull ItemStack stack) {
-        return material.getEnchantmentValue() > 0 && super.isEnchantable(stack);
+        return material.value().enchantmentValue() > 0 && super.isEnchantable(stack);
     }
 
     @Override

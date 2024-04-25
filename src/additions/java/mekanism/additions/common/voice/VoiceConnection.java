@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.ItemWalkieTalkie.WalkieData;
+import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.common.Mekanism;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -134,8 +135,8 @@ public class VoiceConnection extends Thread {
     }
 
     private boolean canListen(int channel, ItemStack stack) {
-        WalkieData data = WalkieData.get(stack);
-        return data != null && data.isRunning() && data.getChannel() == channel;
+        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+        return data.running() && data.channel() == channel;
     }
 
     public int getCurrentChannel() {
@@ -148,11 +149,8 @@ public class VoiceConnection extends Thread {
     }
 
     private int getCurrentChannel(ItemStack stack) {
-        WalkieData data = WalkieData.get(stack);
-        if (data != null && data.isRunning()) {
-            return data.getChannel();
-        }
-        return 0;
+        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
+        return data.running() ? data.channel() : 0;
     }
 
     public ServerPlayer getPlayer() {

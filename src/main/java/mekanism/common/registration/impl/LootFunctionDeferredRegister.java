@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -10,17 +11,17 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 @NothingNullByDefault
-public class LootFunctionDeferredRegister extends MekanismDeferredRegister<LootItemFunctionType> {
+public class LootFunctionDeferredRegister extends MekanismDeferredRegister<LootItemFunctionType<?>> {
 
     public LootFunctionDeferredRegister(String modid) {
         super(Registries.LOOT_FUNCTION_TYPE, modid);
     }
 
-    public MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> registerBasic(String name, Supplier<LootItemFunction> sup) {
-        return registerCodec(name, () -> Codec.unit(sup.get()));
+    public <T extends LootItemFunction> MekanismDeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<T>> registerBasic(String name, Supplier<T> sup) {
+        return registerCodec(name, () -> MapCodec.unit(sup.get()));
     }
 
-    public MekanismDeferredHolder<LootItemFunctionType, LootItemFunctionType> registerCodec(String name, Supplier<Codec<? extends LootItemFunction>> sup) {
-        return register(name, () -> new LootItemFunctionType(sup.get()));
+    public <T extends LootItemFunction> MekanismDeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<T>> registerCodec(String name, Supplier<MapCodec<T>> sup) {
+        return register(name, () -> new LootItemFunctionType<>(sup.get()));
     }
 }

@@ -22,7 +22,7 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
-import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -158,7 +158,14 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     @Nullable
     public ModuleContainer getModuleContainerNullable(ItemStack stack) {
-        return isModuleContainer(stack) ? stack.getData(MekanismAttachmentTypes.MODULE_CONTAINER) : null;
+        if (isModuleContainer(stack)) {
+            if (stack.has(MekanismDataComponents.MODULE_CONTAINER)) {
+                return stack.get(MekanismDataComponents.MODULE_CONTAINER);
+            }
+            stack.set(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY);
+            return ModuleContainer.EMPTY;
+        }
+        return null;
     }
 
     @Override

@@ -12,6 +12,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -218,8 +219,8 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag nbt = super.serializeNBT(provider);
         if (isDraining) {
             nbt.putBoolean(NBTConstants.DRAINING, true);
         }
@@ -239,10 +240,10 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         //Grab the booleans regardless if they are present as if they aren't that means they are false
         isDraining = nbt.getBoolean(NBTConstants.DRAINING);
         isFilling = nbt.getBoolean(NBTConstants.FILLING);
-        super.deserializeNBT(nbt);
+        super.deserializeNBT(provider, nbt);
     }
 }

@@ -51,6 +51,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -244,8 +245,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public void load(@NotNull CompoundTag nbt) {
-        super.load(nbt);
+    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        super.loadAdditional(nbt, provider);
         if (nbt.contains(NBTConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
             long[] savedUsed = nbt.getLongArray(NBTConstants.USED_SO_FAR);
             if (tier.processes != savedUsed.length) {
@@ -260,8 +261,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags) {
-        super.saveAdditional(nbtTags);
+    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+        super.saveAdditional(nbtTags, provider);
         nbtTags.putLongArray(NBTConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
     }
 
@@ -283,13 +284,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof AdvancedMachineUpgradeData data) {
             //Generic factory upgrade data handling
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(provider, upgradeData);
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            gasTank.deserializeNBT(data.stored.serializeNBT());
-            extraSlot.deserializeNBT(data.gasSlot.serializeNBT());
+            gasTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
+            extraSlot.deserializeNBT(provider, data.gasSlot.serializeNBT(provider));
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
@@ -298,9 +299,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @NotNull
     @Override
-    public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, gasTank, extraSlot, energySlot, inputSlots, outputSlots,
-              isSorting(), getComponents());
+    public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
+        return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, gasTank, extraSlot, energySlot,
+              inputSlots, outputSlots, isSorting(), getComponents());
     }
 
     @Override

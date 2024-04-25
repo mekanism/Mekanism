@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +50,7 @@ public final class StackUtils {
                         //Add any remainder to the rejects (if this is zero this will no-op
                         addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - max));
                     }
-                } else if (ItemHandlerHelper.canItemStacksStack(origSlot.getStack(), toAddStack)) {
+                } else if (ItemStack.isSameItemSameComponents(origSlot.getStack(), toAddStack)) {
                     int added = origSlot.growStack(toAddStack.getCount(), Action.EXECUTE);
                     //Add any remainder to the rejects (if this is zero this will no-op
                     addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - added));
@@ -69,7 +68,7 @@ public final class StackUtils {
         if (!stack.isEmpty()) {
             for (ItemStack existingStack : stacks) {
                 int needed = existingStack.getMaxStackSize() - existingStack.getCount();
-                if (needed > 0 && ItemHandlerHelper.canItemStacksStack(existingStack, stack)) {
+                if (needed > 0 && ItemStack.isSameItemSameComponents(existingStack, stack)) {
                     //This stack needs some items and can stack with the one we are adding
                     int toAdd = Math.min(needed, stack.getCount());
                     //Add the amount we can

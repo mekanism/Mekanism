@@ -7,47 +7,51 @@ import mekanism.api.radial.mode.IRadialMode;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.network.PacketUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) implements IMekanismPacket<PlayPayloadContext> {
+public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) implements IMekanismPacket {
 
-    public static final ResourceLocation ID = Mekanism.rl("radial_mode");
-
-    public PacketRadialModeChange(FriendlyByteBuf buffer) {
-        this(buffer.readEnum(EquipmentSlot.class), buffer.readList(FriendlyByteBuf::readResourceLocation), buffer.readVarInt());
-    }
+    public static final CustomPacketPayload.Type<PacketRadialModeChange> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("radial_mode"));
+    public static final StreamCodec<FriendlyByteBuf, PacketRadialModeChange> STREAM_CODEC = StreamCodec.composite(
+          PacketUtils.EQUIPMENT_SLOT_STREAM_CODEC, PacketRadialModeChange::slot,
+          ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketRadialModeChange::path,
+          ByteBufCodecs.VAR_INT, PacketRadialModeChange::networkRepresentation,
+          PacketRadialModeChange::new
+    );
 
     @NotNull
     @Override
-    public ResourceLocation id() {
-        return ID;
+    public CustomPacketPayload.Type<PacketRadialModeChange> type() {
+        return TYPE;
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")//not null, validated by hasNestedData
-    public void handle(PlayPayloadContext context) {
-        Player player = context.player().orElse(null);
-        if (player != null) {
-            ItemStack stack = player.getItemBySlot(slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
-                RadialData<?> radialData = radialModeItem.getRadialData(stack);
-                if (radialData != null) {
-                    for (ResourceLocation path : path) {
-                        INestedRadialMode nestedData = radialData.fromIdentifier(path);
-                        if (nestedData == null || !nestedData.hasNestedData()) {
-                            Mekanism.logger.warn("Could not find path ({}) in current radial data.", path);
-                            return;
-                        }
-                        radialData = nestedData.nestedData();
+    public void handle(IPayloadContext context) {
+        Player player = context.player();
+        ItemStack stack = player.getItemBySlot(slot);
+        if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
+            RadialData<?> radialData = radialModeItem.getRadialData(stack);
+            if (radialData != null) {
+                for (ResourceLocation path : path) {
+                    INestedRadialMode nestedData = radialData.fromIdentifier(path);
+                    if (nestedData == null || !nestedData.hasNestedData()) {
+                        Mekanism.logger.warn("Could not find path ({}) in current radial data.", path);
+                        return;
                     }
-                    setMode(player, stack, radialModeItem, radialData);
+                    radialData = nestedData.nestedData();
                 }
+                setMode(player, stack, radialModeItem, radialData);
             }
         }
     }
@@ -57,12 +61,5 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> 
         if (newMode != null) {
             item.setMode(stack, player, radialData, newMode);
         }
-    }
-
-    @Override
-    public void write(@NotNull FriendlyByteBuf buffer) {
-        buffer.writeEnum(slot);
-        buffer.writeCollection(this.path, FriendlyByteBuf::writeResourceLocation);
-        buffer.writeVarInt(networkRepresentation);
     }
 }

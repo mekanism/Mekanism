@@ -8,7 +8,9 @@ import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.inventory.HashedItem;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,7 +93,7 @@ public class QIOGlobalItemLookup {
     private static class QIOGlobalItemLookupDataHandler extends MekanismSavedData {
 
         @Override
-        public void load(@NotNull CompoundTag nbt) {
+        public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
             //TODO - 1.19: Do we want to clear existing elements
             for (String key : nbt.getAllKeys()) {
                 UUID uuid;
@@ -101,7 +103,7 @@ public class QIOGlobalItemLookup {
                     Mekanism.logger.warn("Invalid UUID ({}) stored in {} saved data.", key, DATA_HANDLER_NAME);
                     continue;
                 }
-                ItemStack stack = ItemStack.of(nbt.getCompound(key));
+                ItemStack stack = ItemStack.parseOptional(provider, nbt.getCompound(key));
                 //Only add the item if the item could be read. If it can't that means the mod adding the item was probably removed
                 if (stack.isEmpty()) {
                     Mekanism.logger.debug("Failed to read corresponding item for UUID ({}) stored in {} saved data. "
@@ -117,10 +119,10 @@ public class QIOGlobalItemLookup {
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbt) {
+        public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
             //TODO - 1.19: See if we can further improve this
             for (Map.Entry<UUID, HashedItem> entry : QIOGlobalItemLookup.INSTANCE.itemCache.entrySet()) {
-                nbt.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation());
+                nbt.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation(provider));
             }
             return nbt;
         }
@@ -128,11 +130,11 @@ public class QIOGlobalItemLookup {
 
     private static class SerializedHashedItem extends HashedItem {
 
-        private CompoundTag nbtRepresentation;
+        private Tag nbtRepresentation;
 
         @Nullable
-        protected static SerializedHashedItem read(CompoundTag nbtRepresentation) {
-            ItemStack stack = ItemStack.of(nbtRepresentation);
+        protected static SerializedHashedItem read(HolderLookup.Provider provider, CompoundTag nbtRepresentation) {
+            ItemStack stack = ItemStack.parseOptional(provider, nbtRepresentation);
             //If the stack is empty something went wrong so return null, otherwise just create a new serializable hashed item
             // We can't cache the nbt we read from as something might have changed related to caps just from loading it, and we
             // want to make sure that we save it with the proper corresponding data
@@ -147,12 +149,12 @@ public class QIOGlobalItemLookup {
             super(other);
         }
 
-        public CompoundTag getNbtRepresentation() {
+        public Tag getNbtRepresentation(@NotNull HolderLookup.Provider provider) {
             if (nbtRepresentation == null) {
-                nbtRepresentation = internalToNBT();
+                nbtRepresentation = internalToNBT(provider);
                 //Override to ensure that it gets stored with a count of one in case it was raw
                 // and that then when we read it we don't create it with extra size
-                nbtRepresentation.putByte(NBTConstants.COUNT, (byte) 1);
+                ((CompoundTag) nbtRepresentation).putByte(NBTConstants.COUNT, (byte) 1);
             }
             return nbtRepresentation;
         }

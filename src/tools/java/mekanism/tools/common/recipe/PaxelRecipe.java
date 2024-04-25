@@ -4,7 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -23,8 +23,8 @@ public class PaxelRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-        ItemStack resultItem = getResultItem(registryAccess);
+    public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider provider) {
+        ItemStack resultItem = getResultItem(provider);
         if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
         }

@@ -41,7 +41,8 @@ public class JadeLookingAtHelper implements LookingAtHelper {
     @Override
     public void addFluidElement(FluidStack stored, int capacity) {
         CompoundTag fluidData = new CompoundTag();
-        fluidData.put(NBTConstants.FLUID_STORED, stored.writeToNBT(new CompoundTag()));
+        //TODO - 1.20.5: Providers
+        //fluidData.put(NBTConstants.FLUID_STORED, stored.save());
         fluidData.putInt(NBTConstants.MAX, capacity);
         data.add(fluidData);
     }

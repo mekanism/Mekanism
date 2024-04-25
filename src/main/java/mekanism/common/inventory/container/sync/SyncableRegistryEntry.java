@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,7 +48,7 @@ public class SyncableRegistryEntry<V> implements ISyncableData {
     }
 
     @Override
-    public IntPropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public IntPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         V value = get();
         //The below code is from FriendlyByteBuf#writeId so that we can hold onto the backingId in cases where we are in single player
         // we don't run into any weirdness about having different data that we reconstructed from the payload

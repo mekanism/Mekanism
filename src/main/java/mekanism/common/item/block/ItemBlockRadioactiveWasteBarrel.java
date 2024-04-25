@@ -22,7 +22,7 @@ public class ItemBlockRadioactiveWasteBarrel extends ItemBlockTooltip<BlockRadio
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get())));
         int ticks = MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get();
         long decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();

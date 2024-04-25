@@ -6,6 +6,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.network.to_client.container.property.FluidStackPropertyData;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
+import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +62,7 @@ public class SyncableFluidStack implements ISyncableData {
     @Override
     public DirtyType isDirty() {
         FluidStack value = get();
-        boolean sameFluid = value.isFluidEqual(this.lastKnownValue);
+        boolean sameFluid = FluidStack.isSameFluidSameComponents(value, this.lastKnownValue);
         if (!sameFluid || value.getAmount() != this.lastKnownValue.getAmount()) {
             //Make sure to copy it in case our fluid stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
@@ -72,7 +73,7 @@ public class SyncableFluidStack implements ISyncableData {
     }
 
     @Override
-    public PropertyData getPropertyData(short property, DirtyType dirtyType) {
+    public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
             return new IntPropertyData(property, get().getAmount());

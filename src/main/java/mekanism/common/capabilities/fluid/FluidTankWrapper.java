@@ -6,6 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -102,8 +103,8 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        return internal.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return internal.serializeNBT(provider);
     }
 
     @Override
@@ -115,8 +116,8 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        internal.deserializeNBT(nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        internal.deserializeNBT(provider, nbt);
     }
 
     @NotNull
