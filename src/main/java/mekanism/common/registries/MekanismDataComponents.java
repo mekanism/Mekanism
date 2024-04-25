@@ -1,8 +1,6 @@
 package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -17,6 +15,7 @@ import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.OverflowAware;
+import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
@@ -44,6 +43,7 @@ import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.DataComponentDeferredRegister;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -51,7 +51,6 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -60,7 +59,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -216,42 +214,16 @@ public class MekanismDataComponents {//TODO - 1.20.5: Organize this class
     );
 
     //TODO - 1.20.5: Validate this doesn't have to be optional
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ItemStack>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
-          builder -> builder.persistent(ItemStack.CODEC)
-                .networkSynchronized(ItemStack.STREAM_CODEC)
+    //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<HashedItem>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
+          builder -> builder.persistent(HashedItem.CODEC)
+                .networkSynchronized(HashedItem.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Re-evaluate this, it is kind of messy
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<boolean[]>> STABILIZER_CHUNKS = DATA_COMPONENTS.simple("stabilzer_chunks",
-          builder -> {
-              int size = TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER;
-              return builder.persistent(Codec.BOOL.listOf(size, size).xmap(booleans -> {
-                        boolean[] booleanArray = new boolean[booleans.size()];
-                        for (int i = 0; i < booleans.size(); i++) {
-                            booleanArray[i] = booleans.get(i);
-                        }
-                        return booleanArray;
-                    }, booleans -> {
-                        List<Boolean> booleanList = new ArrayList<>(booleans.length);
-                        for (boolean bool : booleans) {
-                            booleanList.add(bool);
-                        }
-                        return booleanList;
-                    }))
-                    .networkSynchronized(ByteBufCodecs.byteArray(size).map(bytes -> {
-                        boolean[] booleans = new boolean[bytes.length];
-                        for (int i = 0; i < bytes.length; i++) {
-                            booleans[i] = bytes[i] == 1;
-                        }
-                        return booleans;
-                    }, booleans -> {
-                        byte[] bytes = new byte[booleans.length];
-                        for (int i = 0; i < booleans.length; i++) {
-                            bytes[i] = booleans[i] ? (byte) 1 : 0;
-                        }
-                        return bytes;
-                    }));
-          });
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<StabilizedChunks>> STABILIZER_CHUNKS = DATA_COMPONENTS.simple("stabilzer_chunks",
+          builder -> builder.persistent(StabilizedChunks.CODEC)
+                .networkSynchronized(StabilizedChunks.STREAM_CODEC)
+    );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<TeleporterFrequency>>> TELEPORTER_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("teleporter_frequency", () -> FrequencyType.TELEPORTER);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<InventoryFrequency>>> INVENTORY_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("inventory_frequency", () -> FrequencyType.INVENTORY);
@@ -292,7 +264,7 @@ public class MekanismDataComponents {//TODO - 1.20.5: Organize this class
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<MergedChemicalTank>> CHEMICAL_TANK_CONTENTS_HANDLER = DATA_COMPONENTS.simple("chemical_tank_contents_handler",
           builder -> {
-        //TODO - 1.20.5: Figure out how to implement containers
+              //TODO - 1.20.5: Figure out how to implement containers
               /*if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof ItemBlockChemicalTank tank) {
                   ChemicalTankTier tier = Objects.requireNonNull(tank.getTier(), "Chemical tank tier cannot be null");
                   return MergedChemicalTank.create(

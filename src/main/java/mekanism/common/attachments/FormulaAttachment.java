@@ -67,4 +67,21 @@ public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
     public boolean hasItems() {
         return inventory.stream().anyMatch(slot -> !slot.isEmpty());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FormulaAttachment other = (FormulaAttachment) o;
+        return invalid == other.invalid && ItemStack.listMatches(inventory, other.inventory);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = ItemStack.hashStackList(inventory);
+        return 31 * hash + Boolean.hashCode(invalid);
+    }
 }

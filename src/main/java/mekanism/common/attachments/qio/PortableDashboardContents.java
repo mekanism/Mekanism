@@ -24,4 +24,19 @@ public record PortableDashboardContents(List<ItemStack> contents) {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         contents = Collections.unmodifiableList(contents);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return ItemStack.listMatches(contents, ((PortableDashboardContents) o).contents);
+    }
+
+    @Override
+    public int hashCode() {
+        return ItemStack.hashStackList(contents);
+    }
 }

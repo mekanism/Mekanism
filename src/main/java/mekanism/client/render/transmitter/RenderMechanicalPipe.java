@@ -43,6 +43,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final float offset = 0.02F;
     //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support.
     // 6 is used for null side, and 7 is used for null side but flowing vertically
+    //TODO - 1.20.5: Look at all maps and sets that use FluidStacks as keys as they no longer are hashed
     private static final Int2ObjectMap<Map<FluidStack, Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(8);
 
     public RenderMechanicalPipe(BlockEntityRendererProvider.Context context) {

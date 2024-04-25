@@ -1,8 +1,6 @@
 package mekanism.common.tile.machine;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.Action;
@@ -11,6 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -32,11 +31,9 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -261,19 +258,14 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         //TODO - 1.20.4: Deduplicate this and the from nbt
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        boolean[] chunksToLoad = input.get(MekanismDataComponents.STABILIZER_CHUNKS);
+        StabilizedChunks chunksToLoad = input.get(MekanismDataComponents.STABILIZER_CHUNKS);
         if (chunksToLoad == null) {
             //Skip if we don't have any data
             return;
         }
-        if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
-            //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
-            // where to position our values
-            chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
-        }
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z]);
+                changed |= setChunkLoadingAt(x, z, chunksToLoad.loaded(x * MAX_LOAD_DIAMETER + z));
             }
         }
         if (changed) {
@@ -291,13 +283,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        boolean[] chunksToLoad = new boolean[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
-        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
-            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = isChunkLoadingAt(x, z);
-            }
-        }
-        builder.set(MekanismDataComponents.STABILIZER_CHUNKS, chunksToLoad);
+        builder.set(MekanismDataComponents.STABILIZER_CHUNKS, StabilizedChunks.create(this));
     }
 
     @Override

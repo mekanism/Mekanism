@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import mekanism.api.JsonConstants;
 import mekanism.api.NBTConstants;
@@ -61,5 +62,23 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, ItemStack inputSlot, 
         input.setStack(inputSlot);
         output.setStack(outputSlot);
         return List.of(input, output);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UpgradeAware other = (UpgradeAware) o;
+        return ItemStack.matches(inputSlot, other.inputSlot) && ItemStack.matches(outputSlot, other.outputSlot) && Objects.equals(upgrades, other.upgrades);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = upgrades.hashCode();
+        hash = 31 * hash + ItemStack.hashItemAndComponents(inputSlot);
+        return 31 * hash + ItemStack.hashItemAndComponents(outputSlot);
     }
 }

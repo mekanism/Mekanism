@@ -1,6 +1,5 @@
 package mekanism.common.tile.qio;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
@@ -16,10 +15,8 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -163,7 +160,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         if (itemType != null) {
-            builder.set(MekanismDataComponents.ITEM_TARGET, itemType.getInternalStack());
+            builder.set(MekanismDataComponents.ITEM_TARGET, itemType);
         }
         builder.set(MekanismDataComponents.LONG_AMOUNT, count);
         builder.set(MekanismDataComponents.FUZZY, fuzzy);
@@ -173,12 +170,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
-        ItemStack target = input.get(MekanismDataComponents.ITEM_TARGET);
-        if (target != null && !target.isEmpty()) {
-            itemType = HashedItem.create(target);
-        } else {
-            itemType = null;
-        }
+        itemType = input.get(MekanismDataComponents.ITEM_TARGET);
         count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
         fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
         inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);
