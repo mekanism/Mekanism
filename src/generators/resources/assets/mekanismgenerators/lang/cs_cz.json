@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Turbínový Ventil",
   "block.mekanismgenerators.turbine_vent": "Turbínová Ventilace",
   "block.mekanismgenerators.wind_generator": "Větrný Generátor",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generátory",
+  "constants.mekanismgenerators.pack_description": "Zdroje použité pro Mekanism: Generátory",
   "container.mekanismgenerators.advanced_solar_generator": "Pokročilý Solární Generátor",
   "container.mekanismgenerators.bio_generator": "Bio-Generátor",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Logický Adaptér Štěpného Reaktoru",
@@ -193,6 +195,7 @@
   "turbine.mekanismgenerators.stats.tank_volume": "Objem nádrže: %1$s",
   "turbine.mekanismgenerators.stats.vents": "Ventily: %1$s %2$s",
   "turbine.mekanismgenerators.steam_input": "Vstup Páry: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Voda nebude recyklována",
   "wind_generator.mekanismgenerators.no_wind": "Žádný přístup k větru",
   "wind_generator.mekanismgenerators.sky_blocked": "Obloha zablokována"
 }
