@@ -1634,6 +1634,7 @@
   "tooltip.mekanism.stored.free_runners": "Энергия бегунков: %1$s",
   "tooltip.mekanism.stored_energy": "Накопленная энергия: %1$s",
   "tooltip.mekanism.stored_mb_percentage": "Хранится %1$s: %2$s mB (%3$s)",
+  "tooltip.mekanism.unknown": "Неизвестно",
   "transmission.mekanism.energy": "Энергия",
   "transmission.mekanism.fluids": "Жидкости",
   "transmission.mekanism.gases": "Газы",
