@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "minecraft:water"
+    "id": "minecraft:water"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:water_vapor"
+    "id": "mekanism:water_vapor"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:water_vapor"
+    "id": "mekanism:water_vapor"
   }
 }

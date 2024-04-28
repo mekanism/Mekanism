@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_pressurized_tube"
-            ]
+            "items": "mekanism:basic_pressurized_tube"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.chemical_transport.description"
     },
     "icon": {
-      "item": "mekanism:basic_pressurized_tube"
+      "count": 1,
+      "id": "mekanism:basic_pressurized_tube"
     },
     "title": {
       "translate": "advancements.mekanism.chemical_transport.title"

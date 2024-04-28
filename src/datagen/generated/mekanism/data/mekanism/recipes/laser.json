@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "A": {
       "tag": "mekanism:alloys/reinforced"
@@ -21,6 +21,7 @@
     "AE "
   ],
   "result": {
-    "item": "mekanism:laser"
+    "count": 1,
+    "id": "mekanism:laser"
   }
 }

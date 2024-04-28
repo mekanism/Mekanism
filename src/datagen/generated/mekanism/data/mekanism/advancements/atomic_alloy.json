@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:alloy_atomic"
-            ]
+            "items": "mekanism:alloy_atomic"
           }
         ]
       },
@@ -21,7 +19,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:alloy_atomic"
+      "count": 1,
+      "id": "mekanism:alloy_atomic"
     },
     "title": {
       "translate": "advancements.mekanism.atomic_alloy.title"

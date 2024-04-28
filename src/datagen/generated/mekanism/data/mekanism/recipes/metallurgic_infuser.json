@@ -6,13 +6,13 @@
       "item": "minecraft:furnace"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "O": {
       "tag": "forge:ingots/osmium"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "I#I"
   ],
   "result": {
-    "item": "mekanism:metallurgic_infuser"
+    "count": 1,
+    "id": "mekanism:metallurgic_infuser"
   }
 }

@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     },
     "C": {
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "P": {
       "item": "mekanism:dictionary"
@@ -24,6 +24,7 @@
     "S#S"
   ],
   "result": {
-    "item": "mekanism:oredictionificator"
+    "count": 1,
+    "id": "mekanism:oredictionificator"
   }
 }

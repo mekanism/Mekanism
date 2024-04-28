@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass/purple"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/cheap"
+        },
+        {
+          "tag": "c:dyed/purple"
+        }
+      ]
     }
   },
   "output": {
     "amount": 16,
-    "pigment": "mekanism:purple"
+    "id": "mekanism:purple"
   }
 }

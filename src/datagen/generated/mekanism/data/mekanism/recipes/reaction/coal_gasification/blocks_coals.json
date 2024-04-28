@@ -7,16 +7,16 @@
   },
   "gasInput": {
     "amount": 1000,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 1000,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "itemInput": {
     "ingredient": [
       {
-        "tag": "forge:storage_blocks/coal"
+        "tag": "c:storage_blocks/coal"
       },
       {
         "tag": "forge:storage_blocks/charcoal"
@@ -25,6 +25,6 @@
   },
   "itemOutput": {
     "count": 9,
-    "item": "mekanism:dust_sulfur"
+    "id": "mekanism:dust_sulfur"
   }
 }

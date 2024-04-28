@@ -7,11 +7,11 @@
   },
   "gasInput": {
     "amount": 100,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "gasOutput": {
     "amount": 100,
-    "gas": "mekanism:ethene"
+    "id": "mekanism:ethene"
   },
   "itemInput": {
     "amount": 2,
@@ -20,6 +20,7 @@
     }
   },
   "itemOutput": {
-    "item": "mekanism:substrate"
+    "count": 1,
+    "id": "mekanism:substrate"
   }
 }

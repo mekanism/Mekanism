@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:red_carpet"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/carpets"
+        },
+        {
+          "tag": "c:dyed/red"
+        }
+      ]
     }
   },
   "output": {
     "amount": 128,
-    "pigment": "mekanism:red"
+    "id": "mekanism:red"
   }
 }

@@ -6,7 +6,7 @@
       "item": "mekanismadditions:magenta_plastic"
     },
     "S": {
-      "tag": "forge:slimeballs"
+      "tag": "c:slimeballs"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:magenta_slick_plastic"
+    "id": "mekanismadditions:magenta_slick_plastic"
   }
 }

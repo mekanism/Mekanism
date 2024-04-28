@@ -3,17 +3,17 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:leather"
+      "tag": "c:leather"
     },
     {
-      "tag": "forge:string"
+      "tag": "c:strings"
     },
     {
-      "tag": "forge:dyes/blue"
+      "tag": "c:dyes/blue"
     }
   ],
   "result": {
     "count": 2,
-    "item": "mekanismadditions:blue_balloon"
+    "id": "mekanismadditions:blue_balloon"
   }
 }

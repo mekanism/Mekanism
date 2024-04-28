@@ -5,7 +5,9 @@
       "conditions": {
         "items": [
           {
-            "type": "mekanism:full_canteen"
+            "predicates": {
+              "mekanism:full_canteen": {}
+            }
           }
         ]
       },
@@ -19,7 +21,8 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "item": "mekanism:canteen"
+      "count": 1,
+      "id": "mekanism:canteen"
     },
     "title": {
       "translate": "advancements.mekanism.full_canteen.title"

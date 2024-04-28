@@ -6,6 +6,6 @@
   },
   "output": {
     "amount": 1,
-    "fluid": "mekanism:lithium"
+    "id": "mekanism:lithium"
   }
 }

@@ -2,11 +2,11 @@
   "type": "mekanism:infusion_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:storage_blocks/coal"
+      "tag": "c:storage_blocks/coal"
     }
   },
   "output": {
     "amount": 90,
-    "infuse_type": "mekanism:carbon"
+    "id": "mekanism:carbon"
   }
 }

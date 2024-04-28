@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:sps_casing"
-            ]
+            "items": "mekanism:sps_casing"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:sps_port"
-            ]
+            "items": "mekanism:sps_port"
           }
         ]
       },
@@ -32,7 +28,8 @@
       "translate": "advancements.mekanism.sps.description"
     },
     "icon": {
-      "item": "mekanism:sps_casing"
+      "count": 1,
+      "id": "mekanism:sps_casing"
     },
     "title": {
       "translate": "advancements.mekanism.sps.title"

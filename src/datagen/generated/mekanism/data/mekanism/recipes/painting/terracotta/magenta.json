@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "pigment": "mekanism:magenta"
+    "id": "mekanism:magenta"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:magenta_terracotta"
+    "count": 1,
+    "id": "minecraft:magenta_terracotta"
   }
 }

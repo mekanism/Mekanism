@@ -9,7 +9,7 @@
       "tag": "forge:tools/pickaxes/osmium"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "tag": "forge:tools/shovels/osmium"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:osmium_paxel"
+    "count": 1,
+    "id": "mekanismtools:osmium_paxel"
   }
 }

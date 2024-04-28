@@ -6,10 +6,10 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "P": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -21,6 +21,7 @@
     "SSS"
   ],
   "result": {
-    "item": "mekanism:personal_chest"
+    "count": 1,
+    "id": "mekanism:personal_chest"
   }
 }

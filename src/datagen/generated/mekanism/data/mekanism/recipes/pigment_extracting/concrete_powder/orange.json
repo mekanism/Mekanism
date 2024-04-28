@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:orange_concrete_powder"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/concrete_powder"
+        },
+        {
+          "tag": "c:dyed/orange"
+        }
+      ]
     }
   },
   "output": {
     "amount": 32,
-    "pigment": "mekanism:orange"
+    "id": "mekanism:orange"
   }
 }

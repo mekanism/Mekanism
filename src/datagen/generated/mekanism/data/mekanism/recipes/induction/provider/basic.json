@@ -18,6 +18,7 @@
     "LCL"
   ],
   "result": {
-    "item": "mekanism:basic_induction_provider"
+    "count": 1,
+    "id": "mekanism:basic_induction_provider"
   }
 }

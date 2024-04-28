@@ -7,7 +7,8 @@
     "item": "mekanismtools:diamond_paxel"
   },
   "result": {
-    "item": "mekanismtools:netherite_paxel"
+    "count": 1,
+    "id": "mekanismtools:netherite_paxel"
   },
   "template": {
     "item": "minecraft:netherite_upgrade_smithing_template"

@@ -14,7 +14,8 @@
       "translate": "advancements.mekanism.radiation_poisoning.description"
     },
     "icon": {
-      "item": "mekanism:radioactive_waste_barrel"
+      "count": 1,
+      "id": "mekanism:radioactive_waste_barrel"
     },
     "title": {
       "translate": "advancements.mekanism.radiation_poisoning.title"

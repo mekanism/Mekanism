@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/steel"
   },
-  "result": "mekanism:ingot_steel"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_steel"
+  }
 }

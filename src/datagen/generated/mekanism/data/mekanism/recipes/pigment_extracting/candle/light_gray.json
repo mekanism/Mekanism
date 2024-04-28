@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:light_gray_candle"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/candle"
+        },
+        {
+          "tag": "c:dyed/light_gray"
+        }
+      ]
     }
   },
   "output": {
     "amount": 224,
-    "pigment": "mekanism:light_gray"
+    "id": "mekanism:light_gray"
   }
 }

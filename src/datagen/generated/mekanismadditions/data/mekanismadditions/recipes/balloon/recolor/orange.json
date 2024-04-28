@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/orange"
+      "tag": "c:dyes/orange"
     }
   ],
   "result": {
-    "item": "mekanismadditions:orange_balloon"
+    "count": 1,
+    "id": "mekanismadditions:orange_balloon"
   }
 }

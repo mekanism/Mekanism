@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "C": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "F": {
       "item": "minecraft:furnace"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "O": {
       "tag": "forge:ingots/osmium"
@@ -24,6 +24,7 @@
     "CFC"
   ],
   "result": {
-    "item": "mekanismgenerators:heat_generator"
+    "count": 1,
+    "id": "mekanismgenerators:heat_generator"
   }
 }

@@ -3,17 +3,17 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:leather"
+      "tag": "c:leather"
     },
     {
-      "tag": "forge:string"
+      "tag": "c:strings"
     },
     {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   ],
   "result": {
     "count": 2,
-    "item": "mekanismadditions:magenta_balloon"
+    "id": "mekanismadditions:magenta_balloon"
   }
 }

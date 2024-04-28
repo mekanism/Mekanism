@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/gold"
   },
-  "result": "minecraft:gold_ingot"
+  "result": {
+    "count": 1,
+    "id": "minecraft:gold_ingot"
+  }
 }

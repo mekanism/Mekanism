@@ -6,7 +6,7 @@
       "item": "mekanismadditions:light_blue_slick_plastic"
     },
     "S": {
-      "tag": "forge:sand"
+      "tag": "c:sands"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 3,
-    "item": "mekanismadditions:light_blue_plastic_road"
+    "id": "mekanismadditions:light_blue_plastic_road"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:red"
+    "id": "mekanism:red"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:red_plastic_glow"
+    "count": 1,
+    "id": "mekanismadditions:red_plastic_glow"
   }
 }

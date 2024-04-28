@@ -6,10 +6,10 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "P": {
-      "tag": "forge:barrels/wooden"
+      "tag": "c:barrels/wooden"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -21,6 +21,7 @@
     "SSS"
   ],
   "result": {
-    "item": "mekanism:personal_barrel"
+    "count": 1,
+    "id": "mekanism:personal_barrel"
   }
 }

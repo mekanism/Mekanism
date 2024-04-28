@@ -13,39 +13,21 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "type": "mekanism:energy_containers",
+              "type": "mekanism:energy",
               "function": "mekanism:copy_containers"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                },
-                {
-                  "source": "max",
-                  "target": "mekanism:max_threshold"
-                },
-                {
-                  "source": "min",
-                  "target": "mekanism:min_threshold"
-                },
-                {
-                  "source": "outputMode",
-                  "target": "mekanism:redstone_output"
-                },
-                {
-                  "source": "time",
-                  "target": "mekanism:delay"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:redstone_control",
+                "mekanism:min_threshold",
+                "mekanism:max_threshold",
+                "mekanism:delay",
+                "mekanism:redstone_output"
               ],
               "source": "block_entity"
             }

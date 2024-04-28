@@ -12,11 +12,11 @@
       "item": "mekanismadditions:aqua_plastic"
     },
     {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     }
   ],
   "result": {
     "count": 3,
-    "item": "mekanismadditions:aqua_plastic_glow"
+    "id": "mekanismadditions:aqua_plastic_glow"
   }
 }

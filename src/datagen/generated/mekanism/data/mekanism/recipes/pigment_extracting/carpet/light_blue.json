@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:light_blue_carpet"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/carpets"
+        },
+        {
+          "tag": "c:dyed/light_blue"
+        }
+      ]
     }
   },
   "output": {
     "amount": 128,
-    "pigment": "mekanism:light_blue"
+    "id": "mekanism:light_blue"
   }
 }

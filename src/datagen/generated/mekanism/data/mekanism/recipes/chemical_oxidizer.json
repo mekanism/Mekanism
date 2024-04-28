@@ -24,6 +24,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:chemical_oxidizer"
+    "count": 1,
+    "id": "mekanism:chemical_oxidizer"
   }
 }

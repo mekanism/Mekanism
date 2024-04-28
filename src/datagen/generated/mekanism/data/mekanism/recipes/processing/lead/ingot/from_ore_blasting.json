@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:ores/lead"
   },
-  "result": "mekanism:ingot_lead"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_lead"
+  }
 }

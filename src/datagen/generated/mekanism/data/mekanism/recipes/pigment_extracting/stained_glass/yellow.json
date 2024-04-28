@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass/yellow"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/cheap"
+        },
+        {
+          "tag": "c:dyed/yellow"
+        }
+      ]
     }
   },
   "output": {
     "amount": 16,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   }
 }

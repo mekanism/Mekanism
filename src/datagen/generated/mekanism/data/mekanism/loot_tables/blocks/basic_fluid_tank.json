@@ -8,26 +8,20 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
               "function": "mekanism:copy_containers",
               "types": [
-                "mekanism:fluid_tanks",
-                "mekanism:inventory_slots"
+                "mekanism:fluids",
+                "mekanism:items"
               ]
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "editMode",
-                  "target": "mekanism:edit_mode"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:edit_mode"
               ],
               "source": "block_entity"
             }

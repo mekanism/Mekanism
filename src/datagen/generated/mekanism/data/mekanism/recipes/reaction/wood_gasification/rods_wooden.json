@@ -7,16 +7,16 @@
   },
   "gasInput": {
     "amount": 10,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 10,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "itemInput": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   }
 }

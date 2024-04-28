@@ -9,7 +9,7 @@
       "item": "minecraft:diamond_pickaxe"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "item": "minecraft:diamond_shovel"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:diamond_paxel"
+    "count": 1,
+    "id": "mekanismtools:diamond_paxel"
   }
 }

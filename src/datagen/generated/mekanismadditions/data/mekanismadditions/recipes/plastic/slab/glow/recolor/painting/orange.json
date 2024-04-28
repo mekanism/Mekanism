@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:orange"
+    "id": "mekanism:orange"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:orange_plastic_glow_slab"
+    "count": 1,
+    "id": "mekanismadditions:orange_plastic_glow_slab"
   }
 }

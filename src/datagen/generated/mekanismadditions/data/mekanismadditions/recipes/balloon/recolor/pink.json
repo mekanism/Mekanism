@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/pink"
+      "tag": "c:dyes/pink"
     }
   ],
   "result": {
-    "item": "mekanismadditions:pink_balloon"
+    "count": 1,
+    "id": "mekanismadditions:pink_balloon"
   }
 }

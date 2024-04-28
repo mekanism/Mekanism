@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:cardboard_box"
-            ]
+            "items": "mekanism:cardboard_box"
           }
         ]
       },
@@ -22,7 +20,8 @@
       "translate": "advancements.mekanism.moving_blocks.description"
     },
     "icon": {
-      "item": "mekanism:cardboard_box"
+      "count": 1,
+      "id": "mekanism:cardboard_box"
     },
     "title": {
       "translate": "advancements.mekanism.moving_blocks.title"

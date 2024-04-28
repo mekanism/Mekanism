@@ -2,7 +2,7 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "c:cobblestones/deepslate"
     }
   },
   "mainInput": {
@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "minecraft:deepslate_coal_ore"
+    "count": 1,
+    "id": "minecraft:deepslate_coal_ore"
   }
 }

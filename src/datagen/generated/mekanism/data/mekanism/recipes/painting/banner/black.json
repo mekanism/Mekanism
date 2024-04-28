@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:black"
+    "id": "mekanism:black"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:black_banner"
+    "count": 1,
+    "id": "minecraft:black_banner"
   }
 }

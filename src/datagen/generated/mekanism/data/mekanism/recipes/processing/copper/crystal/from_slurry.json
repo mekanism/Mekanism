@@ -3,9 +3,10 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "slurry": "mekanism:clean_copper"
+    "id": "mekanism:clean_copper"
   },
   "output": {
-    "item": "mekanism:crystal_copper"
+    "count": 1,
+    "id": "mekanism:crystal_copper"
   }
 }

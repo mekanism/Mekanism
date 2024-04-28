@@ -2,10 +2,10 @@
   "type": "mekanism:activating",
   "input": {
     "amount": 1,
-    "gas": "mekanism:lithium"
+    "id": "mekanism:lithium"
   },
   "output": {
     "amount": 1,
-    "gas": "mekanismgenerators:tritium"
+    "id": "mekanismgenerators:tritium"
   }
 }

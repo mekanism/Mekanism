@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:electric_pump"
-            ]
+            "items": "mekanism:electric_pump"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.pump.description"
     },
     "icon": {
-      "item": "mekanism:electric_pump"
+      "count": 1,
+      "id": "mekanism:electric_pump"
     },
     "title": {
       "translate": "advancements.mekanism.pump.title"

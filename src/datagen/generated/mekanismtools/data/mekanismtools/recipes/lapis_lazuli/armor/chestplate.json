@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     }
   },
   "pattern": [
@@ -12,6 +12,7 @@
     "III"
   ],
   "result": {
-    "item": "mekanismtools:lapis_lazuli_chestplate"
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_chestplate"
   }
 }

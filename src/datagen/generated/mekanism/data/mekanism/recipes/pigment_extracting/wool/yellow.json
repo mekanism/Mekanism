@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:yellow_wool"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/wool"
+        },
+        {
+          "tag": "c:dyed/yellow"
+        }
+      ]
     }
   },
   "output": {
     "amount": 192,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   }
 }

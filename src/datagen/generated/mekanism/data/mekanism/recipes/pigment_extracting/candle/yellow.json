@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:yellow_candle"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/candle"
+        },
+        {
+          "tag": "c:dyed/yellow"
+        }
+      ]
     }
   },
   "output": {
     "amount": 224,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   }
 }

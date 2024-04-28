@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:yellow_carpet"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/carpets"
+        },
+        {
+          "tag": "c:dyed/yellow"
+        }
+      ]
     }
   },
   "output": {
     "amount": 128,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   }
 }

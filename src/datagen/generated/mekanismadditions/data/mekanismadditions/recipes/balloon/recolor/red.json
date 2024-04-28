@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/red"
+      "tag": "c:dyes/red"
     }
   ],
   "result": {
-    "item": "mekanismadditions:red_balloon"
+    "count": 1,
+    "id": "mekanismadditions:red_balloon"
   }
 }

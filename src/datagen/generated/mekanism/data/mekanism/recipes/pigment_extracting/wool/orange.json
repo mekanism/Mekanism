@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:orange_wool"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/wool"
+        },
+        {
+          "tag": "c:dyed/orange"
+        }
+      ]
     }
   },
   "output": {
     "amount": 192,
-    "pigment": "mekanism:orange"
+    "id": "mekanism:orange"
   }
 }

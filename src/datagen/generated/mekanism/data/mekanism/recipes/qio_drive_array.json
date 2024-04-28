@@ -9,10 +9,10 @@
       "tag": "forge:circuits/ultimate"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "I": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "T": {
       "item": "mekanism:teleportation_core"
@@ -24,6 +24,7 @@
     "TIT"
   ],
   "result": {
-    "item": "mekanism:qio_drive_array"
+    "count": 1,
+    "id": "mekanism:qio_drive_array"
   }
 }

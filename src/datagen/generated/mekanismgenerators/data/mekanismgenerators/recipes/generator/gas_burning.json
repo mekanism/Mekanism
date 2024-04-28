@@ -21,6 +21,7 @@
     "OAO"
   ],
   "result": {
-    "item": "mekanismgenerators:gas_burning_generator"
+    "count": 1,
+    "id": "mekanismgenerators:gas_burning_generator"
   }
 }

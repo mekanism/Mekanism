@@ -9,7 +9,7 @@
       "tag": "forge:tools/pickaxes/bronze"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "tag": "forge:tools/shovels/bronze"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:bronze_paxel"
+    "count": 1,
+    "id": "mekanismtools:bronze_paxel"
   }
 }

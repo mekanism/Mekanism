@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 80,
-    "infuse_type": "mekanism:tin"
+    "id": "mekanism:tin"
   }
 }

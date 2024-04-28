@@ -1,6 +1,6 @@
 {
   "values": [
     "#minecraft:stone_crafting_materials",
-    "#forge:cobblestone/normal"
+    "#c:cobblestones/normal"
   ]
 }

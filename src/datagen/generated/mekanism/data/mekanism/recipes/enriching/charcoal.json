@@ -6,6 +6,7 @@
     }
   },
   "output": {
-    "item": "minecraft:charcoal"
+    "count": 1,
+    "id": "minecraft:charcoal"
   }
 }

@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "D": {
-      "tag": "forge:dyes/orange"
+      "tag": "c:dyes/orange"
     },
     "I": {
       "tag": "forge:ingots/lead"
@@ -15,6 +15,7 @@
     "III"
   ],
   "result": {
-    "item": "mekanism:hazmat_gown"
+    "count": 1,
+    "id": "mekanism:hazmat_gown"
   }
 }

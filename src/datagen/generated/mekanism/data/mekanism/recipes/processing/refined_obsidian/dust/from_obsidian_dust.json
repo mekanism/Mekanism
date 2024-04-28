@@ -10,6 +10,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_refined_obsidian"
+    "count": 1,
+    "id": "mekanism:dust_refined_obsidian"
   }
 }

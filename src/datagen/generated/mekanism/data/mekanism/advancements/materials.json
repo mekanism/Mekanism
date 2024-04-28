@@ -24,7 +24,8 @@
       "translate": "advancements.mekanism.materials.description"
     },
     "icon": {
-      "item": "mekanism:ingot_osmium"
+      "count": 1,
+      "id": "mekanism:ingot_osmium"
     },
     "title": {
       "translate": "advancements.mekanism.materials.title"

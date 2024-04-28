@@ -2,7 +2,7 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
     "ingredient": {
@@ -10,6 +10,7 @@
     }
   },
   "output": {
-    "item": "mekanism:shard_copper"
+    "count": 1,
+    "id": "mekanism:shard_copper"
   }
 }

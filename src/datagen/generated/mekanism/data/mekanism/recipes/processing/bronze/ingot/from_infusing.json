@@ -7,11 +7,11 @@
   "itemInput": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:ingot_bronze"
+    "id": "mekanism:ingot_bronze"
   }
 }

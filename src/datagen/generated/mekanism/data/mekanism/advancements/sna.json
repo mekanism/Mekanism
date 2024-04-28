@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:solar_neutron_activator"
-            ]
+            "items": "mekanism:solar_neutron_activator"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.sna.description"
     },
     "icon": {
-      "item": "mekanism:solar_neutron_activator"
+      "count": 1,
+      "id": "mekanism:solar_neutron_activator"
     },
     "title": {
       "translate": "advancements.mekanism.sna.title"

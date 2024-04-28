@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:qio_dashboard"
-            ]
+            "items": "mekanism:qio_dashboard"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.qio_dashboard.description"
     },
     "icon": {
-      "item": "mekanism:qio_dashboard"
+      "count": 1,
+      "id": "mekanism:qio_dashboard"
     },
     "title": {
       "translate": "advancements.mekanism.qio_dashboard.title"

@@ -13,28 +13,18 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_frequencies"
-            },
-            {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_upgrades"
-            },
-            {
-              "function": "mekanism:copy_side_config"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:frequencies",
+                "mekanism:inventory_frequency",
+                "mekanism:upgrades",
+                "mekanism:side_config",
+                "mekanism:ejector",
+                "mekanism:redstone_control"
               ],
               "source": "block_entity"
             }

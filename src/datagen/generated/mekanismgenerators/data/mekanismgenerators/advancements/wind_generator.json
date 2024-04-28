@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismgenerators:wind_generator"
-            ]
+            "items": "mekanismgenerators:wind_generator"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanismgenerators.wind_generator.description"
     },
     "icon": {
-      "item": "mekanismgenerators:wind_generator"
+      "count": 1,
+      "id": "mekanismgenerators:wind_generator"
     },
     "title": {
       "translate": "advancements.mekanismgenerators.wind_generator.title"

@@ -2,16 +2,16 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "tag": "forge:bookshelves"
+      "tag": "c:bookshelves"
     }
   },
   "mainOutput": {
     "count": 6,
-    "item": "minecraft:oak_planks"
+    "id": "minecraft:oak_planks"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
     "count": 3,
-    "item": "minecraft:book"
+    "id": "minecraft:book"
   }
 }

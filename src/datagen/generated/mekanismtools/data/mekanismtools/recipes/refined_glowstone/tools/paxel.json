@@ -9,7 +9,7 @@
       "tag": "forge:tools/pickaxes/refined_glowstone"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "tag": "forge:tools/shovels/refined_glowstone"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:refined_glowstone_paxel"
+    "count": 1,
+    "id": "mekanismtools:refined_glowstone_paxel"
   }
 }

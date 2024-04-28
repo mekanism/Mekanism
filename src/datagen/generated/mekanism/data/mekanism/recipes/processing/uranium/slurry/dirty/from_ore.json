@@ -2,7 +2,7 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   },
   "itemInput": {
     "ingredient": {
@@ -12,6 +12,6 @@
   "output": {
     "amount": 1000,
     "chemicalType": "slurry",
-    "slurry": "mekanism:dirty_uranium"
+    "id": "mekanism:dirty_uranium"
   }
 }

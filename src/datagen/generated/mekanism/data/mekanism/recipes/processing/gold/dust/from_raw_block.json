@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:storage_blocks/raw_gold"
+      "tag": "c:storage_blocks/raw_gold"
     }
   },
   "output": {
     "count": 12,
-    "item": "mekanism:dust_gold"
+    "id": "mekanism:dust_gold"
   }
 }

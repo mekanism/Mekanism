@@ -2,14 +2,14 @@
   "type": "mekanism:pigment_mixing",
   "leftInput": {
     "amount": 1,
-    "pigment": "mekanism:light_blue"
+    "id": "mekanism:light_blue"
   },
   "output": {
     "amount": 2,
-    "pigment": "mekanism:magenta"
+    "id": "mekanism:magenta"
   },
   "rightInput": {
     "amount": 1,
-    "pigment": "mekanism:red"
+    "id": "mekanism:red"
   }
 }

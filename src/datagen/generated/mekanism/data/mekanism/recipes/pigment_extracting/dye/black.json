@@ -2,11 +2,11 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   },
   "output": {
     "amount": 256,
-    "pigment": "mekanism:black"
+    "id": "mekanism:black"
   }
 }

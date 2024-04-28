@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "pigment": "mekanism:gray"
+    "id": "mekanism:gray"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:gray_plastic_transparent"
+    "count": 1,
+    "id": "mekanismadditions:gray_plastic_transparent"
   }
 }

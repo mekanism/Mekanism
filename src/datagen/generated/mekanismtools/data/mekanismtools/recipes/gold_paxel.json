@@ -9,7 +9,7 @@
       "item": "minecraft:golden_pickaxe"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "item": "minecraft:golden_shovel"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:gold_paxel"
+    "count": 1,
+    "id": "mekanismtools:gold_paxel"
   }
 }

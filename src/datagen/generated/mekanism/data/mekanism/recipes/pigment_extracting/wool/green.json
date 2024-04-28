@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:green_wool"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/wool"
+        },
+        {
+          "tag": "c:dyed/green"
+        }
+      ]
     }
   },
   "output": {
     "amount": 192,
-    "pigment": "mekanism:green"
+    "id": "mekanism:green"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:painting_machine"
-            ]
+            "items": "mekanism:painting_machine"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.painting_machine.description"
     },
     "icon": {
-      "item": "mekanism:painting_machine"
+      "count": 1,
+      "id": "mekanism:painting_machine"
     },
     "title": {
       "translate": "advancements.mekanism.painting_machine.title"

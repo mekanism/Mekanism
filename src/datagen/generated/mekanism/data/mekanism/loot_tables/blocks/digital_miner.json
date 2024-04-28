@@ -8,72 +8,31 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_upgrades"
-            },
-            {
-              "function": "mekanism:copy_filters"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
               "function": "mekanism:copy_containers",
               "types": [
-                "mekanism:energy_containers",
-                "mekanism:inventory_slots"
+                "mekanism:energy",
+                "mekanism:items"
               ]
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                },
-                {
-                  "source": "eject",
-                  "target": "mekanism:eject"
-                },
-                {
-                  "source": "inverse",
-                  "target": "mekanism:inverse"
-                },
-                {
-                  "source": "inverseReplace",
-                  "target": "mekanism:inverse_replace"
-                },
-                {
-                  "source": "max",
-                  "target": "mekanism:max_y"
-                },
-                {
-                  "source": "min",
-                  "target": "mekanism:min_y"
-                },
-                {
-                  "source": "overflow",
-                  "target": "mekanism:overflow"
-                },
-                {
-                  "source": "pull",
-                  "target": "mekanism:pull"
-                },
-                {
-                  "source": "radius",
-                  "target": "mekanism:radius"
-                },
-                {
-                  "source": "replaceStack",
-                  "target": "mekanism:replace_stack"
-                },
-                {
-                  "source": "silkTouch",
-                  "target": "mekanism:silk_touch"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:radius",
+                "mekanism:inverse_replace",
+                "mekanism:silk_touch",
+                "mekanism:replace_stack",
+                "mekanism:upgrades",
+                "mekanism:eject",
+                "mekanism:max_y",
+                "mekanism:overflow",
+                "mekanism:redstone_control",
+                "mekanism:inverse",
+                "mekanism:pull",
+                "mekanism:min_y"
               ],
               "source": "block_entity"
             }

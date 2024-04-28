@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/blue"
+      "tag": "c:dyes/blue"
     }
   ],
   "result": {
-    "item": "mekanismadditions:blue_balloon"
+    "count": 1,
+    "id": "mekanismadditions:blue_balloon"
   }
 }

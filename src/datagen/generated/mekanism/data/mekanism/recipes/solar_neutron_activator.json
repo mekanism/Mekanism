@@ -24,6 +24,7 @@
     "III"
   ],
   "result": {
-    "item": "mekanism:solar_neutron_activator"
+    "count": 1,
+    "id": "mekanism:solar_neutron_activator"
   }
 }

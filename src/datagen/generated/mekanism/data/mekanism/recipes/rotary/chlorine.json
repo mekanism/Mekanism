@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:chlorine"
+    "id": "mekanism:chlorine"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:chlorine"
+    "id": "mekanism:chlorine"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:chlorine"
+    "id": "mekanism:chlorine"
   }
 }

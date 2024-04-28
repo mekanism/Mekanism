@@ -13,36 +13,18 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_frequencies"
-            },
-            {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_upgrades"
-            },
-            {
-              "function": "mekanism:copy_filters"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "auto",
-                  "target": "mekanism:auto"
-                },
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                },
-                {
-                  "source": "roundRobin",
-                  "target": "mekanism:round_robin"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:frequencies",
+                "mekanism:qio_frequency",
+                "mekanism:upgrades",
+                "mekanism:redstone_control",
+                "mekanism:auto",
+                "mekanism:round_robin"
               ],
               "source": "block_entity"
             }

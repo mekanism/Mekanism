@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:pellet_antimatter"
-            ]
+            "items": "mekanism:pellet_antimatter"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.antimatter.description"
     },
     "icon": {
-      "item": "mekanism:pellet_antimatter"
+      "count": 1,
+      "id": "mekanism:pellet_antimatter"
     },
     "title": {
       "translate": "advancements.mekanism.antimatter.title"

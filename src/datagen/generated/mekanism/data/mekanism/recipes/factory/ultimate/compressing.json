@@ -9,7 +9,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "P": {
       "item": "mekanism:elite_compressing_factory"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:ultimate_compressing_factory"
+    "count": 1,
+    "id": "mekanism:ultimate_compressing_factory"
   }
 }

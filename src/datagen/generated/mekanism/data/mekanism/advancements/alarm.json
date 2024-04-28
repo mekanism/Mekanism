@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:industrial_alarm"
-            ]
+            "items": "mekanism:industrial_alarm"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.alarm.description"
     },
     "icon": {
-      "item": "mekanism:industrial_alarm"
+      "count": 1,
+      "id": "mekanism:industrial_alarm"
     },
     "title": {
       "translate": "advancements.mekanism.alarm.title"

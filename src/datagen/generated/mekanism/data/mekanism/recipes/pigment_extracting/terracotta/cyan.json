@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:cyan_terracotta"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/terracotta"
+        },
+        {
+          "tag": "c:dyed/cyan"
+        }
+      ]
     }
   },
   "output": {
     "amount": 24,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   }
 }

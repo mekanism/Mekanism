@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:configurator"
-            ]
+            "items": "mekanism:configurator"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.configurator.description"
     },
     "icon": {
-      "item": "mekanism:configurator"
+      "count": 1,
+      "id": "mekanism:configurator"
     },
     "title": {
       "translate": "advancements.mekanism.configurator.title"

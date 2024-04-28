@@ -7,10 +7,10 @@
   },
   "leftGasOutput": {
     "amount": 2,
-    "gas": "mekanismgenerators:deuterium"
+    "id": "mekanismgenerators:deuterium"
   },
   "rightGasOutput": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   }
 }

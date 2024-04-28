@@ -55,7 +55,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:basic_smelting_factory"
+      "count": 1,
+      "id": "mekanism:basic_smelting_factory"
     },
     "title": {
       "translate": "advancements.mekanism.factory.title"

@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass_panes/cyan"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_panes"
+        },
+        {
+          "tag": "c:dyed/cyan"
+        }
+      ]
     }
   },
   "output": {
     "amount": 6,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   }
 }

@@ -12,8 +12,11 @@
     },
     "hidden": true,
     "icon": {
-      "item": "mekanism:robit",
-      "neoforge:attachments": "{\"mekanism:robit_skin\":\"mekanism:trans\"}"
+      "components": {
+        "mekanism:robit_skin": "mekanism:trans"
+      },
+      "count": 1,
+      "id": "mekanism:robit"
     },
     "title": {
       "translate": "advancements.mekanism.robit_aesthetics.title"

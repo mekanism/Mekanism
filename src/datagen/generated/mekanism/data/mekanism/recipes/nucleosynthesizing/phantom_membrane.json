@@ -3,14 +3,15 @@
   "duration": 750,
   "gasInput": {
     "amount": 3,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:leather"
+      "tag": "c:leather"
     }
   },
   "output": {
-    "item": "minecraft:phantom_membrane"
+    "count": 1,
+    "id": "minecraft:phantom_membrane"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismgenerators:heat_generator"
-            ]
+            "items": "mekanismgenerators:heat_generator"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanismgenerators.heat_generator.description"
     },
     "icon": {
-      "item": "mekanismgenerators:heat_generator"
+      "count": 1,
+      "id": "mekanismgenerators:heat_generator"
     },
     "title": {
       "translate": "advancements.mekanismgenerators.heat_generator.title"

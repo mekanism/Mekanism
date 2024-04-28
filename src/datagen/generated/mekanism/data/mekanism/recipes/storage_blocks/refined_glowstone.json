@@ -15,6 +15,7 @@
     "###"
   ],
   "result": {
-    "item": "mekanism:block_refined_glowstone"
+    "count": 1,
+    "id": "mekanism:block_refined_glowstone"
   }
 }

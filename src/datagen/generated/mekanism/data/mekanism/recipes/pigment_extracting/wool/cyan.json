@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:cyan_wool"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/wool"
+        },
+        {
+          "tag": "c:dyed/cyan"
+        }
+      ]
     }
   },
   "output": {
     "amount": 192,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   }
 }

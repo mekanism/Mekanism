@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 2,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   }
 }

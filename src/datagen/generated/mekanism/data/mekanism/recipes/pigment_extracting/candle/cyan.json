@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:cyan_candle"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/candle"
+        },
+        {
+          "tag": "c:dyed/cyan"
+        }
+      ]
     }
   },
   "output": {
     "amount": 224,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   }
 }

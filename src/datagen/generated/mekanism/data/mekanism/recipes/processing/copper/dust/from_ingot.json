@@ -2,10 +2,11 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "output": {
-    "item": "mekanism:dust_copper"
+    "count": 1,
+    "id": "mekanism:dust_copper"
   }
 }

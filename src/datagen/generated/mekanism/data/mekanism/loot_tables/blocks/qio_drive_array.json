@@ -8,18 +8,20 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_frequencies"
-            },
-            {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "type": "mekanism:inventory_slots",
+              "type": "mekanism:items",
               "function": "mekanism:copy_containers"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:frequencies",
+                "mekanism:qio_frequency"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:qio_drive_array"

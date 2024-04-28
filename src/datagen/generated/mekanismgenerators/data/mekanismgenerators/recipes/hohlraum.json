@@ -11,6 +11,7 @@
     }
   },
   "output": {
-    "item": "mekanismgenerators:hohlraum"
+    "count": 1,
+    "id": "mekanismgenerators:hohlraum"
   }
 }

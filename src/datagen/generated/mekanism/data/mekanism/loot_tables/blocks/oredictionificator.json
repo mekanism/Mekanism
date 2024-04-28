@@ -8,29 +8,19 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_side_config"
-            },
-            {
-              "function": "mekanism:copy_filters"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "type": "mekanism:inventory_slots",
+              "type": "mekanism:items",
               "function": "mekanism:copy_containers"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:side_config",
+                "mekanism:ejector",
+                "mekanism:redstone_control"
               ],
               "source": "block_entity"
             }

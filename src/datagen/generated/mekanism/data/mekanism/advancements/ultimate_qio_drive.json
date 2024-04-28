@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:qio_drive_supermassive"
-            ]
+            "items": "mekanism:qio_drive_supermassive"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "mekanism:qio_drive_supermassive"
+      "count": 1,
+      "id": "mekanism:qio_drive_supermassive"
     },
     "title": {
       "translate": "advancements.mekanism.ultimate_qio_drive.title"

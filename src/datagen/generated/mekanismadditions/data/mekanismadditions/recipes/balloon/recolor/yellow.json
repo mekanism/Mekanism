@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/yellow"
+      "tag": "c:dyes/yellow"
     }
   ],
   "result": {
-    "item": "mekanismadditions:yellow_balloon"
+    "count": 1,
+    "id": "mekanismadditions:yellow_balloon"
   }
 }

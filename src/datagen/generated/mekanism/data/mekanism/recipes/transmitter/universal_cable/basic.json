@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -14,6 +14,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "mekanism:basic_universal_cable"
+    "id": "mekanism:basic_universal_cable"
   }
 }

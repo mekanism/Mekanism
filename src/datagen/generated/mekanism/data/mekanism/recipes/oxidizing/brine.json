@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 15,
-    "gas": "mekanism:brine"
+    "id": "mekanism:brine"
   }
 }

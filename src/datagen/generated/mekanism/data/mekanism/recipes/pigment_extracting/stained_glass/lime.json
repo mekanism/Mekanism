@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass/lime"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/cheap"
+        },
+        {
+          "tag": "c:dyed/lime"
+        }
+      ]
     }
   },
   "output": {
     "amount": 16,
-    "pigment": "mekanism:lime"
+    "id": "mekanism:lime"
   }
 }

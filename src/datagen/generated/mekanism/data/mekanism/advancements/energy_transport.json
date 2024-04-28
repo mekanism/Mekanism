@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_universal_cable"
-            ]
+            "items": "mekanism:basic_universal_cable"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.energy_transport.description"
     },
     "icon": {
-      "item": "mekanism:basic_universal_cable"
+      "count": 1,
+      "id": "mekanism:basic_universal_cable"
     },
     "title": {
       "translate": "advancements.mekanism.energy_transport.title"

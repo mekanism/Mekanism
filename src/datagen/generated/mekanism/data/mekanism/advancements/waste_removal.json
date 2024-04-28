@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:radioactive_waste_barrel"
-            ]
+            "items": "mekanism:radioactive_waste_barrel"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.waste_removal.description"
     },
     "icon": {
-      "item": "mekanism:radioactive_waste_barrel"
+      "count": 1,
+      "id": "mekanism:radioactive_waste_barrel"
     },
     "title": {
       "translate": "advancements.mekanism.waste_removal.title"

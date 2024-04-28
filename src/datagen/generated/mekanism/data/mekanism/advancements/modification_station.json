@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:modification_station"
-            ]
+            "items": "mekanism:modification_station"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.modification_station.description"
     },
     "icon": {
-      "item": "mekanism:modification_station"
+      "count": 1,
+      "id": "mekanism:modification_station"
     },
     "title": {
       "translate": "advancements.mekanism.modification_station.title"

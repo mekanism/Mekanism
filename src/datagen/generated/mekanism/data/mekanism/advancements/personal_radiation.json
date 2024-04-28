@@ -4,9 +4,7 @@
     "use_dosimeter": {
       "conditions": {
         "item": {
-          "items": [
-            "mekanism:dosimeter"
-          ]
+          "items": "mekanism:dosimeter"
         }
       },
       "trigger": "minecraft:using_item"
@@ -18,7 +16,8 @@
       "translate": "advancements.mekanism.personal_radiation.description"
     },
     "icon": {
-      "item": "mekanism:dosimeter"
+      "count": 1,
+      "id": "mekanism:dosimeter"
     },
     "title": {
       "translate": "advancements.mekanism.personal_radiation.title"

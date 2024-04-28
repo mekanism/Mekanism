@@ -12,7 +12,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:atomic_disassembler"
+      "count": 1,
+      "id": "mekanism:atomic_disassembler"
     },
     "show_toast": false,
     "title": {

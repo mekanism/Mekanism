@@ -12,6 +12,6 @@
   },
   "output": {
     "amount": 768,
-    "pigment": "mekanism:blue"
+    "id": "mekanism:blue"
   }
 }

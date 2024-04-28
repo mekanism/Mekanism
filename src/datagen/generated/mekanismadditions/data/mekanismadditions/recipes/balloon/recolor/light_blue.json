@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   ],
   "result": {
-    "item": "mekanismadditions:light_blue_balloon"
+    "count": 1,
+    "id": "mekanismadditions:light_blue_balloon"
   }
 }

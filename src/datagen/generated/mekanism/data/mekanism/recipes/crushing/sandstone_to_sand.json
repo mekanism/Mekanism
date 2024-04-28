@@ -18,6 +18,6 @@
   },
   "output": {
     "count": 2,
-    "item": "minecraft:sand"
+    "id": "minecraft:sand"
   }
 }

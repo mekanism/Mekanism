@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 10,
-    "infuse_type": "mekanism:refined_obsidian"
+    "id": "mekanism:refined_obsidian"
   }
 }

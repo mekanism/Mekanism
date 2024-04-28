@@ -6,10 +6,10 @@
   },
   "leftGasOutput": {
     "amount": 1,
-    "gas": "mekanism:sodium"
+    "id": "mekanism:sodium"
   },
   "rightGasOutput": {
     "amount": 1,
-    "gas": "mekanism:chlorine"
+    "id": "mekanism:chlorine"
   }
 }

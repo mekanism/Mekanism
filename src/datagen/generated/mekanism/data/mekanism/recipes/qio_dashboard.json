@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "I": {
       "tag": "forge:ingots/lead"
@@ -21,6 +21,7 @@
     "ITI"
   ],
   "result": {
-    "item": "mekanism:qio_dashboard"
+    "count": 1,
+    "id": "mekanism:qio_dashboard"
   }
 }

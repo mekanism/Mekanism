@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:gray_concrete_powder"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/concrete_powder"
+        },
+        {
+          "tag": "c:dyed/gray"
+        }
+      ]
     }
   },
   "output": {
     "amount": 32,
-    "pigment": "mekanism:gray"
+    "id": "mekanism:gray"
   }
 }

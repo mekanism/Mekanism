@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -21,6 +21,7 @@
     "RCR"
   ],
   "result": {
-    "item": "mekanism:pigment_extractor"
+    "count": 1,
+    "id": "mekanism:pigment_extractor"
   }
 }

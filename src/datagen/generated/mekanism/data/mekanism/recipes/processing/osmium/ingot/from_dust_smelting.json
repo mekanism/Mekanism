@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/osmium"
   },
-  "result": "mekanism:ingot_osmium"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_osmium"
+  }
 }

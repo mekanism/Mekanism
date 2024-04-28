@@ -5,24 +5,16 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:hazmat_mask"
-            ]
+            "items": "mekanism:hazmat_mask"
           },
           {
-            "items": [
-              "mekanism:hazmat_gown"
-            ]
+            "items": "mekanism:hazmat_gown"
           },
           {
-            "items": [
-              "mekanism:hazmat_pants"
-            ]
+            "items": "mekanism:hazmat_pants"
           },
           {
-            "items": [
-              "mekanism:hazmat_boots"
-            ]
+            "items": "mekanism:hazmat_boots"
           }
         ]
       },
@@ -34,7 +26,8 @@
       "translate": "advancements.mekanism.radiation_prevention.description"
     },
     "icon": {
-      "item": "mekanism:hazmat_gown"
+      "count": 1,
+      "id": "mekanism:hazmat_gown"
     },
     "title": {
       "translate": "advancements.mekanism.radiation_prevention.title"

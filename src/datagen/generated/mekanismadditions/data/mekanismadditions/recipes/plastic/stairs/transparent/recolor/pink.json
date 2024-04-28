@@ -12,7 +12,7 @@
       }
     },
     "D": {
-      "tag": "forge:dyes/pink"
+      "tag": "c:dyes/pink"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "mekanismadditions:pink_plastic_transparent_stairs"
+    "id": "mekanismadditions:pink_plastic_transparent_stairs"
   }
 }

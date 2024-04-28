@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "mekanism:enriched"
+            "items": "#mekanism:enriched"
           }
         ]
       },
@@ -17,7 +17,8 @@
       "translate": "advancements.mekanism.infusing_efficiency.description"
     },
     "icon": {
-      "item": "mekanism:enriched_redstone"
+      "count": 1,
+      "id": "mekanism:enriched_redstone"
     },
     "title": {
       "translate": "advancements.mekanism.infusing_efficiency.title"

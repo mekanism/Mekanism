@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:cyan_plastic_fence_gate"
+    "count": 1,
+    "id": "mekanismadditions:cyan_plastic_fence_gate"
   }
 }

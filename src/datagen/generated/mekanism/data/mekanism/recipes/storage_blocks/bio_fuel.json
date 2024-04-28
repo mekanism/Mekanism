@@ -15,6 +15,7 @@
     "###"
   ],
   "result": {
-    "item": "mekanism:block_bio_fuel"
+    "count": 1,
+    "id": "mekanism:block_bio_fuel"
   }
 }

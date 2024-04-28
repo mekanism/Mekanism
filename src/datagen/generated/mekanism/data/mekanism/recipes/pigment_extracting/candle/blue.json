@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:blue_candle"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/candle"
+        },
+        {
+          "tag": "c:dyed/blue"
+        }
+      ]
     }
   },
   "output": {
     "amount": 224,
-    "pigment": "mekanism:blue"
+    "id": "mekanism:blue"
   }
 }

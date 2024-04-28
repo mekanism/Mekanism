@@ -6,10 +6,11 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "output": {
-    "item": "mekanism:enriched_iron"
+    "count": 1,
+    "id": "mekanism:enriched_iron"
   }
 }

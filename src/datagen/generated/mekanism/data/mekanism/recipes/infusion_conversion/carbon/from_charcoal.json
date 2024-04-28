@@ -12,6 +12,6 @@
   },
   "output": {
     "amount": 20,
-    "infuse_type": "mekanism:carbon"
+    "id": "mekanism:carbon"
   }
 }

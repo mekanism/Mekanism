@@ -9,7 +9,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "P": {
       "item": "mekanism:steel_casing"
@@ -21,6 +21,7 @@
     "AEA"
   ],
   "result": {
-    "item": "mekanism:basic_energy_cube"
+    "count": 1,
+    "id": "mekanism:basic_energy_cube"
   }
 }

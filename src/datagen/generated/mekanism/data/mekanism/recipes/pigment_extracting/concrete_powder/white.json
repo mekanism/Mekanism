@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:white_concrete_powder"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/concrete_powder"
+        },
+        {
+          "tag": "c:dyed/white"
+        }
+      ]
     }
   },
   "output": {
     "amount": 32,
-    "pigment": "mekanism:white"
+    "id": "mekanism:white"
   }
 }

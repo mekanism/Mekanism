@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:network_reader"
-            ]
+            "items": "mekanism:network_reader"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.network_reader.description"
     },
     "icon": {
-      "item": "mekanism:network_reader"
+      "count": 1,
+      "id": "mekanism:network_reader"
     },
     "title": {
       "translate": "advancements.mekanism.network_reader.title"

@@ -2,10 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "output": {
-    "item": "mekanism:enriched_redstone"
+    "count": 1,
+    "id": "mekanism:enriched_redstone"
   }
 }

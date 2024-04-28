@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/redstone"
+      "tag": "c:ores/redstone"
     }
   },
   "output": {
     "count": 12,
-    "item": "minecraft:redstone"
+    "id": "minecraft:redstone"
   }
 }

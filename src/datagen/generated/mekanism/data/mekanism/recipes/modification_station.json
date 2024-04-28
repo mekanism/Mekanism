@@ -12,7 +12,7 @@
       "item": "mekanism:hdpe_sheet"
     },
     "W": {
-      "tag": "forge:chests/wooden"
+      "tag": "c:chests/wooden"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -24,6 +24,7 @@
     "PAP"
   ],
   "result": {
-    "item": "mekanism:modification_station"
+    "count": 1,
+    "id": "mekanism:modification_station"
   }
 }

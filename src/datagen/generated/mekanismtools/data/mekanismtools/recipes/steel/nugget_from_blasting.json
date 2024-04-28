@@ -35,5 +35,8 @@
       "item": "mekanismtools:steel_paxel"
     }
   ],
-  "result": "mekanism:nugget_steel"
+  "result": {
+    "count": 1,
+    "id": "mekanism:nugget_steel"
+  }
 }

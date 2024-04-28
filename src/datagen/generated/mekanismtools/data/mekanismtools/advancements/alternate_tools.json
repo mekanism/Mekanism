@@ -49,8 +49,8 @@
       "translate": "advancements.mekanismtools.alternate_tools.description"
     },
     "icon": {
-      "item": "mekanismtools:osmium_pickaxe",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "mekanismtools:osmium_pickaxe"
     },
     "title": {
       "translate": "advancements.mekanismtools.alternate_tools.title"

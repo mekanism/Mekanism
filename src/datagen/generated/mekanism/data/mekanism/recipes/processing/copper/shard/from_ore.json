@@ -2,15 +2,15 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ores/copper"
+      "tag": "c:ores/copper"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:shard_copper"
+    "id": "mekanism:shard_copper"
   }
 }

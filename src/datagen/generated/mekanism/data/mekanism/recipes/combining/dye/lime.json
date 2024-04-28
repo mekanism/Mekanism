@@ -2,16 +2,16 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:dyes/white"
+      "tag": "c:dyes/white"
     }
   },
   "mainInput": {
     "ingredient": {
-      "tag": "forge:dyes/green"
+      "tag": "c:dyes/green"
     }
   },
   "output": {
     "count": 4,
-    "item": "minecraft:lime_dye"
+    "id": "minecraft:lime_dye"
   }
 }

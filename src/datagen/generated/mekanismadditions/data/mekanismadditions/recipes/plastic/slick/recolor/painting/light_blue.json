@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:light_blue"
+    "id": "mekanism:light_blue"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:light_blue_slick_plastic"
+    "count": 1,
+    "id": "mekanismadditions:light_blue_slick_plastic"
   }
 }

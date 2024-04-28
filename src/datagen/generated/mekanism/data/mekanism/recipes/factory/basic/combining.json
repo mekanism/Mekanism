@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "P": {
       "item": "mekanism:combiner"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:basic_combining_factory"
+    "count": 1,
+    "id": "mekanism:basic_combining_factory"
   }
 }

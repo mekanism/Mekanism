@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "mekanismadditions:glow_panels"
+            "items": "#mekanismadditions:glow_panels"
           }
         ]
       },
@@ -18,7 +18,8 @@
       "translate": "advancements.mekanismadditions.glow_in_the_dark.description"
     },
     "icon": {
-      "item": "mekanismadditions:orange_glow_panel"
+      "count": 1,
+      "id": "mekanismadditions:orange_glow_panel"
     },
     "title": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.title"

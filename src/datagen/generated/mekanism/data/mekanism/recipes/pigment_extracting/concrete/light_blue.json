@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:light_blue_concrete"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/concrete"
+        },
+        {
+          "tag": "c:dyed/light_blue"
+        }
+      ]
     }
   },
   "output": {
     "amount": 24,
-    "pigment": "mekanism:light_blue"
+    "id": "mekanism:light_blue"
   }
 }

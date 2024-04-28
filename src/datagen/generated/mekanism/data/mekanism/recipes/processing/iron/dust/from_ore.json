@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/iron"
+      "tag": "c:ores/iron"
     }
   },
   "output": {
     "count": 2,
-    "item": "mekanism:dust_iron"
+    "id": "mekanism:dust_iron"
   }
 }

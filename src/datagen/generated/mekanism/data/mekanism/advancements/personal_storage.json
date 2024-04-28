@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "mekanism:personal_storage"
+            "items": "#mekanism:personal_storage"
           }
         ]
       },
@@ -18,7 +18,8 @@
       "translate": "advancements.mekanism.personal_storage.description"
     },
     "icon": {
-      "item": "mekanism:personal_chest"
+      "count": 1,
+      "id": "mekanism:personal_chest"
     },
     "title": {
       "translate": "advancements.mekanism.personal_storage.title"

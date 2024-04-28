@@ -2,10 +2,11 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:gravel"
+      "tag": "c:gravel"
     }
   },
   "output": {
-    "item": "minecraft:sand"
+    "count": 1,
+    "id": "minecraft:sand"
   }
 }

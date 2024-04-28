@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:cyan_concrete_powder"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/concrete_powder"
+        },
+        {
+          "tag": "c:dyed/cyan"
+        }
+      ]
     }
   },
   "output": {
     "amount": 32,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   }
 }

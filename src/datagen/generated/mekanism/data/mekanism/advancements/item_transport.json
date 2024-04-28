@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_logistical_transporter"
-            ]
+            "items": "mekanism:basic_logistical_transporter"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.item_transport.description"
     },
     "icon": {
-      "item": "mekanism:basic_logistical_transporter"
+      "count": 1,
+      "id": "mekanism:basic_logistical_transporter"
     },
     "title": {
       "translate": "advancements.mekanism.item_transport.title"

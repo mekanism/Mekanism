@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass/black"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/cheap"
+        },
+        {
+          "tag": "c:dyed/black"
+        }
+      ]
     }
   },
   "output": {
     "amount": 16,
-    "pigment": "mekanism:black"
+    "id": "mekanism:black"
   }
 }

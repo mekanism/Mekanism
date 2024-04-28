@@ -6,7 +6,7 @@
       "item": "mekanism:hdpe_sheet"
     },
     "D": {
-      "tag": "forge:dyes/white"
+      "tag": "c:dyes/white"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:white_plastic"
+    "id": "mekanismadditions:white_plastic"
   }
 }

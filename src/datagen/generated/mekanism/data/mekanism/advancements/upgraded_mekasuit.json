@@ -5,24 +5,39 @@
       "conditions": {
         "items": [
           {
-            "type": "mekanism:maxed_module_container",
-            "item": "mekanism:mekasuit_helmet"
+            "predicates": {
+              "mekanism:maxed_module_container": {
+                "item": "mekanism:mekasuit_helmet"
+              }
+            }
           },
           {
-            "type": "mekanism:maxed_module_container",
-            "item": "mekanism:mekasuit_bodyarmor"
+            "predicates": {
+              "mekanism:maxed_module_container": {
+                "item": "mekanism:mekasuit_bodyarmor"
+              }
+            }
           },
           {
-            "type": "mekanism:maxed_module_container",
-            "item": "mekanism:mekasuit_pants"
+            "predicates": {
+              "mekanism:maxed_module_container": {
+                "item": "mekanism:mekasuit_pants"
+              }
+            }
           },
           {
-            "type": "mekanism:maxed_module_container",
-            "item": "mekanism:mekasuit_boots"
+            "predicates": {
+              "mekanism:maxed_module_container": {
+                "item": "mekanism:mekasuit_boots"
+              }
+            }
           },
           {
-            "type": "mekanism:maxed_module_container",
-            "item": "mekanism:meka_tool"
+            "predicates": {
+              "mekanism:maxed_module_container": {
+                "item": "mekanism:meka_tool"
+              }
+            }
           }
         ]
       },
@@ -36,7 +51,8 @@
     "frame": "challenge",
     "hidden": true,
     "icon": {
-      "item": "mekanism:mekasuit_bodyarmor"
+      "count": 1,
+      "id": "mekanism:mekasuit_bodyarmor"
     },
     "title": {
       "translate": "advancements.mekanism.upgraded_mekasuit.title"

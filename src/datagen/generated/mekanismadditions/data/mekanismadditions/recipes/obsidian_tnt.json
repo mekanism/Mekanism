@@ -3,7 +3,7 @@
   "category": "redstone",
   "key": {
     "O": {
-      "tag": "forge:obsidian"
+      "tag": "c:obsidians"
     },
     "T": {
       "item": "minecraft:tnt"
@@ -15,6 +15,7 @@
     "OOO"
   ],
   "result": {
-    "item": "mekanismadditions:obsidian_tnt"
+    "count": 1,
+    "id": "mekanismadditions:obsidian_tnt"
   }
 }

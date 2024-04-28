@@ -6,13 +6,13 @@
       "tag": "mekanism:alloys/infused"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "O": {
       "tag": "forge:ingots/osmium"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "OOO"
   ],
   "result": {
-    "item": "mekanismgenerators:solar_panel"
+    "count": 1,
+    "id": "mekanismgenerators:solar_panel"
   }
 }

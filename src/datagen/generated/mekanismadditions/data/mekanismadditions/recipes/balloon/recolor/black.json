@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   ],
   "result": {
-    "item": "mekanismadditions:black_balloon"
+    "count": 1,
+    "id": "mekanismadditions:black_balloon"
   }
 }

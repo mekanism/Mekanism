@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:fluidic_plenisher"
-            ]
+            "items": "mekanism:fluidic_plenisher"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.plenisher.description"
     },
     "icon": {
-      "item": "mekanism:fluidic_plenisher"
+      "count": 1,
+      "id": "mekanism:fluidic_plenisher"
     },
     "title": {
       "translate": "advancements.mekanism.plenisher.title"

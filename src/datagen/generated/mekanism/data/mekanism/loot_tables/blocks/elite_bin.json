@@ -8,7 +8,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "type": "mekanism:inventory_slots",
+              "type": "mekanism:items",
               "function": "mekanism:copy_containers"
             }
           ],

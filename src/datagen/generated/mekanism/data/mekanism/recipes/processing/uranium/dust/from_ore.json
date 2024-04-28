@@ -7,6 +7,6 @@
   },
   "output": {
     "count": 2,
-    "item": "mekanism:dust_uranium"
+    "id": "mekanism:dust_uranium"
   }
 }

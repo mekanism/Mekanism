@@ -7,6 +7,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_charcoal"
+    "count": 1,
+    "id": "mekanism:dust_charcoal"
   }
 }

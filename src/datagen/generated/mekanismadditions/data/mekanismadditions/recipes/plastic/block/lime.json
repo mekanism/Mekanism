@@ -6,7 +6,7 @@
       "item": "mekanism:hdpe_sheet"
     },
     "D": {
-      "tag": "forge:dyes/lime"
+      "tag": "c:dyes/lime"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:lime_plastic"
+    "id": "mekanismadditions:lime_plastic"
   }
 }

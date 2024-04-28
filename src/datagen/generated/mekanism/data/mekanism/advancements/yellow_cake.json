@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:yellow_cake_uranium"
-            ]
+            "items": "mekanism:yellow_cake_uranium"
           }
         ]
       },
@@ -21,7 +19,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:yellow_cake_uranium"
+      "count": 1,
+      "id": "mekanism:yellow_cake_uranium"
     },
     "title": {
       "translate": "advancements.mekanism.yellow_cake.title"

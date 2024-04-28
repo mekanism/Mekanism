@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:precision_sawmill"
-            ]
+            "items": "mekanism:precision_sawmill"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.sawmill.description"
     },
     "icon": {
-      "item": "mekanism:precision_sawmill"
+      "count": 1,
+      "id": "mekanism:precision_sawmill"
     },
     "title": {
       "translate": "advancements.mekanism.sawmill.title"

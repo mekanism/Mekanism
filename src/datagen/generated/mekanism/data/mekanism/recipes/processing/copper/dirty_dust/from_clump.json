@@ -6,6 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dirty_dust_copper"
+    "count": 1,
+    "id": "mekanism:dirty_dust_copper"
   }
 }

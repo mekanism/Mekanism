@@ -2,16 +2,16 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/gold"
+      "tag": "c:raw_materials/gold"
     }
   },
   "output": {
     "count": 8,
-    "item": "mekanism:shard_gold"
+    "id": "mekanism:shard_gold"
   }
 }

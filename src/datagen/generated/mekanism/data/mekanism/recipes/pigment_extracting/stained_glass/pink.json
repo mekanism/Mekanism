@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass/pink"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/cheap"
+        },
+        {
+          "tag": "c:dyed/pink"
+        }
+      ]
     }
   },
   "output": {
     "amount": 16,
-    "pigment": "mekanism:pink"
+    "id": "mekanism:pink"
   }
 }

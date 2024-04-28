@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/green"
+      "tag": "c:dyes/green"
     }
   ],
   "result": {
-    "item": "mekanismadditions:green_balloon"
+    "count": 1,
+    "id": "mekanismadditions:green_balloon"
   }
 }

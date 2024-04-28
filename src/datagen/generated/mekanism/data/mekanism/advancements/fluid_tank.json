@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_fluid_tank"
-            ]
+            "items": "mekanism:basic_fluid_tank"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.fluid_tank.description"
     },
     "icon": {
-      "item": "mekanism:basic_fluid_tank"
+      "count": 1,
+      "id": "mekanism:basic_fluid_tank"
     },
     "title": {
       "translate": "advancements.mekanism.fluid_tank.title"

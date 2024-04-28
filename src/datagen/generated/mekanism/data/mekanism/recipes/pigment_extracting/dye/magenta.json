@@ -2,11 +2,11 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   },
   "output": {
     "amount": 256,
-    "pigment": "mekanism:magenta"
+    "id": "mekanism:magenta"
   }
 }

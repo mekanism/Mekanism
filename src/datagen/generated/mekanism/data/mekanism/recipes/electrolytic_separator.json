@@ -9,10 +9,10 @@
       "tag": "mekanism:alloys/infused"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "IRI"
   ],
   "result": {
-    "item": "mekanism:electrolytic_separator"
+    "count": 1,
+    "id": "mekanism:electrolytic_separator"
   }
 }

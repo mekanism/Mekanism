@@ -2,11 +2,11 @@
   "type": "mekanism:infusion_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:storage_blocks/redstone"
+      "tag": "c:storage_blocks/redstone"
     }
   },
   "output": {
     "amount": 90,
-    "infuse_type": "mekanism:redstone"
+    "id": "mekanism:redstone"
   }
 }

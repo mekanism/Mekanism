@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:glass_panes/red"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_panes"
+        },
+        {
+          "tag": "c:dyed/red"
+        }
+      ]
     }
   },
   "output": {
     "amount": 6,
-    "pigment": "mekanism:red"
+    "id": "mekanism:red"
   }
 }

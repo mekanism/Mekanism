@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:storage_blocks/raw_iron"
+      "tag": "c:storage_blocks/raw_iron"
     }
   },
   "output": {
     "count": 12,
-    "item": "mekanism:dust_iron"
+    "id": "mekanism:dust_iron"
   }
 }

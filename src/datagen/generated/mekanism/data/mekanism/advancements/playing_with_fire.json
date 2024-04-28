@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:flamethrower"
-            ]
+            "items": "mekanism:flamethrower"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.playing_with_fire.description"
     },
     "icon": {
-      "item": "mekanism:flamethrower"
+      "count": 1,
+      "id": "mekanism:flamethrower"
     },
     "title": {
       "translate": "advancements.mekanism.playing_with_fire.title"

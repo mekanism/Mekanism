@@ -2,10 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "c:cobblestones/deepslate"
     }
   },
   "output": {
-    "item": "minecraft:deepslate"
+    "count": 1,
+    "id": "minecraft:deepslate"
   }
 }

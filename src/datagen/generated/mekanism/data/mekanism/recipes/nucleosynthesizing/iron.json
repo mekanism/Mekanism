@@ -3,7 +3,7 @@
   "duration": 200,
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   },
   "itemInput": {
     "ingredient": {
@@ -11,6 +11,7 @@
     }
   },
   "output": {
-    "item": "minecraft:iron_ingot"
+    "count": 1,
+    "id": "minecraft:iron_ingot"
   }
 }

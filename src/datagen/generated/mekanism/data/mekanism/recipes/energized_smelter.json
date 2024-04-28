@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:energized_smelter"
+    "count": 1,
+    "id": "mekanism:energized_smelter"
   }
 }

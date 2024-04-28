@@ -6,10 +6,10 @@
       "tag": "forge:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "T": {
       "item": "mekanism:teleportation_core"
@@ -24,6 +24,7 @@
     "ITI"
   ],
   "result": {
-    "item": "mekanism:qio_redstone_adapter"
+    "count": 1,
+    "id": "mekanism:qio_redstone_adapter"
   }
 }

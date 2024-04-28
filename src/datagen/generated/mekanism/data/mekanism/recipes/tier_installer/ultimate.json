@@ -9,7 +9,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "P": {
       "tag": "minecraft:planks"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:ultimate_tier_installer"
+    "count": 1,
+    "id": "mekanism:ultimate_tier_installer"
   }
 }

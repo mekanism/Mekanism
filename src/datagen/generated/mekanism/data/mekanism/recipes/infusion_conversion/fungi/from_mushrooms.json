@@ -3,7 +3,7 @@
   "input": {
     "ingredient": [
       {
-        "tag": "forge:mushrooms"
+        "tag": "c:mushrooms"
       },
       {
         "item": "minecraft:warped_fungus"
@@ -15,6 +15,6 @@
   },
   "output": {
     "amount": 10,
-    "infuse_type": "mekanism:fungi"
+    "id": "mekanism:fungi"
   }
 }

@@ -24,8 +24,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanismtools:refined_obsidian_chestplate",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "mekanismtools:refined_obsidian_chestplate"
     },
     "title": {
       "translate": "advancements.mekanismtools.better_than_netherite.title"

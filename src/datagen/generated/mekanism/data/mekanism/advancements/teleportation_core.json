@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:teleportation_core"
-            ]
+            "items": "mekanism:teleportation_core"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.teleportation_core.description"
     },
     "icon": {
-      "item": "mekanism:teleportation_core"
+      "count": 1,
+      "id": "mekanism:teleportation_core"
     },
     "title": {
       "translate": "advancements.mekanism.teleportation_core.title"

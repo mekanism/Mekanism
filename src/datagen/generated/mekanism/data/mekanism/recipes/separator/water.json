@@ -6,10 +6,10 @@
   },
   "leftGasOutput": {
     "amount": 2,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "rightGasOutput": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   }
 }

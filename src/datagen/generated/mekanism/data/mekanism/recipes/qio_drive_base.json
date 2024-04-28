@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "C": {
       "item": "mekanism:ultimate_control_circuit"
@@ -18,6 +18,7 @@
     "ICI"
   ],
   "result": {
-    "item": "mekanism:qio_drive_base"
+    "count": 1,
+    "id": "mekanism:qio_drive_base"
   }
 }

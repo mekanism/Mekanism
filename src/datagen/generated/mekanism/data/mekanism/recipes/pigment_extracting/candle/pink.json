@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:pink_candle"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/candle"
+        },
+        {
+          "tag": "c:dyed/pink"
+        }
+      ]
     }
   },
   "output": {
     "amount": 224,
-    "pigment": "mekanism:pink"
+    "id": "mekanism:pink"
   }
 }

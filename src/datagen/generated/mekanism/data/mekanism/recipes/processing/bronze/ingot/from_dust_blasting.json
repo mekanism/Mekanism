@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/bronze"
   },
-  "result": "mekanism:ingot_bronze"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_bronze"
+  }
 }

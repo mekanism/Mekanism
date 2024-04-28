@@ -3,14 +3,15 @@
   "duration": 500,
   "gasInput": {
     "amount": 2,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:gems/amethyst"
+      "tag": "c:gems/amethyst"
     }
   },
   "output": {
-    "item": "minecraft:echo_shard"
+    "count": 1,
+    "id": "minecraft:echo_shard"
   }
 }

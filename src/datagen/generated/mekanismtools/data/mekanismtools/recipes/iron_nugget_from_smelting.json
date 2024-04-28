@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "mekanismtools:iron_paxel"
   },
-  "result": "minecraft:iron_nugget"
+  "result": {
+    "count": 1,
+    "id": "minecraft:iron_nugget"
+  }
 }

@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/netherite_scrap"
+      "tag": "c:ores/netherite_scrap"
     }
   },
   "output": {
     "count": 2,
-    "item": "minecraft:netherite_scrap"
+    "id": "minecraft:netherite_scrap"
   }
 }

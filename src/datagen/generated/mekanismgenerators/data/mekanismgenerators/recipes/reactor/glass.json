@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "I": {
       "tag": "forge:ingots/lead"
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismgenerators:reactor_glass"
+    "id": "mekanismgenerators:reactor_glass"
   }
 }

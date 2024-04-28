@@ -2,11 +2,11 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:dyes/lime"
+      "tag": "c:dyes/lime"
     }
   },
   "output": {
     "amount": 256,
-    "pigment": "mekanism:lime"
+    "id": "mekanism:lime"
   }
 }

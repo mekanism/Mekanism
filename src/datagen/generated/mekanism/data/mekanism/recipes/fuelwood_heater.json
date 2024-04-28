@@ -21,6 +21,7 @@
     "SSS"
   ],
   "result": {
-    "item": "mekanism:fuelwood_heater"
+    "count": 1,
+    "id": "mekanism:fuelwood_heater"
   }
 }

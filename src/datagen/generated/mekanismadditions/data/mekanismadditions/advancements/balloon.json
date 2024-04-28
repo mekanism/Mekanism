@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "mekanismadditions:balloons"
+            "items": "#mekanismadditions:balloons"
           }
         ]
       },
@@ -18,7 +18,8 @@
       "translate": "advancements.mekanismadditions.balloon.description"
     },
     "icon": {
-      "item": "mekanismadditions:aqua_balloon"
+      "count": 1,
+      "id": "mekanismadditions:aqua_balloon"
     },
     "title": {
       "translate": "advancements.mekanismadditions.balloon.title"

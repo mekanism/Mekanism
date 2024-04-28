@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/light_gray"
+      "tag": "c:dyes/light_gray"
     }
   ],
   "result": {
-    "item": "mekanismadditions:light_gray_balloon"
+    "count": 1,
+    "id": "mekanismadditions:light_gray_balloon"
   }
 }

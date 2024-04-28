@@ -12,7 +12,7 @@
       }
     },
     "D": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "mekanismadditions:black_plastic_transparent"
+    "id": "mekanismadditions:black_plastic_transparent"
   }
 }

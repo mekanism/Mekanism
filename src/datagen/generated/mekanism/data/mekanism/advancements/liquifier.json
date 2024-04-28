@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:nutritional_liquifier"
-            ]
+            "items": "mekanism:nutritional_liquifier"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.liquifier.description"
     },
     "icon": {
-      "item": "mekanism:nutritional_liquifier"
+      "count": 1,
+      "id": "mekanism:nutritional_liquifier"
     },
     "title": {
       "translate": "advancements.mekanism.liquifier.title"

@@ -2,7 +2,7 @@
   "type": "mekanism:compressing",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:osmium"
+    "id": "mekanism:osmium"
   },
   "itemInput": {
     "ingredient": {
@@ -10,6 +10,7 @@
     }
   },
   "output": {
-    "item": "mekanism:ingot_refined_obsidian"
+    "count": 1,
+    "id": "mekanism:ingot_refined_obsidian"
   }
 }

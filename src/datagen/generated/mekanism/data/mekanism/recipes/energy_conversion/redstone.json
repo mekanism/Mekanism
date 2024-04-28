@@ -2,7 +2,7 @@
   "type": "mekanism:energy_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "output": 10000

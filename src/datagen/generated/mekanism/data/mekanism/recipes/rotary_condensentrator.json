@@ -12,7 +12,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "T": {
       "item": "mekanism:basic_chemical_tank"
@@ -24,6 +24,7 @@
     "GCG"
   ],
   "result": {
-    "item": "mekanism:rotary_condensentrator"
+    "count": 1,
+    "id": "mekanism:rotary_condensentrator"
   }
 }

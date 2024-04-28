@@ -2,11 +2,19 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "minecraft:light_gray_terracotta"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "mekanism:colorable/terracotta"
+        },
+        {
+          "tag": "c:dyed/light_gray"
+        }
+      ]
     }
   },
   "output": {
     "amount": 24,
-    "pigment": "mekanism:light_gray"
+    "id": "mekanism:light_gray"
   }
 }

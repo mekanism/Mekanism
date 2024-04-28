@@ -20,7 +20,8 @@
       "translate": "advancements.mekanism.configuration_copying.description"
     },
     "icon": {
-      "item": "mekanism:configuration_card"
+      "count": 1,
+      "id": "mekanism:configuration_card"
     },
     "title": {
       "translate": "advancements.mekanism.configuration_copying.title"

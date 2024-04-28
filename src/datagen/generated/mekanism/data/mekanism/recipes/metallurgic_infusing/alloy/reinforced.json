@@ -10,6 +10,7 @@
     }
   },
   "output": {
-    "item": "mekanism:alloy_reinforced"
+    "count": 1,
+    "id": "mekanism:alloy_reinforced"
   }
 }

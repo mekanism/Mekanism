@@ -7,11 +7,11 @@
   },
   "gasInput": {
     "amount": 1000,
-    "gas": "mekanism:polonium"
+    "id": "mekanism:polonium"
   },
   "gasOutput": {
     "amount": 1000,
-    "gas": "mekanism:spent_nuclear_waste"
+    "id": "mekanism:spent_nuclear_waste"
   },
   "itemInput": {
     "ingredient": {
@@ -19,6 +19,7 @@
     }
   },
   "itemOutput": {
-    "item": "mekanism:pellet_polonium"
+    "count": 1,
+    "id": "mekanism:pellet_polonium"
   }
 }

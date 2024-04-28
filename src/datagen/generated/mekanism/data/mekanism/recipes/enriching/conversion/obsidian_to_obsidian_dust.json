@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:obsidian"
+      "tag": "c:obsidians"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_obsidian"
+    "id": "mekanism:dust_obsidian"
   }
 }

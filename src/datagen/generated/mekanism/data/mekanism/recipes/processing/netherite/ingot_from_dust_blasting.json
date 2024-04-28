@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/netherite"
   },
-  "result": "minecraft:netherite_ingot"
+  "result": {
+    "count": 1,
+    "id": "minecraft:netherite_ingot"
+  }
 }

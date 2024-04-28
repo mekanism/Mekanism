@@ -25,8 +25,8 @@
       "translate": "advancements.mekanismtools.not_enough_shielding.description"
     },
     "icon": {
-      "item": "mekanismtools:osmium_shield",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "mekanismtools:osmium_shield"
     },
     "title": {
       "translate": "advancements.mekanismtools.not_enough_shielding.title"

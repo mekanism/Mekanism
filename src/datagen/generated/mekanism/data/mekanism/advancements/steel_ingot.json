@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:ingot_steel"
-            ]
+            "items": "mekanism:ingot_steel"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.steel_ingot.description"
     },
     "icon": {
-      "item": "mekanism:ingot_steel"
+      "count": 1,
+      "id": "mekanism:ingot_steel"
     },
     "title": {
       "translate": "advancements.mekanism.steel_ingot.title"

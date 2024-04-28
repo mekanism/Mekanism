@@ -8,6 +8,6 @@
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_osmium"
+    "id": "mekanism:dust_osmium"
   }
 }

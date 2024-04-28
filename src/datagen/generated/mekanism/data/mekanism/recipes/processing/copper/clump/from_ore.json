@@ -2,15 +2,15 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ores/copper"
+      "tag": "c:ores/copper"
     }
   },
   "output": {
     "count": 3,
-    "item": "mekanism:clump_copper"
+    "id": "mekanism:clump_copper"
   }
 }

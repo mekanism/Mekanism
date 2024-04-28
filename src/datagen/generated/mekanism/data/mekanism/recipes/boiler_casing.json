@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanism:boiler_casing"
+    "id": "mekanism:boiler_casing"
   }
 }

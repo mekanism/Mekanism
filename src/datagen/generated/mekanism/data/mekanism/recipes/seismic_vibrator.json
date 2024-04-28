@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     },
     "C": {
       "tag": "forge:circuits/basic"
@@ -21,6 +21,7 @@
     "III"
   ],
   "result": {
-    "item": "mekanism:seismic_vibrator"
+    "count": 1,
+    "id": "mekanism:seismic_vibrator"
   }
 }

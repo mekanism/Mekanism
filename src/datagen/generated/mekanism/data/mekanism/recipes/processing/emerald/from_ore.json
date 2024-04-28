@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/emerald"
+      "tag": "c:ores/emerald"
     }
   },
   "output": {
     "count": 2,
-    "item": "minecraft:emerald"
+    "id": "minecraft:emerald"
   }
 }

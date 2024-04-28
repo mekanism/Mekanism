@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:laser"
-            ]
+            "items": "mekanism:laser"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.laser.description"
     },
     "icon": {
-      "item": "mekanism:laser"
+      "count": 1,
+      "id": "mekanism:laser"
     },
     "title": {
       "translate": "advancements.mekanism.laser.title"

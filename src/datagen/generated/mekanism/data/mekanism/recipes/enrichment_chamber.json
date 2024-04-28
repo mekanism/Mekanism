@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:enrichment_chamber"
+    "count": 1,
+    "id": "mekanism:enrichment_chamber"
   }
 }

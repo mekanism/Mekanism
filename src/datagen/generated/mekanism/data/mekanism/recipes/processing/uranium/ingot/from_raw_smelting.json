@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:raw_materials/uranium"
   },
-  "result": "mekanism:ingot_uranium"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_uranium"
+  }
 }

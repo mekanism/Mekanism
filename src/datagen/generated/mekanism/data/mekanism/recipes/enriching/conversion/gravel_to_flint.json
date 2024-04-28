@@ -2,10 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:gravel"
+      "tag": "c:gravel"
     }
   },
   "output": {
-    "item": "minecraft:flint"
+    "count": 1,
+    "id": "minecraft:flint"
   }
 }

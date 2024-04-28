@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "O": {
       "tag": "forge:ingots/osmium"
@@ -15,6 +15,7 @@
     "GGG"
   ],
   "result": {
-    "item": "mekanism:gauge_dropper"
+    "count": 1,
+    "id": "mekanism:gauge_dropper"
   }
 }

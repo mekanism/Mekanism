@@ -2,16 +2,17 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "c:cobblestones/normal"
     }
   },
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:raw_materials/gold"
+      "tag": "c:raw_materials/gold"
     }
   },
   "output": {
-    "item": "minecraft:gold_ore"
+    "count": 1,
+    "id": "minecraft:gold_ore"
   }
 }

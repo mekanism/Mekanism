@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:ores/tin"
   },
-  "result": "mekanism:ingot_tin"
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_tin"
+  }
 }

@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/purple"
+      "tag": "c:dyes/purple"
     }
   ],
   "result": {
-    "item": "mekanismadditions:purple_balloon"
+    "count": 1,
+    "id": "mekanismadditions:purple_balloon"
   }
 }

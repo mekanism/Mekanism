@@ -12,6 +12,7 @@
     "###"
   ],
   "result": {
-    "item": "mekanism:block_charcoal"
+    "count": 1,
+    "id": "mekanism:block_charcoal"
   }
 }

@@ -2,11 +2,11 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:dyes/yellow"
+      "tag": "c:dyes/yellow"
     }
   },
   "output": {
     "amount": 256,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   }
 }

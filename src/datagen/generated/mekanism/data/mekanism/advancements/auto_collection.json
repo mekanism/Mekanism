@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:laser_tractor_beam"
-            ]
+            "items": "mekanism:laser_tractor_beam"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.auto_collection.description"
     },
     "icon": {
-      "item": "mekanism:laser_tractor_beam"
+      "count": 1,
+      "id": "mekanism:laser_tractor_beam"
     },
     "title": {
       "translate": "advancements.mekanism.auto_collection.title"

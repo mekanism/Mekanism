@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:purification_chamber"
-            ]
+            "items": "mekanism:purification_chamber"
           }
         ]
       },
@@ -21,7 +19,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:purification_chamber"
+      "count": 1,
+      "id": "mekanism:purification_chamber"
     },
     "title": {
       "translate": "advancements.mekanism.purification_chamber.title"

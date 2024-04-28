@@ -43,8 +43,8 @@
       "translate": "advancements.mekanismtools.alternate_armor.description"
     },
     "icon": {
-      "item": "mekanismtools:osmium_chestplate",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "mekanismtools:osmium_chestplate"
     },
     "title": {
       "translate": "advancements.mekanismtools.alternate_armor.title"

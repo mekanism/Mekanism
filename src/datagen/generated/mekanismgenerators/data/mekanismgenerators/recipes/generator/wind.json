@@ -21,6 +21,7 @@
     "ECE"
   ],
   "result": {
-    "item": "mekanismgenerators:wind_generator"
+    "count": 1,
+    "id": "mekanismgenerators:wind_generator"
   }
 }

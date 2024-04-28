@@ -9,7 +9,7 @@
       "tag": "forge:alloys/elite"
     },
     "D": {
-      "tag": "forge:storage_blocks/diamond"
+      "tag": "c:storage_blocks/diamond"
     },
     "H": {
       "tag": "forge:pellets/polonium"
@@ -24,6 +24,7 @@
     "HHH"
   ],
   "result": {
-    "item": "mekanism:module_fortune_unit"
+    "count": 1,
+    "id": "mekanism:module_fortune_unit"
   }
 }

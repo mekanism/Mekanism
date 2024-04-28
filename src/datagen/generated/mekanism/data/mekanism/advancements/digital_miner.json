@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:digital_miner"
-            ]
+            "items": "mekanism:digital_miner"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:digital_miner"
+      "count": 1,
+      "id": "mekanism:digital_miner"
     },
     "title": {
       "translate": "advancements.mekanism.digital_miner.title"

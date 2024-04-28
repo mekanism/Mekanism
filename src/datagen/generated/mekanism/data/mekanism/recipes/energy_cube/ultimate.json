@@ -9,7 +9,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "P": {
       "item": "mekanism:elite_energy_cube"
@@ -21,6 +21,7 @@
     "AEA"
   ],
   "result": {
-    "item": "mekanism:ultimate_energy_cube"
+    "count": 1,
+    "id": "mekanism:ultimate_energy_cube"
   }
 }

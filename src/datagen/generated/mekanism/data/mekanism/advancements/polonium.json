@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:pellet_polonium"
-            ]
+            "items": "mekanism:pellet_polonium"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.polonium.description"
     },
     "icon": {
-      "item": "mekanism:pellet_polonium"
+      "count": 1,
+      "id": "mekanism:pellet_polonium"
     },
     "title": {
       "translate": "advancements.mekanism.polonium.title"

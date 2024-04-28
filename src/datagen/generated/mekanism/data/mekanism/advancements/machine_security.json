@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:security_desk"
-            ]
+            "items": "mekanism:security_desk"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.machine_security.description"
     },
     "icon": {
-      "item": "mekanism:security_desk"
+      "count": 1,
+      "id": "mekanism:security_desk"
     },
     "title": {
       "translate": "advancements.mekanism.machine_security.title"

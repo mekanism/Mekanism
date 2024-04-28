@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/copper"
+      "tag": "c:ores/copper"
     }
   },
   "output": {
     "count": 2,
-    "item": "mekanism:dust_copper"
+    "id": "mekanism:dust_copper"
   }
 }

@@ -79,7 +79,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "minecraft:wither_skeleton_skull"
+      "count": 1,
+      "id": "minecraft:wither_skeleton_skull"
     },
     "title": {
       "translate": "advancements.mekanismadditions.not_the_babies.title"

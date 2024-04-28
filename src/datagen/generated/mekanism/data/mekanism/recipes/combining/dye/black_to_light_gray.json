@@ -3,16 +3,16 @@
   "extraInput": {
     "amount": 2,
     "ingredient": {
-      "tag": "forge:dyes/white"
+      "tag": "c:dyes/white"
     }
   },
   "mainInput": {
     "ingredient": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   },
   "output": {
     "count": 6,
-    "item": "minecraft:light_gray_dye"
+    "id": "minecraft:light_gray_dye"
   }
 }

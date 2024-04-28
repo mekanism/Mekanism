@@ -18,6 +18,7 @@
     "ISI"
   ],
   "result": {
-    "item": "mekanismgenerators:fission_fuel_assembly"
+    "count": 1,
+    "id": "mekanismgenerators:fission_fuel_assembly"
   }
 }

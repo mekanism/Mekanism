@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/basic"
     },
     "I": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -18,6 +18,7 @@
     "AIA"
   ],
   "result": {
-    "item": "mekanism:superheating_element"
+    "count": 1,
+    "id": "mekanism:superheating_element"
   }
 }

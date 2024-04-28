@@ -12,7 +12,7 @@
       }
     },
     "D": {
-      "tag": "forge:dyes/light_gray"
+      "tag": "c:dyes/light_gray"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:light_gray_plastic_road"
+    "id": "mekanismadditions:light_gray_plastic_road"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:chemical_crystallizer"
-            ]
+            "items": "mekanism:chemical_crystallizer"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:chemical_dissolution_chamber"
-            ]
+            "items": "mekanism:chemical_dissolution_chamber"
           }
         ]
       },
@@ -29,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:chemical_washer"
-            ]
+            "items": "mekanism:chemical_washer"
           }
         ]
       },
@@ -44,7 +38,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "mekanism:chemical_crystallizer"
+      "count": 1,
+      "id": "mekanism:chemical_crystallizer"
     },
     "title": {
       "translate": "advancements.mekanism.chemical_crystallizer.title"

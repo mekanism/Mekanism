@@ -12,11 +12,11 @@
       "item": "mekanismadditions:brown_plastic"
     },
     {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     }
   ],
   "result": {
     "count": 3,
-    "item": "mekanismadditions:brown_plastic_glow"
+    "id": "mekanismadditions:brown_plastic_glow"
   }
 }

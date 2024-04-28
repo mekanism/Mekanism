@@ -3,10 +3,10 @@
   "category": "equipment",
   "key": {
     "I": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     " R"
   ],
   "result": {
-    "item": "mekanismtools:lapis_lazuli_hoe"
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_hoe"
   }
 }

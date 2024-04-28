@@ -12,7 +12,7 @@
       }
     },
     "D": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:light_blue_reinforced_plastic"
+    "id": "mekanismadditions:light_blue_reinforced_plastic"
   }
 }

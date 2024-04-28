@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   ],
   "result": {
-    "item": "mekanismadditions:magenta_balloon"
+    "count": 1,
+    "id": "mekanismadditions:magenta_balloon"
   }
 }

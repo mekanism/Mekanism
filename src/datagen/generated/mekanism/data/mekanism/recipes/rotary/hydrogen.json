@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   }
 }

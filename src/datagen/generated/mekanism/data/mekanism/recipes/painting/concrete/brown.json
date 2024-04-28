@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "pigment": "mekanism:brown"
+    "id": "mekanism:brown"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:brown_concrete"
+    "count": 1,
+    "id": "minecraft:brown_concrete"
   }
 }

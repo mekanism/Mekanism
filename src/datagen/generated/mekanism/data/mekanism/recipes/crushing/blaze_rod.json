@@ -2,11 +2,11 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:rods/blaze"
+      "tag": "c:rods/blaze"
     }
   },
   "output": {
     "count": 4,
-    "item": "minecraft:blaze_powder"
+    "id": "minecraft:blaze_powder"
   }
 }

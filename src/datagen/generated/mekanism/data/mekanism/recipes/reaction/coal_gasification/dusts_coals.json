@@ -7,11 +7,11 @@
   },
   "gasInput": {
     "amount": 100,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 100,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "itemInput": {
     "ingredient": [
@@ -24,6 +24,7 @@
     ]
   },
   "itemOutput": {
-    "item": "mekanism:dust_sulfur"
+    "count": 1,
+    "id": "mekanism:dust_sulfur"
   }
 }

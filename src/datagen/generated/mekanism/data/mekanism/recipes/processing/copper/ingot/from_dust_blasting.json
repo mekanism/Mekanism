@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/copper"
   },
-  "result": "minecraft:copper_ingot"
+  "result": {
+    "count": 1,
+    "id": "minecraft:copper_ingot"
+  }
 }

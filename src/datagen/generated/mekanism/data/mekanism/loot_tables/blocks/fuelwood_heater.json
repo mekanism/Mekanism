@@ -8,17 +8,14 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
               "function": "mekanism:copy_containers",
               "types": [
-                "mekanism:heat_capacitors",
-                "mekanism:inventory_slots"
+                "mekanism:heat_data",
+                "mekanism:items"
               ]
             }
           ],

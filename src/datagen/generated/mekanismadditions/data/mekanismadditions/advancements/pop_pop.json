@@ -24,7 +24,8 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "item": "mekanismadditions:red_balloon"
+      "count": 1,
+      "id": "mekanismadditions:red_balloon"
     },
     "title": {
       "translate": "advancements.mekanismadditions.pop_pop.title"

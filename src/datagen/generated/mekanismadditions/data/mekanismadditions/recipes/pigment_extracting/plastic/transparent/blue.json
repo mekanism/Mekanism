@@ -2,11 +2,24 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "item": "mekanismadditions:blue_plastic_transparent"
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 64,
+        "minecraft:rarity": "common",
+        "minecraft:repair_cost": 0
+      },
+      "items": "mekanismadditions:blue_plastic_transparent"
     }
   },
   "output": {
     "amount": 42,
-    "pigment": "mekanism:blue"
+    "id": "mekanism:blue"
   }
 }

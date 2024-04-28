@@ -6,10 +6,11 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "output": {
-    "item": "mekanism:alloy_infused"
+    "count": 1,
+    "id": "mekanism:alloy_infused"
   }
 }

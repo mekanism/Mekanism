@@ -35,5 +35,8 @@
       "item": "mekanismtools:refined_glowstone_paxel"
     }
   ],
-  "result": "mekanism:nugget_refined_glowstone"
+  "result": {
+    "count": 1,
+    "id": "mekanism:nugget_refined_glowstone"
+  }
 }

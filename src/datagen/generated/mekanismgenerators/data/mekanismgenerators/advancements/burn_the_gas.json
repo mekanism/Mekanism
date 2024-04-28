@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismgenerators:gas_burning_generator"
-            ]
+            "items": "mekanismgenerators:gas_burning_generator"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanismgenerators:gas_burning_generator"
+      "count": 1,
+      "id": "mekanismgenerators:gas_burning_generator"
     },
     "title": {
       "translate": "advancements.mekanismgenerators.burn_the_gas.title"

@@ -9,7 +9,7 @@
       "tag": "forge:circuits/elite"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -24,6 +24,7 @@
     "S#S"
   ],
   "result": {
-    "item": "mekanism:security_desk"
+    "count": 1,
+    "id": "mekanism:security_desk"
   }
 }

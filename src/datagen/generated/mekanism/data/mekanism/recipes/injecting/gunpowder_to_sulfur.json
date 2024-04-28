@@ -2,14 +2,15 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:gunpowder"
+      "tag": "c:gunpowder"
     }
   },
   "output": {
-    "item": "mekanism:dust_sulfur"
+    "count": 1,
+    "id": "mekanism:dust_sulfur"
   }
 }

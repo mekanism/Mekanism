@@ -6,7 +6,7 @@
       "item": "minecraft:piston"
     },
     "A": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "C": {
       "tag": "forge:circuits/ultimate"
@@ -24,6 +24,7 @@
     " # "
   ],
   "result": {
-    "item": "mekanism:qio_exporter"
+    "count": 1,
+    "id": "mekanism:qio_exporter"
   }
 }

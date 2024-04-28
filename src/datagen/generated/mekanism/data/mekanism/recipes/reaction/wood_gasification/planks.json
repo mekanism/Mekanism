@@ -7,11 +7,11 @@
   },
   "gasInput": {
     "amount": 400,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 400,
-    "gas": "mekanism:hydrogen"
+    "id": "mekanism:hydrogen"
   },
   "itemInput": {
     "amount": 20,
@@ -25,6 +25,7 @@
     ]
   },
   "itemOutput": {
-    "item": "mekanism:dust_charcoal"
+    "count": 1,
+    "id": "mekanism:dust_charcoal"
   }
 }

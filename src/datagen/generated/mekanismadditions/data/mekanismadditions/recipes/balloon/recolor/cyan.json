@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/cyan"
+      "tag": "c:dyes/cyan"
     }
   ],
   "result": {
-    "item": "mekanismadditions:cyan_balloon"
+    "count": 1,
+    "id": "mekanismadditions:cyan_balloon"
   }
 }

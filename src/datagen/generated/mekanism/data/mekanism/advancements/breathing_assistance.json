@@ -5,14 +5,10 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:scuba_mask"
-            ]
+            "items": "mekanism:scuba_mask"
           },
           {
-            "items": [
-              "mekanism:scuba_tank"
-            ]
+            "items": "mekanism:scuba_tank"
           }
         ]
       },
@@ -25,7 +21,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:scuba_mask"
+      "count": 1,
+      "id": "mekanism:scuba_mask"
     },
     "title": {
       "translate": "advancements.mekanism.breathing_assistance.title"

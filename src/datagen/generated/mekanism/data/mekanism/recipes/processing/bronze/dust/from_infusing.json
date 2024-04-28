@@ -12,6 +12,6 @@
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_bronze"
+    "id": "mekanism:dust_bronze"
   }
 }

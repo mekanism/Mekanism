@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:lithium"
+    "id": "mekanism:lithium"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:lithium"
+    "id": "mekanism:lithium"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:lithium"
+    "id": "mekanism:lithium"
   }
 }

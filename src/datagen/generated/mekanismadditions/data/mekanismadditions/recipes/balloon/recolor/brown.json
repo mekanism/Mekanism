@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/brown"
+      "tag": "c:dyes/brown"
     }
   ],
   "result": {
-    "item": "mekanismadditions:brown_balloon"
+    "count": 1,
+    "id": "mekanismadditions:brown_balloon"
   }
 }

@@ -2,16 +2,16 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ores/copper"
+      "tag": "c:ores/copper"
     }
   },
   "output": {
     "amount": 1000,
     "chemicalType": "slurry",
-    "slurry": "mekanism:dirty_copper"
+    "id": "mekanism:dirty_copper"
   }
 }

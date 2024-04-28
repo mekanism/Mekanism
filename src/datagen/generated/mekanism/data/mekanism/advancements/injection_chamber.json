@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:chemical_injection_chamber"
-            ]
+            "items": "mekanism:chemical_injection_chamber"
           }
         ]
       },
@@ -21,7 +19,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:chemical_injection_chamber"
+      "count": 1,
+      "id": "mekanism:chemical_injection_chamber"
     },
     "title": {
       "translate": "advancements.mekanism.injection_chamber.title"

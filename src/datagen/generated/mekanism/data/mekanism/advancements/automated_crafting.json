@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:formulaic_assemblicator"
-            ]
+            "items": "mekanism:formulaic_assemblicator"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.automated_crafting.description"
     },
     "icon": {
-      "item": "mekanism:formulaic_assemblicator"
+      "count": 1,
+      "id": "mekanism:formulaic_assemblicator"
     },
     "title": {
       "translate": "advancements.mekanism.automated_crafting.title"

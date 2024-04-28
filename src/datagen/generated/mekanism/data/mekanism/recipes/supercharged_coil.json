@@ -12,7 +12,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "AAA"
   ],
   "result": {
-    "item": "mekanism:supercharged_coil"
+    "count": 1,
+    "id": "mekanism:supercharged_coil"
   }
 }

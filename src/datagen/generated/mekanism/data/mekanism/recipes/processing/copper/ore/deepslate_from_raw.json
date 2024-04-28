@@ -2,16 +2,17 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "c:cobblestones/deepslate"
     }
   },
   "mainInput": {
     "amount": 20,
     "ingredient": {
-      "tag": "forge:raw_materials/copper"
+      "tag": "c:raw_materials/copper"
     }
   },
   "output": {
-    "item": "minecraft:deepslate_copper_ore"
+    "count": 1,
+    "id": "minecraft:deepslate_copper_ore"
   }
 }

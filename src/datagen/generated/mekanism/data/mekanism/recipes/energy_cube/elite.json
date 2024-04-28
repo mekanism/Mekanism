@@ -9,7 +9,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "P": {
       "item": "mekanism:advanced_energy_cube"
@@ -21,6 +21,7 @@
     "AEA"
   ],
   "result": {
-    "item": "mekanism:elite_energy_cube"
+    "count": 1,
+    "id": "mekanism:elite_energy_cube"
   }
 }

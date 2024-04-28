@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 1000,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   }
 }

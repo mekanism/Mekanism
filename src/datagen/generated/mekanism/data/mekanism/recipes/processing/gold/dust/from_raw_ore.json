@@ -3,11 +3,11 @@
   "input": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/gold"
+      "tag": "c:raw_materials/gold"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_gold"
+    "id": "mekanism:dust_gold"
   }
 }

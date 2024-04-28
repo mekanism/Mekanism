@@ -9,7 +9,7 @@
       "tag": "forge:circuits/basic"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "P": {
       "item": "mekanism:purification_chamber"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:basic_purifying_factory"
+    "count": 1,
+    "id": "mekanism:basic_purifying_factory"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "c:cobblestones/normal"
     }
   },
   "mainInput": {
@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "mekanism:osmium_ore"
+    "count": 1,
+    "id": "mekanism:osmium_ore"
   }
 }

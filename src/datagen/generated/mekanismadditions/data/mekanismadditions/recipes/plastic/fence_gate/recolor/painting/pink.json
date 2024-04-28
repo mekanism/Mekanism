@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:pink"
+    "id": "mekanism:pink"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:pink_plastic_fence_gate"
+    "count": 1,
+    "id": "mekanismadditions:pink_plastic_fence_gate"
   }
 }

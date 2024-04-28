@@ -2,7 +2,7 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
     "amount": 3,
@@ -12,6 +12,6 @@
   },
   "output": {
     "count": 8,
-    "item": "mekanism:shard_tin"
+    "id": "mekanism:shard_tin"
   }
 }

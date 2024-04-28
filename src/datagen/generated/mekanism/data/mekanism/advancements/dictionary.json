@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:dictionary"
-            ]
+            "items": "mekanism:dictionary"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.dictionary.description"
     },
     "icon": {
-      "item": "mekanism:dictionary"
+      "count": 1,
+      "id": "mekanism:dictionary"
     },
     "title": {
       "translate": "advancements.mekanism.dictionary.title"

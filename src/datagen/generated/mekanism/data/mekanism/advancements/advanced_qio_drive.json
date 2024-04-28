@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:qio_drive_hyper_dense"
-            ]
+            "items": "mekanism:qio_drive_hyper_dense"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.advanced_qio_drive.description"
     },
     "icon": {
-      "item": "mekanism:qio_drive_hyper_dense"
+      "count": 1,
+      "id": "mekanism:qio_drive_hyper_dense"
     },
     "title": {
       "translate": "advancements.mekanism.advanced_qio_drive.title"

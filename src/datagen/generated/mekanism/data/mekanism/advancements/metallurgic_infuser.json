@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:metallurgic_infuser"
-            ]
+            "items": "mekanism:metallurgic_infuser"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.metallurgic_infuser.description"
     },
     "icon": {
-      "item": "mekanism:metallurgic_infuser"
+      "count": 1,
+      "id": "mekanism:metallurgic_infuser"
     },
     "title": {
       "translate": "advancements.mekanism.metallurgic_infuser.title"

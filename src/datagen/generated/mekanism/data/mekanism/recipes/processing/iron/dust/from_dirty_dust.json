@@ -6,6 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:dust_iron"
+    "count": 1,
+    "id": "mekanism:dust_iron"
   }
 }

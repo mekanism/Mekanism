@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanismgenerators:solar_generator"
-            ]
+            "items": "mekanismgenerators:solar_generator"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanismgenerators.solar_generator.description"
     },
     "icon": {
-      "item": "mekanismgenerators:solar_generator"
+      "count": 1,
+      "id": "mekanismgenerators:solar_generator"
     },
     "title": {
       "translate": "advancements.mekanismgenerators.solar_generator.title"

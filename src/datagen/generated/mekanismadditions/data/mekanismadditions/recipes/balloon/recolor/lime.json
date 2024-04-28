@@ -12,10 +12,11 @@
       }
     },
     {
-      "tag": "forge:dyes/lime"
+      "tag": "c:dyes/lime"
     }
   ],
   "result": {
-    "item": "mekanismadditions:lime_balloon"
+    "count": 1,
+    "id": "mekanismadditions:lime_balloon"
   }
 }

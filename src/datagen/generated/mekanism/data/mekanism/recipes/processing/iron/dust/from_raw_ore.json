@@ -3,11 +3,11 @@
   "input": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/iron"
+      "tag": "c:raw_materials/iron"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_iron"
+    "id": "mekanism:dust_iron"
   }
 }

@@ -6,10 +6,10 @@
   },
   "output": {
     "amount": 1,
-    "slurry": "mekanism:clean_gold"
+    "id": "mekanism:clean_gold"
   },
   "slurryInput": {
     "amount": 1,
-    "slurry": "mekanism:dirty_gold"
+    "id": "mekanism:dirty_gold"
   }
 }

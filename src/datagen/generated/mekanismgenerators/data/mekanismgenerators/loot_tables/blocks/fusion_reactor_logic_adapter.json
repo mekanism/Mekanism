@@ -17,16 +17,10 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "activeCooled",
-                  "target": "mekanismgenerators:active_cooled"
-                },
-                {
-                  "source": "logicType",
-                  "target": "mekanismgenerators:fusion_logic"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanismgenerators:fusion_logic",
+                "mekanismgenerators:active_cooled"
               ],
               "source": "block_entity"
             }

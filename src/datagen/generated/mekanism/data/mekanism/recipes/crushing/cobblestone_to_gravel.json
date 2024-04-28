@@ -2,10 +2,11 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "c:cobblestones/normal"
     }
   },
   "output": {
-    "item": "minecraft:gravel"
+    "count": 1,
+    "id": "minecraft:gravel"
   }
 }

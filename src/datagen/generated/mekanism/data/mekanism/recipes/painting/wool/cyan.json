@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:cyan"
+    "id": "mekanism:cyan"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:cyan_wool"
+    "count": 1,
+    "id": "minecraft:cyan_wool"
   }
 }

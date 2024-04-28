@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/lapis"
+      "tag": "c:ores/lapis"
     }
   },
   "output": {
     "count": 12,
-    "item": "minecraft:lapis_lazuli"
+    "id": "minecraft:lapis_lazuli"
   }
 }

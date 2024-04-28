@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:atomic_disassembler"
-            ]
+            "items": "mekanism:atomic_disassembler"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.disassembler.description"
     },
     "icon": {
-      "item": "mekanism:atomic_disassembler"
+      "count": 1,
+      "id": "mekanism:atomic_disassembler"
     },
     "title": {
       "translate": "advancements.mekanism.disassembler.title"

@@ -6,7 +6,7 @@
       "item": "minecraft:iron_bars"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "mekanism:diversion_transporter"
+    "id": "mekanism:diversion_transporter"
   }
 }

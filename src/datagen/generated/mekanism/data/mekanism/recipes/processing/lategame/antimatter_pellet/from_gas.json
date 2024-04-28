@@ -3,9 +3,10 @@
   "chemicalType": "gas",
   "input": {
     "amount": 1000,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   },
   "output": {
-    "item": "mekanism:pellet_antimatter"
+    "count": 1,
+    "id": "mekanism:pellet_antimatter"
   }
 }

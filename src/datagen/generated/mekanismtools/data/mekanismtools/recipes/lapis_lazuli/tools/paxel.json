@@ -9,7 +9,7 @@
       "tag": "forge:tools/pickaxes/lapis_lazuli"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "tag": "forge:tools/shovels/lapis_lazuli"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:lapis_lazuli_paxel"
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_paxel"
   }
 }

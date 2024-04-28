@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:seismic_reader"
-            ]
+            "items": "mekanism:seismic_reader"
           }
         ]
       },
@@ -17,9 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:seismic_vibrator"
-            ]
+            "items": "mekanism:seismic_vibrator"
           }
         ]
       },
@@ -35,7 +31,8 @@
       "translate": "advancements.mekanism.seismic_vibrations.description"
     },
     "icon": {
-      "item": "mekanism:seismic_vibrator"
+      "count": 1,
+      "id": "mekanism:seismic_vibrator"
     },
     "title": {
       "translate": "advancements.mekanism.seismic_vibrations.title"

@@ -9,7 +9,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -21,6 +21,7 @@
     " S "
   ],
   "result": {
-    "item": "mekanism:network_reader"
+    "count": 1,
+    "id": "mekanism:network_reader"
   }
 }

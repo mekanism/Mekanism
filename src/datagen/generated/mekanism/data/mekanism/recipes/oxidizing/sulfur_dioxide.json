@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 100,
-    "gas": "mekanism:sulfur_dioxide"
+    "id": "mekanism:sulfur_dioxide"
   }
 }

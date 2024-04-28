@@ -3,31 +3,25 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_frequencies"
-            },
-            {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "type": "mekanism:inventory_slots",
-              "function": "mekanism:copy_containers"
-            },
-            {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "insert_into_frequency",
-                  "target": "mekanism:insert_into_frequency"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:frequencies",
+                "mekanism:qio_frequency",
+                "mekanism:insert_into_frequency"
               ],
               "source": "block_entity"
             }

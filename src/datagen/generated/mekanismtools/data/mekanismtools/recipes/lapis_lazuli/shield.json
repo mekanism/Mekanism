@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     },
     "P": {
       "item": "minecraft:shield"
@@ -15,6 +15,7 @@
     " I "
   ],
   "result": {
-    "item": "mekanismtools:lapis_lazuli_shield"
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_shield"
   }
 }

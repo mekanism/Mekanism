@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:advanced_control_circuit"
-            ]
+            "items": "mekanism:advanced_control_circuit"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.advanced_control_circuit.description"
     },
     "icon": {
-      "item": "mekanism:advanced_control_circuit"
+      "count": 1,
+      "id": "mekanism:advanced_control_circuit"
     },
     "title": {
       "translate": "advancements.mekanism.advanced_control_circuit.title"

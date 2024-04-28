@@ -2,16 +2,17 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "c:cobblestones/normal"
     }
   },
   "mainInput": {
     "amount": 16,
     "ingredient": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "output": {
-    "item": "minecraft:redstone_ore"
+    "count": 1,
+    "id": "minecraft:redstone_ore"
   }
 }

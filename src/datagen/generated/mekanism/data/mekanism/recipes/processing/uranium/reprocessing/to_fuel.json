@@ -2,11 +2,24 @@
   "type": "mekanism:oxidizing",
   "input": {
     "ingredient": {
-      "item": "mekanism:reprocessed_fissile_fragment"
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 64,
+        "minecraft:rarity": "rare",
+        "minecraft:repair_cost": 0
+      },
+      "items": "mekanism:reprocessed_fissile_fragment"
     }
   },
   "output": {
     "amount": 2000,
-    "gas": "mekanism:fissile_fuel"
+    "id": "mekanism:fissile_fuel"
   }
 }

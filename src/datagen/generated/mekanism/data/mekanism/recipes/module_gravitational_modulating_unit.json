@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:nether_stars"
+      "tag": "c:nether_stars"
     },
     "A": {
       "tag": "forge:alloys/ultimate"
@@ -24,6 +24,7 @@
     "HHH"
   ],
   "result": {
-    "item": "mekanism:module_gravitational_modulating_unit"
+    "count": 1,
+    "id": "mekanism:module_gravitational_modulating_unit"
   }
 }

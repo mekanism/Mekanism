@@ -3,16 +3,16 @@
   "category": "building",
   "key": {
     "D": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     },
     "G": {
-      "tag": "forge:dusts/glowstone"
+      "tag": "c:dusts/glowstone"
     },
     "H": {
       "item": "mekanism:hdpe_sheet"
     },
     "P": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 2,
-    "item": "mekanismadditions:light_blue_glow_panel"
+    "id": "mekanismadditions:light_blue_glow_panel"
   }
 }

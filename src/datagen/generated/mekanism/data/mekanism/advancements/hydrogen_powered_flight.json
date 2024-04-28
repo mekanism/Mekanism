@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:jetpack"
-            ]
+            "items": "mekanism:jetpack"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.hydrogen_powered_flight.description"
     },
     "icon": {
-      "item": "mekanism:jetpack"
+      "count": 1,
+      "id": "mekanism:jetpack"
     },
     "title": {
       "translate": "advancements.mekanism.hydrogen_powered_flight.title"

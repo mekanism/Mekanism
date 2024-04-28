@@ -13,10 +13,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "type": "mekanism:energy_containers",
+              "type": "mekanism:energy",
               "function": "mekanism:copy_containers"
             }
           ],

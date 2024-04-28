@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:antiprotonic_nucleosynthesizer"
-            ]
+            "items": "mekanism:antiprotonic_nucleosynthesizer"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "mekanism:antiprotonic_nucleosynthesizer"
+      "count": 1,
+      "id": "mekanism:antiprotonic_nucleosynthesizer"
     },
     "title": {
       "translate": "advancements.mekanism.nucleosynthesizer.title"

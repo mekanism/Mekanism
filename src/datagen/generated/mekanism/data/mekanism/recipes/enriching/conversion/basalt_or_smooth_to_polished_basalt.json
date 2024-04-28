@@ -11,6 +11,7 @@
     ]
   },
   "output": {
-    "item": "minecraft:polished_basalt"
+    "count": 1,
+    "id": "minecraft:polished_basalt"
   }
 }

@@ -6,6 +6,7 @@
     }
   },
   "output": {
-    "item": "mekanism:enriched_refined_obsidian"
+    "count": 1,
+    "id": "mekanism:enriched_refined_obsidian"
   }
 }

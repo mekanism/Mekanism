@@ -2,16 +2,16 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 2,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:storage_blocks/raw_iron"
+      "tag": "c:storage_blocks/raw_iron"
     }
   },
   "output": {
     "amount": 6000,
     "chemicalType": "slurry",
-    "slurry": "mekanism:dirty_iron"
+    "id": "mekanism:dirty_iron"
   }
 }

@@ -8,36 +8,27 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_upgrades"
-            },
-            {
-              "function": "mekanism:copy_side_config"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
               "function": "mekanism:copy_containers",
               "types": [
-                "mekanism:energy_containers",
-                "mekanism:gas_tanks",
-                "mekanism:infusion_tanks",
-                "mekanism:inventory_slots",
-                "mekanism:pigment_tanks",
-                "mekanism:slurry_tanks"
+                "mekanism:energy",
+                "mekanism:gases",
+                "mekanism:infuse_types",
+                "mekanism:items",
+                "mekanism:pigments",
+                "mekanism:slurries"
               ]
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:upgrades",
+                "mekanism:side_config",
+                "mekanism:ejector",
+                "mekanism:redstone_control"
               ],
               "source": "block_entity"
             }

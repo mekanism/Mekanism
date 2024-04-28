@@ -7,10 +7,11 @@
   },
   "mainOutput": {
     "count": 6,
-    "item": "minecraft:jungle_planks"
+    "id": "minecraft:jungle_planks"
   },
   "secondaryChance": 0.25,
   "secondaryOutput": {
-    "item": "mekanism:sawdust"
+    "count": 1,
+    "id": "mekanism:sawdust"
   }
 }

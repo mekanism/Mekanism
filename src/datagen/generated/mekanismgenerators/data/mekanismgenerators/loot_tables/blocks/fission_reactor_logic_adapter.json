@@ -17,16 +17,10 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                },
-                {
-                  "source": "logicType",
-                  "target": "mekanismgenerators:fission_logic"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:redstone_control",
+                "mekanismgenerators:fission_logic"
               ],
               "source": "block_entity"
             }

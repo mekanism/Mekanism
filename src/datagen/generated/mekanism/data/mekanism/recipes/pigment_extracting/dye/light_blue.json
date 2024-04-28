@@ -2,11 +2,11 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "ingredient": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   },
   "output": {
     "amount": 256,
-    "pigment": "mekanism:light_blue"
+    "id": "mekanism:light_blue"
   }
 }

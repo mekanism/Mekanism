@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:aqua"
+    "id": "mekanism:aqua"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:aqua_plastic_glow_stairs"
+    "count": 1,
+    "id": "mekanismadditions:aqua_plastic_glow_stairs"
   }
 }

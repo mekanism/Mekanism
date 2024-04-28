@@ -6,10 +6,10 @@
   },
   "output": {
     "amount": 1,
-    "slurry": "mekanism:clean_iron"
+    "id": "mekanism:clean_iron"
   },
   "slurryInput": {
     "amount": 1,
-    "slurry": "mekanism:dirty_iron"
+    "id": "mekanism:dirty_iron"
   }
 }

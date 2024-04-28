@@ -2,10 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:sand"
+      "tag": "c:sands"
     }
   },
   "output": {
-    "item": "minecraft:gravel"
+    "count": 1,
+    "id": "minecraft:gravel"
   }
 }

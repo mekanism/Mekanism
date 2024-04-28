@@ -2,15 +2,15 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 2,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:storage_blocks/raw_copper"
+      "tag": "c:storage_blocks/raw_copper"
     }
   },
   "output": {
     "count": 18,
-    "item": "mekanism:clump_copper"
+    "id": "mekanism:clump_copper"
   }
 }

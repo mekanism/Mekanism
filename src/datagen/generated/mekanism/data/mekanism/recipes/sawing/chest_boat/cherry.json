@@ -2,14 +2,29 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "item": "minecraft:cherry_chest_boat"
+      "type": "neoforge:components",
+      "components": {
+        "minecraft:attribute_modifiers": {
+          "modifiers": []
+        },
+        "minecraft:enchantments": {
+          "levels": {}
+        },
+        "minecraft:lore": [],
+        "minecraft:max_stack_size": 1,
+        "minecraft:rarity": "common",
+        "minecraft:repair_cost": 0
+      },
+      "items": "minecraft:cherry_chest_boat"
     }
   },
   "mainOutput": {
-    "item": "minecraft:cherry_boat"
+    "count": 1,
+    "id": "minecraft:cherry_boat"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:chest"
+    "count": 1,
+    "id": "minecraft:chest"
   }
 }

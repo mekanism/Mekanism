@@ -2,10 +2,11 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:gems/quartz"
     }
   },
   "output": {
-    "item": "mekanism:dust_quartz"
+    "count": 1,
+    "id": "mekanism:dust_quartz"
   }
 }

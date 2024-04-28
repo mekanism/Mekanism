@@ -2,15 +2,15 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:raw_materials/gold"
+      "tag": "c:raw_materials/gold"
     }
   },
   "output": {
     "count": 2,
-    "item": "mekanism:clump_gold"
+    "id": "mekanism:clump_gold"
   }
 }

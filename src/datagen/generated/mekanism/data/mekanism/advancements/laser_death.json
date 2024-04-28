@@ -15,7 +15,8 @@
     },
     "hidden": true,
     "icon": {
-      "item": "minecraft:skeleton_skull"
+      "count": 1,
+      "id": "minecraft:skeleton_skull"
     },
     "title": {
       "translate": "advancements.mekanism.laser_death.title"

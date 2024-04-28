@@ -6,7 +6,7 @@
       "tag": "forge:ingots/refined_obsidian"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     " R"
   ],
   "result": {
-    "item": "mekanismtools:refined_obsidian_axe"
+    "count": 1,
+    "id": "mekanismtools:refined_obsidian_axe"
   }
 }

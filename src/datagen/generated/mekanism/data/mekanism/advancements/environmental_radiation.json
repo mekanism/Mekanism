@@ -4,9 +4,7 @@
     "use_geiger_counter": {
       "conditions": {
         "item": {
-          "items": [
-            "mekanism:geiger_counter"
-          ]
+          "items": "mekanism:geiger_counter"
         }
       },
       "trigger": "minecraft:using_item"
@@ -18,7 +16,8 @@
       "translate": "advancements.mekanism.environmental_radiation.description"
     },
     "icon": {
-      "item": "mekanism:geiger_counter"
+      "count": 1,
+      "id": "mekanism:geiger_counter"
     },
     "title": {
       "translate": "advancements.mekanism.environmental_radiation.title"

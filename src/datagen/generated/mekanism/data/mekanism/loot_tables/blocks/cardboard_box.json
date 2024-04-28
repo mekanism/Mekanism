@@ -11,14 +11,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "attachments": [
-                "mekanism:block_data"
-              ],
-              "function": "mekanism:copy_attachments"
-            }
-          ],
           "name": "mekanism:cardboard_box"
         }
       ],

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanism:structural_glass"
+    "id": "mekanism:structural_glass"
   }
 }

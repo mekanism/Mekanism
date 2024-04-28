@@ -13,41 +13,17 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_security"
-            },
-            {
-              "function": "mekanism:copy_upgrades"
-            },
-            {
-              "function": "mekanism:copy_filters"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "color",
-                  "target": "mekanism:transporter_color"
-                },
-                {
-                  "source": "controlType",
-                  "target": "mekanism:redstone_control"
-                },
-                {
-                  "source": "eject",
-                  "target": "mekanism:eject"
-                },
-                {
-                  "source": "roundRobin",
-                  "target": "mekanism:round_robin"
-                },
-                {
-                  "source": "singleItem",
-                  "target": "mekanism:single"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:upgrades",
+                "mekanism:redstone_control",
+                "mekanism:eject",
+                "mekanism:round_robin",
+                "mekanism:single"
               ],
               "source": "block_entity"
             }

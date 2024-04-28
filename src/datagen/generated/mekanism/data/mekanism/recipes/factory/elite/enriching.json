@@ -9,7 +9,7 @@
       "tag": "forge:circuits/elite"
     },
     "I": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "P": {
       "item": "mekanism:advanced_enriching_factory"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:elite_enriching_factory"
+    "count": 1,
+    "id": "mekanism:elite_enriching_factory"
   }
 }

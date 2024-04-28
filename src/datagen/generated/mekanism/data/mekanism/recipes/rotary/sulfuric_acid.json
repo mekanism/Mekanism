@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:sulfuric_acid"
+    "id": "mekanism:sulfuric_acid"
   }
 }

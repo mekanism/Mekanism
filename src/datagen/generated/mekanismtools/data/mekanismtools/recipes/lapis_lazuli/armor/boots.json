@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     }
   },
   "pattern": [
@@ -11,6 +11,7 @@
     "I I"
   ],
   "result": {
-    "item": "mekanismtools:lapis_lazuli_boots"
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_boots"
   }
 }

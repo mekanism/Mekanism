@@ -12,7 +12,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "O": {
       "tag": "forge:ingots/osmium"
@@ -24,6 +24,7 @@
     "OEO"
   ],
   "result": {
-    "item": "mekanismgenerators:solar_generator"
+    "count": 1,
+    "id": "mekanismgenerators:solar_generator"
   }
 }

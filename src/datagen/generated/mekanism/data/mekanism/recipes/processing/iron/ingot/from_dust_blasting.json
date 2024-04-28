@@ -6,5 +6,8 @@
   "ingredient": {
     "tag": "forge:dusts/iron"
   },
-  "result": "minecraft:iron_ingot"
+  "result": {
+    "count": 1,
+    "id": "minecraft:iron_ingot"
+  }
 }

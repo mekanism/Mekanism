@@ -9,7 +9,7 @@
       "tag": "forge:circuits/ultimate"
     },
     "D": {
-      "tag": "forge:storage_blocks/diamond"
+      "tag": "c:storage_blocks/diamond"
     },
     "I": {
       "tag": "forge:ingots/refined_obsidian"
@@ -21,6 +21,7 @@
     "ICI"
   ],
   "result": {
-    "item": "mekanism:dimensional_stabilizer"
+    "count": 1,
+    "id": "mekanism:dimensional_stabilizer"
   }
 }

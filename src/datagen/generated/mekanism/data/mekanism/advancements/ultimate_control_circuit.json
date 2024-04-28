@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:ultimate_control_circuit"
-            ]
+            "items": "mekanism:ultimate_control_circuit"
           }
         ]
       },
@@ -21,7 +19,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:ultimate_control_circuit"
+      "count": 1,
+      "id": "mekanism:ultimate_control_circuit"
     },
     "title": {
       "translate": "advancements.mekanism.ultimate_control_circuit.title"

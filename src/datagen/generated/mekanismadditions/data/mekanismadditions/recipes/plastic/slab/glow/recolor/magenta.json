@@ -12,7 +12,7 @@
       }
     },
     "D": {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   },
   "pattern": [
@@ -22,6 +22,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:magenta_plastic_glow_slab"
+    "id": "mekanismadditions:magenta_plastic_glow_slab"
   }
 }

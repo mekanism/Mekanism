@@ -3,7 +3,7 @@
   "duration": 500,
   "gasInput": {
     "amount": 2,
-    "gas": "mekanism:antimatter"
+    "id": "mekanism:antimatter"
   },
   "itemInput": {
     "ingredient": {
@@ -11,6 +11,7 @@
     }
   },
   "output": {
-    "item": "minecraft:chorus_flower"
+    "count": 1,
+    "id": "minecraft:chorus_flower"
   }
 }

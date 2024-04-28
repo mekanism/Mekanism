@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:yellow_reinforced_plastic"
+    "count": 1,
+    "id": "mekanismadditions:yellow_reinforced_plastic"
   }
 }

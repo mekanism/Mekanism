@@ -2,11 +2,11 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/quartz"
+      "tag": "c:ores/quartz"
     }
   },
   "output": {
     "count": 6,
-    "item": "minecraft:quartz"
+    "id": "minecraft:quartz"
   }
 }

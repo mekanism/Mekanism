@@ -2,7 +2,7 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:oxygen"
+    "id": "mekanism:oxygen"
   },
   "itemInput": {
     "ingredient": {
@@ -11,6 +11,6 @@
   },
   "output": {
     "count": 2,
-    "item": "mekanism:clump_osmium"
+    "id": "mekanism:clump_osmium"
   }
 }

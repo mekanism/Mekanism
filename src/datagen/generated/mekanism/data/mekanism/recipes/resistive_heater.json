@@ -9,7 +9,7 @@
       "tag": "forge:ingots/tin"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "X": {
       "item": "mekanism:steel_casing"
@@ -21,6 +21,7 @@
     "IEI"
   ],
   "result": {
-    "item": "mekanism:resistive_heater"
+    "count": 1,
+    "id": "mekanism:resistive_heater"
   }
 }

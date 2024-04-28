@@ -3,9 +3,10 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "slurry": "mekanism:clean_iron"
+    "id": "mekanism:clean_iron"
   },
   "output": {
-    "item": "mekanism:crystal_iron"
+    "count": 1,
+    "id": "mekanism:crystal_iron"
   }
 }

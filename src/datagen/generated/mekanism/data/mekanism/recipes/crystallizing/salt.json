@@ -3,9 +3,10 @@
   "chemicalType": "gas",
   "input": {
     "amount": 15,
-    "gas": "mekanism:brine"
+    "id": "mekanism:brine"
   },
   "output": {
-    "item": "mekanism:salt"
+    "count": 1,
+    "id": "mekanism:salt"
   }
 }

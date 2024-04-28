@@ -12,7 +12,7 @@
       "tag": "forge:circuits/advanced"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "###"
   ],
   "result": {
-    "item": "mekanism:thermal_evaporation_controller"
+    "count": 1,
+    "id": "mekanism:thermal_evaporation_controller"
   }
 }

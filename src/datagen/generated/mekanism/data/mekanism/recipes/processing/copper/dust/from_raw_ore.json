@@ -3,11 +3,11 @@
   "input": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/copper"
+      "tag": "c:raw_materials/copper"
     }
   },
   "output": {
     "count": 4,
-    "item": "mekanism:dust_copper"
+    "id": "mekanism:dust_copper"
   }
 }

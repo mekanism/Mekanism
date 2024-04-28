@@ -22,7 +22,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:robit"
+      "count": 1,
+      "id": "mekanism:robit"
     },
     "title": {
       "translate": "advancements.mekanism.robit.title"

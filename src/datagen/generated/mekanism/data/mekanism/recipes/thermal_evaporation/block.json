@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanism:thermal_evaporation_block"
+    "id": "mekanism:thermal_evaporation_block"
   }
 }

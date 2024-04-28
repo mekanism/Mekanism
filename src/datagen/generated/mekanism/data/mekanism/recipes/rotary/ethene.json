@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:ethene"
+    "id": "mekanism:ethene"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:ethene"
+    "id": "mekanism:ethene"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:ethene"
+    "id": "mekanism:ethene"
   }
 }

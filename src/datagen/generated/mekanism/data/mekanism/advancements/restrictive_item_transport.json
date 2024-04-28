@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:restrictive_transporter"
-            ]
+            "items": "mekanism:restrictive_transporter"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.restrictive_item_transport.description"
     },
     "icon": {
-      "item": "mekanism:restrictive_transporter"
+      "count": 1,
+      "id": "mekanism:restrictive_transporter"
     },
     "title": {
       "translate": "advancements.mekanism.restrictive_item_transport.title"

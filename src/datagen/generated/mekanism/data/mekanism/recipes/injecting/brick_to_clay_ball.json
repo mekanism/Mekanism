@@ -6,10 +6,11 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ingots/brick"
+      "tag": "c:bricks/normal"
     }
   },
   "output": {
-    "item": "minecraft:clay_ball"
+    "count": 1,
+    "id": "minecraft:clay_ball"
   }
 }

@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:painting_machine"
+    "count": 1,
+    "id": "mekanism:painting_machine"
   }
 }

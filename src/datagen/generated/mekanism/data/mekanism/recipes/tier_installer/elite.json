@@ -9,7 +9,7 @@
       "tag": "forge:circuits/elite"
     },
     "I": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "P": {
       "tag": "minecraft:planks"
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:elite_tier_installer"
+    "count": 1,
+    "id": "mekanism:elite_tier_installer"
   }
 }

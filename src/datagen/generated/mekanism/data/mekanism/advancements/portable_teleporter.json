@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:portable_teleporter"
-            ]
+            "items": "mekanism:portable_teleporter"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.portable_teleporter.description"
     },
     "icon": {
-      "item": "mekanism:portable_teleporter"
+      "count": 1,
+      "id": "mekanism:portable_teleporter"
     },
     "title": {
       "translate": "advancements.mekanism.portable_teleporter.title"

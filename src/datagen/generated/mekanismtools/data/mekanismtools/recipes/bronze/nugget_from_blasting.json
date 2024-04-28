@@ -35,5 +35,8 @@
       "item": "mekanismtools:bronze_paxel"
     }
   ],
-  "result": "mekanism:nugget_bronze"
+  "result": {
+    "count": 1,
+    "id": "mekanism:nugget_bronze"
+  }
 }

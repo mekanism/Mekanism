@@ -7,6 +7,6 @@
   },
   "output": {
     "count": 2,
-    "item": "mekanism:dust_tin"
+    "id": "mekanism:dust_tin"
   }
 }

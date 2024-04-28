@@ -6,7 +6,7 @@
       "tag": "forge:ingots/refined_glowstone"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     " R"
   ],
   "result": {
-    "item": "mekanismtools:refined_glowstone_hoe"
+    "count": 1,
+    "id": "mekanismtools:refined_glowstone_hoe"
   }
 }

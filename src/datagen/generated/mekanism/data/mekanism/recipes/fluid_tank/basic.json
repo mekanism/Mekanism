@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/basic"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "AIA"
   ],
   "result": {
-    "item": "mekanism:basic_fluid_tank"
+    "count": 1,
+    "id": "mekanism:basic_fluid_tank"
   }
 }

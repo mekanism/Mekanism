@@ -18,6 +18,7 @@
     "E E"
   ],
   "result": {
-    "item": "mekanism:free_runners"
+    "count": 1,
+    "id": "mekanism:free_runners"
   }
 }

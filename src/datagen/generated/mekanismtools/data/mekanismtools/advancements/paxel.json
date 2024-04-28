@@ -30,8 +30,8 @@
       "translate": "advancements.mekanismtools.paxel.description"
     },
     "icon": {
-      "item": "mekanismtools:diamond_paxel",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "mekanismtools:diamond_paxel"
     },
     "title": {
       "translate": "advancements.mekanismtools.paxel.title"

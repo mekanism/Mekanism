@@ -15,6 +15,7 @@
     "AOA"
   ],
   "result": {
-    "item": "mekanism:basic_chemical_tank"
+    "count": 1,
+    "id": "mekanism:basic_chemical_tank"
   }
 }

@@ -13,34 +13,17 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "mekanism:copy_frequencies"
-            },
-            {
-              "function": "mekanism:copy_security"
-            },
-            {
               "function": "minecraft:copy_name",
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_to_attachments",
-              "ops": [
-                {
-                  "source": "amount",
-                  "target": "mekanism:long_amount"
-                },
-                {
-                  "source": "fuzzyMode",
-                  "target": "mekanism:fuzzy"
-                },
-                {
-                  "source": "inverse",
-                  "target": "mekanism:inverse"
-                },
-                {
-                  "source": "singleItem",
-                  "target": "mekanism:item_target"
-                }
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:frequencies",
+                "mekanism:qio_frequency",
+                "mekanism:long_amount",
+                "mekanism:fuzzy",
+                "mekanism:inverse"
               ],
               "source": "block_entity"
             }

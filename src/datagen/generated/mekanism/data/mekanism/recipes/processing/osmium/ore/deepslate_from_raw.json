@@ -2,7 +2,7 @@
   "type": "mekanism:combining",
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "c:cobblestones/deepslate"
     }
   },
   "mainInput": {
@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "mekanism:deepslate_osmium_ore"
+    "count": 1,
+    "id": "mekanism:deepslate_osmium_ore"
   }
 }

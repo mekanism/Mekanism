@@ -3,9 +3,10 @@
   "chemicalType": "gas",
   "input": {
     "amount": 100,
-    "gas": "mekanism:lithium"
+    "id": "mekanism:lithium"
   },
   "output": {
-    "item": "mekanism:dust_lithium"
+    "count": 1,
+    "id": "mekanism:dust_lithium"
   }
 }

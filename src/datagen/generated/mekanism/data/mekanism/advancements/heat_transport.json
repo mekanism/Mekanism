@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_thermodynamic_conductor"
-            ]
+            "items": "mekanism:basic_thermodynamic_conductor"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.heat_transport.description"
     },
     "icon": {
-      "item": "mekanism:basic_thermodynamic_conductor"
+      "count": 1,
+      "id": "mekanism:basic_thermodynamic_conductor"
     },
     "title": {
       "translate": "advancements.mekanism.heat_transport.title"

@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:dark_red"
+    "id": "mekanism:dark_red"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:dark_red_balloon"
+    "count": 1,
+    "id": "mekanismadditions:dark_red_balloon"
   }
 }

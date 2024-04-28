@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:purple"
+    "id": "mekanism:purple"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:purple_balloon"
+    "count": 1,
+    "id": "mekanismadditions:purple_balloon"
   }
 }

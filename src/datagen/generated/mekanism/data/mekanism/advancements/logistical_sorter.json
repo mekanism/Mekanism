@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:logistical_sorter"
-            ]
+            "items": "mekanism:logistical_sorter"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:logistical_sorter"
+      "count": 1,
+      "id": "mekanism:logistical_sorter"
     },
     "title": {
       "translate": "advancements.mekanism.logistical_sorter.title"

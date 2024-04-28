@@ -6,7 +6,7 @@
       "tag": "forge:ingots/osmium"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:osmium_pickaxe"
+    "count": 1,
+    "id": "mekanismtools:osmium_pickaxe"
   }
 }

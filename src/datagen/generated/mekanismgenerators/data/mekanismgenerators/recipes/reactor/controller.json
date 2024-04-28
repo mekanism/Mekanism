@@ -9,7 +9,7 @@
       "item": "mekanismgenerators:fusion_reactor_frame"
     },
     "G": {
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     },
     "T": {
       "item": "mekanism:basic_chemical_tank"
@@ -21,6 +21,7 @@
     "FFF"
   ],
   "result": {
-    "item": "mekanismgenerators:fusion_reactor_controller"
+    "count": 1,
+    "id": "mekanismgenerators:fusion_reactor_controller"
   }
 }

@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 200,
-    "gas": "mekanism:osmium"
+    "id": "mekanism:osmium"
   }
 }

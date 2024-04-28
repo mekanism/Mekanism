@@ -12,6 +12,6 @@
   },
   "output": {
     "count": 2,
-    "item": "minecraft:blue_dye"
+    "id": "minecraft:blue_dye"
   }
 }

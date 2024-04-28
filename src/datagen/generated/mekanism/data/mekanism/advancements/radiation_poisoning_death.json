@@ -15,7 +15,8 @@
     },
     "hidden": true,
     "icon": {
-      "item": "minecraft:player_head"
+      "count": 1,
+      "id": "minecraft:player_head"
     },
     "title": {
       "translate": "advancements.mekanism.radiation_poisoning_death.title"

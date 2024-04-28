@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:steel_casing"
-            ]
+            "items": "mekanism:steel_casing"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.steel_casing.description"
     },
     "icon": {
-      "item": "mekanism:steel_casing"
+      "count": 1,
+      "id": "mekanism:steel_casing"
     },
     "title": {
       "translate": "advancements.mekanism.steel_casing.title"

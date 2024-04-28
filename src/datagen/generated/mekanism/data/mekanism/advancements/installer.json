@@ -24,7 +24,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:basic_tier_installer"
+      "count": 1,
+      "id": "mekanism:basic_tier_installer"
     },
     "title": {
       "translate": "advancements.mekanism.installer.title"

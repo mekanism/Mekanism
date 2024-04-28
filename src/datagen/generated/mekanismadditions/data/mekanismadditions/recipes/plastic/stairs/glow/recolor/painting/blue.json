@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:blue"
+    "id": "mekanism:blue"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:blue_plastic_glow_stairs"
+    "count": 1,
+    "id": "mekanismadditions:blue_plastic_glow_stairs"
   }
 }

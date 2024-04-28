@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_mechanical_pipe"
-            ]
+            "items": "mekanism:basic_mechanical_pipe"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.fluid_transport.description"
     },
     "icon": {
-      "item": "mekanism:basic_mechanical_pipe"
+      "count": 1,
+      "id": "mekanism:basic_mechanical_pipe"
     },
     "title": {
       "translate": "advancements.mekanism.fluid_transport.title"

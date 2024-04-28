@@ -5,29 +5,19 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:mekasuit_helmet"
-            ]
+            "items": "mekanism:mekasuit_helmet"
           },
           {
-            "items": [
-              "mekanism:mekasuit_bodyarmor"
-            ]
+            "items": "mekanism:mekasuit_bodyarmor"
           },
           {
-            "items": [
-              "mekanism:mekasuit_pants"
-            ]
+            "items": "mekanism:mekasuit_pants"
           },
           {
-            "items": [
-              "mekanism:mekasuit_boots"
-            ]
+            "items": "mekanism:mekasuit_boots"
           },
           {
-            "items": [
-              "mekanism:meka_tool"
-            ]
+            "items": "mekanism:meka_tool"
           }
         ]
       },
@@ -40,7 +30,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mekanism:mekasuit_bodyarmor"
+      "count": 1,
+      "id": "mekanism:mekasuit_bodyarmor"
     },
     "title": {
       "translate": "advancements.mekanism.mekasuit.title"

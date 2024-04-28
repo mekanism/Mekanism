@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:basic_energy_cube"
-            ]
+            "items": "mekanism:basic_energy_cube"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.energy_cube.description"
     },
     "icon": {
-      "item": "mekanism:basic_energy_cube"
+      "count": 1,
+      "id": "mekanism:basic_energy_cube"
     },
     "title": {
       "translate": "advancements.mekanism.energy_cube.title"

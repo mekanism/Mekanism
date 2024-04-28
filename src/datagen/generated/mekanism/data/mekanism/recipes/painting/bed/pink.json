@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:pink"
+    "id": "mekanism:pink"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:pink_bed"
+    "count": 1,
+    "id": "minecraft:pink_bed"
   }
 }

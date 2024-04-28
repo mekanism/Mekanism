@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:gray"
+    "id": "mekanism:gray"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:gray_bed"
+    "count": 1,
+    "id": "minecraft:gray_bed"
   }
 }

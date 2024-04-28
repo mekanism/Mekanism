@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 2,
-    "gas": "mekanism:hydrogen_chloride"
+    "id": "mekanism:hydrogen_chloride"
   }
 }

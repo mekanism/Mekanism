@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     },
     "S": {
       "tag": "forge:ingots/steel"
@@ -14,6 +14,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "mekanism:basic_pressurized_tube"
+    "id": "mekanism:basic_pressurized_tube"
   }
 }

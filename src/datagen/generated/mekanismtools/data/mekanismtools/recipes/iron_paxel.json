@@ -9,7 +9,7 @@
       "item": "minecraft:iron_pickaxe"
     },
     "R": {
-      "tag": "forge:rods/wooden"
+      "tag": "c:rods/wooden"
     },
     "S": {
       "item": "minecraft:iron_shovel"
@@ -21,6 +21,7 @@
     " R "
   ],
   "result": {
-    "item": "mekanismtools:iron_paxel"
+    "count": 1,
+    "id": "mekanismtools:iron_paxel"
   }
 }

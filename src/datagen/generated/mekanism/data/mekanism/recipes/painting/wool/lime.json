@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "pigment": "mekanism:lime"
+    "id": "mekanism:lime"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "minecraft:lime_wool"
+    "count": 1,
+    "id": "minecraft:lime_wool"
   }
 }

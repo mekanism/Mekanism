@@ -3,7 +3,7 @@
   "input": {
     "ingredient": [
       {
-        "tag": "forge:storage_blocks/quartz"
+        "item": "minecraft:quartz_block"
       },
       {
         "item": "minecraft:quartz_bricks"
@@ -18,6 +18,6 @@
   },
   "output": {
     "count": 4,
-    "item": "minecraft:quartz"
+    "id": "minecraft:quartz"
   }
 }

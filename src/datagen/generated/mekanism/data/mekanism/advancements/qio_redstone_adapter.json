@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:qio_redstone_adapter"
-            ]
+            "items": "mekanism:qio_redstone_adapter"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.qio_redstone_adapter.description"
     },
     "icon": {
-      "item": "mekanism:qio_redstone_adapter"
+      "count": 1,
+      "id": "mekanism:qio_redstone_adapter"
     },
     "title": {
       "translate": "advancements.mekanism.qio_redstone_adapter.title"

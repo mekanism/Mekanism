@@ -12,7 +12,7 @@
       "tag": "forge:circuits/elite"
     },
     "I": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "ACA"
   ],
   "result": {
-    "item": "mekanism:chemical_injection_chamber"
+    "count": 1,
+    "id": "mekanism:chemical_injection_chamber"
   }
 }

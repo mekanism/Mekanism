@@ -6,10 +6,10 @@
   },
   "output": {
     "amount": 1,
-    "slurry": "mekanism:clean_tin"
+    "id": "mekanism:clean_tin"
   },
   "slurryInput": {
     "amount": 1,
-    "slurry": "mekanism:dirty_tin"
+    "id": "mekanism:dirty_tin"
   }
 }

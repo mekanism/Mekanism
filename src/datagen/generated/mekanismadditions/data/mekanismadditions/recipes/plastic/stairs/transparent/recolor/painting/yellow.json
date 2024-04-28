@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "pigment": "mekanism:yellow"
+    "id": "mekanism:yellow"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:yellow_plastic_transparent_stairs"
+    "count": 1,
+    "id": "mekanismadditions:yellow_plastic_transparent_stairs"
   }
 }

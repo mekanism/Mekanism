@@ -24,6 +24,7 @@
     "HoH"
   ],
   "result": {
-    "item": "mekanism:module_inhalation_purification_unit"
+    "count": 1,
+    "id": "mekanism:module_inhalation_purification_unit"
   }
 }

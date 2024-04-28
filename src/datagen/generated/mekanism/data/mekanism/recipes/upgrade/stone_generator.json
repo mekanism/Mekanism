@@ -12,7 +12,7 @@
       "item": "minecraft:lava_bucket"
     },
     "G": {
-      "tag": "forge:glass/silica"
+      "tag": "c:glass_blocks/cheap"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     " G "
   ],
   "result": {
-    "item": "mekanism:upgrade_stone_generator"
+    "count": 1,
+    "id": "mekanism:upgrade_stone_generator"
   }
 }

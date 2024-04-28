@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:diversion_transporter"
-            ]
+            "items": "mekanism:diversion_transporter"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mekanism.diversion_item_transport.description"
     },
     "icon": {
-      "item": "mekanism:diversion_transporter"
+      "count": 1,
+      "id": "mekanism:diversion_transporter"
     },
     "title": {
       "translate": "advancements.mekanism.diversion_item_transport.title"

@@ -6,14 +6,14 @@
   },
   "fluidOutput": {
     "amount": 1,
-    "fluid": "mekanism:sulfur_trioxide"
+    "id": "mekanism:sulfur_trioxide"
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:sulfur_trioxide"
+    "id": "mekanism:sulfur_trioxide"
   },
   "gasOutput": {
     "amount": 1,
-    "gas": "mekanism:sulfur_trioxide"
+    "id": "mekanism:sulfur_trioxide"
   }
 }

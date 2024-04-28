@@ -8,9 +8,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:teleporter"
-            ]
+            "items": "mekanism:teleporter"
           }
         ]
       },
@@ -22,7 +20,8 @@
       "translate": "advancements.mekanism.teleporter.description"
     },
     "icon": {
-      "item": "mekanism:teleporter"
+      "count": 1,
+      "id": "mekanism:teleporter"
     },
     "title": {
       "translate": "advancements.mekanism.teleporter.title"

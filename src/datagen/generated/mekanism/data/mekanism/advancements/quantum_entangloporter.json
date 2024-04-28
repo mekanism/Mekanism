@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mekanism:quantum_entangloporter"
-            ]
+            "items": "mekanism:quantum_entangloporter"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mekanism.quantum_entangloporter.description"
     },
     "icon": {
-      "item": "mekanism:quantum_entangloporter"
+      "count": 1,
+      "id": "mekanism:quantum_entangloporter"
     },
     "title": {
       "translate": "advancements.mekanism.quantum_entangloporter.title"

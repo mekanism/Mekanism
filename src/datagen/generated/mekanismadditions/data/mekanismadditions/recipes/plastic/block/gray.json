@@ -6,7 +6,7 @@
       "item": "mekanism:hdpe_sheet"
     },
     "D": {
-      "tag": "forge:dyes/gray"
+      "tag": "c:dyes/gray"
     }
   },
   "pattern": [
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "mekanismadditions:gray_plastic"
+    "id": "mekanismadditions:gray_plastic"
   }
 }

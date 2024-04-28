@@ -64,7 +64,8 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "item": "minecraft:creeper_head"
+      "count": 1,
+      "id": "minecraft:creeper_head"
     },
     "title": {
       "translate": "advancements.mekanismadditions.hurt_by_babies.title"

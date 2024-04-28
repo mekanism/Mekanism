@@ -2,7 +2,7 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "pigment": "mekanism:light_gray"
+    "id": "mekanism:light_gray"
   },
   "itemInput": {
     "ingredient": {
@@ -16,6 +16,7 @@
     }
   },
   "output": {
-    "item": "mekanismadditions:light_gray_plastic_stairs"
+    "count": 1,
+    "id": "mekanismadditions:light_gray_plastic_stairs"
   }
 }

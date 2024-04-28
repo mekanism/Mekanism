@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "D": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     },
     "I": {
       "tag": "forge:ingots/lead"
@@ -14,6 +14,7 @@
     "IDI"
   ],
   "result": {
-    "item": "mekanism:hazmat_boots"
+    "count": 1,
+    "id": "mekanism:hazmat_boots"
   }
 }

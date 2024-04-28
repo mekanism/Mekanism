@@ -7,6 +7,6 @@
   },
   "output": {
     "amount": 5,
-    "infuse_type": "mekanism:bio"
+    "id": "mekanism:bio"
   }
 }
