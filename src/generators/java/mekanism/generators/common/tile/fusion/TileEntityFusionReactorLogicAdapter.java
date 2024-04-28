@@ -127,11 +127,6 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    public boolean canBeMaster() {
-        return false;
-    }
-
-    @Override
     public void nextMode() {
         activeCooled = !activeCooled;
         markForSave();

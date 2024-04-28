@@ -4,18 +4,12 @@ import mekanism.api.Action;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class InsertableSlot extends Slot implements IInsertableSlot {
 
     public InsertableSlot(Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
-    }
-
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return Math.min(getMaxStackSize(), stack.getMaxStackSize());
     }
 
     @NotNull

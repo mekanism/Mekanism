@@ -12,7 +12,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
@@ -184,7 +183,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
     }
 
     public static class MultiInfusionStackIngredient extends MultiChemicalStackIngredient<InfuseType, InfusionStack, InfusionStackIngredient> implements
-          InfusionStackIngredient, IEmptyInfusionProvider {
+          InfusionStackIngredient {
 
         //This must be lazy as the base stream codec isn't initialized until after this line happens
         public static final StreamCodec<RegistryFriendlyByteBuf, MultiInfusionStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
