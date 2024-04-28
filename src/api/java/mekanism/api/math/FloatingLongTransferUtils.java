@@ -100,7 +100,7 @@ public class FloatingLongTransferUtils {
         if (energyContainers.isEmpty()) {
             return stack;
         } else if (energyContainers.size() == 1) {
-            return energyContainers.get(0).insert(stack, action, automationType);
+            return energyContainers.getFirst().insert(stack, action, automationType);
         }
         FloatingLong toInsert = stack;
         //Start by trying to insert into the containers that are not empty
@@ -199,7 +199,7 @@ public class FloatingLongTransferUtils {
         if (energyContainers.isEmpty()) {
             return FloatingLong.ZERO;
         } else if (energyContainers.size() == 1) {
-            return energyContainers.get(0).extract(amount, action, automationType);
+            return energyContainers.getFirst().extract(amount, action, automationType);
         }
         FloatingLong extracted = FloatingLong.ZERO;
         FloatingLong toExtract = amount.copy();

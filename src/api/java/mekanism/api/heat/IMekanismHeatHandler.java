@@ -105,7 +105,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
         if (heatCapacitors.isEmpty()) {
             return HeatAPI.DEFAULT_INVERSE_INSULATION;
         } else if (heatCapacitors.size() == 1) {
-            return heatCapacitors.get(0).getInverseInsulation();
+            return heatCapacitors.getFirst().getInverseInsulation();
         }
         double sum = 0;
         double totalCapacity = getTotalHeatCapacity(heatCapacitors);
@@ -121,7 +121,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
         if (heatCapacitors.isEmpty()) {
             return 0;
         } else if (heatCapacitors.size() == 1) {
-            return heatCapacitors.get(0).getTemperature();
+            return heatCapacitors.getFirst().getTemperature();
         }
         double sum = 0;
         double totalCapacity = getTotalHeatCapacity(heatCapacitors);
@@ -137,7 +137,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
         if (heatCapacitors.isEmpty()) {
             return HeatAPI.DEFAULT_INVERSE_CONDUCTION;
         } else if (heatCapacitors.size() == 1) {
-            return heatCapacitors.get(0).getInverseConduction();
+            return heatCapacitors.getFirst().getInverseConduction();
         }
         double sum = 0;
         double totalCapacity = getTotalHeatCapacity(heatCapacitors);
@@ -154,7 +154,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
 
     private double getTotalHeatCapacity(List<IHeatCapacitor> capacitors) {
         if (capacitors.size() == 1) {
-            return capacitors.get(0).getHeatCapacity();
+            return capacitors.getFirst().getHeatCapacity();
         }
         double sum = 0;
         for (IHeatCapacitor capacitor : capacitors) {
@@ -167,7 +167,7 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
     default void handleHeat(double transfer, @Nullable Direction side) {
         List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(side);
         if (heatCapacitors.size() == 1) {
-            heatCapacitors.get(0).handleHeat(transfer);
+            heatCapacitors.getFirst().handleHeat(transfer);
         } else if (!heatCapacitors.isEmpty()) {
             double totalHeatCapacity = getTotalHeatCapacity(heatCapacitors);
             for (IHeatCapacitor heatCapacitor : heatCapacitors) {

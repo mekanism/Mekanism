@@ -10,7 +10,7 @@ public interface ITileRadioactive {
     static float calculateRadiationScale(List<IGasTank> tanks) {
         if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tanks.isEmpty()) {
             if (tanks.size() == 1) {
-                IGasTank tank = tanks.get(0);
+                IGasTank tank = tanks.getFirst();
                 if (!tank.isEmpty() && tank.getStack().isRadioactive()) {
                     return tank.getStored() / (float) tank.getCapacity();
                 }

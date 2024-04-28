@@ -82,7 +82,7 @@ public class ChemicalUtils {
         if (chemicalContainers.isEmpty()) {
             return stack;
         } else if (chemicalContainers.size() == 1) {
-            return chemicalContainers.get(0).insert(stack, action, automationType);
+            return chemicalContainers.getFirst().insert(stack, action, automationType);
         }
         STACK toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
@@ -168,7 +168,7 @@ public class ChemicalUtils {
         if (chemicalTanks.isEmpty()) {
             return empty;
         } else if (chemicalTanks.size() == 1) {
-            return chemicalTanks.get(0).extract(amount, action, automationType);
+            return chemicalTanks.getFirst().extract(amount, action, automationType);
         }
         STACK extracted = empty;
         long toDrain = amount;
@@ -255,7 +255,7 @@ public class ChemicalUtils {
         if (chemicalTanks.isEmpty()) {
             return empty;
         } else if (chemicalTanks.size() == 1) {
-            TANK tank = chemicalTanks.get(0);
+            TANK tank = chemicalTanks.getFirst();
             if (tank.isEmpty() || !tank.isTypeEqual(stack)) {
                 return empty;
             }

@@ -21,7 +21,7 @@ class MultiLineTooltip extends Tooltip {
     }
 
     private MultiLineTooltip(List<Component> message, List<Component> narration) {
-        super(message.get(0), narration.get(0));
+        super(message.getFirst(), narration.getFirst());
         this.message = message;
         this.narration = narration;
     }

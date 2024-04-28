@@ -51,7 +51,7 @@ public class ItemStackToEnergyEmiRecipe extends MekanismEmiHolderRecipe<ItemStac
                 }
             };
         }
-        FloatingLong energy = outputDefinition.isEmpty() ? FloatingLong.ZERO : outputDefinition.get(0);
+        FloatingLong energy = outputDefinition.isEmpty() ? FloatingLong.ZERO : outputDefinition.getFirst();
         return new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {

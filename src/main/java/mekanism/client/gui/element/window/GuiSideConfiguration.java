@@ -56,7 +56,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         interactionStrategy = InteractionStrategy.ALL;
         List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();
         //Get the top transmission as the initial type
-        setCurrentType(transmissions.get(0));
+        setCurrentType(transmissions.getFirst());
         //TODO: Try to make the GUI look a bit better as it still seems a bit off with the scales and such
         // Maybe we want to eventually add some sort of "in world preview" type thing
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12, () -> {

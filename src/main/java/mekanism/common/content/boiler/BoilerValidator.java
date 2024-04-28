@@ -1,9 +1,9 @@
 package mekanism.common.content.boiler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
-import java.util.Set;
+import java.util.SequencedSet;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.multiblock.CuboidStructureValidator;
@@ -43,8 +43,8 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
 
     @Override
     public FormationResult postcheck(BoilerMultiblockData structure, Long2ObjectMap<ChunkAccess> chunkMap) {
-        Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
-        Set<BlockPos> elements = new ObjectOpenHashSet<>();
+        SequencedSet<BlockPos> dispersers = new LinkedHashSet<>();
+        SequencedSet<BlockPos> elements = new LinkedHashSet<>();
         for (BlockPos pos : structure.internalLocations) {
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityPressureDisperser) {
@@ -63,7 +63,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         }
 
         //Find a single disperser contained within this multiblock
-        final BlockPos initDisperser = dispersers.iterator().next();
+        final BlockPos initDisperser = dispersers.getFirst();
 
         //Ensure that a full horizontal plane of dispersers exists, surrounding the found disperser
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
@@ -83,7 +83,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
             return FormationResult.fail(MekanismLang.BOILER_INVALID_EXTRA_DISPERSER);
         }
 
-        structure.superheatingElements = FormationProtocol.explore(world, chunkMap, elements.iterator().next(), initDisperser,
+        structure.superheatingElements = FormationProtocol.explore(world, chunkMap, elements.getFirst(), initDisperser,
               (level, chunks, start, n, pos) -> pos.getY() < n.getY() && WorldUtils.getTileEntity(TileEntitySuperheatingElement.class, level, chunks, pos) != null);
 
         if (elements.size() > structure.superheatingElements) {

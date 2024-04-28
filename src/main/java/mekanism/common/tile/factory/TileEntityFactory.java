@@ -566,7 +566,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     // we don't do any extra processing here, and can properly short circuit
                     HashedItem item = (HashedItem) info.item;
                     ItemStack largerInput = item.createStack(Math.min(item.getMaxStackSize(), info.totalCount));
-                    ProcessInfo processInfo = info.processes.get(0);
+                    ProcessInfo processInfo = info.processes.getFirst();
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
                     info.recipe = factory.getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
                     if (info.recipe != null) {

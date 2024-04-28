@@ -321,7 +321,7 @@ public class TransporterStack {
     }
 
     public BlockPos getDest() {
-        return pathToTarget.get(0);
+        return pathToTarget.getFirst();
     }
 
     @Nullable

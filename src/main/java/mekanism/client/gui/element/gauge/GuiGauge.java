@@ -145,7 +145,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         } else {
             list = new ArrayList<>(getTooltipText());
             if (getLabel() != null) {
-                list.add(0, getLabel());
+                list.addFirst(getLabel());
             }
         }
         if (!list.equals(lastInfo)) {

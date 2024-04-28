@@ -69,7 +69,7 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
             builder.with(CrTRecipeComponents.ITEM.output(), CrTUtils.convertItems(mainOutputDefinition));
         } else {
             //Has both main and secondary outputs
-            builder.with(CrTRecipeComponents.ITEM.output(), CrTUtils.convertItems(List.of(mainOutputDefinition.get(0), secondaryOutputDefinition.get(0))))
+            builder.with(CrTRecipeComponents.ITEM.output(), CrTUtils.convertItems(List.of(mainOutputDefinition.getFirst(), secondaryOutputDefinition.getFirst())))
                   .with(CrTRecipeComponents.CHANCE, recipe.getSecondaryChance());
         }
         return Optional.of(builder.build());

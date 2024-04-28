@@ -104,7 +104,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
                 List<ResourceLocation> textures = skin.textures();
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
-                    ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();
+                    ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.getFirst()).build();
                     return wrap(model, stack, world, entity, seed, modelData, RobitModelDataBakedModel::new);
                 }
             }

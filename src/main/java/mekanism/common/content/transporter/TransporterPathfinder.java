@@ -106,7 +106,7 @@ public final class TransporterPathfinder {
         if (paths.isEmpty()) {
             return null;
         }
-        return paths.get(0);
+        return paths.getFirst();
     }
 
     @Nullable
@@ -134,7 +134,7 @@ public final class TransporterPathfinder {
                                 // if we are the last element mark that the next target is the first one
                                 // Note: We do this rather than just setting it to null so that if more
                                 // targets get added we still continue in the place we are expecting
-                                outputter.setRoundRobinTarget(destinations.get(0));
+                                outputter.setRoundRobinTarget(destinations.getFirst());
                             } else {
                                 // Otherwise, if we are not the last element mark the next target as
                                 // the next destination

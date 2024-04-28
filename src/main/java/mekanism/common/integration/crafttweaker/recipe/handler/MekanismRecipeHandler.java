@@ -158,7 +158,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             }
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
-            return convertParam(list.get(0));
+            return convertParam(list.getFirst());
         } else if (param instanceof ElectrolysisRecipeOutput output) {
             return convertParam(output.left()) + ", " + convertParam(output.right());
         }
@@ -278,7 +278,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                     return Optional.empty();
                 }
                 //Update data to be the element
-                data = dataList.get(0);
+                data = dataList.getFirst();
             }
             if (data instanceof ItemStackIngredient ingredient) {
                 inputs.addItem(ingredient);

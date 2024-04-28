@@ -187,7 +187,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
                 return ItemStack.EMPTY;
             }
             //TODO - 1.20.4: ?? Improve/fix implementation of this?? such as for a ListIngredient to properly cycle?
-            return itemStacks.get(0);
+            return itemStacks.getFirst();
         }
     }
 

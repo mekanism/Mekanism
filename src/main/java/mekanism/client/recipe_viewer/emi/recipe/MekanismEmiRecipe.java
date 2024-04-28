@@ -204,7 +204,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
         if (stacks.isEmpty()) {
             return () -> empty;
         } else if (stacks.size() == 1) {
-            STACK stack = stacks.get(0);
+            STACK stack = stacks.getFirst();
             return () -> stack;
         }
         return () -> RecipeViewerUtils.getCurrent(stacks);

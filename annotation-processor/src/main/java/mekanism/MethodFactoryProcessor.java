@@ -114,7 +114,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
             }
             ClassName clazz = ClassName.get(superTypeElement);
             if (clazz.canonicalName().startsWith("mekanism")) {
-                superClasses.add(0, clazz);
+                superClasses.addFirst(clazz);
             }
         } while ((superClass = superTypeElement.getSuperclass()).getKind() != TypeKind.NONE);
 

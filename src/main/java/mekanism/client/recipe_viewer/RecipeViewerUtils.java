@@ -3,9 +3,10 @@ package mekanism.client.recipe_viewer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.Chemical;
@@ -149,7 +150,7 @@ public class RecipeViewerUtils {
     }
 
     public static List<ItemStack> getDisplayItems(SlurryStackIngredient ingredient) {
-        Set<Named<Item>> tags = new HashSet<>();
+        SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
         for (SlurryStack slurryStack : ingredient.getRepresentations()) {
             Slurry slurry = slurryStack.getChemical();
             if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
@@ -161,7 +162,7 @@ public class RecipeViewerUtils {
         }
         if (tags.size() == 1) {
             //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
-            return tags.stream().findFirst().map(tag -> tag.stream().map(ItemStack::new).toList()).orElse(Collections.emptyList());
+            return tags.getFirst().stream().map(ItemStack::new).toList();
         }
         return Collections.emptyList();
     }

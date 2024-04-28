@@ -209,7 +209,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             List<String> representations = parameterRepresentations[i];
             int representationCount = representations.size();
             if (representationCount == 1) {
-                appendToAll(combinedParameters, representations.get(0), addComma);
+                appendToAll(combinedParameters, representations.getFirst(), addComma);
             } else {
                 List<StringBuilder> currentCombinedParameters = copyCombined(combinedParameters);
                 for (int j = 0; j < representationCount; j++) {
@@ -228,7 +228,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             }
         }
         appendRecipeMethodStart(stringBuilder, methodName);
-        stringBuilder.append(combinedParameters.get(0))
+        stringBuilder.append(combinedParameters.getFirst())
               .append(");\n");
         int possibilities = combinedParameters.size();
         if (possibilities > 1) {

@@ -129,7 +129,7 @@ public class CrTUtils {
             );
             throw new IllegalArgumentException(message);
         }
-        return Optional.of(values.get(0));
+        return Optional.of(values.getFirst());
     }
 
     /**
@@ -161,7 +161,7 @@ public class CrTUtils {
         if (outputs.isEmpty()) {
             return "";
         }
-        return describeOutputs(outputs, getConverter(outputs.get(0)));
+        return describeOutputs(outputs, getConverter(outputs.getFirst()));
     }
 
     /**
@@ -172,7 +172,7 @@ public class CrTUtils {
         if (size == 0) {
             return "";
         } else if (size == 1) {
-            return converter.apply(outputs.get(0)).toString();
+            return converter.apply(outputs.getFirst()).toString();
         }
         //Note: This isn't the best way to describe multiple outputs, but it is probably as close as we can get
         StringBuilder description = new StringBuilder();
@@ -223,7 +223,7 @@ public class CrTUtils {
         if (elements.isEmpty()) {
             return Collections.emptyList();
         }
-        return convert(elements, CrTUtils.<CHEMICAL, STACK, CRT_STACK>getConverter(elements.get(0)));
+        return convert(elements, CrTUtils.<CHEMICAL, STACK, CRT_STACK>getConverter(elements.getFirst()));
     }
 
     /**

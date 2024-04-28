@@ -94,7 +94,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         }
         if (!set.isEmpty()) {
             throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
-        } else if (pattern.size() == 1 && pattern.get(0).length() == 1) {
+        } else if (pattern.size() == 1 && pattern.getFirst().length() == 1) {
             throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item, and should probably be a shapeless recipe instead");
         }
     }

@@ -57,7 +57,7 @@ public class TooltipUtils {
         if (messages.isEmpty()) {
             return null;
         } else if (messages.size() == 1) {
-            return create(messages.get(0));
+            return create(messages.getFirst());
         }
         return new MultiLineTooltip(List.copyOf(messages));
     }

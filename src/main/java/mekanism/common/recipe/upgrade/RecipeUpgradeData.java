@@ -178,7 +178,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (upgradeData.isEmpty()) {
             return null;
         }
-        TYPE data = (TYPE) upgradeData.get(0);
+        TYPE data = (TYPE) upgradeData.getFirst();
         for (int i = 1; i < upgradeData.size(); i++) {
             data = data.merge((TYPE) upgradeData.get(i));
             if (data == null) {

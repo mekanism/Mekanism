@@ -46,7 +46,7 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
               either -> either.map(Function.identity(), multi -> {
                   //unbox if we only got one
                   if (multi.getIngredients().size() == 1) {
-                      return multi.getIngredients().get(0);
+                      return multi.getIngredients().getFirst();
                   }
                   return multi;
               }),

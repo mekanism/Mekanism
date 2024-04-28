@@ -162,7 +162,7 @@ public class RenderTickHandler {
                 profiler.push(ProfilerConstants.DELAYED);
                 if (transparentRenderers.size() == 1) {
                     //If we only have one render type we don't need to bother calculating any distances
-                    LazyRender lazyRender = transparentRenderers.get(0);
+                    LazyRender lazyRender = transparentRenderers.getFirst();
                     doTransparentRender(lazyRender.getRenderType(), lazyRender, camera, renderer, poseStack, renderTick, partialTick, profiler);
                 } else {
 

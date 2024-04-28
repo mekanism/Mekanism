@@ -60,7 +60,7 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGauge, scaledGases);
         List<BoxedChemicalStack> outputDefinition = recipe.getOutputDefinition();
         if (outputDefinition.size() == 1) {
-            BoxedChemicalStack output = outputDefinition.get(0);
+            BoxedChemicalStack output = outputDefinition.getFirst();
             initChemicalOutput(builder, MekanismJEI.getIngredientType(output.getChemicalType()), Collections.singletonList(output.getChemicalStack()));
         } else {
             //This in theory handles them being multiple types as well, but is that even something we want to allow?

@@ -37,7 +37,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         } else {
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
-            PressurizedReactionRecipeOutput output = outputs.get(0);
+            PressurizedReactionRecipeOutput output = outputs.getFirst();
             itemOutput = output.item();
             gasOutput = output.gas();
         }

@@ -36,7 +36,7 @@ public class CopyContainersLootFunction implements LootItemFunction {
                 NeoForgeExtraCodecs.withAlternative(
                       ContainerType.CODEC.<List<ContainerType<?, ?, ?>>>flatComapMap(List::of, list -> {
                           if (list.size() == 1) {
-                              return DataResult.success(list.get(0));
+                              return DataResult.success(list.getFirst());
                           }
                           return DataResult.error(() -> "Must be a single container type to be represented as a direct reference");
                       }).fieldOf("type"),

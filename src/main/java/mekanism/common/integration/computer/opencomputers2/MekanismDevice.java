@@ -77,7 +77,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         return this.methods.keySet().stream().map(key -> {
             List<BoundMethodData<?>> overloads = this.methods.get(key);
             if (overloads.size() == 1) {
-                return new Method(key, overloads.get(0));
+                return new Method(key, overloads.getFirst());
             }
             Set<RPCMethod> set = new HashSet<>(overloads.size());
             for (BoundMethodData<?> md : overloads) {

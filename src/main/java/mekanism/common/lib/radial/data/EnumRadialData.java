@@ -27,7 +27,7 @@ public class EnumRadialData<MODE extends Enum<MODE> & IRadialMode> extends Class
         super(identifier, enumClass);
         //Store it in a list so that we don't have to convert it whenever we are accessing it
         this.modes = List.of(this.clazz.getEnumConstants());
-        this.defaultMode = this.modes.isEmpty() ? null : this.modes.get(0);
+        this.defaultMode = this.modes.isEmpty() ? null : this.modes.getFirst();
     }
 
     @Nullable

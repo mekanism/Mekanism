@@ -95,7 +95,7 @@ public class ExtendedFluidHandlerUtils {
         if (fluidContainers.isEmpty()) {
             return stack;
         } else if (fluidContainers.size() == 1) {
-            return fluidContainers.get(0).insert(stack, action, automationType);
+            return fluidContainers.getFirst().insert(stack, action, automationType);
         }
         FluidStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
@@ -194,7 +194,7 @@ public class ExtendedFluidHandlerUtils {
         if (fluidContainers.isEmpty()) {
             return FluidStack.EMPTY;
         } else if (fluidContainers.size() == 1) {
-            return fluidContainers.get(0).extract(amount, action, automationType);
+            return fluidContainers.getFirst().extract(amount, action, automationType);
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = amount;
@@ -294,7 +294,7 @@ public class ExtendedFluidHandlerUtils {
         if (fluidContainers.isEmpty()) {
             return FluidStack.EMPTY;
         } else if (fluidContainers.size() == 1) {
-            IExtendedFluidTank tank = fluidContainers.get(0);
+            IExtendedFluidTank tank = fluidContainers.getFirst();
             if (tank.isEmpty() || !tank.isFluidEqual(stack)) {
                 return FluidStack.EMPTY;
             }

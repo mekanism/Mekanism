@@ -298,11 +298,11 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         trackLastEnergy(container);
         container.track(SyncableFloatingLong.create(() -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
-            return energyContainers.isEmpty() ? FloatingLong.ZERO : energyContainers.get(0).getEnergy();
+            return energyContainers.isEmpty() ? FloatingLong.ZERO : energyContainers.getFirst().getEnergy();
         }, energy -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             if (!energyContainers.isEmpty()) {
-                energyContainers.get(0).setEnergy(energy);
+                energyContainers.getFirst().setEnergy(energy);
             }
         }));
     }
@@ -346,37 +346,37 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     // in which case we can just add some overloads while we deprecate these
     @ComputerMethod
     ItemStack getBufferItem() throws ComputerException {
-        return getFrequency().getInventorySlots(null).get(0).getStack();
+        return getFrequency().getInventorySlots(null).getFirst().getStack();
     }
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",
                                                                                      "getBufferFluidFilledPercentage"}, docPlaceholder = "fluid buffer")
     IExtendedFluidTank getBufferFluidTank() throws ComputerException {
-        return getFrequency().getFluidTanks(null).get(0);
+        return getFrequency().getFluidTanks(null).getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferGas", "getBufferGasCapacity", "getBufferGasNeeded",
                                                                                         "getBufferGasFilledPercentage"}, docPlaceholder = "gas buffer")
     IGasTank getBufferGasTank() throws ComputerException {
-        return getFrequency().getGasTanks(null).get(0);
+        return getFrequency().getGasTanks(null).getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferInfuseType", "getBufferInfuseTypeCapacity", "getBufferInfuseTypeNeeded",
                                                                                         "getBufferInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
-        return getFrequency().getInfusionTanks(null).get(0);
+        return getFrequency().getInfusionTanks(null).getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferPigment", "getBufferPigmentCapacity", "getBufferPigmentNeeded",
                                                                                         "getBufferPigmentFilledPercentage"}, docPlaceholder = "pigment buffer")
     IPigmentTank getBufferPigmentTank() throws ComputerException {
-        return getFrequency().getPigmentTanks(null).get(0);
+        return getFrequency().getPigmentTanks(null).getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferSlurry", "getBufferSlurryCapacity", "getBufferSlurryNeeded",
                                                                                         "getBufferSlurryFilledPercentage"}, docPlaceholder = "slurry buffer")
     ISlurryTank getBufferSlurryTank() throws ComputerException {
-        return getFrequency().getSlurryTanks(null).get(0);
+        return getFrequency().getSlurryTanks(null).getFirst();
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

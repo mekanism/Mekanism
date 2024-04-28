@@ -34,7 +34,7 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
             return null;
         } else if (nestedModes.size() == 1) {
             //If we only have one mode available, just return it rather than having to select the singular mode
-            return nestedModes.get(0).nestedData();
+            return nestedModes.getFirst().nestedData();
         }
         return new NestingRadialData(getRadialIdentifier(), nestedModes);
     }

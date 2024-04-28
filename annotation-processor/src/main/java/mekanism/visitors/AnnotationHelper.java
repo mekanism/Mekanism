@@ -117,7 +117,7 @@ public class AnnotationHelper {
     }
 
     /**
-     * Get a list of Class (TypeMirror) values from the annotation. Non class values will be ignored
+     * Get a list of Class (TypeMirror) values from the annotation. Non-class values will be ignored
      *
      * @param key the annotation member name
      *

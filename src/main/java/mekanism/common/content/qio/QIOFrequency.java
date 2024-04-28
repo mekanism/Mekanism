@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SequencedMap;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.ObjLongConsumer;
@@ -61,8 +62,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     private static final RandomSource rand = RandomSource.create();
 
-    private final Map<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
-    private final Map<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
+    private final SequencedMap<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
+    private final SequencedMap<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
     private final Set<IQIODriveHolder> driveHolders = new HashSet<>();
     // efficiently keep track of the tags utilized by the items stored
     private final BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
@@ -243,7 +244,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
         QIOItemTypeData data;
         if (itemType == null) {
-            Map.Entry<HashedItem, QIOItemTypeData> entry = itemDataMap.entrySet().iterator().next();
+            Map.Entry<HashedItem, QIOItemTypeData> entry = itemDataMap.firstEntry();
             itemType = entry.getKey();
             data = entry.getValue();
         } else {

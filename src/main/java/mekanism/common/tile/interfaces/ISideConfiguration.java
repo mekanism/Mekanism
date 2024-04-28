@@ -68,7 +68,7 @@ public interface ISideConfiguration {
             // as many data types as there are supported types (excluding the NONE) type. We just check < instead
             // of <= size - 1 to cut down slightly on the calculations
             if (count > 0 && count < info.getSupportedDataTypes().size()) {
-                return types.get(0);
+                return types.getFirst();
             }
         }
         return null;
