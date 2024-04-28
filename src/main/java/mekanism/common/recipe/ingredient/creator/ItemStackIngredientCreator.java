@@ -130,6 +130,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
               SingleItemStackIngredient::new
         ));
 
+        //TODO - 1.20.5: Evaluate if we want to use Neo's SizedIngredient
         private final Ingredient ingredient;
         private final int amount;
 

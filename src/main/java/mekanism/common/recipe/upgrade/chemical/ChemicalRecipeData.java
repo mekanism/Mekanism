@@ -36,7 +36,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected abstract ChemicalRecipeData<CHEMICAL, STACK, TANK> create(List<TANK> tanks);
 
-    protected abstract ContainerType<TANK, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>, ?> getContainerType();
+    protected abstract ContainerType<TANK, ?, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>> getContainerType();
 
     @Override
     public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
@@ -45,7 +45,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
         //TODO: Improve the logic used so that it tries to batch similar types of chemicals together first
         // and maybe make it try multiple slot combinations
-        IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler = getContainerType().getAttachment(stack);
+        IMekanismChemicalHandler<CHEMICAL, STACK, TANK> outputHandler = getContainerType().createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

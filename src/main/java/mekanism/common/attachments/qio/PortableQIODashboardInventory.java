@@ -7,7 +7,6 @@ import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,7 +31,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
             QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, (byte) tableIndex);
             craftingWindows[tableIndex] = craftingWindow;
             for (int slot = 0; slot < 9; slot++) {
-                CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
+                IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 slots.add(inputSlot);
                 if (contents != null) {
                     //Note: setStack will ensure the stack is copied

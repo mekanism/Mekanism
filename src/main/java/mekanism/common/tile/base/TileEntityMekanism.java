@@ -808,8 +808,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
-                //TODO - 1.20.5: Figure out container copying
-                //type.copyFrom(stack, this);
+                type.copyFrom(this, input);
             }
         }
         if (this instanceof ITileFilterHolder<?> filterHolder) {
@@ -834,8 +833,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
-                //TODO - 1.20.5: Figure out container copying
-                //type.copyTo(this, stack);
+                type.copyTo(this, builder);
             }
         }
         if (this instanceof ITileFilterHolder<?> filterHolder) {

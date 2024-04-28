@@ -25,8 +25,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.AttachedChemicalTanks;
-import mekanism.common.attachments.containers.AttachedEnergyContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -53,7 +51,7 @@ public class StorageUtils {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem == null) {
             //Fall back to trying to look up the stored energy by the container type if the stack doesn't expose it
-            energyHandlerItem = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+            energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
         }
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
@@ -83,11 +81,11 @@ public class StorageUtils {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip,
           boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry, BiFunction<STACK, ILangEntry, Component> storedFunction, ItemCapability<? extends IChemicalHandler<CHEMICAL, STACK>, Void> capability,
-          ContainerType<?, ? extends IChemicalHandler<CHEMICAL, STACK>, ?> containerType) {
+          ContainerType<?, ?, ? extends IChemicalHandler<CHEMICAL, STACK>> containerType) {
         IChemicalHandler<CHEMICAL, STACK> handler = stack.getCapability(capability);
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
-            handler = containerType.getAttachmentIfPresent(stack);
+            handler = containerType.createHandlerIfData(stack);
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
@@ -121,7 +119,7 @@ public class StorageUtils {
         IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
         if (handler == null) {
             //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
-            handler = (IFluidHandlerItem) ContainerType.FLUID.getAttachmentIfPresent(stack);
+            handler = ContainerType.FLUID.createHandlerIfData(stack);
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
@@ -274,7 +272,7 @@ public class StorageUtils {
 
     @NotNull
     private static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> STACK getStoredChemicalFromAttachment(ItemStack stack, STACK emptyStack,
-          ContainerType<TANK, ? extends AttachedChemicalTanks<?, STACK, TANK>, ?> containerType) {
+          ContainerType<TANK, ?, ? extends IChemicalHandler<?, STACK>> containerType) {
         STACK chemicalStack = emptyStack;
         for (TANK tank : containerType.getAttachmentContainersIfPresent(stack)) {
             if (tank.isEmpty()) {
@@ -307,7 +305,7 @@ public class StorageUtils {
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
-        AttachedEnergyContainers attachment = ContainerType.ENERGY.getAttachment(toFill);
+        IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
                 energyContainer.setEnergy(energyContainer.getMaxEnergy());

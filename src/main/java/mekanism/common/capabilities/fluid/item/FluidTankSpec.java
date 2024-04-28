@@ -7,6 +7,8 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.GenericTankSpec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -31,6 +33,12 @@ public class FluidTankSpec extends GenericTankSpec<FluidStack> {
         return tankCreator.create(rate, capacity, canExtract, (fluid, automationType) -> canInsert.test(fluid, automationType, stack), isValid, null);
     }
 
+    //TODO - 1.20.5: Re-evaluate this
+    public void addTank(FluidTanksBuilder builder, ComponentTankFromSpecCreator tankCreator) {
+        builder.addTank(((type, attachedTo, containerIndex) -> tankCreator.create(attachedTo, containerIndex, canExtract,
+              (chemical, automationType) -> canInsert.test(chemical, automationType, attachedTo), isValid, rate, capacity)));
+    }
+
     public static FluidTankSpec create(IntSupplier rate, IntSupplier capacity) {
         return new FluidTankSpec(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
               ConstantPredicates.alwaysTrue());
@@ -43,6 +51,13 @@ public class FluidTankSpec extends GenericTankSpec<FluidStack> {
     public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid,
           Predicate<@NotNull ItemStack> supportsStack) {
         return new FluidTankSpec(rate, capacity, ConstantPredicates.notExternal(), (chemical, automation, stack) -> supportsStack.test(stack), isValid, supportsStack);
+    }
+
+    @FunctionalInterface
+    public interface ComponentTankFromSpecCreator {
+
+        ComponentBackedFluidTank create(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> isValid, IntSupplier rate, IntSupplier capacity);
     }
 
     @FunctionalInterface

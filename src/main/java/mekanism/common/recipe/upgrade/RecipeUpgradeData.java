@@ -13,6 +13,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -130,7 +131,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield slots.isEmpty() ? null : new ItemRecipeData(slots);
             }
             case LOCK -> {
-                BinInventorySlot slot = BinInventorySlot.getForStack(stack);
+                ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
                 //If there is no inventory, or it isn't locked just skip
                 yield slot == null || !slot.isLocked() ? null : new LockRecipeData(slot);
             }

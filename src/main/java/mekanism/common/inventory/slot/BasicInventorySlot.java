@@ -150,13 +150,13 @@ public class BasicInventorySlot implements IInventorySlot {
             return ItemStack.EMPTY;
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(stack) - getCount();
+        int needed = getLimit(stack) - current.getCount();
         if (needed <= 0 || !isItemValidForInsertion(stack, automationType)) {
             //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = ItemStack.isSameItemSameComponents(current, stack))) {
+        if (current.isEmpty() || (sameType = ItemStack.isSameItemSameComponents(current, stack))) {
             int toAdd = Math.min(stack.getCount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -179,13 +179,13 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
+        if (current.isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
         }
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
+        int currentAmount = Math.min(current.getCount(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -264,7 +264,7 @@ public class BasicInventorySlot implements IInventorySlot {
      */
     @Override
     public int setStackSize(int amount, Action action) {
-        if (isEmpty()) {
+        if (current.isEmpty()) {
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
@@ -276,7 +276,7 @@ public class BasicInventorySlot implements IInventorySlot {
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (getCount() == amount || action.simulate()) {
+        if (current.getCount() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -292,7 +292,7 @@ public class BasicInventorySlot implements IInventorySlot {
      */
     @Override
     public int growStack(int amount, Action action) {
-        int current = getCount();
+        int current = this.current.getCount();
         if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(amount, getLimit(this.current));

@@ -1,10 +1,10 @@
 package mekanism.common.recipe.upgrade;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -12,7 +12,7 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     private final ItemStack lock;
 
-    LockRecipeData(BinInventorySlot slot) {
+    LockRecipeData(ComponentBackedBinInventorySlot slot) {
         this.lock = slot.getLockStack();
     }
 
@@ -24,7 +24,7 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
     @Override
     public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
-        BinInventorySlot slot = BinInventorySlot.getForStack(stack);
+        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
         if (slot == null) {
             return false;
         }

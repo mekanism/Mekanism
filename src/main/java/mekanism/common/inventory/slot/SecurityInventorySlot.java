@@ -18,23 +18,24 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    private static final Predicate<@NotNull ItemStack> validator = stack -> IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null;
+    public static final Predicate<@NotNull ItemStack> VALIDATOR = stack -> IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null;
+    public static final Predicate<@NotNull ItemStack> LOCK_EXTRACT_PREDICATE = stack -> IItemSecurityUtils.INSTANCE.getOwnerUUID(stack) != null;
+    public static final Predicate<@NotNull ItemStack> LOCK_INSERT_PREDICATE = stack -> IItemSecurityUtils.INSTANCE.getOwnerUUID(stack) == null;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
-        return new SecurityInventorySlot(stack -> IItemSecurityUtils.INSTANCE.getOwnerUUID(stack) == null, stack -> {
+        return new SecurityInventorySlot(LOCK_INSERT_PREDICATE, stack -> {
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
         }, listener, x, y);
     }
 
     public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
-        Predicate<@NotNull ItemStack> insertPredicate = stack -> IItemSecurityUtils.INSTANCE.getOwnerUUID(stack) == null;
-        return new SecurityInventorySlot(insertPredicate.negate(), insertPredicate, listener, x, y);
+        return new SecurityInventorySlot(LOCK_EXTRACT_PREDICATE, LOCK_INSERT_PREDICATE, listener, x, y);
     }
 
     private SecurityInventorySlot(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
-        super(canExtract, canInsert, validator, listener, x, y);
+        super(canExtract, canInsert, VALIDATOR, listener, x, y);
     }
 
     public void unlock(UUID ownerUUID) {

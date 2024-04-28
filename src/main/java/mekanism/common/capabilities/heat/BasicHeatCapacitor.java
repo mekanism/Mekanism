@@ -32,10 +32,6 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
     }
 
-    public static BasicHeatCapacitor createBasicItem(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient) {
-        return create(heatCapacity, inverseConductionCoefficient, inverseInsulationCoefficient, () -> HeatAPI.AMBIENT_TEMP, null);
-    }
-
     public static BasicHeatCapacitor create(double heatCapacity, double inverseConductionCoefficient, double inverseInsulationCoefficient,
           @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
         if (heatCapacity < 1) {

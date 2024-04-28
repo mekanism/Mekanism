@@ -42,10 +42,6 @@ public class MergedChemicalInventorySlot<MERGED extends MergedChemicalTank> exte
         Predicate<@NotNull ItemStack> infusionExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getInfusionTank(), Capabilities.INFUSION);
         Predicate<@NotNull ItemStack> pigmentExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getPigmentTank(), Capabilities.PIGMENT);
         Predicate<@NotNull ItemStack> slurryExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(chemicalTank.getSlurryTank(), Capabilities.SLURRY);
-        Predicate<@NotNull ItemStack> gasInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getGasTank(), Capabilities.GAS, stack);
-        Predicate<@NotNull ItemStack> infusionInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getInfusionTank(), Capabilities.INFUSION, stack);
-        Predicate<@NotNull ItemStack> pigmentInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getPigmentTank(), Capabilities.PIGMENT, stack);
-        Predicate<@NotNull ItemStack> slurryInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getSlurryTank(), Capabilities.SLURRY, stack);
         return new MergedChemicalInventorySlot<>(chemicalTank, (stack, automationType) -> {
             if (automationType == AutomationType.MANUAL) {
                 //Always allow the player to manually extract
@@ -61,13 +57,15 @@ public class MergedChemicalInventorySlot<MERGED extends MergedChemicalTank> exte
                               slurryExtractPredicate.test(stack);
             };
         }, (stack, automationType) -> switch (chemicalTank.getCurrent()) {
-            case GAS -> gasInsertPredicate.test(stack);
-            case INFUSION -> infusionInsertPredicate.test(stack);
-            case PIGMENT -> pigmentInsertPredicate.test(stack);
-            case SLURRY -> slurryInsertPredicate.test(stack);
+            case GAS -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getGasTank(), Capabilities.GAS, stack);
+            case INFUSION -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getInfusionTank(), Capabilities.INFUSION, stack);
+            case PIGMENT -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getPigmentTank(), Capabilities.PIGMENT, stack);
+            case SLURRY -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getSlurryTank(), Capabilities.SLURRY, stack);
             //Tank is empty, only allow it if one of the chemical insert predicates matches
-            case EMPTY -> gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) ||
-                          slurryInsertPredicate.test(stack);
+            case EMPTY -> ChemicalInventorySlot.fillInsertCheck(chemicalTank.getGasTank(), Capabilities.GAS, stack) ||
+                          ChemicalInventorySlot.fillInsertCheck(chemicalTank.getInfusionTank(), Capabilities.INFUSION, stack) ||
+                          ChemicalInventorySlot.fillInsertCheck(chemicalTank.getPigmentTank(), Capabilities.PIGMENT, stack) ||
+                          ChemicalInventorySlot.fillInsertCheck(chemicalTank.getSlurryTank(), Capabilities.SLURRY, stack);
         }, listener, x, y);
     }
 

@@ -5,7 +5,7 @@ import java.util.OptionalInt;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.common.attachments.containers.AttachedFluidTanks;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
@@ -31,7 +31,7 @@ public final class FluidUtils {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Fluid fluid) {
-        AttachedFluidTanks attachment = ContainerType.FLUID.getAttachment(toFill);
+        IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(toFill);
         if (attachment != null) {
             for (IExtendedFluidTank fluidTank : attachment.getFluidTanks(null)) {
                 fluidTank.setStack(new FluidStack(fluid, fluidTank.getCapacity()));

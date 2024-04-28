@@ -234,6 +234,11 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     @Override
+    default int getFluidAmount() {
+        return getFluid().getAmount();
+    }
+
+    @Override
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {

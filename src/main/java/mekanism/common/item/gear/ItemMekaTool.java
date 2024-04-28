@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMultimap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -27,7 +26,8 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
+import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IRadialModuleContainerItem;
@@ -60,7 +60,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -463,12 +462,10 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
-        return NoClampRateLimitEnergyContainer.create(
-              () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
-              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get()),
-              canExtract, canInsert
-        );
+    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
+        return builder.addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, canExtract, canInsert,
+              () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
+              () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get())));
     }
 
     @Override

@@ -60,7 +60,7 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
     public STACK getMatchingInstance(STACK chemicalStack) {
         if (test(chemicalStack)) {
             //Note: We manually "implement" the copy to ensure it returns the proper type as ChemicalStack#copy returns ChemicalStack<CHEMICAL> instead of STACK
-            return (STACK) chemicalInstance.copy();
+            return ChemicalUtil.copy(chemicalInstance);
         }
         return getEmptyStack();
     }

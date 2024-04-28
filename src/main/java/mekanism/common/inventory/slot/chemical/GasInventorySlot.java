@@ -26,7 +26,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     /**
      * Gets the GasStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    private static GasStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
+    public static GasStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         return getPotentialConversion(MekanismRecipeType.GAS_CONVERSION, world, itemStack, GasStack.EMPTY);
     }
 
@@ -36,7 +36,8 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
     public static GasInventorySlot rotaryDrain(IGasTank gasTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        Predicate<@NotNull ItemStack> insertPredicate = getDrainInsertPredicate(gasTank, Capabilities.GAS).and(stack -> modeSupplier.getAsBoolean());
+        Predicate<@NotNull ItemStack> drainInsertPredicate = getDrainInsertPredicate(gasTank, Capabilities.GAS);
+        Predicate<@NotNull ItemStack> insertPredicate = stack -> modeSupplier.getAsBoolean() && drainInsertPredicate.test(stack);
         return new GasInventorySlot(gasTank, insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 

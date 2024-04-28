@@ -61,7 +61,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             }
             return false;
         }
-        IMekanismInventory outputHandler = ContainerType.ITEM.getAttachment(stack);
+        IMekanismInventory outputHandler = ContainerType.ITEM.createHandler(stack);
         //Something went wrong, fail
         return outputHandler != null && applyToStack(outputHandler, slots);
     }

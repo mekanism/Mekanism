@@ -25,7 +25,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
     /**
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    private static InfusionStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
+    public static InfusionStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         return getPotentialConversion(MekanismRecipeType.INFUSION_CONVERSION, world, itemStack, InfusionStack.EMPTY);
     }
 

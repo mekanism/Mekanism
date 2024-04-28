@@ -7,13 +7,12 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 //TODO: Test this recipe in various modded crafting tables/auto crafters
 @NothingNullByDefault
@@ -58,7 +56,7 @@ public class BinInsertRecipe extends BinRecipe {
             //If we didn't find a bin or an item to add it, we don't match the bin insertion recipe
             return false;
         }
-        BinInventorySlot slot = convertToSlot(binStack);
+        ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
         ItemStack remaining = slot.insertItem(foundType, Action.SIMULATE, AutomationType.MANUAL);
         //Return that it doesn't match if our simulation claims we would not be able to accept any items into the bin
         return !ItemStack.matches(remaining, foundType);
@@ -96,7 +94,7 @@ public class BinInsertRecipe extends BinRecipe {
         }
         //Copy the stack
         binStack = binStack.copy();
-        BinInventorySlot slot = convertToSlot(binStack);
+        ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
         boolean hasInserted = false;
         for (ItemStack stack : foundItems) {
             //Try inserting a single item (as crafting grids only go one item at a time)
@@ -154,7 +152,7 @@ public class BinInsertRecipe extends BinRecipe {
         }
         //Copy the stack
         binStack = binStack.copy();
-        BinInventorySlot slot = convertToSlot(binStack);
+        ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
         for (Int2ObjectMap.Entry<ItemStack> entry : foundSlots.int2ObjectEntrySet()) {
             ItemStack slotItem = entry.getValue();
             //Only try inserting a single item into the bin. We execute on a copy of the bin stack so that we can mutate it and chain insertions
@@ -187,7 +185,7 @@ public class BinInsertRecipe extends BinRecipe {
             Boolean fromRecipe = result.remove(MekanismDataComponents.FROM_RECIPE);
             if (fromRecipe != null && fromRecipe) {
                 //And if it was try to move extra items from the container into it
-                BinInventorySlot slot = convertToSlot(result);
+                ComponentBackedBinInventorySlot slot = convertToSlot(result);
                 ItemStack storedStack = slot.getStack();
                 if (!storedStack.isEmpty()) {
                     Container craftingMatrix = event.getInventory();

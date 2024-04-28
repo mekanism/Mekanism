@@ -44,7 +44,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             return fuelValue.applyAsInt(stack) == 0;
-        }, fillPredicate.or(stack -> fuelValue.applyAsInt(stack) > 0), listener, x, y);
+        }, stack -> fuelValue.applyAsInt(stack) > 0 || fillPredicate.test(stack), listener, x, y);
     }
 
     private final IntFunction<@NotNull FluidStack> fuelCreator;

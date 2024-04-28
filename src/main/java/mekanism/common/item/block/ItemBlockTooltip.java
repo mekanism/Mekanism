@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.security.IItemSecurityUtils;
@@ -16,7 +15,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.security.SecurityObject;
+import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -26,8 +26,7 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.InventoryUtils;
@@ -51,7 +50,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IAttachmentAware {
 
@@ -161,8 +159,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         return Attribute.has(getBlock(), AttributeEnergy.class);
     }
 
-    @Nullable
-    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
+    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
         BLOCK block = getBlock();
         AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
         if (attributeEnergy == null) {
@@ -170,12 +167,15 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         }
         FloatingLongSupplier maxEnergy = attributeEnergy::getStorage;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-            //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-            maxEnergy = new UpgradeBasedFloatingLongCache(stack, maxEnergy);
-            return NoClampRateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
+            return builder.addContainer((type, attachedTo, containerIndex) -> {
+                //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
+                FloatingLongSupplier capacity = new UpgradeBasedFloatingLongCache(attachedTo, maxEnergy);
+                return new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(),
+                      () -> capacity.get().multiply(0.005), capacity);
+            });
         }
         //If we don't support energy upgrades, our max energy isn't dependent on another attachment, we can safely clamp to the config values
-        return RateLimitEnergyContainer.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
+        return builder.addBasic(BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate(), () -> maxEnergy.get().multiply(0.005), maxEnergy);
     }
 
     @Override
@@ -191,7 +191,8 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             //Only expose the capability the required configs are loaded and the item wants to
             IEventBus energyEventBus = exposesEnergyCap() ? eventBus : null;
-            ContainerType.ENERGY.addDefaultContainer(energyEventBus, this, this::getDefaultEnergyContainer, MekanismConfig.storage, MekanismConfig.usage);
+            ContainerType.ENERGY.addDefaultCreators(energyEventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(),
+                  MekanismConfig.storage, MekanismConfig.usage);
         }
     }
 

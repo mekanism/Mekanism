@@ -104,7 +104,7 @@ public class CopyContainersLootFunction implements LootItemFunction {
         @Override
         public LootItemFunction build() {
             //Ensure the operations are always saved in the same order
-            containerTypes.sort(Comparator.comparing(ContainerType::getAttachmentName));
+            containerTypes.sort(Comparator.comparing(ContainerType::getComponentName));
             return new CopyContainersLootFunction(this.containerTypes);
         }
     }

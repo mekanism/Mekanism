@@ -169,9 +169,9 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
-    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ? extends IChemicalHandler<?, ?>, ?> containerType,
+    private static String getChemicalComponent(ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler<?, ?>> containerType,
           ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
-        IChemicalHandler<?, ?> handler = containerType.getAttachmentIfPresent(stack);
+        IChemicalHandler<?, ?> handler = containerType.createHandlerIfData(stack);
         if (handler == null) {
             handler = stack.getCapability(capability);
         }
@@ -191,7 +191,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getFluidComponent(ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.getAttachmentIfPresent(stack);
+        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
             handler = Capabilities.FLUID.getCapability(stack);
         }
@@ -211,7 +211,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getEnergyComponent(ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
         if (energyHandlerItem == null) {
             energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         }

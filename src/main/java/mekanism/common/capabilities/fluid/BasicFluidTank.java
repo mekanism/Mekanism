@@ -150,6 +150,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * stack/stack size
      */
     protected int getRate(@Nullable AutomationType automationType) {
+        //TODO - 1.20.5: As we don't actually use this anymore in subclasses decide if we want to remove this
+        // That or we might want to actually start making use of it
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
         return Integer.MAX_VALUE;
     }
@@ -188,7 +190,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = FluidStack.isSameFluidSameComponents(stored, stack))) {
+        if (isEmpty() || (sameType = isFluidEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid

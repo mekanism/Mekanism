@@ -38,7 +38,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         }
         //TODO: Improve the logic used so that it tries to batch similar types of fluids together first
         // and maybe make it try multiple slot combinations??
-        IMekanismFluidHandler outputHandler = ContainerType.FLUID.getAttachment(stack);
+        IMekanismFluidHandler outputHandler = ContainerType.FLUID.createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

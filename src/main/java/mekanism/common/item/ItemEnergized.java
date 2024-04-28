@@ -3,12 +3,11 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.StorageUtils;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,15 +65,15 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
         tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 
-    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
-        return RateLimitEnergyContainer.create(chargeRateSupplier, maxEnergySupplier, canExtract, canInsert);
+    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
+        return builder.addBasic(canExtract, canInsert, chargeRateSupplier, maxEnergySupplier);
     }
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
-        ContainerType.ENERGY.addDefaultContainer(eventBus, this, this::getDefaultEnergyContainer, MekanismConfig.gear);
+        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(), MekanismConfig.gear);
     }
 
     @Override

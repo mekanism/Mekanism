@@ -9,34 +9,33 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.AttachedInventorySlots;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
 
-    private static final Predicate<@NotNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
+    public static final Predicate<@NotNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
 
     @Nullable
-    public static BinInventorySlot getForStack(@NotNull ItemStack stack) {
+    public static ComponentBackedBinInventorySlot getForStack(@NotNull ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
-            AttachedInventorySlots attachment = ContainerType.ITEM.getAttachment(stack);
+            IMekanismInventory attachment = ContainerType.ITEM.createHandler(stack);
             if (attachment != null) {
                 List<IInventorySlot> slots = attachment.getInventorySlots(null);
                 if (slots.size() == 1) {
-                    IInventorySlot slot = slots.get(0);
-                    if (slot instanceof BinInventorySlot binSlot) {
+                    IInventorySlot slot = slots.getFirst();
+                    if (slot instanceof ComponentBackedBinInventorySlot binSlot) {
                         return binSlot;
                     }
                 }
@@ -157,15 +156,14 @@ public class BinInventorySlot extends BasicInventorySlot {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
         if (isLocked()) {
-            Tag stackTag = lockStack.save(provider);
-            nbt.put(NBTConstants.LOCK_STACK, stackTag);
+            nbt.put(NBTConstants.LOCK_STACK, lockStack.save(provider));
         }
         return nbt;
     }
 
     @Override
     public boolean isCompatible(IInventorySlot other) {
-        return super.isCompatible(other) && isLocked() == ((BinInventorySlot) other).isLocked();
+        return super.isCompatible(other) && ItemStack.isSameItemSameComponents(getLockStack(), ((BinInventorySlot) other).getLockStack());
     }
 
     @Override

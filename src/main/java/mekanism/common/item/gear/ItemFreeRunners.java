@@ -15,7 +15,7 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
@@ -121,10 +121,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> RateLimitEnergyContainer.create(
-              MekanismConfig.gear.freeRunnerChargeRate,
-              MekanismConfig.gear.freeRunnerMaxEnergy
-        ), MekanismConfig.gear);
+        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> EnergyContainersBuilder.builder()
+              .addBasic(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy)
+              .build(), MekanismConfig.gear);
     }
 
     @Override

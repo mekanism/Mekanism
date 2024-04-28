@@ -33,7 +33,6 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
-import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
@@ -106,7 +105,7 @@ public class QIOCraftingTransferHandler {
         if (action.simulate()) {
             CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
             for (int slot = 0; slot < 9; slot++) {
-                CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
+                IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 if (!inputSlot.isEmpty()) {
                     //Copy it in case any recipe does weird things and tries to mutate the stack
                     dummy.setItem(slot, inputSlot.getStack().copyWithCount(1));

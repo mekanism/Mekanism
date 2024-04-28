@@ -36,7 +36,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         if (energyContainers.isEmpty()) {
             return true;
         }
-        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.getAttachment(stack);
+        IMekanismStrictEnergyHandler outputHandler = ContainerType.ENERGY.createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

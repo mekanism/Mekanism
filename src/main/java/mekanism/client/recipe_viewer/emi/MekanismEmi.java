@@ -124,9 +124,9 @@ public class MekanismEmi implements EmiPlugin {
         return null;
     });
 
-    private static void addChemicalComponent(Set<Object> representation, ItemStack stack, ContainerType<?, ? extends IChemicalHandler<?, ?>, ?> containerType,
+    private static void addChemicalComponent(Set<Object> representation, ItemStack stack, ContainerType<?, ?, ? extends IChemicalHandler<?, ?>> containerType,
           ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
-        IChemicalHandler<?, ?> handler = containerType.getAttachmentIfPresent(stack);
+        IChemicalHandler<?, ?> handler = containerType.createHandlerIfData(stack);
         if (handler == null) {
             handler = stack.getCapability(capability);
         }
@@ -148,7 +148,7 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addFluidComponent(Set<Object> representation, ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.getAttachmentIfPresent(stack);
+        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
             handler = Capabilities.FLUID.getCapability(stack);
         }
@@ -172,7 +172,7 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addEnergyComponent(Set<Object> representation, ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.getAttachmentIfPresent(stack);
+        IStrictEnergyHandler energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
         if (energyHandlerItem == null) {
             energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         }

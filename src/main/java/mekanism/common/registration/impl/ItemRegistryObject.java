@@ -5,21 +5,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -30,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolder<Item, ITEM> implements IItemProvider {
 
     @Nullable
-    private Map<ContainerType<?, ?, ?>, Function<ItemStack, ? extends List<?>>> defaultContainers;
+    private Map<ContainerType<?, ?, ?>, Supplier<? extends IContainerCreator<?, ?>>> defaultCreators;
     @Nullable
     private List<Consumer<RegisterCapabilitiesEvent>> containerCapabilities;
 
@@ -45,35 +41,24 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     }
 
     @Internal
-    public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachmentOnlyContainer(ContainerType<CONTAINER, ?, ?> containerType,
-          Function<ItemStack, CONTAINER> defaultCreator) {
-        return addAttachmentOnlyContainers(containerType, defaultCreator.andThen(List::of));
-    }
-
-    @Internal
     public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachmentOnlyContainers(ContainerType<CONTAINER, ?, ?> containerType,
-          Function<ItemStack, List<CONTAINER>> defaultCreators) {
-        if (defaultContainers == null) {
+          Supplier<IContainerCreator<? extends CONTAINER, ?>> defaultCreator) {
+        //TODO - 1.20.5: Should we use Lazy instead of Supplier? As in theory the container creators are fine as is once made, they don't have to be reconstructed
+        if (defaultCreators == null) {
             //In case any containers have deps on others make this linked even though it really shouldn't matter
             // as nothing should be trying to construct the containers between register calls
-            defaultContainers = new LinkedHashMap<>();
+            defaultCreators = new LinkedHashMap<>();
         }
-        if (defaultContainers.put(containerType, defaultCreators) != null) {
-            throw new IllegalStateException("Duplicate attachments added for container type: " + containerType.getAttachmentName());
+        if (defaultCreators.put(containerType, defaultCreator) != null) {
+            throw new IllegalStateException("Duplicate attachments added for container type: " + containerType.getComponentName());
         }
         return this;
     }
 
     @Internal
-    public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachedContainerCapability(ContainerType<CONTAINER, ?, ?> containerType,
-          Function<ItemStack, CONTAINER> defaultCreator, IMekanismConfig... requiredConfigs) {
-        return addAttachedContainerCapabilities(containerType, defaultCreator.andThen(List::of), requiredConfigs);
-    }
-
-    @Internal
     public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachedContainerCapabilities(ContainerType<CONTAINER, ?, ?> containerType,
-          Function<ItemStack, List<CONTAINER>> defaultCreators, IMekanismConfig... requiredConfigs) {
-        addAttachmentOnlyContainers(containerType, defaultCreators);
+          Supplier<IContainerCreator<? extends CONTAINER, ?>> defaultCreator, IMekanismConfig... requiredConfigs) {
+        addAttachmentOnlyContainers(containerType, defaultCreator);
         return addContainerCapability(containerType, requiredConfigs);
     }
 
@@ -84,36 +69,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         }
         containerCapabilities.add(event -> containerType.registerItemCapabilities(event, asItem(), false, requiredConfigs));
         return this;
-    }
-
-    @Internal
-    public <TANK extends MergedChemicalTank> ItemRegistryObject<ITEM> addMissingMergedTanks(Supplier<DataComponentType<TANK>> backingAttachment, boolean supportsFluid,
-          boolean exposeCapability) {
-        //TODO - 1.20.5: Fix all these stack.get(component) calls
-        int added = addMissingTankType(ContainerType.GAS, exposeCapability, stack -> stack.get(backingAttachment).getGasTank());
-        added += addMissingTankType(ContainerType.INFUSION, exposeCapability, stack -> stack.get(backingAttachment).getInfusionTank());
-        added += addMissingTankType(ContainerType.PIGMENT, exposeCapability, stack -> stack.get(backingAttachment).getPigmentTank());
-        added += addMissingTankType(ContainerType.SLURRY, exposeCapability, stack -> stack.get(backingAttachment).getSlurryTank());
-        if (supportsFluid) {
-            Supplier<DataComponentType<MergedTank>> attachment = (Supplier) backingAttachment;
-            added += addMissingTankType(ContainerType.FLUID, exposeCapability, stack -> stack.get(attachment).getFluidTank());
-        }
-        if (added == 0) {
-            throw new IllegalStateException("Unnecessary addMissingMergedTanks call");
-        }
-        return this;
-    }
-
-    private <CONTAINER extends INBTSerializable<CompoundTag>> int addMissingTankType(ContainerType<CONTAINER, ?, ?> containerType, boolean exposeCapability,
-          Function<ItemStack, CONTAINER> defaultCreator) {
-        if (defaultContainers != null && defaultContainers.containsKey(containerType)) {
-            return 0;
-        }
-        addAttachmentOnlyContainer(containerType, defaultCreator);
-        if (exposeCapability) {
-            addContainerCapability(containerType);
-        }
-        return 1;
     }
 
     @Internal
@@ -138,13 +93,13 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         if (item instanceof IAttachmentAware attachmentAware) {
             attachmentAware.attachAttachments(eventBus);
         }
-        if (defaultContainers != null) {
-            for (Map.Entry<ContainerType<?, ?, ?>, Function<ItemStack, ? extends List<?>>> entry : defaultContainers.entrySet()) {
+        if (defaultCreators != null) {
+            for (Map.Entry<ContainerType<?, ?, ?>, Supplier<? extends IContainerCreator<?, ?>>> entry : defaultCreators.entrySet()) {
                 //Note: We pass null for the event bus to not expose this attachment as a capability
-                entry.getKey().addDefaultContainers(null, item, (Function) entry.getValue());
+                entry.getKey().addDefaultCreators(null, item, (Supplier) entry.getValue());
             }
             //We only allow them being attached once
-            defaultContainers = null;
+            defaultCreators = null;
         }
     }
 }

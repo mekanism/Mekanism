@@ -12,10 +12,8 @@ import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
@@ -32,12 +30,16 @@ import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasTank;
+import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
+import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
+import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
-import mekanism.common.capabilities.energy.item.NoClampRateLimitEnergyContainer;
+import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.item.FluidTankSpec;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
@@ -280,27 +282,29 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        ContainerType.ENERGY.addDefaultContainer(eventBus, this, stack -> NoClampRateLimitEnergyContainer.create(
-              () -> ModuleEnergyUnit.getChargeRate(stack, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
-              () -> ModuleEnergyUnit.getEnergyCapacity(stack, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
-        ), MekanismConfig.gear);
+        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> EnergyContainersBuilder.builder()
+              .addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
+                    BasicEnergyContainer.alwaysTrue,
+                    () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
+                    () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
+              )).build(), MekanismConfig.gear);
 
         if (!gasTankSpecs.isEmpty()) {
-            ContainerType.GAS.addDefaultContainers(eventBus, this, stack -> {
-                List<IGasTank> list = new ArrayList<>(gasTankSpecs.size());
+            ContainerType.GAS.addDefaultCreators(eventBus, this, () -> {
+                GasTanksBuilder builder = GasTanksBuilder.builder();
                 for (ChemicalTankSpec<Gas> spec : gasTankSpecs) {
-                    list.add(spec.createTank(RateLimitGasTank::create, stack));
+                    spec.addTank(builder, ComponentBackedGasTank::new);
                 }
-                return list;
+                return builder.build();
             }, MekanismConfig.gear);
         }
         if (!fluidTankSpecs.isEmpty()) {
-            ContainerType.FLUID.addDefaultContainers(eventBus, this, stack -> {
-                List<IExtendedFluidTank> list = new ArrayList<>(fluidTankSpecs.size());
+            ContainerType.FLUID.addDefaultCreators(eventBus, this, () -> {
+                FluidTanksBuilder builder = FluidTanksBuilder.builder();
                 for (FluidTankSpec spec : fluidTankSpecs) {
-                    list.add(spec.createTank(RateLimitFluidTank::create, stack));
+                    spec.addTank(builder, ComponentBackedFluidTank::new);
                 }
-                return list;
+                return builder.build();
             }, MekanismConfig.gear);
         }
     }

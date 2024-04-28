@@ -143,7 +143,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Nullable
-    static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemStack stack) {
+    public static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemStack stack) {
         //If we have more than one item in the input, check if we can fill a single item of it
         // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
         // though we have special handling to only move one item at a time anyway
@@ -156,7 +156,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
-    private static boolean isNonFullFluidContainer(@Nullable IFluidHandlerItem fluidHandler) {
+    public static boolean isNonFullFluidContainer(@Nullable IFluidHandlerItem fluidHandler) {
         if (fluidHandler != null) {
             for (int tank = 0, tanks = fluidHandler.getTanks(); tank < tanks; tank++) {
                 if (fluidHandler.getFluidInTank(tank).getAmount() < fluidHandler.getTankCapacity(tank)) {

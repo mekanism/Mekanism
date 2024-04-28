@@ -154,7 +154,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * @return Amount of energy needed
      */
     default FloatingLong getNeeded() {
-        return FloatingLong.ZERO.max(getMaxEnergy().subtract(getEnergy()));
+        return getMaxEnergy().subtract(getEnergy());
     }
 
     @Override

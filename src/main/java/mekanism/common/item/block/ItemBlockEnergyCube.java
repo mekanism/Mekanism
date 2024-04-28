@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
+import mekanism.common.attachments.containers.energy.ComponentBackedEnergyCubeContainer;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.energy.item.EnergyCubeRateLimitEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -116,7 +116,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    protected IEnergyContainer getDefaultEnergyContainer(ItemStack stack) {
-        return EnergyCubeRateLimitEnergyContainer.create(getTier());
+    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
+        return builder.addContainer(ComponentBackedEnergyCubeContainer::create);
     }
 }

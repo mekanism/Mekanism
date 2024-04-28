@@ -4,10 +4,10 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
 
 @NothingNullByDefault
 public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank> {
@@ -22,7 +22,7 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank> {
     }
 
     @Override
-    protected ContainerType<IGasTank, AttachedGasTanks, IGasHandler> getContainerType() {
+    protected ContainerType<IGasTank, AttachedGases, ? extends IMekanismGasHandler> getContainerType() {
         return ContainerType.GAS;
     }
 }

@@ -11,6 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
@@ -34,7 +35,6 @@ import mekanism.api.providers.ISlurryProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.AttachedChemicalTanks;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.MultiTypeCapability;
@@ -209,8 +209,8 @@ public class ChemicalUtil {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> ItemStack getFilledVariant(
-          ItemStack toFill, IChemicalProvider<CHEMICAL> provider, ContainerType<TANK, ? extends AttachedChemicalTanks<CHEMICAL, STACK, TANK>, ?> containerType) {
-        AttachedChemicalTanks<CHEMICAL, STACK, TANK> attachment = containerType.getAttachment(toFill);
+          ItemStack toFill, IChemicalProvider<CHEMICAL> provider, ContainerType<TANK, ?, ? extends IMekanismChemicalHandler<CHEMICAL, STACK, TANK>> containerType) {
+        IMekanismChemicalHandler<CHEMICAL, STACK, TANK> attachment = containerType.createHandler(toFill);
         if (attachment != null) {
             for (TANK tank : attachment.getChemicalTanks(null)) {
                 tank.setStack(withAmount(provider, tank.getCapacity()));

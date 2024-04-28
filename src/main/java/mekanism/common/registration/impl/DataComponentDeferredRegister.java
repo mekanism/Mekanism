@@ -10,8 +10,6 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.FrequencyAware;
-import mekanism.common.attachments.containers.AttachedContainers;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -20,14 +18,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 
 //TODO - 1.20.5: Should we be setting cacheEncoding on any of our builders?
 //TODO - 1.20.5: Figure out how to handle the default values
@@ -40,18 +35,6 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
 
     public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<TYPE>> simple(String name, UnaryOperator<DataComponentType.Builder<TYPE>> operator) {
         return register(name, () -> operator.apply(DataComponentType.builder()).build());
-    }
-
-    public <CONTAINER extends INBTSerializable<CompoundTag>, ATTACHMENT extends AttachedContainers<CONTAINER>>
-    MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ATTACHMENT>> registerContainer(String name, Supplier<ContainerType<CONTAINER, ATTACHMENT, ?>> typeSupplier) {
-        return simple(name, builder -> {
-            ContainerType<CONTAINER, ATTACHMENT, ?> containerType = typeSupplier.get();
-            //TODO - 1.20.5: Figure out how we want to setup containers
-            /*return AttachmentType.serializable(containerType::getDefault)
-                  .copyHandler(containerType)
-                  .build();*/
-            return builder.persistent(Codec.unit(() -> containerType.getDefault(ItemStack.EMPTY)));
-        });
     }
 
     public <FREQ extends Frequency> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<FREQ>>> registerFrequencyAware(String name,

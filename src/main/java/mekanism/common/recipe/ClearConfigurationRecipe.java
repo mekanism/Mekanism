@@ -58,7 +58,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
         set.add(MekanismDataComponents.FILTER_AWARE);
         set.add(MekanismDataComponents.CONFIGURATION_DATA);
 
-        set.add(MekanismDataComponents.HEAT_CAPACITORS);
+        set.add(MekanismDataComponents.ATTACHED_HEAT);
         //TODO: Do we want to clear frequencies?
         //set.add(MekanismDataComponents.FREQUENCY_AWARE);
         //set.add(MekanismDataComponents.FREQUENCY_COMPONENT);

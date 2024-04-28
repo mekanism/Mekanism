@@ -2,12 +2,12 @@ package mekanism.common.recipe.upgrade.chemical;
 
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
 
 @NothingNullByDefault
 public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionStack, IInfusionTank> {
@@ -22,7 +22,7 @@ public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionS
     }
 
     @Override
-    protected ContainerType<IInfusionTank, AttachedInfusionTanks, IInfusionHandler> getContainerType() {
+    protected ContainerType<IInfusionTank, AttachedInfuseTypes, ? extends IMekanismInfusionHandler> getContainerType() {
         return ContainerType.INFUSION;
     }
 }

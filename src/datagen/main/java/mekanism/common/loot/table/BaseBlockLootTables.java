@@ -11,7 +11,6 @@ import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.AttachedContainers;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
@@ -183,10 +182,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 boolean hasContainers = false;
                 CopyContainersLootFunction.Builder containerBuilder = CopyContainersLootFunction.builder();
                 for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-                    AttachedContainers<?> attachment = type.getAttachment(stack);
                     List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
-                    List<?> attachmentContainers = attachment == null ? Collections.emptyList() : attachment.getContainers();
-                    if (containers.size() == attachmentContainers.size()) {
+                    int attachmentContainers = type.getContainerCount(stack);
+                    if (containers.size() == attachmentContainers) {
                         if (!containers.isEmpty()) {
                             containerBuilder.copy(type);
                             hasContainers = true;
@@ -194,18 +192,18 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                                 hasContents = true;
                             }
                         }
-                    } else if (attachmentContainers.isEmpty()) {
+                    } else if (attachmentContainers == 0) {
                         //TODO: Improve how we handle skipping warnings for known missing types
                         if (type == ContainerType.ITEM && block.asItem() instanceof ItemBlockPersonalStorage) {
                             //We don't want explosions causing personal storage items to be directly destroyed. It is also known that the attachment is missing
                             hasContents = true;
                         } else if (type != ContainerType.GAS || !(block instanceof BlockRadioactiveWasteBarrel)) {
-                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getAttachmentName(), RegistryUtils.getName(block));
+                            Mekanism.logger.warn("Container type: {}, item missing attachments: {}", type.getComponentName(), RegistryUtils.getName(block));
                         }
                     } else if (containers.isEmpty()) {
-                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getAttachmentName(), RegistryUtils.getName(block));
+                        Mekanism.logger.warn("Container type: {}, item has attachments but block doesn't have containers: {}", type.getComponentName(), RegistryUtils.getName(block));
                     } else {
-                        Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getAttachmentName(), attachmentContainers.size(),
+                        Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getComponentName(), attachmentContainers,
                               containers.size(), RegistryUtils.getName(block));
                     }
                 }

@@ -3,25 +3,39 @@ package mekanism.common.registries;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.tier.ITier;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.qio.PortableQIODashboardInventory;
+import mekanism.common.attachments.containers.chemical.gas.ComponentBackedChemicalTankGasTank;
+import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasTank;
+import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.chemical.infuse.ComponentBackedChemicalTankInfusionTank;
+import mekanism.common.attachments.containers.chemical.infuse.ComponentBackedInfusionTank;
+import mekanism.common.attachments.containers.chemical.infuse.InfusionTanksBuilder;
+import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
+import mekanism.common.attachments.containers.chemical.pigment.ComponentBackedChemicalTankPigmentTank;
+import mekanism.common.attachments.containers.chemical.pigment.ComponentBackedPigmentTank;
+import mekanism.common.attachments.containers.chemical.pigment.PigmentTanksBuilder;
+import mekanism.common.attachments.containers.chemical.slurry.ComponentBackedChemicalTankSlurryTank;
+import mekanism.common.attachments.containers.chemical.slurry.ComponentBackedSlurryTank;
+import mekanism.common.attachments.containers.chemical.slurry.SlurryTanksBuilder;
+import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTankFluidTank;
+import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
+import mekanism.common.attachments.containers.heat.HeatCapacitorsBuilder;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -48,14 +62,7 @@ import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
-import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
-import mekanism.common.capabilities.chemical.variable.RateLimitInfusionTank;
-import mekanism.common.capabilities.chemical.variable.RateLimitPigmentTank;
-import mekanism.common.capabilities.chemical.variable.RateLimitSlurryTank;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.item.FluidTankRateLimitFluidTank;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.Factory;
@@ -63,21 +70,6 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.gear.IModuleItem;
-import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
-import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.inventory.slot.FormulaicCraftingSlot;
-import mekanism.common.inventory.slot.InputInventorySlot;
-import mekanism.common.inventory.slot.ItemSlotsBuilder;
-import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.QIODriveSlot;
-import mekanism.common.inventory.slot.SecurityInventorySlot;
-import mekanism.common.inventory.slot.chemical.GasInventorySlot;
-import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
-import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
-import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockCardboardBox;
 import mekanism.common.item.block.ItemBlockChemicalTank;
@@ -105,8 +97,13 @@ import mekanism.common.item.block.transmitter.ItemBlockTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
+import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -115,9 +112,7 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
-import mekanism.common.tier.BinTier;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -279,9 +274,9 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerCasing>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityBoilerCasing>>> BOILER_CASING = registerBlock("boiler_casing", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_CASING, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())));
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntityBoilerValve>, ItemBlockTooltip<BlockBasicMultiblock<TileEntityBoilerValve>>> BOILER_VALVE = registerBlock("boiler_valve", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.BOILER_VALVE, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())));
     public static final BlockRegistryObject<BlockTileModel<TileEntitySecurityDesk, BlockTypeTile<TileEntitySecurityDesk>>, ItemBlockSecurityDesk> SECURITY_DESK = BLOCKS.register("security_desk", () -> new BlockTileModel<>(MekanismBlockTypes.SECURITY_DESK, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockSecurityDesk::new)
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                .addSlot((listener, x, y) -> SecurityInventorySlot.unlock(() -> IItemSecurityUtils.INSTANCE.getOwnerUUID(stack), listener, x, y))
-                .addSlot(SecurityInventorySlot::lock)
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                .addUnlockSlot()
+                .addLockSlot()
                 .build()
           ));
     public static final BlockRegistryObject<BlockRadioactiveWasteBarrel, ItemBlockRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BLOCKS.registerDefaultProperties("radioactive_waste_barrel", BlockRadioactiveWasteBarrel::new, ItemBlockRadioactiveWasteBarrel::new);
@@ -289,7 +284,7 @@ public class MekanismBlocks {
 
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnrichmentChamber, FactoryMachine<TileEntityEnrichmentChamber>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityEnrichmentChamber, FactoryMachine<TileEntityEnrichmentChamber>>>> ENRICHMENT_CHAMBER =
           BLOCKS.register("enrichment_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.ENRICHMENT_CHAMBER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(MekanismRecipeType.ENRICHING, SingleInputRecipeCache::containsInput)
                       .addOutput()
                       .addEnergy()
@@ -298,12 +293,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityOsmiumCompressor, FactoryMachine<TileEntityOsmiumCompressor>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityOsmiumCompressor, FactoryMachine<TileEntityOsmiumCompressor>>>> OSMIUM_COMPRESSOR =
           BLOCKS.register("osmium_compressor", () -> new BlockFactoryMachine<>(MekanismBlockTypes.OSMIUM_COMPRESSOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityAdvancedElectricMachine.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                            gas -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputB(null, gas.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS, MekanismRecipeType.COMPRESSING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.COMPRESSING, ItemChemical::containsInputA)
-                            .addGasSlotWithConversion(0)
+                            .addGasFillOrConvertSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -311,7 +306,7 @@ public class MekanismBlocks {
                 );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityCombiner, FactoryMachine<TileEntityCombiner>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityCombiner, FactoryMachine<TileEntityCombiner>>>> COMBINER =
           BLOCKS.register("combiner", () -> new BlockFactoryMachine<>(MekanismBlockTypes.COMBINER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(MekanismRecipeType.COMBINING, DoubleItem::containsInputA)
                       .addInput(MekanismRecipeType.COMBINING, DoubleItem::containsInputB)
                       .addOutput()
@@ -320,7 +315,7 @@ public class MekanismBlocks {
                 ));
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityCrusher, FactoryMachine<TileEntityCrusher>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityCrusher, FactoryMachine<TileEntityCrusher>>>> CRUSHER =
           BLOCKS.register("crusher", () -> new BlockFactoryMachine<>(MekanismBlockTypes.CRUSHER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(MekanismRecipeType.CRUSHING, SingleInputRecipeCache::containsInput)
                       .addOutput()
                       .addEnergy()
@@ -328,25 +323,20 @@ public class MekanismBlocks {
                 ));
     public static final BlockRegistryObject<BlockTileModel<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>>, ItemBlockTooltip<BlockTileModel<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>>>> DIGITAL_MINER =
           BLOCKS.register("digital_miner", () -> new BlockTileModel<>(MekanismBlockTypes.DIGITAL_MINER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                    BiPredicate<ItemStack, AutomationType> canInsert = (s, automationType) -> automationType != AutomationType.EXTERNAL || TileEntityDigitalMiner.isSavedReplaceTarget(stack, s.getItem());
-                    //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
-                    //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
-                    BiPredicate<ItemStack, AutomationType> canExtract = (s, automationType) -> automationType != AutomationType.EXTERNAL || !TileEntityDigitalMiner.isSavedReplaceTarget(stack, s.getItem());
-                    return ItemSlotsBuilder.builder(stack)
-                          .addSlots(3 * 9, (listener, x, y) -> BasicInventorySlot.at(canExtract, canInsert, listener, x, y))
-                          .addEnergy()
-                          .build();
-                }));
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addMinerSlots(3 * 9)
+                      .addEnergy()
+                      .build())
+                );
 
     public static final BlockRegistryObject<BlockFactoryMachineModel<TileEntityMetallurgicInfuser, FactoryMachine<TileEntityMetallurgicInfuser>>, ItemBlockTooltip<BlockFactoryMachineModel<TileEntityMetallurgicInfuser, FactoryMachine<TileEntityMetallurgicInfuser>>>> METALLURGIC_INFUSER =
           BLOCKS.register("metallurgic_infuser", () -> new BlockFactoryMachineModel<>(MekanismBlockTypes.METALLURGIC_INFUSER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.INFUSION, stack -> RateLimitInfusionTank.createBasicItem(TileEntityMetallurgicInfuser.MAX_INFUSE,
-                            ChemicalTankBuilder.INFUSION.manualOnly, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
-                            infuseType -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputB(null, infuseType.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addInfusionSlotWithConversion(0)
+                      .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder()
+                            .addBasic(TileEntityMetallurgicInfuser.MAX_INFUSE, MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addInfusionFillOrConvertSlot(0)
                             .addInput(MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputA)
                             .addOutput()
                             .addEnergy()
@@ -356,12 +346,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPurificationChamber, FactoryMachine<TileEntityPurificationChamber>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityPurificationChamber, FactoryMachine<TileEntityPurificationChamber>>>> PURIFICATION_CHAMBER =
           BLOCKS.register("purification_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.PURIFICATION_CHAMBER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityAdvancedElectricMachine.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                            gas -> MekanismRecipeType.PURIFYING.getInputCache().containsInputB(null, gas.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS, MekanismRecipeType.PURIFYING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.PURIFYING, ItemChemical::containsInputA)
-                            .addGasSlotWithConversion(0)
+                            .addGasFillOrConvertSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -369,21 +359,22 @@ public class MekanismBlocks {
                 );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnergizedSmelter, FactoryMachine<TileEntityEnergizedSmelter>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityEnergizedSmelter, FactoryMachine<TileEntityEnergizedSmelter>>>> ENERGIZED_SMELTER =
           BLOCKS.register("energized_smelter", () -> new BlockFactoryMachine<>(MekanismBlockTypes.ENERGIZED_SMELTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
                       .addOutput()
                       .addEnergy()
                       .build()
                 ));
     public static final BlockRegistryObject<BlockTile<TileEntityTeleporter, Machine<TileEntityTeleporter>>, ItemBlockTeleporter> TELEPORTER = BLOCKS.register("teleporter", () -> new BlockTile<>(MekanismBlockTypes.TELEPORTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTeleporter::new)
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addEnergy().build()));
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectricPump, Machine<TileEntityElectricPump>>, ItemBlockTooltip<BlockTileModel<TileEntityElectricPump, Machine<TileEntityElectricPump>>>> ELECTRIC_PUMP =
           BLOCKS.register("electric_pump", () -> new BlockTileModel<>(MekanismBlockTypes.ELECTRIC_PUMP, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityElectricPump.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addFluidSlot(0, FluidInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityElectricPump.MAX_FLUID)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addFluidDrainSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -396,31 +387,30 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityRotaryCondensentrator, Machine<TileEntityRotaryCondensentrator>>, ItemBlockTooltip<BlockTileModel<TileEntityRotaryCondensentrator, Machine<TileEntityRotaryCondensentrator>>>> ROTARY_CONDENSENTRATOR =
           BLOCKS.register("rotary_condensentrator", () -> new BlockTileModel<>(MekanismBlockTypes.ROTARY_CONDENSENTRATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityRotaryCondensentrator.CAPACITY,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-                            fluid -> MekanismRecipeType.ROTARY.getInputCache().containsInput(null, fluid)
-                      )).addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityRotaryCondensentrator.CAPACITY,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                            gas -> MekanismRecipeType.ROTARY.getInputCache().containsInput(null, gas.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                          BooleanSupplier modeSupplier = () -> stack.getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
-                          return ItemSlotsBuilder.builder(stack)
-                                .addGasSlot(0, (tank, listener, x, y) -> GasInventorySlot.rotaryDrain(tank, modeSupplier, listener, x, y))
-                                .addGasSlot(0, (tank, listener, x, y) -> GasInventorySlot.rotaryDrain(tank, modeSupplier, listener, x, y))
-                                .addFluidSlot(0, (tank, listener, x, y) -> FluidInventorySlot.rotary(tank, modeSupplier, listener, x, y))
-                                .addOutput()
-                                .addEnergy()
-                                .build();
-                      })
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInput)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityRotaryCondensentrator.CAPACITY, MekanismRecipeType.ROTARY, RotaryInputRecipeCache::containsInput)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addGasRotaryDrainSlot(0)
+                            .addGasRotaryFillSlot(0)
+                            .addFluidRotarySlot(0)
+                            .addOutput()
+                            .addEnergy()
+                            .build()
+                      )
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalOxidizer, Machine<TileEntityChemicalOxidizer>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalOxidizer, Machine<TileEntityChemicalOxidizer>>>> CHEMICAL_OXIDIZER =
           BLOCKS.register("chemical_oxidizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_OXIDIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityChemicalOxidizer.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityChemicalOxidizer.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.OXIDIZING, SingleInputRecipeCache::containsInput)
-                            .addGasSlot(0, GasInventorySlot::drain)
+                            .addGasDrainSlot(0)
                             .addEnergy()
                             .build()
                       )
@@ -428,22 +418,15 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalInfuser, Machine<TileEntityChemicalInfuser>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalInfuser, Machine<TileEntityChemicalInfuser>>>> CHEMICAL_INFUSER =
           BLOCKS.register("chemical_infuser", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_INFUSER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntityChemicalInfuser.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.CHEMICAL_INFUSING.getInputCache().containsInput(null, gas.getStack(1))
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntityChemicalInfuser.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.CHEMICAL_INFUSING.getInputCache().containsInput(null, gas.getStack(1))
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntityChemicalInfuser.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addGasSlot(0, GasInventorySlot::fill)
-                            .addGasSlot(1, GasInventorySlot::fill)
-                            .addGasSlot(2, GasInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityChemicalInfuser.MAX_GAS, MekanismRecipeType.CHEMICAL_INFUSING, EitherSideChemical::containsInput)
+                            .addBasic(TileEntityChemicalInfuser.MAX_GAS, MekanismRecipeType.CHEMICAL_INFUSING, EitherSideChemical::containsInput)
+                            .addBasic(TileEntityChemicalInfuser.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addGasFillSlot(0)
+                            .addGasFillSlot(1)
+                            .addGasDrainSlot(2)
                             .addEnergy()
                             .build()
                       )
@@ -451,12 +434,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityChemicalInjectionChamber, FactoryMachine<TileEntityChemicalInjectionChamber>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityChemicalInjectionChamber, FactoryMachine<TileEntityChemicalInjectionChamber>>>> CHEMICAL_INJECTION_CHAMBER =
           BLOCKS.register("chemical_injection_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.CHEMICAL_INJECTION_CHAMBER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityAdvancedElectricMachine.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                            gas -> MekanismRecipeType.INJECTING.getInputCache().containsInputB(null, gas.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS, MekanismRecipeType.INJECTING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.INJECTING, ItemChemical::containsInputA)
-                            .addGasSlotWithConversion(0)
+                            .addGasFillOrConvertSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -465,27 +448,24 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectrolyticSeparator, Machine<TileEntityElectrolyticSeparator>>, ItemBlockTooltip<BlockTileModel<TileEntityElectrolyticSeparator, Machine<TileEntityElectrolyticSeparator>>>> ELECTROLYTIC_SEPARATOR =
           BLOCKS.register("electrolytic_separator", () -> new BlockTileModel<>(MekanismBlockTypes.ELECTROLYTIC_SEPARATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityElectrolyticSeparator.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-                            fluid -> MekanismRecipeType.SEPARATING.getInputCache().containsInput(null, fluid)
-                      )).addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntityElectrolyticSeparator.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntityElectrolyticSeparator.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addFluidSlot(0, FluidInventorySlot::fill)
-                            .addGasSlot(0, GasInventorySlot::drain)
-                            .addGasSlot(1, GasInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityElectrolyticSeparator.MAX_FLUID, MekanismRecipeType.SEPARATING, SingleFluid::containsInput)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityElectrolyticSeparator.MAX_GAS)
+                            .addBasic(TileEntityElectrolyticSeparator.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addFluidFillSlot(0)
+                            .addGasDrainSlot(0)
+                            .addGasDrainSlot(1)
                             .addEnergy()
                             .build()
                       )
                 );
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPrecisionSawmill, FactoryMachine<TileEntityPrecisionSawmill>>, ItemBlockTooltip<BlockFactoryMachine<TileEntityPrecisionSawmill, FactoryMachine<TileEntityPrecisionSawmill>>>> PRECISION_SAWMILL =
           BLOCKS.register("precision_sawmill", () -> new BlockFactoryMachine<>(MekanismBlockTypes.PRECISION_SAWMILL, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(MekanismRecipeType.SAWING, SingleInputRecipeCache::containsInput)
                       .addOutput()
                       .addOutput()//Secondary output
@@ -494,76 +474,96 @@ public class MekanismBlocks {
                 ));
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalDissolutionChamber, Machine<TileEntityChemicalDissolutionChamber>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalDissolutionChamber, Machine<TileEntityChemicalDissolutionChamber>>>> CHEMICAL_DISSOLUTION_CHAMBER =
           BLOCKS.register("chemical_dissolution_chamber", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_DISSOLUTION_CHAMBER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.DISSOLUTION.getInputCache().containsInputB(null, gas.getStack(1))
-                            ),
-                            //TODO - 1.20.5: Fix this get component call
-                            stack.get(MekanismDataComponents.CDC_CONTENTS_HANDLER).getGasTank()
-                      )).addMissingMergedTanks(MekanismDataComponents.CDC_CONTENTS_HANDLER, false, false)
-                      .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addGasSlotWithConversion(0)
-                            .addInput(MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputA)
-                            //TODO - 1.20.5: Fix this get component call
-                            .addContainerSlot(stack.get(MekanismDataComponents.CDC_CONTENTS_HANDLER), MergedChemicalInventorySlot::drain)
-                            .addEnergy()
-                            .build()
-                      )
+                .forItemHolder(holder -> {
+                          final LongSupplier capacitySupplier = () -> TileEntityChemicalDissolutionChamber.MAX_CHEMICAL;
+                          final MergedTankCreator mergedTankCreator = new MergedTankCreator(
+                                (type, attachedTo, containerIndex) -> new ComponentBackedGasTank(attachedTo, containerIndex, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                                      ChemicalTankBuilder.GAS.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedInfusionTank(attachedTo, containerIndex, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                                      ChemicalTankBuilder.INFUSION.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedPigmentTank(attachedTo, containerIndex, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                                      ChemicalTankBuilder.PIGMENT.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedSlurryTank(attachedTo, containerIndex, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                                      ChemicalTankBuilder.SLURRY.alwaysTrue, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null)
+                          );
+                          holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                                      .addBasic(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL, MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputB)
+                                      .addTank(mergedTankCreator)
+                                      .build()
+                                ).addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                                      .addGasFillOrConvertSlot(0)
+                                      .addInput(MekanismRecipeType.DISSOLUTION, ItemChemical::containsInputA)
+                                      .addMergedChemicalDrainSlot(1, 0, 0, 0)
+                                      .addEnergy()
+                                      .build()
+                                );
+                      }
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalWasher, Machine<TileEntityChemicalWasher>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalWasher, Machine<TileEntityChemicalWasher>>>> CHEMICAL_WASHER =
           BLOCKS.register("chemical_washer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_WASHER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityChemicalWasher.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-                            fluid -> MekanismRecipeType.WASHING.getInputCache().containsInputA(null, fluid)
-                      )).addAttachmentOnlyContainers(ContainerType.SLURRY, stack -> List.of(
-                            RateLimitSlurryTank.createBasicItem(TileEntityChemicalWasher.MAX_SLURRY,
-                                  ChemicalTankBuilder.SLURRY.manualOnly, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
-                                  slurry -> MekanismRecipeType.WASHING.getInputCache().containsInputB(null, slurry.getStack(1))
-                            ),
-                            RateLimitSlurryTank.createBasicItem(TileEntityChemicalWasher.MAX_SLURRY,
-                                  ChemicalTankBuilder.SLURRY.manualOnly, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addFluidSlot(0, FluidInventorySlot::fill)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityChemicalWasher.MAX_FLUID, MekanismRecipeType.WASHING, FluidChemical::containsInputA)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder()
+                            .addBasic(TileEntityChemicalWasher.MAX_SLURRY, MekanismRecipeType.WASHING, FluidChemical::containsInputB)
+                            .addBasic(TileEntityChemicalWasher.MAX_SLURRY)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addFluidFillSlot(0)
                             .addOutput()
-                            .addSlurrySlot(1, SlurryInventorySlot::drain)
+                            .addSlurryDrainSlot(1)
                             .addEnergy()
                             .build()
                       )
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>, ItemBlockTooltip<BlockTileModel<TileEntityChemicalCrystallizer, Machine<TileEntityChemicalCrystallizer>>>> CHEMICAL_CRYSTALLIZER =
           BLOCKS.register("chemical_crystallizer", () -> new BlockTileModel<>(MekanismBlockTypes.CHEMICAL_CRYSTALLIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder
-                      .addMissingMergedTanks(MekanismDataComponents.CRYSTALLIZER_CONTENTS_HANDLER, false, false)
-                      .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            //TODO - 1.20.5: Fix this get component call
-                            .addContainerSlot(stack.get(MekanismDataComponents.CRYSTALLIZER_CONTENTS_HANDLER), MergedChemicalInventorySlot::fill)
-                            .addOutput()
-                            .addEnergy()
-                            .build()
-                      )
+                .forItemHolder(holder -> {
+                          final LongSupplier capacitySupplier = () -> TileEntityChemicalCrystallizer.MAX_CHEMICAL;
+                          final Predicate<Gas> gasPredicate = gas -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, gas);
+                          final Predicate<InfuseType> infusionPredicate = infuseType -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, infuseType);
+                          final Predicate<Pigment> pigmentPredicate = pigment -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, pigment);
+                          final Predicate<Slurry> slurryPredicate = slurry -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, slurry);
+                          final MergedTankCreator mergedTankCreator = new MergedTankCreator(
+                                (type, attachedTo, containerIndex) -> new ComponentBackedGasTank(attachedTo, containerIndex, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                                      gasPredicate, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedInfusionTank(attachedTo, containerIndex, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                                      infusionPredicate, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedPigmentTank(attachedTo, containerIndex, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                                      pigmentPredicate, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null),
+                                (type, attachedTo, containerIndex) -> new ComponentBackedSlurryTank(attachedTo, containerIndex, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                                      slurryPredicate, MekanismConfig.general.chemicalItemFillRate, capacitySupplier, null)
+                          );
+                          holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
+                                .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                                      .addMergedChemicalFillSlot(0, 0, 0, 0)
+                                      .addOutput()
+                                      .addEnergy()
+                                      .build()
+                                );
+                      }
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntitySeismicVibrator, Machine<TileEntitySeismicVibrator>>, ItemBlockTooltip<BlockTileModel<TileEntitySeismicVibrator, Machine<TileEntitySeismicVibrator>>>> SEISMIC_VIBRATOR =
           BLOCKS.register("seismic_vibrator", () -> new BlockTileModel<>(MekanismBlockTypes.SEISMIC_VIBRATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addEnergy().build()));
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
     public static final BlockRegistryObject<BlockTileModel<TileEntityPressurizedReactionChamber, Machine<TileEntityPressurizedReactionChamber>>, ItemBlockTooltip<BlockTileModel<TileEntityPressurizedReactionChamber, Machine<TileEntityPressurizedReactionChamber>>>> PRESSURIZED_REACTION_CHAMBER =
           BLOCKS.register("pressurized_reaction_chamber", () -> new BlockTileModel<>(MekanismBlockTypes.PRESSURIZED_REACTION_CHAMBER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityPressurizedReactionChamber.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi,
-                            fluid -> MekanismRecipeType.REACTION.getInputCache().containsInputB(null, fluid)
-                      )).addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntityPressurizedReactionChamber.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.REACTION.getInputCache().containsInputC(null, gas.getStack(1))
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntityPressurizedReactionChamber.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityPressurizedReactionChamber.MAX_FLUID, MekanismRecipeType.REACTION, ItemFluidChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityPressurizedReactionChamber.MAX_GAS, MekanismRecipeType.REACTION, ItemFluidChemical::containsInputC)
+                            .addBasic(TileEntityPressurizedReactionChamber.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.REACTION, ItemFluidChemical::containsInputA)
                             .addOutput()
                             .addEnergy()
@@ -573,17 +573,13 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityIsotopicCentrifuge, Machine<TileEntityIsotopicCentrifuge>>, ItemBlockTooltip<BlockTileModel<TileEntityIsotopicCentrifuge, Machine<TileEntityIsotopicCentrifuge>>>> ISOTOPIC_CENTRIFUGE =
           BLOCKS.register("isotopic_centrifuge", () -> new BlockTileModel<>(MekanismBlockTypes.ISOTOPIC_CENTRIFUGE, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntityIsotopicCentrifuge.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.CENTRIFUGING.getInputCache().containsInput(null, gas.getStack(1))
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntityIsotopicCentrifuge.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addGasSlot(0, GasInventorySlot::fill)
-                            .addGasSlot(1, GasInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityIsotopicCentrifuge.MAX_GAS, MekanismRecipeType.CENTRIFUGING, SingleChemical::containsInput)
+                            .addBasic(TileEntityIsotopicCentrifuge.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addGasFillSlot(0)
+                            .addGasDrainSlot(1)
                             .addEnergy()
                             .build()
                       )
@@ -591,11 +587,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityNutritionalLiquifier, Machine<TileEntityNutritionalLiquifier>>, ItemBlockTooltip<BlockTile<TileEntityNutritionalLiquifier, Machine<TileEntityNutritionalLiquifier>>>> NUTRITIONAL_LIQUIFIER =
           BLOCKS.register("nutritional_liquifier", () -> new BlockTile<>(MekanismBlockTypes.NUTRITIONAL_LIQUIFIER, properties -> properties.noOcclusion().mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityNutritionalLiquifier.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityNutritionalLiquifier.MAX_FLUID)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(TileEntityNutritionalLiquifier::isValidInput)
-                            .addFluidSlot(0, FluidInventorySlot::drain)
+                            .addFluidDrainSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -611,10 +608,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityFluidicPlenisher, Machine<TileEntityFluidicPlenisher>>, ItemBlockTooltip<BlockTileModel<TileEntityFluidicPlenisher, Machine<TileEntityFluidicPlenisher>>>> FLUIDIC_PLENISHER =
           BLOCKS.register("fluidic_plenisher", () -> new BlockTileModel<>(MekanismBlockTypes.FLUIDIC_PLENISHER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.FLUID, stack -> RateLimitFluidTank.createBasicItem(TileEntityFluidicPlenisher.MAX_FLUID,
-                            BasicFluidTank.manualOnly, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addFluidSlot(0, FluidInventorySlot::fill)
+                      .addAttachmentOnlyContainers(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                            .addBasic(TileEntityFluidicPlenisher.MAX_FLUID)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addFluidFillSlot(0)
                             .addOutput()
                             .addEnergy()
                             .build()
@@ -623,61 +621,56 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>, ItemBlockTooltip<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>>> LASER = BLOCKS.register("laser", () -> new BlockTileModel<>(MekanismBlockTypes.LASER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>, ItemBlockLaserAmplifier> LASER_AMPLIFIER = BLOCKS.register("laser_amplifier", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_AMPLIFIER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockLaserAmplifier::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaserTractorBeam, BlockTypeTile<TileEntityLaserTractorBeam>>, ItemBlockLaserTractorBeam> LASER_TRACTOR_BEAM = BLOCKS.register("laser_tractor_beam", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockLaserTractorBeam::new)
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addSlots(3 * 9, OutputInventorySlot::at).build()));
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addOutput(3 * 9).build()));
     public static final BlockRegistryObject<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>, ItemBlockQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = BLOCKS.register("quantum_entangloporter", () -> new BlockTileModel<>(MekanismBlockTypes.QUANTUM_ENTANGLOPORTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockQuantumEntangloporter::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>>, ItemBlockTooltip<BlockTileModel<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>>>> SOLAR_NEUTRON_ACTIVATOR =
           BLOCKS.register("solar_neutron_activator", () -> new BlockTileModel<>(MekanismBlockTypes.SOLAR_NEUTRON_ACTIVATOR, properties -> properties.mapColor(MapColor.COLOR_BLUE)), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.GAS, stack -> List.of(
-                            RateLimitGasTank.createBasicItem(TileEntitySolarNeutronActivator.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                                  gas -> MekanismRecipeType.ACTIVATING.getInputCache().containsInput(null, gas.getStack(1))
-                            ),
-                            RateLimitGasTank.createBasicItem(TileEntitySolarNeutronActivator.MAX_GAS,
-                                  ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addGasSlot(0, GasInventorySlot::fill)
-                            .addGasSlot(1, GasInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntitySolarNeutronActivator.MAX_GAS, MekanismRecipeType.ACTIVATING, SingleChemical::containsInput)
+                            .addBasic(TileEntitySolarNeutronActivator.MAX_GAS)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addGasFillSlot(0)
+                            .addGasDrainSlot(1)
                             .build()
                       )
                 );
     public static final BlockRegistryObject<BlockTile<TileEntityOredictionificator, BlockTypeTile<TileEntityOredictionificator>>, ItemBlockTooltip<BlockTile<TileEntityOredictionificator, BlockTypeTile<TileEntityOredictionificator>>>> OREDICTIONIFICATOR =
           BLOCKS.register("oredictionificator", () -> new BlockTile<>(MekanismBlockTypes.OREDICTIONIFICATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                      .addInput(s -> TileEntityOredictionificator.hasResult(stack.getOrDefault(MekanismDataComponents.FILTER_AWARE, FilterAware.EMPTY).getEnabled(OredictionificatorItemFilter.class), s))
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addOredictionificatorInput()
                       .addOutput()
                       .build()
                 ));
     public static final BlockRegistryObject<BlockTileModel<TileEntityResistiveHeater, Machine<TileEntityResistiveHeater>>, ItemBlockResistiveHeater> RESISTIVE_HEATER = BLOCKS.register("resistive_heater", () -> new BlockTileModel<>(MekanismBlockTypes.RESISTIVE_HEATER, properties -> properties.mapColor(MapColor.METAL)), ItemBlockResistiveHeater::new)
           .forItemHolder(holder -> holder
-                .addAttachmentOnlyContainer(ContainerType.HEAT, stack -> BasicHeatCapacitor.createBasicItem(TileEntityResistiveHeater.HEAT_CAPACITY,
-                      TileEntityResistiveHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityResistiveHeater.INVERSE_INSULATION_COEFFICIENT
-                )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addEnergy().build())
+                .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorsBuilder.builder()
+                      .addBasic(TileEntityResistiveHeater.HEAT_CAPACITY, TileEntityResistiveHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityResistiveHeater.INVERSE_INSULATION_COEFFICIENT)
+                      .build()
+                ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build())
           );
     public static final BlockRegistryObject<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>, ItemBlockTooltip<BlockTile<TileEntityFormulaicAssemblicator, Machine<TileEntityFormulaicAssemblicator>>>> FORMULAIC_ASSEMBLICATOR =
           BLOCKS.register("formulaic_assemblicator", () -> new BlockTile<>(MekanismBlockTypes.FORMULAIC_ASSEMBLICATOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                    BooleanSupplier autoMode = () -> stack.getOrDefault(MekanismDataComponents.AUTO, false);
-                    return ItemSlotsBuilder.builder(stack)
-                          .addSlot((listener, x, y) -> BasicInventorySlot.at(TileEntityFormulaicAssemblicator.FORMULA_SLOT_VALIDATOR, listener, x, y))
-                          //Note: We skip making the extra checks based on the formula and just allow all items
-                          .addSlots(2 * 9, InputInventorySlot::at)
-                          .addSlots(3 * 3, (listener, x, y) -> FormulaicCraftingSlot.at(autoMode, listener, x, y))
-                          .addSlots(3 * 2, OutputInventorySlot::at)
-                          .addEnergy()
-                          .build();
-                }));
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                      .addFormulaSlot()
+                      .addInput(2 * 9)
+                      .addFormulaCraftingSlot(3 * 3)
+                      .addOutput(3 * 2)
+                      .addEnergy()
+                      .build())
+                );
     public static final BlockRegistryObject<BlockTile<TileEntityFuelwoodHeater, BlockTypeTile<TileEntityFuelwoodHeater>>, ItemBlockTooltip<BlockTile<TileEntityFuelwoodHeater, BlockTypeTile<TileEntityFuelwoodHeater>>>> FUELWOOD_HEATER =
           BLOCKS.register("fuelwood_heater", () -> new BlockTile<>(MekanismBlockTypes.FUELWOOD_HEATER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.HEAT, stack -> BasicHeatCapacitor.createBasicItem(TileEntityFuelwoodHeater.HEAT_CAPACITY,
-                            TileEntityFuelwoodHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityFuelwoodHeater.INVERSE_INSULATION_COEFFICIENT
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addFuelSlot().build())
+                      .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorsBuilder.builder()
+                            .addBasic(TileEntityFuelwoodHeater.HEAT_CAPACITY, TileEntityFuelwoodHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityFuelwoodHeater.INVERSE_INSULATION_COEFFICIENT)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addFuelSlot().build())
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.register("modification_station", () -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addInput(s -> s.getItem() instanceof IModuleItem)
                       .addInput(IModuleHelper.INSTANCE::isModuleContainer)
                       .addEnergy()
@@ -686,11 +679,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityAntiprotonicNucleosynthesizer, Machine<TileEntityAntiprotonicNucleosynthesizer>>, ItemBlockTooltip<BlockTileModel<TileEntityAntiprotonicNucleosynthesizer, Machine<TileEntityAntiprotonicNucleosynthesizer>>>> ANTIPROTONIC_NUCLEOSYNTHESIZER =
           BLOCKS.register("antiprotonic_nucleosynthesizer", () -> new BlockTileModel<>(MekanismBlockTypes.ANTIPROTONIC_NUCLEOSYNTHESIZER, properties -> properties.mapColor(MapColor.METAL)), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityAntiprotonicNucleosynthesizer.MAX_GAS,
-                            ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                            gas -> MekanismRecipeType.NUCLEOSYNTHESIZING.getInputCache().containsInputB(null, gas.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addGasSlotWithConversion(0)
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityAntiprotonicNucleosynthesizer.MAX_GAS, MekanismRecipeType.NUCLEOSYNTHESIZING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addGasFillOrConvertSlot(0)
                             .addInput(MekanismRecipeType.NUCLEOSYNTHESIZING, ItemChemical::containsInputA)
                             .addOutput()
                             .addEnergy()
@@ -700,11 +693,12 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityPigmentExtractor, Machine<TileEntityPigmentExtractor>>, ItemBlockTooltip<BlockTile<TileEntityPigmentExtractor, Machine<TileEntityPigmentExtractor>>>> PIGMENT_EXTRACTOR =
           BLOCKS.register("pigment_extractor", () -> new BlockTile<>(MekanismBlockTypes.PIGMENT_EXTRACTOR, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.PIGMENT, stack -> RateLimitPigmentTank.createBasicItem(TileEntityPigmentExtractor.MAX_PIGMENT,
-                            ChemicalTankBuilder.PIGMENT.manualOnly, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder()
+                            .addBasic(TileEntityPigmentExtractor.MAX_PIGMENT)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addInput(MekanismRecipeType.PIGMENT_EXTRACTING, SingleInputRecipeCache::containsInput)
-                            .addPigmentSlot(0, PigmentInventorySlot::drain)
+                            .addPigmentDrainSlot(0)
                             .addEnergy()
                             .build()
                       )
@@ -713,22 +707,15 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityPigmentMixer, Machine<TileEntityPigmentMixer>>, ItemBlockTooltip<BlockTile<TileEntityPigmentMixer, Machine<TileEntityPigmentMixer>>>> PIGMENT_MIXER =
           BLOCKS.register("pigment_mixer", () -> new BlockTile<>(MekanismBlockTypes.PIGMENT_MIXER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainers(ContainerType.PIGMENT, stack -> List.of(
-                            RateLimitPigmentTank.createBasicItem(TileEntityPigmentMixer.MAX_INPUT_PIGMENT,
-                                  ChemicalTankBuilder.PIGMENT.manualOnly, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                                  pigment -> MekanismRecipeType.PIGMENT_MIXING.getInputCache().containsInput(null, pigment.getStack(1))
-                            ),
-                            RateLimitPigmentTank.createBasicItem(TileEntityPigmentMixer.MAX_INPUT_PIGMENT,
-                                  ChemicalTankBuilder.PIGMENT.manualOnly, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                                  pigment -> MekanismRecipeType.PIGMENT_MIXING.getInputCache().containsInput(null, pigment.getStack(1))
-                            ),
-                            RateLimitPigmentTank.createBasicItem(TileEntityPigmentMixer.MAX_OUTPUT_PIGMENT,
-                                  ChemicalTankBuilder.PIGMENT.manualOnly, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue
-                            )
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addPigmentSlot(0, PigmentInventorySlot::fill)
-                            .addPigmentSlot(1, PigmentInventorySlot::fill)
-                            .addPigmentSlot(2, PigmentInventorySlot::drain)
+                      .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder()
+                            .addBasic(TileEntityPigmentMixer.MAX_INPUT_PIGMENT, MekanismRecipeType.PIGMENT_MIXING, EitherSideChemical::containsInput)
+                            .addBasic(TileEntityPigmentMixer.MAX_INPUT_PIGMENT, MekanismRecipeType.PIGMENT_MIXING, EitherSideChemical::containsInput)
+                            .addBasic(TileEntityPigmentMixer.MAX_OUTPUT_PIGMENT)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addPigmentFillSlot(0)
+                            .addPigmentFillSlot(1)
+                            .addPigmentDrainSlot(2)
                             .addEnergy()
                             .build()
                       )
@@ -736,11 +723,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTile<TileEntityPaintingMachine, Machine<TileEntityPaintingMachine>>, ItemBlockTooltip<BlockTile<TileEntityPaintingMachine, Machine<TileEntityPaintingMachine>>>> PAINTING_MACHINE =
           BLOCKS.register("painting_machine", () -> new BlockTile<>(MekanismBlockTypes.PAINTING_MACHINE, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
                 .forItemHolder(holder -> holder
-                      .addAttachmentOnlyContainer(ContainerType.PIGMENT, stack -> RateLimitPigmentTank.createBasicItem(TileEntityPaintingMachine.MAX_PIGMENT,
-                            ChemicalTankBuilder.PIGMENT.manualOnly, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                            pigment -> MekanismRecipeType.PAINTING.getInputCache().containsInputB(null, pigment.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                            .addPigmentSlot(0, PigmentInventorySlot::fill)
+                      .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder()
+                            .addBasic(TileEntityPaintingMachine.MAX_PIGMENT, MekanismRecipeType.PAINTING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addPigmentFillSlot(0)
                             //TODO - 1.20.4: add this comment to more methods
                             //Note: We don't bother with the insertion check based on what pigments are currently stored
                             .addInput(MekanismRecipeType.PAINTING, ItemChemical::containsInputA)
@@ -754,20 +741,17 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>, ItemBlockTooltip<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>>> SUPERCHARGED_COIL = registerBlock("supercharged_coil", () -> new BlockTileModel<>(MekanismBlockTypes.SUPERCHARGED_COIL, properties -> properties.mapColor(MapColor.COLOR_ORANGE)), Rarity.EPIC);
     public static final BlockRegistryObject<BlockTile<TileEntityDimensionalStabilizer, Machine<TileEntityDimensionalStabilizer>>, ItemBlockTooltip<BlockTile<TileEntityDimensionalStabilizer, Machine<TileEntityDimensionalStabilizer>>>> DIMENSIONAL_STABILIZER =
           BLOCKS.register("dimensional_stabilizer", () -> new BlockTile<>(MekanismBlockTypes.DIMENSIONAL_STABILIZER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())), ItemBlockTooltip::new)
-                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack).addEnergy().build()));
+                .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addEnergy().build()));
 
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockQIOComponent> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DRIVE_ARRAY, properties -> properties.mapColor(MapColor.METAL)), ItemBlockQIOComponent::new)
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                //Note: As we don't have to update the presence of a drive or remove it from the frequency we can make do with just using a basic slot
-                //TODO - 1.20.4: Evaluate if copy the notExternal is correct or do we want this to have some other checks
-                .addSlots(2 * 6, (listener, x, y) -> BasicInventorySlot.at(BasicInventorySlot.notExternal, BasicInventorySlot.notExternal, QIODriveSlot.IS_QIO_ITEM, listener, x, y))
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                .addQIODriveSlots(2 * 6)
                 .build()
           ));
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockQIOComponent> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_DASHBOARD, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new)
           //Note: While the attachment is mainly used for the portable dashboard, it is a convenient way to also handle window construction
           // and setting up the proper predicates for the actual dashboard block
-          //TODO - 1.20.5: Fix how we get the slots??
-          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> new PortableQIODashboardInventory(null, stack).getSlots()));
+          .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addQIODashboardSlots().build()));
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockQIOComponent> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_IMPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockQIOComponent> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_EXPORTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
     public static final BlockRegistryObject<BlockQIOComponent<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockQIOComponent> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockQIOComponent<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER, properties -> properties.mapColor(MapColor.COLOR_GRAY)), ItemBlockQIOComponent::new);
@@ -828,9 +812,11 @@ public class MekanismBlocks {
     }
 
     private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BlockTypeTile<TileEntityBin> type) {
-        BinTier tier = (BinTier) type.get(AttributeTier.class).tier();
-        return registerTieredBlock(tier, "_bin", color -> new BlockBin(type, properties -> properties.mapColor(color)), ItemBlockBin::new)
-              .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> List.of(BinInventorySlot.create(null, tier))));
+        return registerTieredBlock(type, "_bin", color -> new BlockBin(type, properties -> properties.mapColor(color)), ItemBlockBin::new)
+              .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                    .addSlot(ComponentBackedBinInventorySlot::create)
+                    .build()
+              ));
     }
 
     private static BlockRegistryObject<BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>>, ItemBlockInductionCell> registerInductionCell(BlockTypeTile<TileEntityInductionCell> type) {
@@ -842,12 +828,13 @@ public class MekanismBlocks {
     }
 
     private static BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> registerFluidTank(Machine<TileEntityFluidTank> type) {
-        FluidTankTier tier = (FluidTankTier) type.get(AttributeTier.class).tier();
-        return registerTieredBlock(tier, "_fluid_tank", () -> new BlockFluidTank(type), ItemBlockFluidTank::new)
+        return registerTieredBlock(type, "_fluid_tank", () -> new BlockFluidTank(type), ItemBlockFluidTank::new)
               .forItemHolder(holder -> holder
-                    .addAttachedContainerCapability(ContainerType.FLUID, stack -> FluidTankRateLimitFluidTank.create(tier))
-                    .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                          .addFluidSlot(0, FluidInventorySlot::input)
+                    .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                          .addTank(ComponentBackedFluidTankFluidTank::create)
+                          .build()
+                    ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                          .addFluidInputSlot(0)
                           .addOutput()
                           .build()
                     )
@@ -856,9 +843,9 @@ public class MekanismBlocks {
 
     private static BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> registerEnergyCube(Machine<TileEntityEnergyCube> type) {
         return registerTieredBlock(type, "_energy_cube", () -> new BlockEnergyCube(type), ItemBlockEnergyCube::new)
-              .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+              .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                     .addEnergy()
-                    .addEnergySlot(0, EnergyInventorySlot::drain)
+                    .addDrainEnergy()
                     .build()
               ));
     }
@@ -891,16 +878,19 @@ public class MekanismBlocks {
     private static BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> registerChemicalTank(
           Machine<TileEntityChemicalTank> type) {
         return registerTieredBlock(type, "_chemical_tank", color -> new BlockTileModel<>(type, properties -> properties.mapColor(color)), ItemBlockChemicalTank::new)
-              .forItemHolder(holder -> holder
-                    .addMissingMergedTanks(MekanismDataComponents.CHEMICAL_TANK_CONTENTS_HANDLER, false, true)
-                    .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> {
-                        //TODO - 1.20.5: Fix this get component call
-                        MergedChemicalTank tank = stack.get(MekanismDataComponents.CHEMICAL_TANK_CONTENTS_HANDLER);
-                        return ItemSlotsBuilder.builder(stack)
-                              .addContainerSlot(tank, MergedChemicalInventorySlot::drain)
-                              .addContainerSlot(tank, MergedChemicalInventorySlot::fill)
-                              .build();
-                    })
+              .forItemHolder(holder -> {
+                        final MergedTankCreator mergedTankCreator = new MergedTankCreator(ComponentBackedChemicalTankGasTank::create, ComponentBackedChemicalTankInfusionTank::create,
+                              ComponentBackedChemicalTankPigmentTank::create, ComponentBackedChemicalTankSlurryTank::create);
+                        holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder().build())
+                              .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                                    .addMergedChemicalDrainSlot(0, 0, 0, 0)
+                                    .addMergedChemicalFillSlot(0, 0, 0, 0)
+                                    .build()
+                              );
+                    }
               );
     }
 
@@ -921,45 +911,43 @@ public class MekanismBlocks {
                 case SAWING -> s -> MekanismRecipeType.SAWING.getInputCache().containsInput(null, s);
             };
             switch (type.getFactoryType()) {
-                case SMELTING, ENRICHING, CRUSHING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                case SMELTING, ENRICHING, CRUSHING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addBasicFactorySlots(processes, recipeInputPredicate)
                       .addEnergy()
                       .build()
                 );
-                case COMPRESSING, INJECTING, PURIFYING -> {
-                    Predicate<GasStack> secondaryInputPredicate = switch (type.getFactoryType()) {
-                        case COMPRESSING -> gas -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputB(null, gas);
-                        case INJECTING -> gas -> MekanismRecipeType.INJECTING.getInputCache().containsInputB(null, gas);
-                        case PURIFYING -> gas -> MekanismRecipeType.PURIFYING.getInputCache().containsInputB(null, gas);
-                        default -> throw new IllegalStateException("Factory type doesn't have a known gas recipe");
-                    };
-                    holder.addAttachmentOnlyContainer(ContainerType.GAS, stack -> RateLimitGasTank.createBasicItem(TileEntityAdvancedElectricMachine.MAX_GAS * processes,
-                          ChemicalTankBuilder.GAS.manualOnly, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                          gas -> secondaryInputPredicate.test(gas.getStack(1))
-                    )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                          .addBasicFactorySlots(processes, recipeInputPredicate)
-                          .addGasSlotWithConversion(0)
-                          .addEnergy()
-                          .build()
-                    );
-                }
-                case COMBINING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                case COMPRESSING, INJECTING, PURIFYING -> holder
+                      .addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                            .addBasic(TileEntityAdvancedElectricMachine.MAX_GAS * processes, switch (type.getFactoryType()) {
+                                case COMPRESSING -> MekanismRecipeType.COMPRESSING;
+                                case INJECTING -> MekanismRecipeType.INJECTING;
+                                case PURIFYING -> MekanismRecipeType.PURIFYING;
+                                default -> throw new IllegalStateException("Factory type doesn't have a known gas recipe");
+                            }, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                            .addBasicFactorySlots(processes, recipeInputPredicate)
+                            .addGasFillOrConvertSlot(0)
+                            .addEnergy()
+                            .build()
+                      );
+                case COMBINING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addBasicFactorySlots(processes, recipeInputPredicate)
                       .addInput(MekanismRecipeType.COMBINING, DoubleItem::containsInputB)
                       .addEnergy()
                       .build()
                 );
                 case INFUSING -> holder
-                      .addAttachmentOnlyContainer(ContainerType.INFUSION, stack -> RateLimitInfusionTank.createBasicItem(TileEntityMetallurgicInfuser.MAX_INFUSE * processes,
-                            ChemicalTankBuilder.INFUSION.manualOnly, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
-                            infuseType -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputB(null, infuseType.getStack(1))
-                      )).addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                      .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder()
+                            .addBasic(TileEntityMetallurgicInfuser.MAX_INFUSE * processes, MekanismRecipeType.METALLURGIC_INFUSING, ItemChemical::containsInputB)
+                            .build()
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                             .addBasicFactorySlots(processes, recipeInputPredicate)
-                            .addInfusionSlotWithConversion(0)
+                            .addInfusionFillOrConvertSlot(0)
                             .addEnergy()
                             .build()
                       );
-                case SAWING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
+                case SAWING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                       .addBasicFactorySlots(processes, recipeInputPredicate, true)
                       .addEnergy()
                       .build()
@@ -972,11 +960,7 @@ public class MekanismBlocks {
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,
           Function<MapColor, ? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), suffix, blockSupplier, itemCreator);
-    }
-
-    private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,
-          Function<MapColor, ? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
+        ITier tier = type.get(AttributeTier.class).tier();
         return registerTieredBlock(tier, suffix, () -> blockSupplier.apply(tier.getBaseTier().getMapColor()), itemCreator);
     }
 

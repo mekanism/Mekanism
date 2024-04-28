@@ -164,6 +164,16 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         case SLURRY -> SlurryStack.MAP_CODEC;
     });
     /**
+     * Codec to get any kind of chemical stack, based on a "chemicalType" field.
+     *
+     * @see ChemicalType
+     * @see mekanism.api.chemical.merged.BoxedChemicalStack
+     * @since 10.6.0
+     */
+    //TODO - 1.20.5: Re-evaluate if we wan this defaulting to an empty gas stack or to try and get the same stack type as it was?
+    public static final Codec<ChemicalStack<?>> BOXED_OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(BOXED_CODEC).xmap(optional -> optional.orElse(GasStack.EMPTY),
+          stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+    /**
      * StreamCodec to get any kind of chemical stack (that does not accept empty stacks), based on a "chemicalType" field.
      *
      * @see ChemicalType

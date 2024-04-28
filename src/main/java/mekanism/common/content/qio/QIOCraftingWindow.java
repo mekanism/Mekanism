@@ -22,7 +22,6 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
@@ -62,10 +61,10 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    private final CraftingWindowInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
+    private final IInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
     private final ReplacementHelper replacementHelper = new ReplacementHelper();
     private final RemainderHelper remainderHelper = new RemainderHelper();
-    private final CraftingWindowOutputInventorySlot outputSlot;
+    private final IInventorySlot outputSlot;
     private final QIOCraftingInventory craftingInventory;
     private final IQIOCraftingWindowHolder holder;
     private final SelectedWindowData windowData;
@@ -94,14 +93,14 @@ public class QIOCraftingWindow implements IContentsListener {
         return windowIndex;
     }
 
-    public CraftingWindowInventorySlot getInputSlot(int slot) {
+    public IInventorySlot getInputSlot(int slot) {
         if (slot < 0 || slot >= 9) {
             throw new IllegalArgumentException("Input slot out of range");
         }
         return inputSlots[slot];
     }
 
-    public CraftingWindowOutputInventorySlot getOutputSlot() {
+    public IInventorySlot getOutputSlot() {
         return outputSlot;
     }
 
@@ -246,7 +245,7 @@ public class QIOCraftingWindow implements IContentsListener {
     private int calculateMaxCraftAmount(@NotNull ItemStack stack, @Nullable QIOFrequency frequency) {
         int outputSize = stack.getCount();
         int inputSize = 64;
-        for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+        for (IInventorySlot inputSlot : inputSlots) {
             int count = inputSlot.getCount();
             if (count > 0 && count < inputSize) {
                 inputSize = count;
@@ -286,7 +285,7 @@ public class QIOCraftingWindow implements IContentsListener {
      */
     public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         if (toPlayerInv) {
-            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+            for (IInventorySlot inputSlot : inputSlots) {
                 if (!inputSlot.isEmpty()) {
                     ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
                     if (!toTransfer.isEmpty()) {
@@ -302,7 +301,7 @@ public class QIOCraftingWindow implements IContentsListener {
             QIOFrequency frequency = holder.getFrequency();
             //NO-OP if the frequency is null and that is the target
             if (frequency != null) {
-                for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+                for (IInventorySlot inputSlot : inputSlots) {
                     if (!inputSlot.isEmpty()) {
                         ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
                         if (!toTransfer.isEmpty()) {
@@ -408,7 +407,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Update slots with remaining contents
             for (int index = 0; index < remaining.size(); index++) {
                 ItemStack remainder = remaining.get(index);
-                CraftingWindowInventorySlot inputSlot = inputSlots[index];
+                IInventorySlot inputSlot = inputSlots[index];
                 if (inputSlot.getCount() > 1) {
                     //If the input slot contains an item that is stacked, reduce the size of it by one
                     //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
@@ -497,7 +496,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Update slots with remaining contents
         for (int index = 0; index < remaining.size(); index++) {
             ItemStack remainder = remaining.get(index);
-            CraftingWindowInventorySlot inputSlot = inputSlots[index];
+            IInventorySlot inputSlot = inputSlots[index];
             if (inputSlot.getCount() > 1) {
                 //If the input slot contains an item that is stacked, reduce the size of it by one
                 //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
@@ -635,7 +634,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Override
         public boolean isEmpty() {
-            return Arrays.stream(inputSlots).allMatch(BasicInventorySlot::isEmpty);
+            return Arrays.stream(inputSlots).allMatch(IInventorySlot::isEmpty);
         }
 
         @NotNull
@@ -656,7 +655,7 @@ public class QIOCraftingWindow implements IContentsListener {
         @Override
         public List<ItemStack> getItems() {
             List<ItemStack> items = new ArrayList<>(getWidth() * getHeight());
-            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+            for (IInventorySlot inputSlot : inputSlots) {
                 //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
                 // to change the size of it. We also add it regardless of it is empty as that is what the method expects
                 items.add(inputSlot.getStack().copy());
@@ -707,7 +706,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Override
         public void clearContent() {
-            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+            for (IInventorySlot inputSlot : inputSlots) {
                 inputSlot.setEmpty();
             }
         }
@@ -727,7 +726,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: We don't copy it as it seems to be read only
             // Don't trust custom implementations though to be read only
             boolean copyNeeded = helper.getClass() != StackedContents.class;
-            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+            for (IInventorySlot inputSlot : inputSlots) {
                 ItemStack stack = inputSlot.getStack();
                 helper.accountSimpleStack(copyNeeded ? stack.copy() : stack);
             }
@@ -805,7 +804,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        public void findEquivalentItem(Level world, @NotNull QIOFrequency frequency, CraftingWindowInventorySlot slot, int index, ItemStack used) {
+        public void findEquivalentItem(Level world, @NotNull QIOFrequency frequency, IInventorySlot slot, int index, ItemStack used) {
             mapRecipe(index, used);
             if (invalid) {
                 //If something about mapping the recipe went wrong, we can't find any equivalents
@@ -842,7 +841,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        private boolean testEquivalentItem(Level world, @NotNull QIOFrequency frequency, CraftingWindowInventorySlot slot, int index, Ingredient usedIngredient,
+        private boolean testEquivalentItem(Level world, @NotNull QIOFrequency frequency, IInventorySlot slot, int index, Ingredient usedIngredient,
               HashedItem replacementType) {
             if (!frequency.isStoring(replacementType) || !usedIngredient.test(replacementType.getInternalStack())) {
                 //Our frequency doesn't actually have the item stored we are trying to use or the type we are trying

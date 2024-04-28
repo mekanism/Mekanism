@@ -24,10 +24,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyInventorySlot extends BasicInventorySlot {
 
+    public static final Predicate<ItemStack> DRAIN_VALIDATOR = EnergyCompatUtils::hasStrictEnergyHandler;
+
     /**
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */
-    private static FloatingLong getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
+    public static FloatingLong getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? FloatingLong.ZERO : foundRecipe.getOutput(itemStack);
     }
@@ -91,10 +93,10 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Otherwise, if we can accept any energy that is currently stored in the container, then we allow inserting the item
             return itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE).smallerThan(storedEnergy);
         };
-        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyCompatUtils::hasStrictEnergyHandler, listener, x, y);
+        return new EnergyInventorySlot(energyContainer, insertPredicate.negate(), insertPredicate, EnergyInventorySlot.DRAIN_VALIDATOR, listener, x, y);
     }
 
-    private static boolean fillInsertCheck(ItemStack stack) {
+    public static boolean fillInsertCheck(ItemStack stack) {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         //If we can extract any energy we are valid. Note: We can't just use FloatingLong.ONE as depending on conversion rates
         // that might be less than a single unit and thus can't be extracted

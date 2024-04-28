@@ -125,7 +125,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
         ItemStack current = getStack();
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
+        int currentAmount = Math.min(current.getCount(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -179,7 +179,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      * @return A slot for use in a container that represents this {@link IInventorySlot}, or null if this slot should not be added.
      */
     @Nullable
-    Slot createContainerSlot();
+    default Slot createContainerSlot() {
+        return null;
+    }
 
     /**
      * Convenience method for modifying the size of the stored stack.
@@ -312,6 +314,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      * @since 10.5.0
      */
     default boolean isCompatible(IInventorySlot other) {
+        //TODO - 1.20.5: Remove this? I don't think it is necessary anymore
         return getClass() == other.getClass() && ItemStack.matches(getStack(), other.getStack());
     }
 }

@@ -2,12 +2,12 @@ package mekanism.common.recipe.upgrade.chemical;
 
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.pigment.IPigmentHandler.IMekanismPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedPigmentTanks;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.chemical.pigment.AttachedPigments;
 
 @NothingNullByDefault
 public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack, IPigmentTank> {
@@ -22,7 +22,7 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
     }
 
     @Override
-    protected ContainerType<IPigmentTank, AttachedPigmentTanks, IPigmentHandler> getContainerType() {
+    protected ContainerType<IPigmentTank, AttachedPigments, ? extends IMekanismPigmentHandler> getContainerType() {
         return ContainerType.PIGMENT;
     }
 }

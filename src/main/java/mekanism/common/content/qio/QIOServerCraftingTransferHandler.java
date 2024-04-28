@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
@@ -29,7 +30,6 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
-import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
@@ -80,7 +80,7 @@ public class QIOServerCraftingTransferHandler {
         //Calculate what items are available inside the crafting window and if they can be extracted as we will
         // need to be able to extract the contents afterwards anyway
         for (byte slot = 0; slot < 9; slot++) {
-            CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
+            IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             if (!inputSlot.isEmpty()) {
                 ItemStack available = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
                 if (available.getCount() < inputSlot.getCount()) {
@@ -495,7 +495,7 @@ public class QIOServerCraftingTransferHandler {
         //Extract what items are still in the window
         Byte2ObjectMap<ItemStack> remainingCraftingGridContents = new Byte2ObjectArrayMap<>(9);
         for (byte slot = 0; slot < 9; slot++) {
-            CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
+            IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             if (!inputSlot.isEmpty()) {
                 ItemStack stack = inputSlot.extractItem(inputSlot.getCount(), Action.EXECUTE, AutomationType.MANUAL);
                 if (!stack.isEmpty()) {
@@ -512,7 +512,7 @@ public class QIOServerCraftingTransferHandler {
         for (ObjectIterator<Byte2ObjectMap.Entry<ItemStack>> iter = targetContents.byte2ObjectEntrySet().iterator(); iter.hasNext(); ) {
             Byte2ObjectMap.Entry<ItemStack> entry = iter.next();
             byte targetSlot = entry.getByteKey();
-            CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(targetSlot);
+            IInventorySlot inputSlot = craftingWindow.getInputSlot(targetSlot);
             ItemStack remainder = inputSlot.insertItem(entry.getValue(), Action.EXECUTE, AutomationType.MANUAL);
             if (remainder.isEmpty()) {
                 //If it was fully inserted, remove the entry from what we have left to deal with
@@ -537,7 +537,7 @@ public class QIOServerCraftingTransferHandler {
             if (!stack.isEmpty()) {
                 //If we couldn't insert it all, try recombining with the slots they were in the crafting window
                 // (only if the type matches though)
-                CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
+                IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
                 if (ItemStack.isSameItemSameComponents(inputSlot.getStack(), stack)) {
                     stack = inputSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
                 }
@@ -595,7 +595,7 @@ public class QIOServerCraftingTransferHandler {
         //Put the items that were in the crafting window in the player's inventory
         for (Byte2ObjectMap.Entry<ItemStack> entry : remainingCraftingGridContents.byte2ObjectEntrySet()) {
             ItemStack stack = entry.getValue();
-            CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
+            IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
             if (ItemStack.isSameItemSameComponents(inputSlot.getStack(), stack)) {
                 stack = inputSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
                 if (stack.isEmpty()) {

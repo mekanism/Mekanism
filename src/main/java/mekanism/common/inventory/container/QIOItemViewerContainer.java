@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -30,7 +31,6 @@ import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.PacketUtils;
@@ -167,8 +167,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    private void addCraftingSlot(CraftingWindowInventorySlot slot, byte tableIndex, int slotIndex) {
-        VirtualInventoryContainerSlot containerSlot = slot.createContainerSlot();
+    private void addCraftingSlot(IInventorySlot slot, byte tableIndex, int slotIndex) {
+        VirtualInventoryContainerSlot containerSlot = (VirtualInventoryContainerSlot) slot.createContainerSlot();
         craftingSlots[tableIndex][slotIndex] = containerSlot;
         addSlot(containerSlot);
     }

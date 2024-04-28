@@ -1,10 +1,8 @@
 package mekanism.common.registries;
 
-import com.mojang.serialization.Codec;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
@@ -14,24 +12,23 @@ import mekanism.common.attachments.BlockData;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.FrequencyAware;
+import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedGasTanks;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedInfusionTanks;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedPigmentTanks;
-import mekanism.common.attachments.containers.AttachedChemicalTanks.AttachedSlurryTanks;
-import mekanism.common.attachments.containers.AttachedEnergyContainers;
-import mekanism.common.attachments.containers.AttachedFluidTanks;
-import mekanism.common.attachments.containers.AttachedHeatCapacitors;
-import mekanism.common.attachments.containers.AttachedInventorySlots;
-import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
+import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
+import mekanism.common.attachments.containers.chemical.pigment.AttachedPigments;
+import mekanism.common.attachments.containers.chemical.slurry.AttachedSlurries;
+import mekanism.common.attachments.containers.energy.AttachedEnergy;
+import mekanism.common.attachments.containers.fluid.AttachedFluids;
+import mekanism.common.attachments.containers.heat.AttachedHeat;
+import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.attachments.qio.PortableDashboardContents;
-import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.qio.QIOFrequency;
@@ -147,14 +144,38 @@ public class MekanismDataComponents {//TODO - 1.20.5: Organize this class
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> PERSONAL_STORAGE_ID = DATA_COMPONENTS.registerUUID("storage_id");
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergyContainers>> ENERGY_CONTAINERS = DATA_COMPONENTS.registerContainer("energy_containers", () -> ContainerType.ENERGY);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInventorySlots>> INVENTORY_SLOTS = DATA_COMPONENTS.registerContainer("inventory_slots", () -> ContainerType.ITEM);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluidTanks>> FLUID_TANKS = DATA_COMPONENTS.registerContainer("fluid_tanks", () -> ContainerType.FLUID);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedGasTanks>> GAS_TANKS = DATA_COMPONENTS.registerContainer("gas_tanks", () -> ContainerType.GAS);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInfusionTanks>> INFUSION_TANKS = DATA_COMPONENTS.registerContainer("infusion_tanks", () -> ContainerType.INFUSION);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedPigmentTanks>> PIGMENT_TANKS = DATA_COMPONENTS.registerContainer("pigment_tanks", () -> ContainerType.PIGMENT);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSlurryTanks>> SLURRY_TANKS = DATA_COMPONENTS.registerContainer("slurry_tanks", () -> ContainerType.SLURRY);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeatCapacitors>> HEAT_CAPACITORS = DATA_COMPONENTS.registerContainer("heat_capacitors", () -> ContainerType.HEAT);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergy>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy",
+          builder -> builder.persistent(AttachedEnergy.CODEC)
+                .networkSynchronized(AttachedEnergy.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedItems>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
+          builder -> builder.persistent(AttachedItems.CODEC)
+                .networkSynchronized(AttachedItems.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluids>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
+          builder -> builder.persistent(AttachedFluids.CODEC)
+                .networkSynchronized(AttachedFluids.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedGases>> ATTACHED_GASES = DATA_COMPONENTS.simple("gases",
+          builder -> builder.persistent(AttachedGases.CODEC)
+                .networkSynchronized(AttachedGases.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInfuseTypes>> ATTACHED_INFUSE_TYPES = DATA_COMPONENTS.simple("infuse_types",
+          builder -> builder.persistent(AttachedInfuseTypes.CODEC)
+                .networkSynchronized(AttachedInfuseTypes.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedPigments>> ATTACHED_PIGMENTS = DATA_COMPONENTS.simple("pigments",
+          builder -> builder.persistent(AttachedPigments.CODEC)
+                .networkSynchronized(AttachedPigments.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSlurries>> ATTACHED_SLURRIES = DATA_COMPONENTS.simple("slurries",
+          builder -> builder.persistent(AttachedSlurries.CODEC)
+                .networkSynchronized(AttachedSlurries.STREAM_CODEC)
+    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
+          builder -> builder.persistent(AttachedHeat.CODEC)
+                .networkSynchronized(AttachedHeat.STREAM_CODEC)
+    );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> OWNER = DATA_COMPONENTS.registerUUID("owner");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<SecurityMode>> SECURITY = DATA_COMPONENTS.simple("security",
@@ -252,93 +273,19 @@ public class MekanismDataComponents {//TODO - 1.20.5: Organize this class
                 .networkSynchronized(UpgradeAware.STREAM_CODEC)
     );
 
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<LockData>> LOCK = DATA_COMPONENTS.simple("lock",
+          builder -> builder.persistent(LockData.CODEC)
+                .networkSynchronized(LockData.STREAM_CODEC)
+    );
+
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FormulaAttachment>> FORMULA_HOLDER = DATA_COMPONENTS.simple("formula",
           builder -> builder.persistent(FormulaAttachment.CODEC)
                 .networkSynchronized(FormulaAttachment.STREAM_CODEC)
     );
 
-    //Non-serializable attachments for use in persisting a backing object between multiple capabilities
+    //TODO - 1.20.5: Re-evaluate this
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<PortableDashboardContents>> QIO_DASHBOARD = DATA_COMPONENTS.simple("qio_dashboard",
           builder -> builder.persistent(PortableDashboardContents.CODEC)
                 .networkSynchronized(PortableDashboardContents.STREAM_CODEC)
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<MergedChemicalTank>> CHEMICAL_TANK_CONTENTS_HANDLER = DATA_COMPONENTS.simple("chemical_tank_contents_handler",
-          builder -> {
-              //TODO - 1.20.5: Figure out how to implement containers
-              /*if (holder instanceof ItemStack stack && !stack.isEmpty() && stack.getItem() instanceof ItemBlockChemicalTank tank) {
-                  ChemicalTankTier tier = Objects.requireNonNull(tank.getTier(), "Chemical tank tier cannot be null");
-                  return MergedChemicalTank.create(
-                        new GasTankRateLimitChemicalTank(tier, null),
-                        new InfusionTankRateLimitChemicalTank(tier, null),
-                        new PigmentTankRateLimitChemicalTank(tier, null),
-                        new SlurryTankRateLimitChemicalTank(tier, null)
-                  );
-              }*/
-              return builder.persistent(Codec.unit(() -> null));
-          });
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<MergedTank>> GAUGE_DROPPER_CONTENTS_HANDLER = DATA_COMPONENTS.simple("gauge_dropper_contents_handler",
-          builder -> {
-              //TODO - 1.20.5: Figure out how to implement containers
-              /*if (holder instanceof ItemStack stack && stack.is(MekanismItems.GAUGE_DROPPER)) {
-                  return MergedTank.create(
-                        RateLimitFluidTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
-                              BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue),
-                        RateLimitGasTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
-                              ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue),
-                        RateLimitInfusionTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
-                              ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrue),
-                        RateLimitPigmentTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
-                              ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue),
-                        RateLimitSlurryTank.create(MekanismConfig.gear.gaugeDroppedTransferRate, MekanismConfig.gear.gaugeDropperCapacity,
-                              ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue)
-                  );
-              }*/
-              return builder.persistent(Codec.unit(() -> null));
-          });
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<MergedChemicalTank>> CDC_CONTENTS_HANDLER = DATA_COMPONENTS.simple("cdc_contents_handler",
-          builder -> {
-              //TODO - 1.20.5: Figure out how to implement containers
-              /*if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.asItem())) {
-                  return MergedChemicalTank.create(
-                        RateLimitGasTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
-                              ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrue
-                        ),
-                        RateLimitInfusionTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
-                              ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrue
-                        ),
-                        RateLimitPigmentTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
-                              ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrue
-                        ),
-                        RateLimitSlurryTank.createBasicItem(TileEntityChemicalDissolutionChamber.MAX_CHEMICAL,
-                              ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrue
-                        )
-                  );
-              }*/
-              return builder.persistent(Codec.unit(() -> null));
-          });
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<MergedChemicalTank>> CRYSTALLIZER_CONTENTS_HANDLER = DATA_COMPONENTS.simple("crystallizer_contents_handler",
-          builder -> {
-              //TODO - 1.20.5: Figure out how to implement containers
-              /*if (holder instanceof ItemStack stack && stack.is(MekanismBlocks.CHEMICAL_CRYSTALLIZER.asItem())) {
-                  return MergedChemicalTank.create(
-                        RateLimitGasTank.createBasicItem(TileEntityChemicalCrystallizer.MAX_CHEMICAL,
-                              ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
-                              gas -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, gas)
-                        ),
-                        RateLimitInfusionTank.createBasicItem(TileEntityChemicalCrystallizer.MAX_CHEMICAL,
-                              ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
-                              infuseType -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, infuseType)
-                        ),
-                        RateLimitPigmentTank.createBasicItem(TileEntityChemicalCrystallizer.MAX_CHEMICAL,
-                              ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                              pigment -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, pigment)
-                        ),
-                        RateLimitSlurryTank.createBasicItem(TileEntityChemicalCrystallizer.MAX_CHEMICAL,
-                              ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
-                              slurry -> MekanismRecipeType.CRYSTALLIZING.getInputCache().containsInput(null, slurry)
-                        )
-                  );
-              }*/
-              return builder.persistent(Codec.unit(() -> null));
-          });
 }

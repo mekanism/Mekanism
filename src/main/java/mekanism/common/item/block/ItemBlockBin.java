@@ -3,6 +3,7 @@ package mekanism.common.item.block;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.slot.BinInventorySlot;
@@ -13,9 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
 
@@ -30,7 +29,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
 
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        BinInventorySlot slot = BinInventorySlot.getForStack(stack);
+        ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
         BinTier tier = getTier();
         if (slot != null && tier != null) {
             if (slot.isEmpty()) {

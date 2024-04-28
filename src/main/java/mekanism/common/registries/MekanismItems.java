@@ -10,15 +10,15 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.qio.PortableQIODashboardInventory;
-import mekanism.common.capabilities.chemical.variable.RateLimitGasTank;
+import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
+import mekanism.common.attachments.containers.chemical.infuse.InfusionTanksBuilder;
+import mekanism.common.attachments.containers.chemical.pigment.PigmentTanksBuilder;
+import mekanism.common.attachments.containers.chemical.slurry.SlurryTanksBuilder;
+import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
+import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
+import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.energy.item.RateLimitEnergyContainer;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.item.RateLimitFluidTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.inventory.slot.ItemSlotsBuilder;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -79,8 +79,8 @@ public class MekanismItems {
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
 
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.registerItem("robit", ItemRobit::new)
-          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> ItemSlotsBuilder.builder(stack)
-                .addSlots(3 * 9, BasicInventorySlot::at)
+          .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
+                .addBasic(3 * 9)
                 .addEnergy()
                 .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
                 .addOutput()
@@ -95,19 +95,20 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.registerItem("crafting_formula", ItemCraftingFormula::new);
     public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new);
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
-          .addMissingMergedTanks(MekanismDataComponents.GAUGE_DROPPER_CONTENTS_HANDLER, true, true);
+          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new)
-          .addAttachedContainerCapability(ContainerType.FLUID, stack -> RateLimitFluidTank.create(
-                MekanismConfig.gear.canteenTransferRate,
-                MekanismConfig.gear.canteenMaxStorage,
-                BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi,
-                fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid())
-          ), MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
+                .addBasicExtractable(MekanismConfig.gear.canteenTransferRate, MekanismConfig.gear.canteenMaxStorage,
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE.getFluid()))
+                .build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemPortableQIODashboard> PORTABLE_QIO_DASHBOARD = ITEMS.registerItem("portable_qio_dashboard", ItemPortableQIODashboard::new)
-          //TODO - 1.20.5: Fix this get component call
-          .addAttachmentOnlyContainers(ContainerType.ITEM, stack -> new PortableQIODashboardInventory(null, stack).getSlots());
+          .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addQIODashboardSlots().build());
     // QIO Drives
     public static final ItemRegistryObject<ItemQIODrive> BASE_QIO_DRIVE = registerQIODrive(QIODriveTier.BASE);
     public static final ItemRegistryObject<ItemQIODrive> HYPER_DENSE_QIO_DRIVE = registerQIODrive(QIODriveTier.HYPER_DENSE);
@@ -116,16 +117,13 @@ public class MekanismItems {
     // Tools
     public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.registerItem("atomic_disassembler", ItemAtomicDisassembler::new);
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.registerItem("electric_bow", ItemElectricBow::new)
-          .addAttachedContainerCapability(ContainerType.ENERGY, stack -> RateLimitEnergyContainer.create(
-                MekanismConfig.gear.electricBowChargeRate,
-                MekanismConfig.gear.electricBowMaxEnergy
-          ), MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy)
+                .build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new)
-          .addAttachedContainerCapability(ContainerType.GAS, stack -> RateLimitGasTank.createInternalStorage(
-                MekanismConfig.gear.flamethrowerFillRate,
-                MekanismConfig.gear.flamethrowerMaxGas,
-                gas -> gas == MekanismGases.HYDROGEN.getChemical()
-          ), MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical()
+                ).build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new);
     // Armor
     public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new);

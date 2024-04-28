@@ -2,7 +2,7 @@ package mekanism.common.recipe.bin;
 
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.MekanismUtils;
@@ -72,7 +72,7 @@ public class BinExtractRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (stackInSlot.getItem() instanceof ItemBlockBin) {
                 ItemStack binStack = stackInSlot.copy();
-                BinInventorySlot slot = convertToSlot(binStack);
+                ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
                 ItemStack bottomStack = slot.getBottomStack();
                 if (!bottomStack.isEmpty()) {
                     //Only attempt to do anything if there are items to try and remove
