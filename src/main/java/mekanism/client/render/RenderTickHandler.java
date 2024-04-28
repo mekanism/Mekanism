@@ -81,6 +81,7 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
@@ -90,8 +91,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
@@ -223,81 +222,79 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void tickEnd(ClientTickEvent event) {
-        if (event.phase == Phase.END) {
-            //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
-            // as our data may be out of date or invalid. For example configs could unload while it is still unloading
-            if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
-                Player player = minecraft.player;
-                Level world = minecraft.player.level();
-                //Traverse active jetpacks and do animations
-                for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
-                    Player p = world.getPlayerByUUID(uuid);
-                    if (p != null) {
-                        Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
-                        Vec3 playerMotion = p.getDeltaMovement();
-                        float random = (world.random.nextFloat() - 0.5F) * 0.1F;
-                        //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
-                        float xRot;
-                        if (p.isCrouching()) {
-                            xRot = 20;
-                            playerPos = playerPos.translate(0, 0.125, 0);
+    public void tickEnd(ClientTickEvent.Post event) {
+        //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
+        // as our data may be out of date or invalid. For example configs could unload while it is still unloading
+        if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
+            Player player = minecraft.player;
+            Level world = minecraft.player.level();
+            //Traverse active jetpacks and do animations
+            for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
+                Player p = world.getPlayerByUUID(uuid);
+                if (p != null) {
+                    Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
+                    Vec3 playerMotion = p.getDeltaMovement();
+                    float random = (world.random.nextFloat() - 0.5F) * 0.1F;
+                    //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
+                    float xRot;
+                    if (p.isCrouching()) {
+                        xRot = 20;
+                        playerPos = playerPos.translate(0, 0.125, 0);
+                    } else {
+                        float f = p.getSwimAmount(minecraft.getPartialTick());
+                        if (p.isFallFlying()) {
+                            float f1 = (float) p.getFallFlyingTicks() + minecraft.getPartialTick();
+                            float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+                            xRot = f2 * (-90.0F - p.getXRot());
                         } else {
-                            float f = p.getSwimAmount(minecraft.getPartialTick());
-                            if (p.isFallFlying()) {
-                                float f1 = (float) p.getFallFlyingTicks() + minecraft.getPartialTick();
-                                float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
-                                xRot = f2 * (-90.0F - p.getXRot());
-                            } else {
-                                float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
-                                xRot = Mth.lerp(f, 0.0F, f3);
-                            }
-                            xRot = -xRot;
-                            Pos3D eyeAdjustments;
-                            if (p.isFallFlying() && (p != player || !minecraft.options.getCameraType().isFirstPerson())) {
-                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
-                            } else if (p.isVisuallySwimming()) {
-                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
-                            } else {
-                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
-                            }
-                            playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
+                            float f3 = p.isInWater() ? -90.0F - p.getXRot() : -90.0F;
+                            xRot = Mth.lerp(f, 0.0F, f3);
                         }
-                        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-                        renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
-                        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
-                        renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
-                        Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
-                        renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
+                        xRot = -xRot;
+                        Pos3D eyeAdjustments;
+                        if (p.isFallFlying() && (p != player || !minecraft.options.getCameraType().isFirstPerson())) {
+                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
+                        } else if (p.isVisuallySwimming()) {
+                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
+                        } else {
+                            eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
+                        }
+                        playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
+                    }
+                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
+                    renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
+                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
+                    renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
+                    Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
+                    renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
+                }
+            }
+
+            if (world.getGameTime() % 4 == 0) {
+                //Traverse active scuba masks and do animations
+                for (UUID uuid : Mekanism.playerState.getActiveScubaMasks()) {
+                    Player p = world.getPlayerByUUID(uuid);
+                    if (p != null && p.isInWater()) {
+                        Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
+                        Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
+                        Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
+                        world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
                 }
-
-                if (world.getGameTime() % 4 == 0) {
-                    //Traverse active scuba masks and do animations
-                    for (UUID uuid : Mekanism.playerState.getActiveScubaMasks()) {
-                        Player p = world.getPlayerByUUID(uuid);
-                        if (p != null && p.isInWater()) {
-                            Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
-                            Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
-                            Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
-                            world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
-                        }
-                    }
-                    //Traverse players and do animations for idle flamethrowers
-                    for (Player p : world.players()) {
-                        if (!p.swinging) {
-                            if (player.isUsingItem()) {
-                                InteractionHand usedHand = player.getUsedItemHand();
-                                if (!(player.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
-                                    //If we the used item isn't a flamethrower, grab the other hand's item for checks
-                                    // if it was an active flamethrower we just skip adding the idle particles
-                                    tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-                                }
-                            } else if (!tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.MAIN_HAND)) {
-                                //If the player isn't using an item, try to first add particles for a flamethrower in the main hand
-                                // and then add particles for a flamethrower in the offhand if we failed
-                                tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.OFF_HAND);
+                //Traverse players and do animations for idle flamethrowers
+                for (Player p : world.players()) {
+                    if (!p.swinging) {
+                        if (player.isUsingItem()) {
+                            InteractionHand usedHand = player.getUsedItemHand();
+                            if (!(player.getItemInHand(usedHand).getItem() instanceof ItemFlamethrower)) {
+                                //If we the used item isn't a flamethrower, grab the other hand's item for checks
+                                // if it was an active flamethrower we just skip adding the idle particles
+                                tryAddIdleFlamethrowerParticles(minecraft, p, usedHand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                             }
+                        } else if (!tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.MAIN_HAND)) {
+                            //If the player isn't using an item, try to first add particles for a flamethrower in the main hand
+                            // and then add particles for a flamethrower in the offhand if we failed
+                            tryAddIdleFlamethrowerParticles(minecraft, p, InteractionHand.OFF_HAND);
                         }
                     }
                 }

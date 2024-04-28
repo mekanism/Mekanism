@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.function.Supplier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.MekanismConfig;
@@ -26,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilityAware {
 
-    public ItemNutritionalPasteBucket(Supplier<? extends Fluid> supplier, Properties builder) {
-        super(supplier, builder);
+    public ItemNutritionalPasteBucket(Fluid fluid, Properties builder) {
+        super(fluid, builder);
     }
 
     @Override

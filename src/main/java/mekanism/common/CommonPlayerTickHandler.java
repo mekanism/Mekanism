@@ -46,13 +46,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
@@ -92,9 +91,9 @@ public class CommonPlayerTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(PlayerTickEvent event) {
-        if (event.phase == Phase.END && event.side.isServer()) {
-            tickEnd(event.player);
+    public void onTick(PlayerTickEvent.Post event) {
+        if (!event.getEntity().level().isClientSide()) {
+            tickEnd(event.getEntity());
         }
     }
 

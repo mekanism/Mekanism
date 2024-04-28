@@ -33,7 +33,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.radiation.PacketEnvironmentalRadiationData;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -66,7 +65,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -525,10 +524,10 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @SubscribeEvent
-    public void onLivingTick(LivingTickEvent event) {
+    public void onLivingTick(EntityTickEvent.Post event) {
         Level world = event.getEntity().level();
-        if (!world.isClientSide() && !(event.getEntity() instanceof Player)) {
-            updateEntityRadiation(event.getEntity());
+        if (!world.isClientSide() && event.getEntity() instanceof LivingEntity living && !(living instanceof Player)) {
+            updateEntityRadiation(living);
         }
     }
 

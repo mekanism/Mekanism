@@ -30,9 +30,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.level.ChunkTicketLevelUpdatedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class TransmitterNetworkRegistry {
@@ -125,15 +124,13 @@ public class TransmitterNetworkRegistry {
     }
 
     @SubscribeEvent
-    public void onTick(ServerTickEvent event) {
-        if (event.phase == Phase.END && event.side.isServer()) {
-            handleChangedChunks();
-            removeInvalidTransmitters();
-            assignOrphans();
-            commitChanges();
-            for (DynamicNetwork<?, ?, ?> net : networks) {
-                net.onUpdate();
-            }
+    public void onTick(ServerTickEvent.Post event) {
+        handleChangedChunks();
+        removeInvalidTransmitters();
+        assignOrphans();
+        commitChanges();
+        for (DynamicNetwork<?, ?, ?> net : networks) {
+            net.onUpdate();
         }
     }
 

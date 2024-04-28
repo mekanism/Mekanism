@@ -33,14 +33,13 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonWorldTickHandler {
@@ -178,26 +177,14 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(ServerTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.END) {
-            serverTick();
-        }
-    }
-
-    @SubscribeEvent
-    public void onTick(LevelTickEvent event) {
-        if (event.side.isServer() && event.phase == Phase.END) {
-            tickEnd((ServerLevel) event.level);
-        }
-    }
-
-    private void serverTick() {
+    public void onTick(ServerTickEvent.Post event) {
         FrequencyManager.tick();
         RadiationManager.get().tickServer();
     }
 
-    private void tickEnd(ServerLevel world) {
-        if (!world.isClientSide) {
+    @SubscribeEvent
+    public void onTick(LevelTickEvent.Post event) {
+        if (event.getLevel() instanceof ServerLevel world) {
             RadiationManager.get().tickServerWorld(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes

@@ -57,12 +57,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 /**
@@ -141,13 +140,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(ClientTickEvent event) {
-        if (event.phase == Phase.START) {
-            tickStart();
-        }
-    }
-
-    public void tickStart() {
+    public void onTick(ClientTickEvent.Pre event) {
         if (firstTick && minecraft.level != null) {
             MekanismClient.launchClient();
             firstTick = false;

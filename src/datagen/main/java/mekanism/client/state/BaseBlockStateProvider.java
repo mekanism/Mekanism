@@ -5,6 +5,7 @@ import java.util.function.Function;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
+import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.util.RegistryUtils;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -24,6 +26,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProvider> extends BlockStateProvider {
+
+    //Note: We use reflection rather than an AT to help prevent accidentally using the field outside datagen
+    private static final FieldReflectionHelper<LiquidBlock, FlowingFluid> FLUID = new FieldReflectionHelper<>(LiquidBlock.class, "fluid", () -> null);
 
     private final String modid;
     private final PROVIDER modelProvider;
@@ -53,7 +58,7 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
     protected void registerFluidBlockStates(FluidDeferredRegister register) {
         for (Holder<Block> blockEntry : register.getBlockEntries()) {
             //Note: We expect this to always be the case
-            if (blockEntry.value() instanceof LiquidBlock block && block.getFluid().getFluidType() instanceof MekanismFluidType fluidType) {
+            if (blockEntry.value() instanceof LiquidBlock block && FLUID.getValue(block).getFluidType() instanceof MekanismFluidType fluidType) {
                 simpleBlock(block, models().getBuilder(RegistryUtils.getPath(block)).texture(DataGenJsonConstants.PARTICLE, fluidType.stillTexture));
             }
         }
