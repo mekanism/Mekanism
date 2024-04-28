@@ -49,9 +49,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         ModList modList = ModList.get();
         Set<String> pathsToSkip = new HashSet<>();
         List<String> fakeProviders = new ArrayList<>();
-        //TODO - 1.20.5: Remove this after thiakil updates yaml-ops
-        pathsToSkip.add("/computer_help/");
-        fakeProviders.add("ComputerHelp: mekanism");
         if (modList.isLoaded(MekanismHooks.PROJECTE_MOD_ID)) {
             gen.addProvider(event.includeServer(), new MekanismCustomConversions(output, lookupProvider));
         } else {
