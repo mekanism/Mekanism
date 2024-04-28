@@ -36,16 +36,13 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Override
     protected TankType getType(STACK stack) {
         CHEMICAL type = getHandler().getStack().getChemical();
-        if (type instanceof Gas) {
-            return TankType.GAS_TANK;
-        } else if (type instanceof InfuseType) {
-            return TankType.INFUSION_TANK;
-        } else if (type instanceof Pigment) {
-            return TankType.PIGMENT_TANK;
-        } else if (type instanceof Slurry) {
-            return TankType.SLURRY_TANK;
-        }
-        return null;
+        return switch (type) {
+            case Gas gas -> TankType.GAS_TANK;
+            case InfuseType infuseType -> TankType.INFUSION_TANK;
+            case Pigment pigment -> TankType.PIGMENT_TANK;
+            case Slurry slurry -> TankType.SLURRY_TANK;
+            default -> null;
+        };
     }
 
     @Override

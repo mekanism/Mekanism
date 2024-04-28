@@ -107,16 +107,18 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                 }
             }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 if (filter != null) {
-                    if (filter instanceof IItemStackFilter<?> itemFilter) {
-                        return List.of(itemFilter.getItemStack());
-                    } else if (filter instanceof ITagFilter<?> tagFilter) {
-                        String name = tagFilter.getTagName();
-                        if (name != null && !name.isEmpty()) {
-                            return TagCache.getItemTagStacks(tagFilter.getTagName());
+                    return switch (filter) {
+                        case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemStack());
+                        case ITagFilter<?> tagFilter -> {
+                            String name = tagFilter.getTagName();
+                            if (name != null && !name.isEmpty()) {
+                                yield TagCache.getItemTagStacks(tagFilter.getTagName());
+                            }
+                            yield Collections.emptyList();
                         }
-                    } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                        return TagCache.getItemModIDStacks(modIDFilter.getModID());
-                    }
+                        case IModIDFilter<?> modIDFilter -> TagCache.getItemModIDStacks(modIDFilter.getModID());
+                        default -> Collections.emptyList();
+                    };
                 }
                 return Collections.emptyList();
             }));

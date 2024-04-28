@@ -1,6 +1,5 @@
 package mekanism.common.integration.computer;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -22,7 +21,6 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -126,21 +124,20 @@ public class SpecialConverters {
         if (enabled instanceof Boolean enable) {
             filter.setEnabled(enable);
         }
-        if (filter instanceof IItemStackFilter<?> itemFilter) {
-            decodeItemStackFilter(map, itemFilter);
-        } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-            decodeModIdFilter(map, modIDFilter);
-        } else if (filter instanceof ITagFilter<?> tagFilter) {
-            decodeTagFilter(map, tagFilter);
+        switch (filter) {
+            case IItemStackFilter<?> itemFilter -> decodeItemStackFilter(map, itemFilter);
+            case IModIDFilter<?> modIDFilter -> decodeModIdFilter(map, modIDFilter);
+            case ITagFilter<?> tagFilter -> decodeTagFilter(map, tagFilter);
+            default -> {
+            }
         }
-        if (filter instanceof MinerFilter<?> minerFilter) {
-            decodeMinerFilter(map, minerFilter);
-        } else if (filter instanceof SorterFilter<?> sorterFilter) {
-            decodeSorterFilter(map, sorterFilter);
-        } else if (filter instanceof QIOFilter<?> qioFilter) {
-            decodeQioFilter(map, qioFilter);
-        } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
-            decodeOreDictFilter(map, oredictionificatorFilter);
+        switch (filter) {
+            case MinerFilter<?> minerFilter -> decodeMinerFilter(map, minerFilter);
+            case SorterFilter<?> sorterFilter -> decodeSorterFilter(map, sorterFilter);
+            case QIOFilter<?> qioFilter -> decodeQioFilter(map, qioFilter);
+            case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> decodeOreDictFilter(map, oredictionificatorFilter);
+            default -> {
+            }
         }
         return expectedType.cast(filter);
     }

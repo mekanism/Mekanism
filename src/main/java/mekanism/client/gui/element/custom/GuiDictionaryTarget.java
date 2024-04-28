@@ -124,94 +124,98 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     public void setTargetSlot(@Nullable Object newTarget) {
         //Clear cached tags
         tags.clear();
-        if (newTarget == null) {
-            setTarget(null);
-        } else if (newTarget instanceof ItemStack itemStack) {
-            if (itemStack.isEmpty()) {
-                setTarget(null);
-            } else {
-                ItemStack stack = itemStack.copyWithCount(1);
-                setTarget(stack);
-                Item item = stack.getItem();
-                tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
-                if (item instanceof BlockItem blockItem) {
-                    Block block = blockItem.getBlock();
-                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.builtInRegistryHolder()));
-                    if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
-                        tags.put(DictionaryTagType.BLOCK_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
+        switch (newTarget) {
+            case null -> setTarget(null);
+            case ItemStack itemStack -> {
+                if (itemStack.isEmpty()) {
+                    setTarget(null);
+                } else {
+                    ItemStack stack = itemStack.copyWithCount(1);
+                    setTarget(stack);
+                    Item item = stack.getItem();
+                    tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
+                    if (item instanceof BlockItem blockItem) {
+                        Block block = blockItem.getBlock();
+                        tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.builtInRegistryHolder()));
+                        if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
+                            tags.put(DictionaryTagType.BLOCK_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
+                        }
+                    }
+                    //Entity type tags
+                    if (item instanceof SpawnEggItem spawnEggItem) {
+                        tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack).getTags()));
+                    }
+                    //Enchantment tags
+                    ItemEnchantments enchantments = stack.getEnchantments();
+                    if (!enchantments.isEmpty()) {
+                        tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream().flatMap(Holder::tags).distinct()));
+                    }
+                    //Get any potion tags
+                    PotionContents potionContents = itemStack.get(DataComponents.POTION_CONTENTS);
+                    if (potionContents != null) {
+                        potionContents.potion().ifPresent(potionHolder -> tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potionHolder)));
+                        Set<String> effectTags = new HashSet<>();
+                        for (MobEffectInstance effect : potionContents.getAllEffects()) {
+                            effectTags.addAll(TagCache.getTagsAsStrings(effect.getEffect().tags()));
+                        }
+                        tags.put(DictionaryTagType.MOB_EFFECT, List.copyOf(effectTags));
+                    }
+                    //Get any attribute tags
+                    ItemAttributeModifiers modifiers = itemStack.get(DataComponents.ATTRIBUTE_MODIFIERS);
+                    if (modifiers != null && !modifiers.modifiers().isEmpty()) {
+                        //Only add them though if it has any attributes at all
+                        tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(modifiers.modifiers().stream()
+                              .flatMap(attribute -> attribute.attribute().tags())
+                              .distinct()
+                        ));
+                    }
+                    //Get tags of any contained fluids
+                    IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
+                    if (fluidHandler != null) {
+                        tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
+                              .mapToObj(fluidHandler::getFluidInTank)
+                              .filter(fluidInTank -> !fluidInTank.isEmpty())
+                              .flatMap(FluidStack::getTags)
+                              .distinct()
+                        ));
+                    }
+                    //Get tags of any contained chemicals
+                    addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS.item());
+                    addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION.item());
+                    addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT.item());
+                    addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY.item());
+                    //TODO: Support other types of things?
+                }
+            }
+            case FluidStack fluidStack -> {
+                if (fluidStack.isEmpty()) {
+                    setTarget(null);
+                } else {
+                    setTarget(fluidStack.copy());
+                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
+                }
+            }
+            case ChemicalStack<?> chemicalStack -> {
+                if (chemicalStack.isEmpty()) {
+                    setTarget(null);
+                } else {
+                    setTarget(chemicalStack.copy());
+                    List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getChemical().getTags());
+                    if (target instanceof GasStack) {
+                        tags.put(DictionaryTagType.GAS, chemicalTags);
+                    } else if (target instanceof InfusionStack) {
+                        tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
+                    } else if (target instanceof PigmentStack) {
+                        tags.put(DictionaryTagType.PIGMENT, chemicalTags);
+                    } else if (target instanceof SlurryStack) {
+                        tags.put(DictionaryTagType.SLURRY, chemicalTags);
                     }
                 }
-                //Entity type tags
-                if (item instanceof SpawnEggItem spawnEggItem) {
-                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack).getTags()));
-                }
-                //Enchantment tags
-                ItemEnchantments enchantments = stack.getEnchantments();
-                if (!enchantments.isEmpty()) {
-                    tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream().flatMap(Holder::tags).distinct()));
-                }
-                //Get any potion tags
-                PotionContents potionContents = itemStack.get(DataComponents.POTION_CONTENTS);
-                if (potionContents != null) {
-                    potionContents.potion().ifPresent(potionHolder -> tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potionHolder)));
-                    Set<String> effectTags = new HashSet<>();
-                    for (MobEffectInstance effect : potionContents.getAllEffects()) {
-                        effectTags.addAll(TagCache.getTagsAsStrings(effect.getEffect().tags()));
-                    }
-                    tags.put(DictionaryTagType.MOB_EFFECT, List.copyOf(effectTags));
-                }
-                //Get any attribute tags
-                ItemAttributeModifiers modifiers = itemStack.get(DataComponents.ATTRIBUTE_MODIFIERS);
-                if (modifiers != null && !modifiers.modifiers().isEmpty()) {
-                    //Only add them though if it has any attributes at all
-                    tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(modifiers.modifiers().stream()
-                          .flatMap(attribute -> attribute.attribute().tags())
-                          .distinct()
-                    ));
-                }
-                //Get tags of any contained fluids
-                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
-                if (fluidHandler != null) {
-                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
-                          .mapToObj(fluidHandler::getFluidInTank)
-                          .filter(fluidInTank -> !fluidInTank.isEmpty())
-                          .flatMap(FluidStack::getTags)
-                          .distinct()
-                    ));
-                }
-                //Get tags of any contained chemicals
-                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS.item());
-                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION.item());
-                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT.item());
-                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY.item());
-                //TODO: Support other types of things?
             }
-        } else if (newTarget instanceof FluidStack fluidStack) {
-            if (fluidStack.isEmpty()) {
-                setTarget(null);
-            } else {
-                setTarget(fluidStack.copy());
-                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
+            default -> {
+                Mekanism.logger.warn("Unable to get tags for unknown type: {}", newTarget);
+                return;
             }
-        } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
-            if (chemicalStack.isEmpty()) {
-                setTarget(null);
-            } else {
-                setTarget(chemicalStack.copy());
-                List<String> chemicalTags = TagCache.getTagsAsStrings(((ChemicalStack<?>) target).getChemical().getTags());
-                if (target instanceof GasStack) {
-                    tags.put(DictionaryTagType.GAS, chemicalTags);
-                } else if (target instanceof InfusionStack) {
-                    tags.put(DictionaryTagType.INFUSE_TYPE, chemicalTags);
-                } else if (target instanceof PigmentStack) {
-                    tags.put(DictionaryTagType.PIGMENT, chemicalTags);
-                } else if (target instanceof SlurryStack) {
-                    tags.put(DictionaryTagType.SLURRY, chemicalTags);
-                }
-            }
-        } else {
-            Mekanism.logger.warn("Unable to get tags for unknown type: {}", newTarget);
-            return;
         }
         //Update the list being viewed
         tagSetter.accept(tags.keySet());

@@ -131,18 +131,13 @@ public class FilterButton extends MekanismButton {
             slotDisplay.updateStackList();
             prevFilter = filter;
         }
-        Component filterDescriptor;
-        if (filter instanceof IItemStackFilter<?> item) {
-            filterDescriptor = item.getItemStack().getHoverName();
-        } else if (filter instanceof ITagFilter<?> tag) {
-            filterDescriptor = Component.literal(tag.getTagName());
-        } else if (filter instanceof IModIDFilter<?> modId) {
-            filterDescriptor = Component.literal(modId.getModID());
-        } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
-            filterDescriptor = Component.literal(oredictionificatorFilter.getFilterText());
-        } else {
-            filterDescriptor = Component.empty();
-        }
+        Component filterDescriptor = switch (filter) {
+            case IItemStackFilter<?> item -> item.getItemStack().getHoverName();
+            case ITagFilter<?> tag -> Component.literal(tag.getTagName());
+            case IModIDFilter<?> modId -> Component.literal(modId.getModID());
+            case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> Component.literal(oredictionificatorFilter.getFilterText());
+            case null, default -> Component.empty();
+        };
         drawFilterDescriptor(guiGraphics, filterDescriptor, relativeX, relativeY);
 
         if (filter instanceof SorterFilter<?> sorterFilter) {

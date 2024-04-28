@@ -71,13 +71,12 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     private List<ItemStack> getRenderStacks(@Nullable IFilter<?> filter) {
         if (filter != null) {
-            if (filter instanceof IItemStackFilter<?> itemFilter) {
-                return List.of(itemFilter.getItemStack());
-            } else if (filter instanceof ITagFilter<?> tagFilter) {
-                return getTagStacks(tagFilter.getTagName());
-            } else if (filter instanceof IModIDFilter<?> modIDFilter) {
-                return getModIDStacks(modIDFilter.getModID());
-            }
+            return switch (filter) {
+                case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemStack());
+                case ITagFilter<?> tagFilter -> getTagStacks(tagFilter.getTagName());
+                case IModIDFilter<?> modIDFilter -> getModIDStacks(modIDFilter.getModID());
+                default -> Collections.emptyList();
+            };
         }
         return Collections.emptyList();
     }

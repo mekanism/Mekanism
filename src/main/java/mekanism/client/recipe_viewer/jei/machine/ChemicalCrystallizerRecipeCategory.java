@@ -80,17 +80,18 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
-        if (input instanceof GasStackIngredient ingredient) {
-            initChemical(builder, MekanismJEI.TYPE_GAS, ingredient);
-        } else if (input instanceof InfusionStackIngredient ingredient) {
-            initChemical(builder, MekanismJEI.TYPE_INFUSION, ingredient);
-        } else if (input instanceof PigmentStackIngredient ingredient) {
-            initChemical(builder, MekanismJEI.TYPE_PIGMENT, ingredient);
-        } else if (input instanceof SlurryStackIngredient ingredient) {
-            initChemical(builder, MekanismJEI.TYPE_SLURRY, ingredient);
-            List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(ingredient);
-            if (!displayItems.isEmpty()) {
-                initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot, displayItems).setSlotName(DISPLAYED_ITEM);
+        switch (input) {
+            case GasStackIngredient ingredient -> initChemical(builder, MekanismJEI.TYPE_GAS, ingredient);
+            case InfusionStackIngredient ingredient -> initChemical(builder, MekanismJEI.TYPE_INFUSION, ingredient);
+            case PigmentStackIngredient ingredient -> initChemical(builder, MekanismJEI.TYPE_PIGMENT, ingredient);
+            case SlurryStackIngredient ingredient -> {
+                initChemical(builder, MekanismJEI.TYPE_SLURRY, ingredient);
+                List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(ingredient);
+                if (!displayItems.isEmpty()) {
+                    initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot, displayItems).setSlotName(DISPLAYED_ITEM);
+                }
+            }
+            default -> {
             }
         }
     }

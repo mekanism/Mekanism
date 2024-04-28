@@ -39,14 +39,11 @@ public class InventorySlotHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof InventorySlotHolder slotHolder) {
-            slotHolder.addSlot(slot);
-        } else if (slotHolder instanceof ReadOnlyInventorySlotHolder slotHolder) {
-            slotHolder.addSlot(slot);
-        } else if (slotHolder instanceof ConfigInventorySlotHolder slotHolder) {
-            slotHolder.addSlot(slot);
-        } else {
-            throw new IllegalArgumentException("Holder does not know how to add slots");
+        switch (slotHolder) {
+            case InventorySlotHolder inventorySlotHolder -> inventorySlotHolder.addSlot(slot);
+            case ReadOnlyInventorySlotHolder inventorySlotHolder -> inventorySlotHolder.addSlot(slot);
+            case ConfigInventorySlotHolder inventorySlotHolder -> inventorySlotHolder.addSlot(slot);
+            default -> throw new IllegalArgumentException("Holder does not know how to add slots");
         }
         return slot;
     }

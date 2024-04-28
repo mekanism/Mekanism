@@ -102,17 +102,13 @@ public class ChemicalUtil {
      */
     @SuppressWarnings("unchecked")
     public static <STACK extends ChemicalStack<?>> STACK getEmptyStack(STACK stack) {
-        if (stack instanceof GasStack) {
-            return (STACK) GasStack.EMPTY;
-        } else if (stack instanceof InfusionStack) {
-            return (STACK) InfusionStack.EMPTY;
-        } else if (stack instanceof PigmentStack) {
-            return (STACK) PigmentStack.EMPTY;
-        } else if (stack instanceof SlurryStack) {
-            return (STACK) SlurryStack.EMPTY;
-        } else {
-            throw new IllegalStateException("Unknown Chemical Type: " + stack.getChemical().getClass().getName());
-        }
+        return switch (stack) {
+            case GasStack gasStack -> (STACK) GasStack.EMPTY;
+            case InfusionStack infusionStack -> (STACK) InfusionStack.EMPTY;
+            case PigmentStack pigmentStack -> (STACK) PigmentStack.EMPTY;
+            case SlurryStack slurryStack -> (STACK) SlurryStack.EMPTY;
+            default -> throw new IllegalStateException("Unknown Chemical Type: " + stack.getChemical().getClass().getName());
+        };
     }
 
     /**
@@ -195,17 +191,13 @@ public class ChemicalUtil {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, IChemicalProvider<?> provider) {
-        if (provider instanceof IGasProvider gasProvider) {
-            return getFilledVariant(toFill, gasProvider, ContainerType.GAS);
-        } else if (provider instanceof IInfuseTypeProvider infuseTypeProvider) {
-            return getFilledVariant(toFill, infuseTypeProvider, ContainerType.INFUSION);
-        } else if (provider instanceof IPigmentProvider pigmentProvider) {
-            return getFilledVariant(toFill, pigmentProvider, ContainerType.PIGMENT);
-        } else if (provider instanceof ISlurryProvider slurryProvider) {
-            return getFilledVariant(toFill, slurryProvider, ContainerType.SLURRY);
-        } else {
-            throw new IllegalStateException("Unknown Chemical Type: " + provider.getChemical().getClass().getName());
-        }
+        return switch (provider) {
+            case IGasProvider gasProvider -> getFilledVariant(toFill, gasProvider, ContainerType.GAS);
+            case IInfuseTypeProvider infuseTypeProvider -> getFilledVariant(toFill, infuseTypeProvider, ContainerType.INFUSION);
+            case IPigmentProvider pigmentProvider -> getFilledVariant(toFill, pigmentProvider, ContainerType.PIGMENT);
+            case ISlurryProvider slurryProvider -> getFilledVariant(toFill, slurryProvider, ContainerType.SLURRY);
+            default -> throw new IllegalStateException("Unknown Chemical Type: " + provider.getChemical().getClass().getName());
+        };
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> ItemStack getFilledVariant(

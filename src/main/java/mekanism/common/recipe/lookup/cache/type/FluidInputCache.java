@@ -13,18 +13,21 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitive
 
     @Override
     public boolean mapInputs(RECIPE recipe, FluidStackIngredient inputIngredient) {
-        if (inputIngredient instanceof SingleFluidStackIngredient single) {
-            addNbtInputCache(single.getInputRaw(), recipe);
-        } else if (inputIngredient instanceof TaggedFluidStackIngredient tagged) {
-            for (Holder<Fluid> input : tagged.getRawInput()) {
-                addInputCache(input, recipe);
+        switch (inputIngredient) {
+            case SingleFluidStackIngredient single -> addNbtInputCache(single.getInputRaw(), recipe);
+            case TaggedFluidStackIngredient tagged -> {
+                for (Holder<Fluid> input : tagged.getRawInput()) {
+                    addInputCache(input, recipe);
+                }
             }
-        } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {
-            return mapMultiInputs(recipe, multi);
-        } else {
-            //This should never really happen as we don't really allow for custom ingredients especially for networking,
-            // but if it does add it as a fallback
-            return true;
+            case MultiFluidStackIngredient multi -> {
+                return mapMultiInputs(recipe, multi);
+            }
+            default -> {
+                //This should never really happen as we don't really allow for custom ingredients especially for networking,
+                // but if it does add it as a fallback
+                return true;
+            }
         }
         return false;
     }

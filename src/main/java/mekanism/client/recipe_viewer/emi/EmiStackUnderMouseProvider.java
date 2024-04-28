@@ -18,14 +18,13 @@ public class EmiStackUnderMouseProvider implements EmiStackProvider<Screen> {
         if (screen instanceof GuiMekanism<?> gui) {
             return GuiElementHandler.getClickableIngredientUnderMouse(gui, x, y, (helper, ingredient) -> {
                 EmiStack emiStack;
-                if (ingredient instanceof ItemStack stack) {
-                    emiStack = EmiStack.of(stack);
-                } else if (ingredient instanceof FluidStack stack) {
-                    emiStack = NeoForgeEmiStack.of(stack);
-                } else if (ingredient instanceof ChemicalStack<?> stack) {
-                    emiStack = ChemicalEmiStack.create(stack);
-                } else {
-                    return null;
+                switch (ingredient) {
+                    case ItemStack stack -> emiStack = EmiStack.of(stack);
+                    case FluidStack stack -> emiStack = NeoForgeEmiStack.of(stack);
+                    case ChemicalStack<?> stack -> emiStack = ChemicalEmiStack.create(stack);
+                    default -> {
+                        return null;
+                    }
                 }
                 return new EmiStackInteraction(emiStack, null, false);
             }).orElse(EmiStackInteraction.EMPTY);

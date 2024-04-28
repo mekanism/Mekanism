@@ -14,18 +14,21 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
 
     @Override
     public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient<CHEMICAL, STACK> inputIngredient) {
-        if (inputIngredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> single) {
-            addInputCache(single.getInputRaw(), recipe);
-        } else if (inputIngredient instanceof TaggedChemicalStackIngredient<CHEMICAL, STACK> tagged) {
-            for (Holder<CHEMICAL> input : tagged.getRawInput()) {
-                addInputCache(input, recipe);
+        switch (inputIngredient) {
+            case SingleChemicalStackIngredient<CHEMICAL, STACK> single -> addInputCache(single.getInputRaw(), recipe);
+            case TaggedChemicalStackIngredient<CHEMICAL, STACK> tagged -> {
+                for (Holder<CHEMICAL> input : tagged.getRawInput()) {
+                    addInputCache(input, recipe);
+                }
             }
-        } else if (inputIngredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multi) {
-            return mapMultiInputs(recipe, multi);
-        } else {
-            //This should never really happen as we don't really allow for custom ingredients especially for networking,
-            // but if it does add it as a fallback
-            return true;
+            case MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multi -> {
+                return mapMultiInputs(recipe, multi);
+            }
+            default -> {
+                //This should never really happen as we don't really allow for custom ingredients especially for networking,
+                // but if it does add it as a fallback
+                return true;
+            }
         }
         return false;
     }

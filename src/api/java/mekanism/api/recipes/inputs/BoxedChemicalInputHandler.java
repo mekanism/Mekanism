@@ -71,27 +71,18 @@ public class BoxedChemicalInputHandler {
             //All recipes currently require that we have an input. If we don't then return that we failed
             return BoxedChemicalStack.EMPTY;
         }
-        if (recipeIngredient instanceof GasStackIngredient ingredient) {
-            if (input.getChemicalType() == ChemicalType.GAS) {
-                return BoxedChemicalStack.box(ingredient.getMatchingInstance((GasStack) input.getChemicalStack()));
-            }
-        } else if (recipeIngredient instanceof InfusionStackIngredient ingredient) {
-            if (input.getChemicalType() == ChemicalType.INFUSION) {
-                return BoxedChemicalStack.box(ingredient.getMatchingInstance((InfusionStack) input.getChemicalStack()));
-            }
-        } else if (recipeIngredient instanceof PigmentStackIngredient ingredient) {
-            if (input.getChemicalType() == ChemicalType.PIGMENT) {
-                return BoxedChemicalStack.box(ingredient.getMatchingInstance((PigmentStack) input.getChemicalStack()));
-            }
-        } else if (recipeIngredient instanceof SlurryStackIngredient ingredient) {
-            if (input.getChemicalType() == ChemicalType.SLURRY) {
-                return BoxedChemicalStack.box(ingredient.getMatchingInstance((SlurryStack) input.getChemicalStack()));
-            }
-        } else {
-            throw new IllegalStateException("Unknown Chemical Type");
-        }
-        //Something went wrong, input doesn't match types with ingredient
-        return BoxedChemicalStack.EMPTY;
+        return switch (recipeIngredient) {
+            case GasStackIngredient ingredient when input.getChemicalType() == ChemicalType.GAS ->
+                  BoxedChemicalStack.box(ingredient.getMatchingInstance((GasStack) input.getChemicalStack()));
+            case InfusionStackIngredient ingredient when input.getChemicalType() == ChemicalType.INFUSION ->
+                  BoxedChemicalStack.box(ingredient.getMatchingInstance((InfusionStack) input.getChemicalStack()));
+            case PigmentStackIngredient ingredient when input.getChemicalType() == ChemicalType.PIGMENT ->
+                  BoxedChemicalStack.box(ingredient.getMatchingInstance((PigmentStack) input.getChemicalStack()));
+            case SlurryStackIngredient ingredient when input.getChemicalType() == ChemicalType.SLURRY ->
+                  BoxedChemicalStack.box(ingredient.getMatchingInstance((SlurryStack) input.getChemicalStack()));
+            //Something went wrong, input doesn't match types with ingredient
+            default -> BoxedChemicalStack.EMPTY;
+        };
     }
 
     /**

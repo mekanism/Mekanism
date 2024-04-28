@@ -641,16 +641,12 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public void handleWindowProperty(short property, byte[] value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableByteArray syncable) {
-            syncable.set(value);
-        } else if (data instanceof SyncableFrequency<?> syncable) {
-            syncable.set(getLevel().registryAccess(), value);
-        } else if (data instanceof SyncableList<?> syncable) {
-            syncable.set(getLevel().registryAccess(), value);
-        } else if (data instanceof SyncableCollection<?> syncable) {
-            syncable.set(getLevel().registryAccess(), value);
-        } else {
-            Mekanism.logger.error("Unknown byte value type: {}, please report", data.getClass().getName());
+        switch (data) {
+            case SyncableByteArray syncable -> syncable.set(value);
+            case SyncableFrequency<?> syncable -> syncable.set(getLevel().registryAccess(), value);
+            case SyncableList<?> syncable -> syncable.set(getLevel().registryAccess(), value);
+            case SyncableCollection<?> syncable -> syncable.set(getLevel().registryAccess(), value);
+            default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data.getClass().getName());
         }
     }
 

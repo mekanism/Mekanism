@@ -393,17 +393,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             return null;
         }
         if (!isFocused()) {
-            if (event instanceof ArrowNavigation) {
-                if (supportsArrowNavigation()) {
-                    return ComponentPath.leaf(this);
-                }
-            } else if (event instanceof TabNavigation) {
-                if (supportsTabNavigation()) {
-                    return ComponentPath.leaf(this);
-                }
-            } else if (event instanceof InitialFocus) {
-                return ComponentPath.leaf(this);
-            }
+            return switch (event) {
+                case ArrowNavigation arrowNavigation when supportsArrowNavigation() -> ComponentPath.leaf(this);
+                case TabNavigation tabNavigation when supportsTabNavigation() -> ComponentPath.leaf(this);
+                case InitialFocus initialFocus -> ComponentPath.leaf(this);
+                default -> ContainerEventHandler.super.nextFocusPath(event);
+            };
         }
         return ContainerEventHandler.super.nextFocusPath(event);
     }

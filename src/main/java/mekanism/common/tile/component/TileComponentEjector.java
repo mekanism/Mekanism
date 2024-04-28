@@ -190,23 +190,29 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Lazy init outputData, we use an identity hashmap to allow for cheaper compare checks
                             outputData = new IdentityHashMap<>();
                         }
-                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo) {
-                            for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
-                                if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
-                                    addData(outputData, tank, outputSides);
+                        switch (slotInfo) {
+                            case ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo when type.isChemical() -> {
+                                for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
+                                    if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
+                                        addData(outputData, tank, outputSides);
+                                    }
                                 }
                             }
-                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo fluidSlotInfo) {
-                            for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
-                                if (!tank.isEmpty()) {
-                                    addData(outputData, tank, outputSides);
+                            case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
+                                for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
+                                    if (!tank.isEmpty()) {
+                                        addData(outputData, tank, outputSides);
+                                    }
                                 }
                             }
-                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo energySlotInfo) {
-                            for (IEnergyContainer container : energySlotInfo.getContainers()) {
-                                if (!container.isEmpty()) {
-                                    addData(outputData, container, outputSides);
+                            case EnergySlotInfo energySlotInfo when type == TransmissionType.ENERGY -> {
+                                for (IEnergyContainer container : energySlotInfo.getContainers()) {
+                                    if (!container.isEmpty()) {
+                                        addData(outputData, container, outputSides);
+                                    }
                                 }
+                            }
+                            default -> {
                             }
                         }
                     }

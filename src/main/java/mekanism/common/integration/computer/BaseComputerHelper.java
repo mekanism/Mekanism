@@ -1,6 +1,5 @@
 package mekanism.common.integration.computer;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,8 +41,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -347,19 +344,21 @@ public abstract class BaseComputerHelper {
         Map<String, Object> wrapped = new HashMap<>();
         wrapped.put("type", convert(result.getFilterType()));
         wrapped.put("enabled", result.isEnabled());
-        if (result instanceof IItemStackFilter<?> itemFilter) {
-            ItemStack stack = itemFilter.getItemStack();
-            wrapped.put("item", convert(stack.getItem()));
-            if (!stack.isEmpty()) {
-                DataComponentMap components = stack.getComponents();
-                if (!components.isEmpty()) {
-                    wrapped.put("itemComponents", SpecialConverters.wrapComponents(components));
+        switch (result) {
+            case IItemStackFilter<?> itemFilter -> {
+                ItemStack stack = itemFilter.getItemStack();
+                wrapped.put("item", convert(stack.getItem()));
+                if (!stack.isEmpty()) {
+                    DataComponentMap components = stack.getComponents();
+                    if (!components.isEmpty()) {
+                        wrapped.put("itemComponents", SpecialConverters.wrapComponents(components));
+                    }
                 }
             }
-        } else if (result instanceof IModIDFilter<?> modIDFilter) {
-            wrapped.put("modId", modIDFilter.getModID());
-        } else if (result instanceof ITagFilter<?> tagFilter) {
-            wrapped.put("tag", tagFilter.getTagName());
+            case IModIDFilter<?> modIDFilter -> wrapped.put("modId", modIDFilter.getModID());
+            case ITagFilter<?> tagFilter -> wrapped.put("tag", tagFilter.getTagName());
+            default -> {
+            }
         }
         return wrapped;
     }

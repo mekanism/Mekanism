@@ -59,43 +59,27 @@ public class TextComponentUtil {
                 continue;
             }
             MutableComponent current = null;
-            if (component instanceof IHasTextComponent hasTextComponent) {
-                current = hasTextComponent.getTextComponent().copy();
-            } else if (component instanceof IHasTranslationKey hasTranslationKey) {
-                current = translate(hasTranslationKey.getTranslationKey());
-            } else if (component instanceof EnumColor color) {
-                cachedStyle = cachedStyle.withColor(color.getColor());
-            } else if (component instanceof TextColor color) {
-                cachedStyle = cachedStyle.withColor(color);
-            } else if (component instanceof Component c) {
+            switch (component) {
+                case IHasTextComponent hasTextComponent -> current = hasTextComponent.getTextComponent().copy();
+                case IHasTranslationKey hasTranslationKey -> current = translate(hasTranslationKey.getTranslationKey());
+                case EnumColor color -> cachedStyle = cachedStyle.withColor(color.getColor());
+                case TextColor color -> cachedStyle = cachedStyle.withColor(color);
                 //Just append if a text component is being passed
-                current = c.copy();
-            } else if (component instanceof ChatFormatting formatting) {
-                cachedStyle = cachedStyle.applyFormat(formatting);
-            } else if (component instanceof ClickEvent event) {
-                cachedStyle = cachedStyle.withClickEvent(event);
-            } else if (component instanceof HoverEvent event) {
-                cachedStyle = cachedStyle.withHoverEvent(event);
-            } else if (component instanceof Block block) {
-                current = block.getName().copy();
-            } else if (component instanceof Item item) {
-                current = item.getDescription().copy();
-            } else if (component instanceof ItemStack stack) {
-                current = stack.getHoverName().copy();
-            } else if (component instanceof FluidStack stack) {
-                current = stack.getHoverName().copy();
-            } else if (component instanceof Fluid fluid) {
-                current = fluid.getFluidType().getDescription().copy();
-            } else if (component instanceof EntityType<?> entityType) {
-                current = entityType.getDescription().copy();
-            } else if (component instanceof Direction direction) {
-                current = getTranslatedDirection(direction);
-            } else if (component instanceof Boolean bool) {
-                current = getTranslatedBoolean(bool);
-            } else {
+                case Component c -> current = c.copy();
+                case ChatFormatting formatting -> cachedStyle = cachedStyle.applyFormat(formatting);
+                case ClickEvent event -> cachedStyle = cachedStyle.withClickEvent(event);
+                case HoverEvent event -> cachedStyle = cachedStyle.withHoverEvent(event);
+                case Block block -> current = block.getName().copy();
+                case Item item -> current = item.getDescription().copy();
+                case ItemStack stack -> current = stack.getHoverName().copy();
+                case FluidStack stack -> current = stack.getHoverName().copy();
+                case Fluid fluid -> current = fluid.getFluidType().getDescription().copy();
+                case EntityType<?> entityType -> current = entityType.getDescription().copy();
+                case Direction direction -> current = getTranslatedDirection(direction);
+                case Boolean bool -> current = getTranslatedBoolean(bool);
                 //Fallback to a generic replacement
                 // this handles strings, numbers, and any type we don't necessarily know about
-                current = getString(component.toString());
+                default -> current = getString(component.toString());
             }
             if (current == null) {
                 //If we don't have a component to add, don't

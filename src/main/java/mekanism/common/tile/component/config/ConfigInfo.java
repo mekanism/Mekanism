@@ -138,17 +138,23 @@ public class ConfigInfo implements IPersistentConfigInfo {
             supportedDataTypes.add(dataType);
         }
         // set up mapping
-        if (info instanceof ChemicalSlotInfo<?, ?, ?> slotInfo) {
-            for (IChemicalTank<?, ?> tank : slotInfo.getTanks()) {
-                containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
+        switch (info) {
+            case ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo -> {
+                for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
+                    containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
+                }
             }
-        } else if (info instanceof FluidSlotInfo slotInfo) {
-            for (IExtendedFluidTank tank : slotInfo.getTanks()) {
-                containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
+            case FluidSlotInfo fluidSlotInfo -> {
+                for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
+                    containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
+                }
             }
-        } else if (info instanceof InventorySlotInfo slotInfo) {
-            for (IInventorySlot slot : slotInfo.getSlots()) {
-                containerTypeMapping.computeIfAbsent(slot, t -> new ArrayList<>()).add(dataType);
+            case InventorySlotInfo inventorySlotInfo -> {
+                for (IInventorySlot slot : inventorySlotInfo.getSlots()) {
+                    containerTypeMapping.computeIfAbsent(slot, t -> new ArrayList<>()).add(dataType);
+                }
+            }
+            default -> {
             }
         }
     }

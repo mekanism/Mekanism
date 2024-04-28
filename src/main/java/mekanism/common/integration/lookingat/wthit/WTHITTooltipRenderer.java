@@ -43,26 +43,26 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
             for (Object element : helper.elements) {
                 ResourceLocation name;
-                if (element instanceof Component component) {
-                    if (lastText != null) {
-                        //Fallback to printing the last text
-                        tooltip.addLine(lastText);
+                switch (element) {
+                    case Component component -> {
+                        if (lastText != null) {
+                            //Fallback to printing the last text
+                            tooltip.addLine(lastText);
+                        }
+                        lastText = component;
+                        continue;
                     }
-                    lastText = component;
-                    continue;
-                } else if (element instanceof EnergyElement) {
-                    name = LookingAtUtils.ENERGY;
-                } else if (element instanceof FluidElement) {
-                    name = LookingAtUtils.FLUID;
-                } else if (element instanceof ChemicalElement chemicalElement) {
-                    name = switch (chemicalElement.getChemicalType()) {
+                    case EnergyElement energyElement -> name = LookingAtUtils.ENERGY;
+                    case FluidElement fluidElement -> name = LookingAtUtils.FLUID;
+                    case ChemicalElement chemicalElement -> name = switch (chemicalElement.getChemicalType()) {
                         case GAS -> LookingAtUtils.GAS;
                         case INFUSION -> LookingAtUtils.INFUSE_TYPE;
                         case PIGMENT -> LookingAtUtils.PIGMENT;
                         case SLURRY -> LookingAtUtils.SLURRY;
                     };
-                } else {
-                    continue;
+                    default -> {
+                        continue;
+                    }
                 }
                 if (config.getBoolean(name)) {
                     tooltip.addLine(new MekElement(lastText, (LookingAtElement) element));

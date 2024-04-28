@@ -79,16 +79,12 @@ public class MovableFilterButton extends FilterButton {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         IFilter<?> filter = getFilter();
-        EnumColor color;
-        if (filter instanceof IItemStackFilter) {
-            color = EnumColor.INDIGO;
-        } else if (filter instanceof ITagFilter) {
-            color = EnumColor.BRIGHT_GREEN;
-        } else if (filter instanceof IModIDFilter) {
-            color = EnumColor.RED;
-        } else {
-            color = null;
-        }
+        EnumColor color = switch (filter) {
+            case IItemStackFilter<?> stackFilter -> EnumColor.INDIGO;
+            case ITagFilter<?> tagFilter -> EnumColor.BRIGHT_GREEN;
+            case IModIDFilter<?> modIDFilter -> EnumColor.RED;
+            case null, default -> null;
+        };
         if (color != null) {
             GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), MekanismRenderer.getColorARGB(color, 0.3F));
         }
