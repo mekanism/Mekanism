@@ -1,13 +1,14 @@
 package mekanism.common.inventory.slot;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.collection.FluidHashStrategy;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +16,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public interface IFluidHandlerSlot extends IInventorySlot {
 
@@ -88,9 +88,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                 // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                 // combining same fluid types into a single fluid stack
-                Set<FluidStack> knownFluids = gatherKnownFluids(itemFluidHandler, itemTanks);
                 //If we found any fluids that we can drain, attempt to drain them into our item
-                for (FluidStack knownFluid : knownFluids) {
+                for (FluidStack knownFluid : gatherKnownFluids(itemFluidHandler, itemTanks)) {
                     if (drainItemAndMove(outputSlot, knownFluid) && isEmpty()) {
                         //If we moved the item after draining it and we now don't have an item to try and fill
                         // then just exit instead of checking the other types of fluids
@@ -261,7 +260,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                     // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                     // combining same fluid types into a single fluid stack
-                    Set<FluidStack> knownFluids = gatherKnownFluids(itemFluidHandler, tanks);
+                    Collection<FluidStack> knownFluids = gatherKnownFluids(itemFluidHandler, tanks);
                     if (!knownFluids.isEmpty()) {
                         //If we found any fluids that we can drain, attempt to drain them into our item
                         boolean changed = false;
@@ -282,8 +281,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         return false;
     }
 
-    private Set<FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
-        Map<FluidStack, FluidStack> knownFluids = new HashMap<>();
+    private Collection<FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
+        Map<FluidStack, FluidStack> knownFluids = new Object2ObjectOpenCustomHashMap<>(FluidHashStrategy.INSTANCE);
         for (int tank = 0; tank < tanks; tank++) {
             FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
             if (!fluidInItem.isEmpty()) {

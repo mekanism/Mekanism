@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
@@ -13,6 +13,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.lib.collection.FluidHashStrategy;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -26,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
-    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedCenterFluids = new HashMap<>();
-    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedValveFluids = new HashMap<>();
+    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedCenterFluids = new Object2ObjectOpenCustomHashMap<>(FluidHashStrategy.INSTANCE);
+    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenCustomHashMap<>(FluidHashStrategy.INSTANCE);
 
     private static final int stages = 1_400;
 
