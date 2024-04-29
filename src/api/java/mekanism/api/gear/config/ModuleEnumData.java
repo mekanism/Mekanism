@@ -59,35 +59,6 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     }
 
     /**
-     * Creates a new {@link ModuleEnumData} out of a given enum type and initializes it to the given default value.
-     *
-     * @param enumClass Class of the Enum this {@link ModuleEnumData} corresponds to.
-     * @param def       Default value.
-     *
-     * @deprecated since 10.3.2, use the version ({@link #ModuleEnumData(Enum)}) that figures out the class automatically.
-     */
-    @Deprecated(forRemoval = true, since = "10.3.2")
-    public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
-        this(def);
-        Objects.requireNonNull(enumClass, "Enum Class cannot be null.");
-    }
-
-    /**
-     * Creates a new {@link ModuleEnumData} out of the first selectableCount elements in the given enum type and initializes it to the given default value.
-     *
-     * @param enumClass       Class of the Enum this {@link ModuleEnumData} corresponds to.
-     * @param selectableCount The number of selectable elements.
-     * @param def             Default value.
-     *
-     * @deprecated since 10.3.2, use the version ({@link #ModuleEnumData(Enum, int)}) that figures out the class automatically.
-     */
-    @Deprecated(forRemoval = true, since = "10.3.2")
-    public ModuleEnumData(Class<TYPE> enumClass, int selectableCount, TYPE def) {
-        this(def, selectableCount);
-        Objects.requireNonNull(enumClass, "Enum Class cannot be null.");
-    }
-
-    /**
      * Gets all the valid values of this {@link ModuleEnumData}.
      *
      * @implNote This list is immutable.

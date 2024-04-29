@@ -36,7 +36,7 @@ public class MaxedModuleContainerItemPredicate implements ItemSubPredicate {
     @Override
     public boolean matches(@NotNull ItemStack stack) {
         if (stack.is(item)) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
             if (container != null && container.moduleTypes().containsAll(supportedModules)) {
                 for (IModule<?> module : container.modules()) {
                     if (module.getInstalledCount() != module.getData().getMaxStackSize()) {

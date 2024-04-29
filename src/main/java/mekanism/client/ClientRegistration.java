@@ -197,7 +197,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
@@ -554,7 +553,7 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
             if (index == 1) {
-                IModule<ModuleColorModulationUnit> colorModulationUnit = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                IModule<ModuleColorModulationUnit> colorModulationUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
                 if (colorModulationUnit == null) {
                     return -1;
                 }

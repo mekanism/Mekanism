@@ -157,7 +157,7 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     @Nullable
-    public ModuleContainer getModuleContainerNullable(ItemStack stack) {
+    public ModuleContainer getModuleContainer(ItemStack stack) {
         if (isModuleContainer(stack)) {
             if (stack.has(MekanismDataComponents.MODULE_CONTAINER)) {
                 return stack.get(MekanismDataComponents.MODULE_CONTAINER);
@@ -199,8 +199,8 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        ModuleContainer container = getModuleContainerNullable(stack);
+    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        ModuleContainer container = getModuleContainer(stack);
         return container != null ? container.get(typeProvider) : null;
     }
 }

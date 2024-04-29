@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModuleContainer;
@@ -123,7 +122,7 @@ public class HUDRenderer {
         pose.pushPose();
         //Render any elements that might be on modules in the meka suit while worn or on the meka tool while held
         for (EquipmentSlot type : EQUIPMENT_ORDER) {
-            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainerNullable(player, type);
+            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(player, type);
             if (moduleContainer != null) {
                 for (IHUDElement element : moduleContainer.getHUDElements(player)) {
                     curY -= 18;

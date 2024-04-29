@@ -91,7 +91,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
-                ModuleContainer container = ModuleHelper.get().getModuleContainerNullable(stack);
+                ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
                     // make sure the container supports this module and that we can still install more of this module
                     if (container.canInstall(data)) {
@@ -123,7 +123,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public void removeModule(Player player, ModuleData<?> type, boolean removeAll) {
         ItemStack stack = containerSlot.getStack();
-        ModuleContainer container = ModuleHelper.get().getModuleContainerNullable(stack);
+        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
             if (container.has(type)) {
                 int toRemove = removeAll ? container.installedCount(type) : 1;

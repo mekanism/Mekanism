@@ -1,10 +1,8 @@
 package mekanism.common.integration.projecte.processors;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
@@ -53,7 +51,7 @@ public class MekanismContentsProcessor implements INBTProcessor {
             currentEMC = addEmc(emcProxy, currentEMC, upgradeAware.asInventorySlots());
         }
         //Stored modules
-        for (IModule<?> module : IModuleHelper.INSTANCE.loadAll(stack)) {
+        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(stack)) {
             ItemStack moduleStack = module.getData().getItemProvider().getItemStack(module.getInstalledCount());
             currentEMC = addEmc(emcProxy, currentEMC, moduleStack);
         }

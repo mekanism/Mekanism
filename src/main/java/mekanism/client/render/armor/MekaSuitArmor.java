@@ -113,7 +113,7 @@ public class MekaSuitArmor implements ICustomArmor {
     }
 
     private static Color getColor(ItemStack stack) {
-        IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+        IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
         return colorUnit != null ? colorUnit.getCustomInstance().getColor() : Color.WHITE;
     }
 
@@ -539,7 +539,7 @@ public class MekaSuitArmor implements ICustomArmor {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, slotType);
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(player, slotType);
             if (container != null && container.isInstance(ItemMekaSuitArmor.class)) {
                 wornParts.add(slotType);
                 for (Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {

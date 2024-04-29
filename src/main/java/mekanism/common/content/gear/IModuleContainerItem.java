@@ -24,11 +24,11 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
 
     @Nullable
     default IModuleContainer moduleContainer(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        return IModuleHelper.INSTANCE.getModuleContainer(stack);
     }
 
     default Collection<? extends IModule<?>> getModules(ItemStack stack) {
-        return IModuleHelper.INSTANCE.loadAll(stack);
+        return IModuleHelper.INSTANCE.getAllModules(stack);
     }
 
     default boolean hasInstalledModules(ItemStack stack) {

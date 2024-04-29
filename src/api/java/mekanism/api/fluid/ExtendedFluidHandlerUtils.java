@@ -5,8 +5,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -15,24 +13,9 @@ import mekanism.api.container.InContainerGetter;
 import mekanism.api.container.IntContainerInteraction;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ExtendedFluidHandlerUtils {
-
-    /**
-     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
-     *
-     * @deprecated Please use {@link #insert(FluidStack, Direction, Action, ToIntFunction, InContainerGetter, ContainerInteraction)} to avoid capturing lambdas.
-     */
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack insert(FluidStack stack, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, InsertFluid insertFluid) {
-        if (stack.isEmpty()) {
-            //Short circuit if nothing is actually being inserted
-            return FluidStack.EMPTY;
-        }
-        return insert(stack, null, action, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank), (tank, fluid, side, act) -> insertFluid.insert(tank, fluid, act));
-    }
 
     /**
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only
@@ -128,19 +111,6 @@ public class ExtendedFluidHandlerUtils {
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      *
-     * @deprecated Please use {@link #extract(int, Direction, Action, ToIntFunction, InContainerGetter, IntContainerInteraction)} to avoid capturing lambdas.
-     */
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack extract(int amount, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
-        if (amount == 0) {
-            return FluidStack.EMPTY;
-        }
-        return extract(amount, null, action, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank), (tank, fluid, side, act) -> extractFluid.extract(tank, fluid, act));
-    }
-
-    /**
-     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
-     *
      * @since 10.5.13
      */
     public static FluidStack extract(int amount, @Nullable Direction side, Action action, ToIntFunction<@Nullable Direction> tankCount, InContainerGetter<FluidStack> inTankGetter,
@@ -220,19 +190,6 @@ public class ExtendedFluidHandlerUtils {
             }
         }
         return extracted;
-    }
-
-    /**
-     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
-     *
-     * @deprecated Please use {@link #extract(FluidStack, Direction, Action, ToIntFunction, InContainerGetter, IntContainerInteraction)} to avoid capturing lambdas.
-     */
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FluidStack extract(FluidStack stack, Action action, IntSupplier tankCount, IntFunction<@NotNull FluidStack> inTankGetter, ExtractFluid extractFluid) {
-        if (stack.isEmpty()) {
-            return FluidStack.EMPTY;
-        }
-        return extract(stack, null, action, side -> tankCount.getAsInt(), (tank, side) -> inTankGetter.apply(tank), (tank, fluid, side, act) -> extractFluid.extract(tank, fluid, act));
     }
 
     /**
@@ -323,25 +280,5 @@ public class ExtendedFluidHandlerUtils {
             }
         }
         return extracted;
-    }
-
-    /**
-     * @deprecated See {@link mekanism.api.container.ContainerInteraction}
-     */
-    @FunctionalInterface
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public interface InsertFluid {
-
-        FluidStack insert(int tank, FluidStack stack, Action action);
-    }
-
-    /**
-     * @deprecated See {@link mekanism.api.container.IntContainerInteraction}
-     */
-    @FunctionalInterface
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public interface ExtractFluid {
-
-        FluidStack extract(int tank, int amount, Action action);
     }
 }

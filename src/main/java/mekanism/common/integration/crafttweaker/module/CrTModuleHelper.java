@@ -28,7 +28,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack stack) {
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(stack);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
         return container == null ? Collections.emptySet() : container.supportedTypes();
     }
 
@@ -68,7 +68,7 @@ public class CrTModuleHelper {
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, ModuleData<MODULE> type) {
-        return IModuleHelper.INSTANCE.load(stack, type);
+        return IModuleHelper.INSTANCE.getModule(stack, type);
     }
 
     /**
@@ -82,7 +82,7 @@ public class CrTModuleHelper {
     @SuppressWarnings({"rawtypes"})
     public static List<IModule> loadAll(ItemStack stack) {
         //ZenCode does not like ? extends IModule<?> so we need to just cast it to a type without any generics specified
-        return new ArrayList<>(IModuleHelper.INSTANCE.loadAll(stack));
+        return new ArrayList<>(IModuleHelper.INSTANCE.getAllModules(stack));
     }
 
     /**
@@ -94,6 +94,6 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
-        return IModuleHelper.INSTANCE.loadAllTypes(stack);
+        return IModuleHelper.INSTANCE.getAllTypes(stack);
     }
 }

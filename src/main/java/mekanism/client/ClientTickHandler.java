@@ -115,7 +115,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainerNullable(player, EquipmentSlot.HEAD);
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(player, EquipmentSlot.HEAD);
         if (container != null && !container.isContainerOnCooldown(player)) {
             IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);
             return module != null && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);

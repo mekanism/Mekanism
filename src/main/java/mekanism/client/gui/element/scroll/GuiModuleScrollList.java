@@ -60,7 +60,7 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     public void updateItemAndList(ItemStack stack) {
         currentItem = stack;
-        currentContainer = ModuleHelper.get().getModuleContainerNullable(stack);
+        currentContainer = ModuleHelper.get().getModuleContainer(stack);
         currentList.clear();
         if (currentContainer != null) {
             currentList.addAll(currentContainer.moduleTypes());

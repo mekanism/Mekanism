@@ -21,7 +21,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
     }
 
     private static FloatingLong getEnergyValue(ItemStack stack, FloatingLong base) {
-        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.load(stack, MekanismModules.ENERGY_UNIT);
+        IModule<ModuleEnergyUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.ENERGY_UNIT);
         if (module == null) {
             return base;
         }

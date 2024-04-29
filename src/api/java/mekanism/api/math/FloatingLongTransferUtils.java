@@ -5,8 +5,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -21,22 +19,6 @@ import org.jetbrains.annotations.Nullable;
 public class FloatingLongTransferUtils {
 
     private FloatingLongTransferUtils() {
-    }
-
-    /**
-     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
-     *
-     * @deprecated Please use {@link #insert(FloatingLong, Direction, Action, ToIntFunction, InContainerGetter, ContainerInteraction)} to avoid capturing lambdas.
-     */
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FloatingLong insert(FloatingLong stack, Action action, IntSupplier containerCount, IntFunction<FloatingLong> inContainerGetter,
-          InsertFloatingLong insert) {
-        if (stack.isZero()) {
-            //Short circuit if nothing is actually being inserted
-            return FloatingLong.ZERO;
-        }
-        return insert(stack, null, action, side -> containerCount.getAsInt(), (container, s) -> inContainerGetter.apply(container),
-              (container, amt, side, a) -> insert.insert(container, amt, a));
     }
 
     /**
@@ -133,20 +115,6 @@ public class FloatingLongTransferUtils {
 
     /**
      * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
-     * 
-     * @deprecated Please use {@link #extract(FloatingLong, Direction, Action, ToIntFunction, ContainerInteraction)} to avoid capturing lambdas.
-     */
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public static FloatingLong extract(FloatingLong amount, Action action, IntSupplier containerCount, ExtractFloatingLong extract) {
-        if (amount.isZero()) {
-            //Short circuit if no energy is trying to be extracted
-            return FloatingLong.ZERO;
-        }
-        return extract(amount, null, action, side -> containerCount.getAsInt(), (container, amt, side, a) -> extract.extract(container, amt, a));
-    }
-
-    /**
-     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
      *
      * @since 10.5.13
      */
@@ -221,25 +189,5 @@ public class FloatingLongTransferUtils {
             }
         }
         return extracted;
-    }
-
-    /**
-     * @deprecated See {@link mekanism.api.container.ContainerInteraction}
-     */
-    @FunctionalInterface
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public interface InsertFloatingLong {
-
-        FloatingLong insert(int container, FloatingLong amount, Action action);
-    }
-
-    /**
-     * @deprecated See {@link mekanism.api.container.ContainerInteraction}
-     */
-    @FunctionalInterface
-    @Deprecated(forRemoval = true, since = "10.5.13")
-    public interface ExtractFloatingLong {
-
-        FloatingLong extract(int container, FloatingLong amount, Action action);
     }
 }

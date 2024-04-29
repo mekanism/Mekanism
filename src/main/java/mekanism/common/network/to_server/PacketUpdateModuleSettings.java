@@ -68,7 +68,7 @@ public record PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, S
     public void handle(IPayloadContext context) {
         if (!data.isBlank()) {
             ItemStack stack = context.player().getInventory().getItem(slotId);
-            Module<?> module = ModuleHelper.get().load(stack, moduleType);
+            Module<?> module = ModuleHelper.get().getModule(stack, moduleType);
             if (module != null) {
                 setValue(module.getConfigItem(data));
             }

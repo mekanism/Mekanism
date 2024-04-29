@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -101,7 +100,7 @@ public interface IModuleHelper {
      * @return {@code true} if the item has the module installed and enabled.
      */
     default boolean isEnabled(ItemStack stack, IModuleDataProvider<?> typeProvider) {
-        IModuleContainer container = getModuleContainerNullable(stack);
+        IModuleContainer container = getModuleContainer(stack);
         return container != null && container.hasEnabled(typeProvider);
     }
 
@@ -114,9 +113,8 @@ public interface IModuleHelper {
      * @return Module, or {@code null} if no module of the given type is installed.
      */
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        //TODO - 1.20.5: Rename to getModule or get, and also re-evaluate other names in this class
-        IModuleContainer container = getModuleContainerNullable(stack);
+    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
+        IModuleContainer container = getModuleContainer(stack);
         return container == null ? null : container.get(typeProvider);
     }
 
@@ -130,7 +128,7 @@ public interface IModuleHelper {
      */
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = getModuleContainerNullable(stack);
+        IModuleContainer container = getModuleContainer(stack);
         return container == null ? null : container.getIfEnabled(typeProvider);
     }
 
@@ -146,21 +144,8 @@ public interface IModuleHelper {
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot,
           IModuleDataProvider<MODULE> typeProvider) {
-        IModuleContainer container = getModuleContainerNullable(entity, slot);
+        IModuleContainer container = getModuleContainer(entity, slot);
         return container == null ? null : container.getIfEnabled(typeProvider);
-    }
-
-    /**
-     * {@return module container for the stack, or empty if it is empty or not a module container}
-     *
-     * @param stack Stack to check for being a module container and then to retrieve the container of.
-     *
-     * @since 10.5.0
-     * @deprecated Prefer using {@link #getModuleContainerNullable(ItemStack)}
-     */
-    @Deprecated(forRemoval = true, since = "10.5.15")
-    default Optional<? extends IModuleContainer> getModuleContainer(ItemStack stack) {
-        return Optional.ofNullable(getModuleContainerNullable(stack));
     }
 
     /**
@@ -170,22 +155,8 @@ public interface IModuleHelper {
      *
      * @since 10.5.15
      */
-    @Nullable//TODO - 1.20.5: Rename to getModuleContainer
-    IModuleContainer getModuleContainerNullable(ItemStack stack);
-
-    /**
-     * {@return module container for the item in entity's equipment slot, or empty if it is empty or not a module container}
-     *
-     * @param entity Entity that has the stack.
-     * @param slot   Slot the stack is in.
-     *
-     * @since 10.5.0
-     * @deprecated Prefer using {@link #getModuleContainerNullable(LivingEntity, EquipmentSlot)}
-     */
-    @Deprecated(forRemoval = true, since = "10.5.15")
-    default Optional<? extends IModuleContainer> getModuleContainer(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
-        return Optional.ofNullable(getModuleContainerNullable(entity, slot));
-    }
+    @Nullable
+    IModuleContainer getModuleContainer(ItemStack stack);
 
     /**
      * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the stack is empty or not a module container}
@@ -195,12 +166,12 @@ public interface IModuleHelper {
      *
      * @since 10.5.15
      */
-    @Nullable//TODO - 1.20.5: Rename to getModuleContainer
-    default IModuleContainer getModuleContainerNullable(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
+    @Nullable
+    default IModuleContainer getModuleContainer(@Nullable LivingEntity entity, @Nullable EquipmentSlot slot) {
         if (entity == null || slot == null) {
             return null;
         }
-        return getModuleContainerNullable(entity.getItemBySlot(slot));
+        return getModuleContainer(entity.getItemBySlot(slot));
     }
 
     /**
@@ -232,8 +203,8 @@ public interface IModuleHelper {
      *
      * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
      */
-    default Collection<? extends IModule<?>> loadAll(ItemStack stack) {
-        IModuleContainer container = getModuleContainerNullable(stack);
+    default Collection<? extends IModule<?>> getAllModules(ItemStack stack) {
+        IModuleContainer container = getModuleContainer(stack);
         return container != null ? container.modules() : Collections.emptyList();
     }
 
@@ -246,9 +217,9 @@ public interface IModuleHelper {
      * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
      */
     @SuppressWarnings("unchecked")
-    default <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> loadAll(ItemStack stack, Class<MODULE> moduleClass) {
+    default <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> getAllModules(ItemStack stack, Class<MODULE> moduleClass) {
         List<IModule<? extends MODULE>> list = new ArrayList<>();
-        for (IModule<?> module : loadAll(stack)) {
+        for (IModule<?> module : getAllModules(stack)) {
             if (moduleClass.isInstance(module.getCustomInstance())) {
                 list.add((IModule<? extends MODULE>) module);
             }
@@ -263,8 +234,8 @@ public interface IModuleHelper {
      *
      * @return Module types on an item.
      */
-    default Set<ModuleData<?>> loadAllTypes(ItemStack stack) {
-        IModuleContainer container = getModuleContainerNullable(stack);
+    default Set<ModuleData<?>> getAllTypes(ItemStack stack) {
+        IModuleContainer container = getModuleContainer(stack);
         return container != null ? container.moduleTypes() : Collections.emptySet();
     }
 

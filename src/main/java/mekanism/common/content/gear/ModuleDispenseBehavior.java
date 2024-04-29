@@ -22,7 +22,7 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             return stack;
         }
         boolean preventDrop = result == ModuleDispenseResult.FAIL_PREVENT_DROP;
-        for (IModule<?> module : IModuleHelper.INSTANCE.loadAll(stack)) {
+        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(stack)) {
             if (module.isEnabled()) {
                 result = onModuleDispense(module, source);
                 if (result == ModuleDispenseResult.HANDLED) {

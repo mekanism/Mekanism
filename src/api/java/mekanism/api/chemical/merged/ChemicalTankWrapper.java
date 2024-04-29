@@ -1,6 +1,5 @@
 package mekanism.api.chemical.merged;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.Action;
@@ -26,11 +25,6 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     @Nullable
     private final BooleanSupplier insertCheck;
     private final MergedChemicalTank mergedTank;
-
-    @Deprecated(forRemoval = true, since = "10.5.15")
-    protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, BooleanSupplier insertCheck) {
-        this(mergedTank, internal, Collections.emptyList(), insertCheck);
-    }
 
     protected ChemicalTankWrapper(MergedChemicalTank mergedTank, IChemicalTank<CHEMICAL, STACK> internal, List<IChemicalTank<?, ?>> otherTanks,
           @Nullable BooleanSupplier insertCheck) {
