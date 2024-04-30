@@ -43,4 +43,14 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         }
         return tile.onActivate(player, hand, player.getItemInHand(hand));
     }
+
+    @Override
+    @Deprecated
+    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+        Block blockOffset = adjacentBlockState.getBlock();
+        if ( blockOffset instanceof BlockBasicMultiblock<?>) {
+            return true;
+        }
+        return super.skipRendering(state, adjacentBlockState, side);
+    }
 }
