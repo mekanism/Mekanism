@@ -162,6 +162,7 @@
   "sound_event.mekanismgenerators.tile.generator.gas": "Gasgenerator surrar",
   "sound_event.mekanismgenerators.tile.generator.heat": "Värmegenerator surrar",
   "sound_event.mekanismgenerators.tile.generator.solar": "Solgenerator surrar",
+  "sound_event.mekanismgenerators.tile.generator.wind": "Vindgenerator susar",
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Fissionsreaktor surrar",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Fusionsreaktor surrar",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Otillräckligt med bränsle",
