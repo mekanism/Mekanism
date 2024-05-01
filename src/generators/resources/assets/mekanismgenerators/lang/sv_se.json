@@ -110,6 +110,7 @@
   "fission.mekanismgenerators.stats": "Fissionsreaktorstatistik",
   "fission.mekanismgenerators.surface_area": "Ytområde för bränsle: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "Avfallstank",
+  "fml.menu.mods.info.description.mekanismgenerators": "Generatormodul för Mekanism",
   "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generators",
   "gas.mekanismgenerators.deuterium": "Deuterium",
   "gas.mekanismgenerators.fusion_fuel": "D-T-bränsle",
