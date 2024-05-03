@@ -21,6 +21,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.common.lib.codec.SequencedCollectionCodec;
+import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModules, ItemEnchantments enchantments) implements IModuleContainer {
 
-    public static final ModuleContainer EMPTY = new ModuleContainer(Collections.emptyNavigableMap(), ItemEnchantments.EMPTY);
+    public static final ModuleContainer EMPTY = new ModuleContainer(EmptySequencedMap.emptyMap(), ItemEnchantments.EMPTY);
 
     public static final Codec<ModuleContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           new SequencedCollectionCodec<>(Module.CODEC).fieldOf(NBTConstants.MODULES).forGetter(container -> container.typedModules().sequencedValues()),
