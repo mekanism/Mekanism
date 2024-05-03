@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "Kunde inte formges, inga elektromagnetiska spolar hittades.",
   "turbine.mekanismgenerators.invalid_missing_complex": "Kunde inte formges, inget rotationskomplex hittades.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "Kunde inte formges, förväntade men hittade inte tryckfördelare vid %1$s.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "Kunde inte formges, inga tryckfördelare hittades.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "Kunde inte formges, rotorerna är ogiltiga (inte angränsande).",
   "turbine.mekanismgenerators.invalid_too_narrow": "Kunde inte formges, strukturen är för trång för att stöda turbinstorleken.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Kunde inte formges, hittade ett turbinluftintag under lagret med tryckfördelaren. Luftintag måste placeras på samma nivå eller precis ovanför tryckfördelaren.",
