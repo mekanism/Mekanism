@@ -23,6 +23,7 @@ import mekanism.api.providers.IModuleDataProvider;
 import mekanism.common.lib.codec.SequencedCollectionCodec;
 import mekanism.common.lib.collection.EmptySequencedMap;
 import mekanism.common.registries.MekanismDataComponents;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -254,7 +255,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
      *
      * @return number installed
      */
-    public <MODULE extends ICustomModule<MODULE>> int addModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider, int toInstall) {
+    public <MODULE extends ICustomModule<MODULE>> int addModule(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> typeProvider, int toInstall) {
         ModuleData<MODULE> type = typeProvider.getModuleData();
         Module<MODULE> module = get(type);
         boolean wasFirst = module == null;
@@ -268,7 +269,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 //Nothing to actually install because we are already at the max stack size
                 return 0;
             }
-            module = module.withReplacedInstallCount(module.getInstalledCount() + toInstall);
+            module = module.withReplacedInstallCount(provider, module.getInstalledCount() + toInstall);
         }
         //Add the module to the list of tracked and known modules if necessary or replace the existing value
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
@@ -285,7 +286,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return toInstall;
     }
 
-    public <MODULE extends ICustomModule<MODULE>> void removeModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider,
+    public <MODULE extends ICustomModule<MODULE>> void removeModule(HolderLookup.Provider provider, ItemStack stack, IModuleDataProvider<MODULE> typeProvider,
           @Range(from = 1, to = Integer.MAX_VALUE) int toRemove) {
         ModuleData<MODULE> type = typeProvider.getModuleData();
         Module<MODULE> module = get(type);
@@ -309,7 +310,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                     }
                 }
             } else {//update the module with the new installed count
-                module = module.withReplacedInstallCount(installed);
+                module = module.withReplacedInstallCount(provider, installed);
                 copiedModules.put(type, module);
                 //Update the level of any corresponding enchantment
                 adjustedEnchantments = updateEnchantment(module, null);

@@ -47,7 +47,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -676,8 +678,9 @@ public class RadiationManager implements IRadiationManager {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>();
+                RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
                 for (Tag nbt : list) {
-                    RadiationSource.load((CompoundTag) nbt).ifPresent(loadedSources::add);
+                    RadiationSource.load(registryOps, (CompoundTag) nbt).ifPresent(loadedSources::add);
                 }
             } else {
                 loadedSources = Collections.emptySet();
@@ -703,9 +706,10 @@ public class RadiationManager implements IRadiationManager {
         @Override
         public CompoundTag save(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             if (manager != null && !manager.radiationTable.isEmpty()) {
+                RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
                 ListTag list = new ListTag();
                 for (RadiationSource source : manager.radiationTable.values()) {
-                    list.add(source.write());
+                    list.add(source.write(registryOps));
                 }
                 nbtTags.put(NBTConstants.RADIATION_LIST, list);
             }

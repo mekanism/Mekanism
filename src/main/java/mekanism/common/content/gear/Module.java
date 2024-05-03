@@ -28,12 +28,15 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -213,11 +216,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return enabled;
     }
 
-    Module<MODULE> withReplacedInstallCount(int installed) {
+    Module<MODULE> withReplacedInstallCount(HolderLookup.Provider provider, int installed) {
+        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
         //TODO - 1.20.5: Re-evaluate this
-        CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow();
+        CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(registryOps, this).getOrThrow();
         tag.putInt(NBTConstants.AMOUNT, installed);
-        return (Module<MODULE>) Module.CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow().getFirst();
+        return (Module<MODULE>) Module.CODEC.decode(registryOps, tag).getOrThrow().getFirst();
     }
 
     Module<MODULE> withReplacedConfig(ModuleConfig<?> config) {

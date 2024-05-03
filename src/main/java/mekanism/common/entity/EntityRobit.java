@@ -129,7 +129,6 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.ITeleporter;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -511,7 +510,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
-            Optional<Tag> result = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, homeLocation).result();
+            Optional<Tag> result = GlobalPos.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), homeLocation).result();
             //noinspection OptionalIsPresent - Capturing lambda
             if (result.isPresent()) {
                 nbtTags.put(NBTConstants.HOME_LOCATION, result.get());
@@ -531,7 +530,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(NbtOps.INSTANCE, home).result().orElse(null));
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), home).result().orElse(null));
         ContainerType.ITEM.readFrom(provider, nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.readFrom(provider, nbtTags, getEnergyContainers(null));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);

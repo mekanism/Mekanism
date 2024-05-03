@@ -100,7 +100,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                         clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
                         if (operatingTicks == ticksRequired) {
                             operatingTicks = 0;
-                            int added = container.addModule(stack, data, moduleSlot.getCount());
+                            int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.getCount());
                             if (added > 0) {
                                 containerSlot.setStack(stack);
                                 MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
@@ -129,7 +129,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (installed > 0) {
                 int toRemove = removeAll ? installed : 1;
                 if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))) {
-                    container.removeModule(stack, type, toRemove);
+                    container.removeModule(player.level().registryAccess(), stack, type, toRemove);
                     containerSlot.setStack(stack);
                 }
             }

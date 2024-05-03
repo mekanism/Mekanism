@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -46,9 +45,9 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
     ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
     //TODO - 1.20.5: Test this and see if there is a proper stream codec for block states
     public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.TRUSTED_COMPOUND_TAG, data -> (CompoundTag) BlockState.CODEC.encodeStart(NbtOps.INSTANCE, data.blockState()).getOrThrow(),
+          ByteBufCodecs.fromCodecTrusted(BlockState.CODEC), BlockData::blockState,
           ByteBufCodecs.optional(ByteBufCodecs.TRUSTED_COMPOUND_TAG), data -> Optional.ofNullable(data.blockEntityTag()),
-          (state, tag) -> new BlockData(BlockState.CODEC.parse(NbtOps.INSTANCE, state).result().orElseThrow(), tag.orElse(null))
+          (state, tag) -> new BlockData(state, tag.orElse(null))
     );
 
     public BlockData(HolderLookup.Provider provider, BlockState state, @Nullable BlockEntity blockEntity) {

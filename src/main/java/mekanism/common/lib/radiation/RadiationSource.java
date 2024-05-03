@@ -8,6 +8,8 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import org.jetbrains.annotations.NotNull;
 
 public class RadiationSource implements IRadiationSource {
@@ -43,8 +45,8 @@ public class RadiationSource implements IRadiationSource {
         return magnitude < RadiationManager.MIN_MAGNITUDE;
     }
 
-    public static Optional<RadiationSource> load(CompoundTag tag) {
-        Optional<GlobalPos> result = GlobalPos.CODEC.parse(NbtOps.INSTANCE, tag).result();
+    public static Optional<RadiationSource> load(RegistryOps<Tag> registryOps, CompoundTag tag) {
+        Optional<GlobalPos> result = GlobalPos.CODEC.parse(registryOps, tag).result();
         //noinspection OptionalIsPresent - Capturing lambda
         if (result.isPresent()) {
             return Optional.of(new RadiationSource(result.get(), tag.getDouble(NBTConstants.RADIATION)));
@@ -52,8 +54,8 @@ public class RadiationSource implements IRadiationSource {
         return Optional.empty();
     }
 
-    public CompoundTag write() {
-        CompoundTag tag = (CompoundTag) GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, pos).result()
+    public CompoundTag write(RegistryOps<Tag> registryOps) {
+        CompoundTag tag = (CompoundTag) GlobalPos.CODEC.encodeStart(registryOps, pos).result()
               .orElseGet(CompoundTag::new);
         tag.putDouble(NBTConstants.RADIATION, magnitude);
         return tag;
