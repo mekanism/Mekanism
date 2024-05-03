@@ -7,12 +7,9 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
@@ -29,17 +26,16 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.FluidType;
 
 @ParametersAreNotNullByDefault
-public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElectrolyticBreathingUnit> {
+public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICustomModule<ModuleElectrolyticBreathingUnit> {
 
-    private IModuleConfigItem<Boolean> fillHeld;
+    public static final String FILL_HELD = "breathing.held";
 
-    @Override
-    public void init(IModule<ModuleElectrolyticBreathingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        fillHeld = configItemCreator.createConfigItem("fill_held", MekanismLang.MODULE_BREATHING_HELD, new ModuleBooleanData());
+    public ModuleElectrolyticBreathingUnit(IModule<ModuleElectrolyticBreathingUnit> module) {
+        this(module.getBooleanConfigOrFalse(FILL_HELD));
     }
 
     @Override
-    public void tickServer(IModule<ModuleElectrolyticBreathingUnit> module, Player player) {
+    public void tickServer(IModule<ModuleElectrolyticBreathingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         int productionRate = 0;
         //Check if the mask is underwater
         //Note: Being in water is checked first to ensure that if it is raining and the player is in water
@@ -62,7 +58,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
         }
         if (productionRate > 0) {
             FloatingLong usage = MekanismConfig.general.FROM_H2.get().multiply(2);
-            int maxRate = Math.min(productionRate, module.getContainerEnergy().divideToInt(usage));
+            int maxRate = Math.min(productionRate, module.getContainerEnergy(stack).divideToInt(usage));
             long hydrogenUsed = 0;
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -73,7 +69,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
                     hydrogenStack.shrink(hydrogenUsed);
                 }
             }
-            if (fillHeld.get()) {
+            if (fillHeld) {
                 ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
                 IGasHandler handCapability = Capabilities.GAS.getCapability(handStack);
                 if (handCapability != null) {
@@ -82,7 +78,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
             long used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
-            module.useEnergy(player, usage.multiply(used));
+            module.useEnergy(player, stack, usage.multiply(used));
             player.setAirSupply(player.getAirSupply() + oxygenUsed);
         }
     }

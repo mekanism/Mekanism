@@ -94,13 +94,13 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
                     // make sure the container supports this module and that we can still install more of this module
-                    if (container.canInstall(data)) {
+                    if (container.canInstall(stack, data)) {
                         operated = true;
                         operatingTicks++;
                         clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
                         if (operatingTicks == ticksRequired) {
                             operatingTicks = 0;
-                            int added = container.addModule(data, moduleSlot.getCount());
+                            int added = container.addModule(stack, data, moduleSlot.getCount());
                             if (added > 0) {
                                 containerSlot.setStack(stack);
                                 MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
@@ -125,10 +125,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         ItemStack stack = containerSlot.getStack();
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
-            if (container.has(type)) {
-                int toRemove = removeAll ? container.installedCount(type) : 1;
+            int installed = container.installedCount(type);
+            if (installed > 0) {
+                int toRemove = removeAll ? installed : 1;
                 if (player.getInventory().add(type.getItemProvider().getItemStack(toRemove))) {
-                    container.removeModule(type, toRemove);
+                    container.removeModule(stack, type, toRemove);
                     containerSlot.setStack(stack);
                 }
             }

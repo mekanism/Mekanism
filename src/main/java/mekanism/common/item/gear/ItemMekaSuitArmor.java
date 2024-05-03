@@ -274,7 +274,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 for (Module<?> module : container.modules()) {
-                    module.tick(player);
+                    module.tick(container, stack, player);
                 }
             }
         }
@@ -347,11 +347,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             IModuleContainer container = moduleContainer(stack);
             if (container != null) {
                 IModule<ModuleElytraUnit> elytra = container.getIfEnabled(MekanismModules.ELYTRA_UNIT);
-                if (elytra != null && elytra.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
+                if (elytra != null && elytra.canUseEnergy(entity, stack, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
                     //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
                     // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
                     IModule<ModuleJetpackUnit> jetpack = container.getIfEnabled(MekanismModules.JETPACK_UNIT);
-                    return jetpack == null || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
+                    return jetpack == null || jetpack.getCustomInstance().mode() != JetpackMode.HOVER ||
                            StorageUtils.getContainedGas(stack, MekanismGases.HYDROGEN).isEmpty();
                 }
             }
@@ -369,7 +369,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 if (nextFlightTicks % SharedConstants.TICKS_PER_SECOND == 0) {
                     IModule<ModuleElytraUnit> module = getEnabledModule(stack, MekanismModules.ELYTRA_UNIT);
                     if (module != null) {
-                        module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
+                        module.useEnergy(entity, stack, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
                     }
                 }
                 entity.gameEvent(GameEvent.ELYTRA_GLIDE);
@@ -393,7 +393,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public JetpackMode getJetpackMode(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            return module.getCustomInstance().getMode();
+            return module.getCustomInstance().mode();
         }
         return JetpackMode.DISABLED;
     }

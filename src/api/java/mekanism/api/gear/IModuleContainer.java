@@ -6,16 +6,14 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IModuleDataProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.neoforge.capabilities.ItemCapability;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Represents an item that can contain modules. Do not implement this interface directly, register new containers via
@@ -43,6 +41,9 @@ public interface IModuleContainer {
         return typedModules().keySet();
     }
 
+    //TODO - 1.20.5: Docs
+    <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config);
+
     /**
      * {@return all the enchantments provided by installed modules}
      */
@@ -53,40 +54,6 @@ public interface IModuleContainer {
      */
     default int getModuleEnchantmentLevel(Enchantment enchantment) {
         return moduleBasedEnchantments().getLevel(enchantment);
-    }
-
-    /**
-     * Adds or removes the given enchantment as being provided at the given level by a module on this container.
-     *
-     * @param enchantment Enchantment to set or remove
-     * @param level       Enchantment level. A value of zero will remove the enchantment from this container.
-     *
-     * @apiNote In general this method should <strong>NEVER</strong> be called directly and should be handled by {@link EnchantmentBasedModule}
-     */
-    @Internal
-    void setEnchantmentLevel(Enchantment enchantment, int level);
-
-    /**
-     * {@return a new stack/copy representing a copy of the backing stack for use in creating previews that won't modify the backing stack}
-     */
-    ItemStack getPreviewStack();
-
-    /**
-     * Gets a capability that is on the backing stack, useful for when interacting with fluid or chemical contents.
-     *
-     * @param capability Capability to look up.
-     * @param context    Capability context.
-     */
-    @Nullable <T, C> T getCapabilityFromStack(ItemCapability<T, C> capability, @UnknownNullability C context);
-
-    /**
-     * Gets a capability that is on the backing stack, useful for when interacting with fluid or chemical contents.
-     *
-     * @param capability Capability to look up.
-     */
-    @Nullable
-    default <T> T getCapabilityFromStack(ItemCapability<T, Void> capability) {
-        return getCapabilityFromStack(capability, null);
     }
 
     /**
@@ -105,22 +72,6 @@ public interface IModuleContainer {
         IModule<?> module = get(typeProvider);
         return module == null ? 0 : module.getInstalledCount();
     }
-
-    /**
-     * Helper to check if the stack behind this container is on cooldown for the given player.
-     *
-     * @param player Player to check the cooldowns of.
-     *
-     * @return {@code true} if the stack behind this container is on cooldown.
-     */
-    boolean isContainerOnCooldown(Player player);
-
-    /**
-     * {@return if the item for the stack behind this container is an instance of the given class}
-     *
-     * @param clazz Class to check.
-     */
-    boolean isInstance(Class<?> clazz);
 
     /**
      * {@return the module if it is installed in this container}
@@ -159,32 +110,18 @@ public interface IModuleContainer {
     }
 
     /**
-     * {@return all the module types this container supports}
-     */
-    Set<ModuleData<?>> supportedTypes();
-
-    /**
-     * {@return if this container supports the given module type}
-     *
-     * @param typeProvider Module type
-     */
-    default boolean supports(IModuleDataProvider<?> typeProvider) {
-        return supportedTypes().contains(typeProvider.getModuleData());
-    }
-
-    /**
      * Gets all the HUD elements that should be displayed when the MekaSuit is rendering the HUD.
      *
      * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
      */
-    List<IHUDElement> getHUDElements(Player player);
+    List<IHUDElement> getHUDElements(Player player, ItemStack stack);//TODO - 1.20.5: Document stack
 
     /**
      * Gets all the text that should be displayed on the HUD.
      *
      * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
      *
-     * @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike {@link #getHUDElements(Player)}.
+     * @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike {@link #getHUDElements(Player, ItemStack)}.
      */
-    List<Component> getHUDStrings(Player player);
+    List<Component> getHUDStrings(Player player, ItemStack stack);//TODO - 1.20.5: Document stack
 }

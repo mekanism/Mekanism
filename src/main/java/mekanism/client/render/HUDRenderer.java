@@ -122,9 +122,10 @@ public class HUDRenderer {
         pose.pushPose();
         //Render any elements that might be on modules in the meka suit while worn or on the meka tool while held
         for (EquipmentSlot type : EQUIPMENT_ORDER) {
-            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(player, type);
+            ItemStack stack = player.getItemBySlot(type);
+            IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
             if (moduleContainer != null) {
-                for (IHUDElement element : moduleContainer.getHUDElements(player)) {
+                for (IHUDElement element : moduleContainer.getHUDElements(player, stack)) {
                     curY -= 18;
                     if (reverseHud) {
                         //Align the mekasuit module icons to the left of the screen

@@ -6,6 +6,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.MekanismLang;
@@ -20,14 +21,18 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
 public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
 
+    public ModuleDosimeterUnit(IModule<ModuleDosimeterUnit> module) {
+    }
+
     @Override
-    public void addHUDElements(IModule<ModuleDosimeterUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleDosimeterUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? player.getData(MekanismAttachmentTypes.RADIATION) : 0;
             Component text = UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2);

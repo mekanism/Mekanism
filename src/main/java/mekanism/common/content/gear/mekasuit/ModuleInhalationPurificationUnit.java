@@ -5,43 +5,38 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInhalationPurificationUnit> {
+public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects, boolean harmfulEffects) implements ICustomModule<ModuleInhalationPurificationUnit> {
 
     private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
           MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
 
-    private IModuleConfigItem<Boolean> beneficialEffects;
-    private IModuleConfigItem<Boolean> neutralEffects;
-    private IModuleConfigItem<Boolean> harmfulEffects;
+    public static final String BENEFICIAL_EFFECTS = "purification.beneficial";
+    public static final String NEUTRAL_EFFECTS = "purification.neutral";
+    public static final String HARMFUL_EFFECTS = "purification.harmful";
 
-    @Override
-    public void init(IModule<ModuleInhalationPurificationUnit> module, ModuleConfigItemCreator configItemCreator) {
-        beneficialEffects = configItemCreator.createConfigItem("beneficial_effects", MekanismLang.MODULE_PURIFICATION_BENEFICIAL, new ModuleBooleanData(false));
-        neutralEffects = configItemCreator.createConfigItem("neutral_effects", MekanismLang.MODULE_PURIFICATION_NEUTRAL, new ModuleBooleanData());
-        harmfulEffects = configItemCreator.createConfigItem("harmful_effects", MekanismLang.MODULE_PURIFICATION_HARMFUL, new ModuleBooleanData());
+    public ModuleInhalationPurificationUnit(IModule<ModuleInhalationPurificationUnit> module) {
+        this(module.getBooleanConfigOrFalse(BENEFICIAL_EFFECTS), module.getBooleanConfigOrFalse(NEUTRAL_EFFECTS), module.getBooleanConfigOrFalse(HARMFUL_EFFECTS));
     }
 
     @Override
-    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, Player player) {
+    public void tickClient(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         //Messy rough estimate version of tickServer so that the timer actually properly updates
         if (!player.isSpectator()) {
             FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
             boolean free = usage.isZero() || player.isCreative();
-            FloatingLong energy = free ? FloatingLong.ZERO : module.getContainerEnergy().copy();
+            FloatingLong energy = free ? FloatingLong.ZERO : module.getContainerEnergy(stack).copy();
             if (free || energy.greaterOrEqual(usage)) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
@@ -63,10 +58,10 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     }
 
     @Override
-    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, Player player) {
+    public void tickServer(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
         boolean free = usage.isZero() || player.isCreative();
-        IEnergyContainer energyContainer = free ? null : module.getEnergyContainer();
+        IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
         if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
             // don't run into any issues related to CMEs
@@ -102,9 +97,9 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
 
     private boolean canHandle(MobEffectInstance effectInstance) {
         return MekanismUtils.shouldSpeedUpEffect(effectInstance) && switch (effectInstance.getEffect().value().getCategory()) {
-            case BENEFICIAL -> beneficialEffects.get();
-            case HARMFUL -> harmfulEffects.get();
-            case NEUTRAL -> neutralEffects.get();
+            case BENEFICIAL -> beneficialEffects;
+            case HARMFUL -> harmfulEffects;
+            case NEUTRAL -> neutralEffects;
         };
     }
 }

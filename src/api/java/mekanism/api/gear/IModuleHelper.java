@@ -81,6 +81,18 @@ public interface IModuleHelper {
     Set<Item> getSupported(IModuleDataProvider<?> typeProvider);
 
     /**
+     * {@return if the module container supports the given module type}
+     *
+     * @param item         Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param typeProvider Module type
+     *
+     * @since 10.6.0
+     */
+    default boolean supports(Item item, IModuleDataProvider<?> typeProvider) {
+        return getSupported(item).contains(typeProvider.getModuleData());
+    }
+
+    /**
      * Gets all the module types a given module type conflicts with.
      *
      * @param typeProvider Module type.

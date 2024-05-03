@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismIMC;
 import mekanism.api.MekanismIMC.ModuleContainerTarget;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModuleHelper;
@@ -196,11 +195,5 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public synchronized void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive) {
         MekaSuitArmor.registerModule(name, moduleDataProvider, slotType, isActive);
-    }
-
-    @Override
-    public <MODULE extends ICustomModule<MODULE>> Module<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        ModuleContainer container = getModuleContainer(stack);
-        return container != null ? container.get(typeProvider) : null;
     }
 }

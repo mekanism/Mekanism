@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.ModuleConfig;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.custom.module.GuiModuleScreen;
@@ -17,7 +18,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
-import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.network.PacketUtils;
@@ -42,7 +42,7 @@ import org.lwjgl.glfw.GLFW;
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     private final ArmorPreview armorPreview = new ArmorPreview();
-    private final Consumer<ModuleConfigItem<?>> saveCallback;
+    private final Consumer<ModuleConfig<?>> saveCallback;
 
     private GuiModuleScrollList scrollList;
     private GuiModuleScreen moduleScreen;
@@ -68,8 +68,9 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 138, 20, saveCallback, armorPreview));
-        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
+        Supplier<ItemStack> itemSupplier = () -> getStack(selected);
+        moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 138, 20, itemSupplier, saveCallback, armorPreview));
+        scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 108, 116, itemSupplier, this::onModuleSelected));
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 108, 18));
         optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 106, 16, MekanismLang.BUTTON_OPTIONS, (element, mouseX, mouseY) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();

@@ -114,7 +114,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
     private static Color getColor(ItemStack stack) {
         IModule<ModuleColorModulationUnit> colorUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
-        return colorUnit != null ? colorUnit.getCustomInstance().getColor() : Color.WHITE;
+        return colorUnit != null ? colorUnit.getCustomInstance().color() : Color.WHITE;
     }
 
     public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight,
@@ -539,13 +539,16 @@ public class MekaSuitArmor implements ICustomArmor {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(player, slotType);
-            if (container != null && container.isInstance(ItemMekaSuitArmor.class)) {
-                wornParts.add(slotType);
-                for (Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
-                    if (container.hasEnabled(entry.getKey())) {
-                        ModuleModelSpec spec = entry.getValue();
-                        modules.put(spec, spec.isActive(player));
+            ItemStack stack = player.getItemBySlot(slotType);
+            if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
+                if (container != null) {
+                    wornParts.add(slotType);
+                    for (Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
+                        if (container.hasEnabled(entry.getKey())) {
+                            ModuleModelSpec spec = entry.getValue();
+                            modules.put(spec, spec.isActive(player));
+                        }
                     }
                 }
             }

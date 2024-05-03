@@ -6,11 +6,13 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 
@@ -19,9 +21,12 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
 
     private static final FloatingLong RAIN_MULTIPLIER = FloatingLong.createConst(0.2);
 
+    public ModuleSolarRechargingUnit(IModule<ModuleSolarRechargingUnit> module) {
+    }
+
     @Override
-    public void tickServer(IModule<ModuleSolarRechargingUnit> module, Player player) {
-        IEnergyContainer energyContainer = module.getEnergyContainer();
+    public void tickServer(IModule<ModuleSolarRechargingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             //Use the position that is roughly where the solar panel is
             BlockPos pos = BlockPos.containing(player.getX(), player.getEyeY() + 0.2, player.getZ());

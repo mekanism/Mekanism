@@ -7,12 +7,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
@@ -25,28 +22,26 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
 @ParametersAreNotNullByDefault
-public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeDistributionUnit> {
+public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
 
-    private IModuleConfigItem<Boolean> chargeSuit;
-    private IModuleConfigItem<Boolean> chargeInventory;
+    public static final String CHARGE_SUIT = "charge_suit";
+    public static final String CHARGE_INVENTORY = "charge_inventory";
 
-    @Override
-    public void init(IModule<ModuleChargeDistributionUnit> module, ModuleConfigItemCreator configItemCreator) {
-        chargeSuit = configItemCreator.createConfigItem("charge_suit", MekanismLang.MODULE_CHARGE_SUIT, new ModuleBooleanData());
-        chargeInventory = configItemCreator.createConfigItem("charge_inventory", MekanismLang.MODULE_CHARGE_INVENTORY, new ModuleBooleanData(false));
+    public ModuleChargeDistributionUnit(IModule<ModuleChargeDistributionUnit> module) {
+        this(module.getBooleanConfigOrFalse(CHARGE_SUIT), module.getBooleanConfigOrFalse(CHARGE_INVENTORY));
     }
 
     @Override
-    public void tickServer(IModule<ModuleChargeDistributionUnit> module, Player player) {
+    public void tickServer(IModule<ModuleChargeDistributionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         // charge inventory first
-        if (chargeInventory.get()) {
-            IEnergyContainer energyContainer = module.getEnergyContainer();
+        if (chargeInventory) {
+            IEnergyContainer energyContainer = module.getEnergyContainer(stack);
             if (energyContainer != null) {
                 chargeInventory(energyContainer, player);
             }
         }
         // distribute suit charge next, so that if we used power from the suit to charge an item, then we can balance across the suit properly
-        if (chargeSuit.get()) {
+        if (chargeSuit) {
             chargeSuit(player);
         }
     }

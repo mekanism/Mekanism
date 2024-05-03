@@ -64,6 +64,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(key.value().getDescriptionId(), value);
     }
 
+    protected void addModuleConfig(String configKey, String value) {
+        add("module." + modName + "." + configKey, value);
+    }
+
     protected void add(IHasTranslationKey key, String value) {
         if (key instanceof IBlockProvider blockProvider) {
             Block block = blockProvider.getBlock();

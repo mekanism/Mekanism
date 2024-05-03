@@ -2,7 +2,7 @@ package mekanism.api.gear;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.IHasTextComponent;
@@ -26,6 +26,31 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     ModuleData<MODULE> getData();
 
     /**
+     * {@return the config item with the given name}
+     *
+     * @param name Config to look up.
+     *
+     * @since 10.6.0
+     */
+    @Nullable//TODO - 1.20.5: Docs
+    <TYPE> ModuleConfig<TYPE> getConfig(String name);
+
+    //TODO - 1.20.5: Docs
+    default boolean getBooleanConfigOrFalse(String name) {
+        ModuleConfig<Boolean> config = getConfig(name);
+        return config != null && config.get();
+    }
+
+    //TODO - 1.20.5: Docs
+    default <TYPE> ModuleConfig<TYPE> getConfigOrThrow(String name) {
+        ModuleConfig<TYPE> config = getConfig(name);
+        if (config == null) {
+            throw new IllegalStateException("Expected module to contain a config with name " + name);
+        }
+        return config;
+    }
+
+    /**
      * Gets the custom module implementation this module references.
      */
     MODULE getCustomInstance();
@@ -41,16 +66,6 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @return {@code true} if this module is enabled.
      */
     boolean isEnabled();
-
-    /**
-     * {@return the config item with the given name}
-     *
-     * @param name Config to look up.
-     *
-     * @since 10.5.0
-     */
-    @Nullable
-    IModuleConfigItem<?> getConfigItem(String name);
 
     /**
      * Gets if this module type ({@link #getData()}) can currently handle mode changes and if this module is configured to handle mode changes in the Module Tweaker.
@@ -78,14 +93,6 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean handlesAnyModeChange();
 
     /**
-     * Gets if this module type ({@link #getData()}) has any data that should be added to the HUD and if this module is configured to render to the HUD in the Module
-     * Tweaker.
-     *
-     * @return {@code true} if this module has data to add to the HUD.
-     */
-    boolean renderHUD();
-
-    /**
      * Helper to display the mode change message.
      *
      * @param player   Player to send the message to.
@@ -100,94 +107,83 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @param player   Player to send the message to.
      * @param modeName Text to display that was either enabled or disabled.
      */
-    void toggleEnabled(Player player, Component modeName);
-
-    /**
-     * Gets the item this module is installed on.
-     *
-     * @return Container.
-     *
-     * @apiNote Be careful when interacting this stack as mutating it may have side effects.
-     * @since 10.5.0
-     */
-    ItemStack getContainerStack();
-
-    /**
-     * Gets the module container this module is installed on.
-     *
-     * @return Container.
-     *
-     * @since 10.5.0
-     */
-    IModuleContainer getContainer();
+    void toggleEnabled(IModuleContainer moduleContainer, ItemStack stack, Player player, Component modeName);
 
     /**
      * Helper to get the energy container of the item this module is installed on.
      *
+     * @param stack The stack this module is installed on.
+     *
      * @return Energy container or {@code null} if something failed.
      */
     @Nullable
-    IEnergyContainer getEnergyContainer();
+    IEnergyContainer getEnergyContainer(ItemStack stack);
 
     /**
-     * Helper to get the energy stored in {@link #getEnergyContainer()}.
+     * Helper to get the energy stored in {@link #getEnergyContainer(ItemStack)}.
+     *
+     * @param stack The stack this module is installed on.
      *
      * @return Energy stored, or {@link FloatingLong#ZERO} if the energy container is {@code null}.
      */
-    FloatingLong getContainerEnergy();
+    FloatingLong getContainerEnergy(ItemStack stack);
 
     /**
-     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer()}.
+     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
      *
+     * @param stack          The stack this module is installed on.
      * @param energySupplier Supplier that provides the minimum amount of required energy to check.
      *
-     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer()}.
+     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer(ItemStack)}.
      *
      * @since 10.4.0
      */
-    boolean hasEnoughEnergy(FloatingLongSupplier energySupplier);
+    boolean hasEnoughEnergy(ItemStack stack, FloatingLongSupplier energySupplier);
 
     /**
-     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer()}.
+     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
      *
+     * @param stack  The stack this module is installed on.
      * @param energy Minimum amount of required energy to check.
      *
-     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer()}.
+     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer(ItemStack)}.
      *
      * @since 10.4.0
      */
-    boolean hasEnoughEnergy(FloatingLong energy);
+    boolean hasEnoughEnergy(ItemStack stack, FloatingLong energy);
 
     /**
      * Helper to check if the item this module is installed on can provide the given amount of energy.
      *
      * @param wearer Wearer/User of the item the module is installed on.
+     * @param stack  The stack this module is installed on.
      * @param energy Energy amount to check.
      *
      * @return {@code true} if the energy can be used/provided.
      *
      * @implNote By default, this method checks players in creative as well.
      */
-    boolean canUseEnergy(LivingEntity wearer, FloatingLong energy);
+    boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy);
 
     /**
      * Helper to check if the item this module is installed on can provide the given amount of energy. If {@code checkCreative} is {@code false} this method will return
      * {@code false} for players in creative or spectator.
      *
      * @param wearer         Wearer/User of the item the module is installed on.
+     * @param stack          The stack this module is installed on.
      * @param energy         Energy amount to check.
      * @param ignoreCreative {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
      *
      * @return {@code true} if the energy can be used/provided.
      */
-    boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean ignoreCreative);
+    boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean ignoreCreative);
 
     /**
      * Helper to check if the item this module is installed on can provide the given amount of energy. If the {@code energyContainer} is null this will return
      * {@code false}. If {@code checkCreative} is {@code false} this method will return {@code false} for players in creative or spectator.
      *
      * @param wearer          Wearer/User of the item the module is installed on.
-     * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer()}.
+     * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer(ItemStack)}.
      * @param energy          Energy amount to check.
      * @param ignoreCreative  {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
      *
@@ -201,32 +197,34 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * Helper to use energy from the item this module is installed on.
      *
      * @param wearer Wearer/User of the item the module is installed on.
+     * @param stack  The stack this module is installed on.
      * @param energy Energy to use.
      *
      * @return Actual amount of energy used.
      *
      * @implNote By default, this method does not use any energy from players that are in creative.
      */
-    FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy);
+    FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy);
 
     /**
      * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return {@link FloatingLong#ZERO} for
      * players in creative or spectator.
      *
      * @param wearer       Wearer/User of the item the module is installed on.
+     * @param stack        The stack this module is installed on.
      * @param energy       Energy to use.
      * @param freeCreative {@code true} to not use any energy from the item if the wearer is in creative.
      *
      * @return Actual amount of energy used.
      */
-    FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean freeCreative);
+    FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean freeCreative);
 
     /**
      * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return {@link FloatingLong#ZERO}. If {@code checkCreative}
      * is {@code false} this method will return {@link FloatingLong#ZERO} for players in creative or spectator.
      *
      * @param wearer          Wearer/User of the item the module is installed on.
-     * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer()}.
+     * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer(ItemStack)}.
      * @param energy          Energy to use.
      * @param freeCreative    {@code true} to not use any energy from the item if the wearer is in creative.
      *

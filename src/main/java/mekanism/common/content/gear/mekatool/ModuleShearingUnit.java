@@ -48,36 +48,37 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
+    public ModuleShearingUnit(IModule<ModuleShearingUnit> module) {
+    }
+
     @Override
-    public boolean canPerformAction(IModule<ModuleShearingUnit> module, ToolAction action) {
+    public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ItemStack stack, ToolAction action) {
         if (action == ToolActions.SHEARS_DISARM) {
-            IModuleContainer container = module.getContainer();
-            if (container.isInstance(ItemMekaTool.class)) {
+            if (stack.getItem() instanceof ItemMekaTool) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"
                 // Note: We assume hardness is zero like the default is for tripwires as we don't have the target block in our current context
                 FloatingLong cost = ItemMekaTool.getDestroyEnergy(container, 0, container.hasEnabled(MekanismModules.SILK_TOUCH_UNIT));
-                return module.hasEnoughEnergy(cost);
+                return module.hasEnoughEnergy(stack, cost);
             }
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
             return true;
         } else if (action == ToolActions.SHEARS_DIG) {
-            IModuleContainer container = module.getContainer();
             //Note: If for some reason we are installed on something that is not the Meka-Tool don't stop the action from being enabled
             // as it may not actually require energy
-            return !container.isInstance(ItemMekaTool.class) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyContainer());
+            return !(stack.getItem() instanceof ItemMekaTool) || ItemMekaTool.hasEnergyForDigAction(container, module.getEnergyContainer(stack));
         }
         return ToolActions.DEFAULT_SHEARS_ACTIONS.contains(action);
     }
 
     @NotNull
     @Override
-    public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand) {
+    public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
         if (entity instanceof IShearable) {
             FloatingLong cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-            IEnergyContainer energyContainer = module.getEnergyContainer();
+            IEnergyContainer energyContainer = module.getEnergyContainer(stack);
             if (cost.isZero() || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(cost) &&
-                                 shearEntity(energyContainer, entity, player, module.getContainerStack(), entity.level(), entity.blockPosition())) {
+                                 shearEntity(energyContainer, entity, player, stack, entity.level(), entity.blockPosition())) {
                 return InteractionResult.SUCCESS;
             }
         }
@@ -86,11 +87,11 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     @NotNull
     @Override
-    public ModuleDispenseResult onDispense(IModule<ModuleShearingUnit> module, BlockSource source) {
+    public ModuleDispenseResult onDispense(IModule<ModuleShearingUnit> module, IModuleContainer moduleContainer, ItemStack stack, BlockSource source) {
         ServerLevel world = source.level();
         Direction facing = source.state().getValue(DispenserBlock.FACING);
         BlockPos pos = source.pos().relative(facing);
-        if (tryShearBlock(world, pos, facing.getOpposite()) || tryShearLivingEntity(module.getEnergyContainer(), world, pos, module.getContainerStack())) {
+        if (tryShearBlock(world, pos, facing.getOpposite()) || tryShearLivingEntity(module.getEnergyContainer(stack), world, pos, stack)) {
             return ModuleDispenseResult.HANDLED;
         }
         return ModuleDispenseResult.FAIL_PREVENT_DROP;

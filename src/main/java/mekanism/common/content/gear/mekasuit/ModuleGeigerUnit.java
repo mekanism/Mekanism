@@ -6,6 +6,7 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -18,14 +19,18 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
 public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "geiger_counter.png");
 
+    public ModuleGeigerUnit(IModule<ModuleGeigerUnit> module) {
+    }
+
     @Override
-    public void addHUDElements(IModule<ModuleGeigerUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleGeigerUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             double magnitude = RadiationManager.get().getClientEnvironmentalRadiation();
             Component text = UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2);

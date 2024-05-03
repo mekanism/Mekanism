@@ -41,8 +41,12 @@ public class MekanismHUD implements LayeredDraw.Layer {
             //mekanism does this
             return hudProvider;
         }
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
-        return container != null ? (list, player, s, slotType) -> list.addAll(container.getHUDStrings(player)) : null;
+        return (list, player, s, slotType) -> {
+            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(s);
+            if (container != null) {
+                list.addAll(container.getHUDStrings(player, s));
+            }
+        };
     }
 
     @Override

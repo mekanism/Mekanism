@@ -1,68 +1,110 @@
 package mekanism.common.content.gear;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BooleanSupplier;
+import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleConfigData;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Do we need to override equals and hashcode?
 @ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
 
-    public static final String ENABLED_KEY = "enabled";
+    private record InstalledData<MODULE extends ICustomModule<MODULE>>(ModuleData<MODULE> data, int installed) {
 
-    private final Map<String, ModuleConfigItem<?>> configItems = new LinkedHashMap<>();
-    private final Collection<ModuleConfigItem<?>> configItemsView = Collections.unmodifiableCollection(configItems.values());
+        private static final Codec<InstalledData<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              MekanismAPI.MODULE_REGISTRY.byNameCodec().fieldOf(NBTConstants.TYPE).forGetter(InstalledData::data),
+              ExtraCodecs.POSITIVE_INT.fieldOf(NBTConstants.AMOUNT).forGetter(InstalledData::installed)
+        ).apply(instance, InstalledData::new));
+        private static final StreamCodec<RegistryFriendlyByteBuf, InstalledData<?>> STREAM_CODEC = StreamCodec.composite(
+              ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME), InstalledData::data,
+              ByteBufCodecs.VAR_INT, InstalledData::installed,
+              InstalledData::new
+        );
+
+        public Module<MODULE> create(List<ModuleConfig<?>> configs) {
+            return new Module<>(data, installed, configs);
+        }
+
+        public MapCodec<List<ModuleConfig<?>>> configCodecs() {
+            return data.configCodecs(installed).optionalFieldOf(NBTConstants.CONFIG, data.defaultConfigs(installed));
+        }
+
+        public StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> configStreamCodecs() {
+            return data.configStreamCodecs(installed);
+        }
+    }
+
+    public static final Codec<Module<?>> CODEC = InstalledData.CODEC.dispatch(
+          module -> new InstalledData<>(module.getData(), module.getInstalledCount()),
+          installedData -> RecordCodecBuilder.mapCodec(instance -> instance.group(
+                installedData.configCodecs().forGetter(Module::getConfigs)
+          ).apply(instance, installedData::create))
+    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, Module<?>> STREAM_CODEC = InstalledData.STREAM_CODEC.dispatch(
+          module -> new InstalledData<>(module.getData(), module.getInstalledCount()),
+          installedData -> installedData.configStreamCodecs().map(installedData::create, Module::getConfigs)
+    );
+
+    private final Map<String, ModuleConfig<?>> configItemsByName = new HashMap<>();
+    private final List<ModuleConfig<?>> configItems;
 
     private final ModuleData<MODULE> data;
-    private final ModuleContainer container;
     private final MODULE customModule;
+    private final boolean enabled;
+    private final boolean handleModeChange;
+    private final boolean renderHUD;
+    private final int installed;
 
-    private ModuleConfigItem<Boolean> enabled;
-    private ModuleConfigItem<Boolean> handleModeChange;
-    private ModuleConfigItem<Boolean> renderHUD;
+    Module(ModuleData<MODULE> data, int installed) {
+        this(data, installed, data.defaultConfigs(installed));
+    }
 
-    private int installed = 1;
-
-    Module(ModuleData<MODULE> data, ModuleContainer container) {
+    Module(ModuleData<MODULE> data, int installed, List<ModuleConfig<?>> configItems) {
         this.data = data;
-        this.container = container;
-        this.customModule = data.get();
+        this.installed = installed;
+        this.configItems = configItems;
+        for (ModuleConfig<?> configItem : this.configItems) {
+            configItemsByName.put(configItem.name(), configItem);
+        }
+        this.enabled = this.getBooleanConfigOrFalse(ModuleConfig.ENABLED_KEY);
+        this.handleModeChange = getBooleanConfigOrFalse(ModuleConfig.HANDLES_MODE_CHANGE_KEY);
+        this.renderHUD = getBooleanConfigOrFalse(ModuleConfig.RENDER_HUD_KEY);
+        this.customModule = data.create(this);
     }
 
     @Override
@@ -70,117 +112,47 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return customModule;
     }
 
-    private void reInit() {
-        //TODO: Improve how we handle re-init as this isn't the cleanest way of doing it
-        CompoundTag configData = save();
-        //Note: After saving the configs we need to clear the list of them before we can read and re-initialize them
-        configItems.clear();
-        readConfigItems(configData);
-    }
-
-    private void init() {
-        enabled = addConfigItem(new ModuleConfigItem<>(this.data, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())) {
-            @Override
-            public void set(@NotNull Boolean val, @Nullable Runnable callback) {
-                //Custom override of set to see if it changed and if so notify the custom module of that fact
-                boolean wasEnabled = get();
-                super.set(val, callback);
-                //Note: This isn't the best but given we only call set for enabled from within Mekanism, we can use the
-                // implementation detail that if the callback is null we are on the client side so if it isn't null then
-                // we can assume it is server side
-                if (callback == null && wasEnabled != get()) {
-                    customModule.onEnabledStateChange(Module.this);
-                }
-            }
-
-            @Override
-            protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
-                //If enabled state of the module changes, recheck about mode changes and exclusivity flags
-                // but only if this module can handle mode changes or has any exclusive flags set
-                if (value && (handlesModeChange() || moduleType.getExclusiveFlags() != 0)) {
-                    disableOtherExclusives(callback != null);
-                }
-            }
-        });
-        if (data.handlesModeChange()) {
-            handleModeChange = addConfigItem(new ModuleConfigItem<>(this.data, "handleModeChange", MekanismLang.MODULE_HANDLE_MODE_CHANGE,
-                  new ModuleBooleanData(!data.isModeChangeDisabledByDefault())) {
-                @Override
-                protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
-                    //If the mode change is being enabled, and we handle mode changes
-                    if (value && handlesModeChange()) {
-                        // turn off mode change handling for other modules
-                        for (Module<?> module : container.modules()) {
-                            if (module.getData() != data && module.handlesModeChange()) {
-                                module.setModeHandlingDisabledForce();
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        if (data.rendersHUD()) {
-            renderHUD = addConfigItem(new ModuleConfigItem<>(this.data, "renderHUD", MekanismLang.MODULE_RENDER_HUD, new ModuleBooleanData()));
-        }
-        customModule.init(this, new ModuleConfigItemCreator() {
-            @Override
-            public <TYPE> IModuleConfigItem<TYPE> createConfigItem(String name, ILangEntry description, ModuleConfigData<TYPE> data) {
-                return addConfigItem(new ModuleConfigItem<>(Module.this.data, name, description, data));
-            }
-
-            @Override
-            public IModuleConfigItem<Boolean> createDisableableConfigItem(String name, ILangEntry description, boolean def, BooleanSupplier isConfigEnabled) {
-                return addConfigItem(new DisableableModuleConfigItem(Module.this.data, name, description, def, isConfigEnabled));
-            }
-        });
-    }
-
-    private <T> ModuleConfigItem<T> addConfigItem(ModuleConfigItem<T> item) {
-        configItems.put(item.getName(), item);
-        return item;
-    }
-
-    public void tick(Player player) {
+    public void tick(IModuleContainer moduleContainer, ItemStack stack, Player player) {
         if (isEnabled()) {
             if (player.level().isClientSide()) {
-                customModule.tickClient(this, player);
+                customModule.tickClient(this, moduleContainer, stack, player);
             } else {
-                customModule.tickServer(this, player);
+                customModule.tickServer(this, moduleContainer, stack, player);
             }
         }
     }
 
     @Nullable
     @Override
-    public IEnergyContainer getEnergyContainer() {
-        return StorageUtils.getEnergyContainer(getContainerStack(), 0);
+    public IEnergyContainer getEnergyContainer(ItemStack stack) {
+        return StorageUtils.getEnergyContainer(stack, 0);
     }
 
     @Override
-    public FloatingLong getContainerEnergy() {
-        IEnergyContainer energyContainer = getEnergyContainer();
+    public FloatingLong getContainerEnergy(ItemStack stack) {
+        IEnergyContainer energyContainer = getEnergyContainer(stack);
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
     }
 
     @Override
-    public boolean hasEnoughEnergy(FloatingLongSupplier energySupplier) {
-        return hasEnoughEnergy(energySupplier.get());
+    public boolean hasEnoughEnergy(ItemStack stack, FloatingLongSupplier energySupplier) {
+        return hasEnoughEnergy(stack, energySupplier.get());
     }
 
     @Override
-    public boolean hasEnoughEnergy(FloatingLong cost) {
-        return cost.isZero() || getContainerEnergy().greaterOrEqual(cost);
+    public boolean hasEnoughEnergy(ItemStack stack, FloatingLong cost) {
+        return cost.isZero() || getContainerEnergy(stack).greaterOrEqual(cost);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy) {
+    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy) {
         //Note: This is subtly different than how useEnergy does it so that we can get to useEnergy when in creative
-        return canUseEnergy(wearer, energy, false);
+        return canUseEnergy(wearer, stack, energy, false);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean ignoreCreative) {
-        return canUseEnergy(wearer, getEnergyContainer(), energy, ignoreCreative);
+    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean ignoreCreative) {
+        return canUseEnergy(wearer, getEnergyContainer(stack), energy, ignoreCreative);
     }
 
     @Override
@@ -195,13 +167,13 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy) {
-        return useEnergy(wearer, energy, true);
+    public FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy) {
+        return useEnergy(wearer, stack, energy, true);
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean freeCreative) {
-        return useEnergy(wearer, getEnergyContainer(), energy, freeCreative);
+    public FloatingLong useEnergy(LivingEntity wearer, ItemStack stack, FloatingLong energy, boolean freeCreative) {
+        return useEnergy(wearer, getEnergyContainer(stack), energy, freeCreative);
     }
 
     @Override
@@ -215,40 +187,20 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return FloatingLong.ZERO;
     }
 
-    void read(CompoundTag nbt) {
-        if (nbt.contains(NBTConstants.AMOUNT, Tag.TAG_INT)) {
-            installed = nbt.getInt(NBTConstants.AMOUNT);
-        }
-        readConfigItems(nbt);
-    }
-
-    private void readConfigItems(CompoundTag nbt) {
-        init();
-        for (String key : nbt.getAllKeys()) {
-            if (!key.equals(NBTConstants.AMOUNT)) {
-                ModuleConfigItem<?> configItem = getConfigItem(key);
-                if (configItem != null) {
-                    configItem.getData().read(key, nbt);
-                }
-            }
-        }
-    }
-
-    /**
-     * Save this module to a compound tag with the proper structure.
-     */
-    CompoundTag save() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt(NBTConstants.AMOUNT, installed);
-        for (Entry<String, ModuleConfigItem<?>> entry : configItems.entrySet()) {
-            entry.getValue().getData().write(entry.getKey(), nbt);
-        }
-        return nbt;
-    }
-
     @Override
     public ModuleData<MODULE> getData() {
         return data;
+    }
+
+    @Nullable
+    @Override
+    public <TYPE> ModuleConfig<TYPE> getConfig(String name) {
+        //TODO - 1.20.5: Do we want to allow passing in the type to validate that the type is correct?
+        return (ModuleConfig<TYPE>) configItemsByName.get(name);
+    }
+
+    public List<ModuleConfig<?>> getConfigs() {
+        return configItems;
     }
 
     @Override
@@ -258,76 +210,51 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public boolean isEnabled() {
-        return enabled.get();
+        return enabled;
     }
 
-    public void setDisabledForce(boolean hasCallback) {
-        if (isEnabled()) {
-            enabled.getData().set(false);
-            //Manually call state changed as we bypassed the check we injected into set if we are on the server
-            // we use the implementation detail about whether there was a callback to determine if it was on the
-            // server or not
-            if (!hasCallback) {
-                customModule.onEnabledStateChange(this);
+    Module<MODULE> withReplacedInstallCount(int installed) {
+        //TODO - 1.20.5: Re-evaluate this
+        CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow();
+        tag.putInt(NBTConstants.AMOUNT, installed);
+        return (Module<MODULE>) Module.CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow().getFirst();
+    }
+
+    Module<MODULE> withReplacedConfig(ModuleConfig<?> config) {
+        for (int i = 0; i < configItems.size(); i++) {
+            ModuleConfig<?> storedConfig = configItems.get(i);
+            if (storedConfig.name().equals(config.name())) {
+                if (storedConfig.get().equals(config.get())) {
+                    //Nothing changed
+                    return this;
+                }
+                List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(configItems);
+                copiedConfigs.set(i, config);
+                return new Module<>(data, installed, List.copyOf(copiedConfigs));
             }
         }
+        throw new IllegalStateException("Could not find an existing config with name: " + config.name());
     }
 
-    private void disableOtherExclusives(boolean forceDisable) {
-        int exclusiveFlags = data.getExclusiveFlags();
-        for (Module<?> module : container.modules()) {
-            if (module.getData() != getData()) {
-                // disable other exclusive modules if this is an exclusive module, as this one will now be active
-                if (module.getData().isExclusive(exclusiveFlags)) {
-                    module.setDisabledForce(forceDisable);
-                }
-                if (handlesModeChange() && module.handlesModeChange()) {
-                    module.setModeHandlingDisabledForce();
-                }
-            }
+    public void addHUDStrings(Player player, IModuleContainer moduleContainer, ItemStack stack, List<Component> list) {
+        if (renderHUD) {
+            customModule.addHUDStrings(this, moduleContainer, stack, player, list::add);
         }
     }
 
-    @Override
-    public ItemStack getContainerStack() {
-        return getContainer().container();
-    }
-
-    @Override
-    public ModuleContainer getContainer() {
-        return container;
-    }
-
-    @Nullable
-    @Override
-    public ModuleConfigItem<?> getConfigItem(String name) {
-        return configItems.get(name);
-    }
-
-    @Nullable
-    public <TYPE extends ModuleConfigData<?>> TYPE getConfigItemData(String name, Class<TYPE> dataType) {
-        ModuleConfigItem<?> configItem = getConfigItem(name);
-        if (configItem != null && dataType.isInstance(configItem.getData())) {
-            return dataType.cast(configItem.getData());
+    public void addHUDElements(Player player, IModuleContainer moduleContainer, ItemStack stack, List<IHUDElement> list) {
+        if (renderHUD) {
+            customModule.addHUDElements(this, moduleContainer, stack, player, list::add);
         }
-        return null;
     }
 
-    public Collection<ModuleConfigItem<?>> getConfigItems() {
-        return configItemsView;
-    }
-
-    public void addHUDStrings(Player player, List<Component> list) {
-        customModule.addHUDStrings(this, player, list::add);
-    }
-
-    public void addHUDElements(Player player, List<IHUDElement> list) {
-        customModule.addHUDElements(this, player, list::add);
+    boolean handlesModeChangeRaw() {
+        return handleModeChange;
     }
 
     @Override
     public boolean handlesModeChange() {
-        return data.handlesModeChange() && handleModeChange.get() && (isEnabled() || customModule.canChangeModeWhenDisabled(this));
+        return handleModeChange && (isEnabled() || customModule.canChangeModeWhenDisabled(this));
     }
 
     @Override
@@ -338,65 +265,9 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     @Override
     public boolean handlesAnyModeChange() {
         if (data.handlesModeChange()) {
-            return isEnabled() || handleModeChange.get() && customModule.canChangeModeWhenDisabled(this) || customModule.canChangeRadialModeWhenDisabled(this);
+            return isEnabled() || handleModeChange && customModule.canChangeModeWhenDisabled(this) || customModule.canChangeRadialModeWhenDisabled(this);
         }
         return false;
-    }
-
-    public void setModeHandlingDisabledForce() {
-        if (data.handlesModeChange()) {
-            handleModeChange.getData().set(false);
-        }
-    }
-
-    @Override
-    public boolean renderHUD() {
-        return data.rendersHUD() && renderHUD.get();
-    }
-
-    /**
-     * @param wasFirst  if this is the first set of modules being added.
-     * @param toInstall Number of modules to try and install.
-     *
-     * @return number installed
-     */
-    int add(boolean wasFirst, int toInstall) {
-        toInstall = Math.min(toInstall, getData().getMaxStackSize());
-        //Note: We don't have to save it and mutate the stack as attachments are auto saved
-        disableOtherExclusives(false);
-        if (!wasFirst || toInstall > 1) {
-            //If we weren't the first module being added (or we are adding many at once) we need to reinitialize the config items on this module
-            // the first module can be skipped when we are only installing a single item as the normal init process will have it in the correct state
-            // We also need to increment the count if it wasn't the first module
-            if (wasFirst) {
-                installed = toInstall;
-            } else {
-                //Clamp based on how many modules we have room to add
-                toInstall = Math.min(toInstall, getData().getMaxStackSize() - installed);
-                installed += toInstall;
-            }
-            reInit();
-        }
-        customModule.onAdded(this, wasFirst);
-        return toInstall;
-    }
-
-    /**
-     * @return was last module.
-     */
-    boolean remove(int toRemove) {
-        //Theoretically we are only calling this within the max stack size, but double check
-        toRemove = Math.min(toRemove, getData().getMaxStackSize());
-        installed -= toRemove;
-        boolean wasLast = installed == 0;
-        if (!wasLast) {
-            //If we weren't the last module being removed we need to reinitialize the config items on this module
-            // we can skip the last module as this object no longer matters and can be GCd once it is removed
-            reInit();
-        }
-        //Note: We don't have to save it and mutate the stack as attachments are auto saved
-        customModule.onRemoved(this, wasLast);
-        return wasLast;
     }
 
     @Override
@@ -410,14 +281,30 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public void toggleEnabled(Player player, Component modeName) {
-        enabled.set(!isEnabled());
+    public void toggleEnabled(IModuleContainer moduleContainer, ItemStack stack, Player player, Component modeName) {
         Component message;
-        if (isEnabled()) {
-            message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
-        } else {
+        if (enabled) {//Going from enabled to disabled
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.DARK_RED, MekanismLang.MODULE_DISABLED_LOWER);
+        } else {//Going from disabled to enabled
+            message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
         }
         player.sendSystemMessage(MekanismUtils.logFormat(message));
+        ((ModuleContainer) moduleContainer).toggleEnabled(stack, data);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Module<?> module = (Module<?>) o;
+        return installed == module.installed && Objects.equals(configItems, module.configItems) && Objects.equals(data, module.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(configItems, data, installed);
     }
 }

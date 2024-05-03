@@ -557,7 +557,7 @@ public class ClientRegistration {
                 if (colorModulationUnit == null) {
                     return -1;
                 }
-                return colorModulationUnit.getCustomInstance().getColor().toTint().argb();//todo store tint argb on the unit?
+                return colorModulationUnit.getCustomInstance().tintARGB();
             }
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);

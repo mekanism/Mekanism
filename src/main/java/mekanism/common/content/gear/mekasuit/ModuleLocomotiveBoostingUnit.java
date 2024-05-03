@@ -1,68 +1,64 @@
 package mekanism.common.content.gear.mekasuit;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
-import mekanism.api.gear.config.ModuleEnumData;
-import mekanism.api.math.MathUtils;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.filter.FilterType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 @ParametersAreNotNullByDefault
-public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
+public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
-    private IModuleConfigItem<SprintBoost> sprintBoost;
+    public static final String SPRINT_BOOST = "sprint_boost";
 
-    @Override
-    public void init(IModule<ModuleLocomotiveBoostingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        sprintBoost = configItemCreator.createConfigItem("sprint_boost", MekanismLang.MODULE_SPRINT_BOOST,
-              new ModuleEnumData<>(SprintBoost.LOW, module.getInstalledCount() + 1));
+    public ModuleLocomotiveBoostingUnit(IModule<ModuleLocomotiveBoostingUnit> module) {
+        this(module.<SprintBoost>getConfigOrThrow(SPRINT_BOOST).get());
     }
 
     @Override
-    public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        SprintBoost currentMode = sprintBoost.get();
-        SprintBoost newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
-        if (currentMode != newMode) {
-            sprintBoost.set(newMode);
+    public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
+        SprintBoost newMode = sprintBoost.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
+        if (sprintBoost != newMode) {
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
             }
+            moduleContainer.replaceModuleConfig(stack, module.getData(), module.<SprintBoost>getConfigOrThrow(SPRINT_BOOST).with(newMode));
         }
     }
 
     @Override
-    public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
-        if (tick(module, player)) {
-            module.useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
+    public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+        if (tick(module, stack, player)) {
+            module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(sprintBoost.getBoost() / 0.1F));
         }
     }
 
     @Override
-    public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
+    public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         // leave energy usage up to server
-        tick(module, player);
+        tick(module, stack, player);
     }
 
-    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
-        if (canFunction(module, player)) {
-            float boost = getBoost();
+    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player) {
+        if (canFunction(module, stack, player)) {
+            float boost = sprintBoost.getBoost();
             if (!player.onGround()) {
                 boost /= 5F; // throttle if we're in the air
             }
@@ -75,31 +71,30 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         return false;
     }
 
-    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
+    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player) {
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
-        return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player,
-              MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
-    }
-
-    public float getBoost() {
-        return sprintBoost.get().getBoost();
+        return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player, stack,
+              MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(sprintBoost.getBoost() / 0.1F));
     }
 
     @NothingNullByDefault
-    public enum SprintBoost implements IHasTextComponent, IIncrementalEnum<SprintBoost> {
+    public enum SprintBoost implements IHasTextComponent, IIncrementalEnum<SprintBoost>, StringRepresentable {
         OFF(0),
         LOW(0.05F),
         MED(0.1F),
         HIGH(0.25F),
         ULTRA(0.5F);
 
+        public static final Codec<SprintBoost> CODEC = StringRepresentable.fromEnum(SprintBoost::values);
         public static final IntFunction<SprintBoost> BY_ID = ByIdMap.continuous(SprintBoost::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, SprintBoost> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SprintBoost::ordinal);
 
+        private final String serializedName;
         private final float boost;
         private final Component label;
 
         SprintBoost(float boost) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.boost = boost;
             this.label = TextComponentUtil.getString(Float.toString(boost));
         }
@@ -116,6 +111,11 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
         public float getBoost() {
             return boost;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

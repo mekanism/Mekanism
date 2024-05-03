@@ -6,15 +6,13 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleColorData;
-import mekanism.api.gear.config.ModuleConfigData;
-import mekanism.api.gear.config.ModuleEnumData;
-import mekanism.api.gear.config.ModuleIntegerData;
-import mekanism.api.math.MathUtils;
+import mekanism.api.gear.config.ModuleBooleanConfig;
+import mekanism.api.gear.config.ModuleColorConfig;
+import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.gear.config.ModuleEnumConfig;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.Module;
-import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -45,17 +43,16 @@ public record PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, S
         this(slotId, moduleType, data, new TypedValue(dataType, value));
     }
 
-    public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, ModuleConfigItem<?> configItem) {
-        ModuleConfigData<?> configData = configItem.getData();
-        if (configData instanceof ModuleEnumData<?> enumData) {
-            return new PacketUpdateModuleSettings(slotId, moduleType, configItem.getName(), ModuleDataType.ENUM, enumData.get().ordinal());
+    public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, ModuleConfig<?> config) {
+        if (config instanceof ModuleEnumConfig<?> enumData) {
+            return new PacketUpdateModuleSettings(slotId, moduleType, config.name(), ModuleDataType.ENUM, enumData.get().ordinal());
         }
         for (ModuleDataType type : ModuleDataType.VALUES) {
-            if (type.typeMatches(configData)) {
-                return new PacketUpdateModuleSettings(slotId, moduleType, configItem.getName(), type, configData.get());
+            if (type.typeMatches(config)) {
+                return new PacketUpdateModuleSettings(slotId, moduleType, config.name(), type, config.get());
             }
         }
-        throw new IllegalArgumentException("Unknown config data type for config with name: " + configItem.getName());
+        throw new IllegalArgumentException("Unknown config data type for config with name: " + config.name());
     }
 
     @NotNull
@@ -68,31 +65,43 @@ public record PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, S
     public void handle(IPayloadContext context) {
         if (!data.isBlank()) {
             ItemStack stack = context.player().getInventory().getItem(slotId);
-            Module<?> module = ModuleHelper.get().getModule(stack, moduleType);
-            if (module != null) {
-                setValue(module.getConfigItem(data));
+            ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+            if (container != null) {
+                Module<?> module = container.get(moduleType);
+                if (module != null) {
+                    ModuleConfig<?> config = updateConfig(module.getConfig(data));
+                    if (config != null) {
+                        container.replaceModuleConfig(stack, moduleType, config);
+                    }
+                }
             }
         }
     }
 
-    private <TYPE> void setValue(@Nullable ModuleConfigItem<TYPE> moduleConfigItem) {
-        if (moduleConfigItem != null) {
-            ModuleConfigData<TYPE> configData = moduleConfigItem.getData();
-            if (configData instanceof ModuleEnumData && value.type() == ModuleDataType.ENUM) {
-                moduleConfigItem.set((TYPE) MathUtils.getByIndexMod(((ModuleEnumData<?>) configData).getEnums(), (int) value.value()));
-            } else if (value.type().typeMatches(configData)) {
-                //noinspection unchecked
-                moduleConfigItem.set((TYPE) value.value());
+    @Nullable
+    private <TYPE> ModuleConfig<?> updateConfig(@Nullable ModuleConfig<TYPE> configData) {
+        if (configData != null) {
+            try {
+                if (configData instanceof ModuleEnumConfig<?> config && value.type() == ModuleDataType.ENUM) {
+                    return config.with((int) value.value());
+                } else if (value.type().typeMatches(configData)) {
+                    //noinspection unchecked
+                    return configData.with((TYPE) value.value());
+                }
+            } catch (IllegalArgumentException ignored) {
+                //Ideally we will never have this be thrown, but if for some reason we get bad data it might be, and then we want to ignore it
+                //TODO - 1.20.5: Instead of just ignoring this maybe we should disconnect the client via the IPayloadContext?
             }
         }
+        return null;
     }
 
     private enum ModuleDataType {
-        BOOLEAN(data -> data instanceof ModuleBooleanData, ByteBufCodecs.BOOL),
+        //TODO - 1.20.5: Can we make use of the module config stream codecs somehow?
+        BOOLEAN(data -> data instanceof ModuleBooleanConfig, ByteBufCodecs.BOOL),
         //Must be above integer, so it uses the color type as ModuleColorData extends ModuleIntegerData
-        COLOR(data -> data instanceof ModuleColorData, ByteBufCodecs.INT),
-        INTEGER(data -> data instanceof ModuleIntegerData, ByteBufCodecs.VAR_INT),
-        ENUM(data -> data instanceof ModuleEnumData, ByteBufCodecs.VAR_INT);
+        COLOR(data -> data instanceof ModuleColorConfig, ByteBufCodecs.INT),
+        ENUM(data -> data instanceof ModuleEnumConfig, ByteBufCodecs.VAR_INT);
 
         public static final IntFunction<ModuleDataType> BY_ID = ByIdMap.continuous(ModuleDataType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ModuleDataType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ModuleDataType::ordinal);
@@ -100,15 +109,15 @@ public record PacketUpdateModuleSettings(int slotId, ModuleData<?> moduleType, S
         //DO NOT MODIFY
         private static final ModuleDataType[] VALUES = values();
 
-        private final Predicate<ModuleConfigData<?>> configDataPredicate;
+        private final Predicate<ModuleConfig<?>> configDataPredicate;
         private final StreamCodec<ByteBuf, Object> streamCodec;
 
-        ModuleDataType(Predicate<ModuleConfigData<?>> configDataPredicate, StreamCodec<ByteBuf, ?> streamCodec) {
+        ModuleDataType(Predicate<ModuleConfig<?>> configDataPredicate, StreamCodec<ByteBuf, ?> streamCodec) {
             this.configDataPredicate = configDataPredicate;
             this.streamCodec = (StreamCodec<ByteBuf, Object>) streamCodec;
         }
 
-        public boolean typeMatches(ModuleConfigData<?> data) {
+        public boolean typeMatches(ModuleConfig<?> data) {
             return configDataPredicate.test(data);
         }
 

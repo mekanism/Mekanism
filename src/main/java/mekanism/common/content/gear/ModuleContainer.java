@@ -7,19 +7,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import mekanism.api.MekanismAPI;
+import java.util.SequencedCollection;
+import java.util.SequencedMap;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.nbt.CompoundTag;
+import mekanism.common.lib.codec.SequencedCollectionCodec;
+import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -28,107 +30,35 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.neoforge.capabilities.ItemCapability;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
+import org.jetbrains.annotations.Range;
 
-@NothingNullByDefault//TODO - 1.20.5: Do we want the modules to be sorted?
-public record ModuleContainer(Map<ModuleData<?>, Module<?>> typedModules, ItemEnchantments enchantments) implements IModuleContainer {
+@NothingNullByDefault
+public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModules, ItemEnchantments enchantments) implements IModuleContainer {
 
-    public static final ModuleContainer EMPTY = new ModuleContainer(Collections.emptyMap(), ItemEnchantments.EMPTY);
+    public static final ModuleContainer EMPTY = new ModuleContainer(Collections.emptyNavigableMap(), ItemEnchantments.EMPTY);
 
     public static final Codec<ModuleContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          Codec.unboundedMap(MekanismAPI.MODULE_REGISTRY.byNameCodec(), CompoundTag.CODEC)
-                      .xmap(map -> {
-                          Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>(map.size());
-                          for (Map.Entry<ModuleData<?>, CompoundTag> entry : map.entrySet()) {
-                              //TODO - 1.20.5: FIGURE THIS OUT
-                          }
-                          return modules;
-                      }, modules -> {
-                          Map<ModuleData<?>, CompoundTag> map = new LinkedHashMap<>(modules.size());
-                          for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
-                              map.put(entry.getKey(), entry.getValue().save());
-                          }
-                          return map;
-                      }).fieldOf(NBTConstants.MODULES).forGetter(ModuleContainer::typedModules),
+          new SequencedCollectionCodec<>(Module.CODEC).fieldOf(NBTConstants.MODULES).forGetter(container -> container.typedModules().sequencedValues()),
           ItemEnchantments.CODEC.fieldOf(NBTConstants.ENCHANTMENTS).forGetter(ModuleContainer::enchantments)
-    ).apply(instance, ModuleContainer::new));
+    ).apply(instance, ModuleContainer::create));
     public static final StreamCodec<RegistryFriendlyByteBuf, ModuleContainer> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.<RegistryFriendlyByteBuf, ModuleData<?>, CompoundTag, Map<ModuleData<?>, CompoundTag>>map(LinkedHashMap::new, ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME), ByteBufCodecs.TRUSTED_COMPOUND_TAG)
-                      .map(map -> {
-                          Map<ModuleData<?>, Module<?>> modules = new LinkedHashMap<>(map.size());
-                          for (Map.Entry<ModuleData<?>, CompoundTag> entry : map.entrySet()) {
-                              //TODO - 1.20.5: FIGURE THIS OUT
-                          }
-                          return modules;
-                      }, modules -> {
-                          Map<ModuleData<?>, CompoundTag> map = new LinkedHashMap<>(modules.size());
-                          for (Map.Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
-                              map.put(entry.getKey(), entry.getValue().save());
-                          }
-                          return map;
-                      }), ModuleContainer::typedModules,
+          Module.STREAM_CODEC.apply(streamCodec -> ByteBufCodecs.collection(ArrayList::new, streamCodec)), container -> container.typedModules().sequencedValues(),
           ItemEnchantments.STREAM_CODEC, ModuleContainer::enchantments,
-          ModuleContainer::new
+          ModuleContainer::create
     );
+
+    private static ModuleContainer create(SequencedCollection<Module<?>> modules, ItemEnchantments enchantments) {
+        SequencedMap<ModuleData<?>, Module<?>> typedModules = new LinkedHashMap<>(modules.size());
+        for (Module<?> module : modules) {
+            typedModules.put(module.getData(), module);
+        }
+        return new ModuleContainer(typedModules, enchantments);
+    }
 
     public ModuleContainer {
         //Make the map unmodifiable to ensure we don't accidentally mutate it
-        typedModules = Collections.unmodifiableMap(typedModules);
-    }
-
-    /*@Nullable
-    @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        if (modules.isEmpty() && enchantments.isEmpty()) {
-            return null;
-        }
-        CompoundTag modulesTag = new CompoundTag();
-        for (Entry<ModuleData<?>, Module<?>> entry : modules.entrySet()) {
-            modulesTag.put(entry.getKey().getRegistryName().toString(), entry.getValue().save());
-        }
-        //Add any extra data we may be tracking that isn't specifically modules to module info
-        CompoundTag extraData = new CompoundTag();
-        if (!enchantments.isEmpty()) {
-            extraData.put(NBTConstants.ENCHANTMENTS, ItemEnchantments.CODEC.encodeStart(NbtOps.INSTANCE, enchantments).getOrThrow());
-        }
-        if (!extraData.isEmpty()) {
-            modulesTag.put(NBTConstants.EXTRA_DATA, extraData);
-        }
-        return modulesTag;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag modulesTag) {
-        this.modules.clear();
-        for (String name : modulesTag.getAllKeys()) {
-            //Try to get the registry name and then look it up in the module registry
-            ResourceLocation registryName = ResourceLocation.tryParse(name);
-            ModuleData<?> moduleType = registryName == null ? null : MekanismAPI.MODULE_REGISTRY.get(registryName);
-            //Ensure it exists as there won't be a module for the extra tag we shoehorn into the compound
-            if (moduleType != null) {
-                Module<?> module = createNewModule(moduleType, modulesTag.getCompound(name));
-                if (module.getInstalledCount() > 0) {
-                    //Basic validation check, this should always pass, but just in case
-                    this.modules.put(moduleType, module);
-                }
-            }
-        }
-        //TODO: Do we actually want to save the enchantments or just cache them and lazily recreate the map?
-        if (modulesTag.contains(NBTConstants.EXTRA_DATA, Tag.TAG_COMPOUND)) {
-            CompoundTag extraData = modulesTag.getCompound(NBTConstants.EXTRA_DATA);
-            if (extraData.contains(NBTConstants.ENCHANTMENTS)) {
-                enchantments = ItemEnchantments.CODEC.decode(NbtOps.INSTANCE, extraData.get(NBTConstants.ENCHANTMENTS)).getOrThrow().getFirst();
-            }
-        }
-    }*/
-
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> createNewModule(ModuleData<MODULE> type, CompoundTag nbt) {
-        Module<MODULE> module = new Module<>(type, this);
-        module.read(nbt);
-        return module;
+        typedModules = Collections.unmodifiableSequencedMap(typedModules);
     }
 
     @Override
@@ -141,43 +71,6 @@ public record ModuleContainer(Map<ModuleData<?>, Module<?>> typedModules, ItemEn
         return enchantments;
     }
 
-    @Internal
-    @Override
-    public void setEnchantmentLevel(Enchantment enchantment, int level) {
-        //TODO - 1.20.5: Figure out
-        /*if (level == 0) {
-            enchantments.removeInt(enchantment);
-        } else {
-            enchantments.put(enchantment, level);
-        }*/
-    }
-
-    //TODO - 1.20.5: Figure out
-    ItemStack container() {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ItemStack getPreviewStack() {
-        return container().copy();
-    }
-
-    @Nullable
-    @Override
-    public <T, C> T getCapabilityFromStack(ItemCapability<T, C> capability, @UnknownNullability C context) {
-        return container().getCapability(capability, context);
-    }
-
-    @Override
-    public boolean isContainerOnCooldown(Player player) {
-        return player.getCooldowns().isOnCooldown(container().getItem());
-    }
-
-    @Override
-    public boolean isInstance(Class<?> clazz) {
-        return clazz.isInstance(container().getItem());
-    }
-
     @Nullable
     @Override
     @SuppressWarnings("unchecked")
@@ -186,64 +79,250 @@ public record ModuleContainer(Map<ModuleData<?>, Module<?>> typedModules, ItemEn
     }
 
     @Override
-    public Set<ModuleData<?>> supportedTypes() {
-        return IModuleHelper.INSTANCE.getSupported(container().getItem());
-    }
-
-    public boolean canInstall(IModuleDataProvider<?> typeProvider) {
-        if (supports(typeProvider)) {
-            IModule<?> module = get(typeProvider);
-            return module == null || module.getInstalledCount() < module.getData().getMaxStackSize();
-        }
-        return false;
-    }
-
-    public void removeModule(IModuleDataProvider<?> typeProvider, int toRemove) {
-        ModuleData<?> type = typeProvider.getModuleData();
-        Module<?> module = typedModules.get(type);
-        if (module != null && module.remove(toRemove)) {
-            //TODO - 1.20.5: Fix this
-            //typedModules.remove(type);
-        }
-    }
-
-    public int addModule(IModuleDataProvider<?> typeProvider, int toInstall) {
-        ModuleData<?> moduleType = typeProvider.getModuleData();
-        boolean hadModule = has(moduleType);
-        Module<?> module = typedModules.get(moduleType);
-        if (module == null) {
-            module = createNewModule(moduleType, new CompoundTag());
-            //TODO - 1.20.5: Fix this
-            //typedModules.put(moduleType, module);
-        }
-        return module.add(!hadModule, toInstall);
-    }
-
-    @Override
-    public List<IHUDElement> getHUDElements(Player player) {
+    public List<IHUDElement> getHUDElements(Player player, ItemStack stack) {
         if (typedModules.isEmpty()) {
             return Collections.emptyList();
         }
         List<IHUDElement> ret = new ArrayList<>();
         for (Module<?> module : modules()) {
-            if (module.renderHUD()) {
-                module.addHUDElements(player, ret);
-            }
+            module.addHUDElements(player, this, stack, ret);
         }
         return ret;
     }
 
     @Override
-    public List<Component> getHUDStrings(Player player) {
+    public List<Component> getHUDStrings(Player player, ItemStack stack) {
         if (typedModules.isEmpty()) {
             return Collections.emptyList();
         }
         List<Component> ret = new ArrayList<>();
         for (Module<?> module : modules()) {
-            if (module.renderHUD()) {
-                module.addHUDStrings(player, ret);
-            }
+            module.addHUDStrings(player, this, stack, ret);
         }
         return ret;
+    }
+
+    @Override
+    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config) {
+        Module<MODULE> module = get(type);
+        if (module == null) {
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+        }
+        if (config.name().equals(ModuleConfig.ENABLED_KEY)) {
+            if (module.isEnabled() == (boolean) config.get()) {
+                return this;//State matches no change needed
+            }
+            //Toggle the enabled state including any side effects changing that config may have
+            return toggleEnabled(stack, type, module);
+        } else if (config.name().equals(ModuleConfig.HANDLES_MODE_CHANGE_KEY)) {
+            if (module.handlesModeChangeRaw() == (boolean) config.get()) {
+                return this;//State matches no change needed
+            }
+            //Toggle the handle mode state including any side effects changing that config may have
+            return toggleHandlesModeChange(stack, type, module);
+        }
+
+        Module<MODULE> replacedModule = module.withReplacedConfig(config);
+        if (module == replacedModule) {
+            //If nothing actually changed we don't need to bother updating the instance on the stack
+            return this;
+        }
+        SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+        copiedModules.put(type, replacedModule);
+        //TODO - 1.20.5: Evaluate what we want it to return as
+        return updateContainer(stack, copiedModules, null);
+    }
+
+    <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(ItemStack stack, ModuleData<MODULE> type) {
+        Module<MODULE> module = get(type);
+        if (module == null) {
+            throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
+        }
+        return toggleEnabled(stack, type, module);
+    }
+
+    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleEnabled(ItemStack stack, ModuleData<MODULE> type, Module<MODULE> module) {
+        boolean setEnabled = !module.isEnabled();
+        module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(setEnabled));
+
+        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(module, null);
+        SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+        copiedModules.put(type, module);
+
+        //If we are becoming enabled, and we handle mode change or have some exclusivity flags
+        // then we will need to recheck other installed modules
+        if (setEnabled) {
+            adjustedEnchantments = disableOtherExclusives(type, module, copiedModules, adjustedEnchantments);
+        }
+
+        return updateContainer(stack, copiedModules, adjustedEnchantments);
+    }
+
+    @Nullable
+    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable disableOtherExclusives(ModuleData<MODULE> type, Module<MODULE> module,
+          SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+        boolean handlesModeChange = module.handlesModeChange();
+        int exclusiveFlags = type.getExclusiveFlags();
+        if (handlesModeChange || exclusiveFlags != 0) {
+            for (Module<?> otherModule : modules()) {
+                ModuleData<?> otherType = otherModule.getData();
+                if (otherType != type) {
+                    // disable other exclusive modules if this is an exclusive module, as this one will now be active
+                    if (otherType.isExclusive(exclusiveFlags) && otherModule.isEnabled()) {
+                        ModuleConfig<Boolean> disabledConfig = otherModule.<Boolean>getConfigOrThrow(ModuleConfig.ENABLED_KEY).with(false);
+                        //Update the other module
+                        otherModule = otherModule.withReplacedConfig(disabledConfig);
+                        copiedModules.put(otherType, otherModule);
+                        //Manually call state changed as we bypassed the check we injected into set if we are on the server
+                        // we use the implementation detail about whether there was a callback to determine if it was on the
+                        // server or not
+                        //TODO - 1.20.5: Update above comment
+                        adjustedEnchantments = updateEnchantment(otherModule, adjustedEnchantments);
+                    }
+                    //TODO - 1.20.5: Figure out if we need to check against the original other module before it is disabled
+                    // which is what previously happened or if checking it here is fine
+                    // Given handlesModeChange takes the enabled state into account that means previously this would always be true
+                    // if handlesModeChange && otherType.handlesModeChange
+                    // Now it is true if handlesModeChange && otherType.handlesModeChange && otherModule.customInstance.canChangeModeWhenDisabled
+                    if (handlesModeChange && otherModule.handlesModeChange()) {
+                        ModuleConfig<Boolean> modeChangeConfig = otherModule.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(false);
+                        //Update the other module
+                        otherModule = otherModule.withReplacedConfig(modeChangeConfig);
+                        copiedModules.put(otherType, otherModule);
+                    }
+                }
+            }
+        }
+        return adjustedEnchantments;
+    }
+
+    @Nullable
+    private <MODULE extends ICustomModule<MODULE>> ItemEnchantments.Mutable updateEnchantment(Module<MODULE> module, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+        if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
+            Enchantment enchantment = enchantmentBased.enchantment();
+            int level = getEnchantmentLevel(module);
+            if (enchantments.getLevel(enchantment) != level) {
+                adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
+                adjustedEnchantments.set(enchantment, level);
+            }
+        }
+        return adjustedEnchantments;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <MODULE extends EnchantmentAwareModule<MODULE>> int getEnchantmentLevel(Module<?> module) {
+        Module<MODULE> enchantBased = (Module<MODULE>) module;
+        return enchantBased.getCustomInstance().getLevelFor(enchantBased);
+    }
+
+    private <MODULE extends ICustomModule<MODULE>> ModuleContainer toggleHandlesModeChange(ItemStack stack, ModuleData<MODULE> type, Module<MODULE> module) {
+        boolean setHandles = !module.handlesModeChange();
+        module = module.withReplacedConfig(module.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(setHandles));
+
+        SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+        copiedModules.put(type, module);
+
+        //If we are becoming enabled, and we handle mode change then we need to force disable it for other installed modules
+        if (setHandles && module.handlesModeChange()) {
+            for (Module<?> otherModule : modules()) {
+                ModuleData<?> otherType = otherModule.getData();
+                //If it is a different module, and it handles mode change then we want to disable it handling mode changes
+                //TODO - 1.20.5: Validate this functionality compared to how 1.20.4 worked. Mainly what was the behavior when enabling a module
+                // that had its mode handling set to false because of this
+                if (otherType != type && otherModule.handlesModeChange()) {
+                    ModuleConfig<Boolean> modeChangeConfig = otherModule.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(false);
+                    copiedModules.put(otherType, otherModule.withReplacedConfig(modeChangeConfig));
+                }
+            }
+        }
+
+        return updateContainer(stack, copiedModules, null);
+    }
+
+    public boolean canInstall(ItemStack stack, IModuleDataProvider<?> typeProvider) {
+        ModuleData<?> type = typeProvider.getModuleData();
+        if (IModuleHelper.INSTANCE.supports(stack.getItem(), type)) {
+            IModule<?> module = get(type);
+            return module == null || module.getInstalledCount() < type.getMaxStackSize();
+        }
+        return false;
+    }
+
+    /**
+     * @param toInstall Number of modules to try and install.
+     *
+     * @return number installed
+     */
+    public <MODULE extends ICustomModule<MODULE>> int addModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider, int toInstall) {
+        ModuleData<MODULE> type = typeProvider.getModuleData();
+        Module<MODULE> module = get(type);
+        boolean wasFirst = module == null;
+        if (wasFirst) {
+            toInstall = Math.min(toInstall, type.getMaxStackSize());
+            module = new Module<>(type, toInstall);
+        } else {
+            //Clamp based on how many modules we have room to add
+            toInstall = Math.min(toInstall, type.getMaxStackSize() - module.getInstalledCount());
+            if (toInstall == 0) {
+                //Nothing to actually install because we are already at the max stack size
+                return 0;
+            }
+            module = module.withReplacedInstallCount(module.getInstalledCount() + toInstall);
+        }
+        //Add the module to the list of tracked and known modules if necessary or replace the existing value
+        SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+        copiedModules.put(type, module);
+        //Update what the enchantment level is at after the install
+        ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(module, null);
+        //Disable any other modules that are exclusive in regard to the newly installed module
+        adjustedEnchantments = disableOtherExclusives(type, module, copiedModules, adjustedEnchantments);
+
+        ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
+        //Call the added method on the new module instance with the new container
+        //TODO - 1.20.5: Update docs for onAdded to specify what instance it is called on? (May not be necessary, but check them)
+        module.getCustomInstance().onAdded(module, replacedContainer, stack, wasFirst);
+        return toInstall;
+    }
+
+    public <MODULE extends ICustomModule<MODULE>> void removeModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider,
+          @Range(from = 1, to = Integer.MAX_VALUE) int toRemove) {
+        ModuleData<MODULE> type = typeProvider.getModuleData();
+        Module<MODULE> module = get(type);
+        if (module != null) {
+            //Theoretically we are only calling this within the max stack size, but double check
+            toRemove = Math.min(toRemove, type.getMaxStackSize());
+            int installed = module.getInstalledCount() - toRemove;
+            boolean wasLast = installed == 0;
+
+            SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
+            ItemEnchantments.Mutable adjustedEnchantments = null;
+            if (wasLast) {
+                //Remove the module
+                copiedModules.remove(type);
+                //Remove any corresponding enchantment
+                if (module.getCustomInstance() instanceof EnchantmentAwareModule<?> enchantmentBased) {
+                    Enchantment enchantment = enchantmentBased.enchantment();
+                    if (enchantments.getLevel(enchantment) != 0) {
+                        adjustedEnchantments = new ItemEnchantments.Mutable(enchantments);
+                        adjustedEnchantments.set(enchantment, 0);
+                    }
+                }
+            } else {//update the module with the new installed count
+                module = module.withReplacedInstallCount(installed);
+                copiedModules.put(type, module);
+                //Update the level of any corresponding enchantment
+                adjustedEnchantments = updateEnchantment(module, null);
+            }
+            ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
+            //TODO - 1.20.5: Document the behavior that this is the new module instance, container, and amount unless wasLast is true,
+            // and then it is the old module instance and the new module container
+            module.getCustomInstance().onRemoved(module, replacedContainer, stack, wasLast);
+        }
+    }
+
+    private ModuleContainer updateContainer(ItemStack stack, SequencedMap<ModuleData<?>, Module<?>> copiedModules, @Nullable ItemEnchantments.Mutable adjustedEnchantments) {
+        ModuleContainer replacedContainer = new ModuleContainer(copiedModules, adjustedEnchantments == null ? enchantments : adjustedEnchantments.toImmutable());
+        stack.set(MekanismDataComponents.MODULE_CONTAINER, replacedContainer);
+        return replacedContainer;
     }
 }

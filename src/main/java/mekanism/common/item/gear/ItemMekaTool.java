@@ -116,16 +116,19 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             IModuleContainer container = moduleContainer(stack);
             return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
         }
-        for (IModule<?> module : getModules(stack)) {
-            if (module.isEnabled() && canPerformAction(module, action)) {
-                return true;
+        IModuleContainer moduleContainer = moduleContainer(stack);
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
+                if (module.isEnabled() && canPerformAction(module, moduleContainer, stack, action)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
-        return module.getCustomInstance().canPerformAction(module, action);
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
+        return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
     }
 
     public static boolean hasEnergyForDigAction(IModuleContainer container, @Nullable IEnergyContainer energyContainer) {
@@ -204,11 +207,14 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @NotNull
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
-        for (IModule<?> module : getModules(stack)) {
-            if (module.isEnabled()) {
-                InteractionResult result = onModuleInteract(module, player, entity, hand);
-                if (result != InteractionResult.PASS) {
-                    return result;
+        IModuleContainer moduleContainer = moduleContainer(stack);
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
+                if (module.isEnabled()) {
+                    InteractionResult result = onModuleInteract(module, player, entity, hand, moduleContainer, stack);
+                    if (result != InteractionResult.PASS) {
+                        return result;
+                    }
                 }
             }
         }
@@ -216,8 +222,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     private <MODULE extends ICustomModule<MODULE>> InteractionResult onModuleInteract(IModule<MODULE> module, @NotNull Player player, @NotNull LivingEntity entity,
-          @NotNull InteractionHand hand) {
-        return module.getCustomInstance().onInteract(module, player, entity, hand);
+          @NotNull InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
+        return module.getCustomInstance().onInteract(module, player, entity, hand, moduleContainer, stack);
     }
 
     @Override
@@ -286,7 +292,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         IModule<ModuleVeinMiningUnit> veinMiningUnit = getEnabledModule(stack, MekanismModules.VEIN_MINING_UNIT);
         if (veinMiningUnit != null) {
             ModuleVeinMiningUnit customInstance = veinMiningUnit.getCustomInstance();
-            return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.isExtended() ? customInstance.getExcavationRange() : 0, oreTracker);
+            return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.extended() ? customInstance.getExcavationRange() : 0, oreTracker);
         }
         return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
     }

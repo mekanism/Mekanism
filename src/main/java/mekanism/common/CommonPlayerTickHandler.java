@@ -86,8 +86,9 @@ public class CommonPlayerTickHandler {
     }
 
     public static float getSwimBoost(Player player) {
-        IModule<ModuleHydrostaticRepulsorUnit> swimModule = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.LEGS, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-        return swimModule != null && swimModule.getCustomInstance().isSwimBoost(swimModule, player) ? 1 : 0;
+        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+        IModule<ModuleHydrostaticRepulsorUnit> swimModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
+        return swimModule != null && swimModule.getCustomInstance().isSwimBoost(swimModule, legs, player) ? 1 : 0;
     }
 
     @SubscribeEvent
@@ -150,7 +151,7 @@ public class CommonPlayerTickHandler {
 
     public static boolean isGravitationalModulationReady(ItemStack stack) {
         IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
-        return module != null && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
+        return module != null && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation);
     }
 
     public static boolean isGravitationalModulationOn(Player player) {
@@ -252,18 +253,20 @@ public class CommonPlayerTickHandler {
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.FEET, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            IModule<ModuleHydraulicPropulsionUnit> propulsionModule = IModuleHelper.INSTANCE.getIfEnabled(boots, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
-                if (propulsionModule.canUseEnergy(player, usage)) {
+                if (propulsionModule.canUseEnergy(player, boots, usage)) {
                     // if we're sprinting with the boost module, limit the height
-                    IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.LEGS, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
-                    if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, player)) {
+                    ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+                    IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+                    if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, legs, player)) {
                         boost = Mth.sqrt(boost);
                     }
                     player.addDeltaMovement(new Vec3(0, boost, 0));
-                    propulsionModule.useEnergy(player, usage, true);
+                    propulsionModule.useEnergy(player, legs, usage, true);
                 }
             }
         }

@@ -1,6 +1,10 @@
 package mekanism.common.content.gear.mekatool;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -8,13 +12,10 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
-import mekanism.api.gear.config.ModuleEnumData;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
@@ -28,10 +29,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -53,14 +58,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
+public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomModule<ModuleFarmingUnit> {
 
-    private IModuleConfigItem<FarmingRadius> farmingRadius;
+    public static final String FARMING_RADIUS = "farming_radius";
 
-    @Override
-    public void init(IModule<ModuleFarmingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        farmingRadius = configItemCreator.createConfigItem("farming_radius", MekanismLang.MODULE_FARMING_RADIUS,
-              new ModuleEnumData<>(FarmingRadius.LOW, module.getInstalledCount() + 1));
+    public ModuleFarmingUnit(IModule<ModuleFarmingUnit> module) {
+        this(module.<FarmingRadius>getConfigOrThrow(FARMING_RADIUS).get());
     }
 
     @NotNull
@@ -72,7 +75,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
             //Skip if we don't have a player, or they are sneaking
             return InteractionResult.PASS;
         }
-        int diameter = farmingRadius.get().getRadius();
+        int diameter = farmingRadius.getRadius();
         if (diameter == 0) {
             //If we don't have any blocks we are going to want to do, then skip it
             return InteractionResult.PASS;
@@ -98,13 +101,13 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
     }
 
     @Override
-    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, ToolAction action) {
+    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
         if (action == ToolActions.AXE_STRIP || action == ToolActions.AXE_SCRAPE || action == ToolActions.AXE_WAX_OFF) {
-            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageAxe);
+            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ToolActions.SHOVEL_FLATTEN) {
-            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageShovel);
+            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageShovel);
         } else if (action == ToolActions.HOE_TILL) {
-            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageHoe);
+            return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageHoe);
         }
         //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
         // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before
@@ -113,17 +116,23 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
     }
 
     @NothingNullByDefault
-    public enum FarmingRadius implements IHasTextComponent {
+    public enum FarmingRadius implements IHasTextComponent, StringRepresentable {
         OFF(0),
         LOW(1),
         MED(3),
         HIGH(5),
         ULTRA(7);
 
+        public static final Codec<FarmingRadius> CODEC = StringRepresentable.fromEnum(FarmingRadius::values);
+        public static final IntFunction<FarmingRadius> BY_ID = ByIdMap.continuous(FarmingRadius::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+        public static final StreamCodec<ByteBuf, FarmingRadius> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, FarmingRadius::ordinal);
+
+        private final String serializedName;
         private final int radius;
         private final Component label;
 
         FarmingRadius(int radius) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.radius = radius;
             this.label = TextComponentUtil.getString(Integer.toString(radius));
         }
@@ -135,6 +144,11 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
         public int getRadius() {
             return radius;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 

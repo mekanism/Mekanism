@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -30,42 +29,38 @@ import org.jetbrains.annotations.Nullable;
 public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
-     * Called when initializing a new module instance and the backing custom module. This can be used to create module config items that will show up in the ModuleTweaker
-     * and can be used to control various settings of this module.
-     *
-     * @param module            Module instance.
-     * @param configItemCreator Helper to create module config items.
-     */
-    default void init(IModule<MODULE> module, ModuleConfigItemCreator configItemCreator) {
-    }
-
-    /**
      * Called each tick on the server side when installed in a MekaSuit and set to enabled.
      *
-     * @param module Module instance.
-     * @param player Player wearing the MekaSuit.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param player          Player wearing the MekaSuit.
      */
-    default void tickServer(IModule<MODULE> module, Player player) {
+    default void tickServer(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
     }
 
     /**
      * Called each tick on the client side when installed in a MekaSuit and set to enabled.
      *
-     * @param module Module instance.
-     * @param player Player wearing the MekaSuit.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param player          Player wearing the MekaSuit.
      */
-    default void tickClient(IModule<MODULE> module, Player player) {
+    default void tickClient(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
     }
 
     /**
      * Called to collect any HUD strings that should be displayed. This will only be called if {@link ModuleData#rendersHUD()} is {@code true}.
      *
-     * @param module         Module instance.
-     * @param player         Player using the Meka-Tool or wearing the MekaSuit. In general this will be the client player, but is passed to make sidedness safer and
-     *                       easier.
-     * @param hudStringAdder Accepts and adds HUD strings.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.odule is installed on.
+     * @param player          Player using the Meka-Tool or wearing the MekaSuit. In general this will be the client player, but is passed to make sidedness safer and
+     *                        easier.
+     * @param hudStringAdder  Accepts and adds HUD strings.
      */
-    default void addHUDStrings(IModule<MODULE> module, Player player, Consumer<Component> hudStringAdder) {
+    default void addHUDStrings(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<Component> hudStringAdder) {
     }
 
     /**
@@ -73,13 +68,15 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * {@code true}.
      *
      * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
      * @param player          Player using the Meka-Tool or wearing the MekaSuit. In general this will be the client player, but is passed to make sidedness safer and
      *                        easier.
      * @param hudElementAdder Accepts and adds HUD elements.
      *
      * @apiNote See {@link IModuleHelper} for various helpers to create HUD elements.
      */
-    default void addHUDElements(IModule<MODULE> module, Player player, Consumer<IHUDElement> hudElementAdder) {
+    default void addHUDElements(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
     }
 
     /**
@@ -131,13 +128,14 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @param module               Module instance.
      * @param player               The player who made the mode change.
+     * @param moduleContainer      The container this module is part of.
      * @param stack                The stack to change the mode of.
      * @param shift                The amount to shift the mode by, may be negative for indicating the mode should decrease.
      * @param displayChangeMessage {@code true} if a message should be displayed when the mode changes
      *
      * @see #canChangeModeWhenDisabled(IModule)
      */
-    default void changeMode(IModule<MODULE> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    default void changeMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
     }
 
     /**
@@ -177,52 +175,49 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * Called by the Meka-Tool to attempt to set the mode of the module for the given radial data. This will only be called if {@link ModuleData#handlesModeChange()} is
      * {@code true}, but may be called when this module does not support or handle the given radial type, so the radial type should be validated.
      *
-     * @param module     Module instance.
-     * @param player     The player who is attempting to set the mode.
-     * @param stack      The stack to set the mode of.
-     * @param radialData Radial data of the mode being set.
-     * @param mode       Mode to attempt to set if this module can handle modes of this type.
-     * @param <MODE>     Radial Mode.
+     * @param <MODE>          Radial Mode.
+     * @param module          Module instance.
+     * @param player          The player who is attempting to set the mode.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param radialData      Radial data of the mode being set.
+     * @param mode            Mode to attempt to set if this module can handle modes of this type.
      *
      * @return {@code true} if this module was able to handle the given radial data.
      *
      * @see #canChangeRadialModeWhenDisabled(IModule)
      * @since 10.3.2
      */
-    default <MODE extends IRadialMode> boolean setMode(IModule<MODULE> module, Player player, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
+    default <MODE extends IRadialMode> boolean setMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
         return false;
     }
 
     /**
      * Called when this module is added to an item.
      *
-     * @param module Module instance.
-     * @param first  {@code true} if it is the first module of this type installed.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param first           {@code true} if it is the first module of this type installed.
      *
      * @apiNote This method may be called when more than one module is added at once, so it is important to get the installed count from the module rather than assume it
      * just went up by one.
      */
-    default void onAdded(IModule<MODULE> module, boolean first) {
+    default void onAdded(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, boolean first) {
     }
 
     /**
      * Called when this module is removed from an item.
      *
-     * @param module Module instance.
-     * @param last   {@code true} if it was the last module of this type installed.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param wasLast         {@code true} if it was the last module of this type installed.
      *
-     * @apiNote This method may be called when more than one module is removed at once, so it is important to get the installed count from the module rather than assume it
-     * just down up by one.
+     * @apiNote This method may be called when more than one module is removed at once, so it is important to get the installed count from the module rather than assume
+     * it just down up by one.
      */
-    default void onRemoved(IModule<MODULE> module, boolean last) {
-    }
-
-    /**
-     * Called when the enabled state of this module changes.
-     *
-     * @param module Module instance.
-     */
-    default void onEnabledStateChange(IModule<MODULE> module) {
+    default void onRemoved(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, boolean wasLast) {
     }
 
     /**
@@ -253,24 +248,28 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     /**
      * Called to check if this module allows the Meka-Tool to perform a specific {@link ToolAction}.
      *
-     * @param module Module instance.
-     * @param action Tool action to check.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param action          Tool action to check.
      */
-    default boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
+    default boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ToolAction action) {
         return false;
     }
 
     /**
      * Called when the Meka-Tool is used on an entity to allow modules to implement custom interact behavior.
      *
-     * @param module Module instance.
-     * @param player Player using the Meka-Tool.
-     * @param entity Entity type being interacted with.
-     * @param hand   Hand used.
+     * @param module          Module instance.
+     * @param player          Player using the Meka-Tool.
+     * @param entity          Entity type being interacted with.
+     * @param hand            Hand used.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           Stack the module is installed on and is being used to interact with an entity.
      *
      * @return Result type or {@link InteractionResult#PASS} to pass.
      */
-    default InteractionResult onInteract(IModule<MODULE> module, Player player, LivingEntity entity, InteractionHand hand) {
+    default InteractionResult onInteract(IModule<MODULE> module, Player player, LivingEntity entity, InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
         return InteractionResult.PASS;
     }
 
@@ -278,12 +277,14 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * Called on enabled modules when the Meka-Tool or MekaSuit is "dispensed" from a dispenser. The MekaSuit will prioritize performing the vanilla armor dispense
      * behavior of equipping on entities before checking if any of the modules have a custom behavior.
      *
-     * @param module Module instance.
-     * @param source Dispenser source information.
+     * @param module          Module instance.
+     * @param moduleContainer The container this module is part of.
+     * @param stack           The stack this module is installed on.
+     * @param source          Dispenser source information.
      *
      * @return The {@link ModuleDispenseResult} defining how this dispenser should behave.
      */
-    default ModuleDispenseResult onDispense(IModule<MODULE> module, BlockSource source) {
+    default ModuleDispenseResult onDispense(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, BlockSource source) {
         return ModuleDispenseResult.DEFAULT;
     }
 
@@ -304,7 +305,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Represents the different result states of {@link ICustomModule#onDispense(IModule, BlockSource)}.
+     * Represents the different result states of {@link ICustomModule#onDispense(IModule, IModuleContainer, ItemStack, BlockSource)}.
      */
     enum ModuleDispenseResult {
         /**

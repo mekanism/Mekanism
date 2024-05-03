@@ -66,16 +66,19 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
     default void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         IModuleContainer moduleContainer = moduleContainer(stack);
         if (moduleContainer != null) {
-            list.addAll(moduleContainer.getHUDStrings(player));
+            list.addAll(moduleContainer.getHUDStrings(player, stack));
         }
     }
 
     @Override
     default void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
-        for (IModule<?> module : getModules(stack)) {
-            if (module.handlesModeChange()) {
-                changeMode(module, player, stack, shift, displayChange);
-                return;
+        IModuleContainer moduleContainer = moduleContainer(stack);
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
+                if (module.handlesModeChange()) {
+                    changeMode(module, player, moduleContainer, stack, shift, displayChange);
+                    return;
+                }
             }
         }
     }
@@ -104,8 +107,9 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider {
         return null;
     }
 
-    private static <MODULE extends ICustomModule<MODULE>> void changeMode(IModule<MODULE> module, Player player, ItemStack stack, int shift, DisplayChange displayChange) {
-        module.getCustomInstance().changeMode(module, player, stack, shift, displayChange != DisplayChange.NONE);
+    private static <MODULE extends ICustomModule<MODULE>> void changeMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer, ItemStack stack,
+          int shift, DisplayChange displayChange) {
+        module.getCustomInstance().changeMode(module, player, moduleContainer, stack, shift, displayChange != DisplayChange.NONE);
     }
 
     @Nullable

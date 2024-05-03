@@ -4,12 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
-import mekanism.api.gear.config.ModuleBooleanData;
-import mekanism.api.gear.config.ModuleColorData;
-import mekanism.api.gear.config.ModuleEnumData;
-import mekanism.api.text.IHasTextComponent;
+import mekanism.api.gear.config.ModuleBooleanConfig;
+import mekanism.api.gear.config.ModuleColorConfig;
+import mekanism.api.gear.config.ModuleConfig;
+import mekanism.api.gear.config.ModuleEnumConfig;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiModuleTweaker.ArmorPreview;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -18,9 +20,10 @@ import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.scroll.GuiScrollableElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
-import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +31,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     private static final int ELEMENT_SPACER = 4;
 
-    final Consumer<ModuleConfigItem<?>> saveCallback;
+    final Consumer<ModuleConfig<?>> saveCallback;
+    private final Supplier<ItemStack> itemSupplier;
     private final ArmorPreview armorPreview;
 
     @Nullable
@@ -36,41 +40,42 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private Map<String, MiniElement> miniElements = new LinkedHashMap<>();
     private int maxElements;
 
-    public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ModuleConfigItem<?>> saveCallback, ArmorPreview armorPreview) {
-        this(gui, x, y, 102, 134, saveCallback, armorPreview);
+    public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
+        this(gui, x, y, 102, 134, itemSupplier, saveCallback, armorPreview);
     }
 
-    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Consumer<ModuleConfigItem<?>> saveCallback, ArmorPreview armorPreview) {
+    private GuiModuleScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
         super(GuiScrollList.SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
+        this.itemSupplier = itemSupplier;
         this.saveCallback = saveCallback;
         this.armorPreview = armorPreview;
     }
 
-    @SuppressWarnings("unchecked")
     public void setModule(@Nullable Module<?> module) {
         Map<String, MiniElement> newElements = new LinkedHashMap<>();
 
         if (module != null) {
             int startY = getStartY(module);
-            for (ModuleConfigItem<?> configItem : module.getConfigItems()) {
-                String name = configItem.getName();
+            for (ModuleConfig<?> configItem : module.getConfigs()) {
+                if (configItem.isConfigDisabled()) {
+                    //Skip options that are force disabled by the config
+                    continue;
+                }
+                Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", module.getData().getRegistryName().withPath(configItem.name())));
+                String name = configItem.name();
                 MiniElement element = null;
                 // Don't show the enabled option if this is enabled by default
-                if (configItem.getData() instanceof ModuleBooleanData && (!name.equals(Module.ENABLED_KEY) || !module.getData().isNoDisable())) {
-                    if (configItem instanceof DisableableModuleConfigItem item && !item.isConfigEnabled()) {
-                        //Skip options that are force disabled by the config
-                        continue;
-                    }
-                    element = new BooleanToggle(this, (ModuleConfigItem<Boolean>) configItem, 2, startY);
-                } else if (configItem.getData() instanceof ModuleEnumData) {
-                    EnumToggle<?> toggle = createEnumToggle(configItem, 2, startY);
+                if (configItem instanceof ModuleBooleanConfig config && (!name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable())) {
+                    element = new BooleanToggle(this, config, description, 2, startY);
+                } else if (configItem instanceof ModuleEnumConfig<?> config) {
+                    EnumToggle<?> toggle = new EnumToggle<>(this, config, description, 2, startY);
                     element = toggle;
                     // allow the dragger to continue sliding, even when we reset the config element
                     if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
                         toggle.dragging = enumToggle.dragging;
                     }
-                } else if (configItem.getData() instanceof ModuleColorData data) {
-                    element = new ColorSelection(this, (ModuleConfigItem<Integer>) configItem, 2, startY, data.handlesAlpha(), armorPreview);
+                } else if (configItem instanceof ModuleColorConfig config) {
+                    element = new ColorSelection(this, config, description, 2, startY, armorPreview);
                 }
                 if (element != null) {
                     newElements.put(name, element);
@@ -84,11 +89,6 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
         currentModule = module;
         miniElements = newElements;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <TYPE extends Enum<TYPE> & IHasTextComponent> EnumToggle<TYPE> createEnumToggle(ModuleConfigItem<?> data, int xPos, int yPos) {
-        return new EnumToggle<>(this, (ModuleConfigItem<TYPE>) data, xPos, yPos);
     }
 
     private static int getStartY(@Nullable IModule<?> module) {
@@ -127,6 +127,10 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @Nullable
     public IModule<?> getCurrentModule() {
         return currentModule;
+    }
+
+    public ItemStack getContainerStack() {
+        return itemSupplier.get();
     }
 
     @Override

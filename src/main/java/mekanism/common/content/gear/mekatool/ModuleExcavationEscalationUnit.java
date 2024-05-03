@@ -1,8 +1,10 @@
 package mekanism.common.content.gear.mekatool;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
@@ -10,9 +12,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.config.IModuleConfigItem;
-import mekanism.api.gear.config.ModuleConfigItemCreator;
-import mekanism.api.gear.config.ModuleEnumData;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -30,6 +30,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -37,7 +38,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcavationEscalationUnit> {
+public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) implements ICustomModule<ModuleExcavationEscalationUnit> {
+
+    public static final String EXCAVATION_MODE = "efficiency";
 
     private static final ResourceLocation RADIAL_ID = Mekanism.rl("excavation_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {
@@ -51,12 +54,8 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         return map;
     });
 
-    private IModuleConfigItem<ExcavationMode> excavationMode;
-
-    @Override
-    public void init(IModule<ModuleExcavationEscalationUnit> module, ModuleConfigItemCreator configItemCreator) {
-        excavationMode = configItemCreator.createConfigItem("excavation_mode", MekanismLang.MODULE_EFFICIENCY,
-              new ModuleEnumData<>(ExcavationMode.NORMAL, module.getInstalledCount() + 2));
+    public ModuleExcavationEscalationUnit(IModule<ModuleExcavationEscalationUnit> module) {
+        this(module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).get());
     }
 
     private NestedRadialMode getNestedData(IModule<ModuleExcavationEscalationUnit> module) {
@@ -76,17 +75,17 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     @Override
     public <MODE extends IRadialMode> MODE getMode(IModule<ModuleExcavationEscalationUnit> module, ItemStack stack, RadialData<MODE> radialData) {
         if (radialData == getRadialData(module)) {
-            return (MODE) excavationMode.get();
+            return (MODE) excavationMode;
         }
         return null;
     }
 
     @Override
-    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleExcavationEscalationUnit> module, Player player, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
+    public <MODE extends IRadialMode> boolean setMode(IModule<ModuleExcavationEscalationUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
         if (radialData == getRadialData(module)) {
             ExcavationMode newMode = (ExcavationMode) mode;
-            if (excavationMode.get() != newMode) {
-                excavationMode.set(newMode);
+            if (excavationMode != newMode) {
+                moduleContainer.replaceModuleConfig(stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
             }
         }
         return false;
@@ -95,35 +94,33 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     @Nullable
     @Override
     public Component getModeScrollComponent(IModule<ModuleExcavationEscalationUnit> module, ItemStack stack) {
-        ExcavationMode mode = excavationMode.get();
-        return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, mode.sliceName(), EnumColor.AQUA, mode.getEfficiency());
+        return MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.INDIGO, excavationMode.sliceName(), EnumColor.AQUA, excavationMode.getEfficiency());
     }
 
     @Override
-    public void changeMode(IModule<ModuleExcavationEscalationUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        ExcavationMode currentMode = excavationMode.get();
-        ExcavationMode newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
-        if (currentMode != newMode) {
-            excavationMode.set(newMode);
+    public void changeMode(IModule<ModuleExcavationEscalationUnit> module, Player player, IModuleContainer moduleContainer, ItemStack stack, int shift, boolean displayChangeMessage) {
+        ExcavationMode newMode = excavationMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
+        if (excavationMode != newMode) {
             if (displayChangeMessage) {
                 module.displayModeChange(player, MekanismLang.MODULE_EFFICIENCY.translate(), newMode);
             }
+            moduleContainer.replaceModuleConfig(stack, module.getData(), module.<ExcavationMode>getConfigOrThrow(EXCAVATION_MODE).with(newMode));
         }
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, Player player, Consumer<Component> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<Component> hudStringAdder) {
         if (module.isEnabled()) {
-            hudStringAdder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
+            hudStringAdder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, getEfficiency()));
         }
     }
 
     public float getEfficiency() {
-        return excavationMode.get().getEfficiency();
+        return excavationMode.getEfficiency();
     }
 
     @NothingNullByDefault
-    public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, IRadialMode {
+    public enum ExcavationMode implements IIncrementalEnum<ExcavationMode>, IHasTextComponent, IRadialMode, StringRepresentable {
         OFF(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, 0, EnumColor.WHITE, "speed_off"),
         SLOW(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, 4, EnumColor.PINK, "speed_slow"),
         NORMAL(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, 16, EnumColor.BRIGHT_GREEN, "speed_normal"),
@@ -131,9 +128,11 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         SUPER_FAST(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, 64, EnumColor.ORANGE, "speed_super"),
         EXTREME(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, 128, EnumColor.RED, "speed_extreme");
 
+        public static final Codec<ExcavationMode> CODEC = StringRepresentable.fromEnum(ExcavationMode::values);
         public static final IntFunction<ExcavationMode> BY_ID = ByIdMap.continuous(ExcavationMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ExcavationMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationMode::ordinal);
 
+        private final String serializedName;
         private final ResourceLocation icon;
         private final ILangEntry langEntry;
         private final Component label;
@@ -141,6 +140,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         private final int efficiency;
 
         ExcavationMode(ILangEntry langEntry, int efficiency, EnumColor color, String texture) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.color = color;
@@ -177,6 +177,11 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         @Override
         public EnumColor color() {
             return color;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

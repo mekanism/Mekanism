@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
@@ -55,9 +56,12 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
 
     @Override
     default <M extends IRadialMode> void setMode(ItemStack stack, Player player, RadialData<M> radialData, M mode) {
-        for (IModule<?> module : getModules(stack)) {
-            if (module.handlesRadialModeChange() && setMode(module, player, stack, radialData, mode)) {
-                return;
+        IModuleContainer moduleContainer = moduleContainer(stack);
+        if (moduleContainer != null) {
+            for (IModule<?> module : moduleContainer.modules()) {
+                if (module.handlesRadialModeChange() && setMode(module, player, moduleContainer, stack, radialData, mode)) {
+                    return;
+                }
             }
         }
     }
@@ -71,8 +75,8 @@ public interface IRadialModuleContainerItem extends IModuleContainerItem, IGener
         return module.getCustomInstance().getMode(module, stack, radialData);
     }
 
-    private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> boolean setMode(IModule<MODULE> module, Player player, ItemStack stack,
-          RadialData<M> radialData, M mode) {
-        return module.getCustomInstance().setMode(module, player, stack, radialData, mode);
+    private static <M extends IRadialMode, MODULE extends ICustomModule<MODULE>> boolean setMode(IModule<MODULE> module, Player player, IModuleContainer moduleContainer,
+          ItemStack stack, RadialData<M> radialData, M mode) {
+        return module.getCustomInstance().setMode(module, player, moduleContainer, stack, radialData, mode);
     }
 }

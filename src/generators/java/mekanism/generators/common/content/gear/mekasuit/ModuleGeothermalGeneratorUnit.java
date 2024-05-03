@@ -9,6 +9,7 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleContainer;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -21,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -43,9 +45,12 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
         return map;
     });
 
+    public ModuleGeothermalGeneratorUnit(IModule<ModuleGeothermalGeneratorUnit> module) {
+    }
+
     @Override
-    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, Player player) {
-        IEnergyContainer energyContainer = module.getEnergyContainer();
+    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;

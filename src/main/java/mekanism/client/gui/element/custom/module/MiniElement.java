@@ -1,15 +1,20 @@
 package mekanism.client.gui.element.custom.module;
 
-import mekanism.common.content.gear.ModuleConfigItem;
+import mekanism.api.gear.config.ModuleConfig;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
-abstract class MiniElement {
+abstract class MiniElement<TYPE> {
 
     protected final GuiModuleScreen parent;
+    protected final Component description;
     protected final int xPos, yPos;
+    protected ModuleConfig<TYPE> data;
 
-    protected MiniElement(GuiModuleScreen parent, int xPos, int yPos) {
+    protected MiniElement(GuiModuleScreen parent, ModuleConfig<TYPE> data, Component description, int xPos, int yPos) {
         this.parent = parent;
+        this.data = data;
+        this.description = description;
         this.xPos = xPos;
         this.yPos = yPos;
     }
@@ -50,7 +55,10 @@ abstract class MiniElement {
         return mouseX >= x + relativeX && mouseX < x + relativeX + width && mouseY >= y + relativeY && mouseY < y + relativeY + height;
     }
 
-    protected <TYPE> void setData(ModuleConfigItem<TYPE> data, TYPE value) {
-        data.set(value, () -> parent.saveCallback.accept(data));
+    protected void setData(TYPE value) {
+        //TODO - 1.20.5: Fix it so that after it syncs to the server we then actually update what our data value is
+        // We sort of do this now, but options that have side effects don't necessarily get properly updated
+        this.data = data.with(value);
+        parent.saveCallback.accept(data);
     }
 }
