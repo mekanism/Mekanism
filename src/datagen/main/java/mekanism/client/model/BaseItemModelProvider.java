@@ -60,7 +60,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
             if (holder.value() instanceof BucketItem bucket) {
                 withExistingParent(RegistryUtils.getPath(bucket), new ResourceLocation("neoforge", "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
-                      .fluid(bucket.getFluid());
+                      .fluid(bucket.content);
             }
         }
     }

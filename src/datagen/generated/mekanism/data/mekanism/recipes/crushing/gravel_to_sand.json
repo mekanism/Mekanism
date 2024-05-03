@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "c:gravel"
+      "tag": "c:gravels"
     }
   },
   "output": {

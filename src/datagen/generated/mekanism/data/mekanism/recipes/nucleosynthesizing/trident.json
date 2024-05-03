@@ -7,63 +7,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "type": "neoforge:components",
-      "components": {
-        "minecraft:attribute_modifiers": {
-          "modifiers": [
-            {
-              "type": "minecraft:generic.attack_damage",
-              "amount": 6.0,
-              "name": "Weapon modifier",
-              "operation": "add_value",
-              "slot": "mainhand",
-              "uuid": [
-                -885041709,
-                1683771192,
-                -1533567981,
-                -1556236849
-              ]
-            },
-            {
-              "type": "minecraft:generic.attack_speed",
-              "amount": -2.4000000953674316,
-              "name": "Weapon modifier",
-              "operation": "add_value",
-              "slot": "mainhand",
-              "uuid": [
-                -98353636,
-                1098926181,
-                -1340359474,
-                -1752847197
-              ]
-            }
-          ]
-        },
-        "minecraft:damage": 0,
-        "minecraft:enchantments": {
-          "levels": {}
-        },
-        "minecraft:lore": [],
-        "minecraft:max_damage": 1561,
-        "minecraft:max_stack_size": 1,
-        "minecraft:rarity": "common",
-        "minecraft:repair_cost": 0,
-        "minecraft:tool": {
-          "damage_per_block": 2,
-          "rules": [
-            {
-              "blocks": "minecraft:cobweb",
-              "correct_for_drops": true,
-              "speed": 15.0
-            },
-            {
-              "blocks": "#minecraft:sword_efficient",
-              "speed": 1.5
-            }
-          ]
-        }
-      },
-      "items": "minecraft:diamond_sword"
+      "item": "minecraft:diamond_sword"
     }
   },
   "output": {

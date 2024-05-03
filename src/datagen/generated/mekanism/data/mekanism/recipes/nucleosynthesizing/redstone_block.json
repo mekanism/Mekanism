@@ -7,20 +7,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "type": "neoforge:components",
-      "components": {
-        "minecraft:attribute_modifiers": {
-          "modifiers": []
-        },
-        "minecraft:enchantments": {
-          "levels": {}
-        },
-        "minecraft:lore": [],
-        "minecraft:max_stack_size": 64,
-        "minecraft:rarity": "common",
-        "minecraft:repair_cost": 0
-      },
-      "items": "minecraft:red_wool"
+      "item": "minecraft:red_wool"
     }
   },
   "output": {

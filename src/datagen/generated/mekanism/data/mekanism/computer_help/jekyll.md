@@ -50,12 +50,8 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
-      itemAttachments:
-        description: The Attachment NBT data of the filtered item, optional
-        javaType: java.lang.String
-        type: String
-      itemNBT:
-        description: The NBT data of the filtered item, optional
+      itemComponents:
+        description: The Component data of the filtered item, optional
         javaType: java.lang.String
         type: String
     humanName: Table (MinerItemStackFilter)
@@ -107,12 +103,8 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
-      itemAttachments:
-        description: The Attachment NBT data of the filtered item, optional
-        javaType: java.lang.String
-        type: String
-      itemNBT:
-        description: The NBT data of the filtered item, optional
+      itemComponents:
+        description: The Component data of the filtered item, optional
         javaType: java.lang.String
         type: String
     humanName: Table (QIOItemStackFilter)
@@ -171,12 +163,8 @@ builtInTables:
         description: The filtered item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
-      itemAttachments:
-        description: The Attachment NBT data of the filtered item, optional
-        javaType: java.lang.String
-        type: String
-      itemNBT:
-        description: The NBT data of the filtered item, optional
+      itemComponents:
+        description: The Component data of the filtered item, optional
         javaType: java.lang.String
         type: String
     humanName: Table (SorterItemStackFilter)
@@ -249,8 +237,8 @@ builtInTables:
   net.minecraft.world.item.ItemStack:
     description: A stack of Item(s)
     fields:
-      attachments:
-        description: Any Attachment NBT of the item, in Command JSON format
+      components:
+        description: Any NBT of the item, in Command JSON format
         javaType: java.lang.String
         type: String
       count:
@@ -261,10 +249,6 @@ builtInTables:
         description: The Item's registered name
         javaType: net.minecraft.world.item.Item
         type: String (Item)
-      nbt:
-        description: Any NBT of the item, in Command JSON format
-        javaType: java.lang.String
-        type: String
     humanName: Table (ItemStack)
   net.minecraft.world.level.block.state.BlockState:
     description: A Block State
@@ -286,14 +270,14 @@ builtInTables:
         description: The amount in mB
         javaType: int
         type: Number (int)
+      components:
+        description: Any NBT of the fluid, in Command JSON format
+        javaType: java.lang.String
+        type: String
       name:
         description: The Fluid's registered name, e.g. minecraft:water
         javaType: net.minecraft.resources.ResourceLocation
         type: String (ResourceLocation)
-      nbt:
-        description: Any NBT of the fluid, in Command JSON format
-        javaType: java.lang.String
-        type: String
     humanName: Table (FluidStack)
 enums:
   mekanism.api.RelativeSide:

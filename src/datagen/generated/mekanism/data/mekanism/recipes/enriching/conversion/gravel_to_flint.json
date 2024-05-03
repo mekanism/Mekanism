@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "c:gravel"
+      "tag": "c:gravels"
     }
   },
   "output": {

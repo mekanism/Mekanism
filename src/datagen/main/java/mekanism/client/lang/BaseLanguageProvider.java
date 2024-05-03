@@ -65,7 +65,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void addModuleConfig(String configKey, String value) {
-        add("module." + modName + "." + configKey, value);
+        add("module." + modid + "." + configKey, value);
     }
 
     protected void add(IHasTranslationKey key, String value) {
