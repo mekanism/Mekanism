@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:chiseled_quartz_stairs"
+    "count": 1,
+    "id": "ae2:chiseled_quartz_stairs"
   }
 }

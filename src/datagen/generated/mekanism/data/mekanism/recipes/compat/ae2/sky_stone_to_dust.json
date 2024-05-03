@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:sky_dust"
+    "count": 1,
+    "id": "ae2:sky_dust"
   }
 }

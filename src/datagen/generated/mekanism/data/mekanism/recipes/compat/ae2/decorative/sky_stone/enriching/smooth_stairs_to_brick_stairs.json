@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:sky_stone_brick_stairs"
+    "count": 1,
+    "id": "ae2:sky_stone_brick_stairs"
   }
 }

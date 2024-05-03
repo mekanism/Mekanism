@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:chiseled_quartz_block"
+    "count": 1,
+    "id": "ae2:chiseled_quartz_block"
   }
 }

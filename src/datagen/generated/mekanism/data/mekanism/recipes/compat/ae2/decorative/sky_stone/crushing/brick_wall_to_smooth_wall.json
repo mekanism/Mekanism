@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:smooth_sky_stone_wall"
+    "count": 1,
+    "id": "ae2:smooth_sky_stone_wall"
   }
 }

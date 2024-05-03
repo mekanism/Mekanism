@@ -12,6 +12,7 @@
     }
   },
   "output": {
-    "item": "ae2:quartz_pillar_slab"
+    "count": 1,
+    "id": "ae2:quartz_pillar_slab"
   }
 }
