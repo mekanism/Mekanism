@@ -84,6 +84,12 @@ sourceSets {
 }
 
 configurations {
+    // Sets up a dependency configuration called 'localRuntime'.
+    // This configuration should be used instead of 'runtimeOnly' to declare
+    // a dependency that will be present for runtime testing but that is
+    // "optional", meaning it will not be pulled by dependents of this mod.
+    runtimeClasspath.extendsFrom localRuntime
+
     datagenNonMod
 }
 
@@ -415,7 +421,8 @@ test {
 dependencies {
     implementation "net.neoforged:neoforge:${forge_version}"
 
-    implementation project(":annotation-processor")
+    compileOnly project(":annotation-processor")
+    localRuntime project(":annotation-processor")
     annotationProcessor project(":annotation-processor")
 
     gameTestImplementation "net.neoforged:testframework:${forge_version}"
@@ -428,35 +435,40 @@ dependencies {
     compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == "jei" || recipe_viewer == "hybrid") {
         //TODO - 1.20.5: Re-enable when JEI updates
-        //runtimeOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
+        //localRuntime("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
     }
 
     compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
 
     if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
-        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+        localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
     }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
-    //runtimeOnly("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
+    //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
     //TODO - 1.20.4: Re-enable once it doesn't cause connection issues on servers
-    /*runtimeOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    /*localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
     }*/
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     //TODO - 1.20.5: Re-enable when Jade updates
-    //runtimeOnly("curse.maven:jade-324717:${jade_id}")
+    //localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
-    //TODO - 1.20.5: Switch back to implementation when it updates
-    compileOnly("com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}")
+    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
+    compileOnly(crt)
+    //TODO - 1.20.5: Re-enable when it updates
+    //localRuntime(crt)
     //TODO - 1.20.2: move back to implementation
-    compileOnly("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
+    def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}"
+    compileOnly(jeiTweaker)
+    //TODO - 1.20.5: Re-enable when it updates
+    //localRuntime(jeiTweaker)
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
@@ -468,7 +480,7 @@ dependencies {
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
     compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
-    //runtimeOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
@@ -618,11 +630,6 @@ tasks.register('optimizePng').configure {
     }
 }
 
-tasks.withType(GenerateModuleMetadata).configureEach {
-    //Disable Gradle 7 module metadata generation as it does not play nicely with FG
-    enabled = false
-}
-
 //properties to put in $HOME/.gradle/gradle.properties
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
 def MODMAVEN_PW = System.getenv('MEK_MAVEN_PW') ?: (String) project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
@@ -652,13 +659,6 @@ publishing {
                         name.set('MIT')
                         distribution.set('repo')
                     }
-                }
-                withXml {
-                    NodeList dependencies = asNode().dependencies
-                    NodeList allDeps = dependencies.'*'
-
-                    //As we don't actually have any hard deps, just mark everything as optional so other people don't have to inherit them
-                    allDeps.<Node> each { Node el -> el.appendNode('optional', true) }
                 }
             }
         }
