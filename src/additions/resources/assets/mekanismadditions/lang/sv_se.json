@@ -291,6 +291,7 @@
   "entity.mekanismadditions.baby_wither_skeleton": "Witherskelettbaby",
   "entity.mekanismadditions.balloon": "Ballong",
   "entity.mekanismadditions.obsidian_tnt": "Obsidiandynamit",
+  "fml.menu.mods.info.description.mekanismadditions": "Tilläggsmodul för Mekanism, innehåller saker som inte riktigt passar in i de andra modulerna",
   "fml.menu.mods.info.displayname.mekanismadditions": "Mekanism: Additions",
   "item.mekanismadditions.aqua_balloon": "Aqua ballong",
   "item.mekanismadditions.baby_creeper_spawn_egg": "Skapelseägg för creeperbaby",
