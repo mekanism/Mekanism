@@ -12,11 +12,16 @@ public class FluidHashStrategy implements Strategy<FluidStack> {
 
     @Override
     public int hashCode(FluidStack stack) {
-        return FluidStack.hashFluidAndComponents(stack);
+        return stack == null ? 0 : FluidStack.hashFluidAndComponents(stack);
     }
 
     @Override
     public boolean equals(FluidStack a, FluidStack b) {
+        if (a == b) {
+            return true;
+        } else if (a == null || b == null) {
+            return false;
+        }
         return FluidStack.isSameFluidSameComponents(a, b);
     }
 }
