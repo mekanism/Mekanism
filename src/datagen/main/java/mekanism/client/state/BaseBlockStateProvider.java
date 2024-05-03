@@ -58,7 +58,7 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
     protected void registerFluidBlockStates(FluidDeferredRegister register) {
         for (Holder<Block> blockEntry : register.getBlockEntries()) {
             //Note: We expect this to always be the case
-            if (blockEntry.value() instanceof LiquidBlock block && FLUID.getValue(block).getFluidType() instanceof MekanismFluidType fluidType) {
+            if (blockEntry.value() instanceof LiquidBlock block && block.fluid.getFluidType() instanceof MekanismFluidType fluidType) {
                 simpleBlock(block, models().getBuilder(RegistryUtils.getPath(block)).texture(DataGenJsonConstants.PARTICLE, fluidType.stillTexture));
             }
         }

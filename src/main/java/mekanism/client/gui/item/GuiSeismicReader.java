@@ -61,10 +61,12 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             ItemStack stack = state.getCloneItemStack(new BlockHitResult(p.getCenter().relative(Direction.UP, 0.5), Direction.UP, p, false), level, p, player);
             if (stack.isEmpty()) {
                 Fluid fluid = Fluids.EMPTY;
-                if (state.getBlock() instanceof LiquidBlock || state.getBlock() instanceof BubbleColumnBlock) {
-                    fluid = level.getFluidState(p).getType();
+                if (state.getBlock() instanceof LiquidBlock liquidBlock) {
+                    fluid = liquidBlock.fluid;
                 } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
                     fluid = fluidBlock.getFluid();
+                } else if (state.getBlock() instanceof BubbleColumnBlock) {
+                    fluid = level.getFluidState(p).getType();
                 }
                 if (fluid == Fluids.EMPTY) {
                     blockList.add(new BlockInfo<>(state, state, null));

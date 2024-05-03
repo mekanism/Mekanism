@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.moddiscovery.ModAnnotation;
+import net.neoforged.fml.loading.modscan.ModAnnotation;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;

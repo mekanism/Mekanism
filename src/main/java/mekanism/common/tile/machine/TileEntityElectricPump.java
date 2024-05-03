@@ -248,7 +248,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                                 return false;
                             } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
                                 //This isn't the best validation check given it may not return a bucket, but it is good enough for now
-                                sourceFluid = bucket.getFluid();
+                                sourceFluid = bucket.content;
                                 //Update the fluid stack in case something somehow changed about the type
                                 // making sure that we replace to heavy water if we got heavy water
                                 fluidStack = getOutput(sourceFluid, hasFilter);

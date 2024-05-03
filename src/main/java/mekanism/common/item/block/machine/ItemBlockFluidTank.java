@@ -16,7 +16,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
@@ -215,7 +214,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                                 return InteractionResultHolder.pass(stack);
                             } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
                                 //This isn't the best validation check given it may not return a bucket, but it is good enough for now
-                                fluid = bucket.getFluid();
+                                fluid = bucket.content;
                                 //Update the fluid stack in case something somehow changed about the type
                                 // making sure that we replace to heavy water if we got heavy water
                                 fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
@@ -357,7 +356,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             return super.execute(source, stack);
                         } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
                             //This isn't the best validation check given it may not return a bucket, but it is good enough for now
-                            fluid = bucket.getFluid();
+                            fluid = bucket.content;
                             //Update the fluid stack in case something somehow changed about the type
                             // making sure that we replace to heavy water if we got heavy water
                             fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
