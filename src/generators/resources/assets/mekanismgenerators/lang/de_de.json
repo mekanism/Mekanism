@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "Konnte Turbine nicht erstellen, elektromagnetische Spulen sind nicht vorhanden.",
   "turbine.mekanismgenerators.invalid_missing_complex": "Kein Rotationskomplex vorhanden.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "Formen fehlgeschlagen, es wurde kein Druckverteiler bei %1$s gefunden.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "Konstruieren fehlgeschlagen, es wurde kein Druckventil gefunden.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "Konnte nicht formen, Rotoren sind ungültig (nicht aneinandergrenzend).",
   "turbine.mekanismgenerators.invalid_too_narrow": "Konnte nicht formen, die Struktur ist zu eng um die Turbinengröße zu unterstützen.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Konnte sich nicht formen, Turbinenschacht unterhalb der Druckdispergiererschicht. Die Lüftungsschlitze müssen an oder über der vertikalen Position der Druckdispergierer liegen.",
