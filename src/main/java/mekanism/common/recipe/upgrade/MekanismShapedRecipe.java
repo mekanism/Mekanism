@@ -10,7 +10,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -38,7 +37,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
         List<ItemStack> componentInputs = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (!stack.isEmpty() && !stack.getComponents().isEmpty()) {
+            if (!stack.isEmpty() && !stack.getComponentsPatch().isEmpty()) {
                 componentInputs.add(stack);
             }
         }

@@ -37,8 +37,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         stack = stack.copy();
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
-        //TODO - 1.20.5: Do we want to only do this if there are components that are not equal to the default on the item??
-        if (!stack.getComponents().isEmpty()) {
+        if (!stack.getComponentsPatch().isEmpty()) {
             return from(DataComponentIngredient.of(false, stack), amount);
         }
         return from(Ingredient.of(stack), amount);

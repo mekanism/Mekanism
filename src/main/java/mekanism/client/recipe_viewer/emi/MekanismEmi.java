@@ -209,7 +209,6 @@ public class MekanismEmi implements EmiPlugin {
         registry.addIngredientSerializer(InfusionEmiStack.class, INFUSION_SERIALIZER);
         registry.addIngredientSerializer(PigmentEmiStack.class, PIGMENT_SERIALIZER);
         registry.addIngredientSerializer(SlurryEmiStack.class, SLURRY_SERIALIZER);
-        //TODO - 1.20.5: Test this works properly for getting things to display as tags
         registry.addRegistryAdapter(GAS_REGISTRY_ADAPTER);
         registry.addRegistryAdapter(INFUSE_TYPE_REGISTRY_ADAPTER);
         registry.addRegistryAdapter(PIGMENT_REGISTRY_ADAPTER);
