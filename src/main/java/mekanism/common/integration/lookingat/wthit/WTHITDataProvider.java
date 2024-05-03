@@ -25,7 +25,7 @@ public class WTHITDataProvider implements IDataProvider<BlockEntity> {
             BlockState state = tile == null ? level.getBlockState(pos) : tile.getBlockState();
             WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
             LookingAtUtils.addInfoOrRedirect(helper, level, pos, state, tile, true, true);
-            dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
+            dataWriter.add(WTHITLookingAtHelper.TYPE, result -> result.add(helper));
         }
     }
 }

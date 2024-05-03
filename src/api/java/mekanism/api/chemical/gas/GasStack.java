@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -139,14 +138,6 @@ public final class GasStack extends ChemicalStack<Gas> {
     @Override
     protected Gas getEmptyChemical() {
         return MekanismAPI.EMPTY_GAS;
-    }
-
-    public static GasStack readFromPacket(FriendlyByteBuf buf) {
-        Gas gas = buf.readById(MekanismAPI.GAS_REGISTRY::byId);
-        if (gas == null || gas.isEmptyType()) {
-            return EMPTY;
-        }
-        return new GasStack(gas, buf.readVarLong());
     }
 
     /**

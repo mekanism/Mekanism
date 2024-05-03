@@ -9,15 +9,12 @@ import mcp.mobius.waila.api.IEntityComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.ITooltipComponent;
-import mekanism.common.integration.lookingat.ChemicalElement;
-import mekanism.common.integration.lookingat.EnergyElement;
-import mekanism.common.integration.lookingat.FluidElement;
+import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
-import mekanism.common.integration.lookingat.LookingAtUtils;
+import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityComponentProvider {
@@ -35,36 +32,22 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
     }
 
     private void append(ITooltip tooltip, IDataReader dataReader, IPluginConfig config) {
-        WTHITLookingAtHelper helper = dataReader.get(WTHITLookingAtHelper.class);
+        WTHITLookingAtHelper helper = dataReader.get(WTHITLookingAtHelper.TYPE);
         if (helper != null) {
             //We have mek data, add an empty line for it so that we know to skip rendering the builtin types
             tooltip.setLine(MekanismWTHITPlugin.MEK_DATA);
             Component lastText = null;
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
-            for (Object element : helper.elements) {
-                ResourceLocation name;
-                switch (element) {
-                    case Component component -> {
-                        if (lastText != null) {
-                            //Fallback to printing the last text
-                            tooltip.addLine(lastText);
-                        }
-                        lastText = component;
-                        continue;
+            for (ILookingAtElement element : helper.elements) {
+                if (element instanceof TextElement textElement) {
+                    if (lastText != null) {
+                        //Fallback to printing the last text
+                        tooltip.addLine(lastText);
                     }
-                    case EnergyElement energyElement -> name = LookingAtUtils.ENERGY;
-                    case FluidElement fluidElement -> name = LookingAtUtils.FLUID;
-                    case ChemicalElement chemicalElement -> name = switch (chemicalElement.getChemicalType()) {
-                        case GAS -> LookingAtUtils.GAS;
-                        case INFUSION -> LookingAtUtils.INFUSE_TYPE;
-                        case PIGMENT -> LookingAtUtils.PIGMENT;
-                        case SLURRY -> LookingAtUtils.SLURRY;
-                    };
-                    default -> {
-                        continue;
-                    }
+                    lastText = textElement.text();
+                    continue;
                 }
-                if (config.getBoolean(name)) {
+                if (config.getBoolean(element.getID())) {
                     tooltip.addLine(new MekElement(lastText, (LookingAtElement) element));
                 }
                 lastText = null;

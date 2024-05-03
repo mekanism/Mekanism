@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -134,14 +133,6 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
     @Override
     protected Pigment getEmptyChemical() {
         return MekanismAPI.EMPTY_PIGMENT;
-    }
-
-    public static PigmentStack readFromPacket(FriendlyByteBuf buf) {
-        Pigment pigment = buf.readById(MekanismAPI.PIGMENT_REGISTRY::byId);
-        if (pigment == null || pigment.isEmptyType()) {
-            return EMPTY;
-        }
-        return new PigmentStack(pigment, buf.readVarLong());
     }
 
     /**

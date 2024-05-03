@@ -1,5 +1,8 @@
 package mekanism.common.integration.lookingat;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -7,11 +10,26 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidElement extends LookingAtElement {
+
+    public static final MapCodec<FluidElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+          FluidStack.OPTIONAL_CODEC.fieldOf(NBTConstants.FLUID_STORED).forGetter(FluidElement::getStored),
+          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(NBTConstants.MAX).forGetter(FluidElement::getCapacity)
+    ).apply(instance, FluidElement::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidElement> STREAM_CODEC = StreamCodec.composite(
+          FluidStack.OPTIONAL_STREAM_CODEC, FluidElement::getStored,
+          ByteBufCodecs.VAR_INT, FluidElement::getCapacity,
+          FluidElement::new
+    );
 
     @NotNull
     protected final FluidStack stored;
@@ -60,5 +78,10 @@ public class FluidElement extends LookingAtElement {
     protected boolean applyRenderColor(GuiGraphics guiGraphics) {
         MekanismRenderer.color(guiGraphics, stored);
         return true;
+    }
+
+    @Override
+    public ResourceLocation getID() {
+        return LookingAtUtils.FLUID;
     }
 }

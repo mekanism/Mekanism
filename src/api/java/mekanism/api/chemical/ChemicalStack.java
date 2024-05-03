@@ -30,7 +30,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -543,18 +542,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     public String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier
         return getChemical().getTranslationKey();
-    }
-
-    /**
-     * Writes this ChemicalStack to a Packet Buffer.
-     *
-     * @param buffer - Buffer to write to.
-     */
-    public void writeToPacket(FriendlyByteBuf buffer) {
-        buffer.writeById(getRegistry()::getId, getChemical());
-        if (!isEmpty()) {
-            buffer.writeVarLong(getAmount());
-        }
     }
 
     /**

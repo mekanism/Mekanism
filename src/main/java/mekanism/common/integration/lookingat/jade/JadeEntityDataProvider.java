@@ -17,7 +17,7 @@ public class JadeEntityDataProvider implements IServerDataProvider<EntityAccesso
 
     @Override
     public void appendServerData(CompoundTag data, EntityAccessor entityAccessor) {
-        JadeLookingAtHelper helper = new JadeLookingAtHelper();
+        JadeLookingAtHelper helper = new JadeLookingAtHelper(entityAccessor.getLevel().registryAccess());
         LookingAtUtils.addInfo(helper, entityAccessor.getEntity());
         //Add our data if we have any
         helper.finalizeData(data);

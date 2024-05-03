@@ -150,7 +150,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void write(RegistryFriendlyByteBuf buffer) {
         super.write(buffer);
-        storedEnergy.getEnergy().writeToBuffer(buffer);
+        FloatingLong.STREAM_CODEC.encode(buffer, storedEnergy.getEnergy());
         FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedFluid.getFluid());
         GasStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedGas.getStack());
         InfusionStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedInfusion.getStack());
@@ -164,7 +164,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     protected void read(RegistryFriendlyByteBuf dataStream) {
         super.read(dataStream);
         presetVariables();
-        storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
+        storedEnergy.setEnergy(FloatingLong.STREAM_CODEC.decode(dataStream));
         storedFluid.setStack(FluidStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedGas.setStack(GasStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
         storedInfusion.setStack(InfusionStack.OPTIONAL_STREAM_CODEC.decode(dataStream));

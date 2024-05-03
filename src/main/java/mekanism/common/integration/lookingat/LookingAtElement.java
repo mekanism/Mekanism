@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LookingAtElement {
+public abstract class LookingAtElement implements ILookingAtElement {
 
     private final int borderColor;
     private final int textColor;

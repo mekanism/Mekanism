@@ -15,6 +15,6 @@ public class WTHITEntityDataProvider implements IDataProvider<Entity> {
     public void appendData(IDataWriter dataWriter, IServerAccessor<Entity> serverAccessor, IPluginConfig config) {
         WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
         LookingAtUtils.addInfo(helper, serverAccessor.getTarget());
-        dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
+        dataWriter.add(WTHITLookingAtHelper.TYPE, result -> result.add(helper));
     }
 }

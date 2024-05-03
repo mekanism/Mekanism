@@ -61,10 +61,7 @@ public class LookingAtUtils {
 
     public static final ResourceLocation ENERGY = Mekanism.rl("energy");
     public static final ResourceLocation FLUID = Mekanism.rl("fluid");
-    public static final ResourceLocation GAS = Mekanism.rl("gas");
-    public static final ResourceLocation INFUSE_TYPE = Mekanism.rl("infuse_type");
-    public static final ResourceLocation PIGMENT = Mekanism.rl("pigment");
-    public static final ResourceLocation SLURRY = Mekanism.rl("slurry");
+    public static final ResourceLocation CHEMICAL = Mekanism.rl("chemical");
 
     private LookingAtUtils() {
     }
@@ -189,13 +186,13 @@ public class LookingAtUtils {
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fallback));
         }
-        info.addFluidElement(fluidInTank, capacity);
+        info.addFluidElement(new FluidElement(fluidInTank, capacity));
     }
 
     private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
         int containers = energyHandler.getEnergyContainerCount();
         for (int container = 0; container < containers; container++) {
-            info.addEnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container));
+            info.addEnergyElement(new EnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container)));
         }
     }
 
@@ -275,6 +272,6 @@ public class LookingAtUtils {
         } else if (!fallback.isEmptyType()) {
             info.addText(langEntry.translate(fallback));
         }
-        info.addChemicalElement(chemicalInTank, capacity);
+        info.addChemicalElement(new ChemicalElement(chemicalInTank, capacity));
     }
 }

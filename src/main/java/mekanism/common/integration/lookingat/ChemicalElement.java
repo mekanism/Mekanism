@@ -1,5 +1,9 @@
 package mekanism.common.integration.lookingat;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mekanism.api.NBTConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.math.MathUtils;
@@ -8,10 +12,24 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class ChemicalElement extends LookingAtElement {
+
+    public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+          ChemicalStack.BOXED_OPTIONAL_CODEC.fieldOf(NBTConstants.BOXED_CHEMICAL).forGetter(ChemicalElement::getStored),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.MAX).forGetter(ChemicalElement::getCapacity)
+    ).apply(instance, ChemicalElement::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(
+          ChemicalStack.BOXED_OPTIONAL_STREAM_CODEC, ChemicalElement::getStored,
+          ByteBufCodecs.VAR_LONG, ChemicalElement::getCapacity,
+          ChemicalElement::new
+    );
 
     @NotNull
     protected final ChemicalStack<?> stored;
@@ -64,5 +82,10 @@ public class ChemicalElement extends LookingAtElement {
     protected boolean applyRenderColor(GuiGraphics guiGraphics) {
         MekanismRenderer.color(guiGraphics, stored.getChemical());
         return true;
+    }
+
+    @Override
+    public ResourceLocation getID() {
+        return LookingAtUtils.CHEMICAL;
     }
 }

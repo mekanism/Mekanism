@@ -178,17 +178,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return new FloatingLong(value, clampDecimal(decimal), true);
     }
 
-    /**
-     * Reads an immutable {@link FloatingLong} from a buffer
-     *
-     * @param buffer The {@link FriendlyByteBuf} to read from
-     *
-     * @return An immutable {@link FloatingLong}
-     */
-    public static FloatingLong readFromBuffer(FriendlyByteBuf buffer) {
-        return createConst(buffer.readVarLong(), buffer.readShort());
-    }
-
     private final boolean isConstant;
     private long value;
     private short decimal;
@@ -1080,16 +1069,6 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return subtract(other);
         }
         return add(other);
-    }
-
-    /**
-     * Writes this {@link FloatingLong} to the given buffer
-     *
-     * @param buffer The {@link FriendlyByteBuf} to write to.
-     */
-    public void writeToBuffer(FriendlyByteBuf buffer) {
-        buffer.writeVarLong(value);
-        buffer.writeShort(decimal);
     }
 
     @Override

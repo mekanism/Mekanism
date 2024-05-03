@@ -12,7 +12,7 @@ import java.util.function.Consumer
 
 plugins {
     id 'org.ajoberstar.grgit.service' version '5.2.2'
-    id 'net.darkhax.curseforgegradle' version '1.1.18'
+    id 'net.darkhax.curseforgegradle' version '1.1.23'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
@@ -479,13 +479,12 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-1.20.5-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 1.20.5: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
+    datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
     //TODO - 1.20.5: Switch back to datagenMainImplementation
     //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
     //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")

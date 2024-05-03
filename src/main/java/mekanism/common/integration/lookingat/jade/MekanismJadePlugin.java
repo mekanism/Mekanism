@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.EntityAccessor;
+import snownee.jade.api.IComponentProvider;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -28,14 +30,11 @@ public class MekanismJadePlugin implements IWailaPlugin {
     public void registerClient(IWailaClientRegistration registration) {
         registration.addConfig(LookingAtUtils.ENERGY, true);
         registration.addConfig(LookingAtUtils.FLUID, true);
-        registration.addConfig(LookingAtUtils.GAS, true);
-        registration.addConfig(LookingAtUtils.INFUSE_TYPE, true);
-        registration.addConfig(LookingAtUtils.PIGMENT, true);
-        registration.addConfig(LookingAtUtils.SLURRY, true);
-        registration.registerEntityComponent(JadeTooltipRenderer.INSTANCE, EntityRobit.class);
-        registration.registerBlockComponent(JadeTooltipRenderer.INSTANCE, Block.class);
-        registration.registerEntityComponent(JadeBuiltinRemover.INSTANCE, EntityRobit.class);
-        registration.registerBlockComponent(JadeBuiltinRemover.INSTANCE, Block.class);
+        registration.addConfig(LookingAtUtils.CHEMICAL, true);
+        registration.registerEntityComponent((IComponentProvider< EntityAccessor >) JadeTooltipRenderer.INSTANCE, EntityRobit.class);
+        registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeTooltipRenderer.INSTANCE, Block.class);
+        registration.registerEntityComponent((IComponentProvider<EntityAccessor>) JadeBuiltinRemover.INSTANCE, EntityRobit.class);
+        registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeBuiltinRemover.INSTANCE, Block.class);
         registration.addRayTraceCallback((hitResult, accessor, originalAccessor) -> {
             //Redirect bounding blocks to the main tile for purposes of naming and the like
             if (accessor instanceof BlockAccessor target && target.getBlockState().getBlock() instanceof BlockBounding) {

@@ -1,17 +1,14 @@
 package mekanism.common.integration.lookingat;
 
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.math.FloatingLong;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 public interface LookingAtHelper {
 
     void addText(Component text);
 
-    void addEnergyElement(FloatingLong energy, FloatingLong maxEnergy);
+    void addEnergyElement(EnergyElement element);
 
-    void addFluidElement(FluidStack stored, int capacity);
+    void addFluidElement(FluidElement element);
 
-    void addChemicalElement(ChemicalStack<?> stored, long capacity);
+    void addChemicalElement(ChemicalElement element);
 }

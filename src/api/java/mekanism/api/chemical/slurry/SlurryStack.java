@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -134,14 +133,6 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
     @Override
     protected Slurry getEmptyChemical() {
         return MekanismAPI.EMPTY_SLURRY;
-    }
-
-    public static SlurryStack readFromPacket(FriendlyByteBuf buf) {
-        Slurry slurry = buf.readById(MekanismAPI.SLURRY_REGISTRY::byId);
-        if (slurry == null || slurry.isEmptyType()) {
-            return EMPTY;
-        }
-        return new SlurryStack(slurry, buf.readVarLong());
     }
 
     /**

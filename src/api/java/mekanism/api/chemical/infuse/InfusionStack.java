@@ -14,7 +14,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -134,14 +133,6 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
     @Override
     protected InfuseType getEmptyChemical() {
         return MekanismAPI.EMPTY_INFUSE_TYPE;
-    }
-
-    public static InfusionStack readFromPacket(FriendlyByteBuf buf) {
-        InfuseType infuseType = buf.readById(MekanismAPI.INFUSE_TYPE_REGISTRY::byId);
-        if (infuseType == null || infuseType.isEmptyType()) {
-            return EMPTY;
-        }
-        return new InfusionStack(infuseType, buf.readVarLong());
     }
 
     /**

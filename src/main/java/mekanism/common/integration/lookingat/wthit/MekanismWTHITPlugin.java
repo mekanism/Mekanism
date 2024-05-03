@@ -37,13 +37,10 @@ public class MekanismWTHITPlugin implements IWailaPlugin {
         registration.addEntityData(WTHITEntityDataProvider.INSTANCE, EntityRobit.class);
         registration.addConfig(LookingAtUtils.ENERGY, true);
         registration.addConfig(LookingAtUtils.FLUID, true);
-        registration.addConfig(LookingAtUtils.GAS, true);
-        registration.addConfig(LookingAtUtils.INFUSE_TYPE, true);
-        registration.addConfig(LookingAtUtils.PIGMENT, true);
-        registration.addConfig(LookingAtUtils.SLURRY, true);
+        registration.addConfig(LookingAtUtils.CHEMICAL, true);
         registration.addComponent((IEntityComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, EntityRobit.class);
         registration.addComponent((IBlockComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, Block.class);
-        registration.addDataType(MEK_DATA, WTHITLookingAtHelper.class, WTHITLookingAtHelper.SERIALIZER);
+        registration.addDataType(WTHITLookingAtHelper.TYPE, WTHITLookingAtHelper.STREAM_CODEC);
 
         registration.addEventListener(new IEventListener() {
             @Override

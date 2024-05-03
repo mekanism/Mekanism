@@ -623,10 +623,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addJadeConfigTooltip(JadeConstants.TOOLTIP_RENDERER, "Jade tooltip renderer");
         addJadeConfigTooltip(LookingAtUtils.ENERGY, "Energy");
         addJadeConfigTooltip(LookingAtUtils.FLUID, "Fluid");
-        addJadeConfigTooltip(LookingAtUtils.GAS, "Gas");
-        addJadeConfigTooltip(LookingAtUtils.INFUSE_TYPE, "Infuse Type");
-        addJadeConfigTooltip(LookingAtUtils.PIGMENT, "Pigment");
-        addJadeConfigTooltip(LookingAtUtils.SLURRY, "Slurry");
+        addJadeConfigTooltip(LookingAtUtils.CHEMICAL, "Chemical");
     }
 
     private void addJadeConfigTooltip(ResourceLocation location, String value) {
