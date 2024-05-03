@@ -9,6 +9,7 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
@@ -24,6 +25,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -79,7 +81,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addBalloons() {
-        addToTag(AdditionsTags.Items.BALLOONS, AdditionsItems.BALLOONS.values().toArray(new IItemProvider[0]));
+        addToTag(AdditionsTags.Items.BALLOONS, AdditionsItems.BALLOONS);
     }
 
     private void addSlabs() {
@@ -145,7 +147,26 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
     }
 
-    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<?, ? extends IBlockProvider> blockProviders) {
+    private void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, Map<EnumColor, ? extends IBlockProvider> blockProviders) {
         addToTags(itemTag, blockTag, blockProviders.values().toArray(new IBlockProvider[0]));
+        for (Map.Entry<EnumColor, ? extends IBlockProvider> entry : blockProviders.entrySet()) {
+            DyeColor dyeColor = entry.getKey().getDyeColor();
+            if (dyeColor != null) {
+                addToTags(Tags.Items.DYED, Tags.Blocks.DYED, entry.getValue());
+                TagKey<Item> dyedColor = ItemTags.create(Tags.Items.DYED.location().withSuffix("/" + dyeColor.getName()));
+                addToTags(dyedColor, BlockTags.create(dyedColor.location()), entry.getValue());
+            }
+        }
+    }
+
+    private void addToTag(TagKey<Item> itemTag, Map<EnumColor, ? extends IItemProvider> itemProviders) {
+        addToTag(itemTag, itemProviders.values().toArray(new IItemProvider[0]));
+        for (Map.Entry<EnumColor, ? extends IItemProvider> entry : itemProviders.entrySet()) {
+            DyeColor dyeColor = entry.getKey().getDyeColor();
+            if (dyeColor != null) {
+                addToTag(Tags.Items.DYED, entry.getValue());
+                addToTag(ItemTags.create(Tags.Items.DYED.location().withSuffix("/" + dyeColor.getName())), entry.getValue());
+            }
+        }
     }
 }

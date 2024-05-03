@@ -81,7 +81,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             filterSaveFailed(getNoFilterSaveError());
             return false;
         }
-        String modid = "forge";
+        String modid = "c";
         String newFilter = name.toLowerCase(Locale.ROOT);
         if (newFilter.contains(":")) {
             String[] split = newFilter.split(":");

@@ -436,7 +436,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "6) Adds a recipe that uses 400 mB of Water, 400 mB of Oxygen, and four Boats to create a Charcoal Dust and 400 mB of Hydrogen in 600 ticks."
               ).blankLine()
               .recipe(PressurizedReactionRecipeManager.INSTANCE)
-              .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(MekanismTags.Items.SAWDUST), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 350),
+              .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(FluidTags.WATER, 350),
                     IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), FloatingLong.createConst(25))
               .addExample("reaction/sand", IngredientCreatorAccess.item().from(Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.CHLORINE, 100),
                     IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN, 100), 300, MekanismBlocks.SALT_BLOCK.getItemStack())

@@ -40,7 +40,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -206,7 +205,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
-              ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
+              ).key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_WOOD)
               .build(consumer);
         //Bio Fuel
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
@@ -337,7 +336,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .key(Pattern.BUCKET, Items.LAVA_BUCKET)
+              .key(Pattern.BUCKET, Tags.Items.BUCKETS_LAVA)
               .build(consumer);
         //Dictionary
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DICTIONARY)
@@ -372,7 +371,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
         //Dye Base
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.DYE_BASE, 3)
-              .addIngredient(MekanismTags.Items.SAWDUST, 2)
+              .addIngredient(MekanismTags.Items.DUSTS_WOOD, 2)
               .addIngredient(Items.CLAY_BALL)
               .build(consumer);
         //Dynamic tank
@@ -764,7 +763,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(Items.PAPER, 6)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
-              ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
+              ).key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_WOOD)
               .build(consumer, Mekanism.rl("paper"));
         //Personal barrel
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_BARREL)

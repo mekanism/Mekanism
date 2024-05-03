@@ -48,8 +48,8 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.BUCKET),
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY))
               ).key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_BLOCKS_CHEAP)
-              .key(Pattern.CONSTANT, Items.WATER_BUCKET)
-              .key(Pattern.BUCKET, Items.LAVA_BUCKET)
+              .key(Pattern.CONSTANT, Tags.Items.BUCKETS_WATER)
+              .key(Pattern.BUCKET, Tags.Items.BUCKETS_LAVA)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.STONE_GENERATOR_UPGRADE)));
     }

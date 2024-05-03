@@ -18,13 +18,13 @@ public class GeneratorTags {
         private Fluids() {
         }
 
-        public static final TagKey<Fluid> BIOETHANOL = forgeTag("bioethanol");
-        public static final TagKey<Fluid> DEUTERIUM = forgeTag("deuterium");
-        public static final TagKey<Fluid> FUSION_FUEL = forgeTag("fusion_fuel");
-        public static final TagKey<Fluid> TRITIUM = forgeTag("tritium");
+        public static final TagKey<Fluid> BIOETHANOL = commonTag("bioethanol");
+        public static final TagKey<Fluid> DEUTERIUM = commonTag("deuterium");
+        public static final TagKey<Fluid> FUSION_FUEL = commonTag("fusion_fuel");
+        public static final TagKey<Fluid> TRITIUM = commonTag("tritium");
 
-        private static TagKey<Fluid> forgeTag(String name) {
-            return FluidTags.create(new ResourceLocation("forge", name));
+        private static TagKey<Fluid> commonTag(String name) {
+            return FluidTags.create(new ResourceLocation("c", name));
         }
     }
 

@@ -255,7 +255,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
-              "validItemFilters", () -> Collections.singletonMap("forge", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
+              "validItemFilters", () -> Collections.singletonMap("c", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);

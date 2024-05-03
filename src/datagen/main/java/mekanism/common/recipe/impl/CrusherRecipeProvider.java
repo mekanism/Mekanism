@@ -88,13 +88,10 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.item().from(Items.BONE),
               new ItemStack(Items.BONE_MEAL, 6)
         ).build(consumer, Mekanism.rl(basePath + "bone"));
-        //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Blocks.RED_SANDSTONE,
-              Blocks.CHISELED_RED_SANDSTONE, Blocks.CUT_RED_SANDSTONE, Blocks.SMOOTH_RED_SANDSTONE);
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Tags.Items.SANDSTONE_RED_BLOCKS);
         //Sandstone -> Sand
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "sandstone_to_sand", null, Blocks.SAND, Blocks.SANDSTONE,
-              Blocks.CHISELED_SANDSTONE, Blocks.CUT_SANDSTONE, Blocks.SMOOTH_SANDSTONE);
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "sandstone_to_sand", null, Blocks.SAND, Tags.Items.SANDSTONE_UNCOLORED_BLOCKS);
         //Wool -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(ItemTags.WOOL),

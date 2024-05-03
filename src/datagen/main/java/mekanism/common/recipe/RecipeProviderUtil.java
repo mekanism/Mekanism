@@ -136,6 +136,14 @@ public class RecipeProviderUtil {
         ), basePath + "trapdoor/" + name, condition);
     }
 
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, ItemLike sand, TagKey<Item> sandstoneTag) {
+        build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
+              IngredientCreatorAccess.item().from(Ingredient.of(sandstoneTag)),
+              new ItemStack(sand, 2)
+        ), path, condition);
+    }
+
+    @Deprecated
     public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, ItemLike sand, ItemLike... sandstones) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Ingredient.of(sandstones)),

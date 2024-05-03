@@ -1,13 +1,15 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
-import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -17,7 +19,6 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSlurries;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
@@ -47,10 +48,6 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
 public class MekanismTagProvider extends BaseTagProvider {
 
     public MekanismTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -69,8 +66,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addBoxBlacklist();
         addTools();
         addArmor();
-        addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
-        addToTag(MekanismTags.Items.YELLOW_CAKE_URANIUM, MekanismItems.YELLOW_CAKE_URANIUM);
         addRods();
         addFuels();
         addAlloys();
@@ -133,13 +128,25 @@ public class MekanismTagProvider extends BaseTagProvider {
         getBlockBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
               Blocks.PINK_PETALS
         );
+        addToTag(BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS, MekanismBlocks.SALT_BLOCK);
+
+        addToTags(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS, Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS, MekanismBlocks.BOUNDING_BLOCK);
     }
 
     private void addEntities() {
         addEntitiesToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
+        addEntitiesToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
+
         addEntitiesToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
         addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
-        addEntitiesToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.CAN_BREATHE_UNDER_WATER, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.IGNORES_POISON_AND_REGEN, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.IMMUNE_TO_INFESTED, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.IMMUNE_TO_OOZING, MekanismEntityTypes.ROBIT);
+        //Robit's are not scary, they are friends!
+        addEntitiesToTag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.ILLAGER_FRIENDS, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.WITHER_FRIENDS, MekanismEntityTypes.ROBIT);
     }
 
     private void addProcessedResources() {
@@ -191,7 +198,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addBoxBlacklist() {
-        addToTag(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED,
+        addToTag(Tags.Blocks.RELOCATION_NOT_SUPPORTED,
               MekanismBlocks.CARDBOARD_BOX,
               MekanismBlocks.BOUNDING_BLOCK,
               MekanismBlocks.SECURITY_DESK,
@@ -211,6 +218,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ELITE_PRESSURIZED_TUBE,
               MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE,
               //Don't allow other transmitters that have a buffer either due to dupe bugs
+              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
+              // into remaining network when removed except for when they are removed by a mod that saved their contents first
+              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
               MekanismBlocks.BASIC_MECHANICAL_PIPE,
               MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
               MekanismBlocks.ELITE_MECHANICAL_PIPE,
@@ -221,68 +231,56 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
-              .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
-        TileEntityTypeRegistryObject<?>[] tilesToBlacklist = {
-              MekanismTileEntityTypes.CARDBOARD_BOX,
-              MekanismTileEntityTypes.BOUNDING_BLOCK,
-              MekanismTileEntityTypes.SECURITY_DESK,
-              MekanismTileEntityTypes.DIGITAL_MINER,
-              MekanismTileEntityTypes.SEISMIC_VIBRATOR,
-              MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR,
-              MekanismTileEntityTypes.MODIFICATION_STATION,
-              MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE,
-              MekanismTileEntityTypes.PIGMENT_MIXER,
-              //Don't allow blocks that may have a radioactive substance in them to be picked up as it
-              // will effectively dupe the radiation and also leak out into the atmosphere which is not
-              // what people want, and means that it is likely someone miss-clicked.
-              MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL,
-              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER,
-              MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
-              MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE,
-              MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE,
-              MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE,
-              //Don't allow other transmitters that have a buffer either due to dupe bugs
-              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
-              // into remaining network when removed except for when they are removed by a mod that saved their contents first
-              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
-              MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE,
-              MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE,
-              MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE,
-              MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE,
-              MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE,
-              MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE,
-              MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE,
-              MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE
-        };
-        addToTag(MekanismTags.TileEntityTypes.IMMOVABLE, tilesToBlacklist);
-        addToTag(MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED, tilesToBlacklist);
-        getTileEntityTypeBuilder(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST)
-              .add(MekanismTags.TileEntityTypes.IMMOVABLE, MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED);
+              .add(Tags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
     }
 
     private void addTools() {
         addWrenches();
         addToTag(Tags.Items.TOOLS_BOWS, MekanismItems.ELECTRIC_BOW);
+        addToTag(ItemTags.BOW_ENCHANTABLE, MekanismItems.ELECTRIC_BOW);
+        addToTag(ItemTags.DURABILITY_ENCHANTABLE, MekanismItems.HDPE_REINFORCED_ELYTRA);
+        addToTag(ItemTags.EQUIPPABLE_ENCHANTABLE, MekanismItems.HDPE_REINFORCED_ELYTRA);
     }
 
     private void addWrenches() {
-        addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
         //Note: We don't add wrenches to the vanilla tools tag as that is for a different style of tool and used for things like breaking pots
-        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
-        addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
-        getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCH);
+        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCHES);
+        addToTag(MekanismTags.Items.TOOLS_WRENCHES, MekanismItems.CONFIGURATOR);
+        getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.TOOLS_WRENCHES);
     }
 
     private void addArmor() {
-        getItemBuilder(ItemTags.HEAD_ARMOR).add(MekanismTags.Items.ARMORS_HELMETS_HAZMAT);
-        getItemBuilder(ItemTags.CHEST_ARMOR).add(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT);
-        getItemBuilder(ItemTags.LEG_ARMOR).add(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT);
-        getItemBuilder(ItemTags.FOOT_ARMOR).add(MekanismTags.Items.ARMORS_BOOTS_HAZMAT);
-
-        addToTag(MekanismTags.Items.ARMORS_HELMETS_HAZMAT, MekanismItems.HAZMAT_MASK);
-        addToTag(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT, MekanismItems.HAZMAT_GOWN);
-        addToTag(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT, MekanismItems.HAZMAT_PANTS);
-        addToTag(MekanismTags.Items.ARMORS_BOOTS_HAZMAT, MekanismItems.HAZMAT_BOOTS);
+        addToTag(ItemTags.HEAD_ARMOR, MekanismItems.HAZMAT_MASK, MekanismItems.MEKASUIT_HELMET);
+        addToTag(ItemTags.CHEST_ARMOR, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
+        addToTag(ItemTags.LEG_ARMOR, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
+        addToTag(ItemTags.FOOT_ARMOR, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
+        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName,
+              MekanismItems.HAZMAT_MASK,
+              MekanismItems.HAZMAT_GOWN,
+              MekanismItems.HAZMAT_PANTS,
+              MekanismItems.HAZMAT_BOOTS,
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS,
+              MekanismItems.MEKASUIT_BOOTS
+        );
+        IItemProvider[] providers = {
+              MekanismItems.HAZMAT_MASK,
+              MekanismItems.HAZMAT_GOWN,
+              MekanismItems.HAZMAT_PANTS,
+              MekanismItems.HAZMAT_BOOTS,
+              MekanismItems.MEKASUIT_HELMET,
+              MekanismItems.MEKASUIT_BODYARMOR,
+              MekanismItems.MEKASUIT_PANTS,
+              MekanismItems.MEKASUIT_BOOTS
+        };
+        getItemBuilder(ItemTags.TRIMMABLE_ARMOR).remove(IItemProvider::getRegistryName, providers);
+        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
+        getItemBuilder(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(IItemProvider::getRegistryName, providers);
+        getItemBuilder(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_MASK, MekanismItems.MEKASUIT_HELMET);
+        getItemBuilder(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_GOWN, MekanismItems.MEKASUIT_BODYARMOR);
+        getItemBuilder(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_PANTS, MekanismItems.MEKASUIT_PANTS);
+        getItemBuilder(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(IItemProvider::getRegistryName, MekanismItems.HAZMAT_BOOTS, MekanismItems.MEKASUIT_BOOTS);
     }
 
     private void addRods() {
@@ -301,7 +299,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.ALLOYS_ADVANCED, MekanismItems.INFUSED_ALLOY);
         addToTag(MekanismTags.Items.ALLOYS_ELITE, MekanismItems.REINFORCED_ALLOY);
         addToTag(MekanismTags.Items.ALLOYS_ULTIMATE, MekanismItems.ATOMIC_ALLOY);
-        getItemBuilder(MekanismTags.Items.FORGE_ALLOYS).add(MekanismTags.Items.ALLOYS_ADVANCED, MekanismTags.Items.ALLOYS_ELITE, MekanismTags.Items.ALLOYS_ULTIMATE);
+        getItemBuilder(MekanismTags.Items.COMMON_ALLOYS).add(MekanismTags.Items.ALLOYS_ADVANCED, MekanismTags.Items.ALLOYS_ELITE, MekanismTags.Items.ALLOYS_ULTIMATE);
         //Alloy tags that go in our domain
         addToTag(MekanismTags.Items.ALLOYS_BASIC, Items.REDSTONE);
         getItemBuilder(MekanismTags.Items.ALLOYS_INFUSED).add(MekanismTags.Items.ALLOYS_ADVANCED);
@@ -447,9 +445,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.DUSTS_FLUORITE);
 
         addToTag(Tags.Items.DYES_YELLOW, MekanismItems.SULFUR_DUST);
-
-        getItemBuilder(MekanismTags.Items.SALT).add(MekanismTags.Items.DUSTS_SALT);
-        getItemBuilder(MekanismTags.Items.SAWDUST).add(MekanismTags.Items.DUSTS_WOOD);
     }
 
     private void addGems() {
@@ -500,12 +495,13 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addBiomes() {
-        getBiomeBuilder(MekanismTags.Biomes.SPAWN_ORES).add(BiomeTags.IS_OVERWORLD);
+        getBiomeBuilder(MekanismTags.Biomes.SPAWN_ORES).add(BiomeTags.IS_OVERWORLD, Tags.Biomes.IS_OVERWORLD);
     }
 
     private void addDamageTypes() {
         addToTag(Tags.DamageTypes.IS_ENVIRONMENT, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_WOLF_ARMOR, MekanismDamageTypes.RADIATION);
         addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
         getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 

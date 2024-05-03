@@ -18,6 +18,7 @@ import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseItemModelProvider extends ItemModelProvider {
@@ -58,7 +59,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                withExistingParent(RegistryUtils.getPath(bucket), new ResourceLocation("neoforge", "item/bucket"))
+                withExistingParent(RegistryUtils.getPath(bucket), new ResourceLocation(NeoForgeVersion.MOD_ID, "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
                       .fluid(bucket.content);
             }

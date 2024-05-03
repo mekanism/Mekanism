@@ -74,6 +74,7 @@ import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.ITeleporter;
 import net.neoforged.neoforge.entity.PartEntity;
@@ -88,8 +89,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo((byte) 4, null, Collections.emptyList());
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
-    private final Predicate<Entity> SAME_DIMENSION_TARGET = entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) && !didTeleport.contains(entity.getUUID());
-    private final Predicate<Entity> DIFFERENT_DIMENSION_TARGET = entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) && entity.canChangeDimensions() && !didTeleport.contains(entity.getUUID());
+    private final Predicate<Entity> SAME_DIMENSION_TARGET = entity -> canTeleportEntity(entity, false);
+    private final Predicate<Entity> DIFFERENT_DIMENSION_TARGET = entity -> canTeleportEntity(entity, true);
     private AABB teleportBounds;
     public int teleDelay = 0;
     public boolean shouldRender;
@@ -130,6 +131,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 153, 7));
         return builder.build();
+    }
+
+    private boolean canTeleportEntity(Entity entity, boolean checkDimensions) {
+        if (entity.isSpectator() || entity.isPassenger() || entity instanceof PartEntity || entity.getType().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
+            return false;
+        } else if (checkDimensions && !entity.canChangeDimensions()) {
+            return false;
+        }
+        return !didTeleport.contains(entity.getUUID());
     }
 
     public static void alignPlayer(ServerPlayer player, MekanismTeleportEvent.Teleporter event, TileEntityTeleporter teleporter) {

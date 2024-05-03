@@ -24,8 +24,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -132,11 +130,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         tool(AXE, axe, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
         tool(SHOVEL, shovel, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
         tool(HOE, hoe, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
+        //TODO - 1.20.5: Do we care this no longer accepts tools from other mods?
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
-              .key(AXE_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/axes/" + name)))
-              .key(PICKAXE_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/pickaxes/" + name)))
-              .key(SHOVEL_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/shovels/" + name)))
+              .key(AXE_CHAR, axe)
+              .key(PICKAXE_CHAR, pickaxe)
+              .key(SHOVEL_CHAR, shovel)
               .key(ROD_CHAR, rod)
               .build(consumer, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget

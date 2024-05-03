@@ -7,9 +7,9 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.Tags;
 
 @ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
@@ -22,7 +22,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     protected void registerRecipes(RecipeOutput consumer, String basePath) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(ItemTags.create(new ResourceLocation("forge", "gems/certus_quartz"))),
+                    IngredientCreatorAccess.item().from(ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"))),
                     AEItems.CERTUS_QUARTZ_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));

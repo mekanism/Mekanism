@@ -2,13 +2,10 @@ package mekanism.generators.common;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
-import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
-import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -40,16 +37,10 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     private void addBoxBlacklist() {
-        addToTag(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED,
+        addToTag(Tags.Blocks.RELOCATION_NOT_SUPPORTED,
               GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR,
               GeneratorsBlocks.WIND_GENERATOR
         );
-        TileEntityTypeRegistryObject<?>[] tilesToBlacklist = {
-              GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR,
-              GeneratorsTileEntityTypes.WIND_GENERATOR
-        };
-        addToTag(MekanismTags.TileEntityTypes.IMMOVABLE, tilesToBlacklist);
-        addToTag(MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED, tilesToBlacklist);
     }
 
     private void addEndermanBlacklist() {
