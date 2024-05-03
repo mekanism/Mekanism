@@ -6,7 +6,7 @@ import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.resources.ResourceLocation;
 
 @NothingNullByDefault
@@ -27,7 +27,7 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>
     }
 
     @Override
-    public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
+    public EmiStack create(ResourceLocation id, DataComponentPatch ignored, long amount) {
         Optional<CHEMICAL> chemical = registry.getOptional(id).filter(c -> !c.isEmptyType());
         if (chemical.isPresent()) {
             return stackCreator.create(chemical.get(), amount);

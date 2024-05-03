@@ -9,6 +9,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiRegistryAdapter;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -98,19 +99,22 @@ public class MekanismEmi implements EmiPlugin {
 
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
     private static final ChemicalEmiIngredientSerializer<Gas, GasEmiStack> GAS_SERIALIZER = new ChemicalEmiIngredientSerializer<Gas, GasEmiStack>("Gas", MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
+    private static final EmiRegistryAdapter<Gas> GAS_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Gas.class, MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
     private static final ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack> INFUSION_SERIALIZER = new ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack>("Infuse Type", MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
+    private static final EmiRegistryAdapter<InfuseType> INFUSE_TYPE_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(InfuseType.class, MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
     private static final ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack> PIGMENT_SERIALIZER = new ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack>("Pigment", MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
+    private static final EmiRegistryAdapter<Pigment> PIGMENT_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Pigment.class, MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
     private static final ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack> SLURRY_SERIALIZER = new ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack>("Slurry", MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
+    private static final EmiRegistryAdapter<Slurry> SLURRY_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Slurry.class, MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
 
-    //TODO - 1.20.4: I believe this doesn't work because of https://github.com/emilyploszaj/emi/issues/475
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
-        ItemStack stack = emiStack.getItemStack();
         //TODO - 1.20.5: Re-evaluate if we want the components check or if it should check it slightly differently?
-        if (!stack.getComponents().isEmpty()) {
+        if (!emiStack.getComponentChanges().isEmpty()) {
             Set<Object> representation = new HashSet<>();
+            ItemStack stack = emiStack.getItemStack();
             addChemicalComponent(representation, stack, ContainerType.GAS, Capabilities.GAS.item());
             addChemicalComponent(representation, stack, ContainerType.INFUSION, Capabilities.INFUSION.item());
             addChemicalComponent(representation, stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item());
@@ -118,6 +122,7 @@ public class MekanismEmi implements EmiPlugin {
             addFluidComponent(representation, stack);
             addEnergyComponent(representation, stack);
             if (!representation.isEmpty()) {
+
                 return representation;
             }
         }
@@ -204,7 +209,11 @@ public class MekanismEmi implements EmiPlugin {
         registry.addIngredientSerializer(InfusionEmiStack.class, INFUSION_SERIALIZER);
         registry.addIngredientSerializer(PigmentEmiStack.class, PIGMENT_SERIALIZER);
         registry.addIngredientSerializer(SlurryEmiStack.class, SLURRY_SERIALIZER);
-        //TODO - 1.20.4: Add a support for tag ingredients https://github.com/emilyploszaj/emi/issues/483
+        //TODO - 1.20.5: Test this works properly for getting things to display as tags
+        registry.addRegistryAdapter(GAS_REGISTRY_ADAPTER);
+        registry.addRegistryAdapter(INFUSE_TYPE_REGISTRY_ADAPTER);
+        registry.addRegistryAdapter(PIGMENT_REGISTRY_ADAPTER);
+        registry.addRegistryAdapter(SLURRY_REGISTRY_ADAPTER);
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>> void addEmiStacks(EmiRegistry emiRegistry, ChemicalEmiIngredientSerializer<CHEMICAL, ?> serializer) {
@@ -217,7 +226,6 @@ public class MekanismEmi implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {
-        //TODO - 1.20.4: Tooltips in EMI in mekanism screens render behind the items rendered in EMI https://github.com/emilyploszaj/emi/issues/480
         addEmiStacks(registry, GAS_SERIALIZER);
         addEmiStacks(registry, INFUSION_SERIALIZER);
         addEmiStacks(registry, PIGMENT_SERIALIZER);

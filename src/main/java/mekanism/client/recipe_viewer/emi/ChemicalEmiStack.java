@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -82,10 +83,9 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
         return chemical.isEmptyType() || amount == 0;
     }
 
-    @Nullable
     @Override
-    public CompoundTag getNbt() {
-        return null;
+    public DataComponentPatch getComponentChanges() {
+        return DataComponentPatch.EMPTY;
     }
 
     @Override
@@ -145,6 +145,10 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
 
     public static class GasEmiStack extends ChemicalEmiStack<Gas> {
 
+        public GasEmiStack(Gas gas, DataComponentPatch ignored, long amount) {
+            this(gas, amount);
+        }
+
         public GasEmiStack(Gas gas, long amount) {
             super(gas, amount);
         }
@@ -156,6 +160,10 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     }
 
     public static class InfusionEmiStack extends ChemicalEmiStack<InfuseType> {
+
+        public InfusionEmiStack(InfuseType infuseType, DataComponentPatch ignored, long amount) {
+            this(infuseType, amount);
+        }
 
         public InfusionEmiStack(InfuseType infuseType, long amount) {
             super(infuseType, amount);
@@ -169,6 +177,10 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
 
     public static class PigmentEmiStack extends ChemicalEmiStack<Pigment> {
 
+        public PigmentEmiStack(Pigment pigment, DataComponentPatch ignored, long amount) {
+            this(pigment, amount);
+        }
+
         public PigmentEmiStack(Pigment pigment, long amount) {
             super(pigment, amount);
         }
@@ -180,6 +192,10 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
     }
 
     public static class SlurryEmiStack extends ChemicalEmiStack<Slurry> {
+
+        public SlurryEmiStack(Slurry slurry, DataComponentPatch ignored, long amount) {
+            this(slurry, amount);
+        }
 
         public SlurryEmiStack(Slurry slurry, long amount) {
             super(slurry, amount);

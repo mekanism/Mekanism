@@ -42,8 +42,7 @@ idea {
 }
 
 ext {
-    versionProperties = ["version"    : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range,
-                         "emi_version": emi_version_range]
+    versionProperties = ["version"    : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen']
@@ -432,10 +431,10 @@ dependencies {
         //runtimeOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}:api")
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
 
     if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
-        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minor_minecraft_version}")
+        runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
     }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
