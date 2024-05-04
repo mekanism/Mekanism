@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "mekanism:clumps/osmium"
+      "tag": "c:clumps/osmium"
     }
   },
   "output": {

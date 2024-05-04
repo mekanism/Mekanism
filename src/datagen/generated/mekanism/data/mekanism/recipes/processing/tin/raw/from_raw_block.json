@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/raw_tin"
+      "tag": "c:storage_blocks/raw_tin"
     }
   ],
   "result": {

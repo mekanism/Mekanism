@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:raw_materials/uranium"
+      "tag": "c:raw_materials/uranium"
     }
   },
   "output": {

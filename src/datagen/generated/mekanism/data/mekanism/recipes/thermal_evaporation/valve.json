@@ -6,7 +6,7 @@
       "item": "mekanism:thermal_evaporation_block"
     },
     "C": {
-      "tag": "forge:circuits/advanced"
+      "tag": "c:circuits/advanced"
     }
   },
   "pattern": [

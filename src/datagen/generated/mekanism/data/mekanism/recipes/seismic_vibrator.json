@@ -6,10 +6,10 @@
       "tag": "c:gems/lapis"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "I": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     },
     "X": {
       "item": "mekanism:steel_casing"

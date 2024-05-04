@@ -6,7 +6,7 @@
       "item": "mekanism:energy_tablet"
     },
     "I": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     },
     "R": {
       "tag": "c:dusts/redstone"

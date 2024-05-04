@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/lead"
+      "tag": "c:ores/lead"
     }
   },
   "output": {

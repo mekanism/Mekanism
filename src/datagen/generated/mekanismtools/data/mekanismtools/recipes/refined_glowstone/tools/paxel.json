@@ -3,16 +3,16 @@
   "category": "equipment",
   "key": {
     "A": {
-      "tag": "forge:tools/axes/refined_glowstone"
+      "item": "mekanismtools:refined_glowstone_axe"
     },
     "P": {
-      "tag": "forge:tools/pickaxes/refined_glowstone"
+      "item": "mekanismtools:refined_glowstone_pickaxe"
     },
     "R": {
       "tag": "c:rods/wooden"
     },
     "S": {
-      "tag": "forge:tools/shovels/refined_glowstone"
+      "item": "mekanismtools:refined_glowstone_shovel"
     }
   },
   "pattern": [

@@ -4,7 +4,7 @@
   "energyRequired": 1000,
   "fluidInput": {
     "amount": 50,
-    "tag": "forge:ethene"
+    "tag": "c:ethene"
   },
   "gasInput": {
     "amount": 10,

@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.6,
   "ingredient": {
-    "tag": "forge:raw_materials/uranium"
+    "tag": "c:raw_materials/uranium"
   },
   "result": {
     "count": 1,

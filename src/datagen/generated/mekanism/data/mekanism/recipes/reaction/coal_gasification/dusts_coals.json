@@ -16,10 +16,10 @@
   "itemInput": {
     "ingredient": [
       {
-        "tag": "forge:dusts/coal"
+        "tag": "c:dusts/coal"
       },
       {
-        "tag": "forge:dusts/charcoal"
+        "tag": "c:dusts/charcoal"
       }
     ]
   },

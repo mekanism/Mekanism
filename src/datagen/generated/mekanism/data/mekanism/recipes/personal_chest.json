@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "G": {
       "tag": "c:glass_blocks/cheap"
@@ -12,7 +12,7 @@
       "tag": "c:chests/wooden"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

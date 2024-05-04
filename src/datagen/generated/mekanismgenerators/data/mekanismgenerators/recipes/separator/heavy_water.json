@@ -3,7 +3,7 @@
   "energyMultiplier": 2,
   "input": {
     "amount": 2,
-    "tag": "forge:heavy_water"
+    "tag": "c:heavy_water"
   },
   "leftGasOutput": {
     "amount": 2,

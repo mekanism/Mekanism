@@ -6,7 +6,7 @@
       "item": "mekanism:energy_tablet"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

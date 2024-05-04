@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "minecraft:lava_bucket"
+      "tag": "c:buckets/lava"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "R": {
       "tag": "c:dusts/redstone"

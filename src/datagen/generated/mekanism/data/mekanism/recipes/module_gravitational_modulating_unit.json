@@ -6,13 +6,13 @@
       "tag": "c:nether_stars"
     },
     "A": {
-      "tag": "forge:alloys/ultimate"
+      "tag": "c:alloys/ultimate"
     },
     "E": {
       "item": "mekanism:ultimate_induction_provider"
     },
     "H": {
-      "tag": "forge:pellets/antimatter"
+      "tag": "c:pellets/antimatter"
     },
     "P": {
       "item": "mekanism:module_base"

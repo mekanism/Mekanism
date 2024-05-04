@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "ingredient": {
-      "tag": "forge:yellow_cake_uranium"
+      "item": "mekanism:yellow_cake_uranium"
     }
   },
   "output": {

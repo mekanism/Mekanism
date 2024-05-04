@@ -9,13 +9,13 @@
       "tag": "mekanism:alloys/infused"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "P": {
       "item": "mekanism:enrichment_chamber"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "T": {
       "item": "mekanism:basic_chemical_tank"

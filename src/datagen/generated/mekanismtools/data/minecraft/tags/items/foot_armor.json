@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:armors/boots/bronze",
-    "#forge:armors/boots/lapis_lazuli",
-    "#forge:armors/boots/osmium",
-    "#forge:armors/boots/refined_glowstone",
-    "#forge:armors/boots/refined_obsidian",
-    "#forge:armors/boots/steel"
+    "mekanismtools:bronze_boots",
+    "mekanismtools:lapis_lazuli_boots",
+    "mekanismtools:osmium_boots",
+    "mekanismtools:refined_glowstone_boots",
+    "mekanismtools:refined_obsidian_boots",
+    "mekanismtools:steel_boots"
   ]
 }

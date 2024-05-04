@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:gems/fluorite"
+      "tag": "c:gems/fluorite"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:ingots/refined_obsidian"
+      "tag": "c:ingots/refined_obsidian"
     },
     "X": {
       "item": "mekanism:steel_casing"

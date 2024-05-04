@@ -8,7 +8,7 @@
   "mainInput": {
     "amount": 14,
     "ingredient": {
-      "tag": "forge:dusts/fluorite"
+      "tag": "c:dusts/fluorite"
     }
   },
   "output": {

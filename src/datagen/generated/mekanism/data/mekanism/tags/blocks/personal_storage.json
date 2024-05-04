@@ -1,6 +1,6 @@
 {
   "values": [
-    "#forge:barrels/personal",
-    "#forge:chests/personal"
+    "#c:barrels/personal",
+    "#c:chests/personal"
   ]
 }

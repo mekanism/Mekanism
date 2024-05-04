@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "O": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

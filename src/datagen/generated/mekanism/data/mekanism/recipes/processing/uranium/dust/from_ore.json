@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/uranium"
+      "tag": "c:ores/uranium"
     }
   },
   "output": {

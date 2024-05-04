@@ -8,7 +8,7 @@
   "mainInput": {
     "amount": 27,
     "ingredient": {
-      "tag": "forge:dusts/lapis"
+      "tag": "c:dusts/lapis"
     }
   },
   "output": {

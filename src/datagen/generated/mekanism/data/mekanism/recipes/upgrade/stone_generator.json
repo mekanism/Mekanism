@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "#": {
-      "item": "minecraft:water_bucket"
+      "tag": "c:buckets/water"
     },
     "A": {
       "tag": "mekanism:alloys/infused"
     },
     "B": {
-      "item": "minecraft:lava_bucket"
+      "tag": "c:buckets/lava"
     },
     "G": {
       "tag": "c:glass_blocks/cheap"

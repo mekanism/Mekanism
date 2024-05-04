@@ -6,7 +6,7 @@
       "item": "mekanism:ultimate_energy_cube"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "P": {
       "item": "mekanism:elite_induction_provider"

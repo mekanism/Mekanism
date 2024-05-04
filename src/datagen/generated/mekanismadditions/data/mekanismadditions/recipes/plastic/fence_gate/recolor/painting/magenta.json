@@ -8,7 +8,7 @@
     "ingredient": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:fence_gates/plastic"
+        "tag": "c:fence_gates/plastic"
       },
       "subtracted": {
         "item": "mekanismadditions:magenta_plastic_fence_gate"

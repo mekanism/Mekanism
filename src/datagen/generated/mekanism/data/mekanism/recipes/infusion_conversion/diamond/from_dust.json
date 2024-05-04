@@ -2,7 +2,7 @@
   "type": "mekanism:infusion_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/diamond"
+      "tag": "c:dusts/diamond"
     }
   },
   "output": {

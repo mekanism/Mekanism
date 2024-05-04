@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:armors/chestplates/hazmat"
+    "mekanism:hazmat_gown",
+    "mekanism:mekasuit_bodyarmor"
   ]
 }

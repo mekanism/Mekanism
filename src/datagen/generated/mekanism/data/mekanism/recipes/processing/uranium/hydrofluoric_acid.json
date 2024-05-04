@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:gems/fluorite"
+      "tag": "c:gems/fluorite"
     }
   },
   "output": {

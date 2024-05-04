@@ -6,13 +6,13 @@
       "tag": "c:chests/wooden"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "P": {
       "item": "minecraft:crafting_table"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "X": {
       "item": "mekanism:steel_casing"

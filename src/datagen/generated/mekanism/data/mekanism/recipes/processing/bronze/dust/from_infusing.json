@@ -7,7 +7,7 @@
   "itemInput": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:dusts/copper"
+      "tag": "c:dusts/copper"
     }
   },
   "output": {

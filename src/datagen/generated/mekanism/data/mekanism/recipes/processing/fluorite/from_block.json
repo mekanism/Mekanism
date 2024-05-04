@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/fluorite"
+      "tag": "c:storage_blocks/fluorite"
     }
   ],
   "result": {

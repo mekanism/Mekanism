@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:armors/leggings/hazmat"
+    "mekanism:hazmat_pants",
+    "mekanism:mekasuit_pants"
   ]
 }

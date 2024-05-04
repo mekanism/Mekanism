@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.5,
   "ingredient": {
-    "tag": "forge:dusts/gold"
+    "tag": "c:dusts/gold"
   },
   "result": {
     "count": 1,

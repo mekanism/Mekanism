@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:storage_blocks/refined_glowstone"
+      "tag": "c:storage_blocks/refined_glowstone"
     },
     "A": {
-      "tag": "forge:alloys/elite"
+      "tag": "c:alloys/elite"
     },
     "D": {
       "item": "minecraft:diamond_pickaxe"
     },
     "H": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

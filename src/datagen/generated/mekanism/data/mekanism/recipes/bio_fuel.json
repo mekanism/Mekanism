@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:fuels/block/bio"
+      "tag": "c:fuels/block/bio"
     }
   ],
   "result": {

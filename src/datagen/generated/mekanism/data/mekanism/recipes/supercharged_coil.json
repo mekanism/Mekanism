@@ -6,10 +6,10 @@
       "item": "mekanism:laser"
     },
     "A": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "c": {
       "tag": "c:ingots/copper"

@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:sulfuric_acid"
+    "tag": "c:sulfuric_acid"
   },
   "fluidOutput": {
     "amount": 1,

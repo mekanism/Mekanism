@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "P": {
       "item": "mekanism:hdpe_sheet"

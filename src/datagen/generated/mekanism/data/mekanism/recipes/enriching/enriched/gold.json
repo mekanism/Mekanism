@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/gold"
+      "tag": "c:dusts/gold"
     }
   },
   "output": {

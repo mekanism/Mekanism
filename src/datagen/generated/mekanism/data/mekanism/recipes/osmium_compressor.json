@@ -9,7 +9,7 @@
       "item": "minecraft:bucket"
     },
     "C": {
-      "tag": "forge:circuits/advanced"
+      "tag": "c:circuits/advanced"
     },
     "X": {
       "item": "mekanism:steel_casing"

@@ -6,7 +6,7 @@
       "item": "minecraft:flint"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "R": {
       "tag": "c:dusts/redstone"

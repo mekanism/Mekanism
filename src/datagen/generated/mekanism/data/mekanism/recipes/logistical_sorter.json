@@ -6,7 +6,7 @@
       "item": "minecraft:piston"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "I": {
       "tag": "c:ingots/iron"

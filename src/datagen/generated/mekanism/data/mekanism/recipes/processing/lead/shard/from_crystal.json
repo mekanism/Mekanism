@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "mekanism:crystals/lead"
+      "tag": "c:crystals/lead"
     }
   },
   "output": {

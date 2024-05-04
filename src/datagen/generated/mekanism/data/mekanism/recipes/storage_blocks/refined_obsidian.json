@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:ingots/refined_obsidian"
+      "tag": "c:ingots/refined_obsidian"
     },
     "P": {
       "item": "mekanism:ingot_refined_obsidian"

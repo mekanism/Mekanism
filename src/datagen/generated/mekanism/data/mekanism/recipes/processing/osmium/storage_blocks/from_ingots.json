@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "P": {
       "item": "mekanism:ingot_osmium"

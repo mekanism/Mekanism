@@ -9,7 +9,7 @@
       "item": "mekanism:ultimate_control_circuit"
     },
     "I": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     }
   },
   "pattern": [

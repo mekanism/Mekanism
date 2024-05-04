@@ -8,7 +8,7 @@
     "ingredient": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:stairs/plastic/transparent"
+        "tag": "c:stairs/plastic/transparent"
       },
       "subtracted": {
         "item": "mekanismadditions:white_plastic_transparent_stairs"

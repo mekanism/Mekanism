@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.3,
   "ingredient": {
-    "tag": "forge:dusts/osmium"
+    "tag": "c:dusts/osmium"
   },
   "result": {
     "count": 1,

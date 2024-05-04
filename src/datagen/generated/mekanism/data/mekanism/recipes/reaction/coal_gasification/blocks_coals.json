@@ -19,7 +19,7 @@
         "tag": "c:storage_blocks/coal"
       },
       {
-        "tag": "forge:storage_blocks/charcoal"
+        "tag": "c:storage_blocks/charcoal"
       }
     ]
   },

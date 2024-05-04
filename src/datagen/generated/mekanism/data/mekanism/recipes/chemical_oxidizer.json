@@ -9,7 +9,7 @@
       "tag": "mekanism:alloys/infused"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "P": {
       "tag": "mekanism:personal_storage"

@@ -16,7 +16,7 @@
   "itemInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/wood"
+      "tag": "c:dusts/wood"
     }
   }
 }

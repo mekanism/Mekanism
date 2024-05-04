@@ -6,7 +6,7 @@
       "item": "minecraft:book"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     }
   },
   "pattern": [

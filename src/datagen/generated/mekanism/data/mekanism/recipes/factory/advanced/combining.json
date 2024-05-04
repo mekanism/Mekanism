@@ -6,10 +6,10 @@
       "tag": "mekanism:alloys/infused"
     },
     "C": {
-      "tag": "forge:circuits/advanced"
+      "tag": "c:circuits/advanced"
     },
     "I": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "P": {
       "item": "mekanism:basic_combining_factory"

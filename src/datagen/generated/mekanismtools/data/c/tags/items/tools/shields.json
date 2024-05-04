@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:tools/shields/bronze",
-    "#forge:tools/shields/lapis_lazuli",
-    "#forge:tools/shields/osmium",
-    "#forge:tools/shields/refined_glowstone",
-    "#forge:tools/shields/refined_obsidian",
-    "#forge:tools/shields/steel"
+    "mekanismtools:bronze_shield",
+    "mekanismtools:lapis_lazuli_shield",
+    "mekanismtools:osmium_shield",
+    "mekanismtools:refined_glowstone_shield",
+    "mekanismtools:refined_obsidian_shield",
+    "mekanismtools:steel_shield"
   ]
 }

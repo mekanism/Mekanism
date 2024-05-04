@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:gems/fluorite"
+      "tag": "c:gems/fluorite"
     },
     "P": {
       "item": "mekanism:fluorite_gem"

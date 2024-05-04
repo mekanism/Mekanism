@@ -3,7 +3,7 @@
   "input": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/tin"
+      "tag": "c:raw_materials/tin"
     }
   },
   "output": {

@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:armors/chestplates/bronze",
-    "#forge:armors/chestplates/lapis_lazuli",
-    "#forge:armors/chestplates/osmium",
-    "#forge:armors/chestplates/refined_glowstone",
-    "#forge:armors/chestplates/refined_obsidian",
-    "#forge:armors/chestplates/steel"
+    "mekanismtools:bronze_chestplate",
+    "mekanismtools:lapis_lazuli_chestplate",
+    "mekanismtools:osmium_chestplate",
+    "mekanismtools:refined_glowstone_chestplate",
+    "mekanismtools:refined_obsidian_chestplate",
+    "mekanismtools:steel_chestplate"
   ]
 }

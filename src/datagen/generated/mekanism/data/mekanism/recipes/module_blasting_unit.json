@@ -6,13 +6,13 @@
       "item": "minecraft:tnt"
     },
     "A": {
-      "tag": "forge:alloys/ultimate"
+      "tag": "c:alloys/ultimate"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "H": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

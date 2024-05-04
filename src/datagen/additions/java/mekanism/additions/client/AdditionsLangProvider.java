@@ -50,7 +50,6 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS, "All Types of Plastic Blocks");
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, "Glow Plastic Blocks");
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, "Plastic Blocks");
-        addTag(AdditionsTags.Items.PLASTIC_BLOCKS, "Plastic Blocks");
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, "Reinforced Plastic Blocks");
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, "Plastic Roads");
         addTag(AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, "Slick Plastic Blocks");

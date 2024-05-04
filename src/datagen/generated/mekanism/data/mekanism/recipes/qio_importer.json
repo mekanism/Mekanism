@@ -9,10 +9,10 @@
       "tag": "c:ender_pearls"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "T": {
       "item": "mekanism:teleportation_core"

@@ -6,13 +6,13 @@
       "item": "mekanism:free_runners"
     },
     "A": {
-      "tag": "forge:alloys/elite"
+      "tag": "c:alloys/elite"
     },
     "E": {
       "item": "mekanism:energy_tablet"
     },
     "H": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

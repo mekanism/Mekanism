@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.3,
   "ingredient": {
-    "tag": "forge:dusts/tin"
+    "tag": "c:dusts/tin"
   },
   "result": {
     "count": 1,

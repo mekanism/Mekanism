@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:pellets/plutonium"
+      "tag": "c:pellets/plutonium"
     },
     "A": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "P": {
       "item": "mekanism:hdpe_sheet"

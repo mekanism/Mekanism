@@ -16,7 +16,7 @@
   "itemInput": {
     "amount": 2,
     "ingredient": {
-      "tag": "forge:fuels/bio"
+      "tag": "c:fuels/bio"
     }
   },
   "itemOutput": {

@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "mekanism:dirty_dusts/gold"
+      "tag": "c:dirty_dusts/gold"
     }
   },
   "output": {

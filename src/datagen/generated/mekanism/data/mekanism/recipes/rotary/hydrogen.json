@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:hydrogen"
+    "tag": "c:hydrogen"
   },
   "fluidOutput": {
     "amount": 1,

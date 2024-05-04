@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:fusion_fuel"
+    "tag": "c:fusion_fuel"
   },
   "fluidOutput": {
     "amount": 1,

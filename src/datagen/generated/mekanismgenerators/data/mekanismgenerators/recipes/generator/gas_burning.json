@@ -9,7 +9,7 @@
       "item": "mekanism:electrolytic_core"
     },
     "O": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "X": {
       "item": "mekanism:steel_casing"

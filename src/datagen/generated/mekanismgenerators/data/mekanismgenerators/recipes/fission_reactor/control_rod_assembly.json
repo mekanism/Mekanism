@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "C": {
-      "tag": "forge:circuits/elite"
+      "tag": "c:circuits/elite"
     },
     "I": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

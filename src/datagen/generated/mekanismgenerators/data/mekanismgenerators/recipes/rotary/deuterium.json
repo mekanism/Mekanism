@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:deuterium"
+    "tag": "c:deuterium"
   },
   "fluidOutput": {
     "amount": 1,

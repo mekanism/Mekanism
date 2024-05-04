@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:dusts/diamond"
+      "tag": "c:dusts/diamond"
     },
     "I": {
-      "tag": "forge:ingots/bronze"
+      "tag": "c:ingots/bronze"
     },
     "P": {
       "item": "mekanism:jetpack"
     },
     "S": {
-      "tag": "forge:storage_blocks/steel"
+      "tag": "c:storage_blocks/steel"
     }
   },
   "pattern": [

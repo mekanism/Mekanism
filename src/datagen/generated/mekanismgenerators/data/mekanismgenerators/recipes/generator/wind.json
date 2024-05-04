@@ -6,13 +6,13 @@
       "tag": "mekanism:alloys/infused"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "E": {
       "item": "mekanism:energy_tablet"
     },
     "O": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     }
   },
   "pattern": [

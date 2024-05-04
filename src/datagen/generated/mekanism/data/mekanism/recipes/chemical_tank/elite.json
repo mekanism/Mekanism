@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/reinforced"
     },
     "O": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "P": {
       "item": "mekanism:advanced_chemical_tank"

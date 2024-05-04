@@ -6,7 +6,7 @@
       "item": "mekanism:basic_fluid_tank"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "E": {
       "item": "mekanism:energy_tablet"

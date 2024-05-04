@@ -3,16 +3,16 @@
   "category": "equipment",
   "key": {
     "A": {
-      "tag": "forge:tools/axes/refined_obsidian"
+      "item": "mekanismtools:refined_obsidian_axe"
     },
     "P": {
-      "tag": "forge:tools/pickaxes/refined_obsidian"
+      "item": "mekanismtools:refined_obsidian_pickaxe"
     },
     "R": {
       "tag": "c:rods/wooden"
     },
     "S": {
-      "tag": "forge:tools/shovels/refined_obsidian"
+      "item": "mekanismtools:refined_obsidian_shovel"
     }
   },
   "pattern": [

@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:stairs/plastic/transparent"
+        "tag": "c:stairs/plastic/transparent"
       },
       "subtracted": {
         "item": "mekanismadditions:blue_plastic_transparent_stairs"

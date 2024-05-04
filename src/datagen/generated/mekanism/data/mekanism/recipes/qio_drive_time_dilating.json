@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "I": {
-      "tag": "forge:pellets/plutonium"
+      "tag": "c:pellets/plutonium"
     },
     "P": {
       "item": "mekanism:qio_drive_hyper_dense"

@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:storage_blocks/fluorite"
+      "tag": "c:storage_blocks/fluorite"
     }
   },
   "output": {

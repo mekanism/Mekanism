@@ -9,7 +9,7 @@
       "item": "minecraft:bucket"
     },
     "C": {
-      "tag": "forge:circuits/advanced"
+      "tag": "c:circuits/advanced"
     },
     "G": {
       "tag": "c:glass_panes"

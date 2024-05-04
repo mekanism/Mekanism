@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/basic"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "_": {
       "tag": "mekanism:stone_crafting_materials"

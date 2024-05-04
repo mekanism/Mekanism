@@ -8,7 +8,7 @@
   "mainInput": {
     "amount": 14,
     "ingredient": {
-      "tag": "forge:dusts/quartz"
+      "tag": "c:dusts/quartz"
     }
   },
   "output": {

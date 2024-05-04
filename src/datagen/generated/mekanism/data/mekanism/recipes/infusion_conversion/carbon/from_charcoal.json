@@ -3,7 +3,7 @@
   "input": {
     "ingredient": [
       {
-        "tag": "forge:dusts/charcoal"
+        "tag": "c:dusts/charcoal"
       },
       {
         "item": "minecraft:charcoal"

@@ -2,7 +2,7 @@
   "type": "mekanism:infusion_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:fuels/bio"
+      "tag": "c:fuels/bio"
     }
   },
   "output": {

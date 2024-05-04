@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:sawdust"
+      "tag": "c:dusts/wood"
     },
     {
-      "tag": "forge:sawdust"
+      "tag": "c:dusts/wood"
     },
     {
       "item": "minecraft:clay_ball"

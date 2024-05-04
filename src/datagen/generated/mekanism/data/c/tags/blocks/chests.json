@@ -1,6 +1,6 @@
 {
   "values": [
-    "#forge:chests/electric",
-    "#forge:chests/personal"
+    "#c:chests/electric",
+    "#c:chests/personal"
   ]
 }

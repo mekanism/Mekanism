@@ -8,7 +8,7 @@
     "ingredient": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:slabs/plastic"
+        "tag": "c:slabs/plastic"
       },
       "subtracted": {
         "item": "mekanismadditions:aqua_plastic_slab"

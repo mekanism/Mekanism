@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:ingots/refined_glowstone"
+      "tag": "c:ingots/refined_glowstone"
     },
     "I": {
-      "tag": "forge:ingots/refined_obsidian"
+      "tag": "c:ingots/refined_obsidian"
     }
   },
   "pattern": [

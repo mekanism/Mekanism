@@ -6,7 +6,7 @@
       "item": "mekanism:teleportation_core"
     },
     "I": {
-      "tag": "forge:pellets/plutonium"
+      "tag": "c:pellets/plutonium"
     },
     "P": {
       "item": "mekanism:qio_drive_base"

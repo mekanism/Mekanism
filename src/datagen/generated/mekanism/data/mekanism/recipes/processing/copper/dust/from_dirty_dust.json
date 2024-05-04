@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "mekanism:dirty_dusts/copper"
+      "tag": "c:dirty_dusts/copper"
     }
   },
   "output": {

@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:tools/shovels/bronze",
-    "#forge:tools/shovels/lapis_lazuli",
-    "#forge:tools/shovels/osmium",
-    "#forge:tools/shovels/refined_glowstone",
-    "#forge:tools/shovels/refined_obsidian",
-    "#forge:tools/shovels/steel"
+    "mekanismtools:bronze_shovel",
+    "mekanismtools:lapis_lazuli_shovel",
+    "mekanismtools:osmium_shovel",
+    "mekanismtools:refined_glowstone_shovel",
+    "mekanismtools:refined_obsidian_shovel",
+    "mekanismtools:steel_shovel"
   ]
 }

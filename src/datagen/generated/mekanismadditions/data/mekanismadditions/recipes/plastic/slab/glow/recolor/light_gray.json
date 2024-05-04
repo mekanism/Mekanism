@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:slabs/plastic/glow"
+        "tag": "c:slabs/plastic/glow"
       },
       "subtracted": {
         "item": "mekanismadditions:light_gray_plastic_glow_slab"

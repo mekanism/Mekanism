@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:fences/plastic"
+        "tag": "c:fences/plastic"
       },
       "subtracted": {
         "item": "mekanismadditions:green_plastic_fence"

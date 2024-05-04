@@ -8,7 +8,7 @@
     "ingredient": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:stairs/plastic/glow"
+        "tag": "c:stairs/plastic/glow"
       },
       "subtracted": {
         "item": "mekanismadditions:orange_plastic_glow_stairs"

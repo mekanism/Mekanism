@@ -6,7 +6,7 @@
       "item": "minecraft:bowl"
     },
     "I": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     }
   },
   "pattern": [

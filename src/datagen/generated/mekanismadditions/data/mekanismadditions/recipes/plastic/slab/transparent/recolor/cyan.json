@@ -5,7 +5,7 @@
     "#": {
       "type": "neoforge:difference",
       "base": {
-        "tag": "forge:slabs/plastic/transparent"
+        "tag": "c:slabs/plastic/transparent"
       },
       "subtracted": {
         "item": "mekanismadditions:cyan_plastic_transparent_slab"

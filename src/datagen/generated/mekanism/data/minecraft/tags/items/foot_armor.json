@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:armors/boots/hazmat"
+    "mekanism:hazmat_boots",
+    "mekanism:mekasuit_boots"
   ]
 }

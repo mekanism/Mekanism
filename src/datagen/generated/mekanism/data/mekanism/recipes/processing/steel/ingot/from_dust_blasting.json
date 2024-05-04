@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.4,
   "ingredient": {
-    "tag": "forge:dusts/steel"
+    "tag": "c:dusts/steel"
   },
   "result": {
     "count": 1,

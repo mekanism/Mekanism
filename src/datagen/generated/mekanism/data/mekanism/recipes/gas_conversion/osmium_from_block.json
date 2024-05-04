@@ -2,7 +2,7 @@
   "type": "mekanism:gas_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:storage_blocks/osmium"
+      "tag": "c:storage_blocks/osmium"
     }
   },
   "output": {

@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/tin"
+      "tag": "c:dusts/tin"
     }
   },
   "output": {

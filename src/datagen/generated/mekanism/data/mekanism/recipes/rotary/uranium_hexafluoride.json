@@ -2,7 +2,7 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:uranium_hexafluoride"
+    "tag": "c:uranium_hexafluoride"
   },
   "fluidOutput": {
     "amount": 1,

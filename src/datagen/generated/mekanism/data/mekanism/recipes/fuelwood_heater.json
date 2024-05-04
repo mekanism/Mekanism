@@ -6,10 +6,10 @@
       "item": "minecraft:furnace"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "X": {
       "item": "mekanism:steel_casing"

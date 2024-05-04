@@ -4,9 +4,9 @@
     "#c:ingots/iron",
     "#c:ingots/gold",
     "#c:ingots/copper",
-    "#forge:ingots/osmium",
-    "#forge:ingots/tin",
-    "#forge:ingots/lead",
-    "#forge:gems/fluorite"
+    "#c:ingots/osmium",
+    "#c:ingots/tin",
+    "#c:ingots/lead",
+    "#c:gems/fluorite"
   ]
 }

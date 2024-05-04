@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "A": {
-      "tag": "forge:alloys/ultimate"
+      "tag": "c:alloys/ultimate"
     },
     "X": {
       "item": "mekanism:steel_casing"

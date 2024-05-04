@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:raw_materials/tin"
+      "tag": "c:raw_materials/tin"
     },
     "P": {
       "item": "mekanism:raw_tin"

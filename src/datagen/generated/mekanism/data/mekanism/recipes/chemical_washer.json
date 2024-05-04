@@ -6,10 +6,10 @@
       "item": "mekanism:basic_fluid_tank"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "I": {
-      "tag": "forge:ingots/refined_obsidian"
+      "tag": "c:ingots/refined_obsidian"
     },
     "T": {
       "item": "mekanism:basic_chemical_tank"

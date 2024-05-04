@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:tools/hoes/bronze",
-    "#forge:tools/hoes/lapis_lazuli",
-    "#forge:tools/hoes/osmium",
-    "#forge:tools/hoes/refined_glowstone",
-    "#forge:tools/hoes/refined_obsidian",
-    "#forge:tools/hoes/steel"
+    "mekanismtools:bronze_hoe",
+    "mekanismtools:lapis_lazuli_hoe",
+    "mekanismtools:osmium_hoe",
+    "mekanismtools:refined_glowstone_hoe",
+    "mekanismtools:refined_obsidian_hoe",
+    "mekanismtools:steel_hoe"
   ]
 }

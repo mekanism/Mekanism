@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:nuggets/tin"
+      "tag": "c:nuggets/tin"
     },
     "P": {
       "item": "mekanism:nugget_tin"

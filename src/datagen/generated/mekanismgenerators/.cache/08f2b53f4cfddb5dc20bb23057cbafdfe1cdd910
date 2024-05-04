@@ -1,12 +1,14 @@
-// 1.20.6	2024-05-02T21:22:44.8366361	Tags: mekanismgenerators
+// 1.20.6	2024-05-03T19:25:53.0750963	Tags: mekanismgenerators
 51c625436874fdd2506b20267e03dabf44c090b0 data/create/tags/fluids/no_infinite_draining.json
-f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/blocks/relocation_not_supported.json
-f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/block_entity_type/immovable.json
-f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/block_entity_type/relocation_not_supported.json
-bcd21ce2046a3b918a45281848276b4479c761dd data/forge/tags/fluids/bioethanol.json
-caa388bf7134c013888de340917b3323e5ee67cc data/forge/tags/fluids/deuterium.json
-7f7a379b0ce180430b454926e5f658f94b29bc75 data/forge/tags/fluids/fusion_fuel.json
-7cc3c16e557edb3ce5a4217ef457e9463b7469aa data/forge/tags/fluids/tritium.json
+f30d0458accef4b51831b90f9039c05d00276e48 data/c/tags/blocks/relocation_not_supported.json
+bcd21ce2046a3b918a45281848276b4479c761dd data/c/tags/fluids/bioethanol.json
+caa388bf7134c013888de340917b3323e5ee67cc data/c/tags/fluids/deuterium.json
+7f7a379b0ce180430b454926e5f658f94b29bc75 data/c/tags/fluids/fusion_fuel.json
+7cc3c16e557edb3ce5a4217ef457e9463b7469aa data/c/tags/fluids/tritium.json
+f3c0bfb9020aeaa51c44755bcabcdb18a96773ed data/c/tags/items/buckets/bioethanol.json
+e852e7526ff85430ba77be1dd2785834cca52b15 data/c/tags/items/buckets/deuterium.json
+e2a5f1e2e87e4d710f560c0c2feb3c7d1b95b6da data/c/tags/items/buckets/fusion_fuel.json
+1b49261b0faee223ee3383eda35c914c14bc82ff data/c/tags/items/buckets/tritium.json
 be4bda854d3fe9deb94fb59619b00b5a068729bf data/mekanism/tags/mekanism/gas/deuterium.json
 f335abd8b1bb57e1fb2740b6c80d8c5cb80b06c1 data/mekanism/tags/mekanism/gas/fusion_fuel.json
 e7f3de2230470165a4e2f84ad01e7a005ad81e2f data/mekanism/tags/mekanism/gas/tritium.json

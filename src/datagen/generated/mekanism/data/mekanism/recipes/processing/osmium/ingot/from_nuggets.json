@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:nuggets/osmium"
+      "tag": "c:nuggets/osmium"
     },
     "P": {
       "item": "mekanism:nugget_osmium"

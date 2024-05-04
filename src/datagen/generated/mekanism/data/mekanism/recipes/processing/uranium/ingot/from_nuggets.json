@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:nuggets/uranium"
+      "tag": "c:nuggets/uranium"
     },
     "P": {
       "item": "mekanism:nugget_uranium"

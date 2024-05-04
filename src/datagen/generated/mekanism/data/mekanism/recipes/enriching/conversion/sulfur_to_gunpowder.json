@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/sulfur"
+      "tag": "c:dusts/sulfur"
     }
   },
   "output": {

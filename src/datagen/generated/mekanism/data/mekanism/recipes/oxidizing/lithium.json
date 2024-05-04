@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/lithium"
+      "tag": "c:dusts/lithium"
     }
   },
   "output": {

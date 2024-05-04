@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:nuggets/lead"
+      "tag": "c:nuggets/lead"
     },
     "P": {
       "item": "mekanism:nugget_lead"

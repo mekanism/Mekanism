@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 1.0,
   "ingredient": {
-    "tag": "forge:dusts/netherite"
+    "tag": "c:dusts/netherite"
   },
   "result": {
     "count": 1,

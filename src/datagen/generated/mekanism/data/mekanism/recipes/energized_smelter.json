@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/basic"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "G": {
       "tag": "c:glass_blocks/cheap"

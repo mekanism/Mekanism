@@ -1,10 +1,10 @@
 {
   "values": [
-    "#forge:tools/pickaxes/bronze",
-    "#forge:tools/pickaxes/lapis_lazuli",
-    "#forge:tools/pickaxes/osmium",
-    "#forge:tools/pickaxes/refined_glowstone",
-    "#forge:tools/pickaxes/refined_obsidian",
-    "#forge:tools/pickaxes/steel"
+    "mekanismtools:bronze_pickaxe",
+    "mekanismtools:lapis_lazuli_pickaxe",
+    "mekanismtools:osmium_pickaxe",
+    "mekanismtools:refined_glowstone_pickaxe",
+    "mekanismtools:refined_obsidian_pickaxe",
+    "mekanismtools:steel_pickaxe"
   ]
 }

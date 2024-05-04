@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "mekanism:shards/lead"
+      "tag": "c:shards/lead"
     }
   },
   "output": {

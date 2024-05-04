@@ -6,7 +6,7 @@
       "item": "minecraft:paper"
     },
     {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     }
   ],
   "result": {

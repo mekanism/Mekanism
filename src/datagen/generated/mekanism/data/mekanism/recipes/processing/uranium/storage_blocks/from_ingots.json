@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:ingots/uranium"
+      "tag": "c:ingots/uranium"
     },
     "P": {
       "item": "mekanism:ingot_uranium"

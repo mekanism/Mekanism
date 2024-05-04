@@ -6,13 +6,13 @@
       "tag": "mekanism:alloys/atomic"
     },
     "C": {
-      "tag": "forge:circuits/ultimate"
+      "tag": "c:circuits/ultimate"
     },
     "D": {
       "tag": "c:storage_blocks/diamond"
     },
     "I": {
-      "tag": "forge:ingots/refined_obsidian"
+      "tag": "c:ingots/refined_obsidian"
     }
   },
   "pattern": [

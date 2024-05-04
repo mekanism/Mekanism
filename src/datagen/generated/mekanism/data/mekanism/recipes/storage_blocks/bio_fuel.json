@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:fuels/bio"
+      "tag": "c:fuels/bio"
     },
     "P": {
       "item": "mekanism:bio_fuel"

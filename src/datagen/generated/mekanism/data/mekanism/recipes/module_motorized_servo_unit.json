@@ -6,13 +6,13 @@
       "item": "minecraft:blue_ice"
     },
     "A": {
-      "tag": "forge:alloys/elite"
+      "tag": "c:alloys/elite"
     },
     "C": {
-      "tag": "forge:circuits/elite"
+      "tag": "c:circuits/elite"
     },
     "H": {
-      "tag": "forge:pellets/polonium"
+      "tag": "c:pellets/polonium"
     },
     "P": {
       "item": "mekanism:module_base"

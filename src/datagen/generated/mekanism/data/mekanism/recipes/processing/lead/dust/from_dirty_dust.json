@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "mekanism:dirty_dusts/lead"
+      "tag": "c:dirty_dusts/lead"
     }
   },
   "output": {

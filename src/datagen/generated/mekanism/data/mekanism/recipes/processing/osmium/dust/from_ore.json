@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:ores/osmium"
+      "tag": "c:ores/osmium"
     }
   },
   "output": {

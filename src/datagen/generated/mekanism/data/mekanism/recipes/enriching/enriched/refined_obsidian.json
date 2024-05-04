@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/refined_obsidian"
+      "tag": "c:dusts/refined_obsidian"
     }
   },
   "output": {

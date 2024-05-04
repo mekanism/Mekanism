@@ -9,7 +9,7 @@
       "tag": "c:glass_panes"
     },
     "I": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "T": {
       "item": "mekanism:teleportation_core"

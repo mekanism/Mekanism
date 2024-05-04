@@ -15,7 +15,7 @@
       "tag": "c:ingots/iron"
     },
     "O": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     }
   },
   "pattern": [

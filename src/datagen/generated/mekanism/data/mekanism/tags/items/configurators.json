@@ -1,6 +1,5 @@
 {
   "values": [
-    "#forge:wrenches",
-    "#forge:tools/wrench"
+    "#c:tools/wrenches"
   ]
 }

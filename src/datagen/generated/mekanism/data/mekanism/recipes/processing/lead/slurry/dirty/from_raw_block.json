@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:storage_blocks/raw_lead"
+      "tag": "c:storage_blocks/raw_lead"
     }
   },
   "output": {

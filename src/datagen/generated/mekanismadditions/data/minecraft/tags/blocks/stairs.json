@@ -1,7 +1,7 @@
 {
   "values": [
-    "#forge:stairs/plastic",
-    "#forge:stairs/plastic/glow",
-    "#forge:stairs/plastic/transparent"
+    "#c:stairs/plastic",
+    "#c:stairs/plastic/glow",
+    "#c:stairs/plastic/transparent"
   ]
 }

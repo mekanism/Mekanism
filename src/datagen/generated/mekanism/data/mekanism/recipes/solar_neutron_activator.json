@@ -9,10 +9,10 @@
       "tag": "mekanism:alloys/reinforced"
     },
     "C": {
-      "tag": "forge:circuits/elite"
+      "tag": "c:circuits/elite"
     },
     "I": {
-      "tag": "forge:ingots/bronze"
+      "tag": "c:ingots/bronze"
     },
     "X": {
       "item": "mekanism:steel_casing"

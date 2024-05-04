@@ -1,5 +1,6 @@
 {
   "values": [
-    "#forge:armors/hazmat"
+    "mekanism:hazmat_mask",
+    "mekanism:mekasuit_helmet"
   ]
 }

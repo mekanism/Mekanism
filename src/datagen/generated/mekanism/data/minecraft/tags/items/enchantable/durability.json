@@ -1,0 +1,15 @@
+{
+  "remove": [
+    "mekanism:hazmat_mask",
+    "mekanism:hazmat_gown",
+    "mekanism:hazmat_pants",
+    "mekanism:hazmat_boots",
+    "mekanism:mekasuit_helmet",
+    "mekanism:mekasuit_bodyarmor",
+    "mekanism:mekasuit_pants",
+    "mekanism:mekasuit_boots"
+  ],
+  "values": [
+    "mekanism:hdpe_elytra"
+  ]
+}

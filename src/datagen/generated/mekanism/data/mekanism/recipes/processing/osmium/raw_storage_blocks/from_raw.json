@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "forge:raw_materials/osmium"
+      "tag": "c:raw_materials/osmium"
     },
     "P": {
       "item": "mekanism:raw_osmium"

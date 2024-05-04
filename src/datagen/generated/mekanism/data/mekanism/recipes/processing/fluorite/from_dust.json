@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/fluorite"
+      "tag": "c:dusts/fluorite"
     }
   },
   "output": {

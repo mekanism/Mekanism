@@ -6,7 +6,7 @@
       "item": "mekanism:induction_casing"
     },
     "C": {
-      "tag": "forge:circuits/elite"
+      "tag": "c:circuits/elite"
     }
   },
   "pattern": [

@@ -6,10 +6,10 @@
       "item": "mekanism:hdpe_sheet"
     },
     "I": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     },
     "N": {
-      "tag": "forge:nuggets/bronze"
+      "tag": "c:nuggets/bronze"
     }
   },
   "pattern": [

@@ -6,7 +6,7 @@
       "tag": "c:glass_blocks/cheap"
     },
     "I": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "S": {
       "item": "mekanism:enriched_iron"

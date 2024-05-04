@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "mekanism:clumps/uranium"
+      "tag": "c:clumps/uranium"
     }
   },
   "output": {

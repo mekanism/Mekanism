@@ -6,7 +6,7 @@
       "tag": "mekanism:alloys/atomic"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "R": {
       "item": "mekanism:robit"

@@ -9,7 +9,7 @@
       "item": "mekanism:basic_energy_cube"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

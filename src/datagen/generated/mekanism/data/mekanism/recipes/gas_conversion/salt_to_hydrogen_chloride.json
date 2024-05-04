@@ -2,7 +2,7 @@
   "type": "mekanism:gas_conversion",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/salt"
+      "tag": "c:dusts/salt"
     }
   },
   "output": {

@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "mekanism:shards/osmium"
+      "tag": "c:shards/osmium"
     }
   },
   "output": {

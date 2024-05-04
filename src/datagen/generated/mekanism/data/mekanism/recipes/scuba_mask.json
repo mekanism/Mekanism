@@ -3,13 +3,13 @@
   "category": "equipment",
   "key": {
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "G": {
       "tag": "c:glass_blocks/cheap"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

@@ -15,7 +15,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:dusts/fluorite"
+      "tag": "c:dusts/fluorite"
     }
   },
   "itemOutput": {

@@ -3,16 +3,16 @@
   "category": "equipment",
   "key": {
     "A": {
-      "tag": "forge:tools/axes/steel"
+      "item": "mekanismtools:steel_axe"
     },
     "P": {
-      "tag": "forge:tools/pickaxes/steel"
+      "item": "mekanismtools:steel_pickaxe"
     },
     "R": {
       "tag": "c:ingots/iron"
     },
     "S": {
-      "tag": "forge:tools/shovels/steel"
+      "item": "mekanismtools:steel_shovel"
     }
   },
   "pattern": [

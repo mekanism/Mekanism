@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "I": {
-      "tag": "forge:ingots/refined_glowstone"
+      "tag": "c:ingots/refined_glowstone"
     }
   },
   "pattern": [

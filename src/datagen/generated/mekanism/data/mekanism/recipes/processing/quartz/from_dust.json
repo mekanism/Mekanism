@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "forge:dusts/quartz"
+      "tag": "c:dusts/quartz"
     }
   },
   "output": {

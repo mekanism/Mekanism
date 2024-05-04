@@ -6,7 +6,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "mekanism:crystals/uranium"
+      "tag": "c:crystals/uranium"
     }
   },
   "output": {

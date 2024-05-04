@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:storage_blocks/uranium"
+      "tag": "c:storage_blocks/uranium"
     }
   ],
   "result": {

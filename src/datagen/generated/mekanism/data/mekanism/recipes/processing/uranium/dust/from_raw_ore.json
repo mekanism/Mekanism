@@ -3,7 +3,7 @@
   "input": {
     "amount": 3,
     "ingredient": {
-      "tag": "forge:raw_materials/uranium"
+      "tag": "c:raw_materials/uranium"
     }
   },
   "output": {

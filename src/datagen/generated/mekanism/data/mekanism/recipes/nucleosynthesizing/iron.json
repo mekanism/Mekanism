@@ -7,7 +7,7 @@
   },
   "itemInput": {
     "ingredient": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     }
   },
   "output": {

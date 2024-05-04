@@ -6,10 +6,10 @@
       "tag": "mekanism:alloys/infused"
     },
     "B": {
-      "tag": "forge:fuels/bio"
+      "tag": "c:fuels/bio"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "I": {
       "tag": "c:ingots/iron"

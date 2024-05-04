@@ -6,7 +6,7 @@
       "tag": "c:chests/wooden"
     },
     "C": {
-      "tag": "forge:circuits/basic"
+      "tag": "c:circuits/basic"
     },
     "G": {
       "tag": "c:glass_panes"
@@ -15,7 +15,7 @@
       "item": "mekanism:dictionary"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

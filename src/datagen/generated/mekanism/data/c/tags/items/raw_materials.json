@@ -1,8 +1,8 @@
 {
   "values": [
-    "#forge:raw_materials/osmium",
-    "#forge:raw_materials/tin",
-    "#forge:raw_materials/lead",
-    "#forge:raw_materials/uranium"
+    "#c:raw_materials/osmium",
+    "#c:raw_materials/tin",
+    "#c:raw_materials/lead",
+    "#c:raw_materials/uranium"
   ]
 }

@@ -1,18 +1,18 @@
 {
   "values": [
-    "#forge:storage_blocks/bronze",
-    "#forge:storage_blocks/charcoal",
-    "#forge:storage_blocks/refined_glowstone",
-    "#forge:storage_blocks/refined_obsidian",
-    "#forge:storage_blocks/steel",
-    "#forge:storage_blocks/fluorite",
-    "#forge:storage_blocks/osmium",
-    "#forge:storage_blocks/raw_osmium",
-    "#forge:storage_blocks/tin",
-    "#forge:storage_blocks/raw_tin",
-    "#forge:storage_blocks/lead",
-    "#forge:storage_blocks/raw_lead",
-    "#forge:storage_blocks/uranium",
-    "#forge:storage_blocks/raw_uranium"
+    "#c:storage_blocks/bronze",
+    "#c:storage_blocks/charcoal",
+    "#c:storage_blocks/refined_glowstone",
+    "#c:storage_blocks/refined_obsidian",
+    "#c:storage_blocks/steel",
+    "#c:storage_blocks/fluorite",
+    "#c:storage_blocks/osmium",
+    "#c:storage_blocks/raw_osmium",
+    "#c:storage_blocks/tin",
+    "#c:storage_blocks/raw_tin",
+    "#c:storage_blocks/lead",
+    "#c:storage_blocks/raw_lead",
+    "#c:storage_blocks/uranium",
+    "#c:storage_blocks/raw_uranium"
   ]
 }
