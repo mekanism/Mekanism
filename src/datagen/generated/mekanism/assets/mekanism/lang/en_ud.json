@@ -549,6 +549,7 @@
   "constants.mekanism.alpha_warning.here": "ǝɹǝɥ",
   "constants.mekanism.debug_title": "ᵷnqǝᗡ ɯsᴉuɐʞǝW",
   "constants.mekanism.error": "ɹoɹɹƎ",
+  "constants.mekanism.error.packet.invalid": "%s :pǝʌᴉǝɔǝɹ ɐʇɐp ʇǝʞɔɐd pᴉꞁɐʌuI",
   "constants.mekanism.forge": "ǝᵷɹoℲoǝN",
   "constants.mekanism.log_format": "%2$s [%1$s]",
   "constants.mekanism.mod_name": "ɯsᴉuɐʞǝW",

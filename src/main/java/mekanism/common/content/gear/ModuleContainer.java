@@ -104,8 +104,15 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return ret;
     }
 
+    //throws IllegalStateException
     @Override
     public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config) {
+        return replaceModuleConfig(stack, type, config, false);
+    }
+
+    //throws IllegalArgumentException
+    //throws IllegalStateException
+    public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config, boolean fromPacket) {
         Module<MODULE> module = get(type);
         if (module == null) {
             throw new IllegalArgumentException("Module container does not contain any modules of type " + type.getRegistryName());
@@ -119,12 +126,15 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         } else if (config.name().equals(ModuleConfig.HANDLES_MODE_CHANGE_KEY)) {
             if (module.handlesModeChangeRaw() == (boolean) config.get()) {
                 return this;//State matches no change needed
+            } else if (fromPacket && module.getConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY) == null) {
+                //Illegal state, got a packet for mode change key, but it doesn't support mode changes
+                return this;
             }
             //Toggle the handle mode state including any side effects changing that config may have
             return toggleHandlesModeChange(stack, type, module);
         }
 
-        Module<MODULE> replacedModule = module.withReplacedConfig(config);
+        Module<MODULE> replacedModule = module.withReplacedConfig(config, fromPacket);
         if (module == replacedModule) {
             //If nothing actually changed we don't need to bother updating the instance on the stack
             return this;

@@ -22,6 +22,7 @@ public enum MekanismLang implements ILangEntry {
     PACK_DESCRIPTION("constants", "pack_description"),
     FORGE("constants", "forge"),
     ERROR("constants", "error"),
+    INVALID_PACKET("constants", "error.packet.invalid"),
     ALPHA_WARNING("constants", "alpha_warning"),
     ALPHA_WARNING_HERE("constants", "alpha_warning.here"),
     //Equipment

@@ -836,6 +836,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");
         add(MekanismLang.FORGE, "NeoForge");
         add(MekanismLang.ERROR, "Error");
+        add(MekanismLang.INVALID_PACKET, "Invalid packet data received: %1$s");
         add(MekanismLang.ALPHA_WARNING, "Warning: " + modName + " is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
         //Equipment

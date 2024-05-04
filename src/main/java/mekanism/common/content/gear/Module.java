@@ -225,12 +225,28 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     Module<MODULE> withReplacedConfig(ModuleConfig<?> config) {
+        return withReplacedConfig(config, false);
+    }
+
+    //throws IllegalArgumentException
+    //throws IllegalStateException
+    <CONFIG> Module<MODULE> withReplacedConfig(ModuleConfig<CONFIG> config, boolean fromPacket) {
         for (int i = 0; i < configItems.size(); i++) {
             ModuleConfig<?> storedConfig = configItems.get(i);
             if (storedConfig.name().equals(config.name())) {
                 if (storedConfig.get().equals(config.get())) {
                     //Nothing changed
                     return this;
+                } else if (fromPacket) {
+                    //Note: This cast is theoretically not unsafe as when reading from the packet we validate
+                    // that the type is what we expect it to be. To be safe though we double-check the classes
+                    if (storedConfig.getClass() != config.getClass()) {
+                        //Invalid, don't apply the change
+                        throw new IllegalStateException("Config " + config.name() + "'s Class " + config.getClass().getSimpleName() + "  did not match " + storedConfig.getClass().getSimpleName());
+                    }
+                    //Ensure we sanitize it and that it actually has the correct range applied and the client
+                    // didn't just lie about how many are installed in order to get a higher value set
+                    config = ((ModuleConfig<CONFIG>) storedConfig).with(config.get());
                 }
                 List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(configItems);
                 copiedConfigs.set(i, config);

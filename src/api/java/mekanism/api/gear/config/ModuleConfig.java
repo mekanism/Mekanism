@@ -41,6 +41,8 @@ public abstract class ModuleConfig<DATA> {
 
     public abstract DATA get();
 
+    //throws null pointer if value is null
+    //throws IllegalArgumentException if value is not valid
     public abstract ModuleConfig<DATA> with(DATA value);
 
     public boolean isConfigDisabled() {

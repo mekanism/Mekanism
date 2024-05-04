@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.Module;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
@@ -42,12 +42,14 @@ public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> targe
     public void handle(IPayloadContext context) {
         ItemStack stack = context.player().getInventory().getItem(slotId);
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
-        if (container != null) {
-            Module<?> module = container.get(target.moduleType());
-            if (module != null) {
-                //TODO - 1.20.5: Validate the config is at a valid level/in bounds for it, such as if it is a limited range enum value
-                // maybe we want the server to do a config.with itself?
-                container.replaceModuleConfig(stack, target.moduleType(), target.config());
+        //Validate the container still has the container, and it didn't end up somehow getting removed by the time the server received the packet
+        if (container != null && container.has(target.moduleType())) {
+            try {
+                container.replaceModuleConfig(stack, target.moduleType(), target.config(), true);
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                //If the packet is invalid, for example if a config got sent setting to an enum value that is not in range
+                // or if a module config with the given name couldn't be found
+                context.disconnect(MekanismLang.INVALID_PACKET.translate(e.getMessage()));
             }
         }
     }

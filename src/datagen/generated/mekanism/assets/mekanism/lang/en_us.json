@@ -550,6 +550,7 @@
   "constants.mekanism.alpha_warning.here": "here",
   "constants.mekanism.debug_title": "Mekanism Debug",
   "constants.mekanism.error": "Error",
+  "constants.mekanism.error.packet.invalid": "Invalid packet data received: %1$s",
   "constants.mekanism.forge": "NeoForge",
   "constants.mekanism.log_format": "[%1$s] %2$s",
   "constants.mekanism.mod_name": "Mekanism",
