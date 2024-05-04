@@ -21,18 +21,21 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:min_y",
-                "mekanism:inverse_replace",
-                "mekanism:radius",
+                "mekanism:eject",
+                "mekanism:filters",
                 "mekanism:inverse",
-                "mekanism:pull",
-                "mekanism:redstone_control",
+                "mekanism:inverse_replace",
                 "mekanism:max_y",
+                "mekanism:min_y",
                 "mekanism:overflow",
-                "mekanism:upgrades",
-                "mekanism:silk_touch",
+                "mekanism:owner",
+                "mekanism:pull",
+                "mekanism:radius",
+                "mekanism:redstone_control",
                 "mekanism:replace_stack",
-                "mekanism:eject"
+                "mekanism:security",
+                "mekanism:silk_touch",
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }

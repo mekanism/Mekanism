@@ -19,12 +19,14 @@
             {
               "function": "minecraft:copy_components",
               "include": [
+                "mekanism:ejector",
                 "mekanism:frequencies",
                 "mekanism:inventory_frequency",
-                "mekanism:upgrades",
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:security",
                 "mekanism:side_config",
-                "mekanism:ejector",
-                "mekanism:redstone_control"
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }

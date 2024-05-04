@@ -1,5 +1,7 @@
 package mekanism.common.tile.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import mekanism.api.Chunk3D;
 import mekanism.common.Mekanism;
@@ -12,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -34,6 +37,13 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
+    }
+
+    /**
+     * Collects all data component types that should be persisted to the dropped item. Override this for any conditionally applied component types.
+     */
+    public List<DataComponentType<?>> getRemapEntries() {
+        return new ArrayList<>(collectComponents().keySet());
     }
 
     /**

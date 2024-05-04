@@ -17,6 +17,14 @@
                 "mekanism:energy",
                 "mekanism:items"
               ]
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:owner",
+                "mekanism:security"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:laser_tractor_beam"

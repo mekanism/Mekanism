@@ -1,5 +1,6 @@
 package mekanism.common.tile.component;
 
+import java.util.List;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -16,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -85,6 +87,16 @@ public class TileComponentSecurity implements ITileComponent {
     public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         securityMode = input.getOrDefault(MekanismDataComponents.SECURITY, securityMode);
         setOwnerUUID(input.getOrDefault(MekanismDataComponents.OWNER, ownerUUID));
+    }
+
+    @Override
+    public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
+        if (securityMode == SecurityMode.PUBLIC) {
+            remapEntries.add(MekanismDataComponents.SECURITY.get());
+        }
+        if (ownerUUID == null) {
+            remapEntries.add(MekanismDataComponents.OWNER.get());
+        }
     }
 
     @Override

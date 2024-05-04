@@ -18,9 +18,12 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:side_config",
                 "mekanism:ejector",
-                "mekanism:redstone_control"
+                "mekanism:filters",
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:security",
+                "mekanism:side_config"
               ],
               "source": "block_entity"
             }

@@ -21,7 +21,9 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:redstone_control"
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:security"
               ],
               "source": "block_entity"
             }

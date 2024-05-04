@@ -15,7 +15,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: PR support to make custom StructureTemplateBuilders to Neo?
+//TODO: PR support to make custom StructureTemplateBuilders to Neo?
 @NothingNullByDefault
 public class TransporterTestUtils {
 
@@ -34,8 +34,7 @@ public class TransporterTestUtils {
         CompoundTag tag = new CompoundTag();
         ListTag items = new ListTag();
         for (int i = 0; i < stacks.length; i++) {
-            //TODO - 1.20.5: Re-evaluate this
-            CompoundTag item = (CompoundTag) stacks[i].save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag());
+            CompoundTag item = saveItem(stacks[i]);
             item.putByte(NBTConstants.SLOT, (byte) i);
             items.add(item);
         }
@@ -47,13 +46,16 @@ public class TransporterTestUtils {
         CompoundTag tag = new CompoundTag();
         ListTag items = new ListTag();
         for (int i = 0; i < slots; i++) {
-            //TODO - 1.20.5: Re-evaluate this
-            CompoundTag item = (CompoundTag) stack.save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag());
+            CompoundTag item = saveItem(stack);
             item.putByte(NBTConstants.SLOT, (byte) i);
             items.add(item);
         }
         tag.put(NBTConstants.ITEMS, items);
         return tag;
+    }
+
+    private static CompoundTag saveItem(ItemStack stack) {
+        return (CompoundTag) stack.save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag());
     }
 
     @Nullable

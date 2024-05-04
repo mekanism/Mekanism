@@ -1,9 +1,11 @@
 package mekanism.common.tile.component;
 
+import java.util.List;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +33,9 @@ public interface ITileComponent {
     }
 
     default void collectImplicitComponents(DataComponentMap.Builder builder) {
+    }
+
+    default void addRemapEntries(List<DataComponentType<?>> remapEntries) {
     }
 
     /**

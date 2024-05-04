@@ -19,7 +19,9 @@
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:frequencies",
-                "mekanism:qio_frequency"
+                "mekanism:owner",
+                "mekanism:qio_frequency",
+                "mekanism:security"
               ],
               "source": "block_entity"
             }

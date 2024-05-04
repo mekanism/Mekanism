@@ -21,7 +21,9 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:edit_mode"
+                "mekanism:edit_mode",
+                "mekanism:owner",
+                "mekanism:security"
               ],
               "source": "block_entity"
             }

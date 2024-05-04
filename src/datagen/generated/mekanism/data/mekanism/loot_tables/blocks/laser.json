@@ -15,6 +15,14 @@
             {
               "type": "mekanism:energy",
               "function": "mekanism:copy_containers"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:owner",
+                "mekanism:security"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:laser"

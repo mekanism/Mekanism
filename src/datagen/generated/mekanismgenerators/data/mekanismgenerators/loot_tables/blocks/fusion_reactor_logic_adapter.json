@@ -19,8 +19,8 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanismgenerators:fusion_logic",
-                "mekanismgenerators:active_cooled"
+                "mekanismgenerators:active_cooled",
+                "mekanismgenerators:fusion_logic"
               ],
               "source": "block_entity"
             }

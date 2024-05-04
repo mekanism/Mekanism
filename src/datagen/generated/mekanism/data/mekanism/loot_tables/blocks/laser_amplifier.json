@@ -23,11 +23,13 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:redstone_control",
-                "mekanism:min_threshold",
-                "mekanism:max_threshold",
                 "mekanism:delay",
-                "mekanism:redstone_output"
+                "mekanism:max_threshold",
+                "mekanism:min_threshold",
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:redstone_output",
+                "mekanism:security"
               ],
               "source": "block_entity"
             }

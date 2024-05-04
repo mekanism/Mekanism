@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.Collection;
+import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -37,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -301,6 +303,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
         filterManager.readFromNBT(provider, dataMap);
+    }
+
+    @Override
+    public List<DataComponentType<?>> getRemapEntries() {
+        List<DataComponentType<?>> remapEntries = super.getRemapEntries();
+        remapEntries.add(MekanismDataComponents.COLOR.get());
+        return remapEntries;
     }
 
     @Override

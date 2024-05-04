@@ -1,5 +1,6 @@
 package mekanism.common.tile.qio;
 
+import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
@@ -17,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -154,6 +156,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             isEmitting = emitting;
             updateModelData();
         }
+    }
+
+    @Override
+    public List<DataComponentType<?>> getRemapEntries() {
+        List<DataComponentType<?>> remapEntries = super.getRemapEntries();
+        remapEntries.add(MekanismDataComponents.ITEM_TARGET.get());
+        return remapEntries;
     }
 
     @Override

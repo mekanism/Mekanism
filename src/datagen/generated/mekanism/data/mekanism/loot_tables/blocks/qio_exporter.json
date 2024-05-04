@@ -19,12 +19,15 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:frequencies",
-                "mekanism:qio_frequency",
-                "mekanism:upgrades",
-                "mekanism:redstone_control",
                 "mekanism:auto",
-                "mekanism:round_robin"
+                "mekanism:filters",
+                "mekanism:frequencies",
+                "mekanism:owner",
+                "mekanism:qio_frequency",
+                "mekanism:redstone_control",
+                "mekanism:round_robin",
+                "mekanism:security",
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }

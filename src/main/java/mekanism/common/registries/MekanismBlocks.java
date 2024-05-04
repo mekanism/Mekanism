@@ -881,7 +881,7 @@ public class MekanismBlocks {
               .forItemHolder(holder -> {
                         final MergedTankCreator mergedTankCreator = new MergedTankCreator(ComponentBackedChemicalTankGasTank::create, ComponentBackedChemicalTankInfusionTank::create,
                               ComponentBackedChemicalTankPigmentTank::create, ComponentBackedChemicalTankSlurryTank::create);
-                        holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder().build())
+                        holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(mergedTankCreator).build())
                               .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
                               .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
                               .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())

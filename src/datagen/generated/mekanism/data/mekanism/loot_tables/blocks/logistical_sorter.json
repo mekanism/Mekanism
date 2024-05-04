@@ -19,11 +19,15 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:upgrades",
-                "mekanism:redstone_control",
+                "mekanism:color",
                 "mekanism:eject",
+                "mekanism:filters",
+                "mekanism:owner",
+                "mekanism:redstone_control",
                 "mekanism:round_robin",
-                "mekanism:single"
+                "mekanism:security",
+                "mekanism:single",
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }

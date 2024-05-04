@@ -126,6 +126,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -821,6 +822,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsRedstone()) {
             setControlType(input.getOrDefault(MekanismDataComponents.REDSTONE_CONTROL, getControlType()));
         }
+    }
+
+    @Override
+    public List<DataComponentType<?>> getRemapEntries() {
+        List<DataComponentType<?>> remapEntries = super.getRemapEntries();
+        for (ITileComponent component : components) {
+            component.addRemapEntries(remapEntries);
+        }
+        if (this instanceof ITileFilterHolder<?> && !remapEntries.contains(MekanismDataComponents.FILTER_AWARE.get())) {
+            remapEntries.add(MekanismDataComponents.FILTER_AWARE.get());
+        }
+        return remapEntries;
     }
 
     @Override//TODO - 1.20.5: Do we need to override removeComponentsFromTag??

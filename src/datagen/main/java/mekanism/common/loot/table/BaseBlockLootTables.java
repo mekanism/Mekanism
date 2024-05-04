@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -27,9 +28,10 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -167,12 +169,14 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 }
             }
             if (tile instanceof TileEntityUpdateable tileEntity) {
-                //TODO - 1.20.5: Does this work properly given I believe in some places we only conditionally add them
-                // Do we maybe need a secondary thing we can specify ones to add regardless?
-                DataComponentMap components = tileEntity.collectComponents();
-                hasComponents = !components.isEmpty();
-                for (DataComponentType<?> remapEntry : components.keySet()) {
-                    componentsBuilder.include(remapEntry);
+                List<DataComponentType<?>> components = tileEntity.getRemapEntries();
+                if (!components.isEmpty()) {
+                    hasComponents = true;
+                    //Sort the components so that the order is consistent when writing to json
+                    components.sort(Comparator.comparing(BuiltInRegistries.DATA_COMPONENT_TYPE::getKey, ResourceLocation::compareNamespaced));
+                    for (DataComponentType<?> remapEntry : components) {
+                        componentsBuilder.include(remapEntry);
+                    }
                 }
             }
             if (tile instanceof TileEntityMekanism tileEntity) {

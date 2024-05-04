@@ -14,6 +14,14 @@
             {
               "type": "mekanism:items",
               "function": "mekanism:copy_containers"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:owner",
+                "mekanism:security"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:security_desk"

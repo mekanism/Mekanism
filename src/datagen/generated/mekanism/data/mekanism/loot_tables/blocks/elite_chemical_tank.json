@@ -14,6 +14,7 @@
             {
               "function": "mekanism:copy_containers",
               "types": [
+                "mekanism:gases",
                 "mekanism:infuse_types",
                 "mekanism:items",
                 "mekanism:pigments",
@@ -23,10 +24,12 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:side_config",
+                "mekanism:dump_mode",
                 "mekanism:ejector",
+                "mekanism:owner",
                 "mekanism:redstone_control",
-                "mekanism:dump_mode"
+                "mekanism:security",
+                "mekanism:side_config"
               ],
               "source": "block_entity"
             }

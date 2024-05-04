@@ -20,10 +20,13 @@
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:frequencies",
-                "mekanism:qio_frequency",
-                "mekanism:long_amount",
                 "mekanism:fuzzy",
-                "mekanism:inverse"
+                "mekanism:inverse",
+                "mekanism:item_target",
+                "mekanism:long_amount",
+                "mekanism:owner",
+                "mekanism:qio_frequency",
+                "mekanism:security"
               ],
               "source": "block_entity"
             }

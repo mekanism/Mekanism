@@ -22,9 +22,11 @@
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:frequencies",
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:security",
                 "mekanism:teleporter_frequency",
-                "mekanism:upgrades",
-                "mekanism:redstone_control"
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }

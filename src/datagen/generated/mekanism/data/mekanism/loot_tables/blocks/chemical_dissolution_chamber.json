@@ -25,10 +25,12 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:upgrades",
-                "mekanism:side_config",
                 "mekanism:ejector",
-                "mekanism:redstone_control"
+                "mekanism:owner",
+                "mekanism:redstone_control",
+                "mekanism:security",
+                "mekanism:side_config",
+                "mekanism:upgrades"
               ],
               "source": "block_entity"
             }
