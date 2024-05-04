@@ -330,16 +330,6 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return nbt;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isCompatible(IExtendedFluidTank other) {
-        return getClass() == other.getClass() && FluidStack.matches(stored, ((BasicFluidTank) other).stored);
-    }
-
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.STORED, this::setStackUnchecked);

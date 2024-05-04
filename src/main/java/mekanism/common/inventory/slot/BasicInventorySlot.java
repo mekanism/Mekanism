@@ -338,16 +338,6 @@ public class BasicInventorySlot implements IInventorySlot {
         return nbt;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isCompatible(IInventorySlot other) {
-        return getClass() == other.getClass() && ItemStack.matches(current, ((BasicInventorySlot) other).current);
-    }
-
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         ItemStack stack = ItemStack.EMPTY;

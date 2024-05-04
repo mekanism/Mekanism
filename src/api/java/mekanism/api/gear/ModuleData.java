@@ -6,12 +6,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.config.ModuleBooleanConfig;
@@ -30,16 +33,12 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModuleDataProvider<MODULE> {
 
-    private final Int2ObjectMap<ConfigData> configData = new Int2ObjectOpenHashMap<>();
     private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
+    private final Int2ObjectMap<ConstructedConfigData> configData;
     private final IItemProvider itemProvider;
     private final int maxStackSize;
     private final int exclusive;
-    private final boolean handlesModeChange;
-    private final boolean modeChangeDisabledByDefault;
-    private final boolean rendersHUD;
     private final boolean noDisable;
-    private final boolean disabledByDefault;
     @Nullable
     private String translationKey;
     @Nullable
@@ -53,21 +52,18 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         this.itemProvider = builder.itemProvider;
         this.maxStackSize = builder.maxStackSize;
         this.exclusive = builder.exclusive;
-        this.handlesModeChange = builder.handlesModeChange;
-        this.modeChangeDisabledByDefault = builder.modeChangeDisabledByDefault;
-        this.rendersHUD = builder.rendersHUD;
         this.noDisable = builder.noDisable;
-        this.disabledByDefault = builder.disabledByDefault;
+        this.configData = new Int2ObjectOpenHashMap<>(maxStackSize);
         //Handle copying the configs and ensuring the lists are immutable
         builder.ensureConfigsInitialized();
         for (Int2ObjectMap.Entry<ConfigData> entry : builder.configData.int2ObjectEntrySet()) {
-            this.configData.put(entry.getIntKey(), entry.getValue().toImmutable());
+            this.configData.put(entry.getIntKey(), entry.getValue().construct());
         }
         if (this.configData.size() < maxStackSize) {
             //There are missing entries, or we don't have size based configs, just default them to being pointers to the same data
-            ConfigData defaultData = this.configData.get(1);
+            ConstructedConfigData defaultData = this.configData.get(1);
             for (int i = 2; i <= maxStackSize; i++) {
-                ConfigData sizedData = configData.get(i);
+                ConstructedConfigData sizedData = configData.get(i);
                 if (sizedData == null) {
                     //If we don't already have data for that element (likely will always be the case),
                     // then set it to point to the default value, so we can more easily look it up
@@ -96,7 +92,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      *
      * @since 10.6.0
      */
-    @NotNull//TODO - 1.20.5: Adjust this slightly so that it that this is where you can grab config values if you want pointers to them
+    @NotNull
     public final MODULE create(IModule<MODULE> module) {
         return constructor.apply(module);
     }
@@ -131,52 +127,57 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     }
 
     /**
-     * Gets if this module type is able to handle mode changes.
+     * Retrieves the codec for (de)serializing configs on modules of this type, when there are the given number of them installed.
      *
-     * @return {@code true} if this module type can handle mode changes.
+     * @param installed Number of installed modules.
+     *
+     * @throws IllegalArgumentException If the number of installed modules is less than one.
+     * @since 10.6.0
      */
-    public final boolean handlesModeChange() {
-        return handlesModeChange;
-    }
-
-    //TODO - 1.20.5: Docs
     public final Codec<List<ModuleConfig<?>>> configCodecs(int installed) {
-        //TODO - 1.20.5: Re-evaluate this cast
-        return new ModuleConfigListCodec((List) this.configData.get(installed).codecs());
+        return getConfigData(installed).codec();
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Retrieves the stream codec for encoding and decoding configs on modules of this type, when there are the given number of them installed.
+     *
+     * @param installed Number of installed modules.
+     *
+     * @throws IllegalArgumentException If the number of installed modules is less than one.
+     * @since 10.6.0
+     */
     public final StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> configStreamCodecs(int installed) {
-        List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs = this.configData.get(installed).streamCodecs();
-        int size = streamCodecs.size();
-        return new StreamCodec<>() {
-            @Override
-            public List<ModuleConfig<?>> decode(RegistryFriendlyByteBuf buffer) {
-                List<ModuleConfig<?>> configs = new ArrayList<>(size);
-                for (StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>> streamCodec : streamCodecs) {
-                    configs.add(streamCodec.decode(buffer));
-                }
-                return configs;
-            }
-
-            @Override
-            public void encode(RegistryFriendlyByteBuf buffer, List<ModuleConfig<?>> configs) {
-                if (configs.size() != size) {
-                    throw new EncoderException("Number of configs to encode does not match the number of stream codecs we have");
-                }
-                for (int i = 0; i < size; i++) {
-                    StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<?>> streamCodec = (StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<?>>) streamCodecs.get(i);
-                    streamCodec.encode(buffer, configs.get(i));
-                }
-            }
-        };
+        return getConfigData(installed).streamCodec();
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Retrieves the default configs for modules of this type, when there are the given number of them installed.
+     *
+     * @param installed Number of installed modules.
+     *
+     * @return Default configs.
+     *
+     * @throws IllegalArgumentException If the number of installed modules is less than one.
+     * @since 10.6.0
+     */
+    public final List<ModuleConfig<?>> defaultConfigs(int installed) {
+        return getConfigData(installed).configs();
+    }
+
+    /**
+     * Retrieves the default config that has the given name.
+     *
+     * @param installed Number of installed modules to lookup the default configs for.
+     * @param name      Name of the module.
+     *
+     * @return Default config, or {@code null} if no config with the given name was found.
+     *
+     * @throws IllegalArgumentException If the number of installed modules is less than one.
+     * @since 10.6.0
+     */
     @Nullable
     public final ModuleConfig<?> getNamedConfig(int installed, String name) {
-        ConfigData data = this.configData.get(installed);
-        for (ModuleConfig<?> config : data.configs()) {
+        for (ModuleConfig<?> config : getConfigData(installed).configs()) {
             if (config.name().equals(name)) {
                 return config;
             }
@@ -184,29 +185,14 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         return null;
     }
 
-    //TODO - 1.20.5: Docs
-    public final List<ModuleConfig<?>> defaultConfigs(int installed) {
-        return this.configData.get(installed).configs();
-    }
-
     /**
-     * Gets if this module type is has mode change disabled by default in the Module Tweaker.
-     *
-     * @return {@code true} if this module type's mode change ability is disabled by default.
-     *
-     * @since 10.3.6
+     * Helper to clamp the number of installed modules to within the max stack size in case it is for some reason greater.
      */
-    public final boolean isModeChangeDisabledByDefault() {
-        return modeChangeDisabledByDefault;
-    }
-
-    /**
-     * Gets if this module type has any data that should be added to the HUD.
-     *
-     * @return {@code true} if this module type has data to add to the HUD.
-     */
-    public final boolean rendersHUD() {
-        return rendersHUD;
+    private ConstructedConfigData getConfigData(int installed) {
+        if (installed < 1) {
+            throw new IllegalArgumentException("Installed number must be at least 1");
+        }
+        return this.configData.get(Math.min(installed, maxStackSize));
     }
 
     /**
@@ -216,15 +202,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      */
     public final boolean isNoDisable() {
         return noDisable;
-    }
-
-    /**
-     * Gets if this module type is disabled by default in the Module Tweaker.
-     *
-     * @return {@code true} if this module type is disabled by default.
-     */
-    public final boolean isDisabledByDefault() {
-        return disabledByDefault;
     }
 
     @Override
@@ -252,15 +229,53 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         return MekanismAPI.MODULE_REGISTRY.getKey(this);
     }
 
-    private record ConfigData(List<Codec<? extends ModuleConfig<?>>> codecs, List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs,
-                              List<ModuleConfig<?>> configs) {
+    private record ConstructedConfigData(List<ModuleConfig<?>> configs, Codec<List<ModuleConfig<?>>> codec,
+                                         StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> streamCodec) {
 
-        private ConfigData toImmutable() {
-            return new ConfigData(java.util.List.copyOf(codecs), List.copyOf(streamCodecs), List.copyOf(configs));
+        private static ConstructedConfigData create(List<ModuleConfig<?>> configs, List<Codec<? extends ModuleConfig<?>>> codecs,
+              List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs) {
+            return new ConstructedConfigData(configs, new ModuleConfigListCodec(codecs), new StreamCodec<>() {
+                @Override
+                public List<ModuleConfig<?>> decode(RegistryFriendlyByteBuf buffer) {
+                    List<ModuleConfig<?>> configs = new ArrayList<>(streamCodecs.size());
+                    for (StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>> streamCodec : streamCodecs) {
+                        configs.add(streamCodec.decode(buffer));
+                    }
+                    return configs;
+                }
+
+                @Override
+                @SuppressWarnings("unchecked")
+                public void encode(RegistryFriendlyByteBuf buffer, List<ModuleConfig<?>> configs) {
+                    int size = streamCodecs.size();
+                    if (configs.size() != size) {
+                        throw new EncoderException("Number of configs to encode does not match the number of stream codecs we have");
+                    }
+                    for (int i = 0; i < size; i++) {
+                        StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<?>> streamCodec =
+                              (StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<?>>) streamCodecs.get(i);
+                        streamCodec.encode(buffer, configs.get(i));
+                    }
+                }
+            });
+        }
+    }
+
+    private record ConfigData(List<ModuleConfig<?>> configs, List<Codec<? extends ModuleConfig<?>>> codecs,
+                              List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs) {
+
+        private ConstructedConfigData construct() {
+            Set<String> uniqueNames = new HashSet<>(configs.size());
+            for (ModuleConfig<?> config : configs) {
+                if (!uniqueNames.add(config.name())) {
+                    throw new IllegalStateException("Duplicate module config name " + config.name());
+                }
+            }
+            return ConstructedConfigData.create(List.copyOf(configs), List.copyOf(codecs), List.copyOf(streamCodecs));
         }
 
         private ConfigData copy() {
-            return new ConfigData(new ArrayList<>(codecs), new ArrayList<>(streamCodecs), new ArrayList<>(configs));
+            return new ConfigData(new ArrayList<>(configs), new ArrayList<>(codecs), new ArrayList<>(streamCodecs));
         }
     }
 
@@ -269,14 +284,15 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      */
     public static class ModuleDataBuilder<MODULE extends ICustomModule<MODULE>> {
 
-        private static final ModuleConfig<Boolean> ENABLED_BY_DEFAULT = new ModuleBooleanConfig(ModuleConfig.ENABLED_KEY, true);
-        private static final ModuleConfig<Boolean> DISABLED_BY_DEFAULT = new ModuleBooleanConfig(ModuleConfig.ENABLED_KEY, false);
-        private static final ModuleBooleanConfig HANDLES_MODE_CHANGE_ENABLED = new ModuleBooleanConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY, true);
-        private static final ModuleBooleanConfig HANDLES_MODE_CHANGE_DISABLED = new ModuleBooleanConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY, false);
-        private static final ModuleBooleanConfig RENDER_HUD = new ModuleBooleanConfig(ModuleConfig.RENDER_HUD_KEY, true);
+        private static final ModuleConfig<Boolean> ENABLED_BY_DEFAULT = ModuleBooleanConfig.create(ModuleConfig.ENABLED_KEY, true);
+        private static final ModuleConfig<Boolean> DISABLED_BY_DEFAULT = ModuleBooleanConfig.create(ModuleConfig.ENABLED_KEY, false);
+        private static final ModuleBooleanConfig HANDLES_MODE_CHANGE_ENABLED = ModuleBooleanConfig.create(ModuleConfig.HANDLES_MODE_CHANGE_KEY, true);
+        private static final ModuleBooleanConfig HANDLES_MODE_CHANGE_DISABLED = ModuleBooleanConfig.create(ModuleConfig.HANDLES_MODE_CHANGE_KEY, false);
+        private static final ModuleBooleanConfig RENDER_HUD = ModuleBooleanConfig.create(ModuleConfig.RENDER_HUD_KEY, true);
 
         private record MarkerModule() implements ICustomModule<MarkerModule> {
         }
+
         private static final MarkerModule MARKER_MODULE = new MarkerModule();
         private static final Function<IModule<MarkerModule>, MarkerModule> MARKER_MODULE_SUPPLIER = module -> MARKER_MODULE;
 
@@ -288,31 +304,45 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          */
         @SuppressWarnings({"rawtypes", "unchecked"})
         public static ModuleDataBuilder<?> marker(IItemProvider itemProvider) {
-            return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, itemProvider);
+            //Note: We don't use customInstanced, so that we have the same instance between all our marker modules
+            return new ModuleDataBuilder(MARKER_MODULE_SUPPLIER, itemProvider, true);
         }
 
         /**
-         * Helper creator for creating a custom module. The given module supplier should return a <strong>NEW</strong> instance each time it is called as any config items
-         * created will be stored in the module object returned.
+         * Helper creator for creating a custom module. The given module supports no custom config options, and the returned instance should be immutable, and will be
+         * re-used for every instance of this module.
          *
-         * @param customModule Supplier for the custom module this data is for.
+         * @param customModule Constructor/factory for the custom module this data is for.
          * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
-         *
-         * @apiNote Strictly speaking a new instance of the custom module does not need to be returned if {@link ICustomModule#init(IModule, ModuleConfigItemCreator)}
-         * creates no config items so there is no unique data, but it is easier to just return a new instance each time unless you are using
-         * {@link #marker(IItemProvider)}.
          *
          * @since 10.6.0
          */
-        //TODO - 1.20.5: Update docs and mention getting the config values in the constructor
-        // We should also note that you can just resolve the actual value and store that as modules have to be immutable for data component purposes
-        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(@NotNull Function<IModule<MODULE>, @NotNull MODULE> customModule, IItemProvider itemProvider) {
-            return new ModuleDataBuilder<>(customModule, itemProvider);
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> customInstanced(Supplier<@NotNull MODULE> customModule, IItemProvider itemProvider) {
+            MODULE customModuleInstance = customModule.get();
+            Function<IModule<MODULE>, MODULE> function = module -> customModuleInstance;
+            return new ModuleDataBuilder<>(function, itemProvider, true);
+        }
+
+        /**
+         * Helper creator for creating a custom module. The given module constructor should return an immutable instance for the custom module that is used to store any
+         * custom config options. It is safe to retrieve and locally store the config values in this instance, as the constructor will be called again if any config
+         * values change. If the module does not use any config values besides the builtin three (enabled, handles mode change, render hud), it is safe to always return
+         * the same module instance.
+         *
+         * @param customModule Constructor/factory for the custom module this data is for.
+         * @param itemProvider Provider for the item that this module corresponds to and is used in the Modification Station to install this module.
+         *
+         * @since 10.6.0
+         */
+        public static <MODULE extends ICustomModule<MODULE>> ModuleDataBuilder<MODULE> custom(Function<IModule<MODULE>, @NotNull MODULE> customModule,
+              IItemProvider itemProvider) {
+            return new ModuleDataBuilder<>(customModule, itemProvider, false);
         }
 
         private final Int2ObjectMap<ConfigData> configData = new Int2ObjectOpenHashMap<>();
         private final Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor;
         private final IItemProvider itemProvider;
+        private final boolean isInstanced;
         private int maxStackSize = 1;
         private int exclusive;
         private boolean handlesModeChange;
@@ -321,9 +351,10 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         private boolean noDisable;
         private boolean disabledByDefault;
 
-        private ModuleDataBuilder(Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor, IItemProvider itemProvider) {
+        private ModuleDataBuilder(Function<@NotNull IModule<MODULE>, @NotNull MODULE> constructor, IItemProvider itemProvider, boolean isInstanced) {
             this.constructor = Objects.requireNonNull(constructor, "Custom module constructor cannot be null.");
             this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
+            this.isInstanced = isInstanced;
         }
 
         /**
@@ -391,7 +422,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
             return this;
         }
 
-        //TODO - 1.20.5: Pass these to the module data, also we probably want to make it so that we validate there are no duplicate keys added?
         private void ensureConfigsInitialized() {
             if (configData.isEmpty()) {
                 List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs = new ArrayList<>();
@@ -410,18 +440,39 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
                     codecs.add(ModuleBooleanConfig.CODEC);
                     streamCodecs.add(ModuleBooleanConfig.STREAM_CODEC);
                 }
-                configData.put(1, new ConfigData(codecs, streamCodecs, configs));
+                configData.put(1, new ConfigData(configs, codecs, streamCodecs));
             }
         }
 
-        //TODO - 1.20.5: Do we want to do it like this or just let each module define its own codec? with a helper for the base codec?
+        /**
+         * Helper to add a boolean based module config option that is always present.
+         *
+         * @param defaultConfig Default value for the config option.
+         *
+         * @throws IllegalStateException if this module type is instanced based.
+         * @since 10.6.0
+         */
         public ModuleDataBuilder<MODULE> addConfig(ModuleBooleanConfig defaultConfig) {
             return addConfig(defaultConfig, ModuleBooleanConfig.CODEC, ModuleBooleanConfig.STREAM_CODEC);
         }
 
-        //TODO - 1.20.5: Docs
+        /**
+         * Adds a module config option that is always present.
+         *
+         * @param defaultConfig Default value for the config option.
+         * @param codec         Codec for (de)serializing the config.
+         * @param streamCodec   Stream codec for encoding and decoding the config over the network.
+         * @param <TYPE>        Type of the config object that is being stored.
+         * @param <CONFIG>      Config object type.
+         *
+         * @throws IllegalStateException if this module type is instanced based.
+         * @since 10.6.0
+         */
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addConfig(CONFIG defaultConfig, Codec<CONFIG> codec,
               StreamCodec<? super RegistryFriendlyByteBuf, CONFIG> streamCodec) {
+            if (isInstanced) {
+                throw new IllegalStateException("Custom configs are not supported for instance based modules");
+            }
             ensureConfigsInitialized();
             for (ConfigData data : configData.values()) {
                 //Add the config to all installed counts
@@ -432,22 +483,63 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
             return this;
         }
 
-        //TODO - 1.20.5: Docs
+        /**
+         * Adds a module config option that is dependent on the number of modules installed (mostly useful for {@link mekanism.api.gear.config.ModuleEnumConfig}).
+         *
+         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+         *                      installed.
+         * @param <TYPE>        Type of the config object that is being stored.
+         * @param <CONFIG>      Config object type.
+         *
+         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+         * @since 10.6.0
+         */
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addInstalledCountConfig(IntFunction<CONFIG> defaultConfig,
               IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
             return addInstalledCountConfig(installed -> true, defaultConfig, codec, streamCodec);
         }
 
-        //TODO - 1.20.5: Docs
+        /**
+         * Helper to add a module config option that is dependent on the number of modules installed (mostly useful for
+         * {@link mekanism.api.gear.config.ModuleEnumConfig}), but that is only added when the max number of modules is installed.
+         *
+         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+         *                      installed.
+         * @param <TYPE>        Type of the config object that is being stored.
+         * @param <CONFIG>      Config object type.
+         *
+         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+         * @since 10.6.0
+         */
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addMaxInstalledConfig(IntFunction<CONFIG> defaultConfig,
               IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
             return addInstalledCountConfig(installed -> installed == maxStackSize, defaultConfig, codec, streamCodec);
         }
 
-        //TODO - 1.20.5: Docs
+        /**
+         * Adds a module config option that is dependent on the number of modules installed (mostly useful for {@link mekanism.api.gear.config.ModuleEnumConfig}). The
+         * config option is only added if the given int predicate is met.
+         *
+         * @param shouldAdd     Predicate that determines whether the config should be added for the given install count.
+         * @param defaultConfig Int function that provides the default value for the config option when the given number of modules are installed.
+         * @param codec         Int function that provides the codec for (de)serializing the config when the given number of modules are installed.
+         * @param streamCodec   Int function that provides the stream codec for encoding and decoding the config over the network when the given number of modules are
+         *                      installed.
+         * @param <TYPE>        Type of the config object that is being stored.
+         * @param <CONFIG>      Config object type.
+         *
+         * @throws IllegalStateException if this module type is instanced based, or if the max stack size is one.
+         * @since 10.6.0
+         */
         public <TYPE, CONFIG extends ModuleConfig<TYPE>> ModuleDataBuilder<MODULE> addInstalledCountConfig(IntPredicate shouldAdd,
               IntFunction<CONFIG> defaultConfig, IntFunction<Codec<CONFIG>> codec, IntFunction<StreamCodec<? super RegistryFriendlyByteBuf, CONFIG>> streamCodec) {
-            if (maxStackSize == 1) {
+            if (isInstanced) {
+                throw new IllegalStateException("Custom configs are not supported for instance based modules");
+            } else if (maxStackSize == 1) {
                 throw new IllegalStateException("Cannot add an config that is based on the number of installed modules when the max amount is one");
             }
             ensureConfigsInitialized();
@@ -477,8 +569,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
         /**
          * Marks this module type as having HUD elements to render. In addition to using this method
-         * {@link ICustomModule#addHUDElements(IModule, IModuleContainer, ItemStack, Player, Consumer)} or {@link ICustomModule#addHUDStrings(IModule, IModuleContainer, ItemStack, Player, Consumer)} should
-         * be implemented.
+         * {@link ICustomModule#addHUDElements(IModule, IModuleContainer, ItemStack, Player, Consumer)} or
+         * {@link ICustomModule#addHUDStrings(IModule, IModuleContainer, ItemStack, Player, Consumer)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> rendersHUD() {
             if (!configData.isEmpty()) {

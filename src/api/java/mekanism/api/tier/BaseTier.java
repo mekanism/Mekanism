@@ -4,8 +4,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.SupportsColorMap;
-import mekanism.api.Upgrade;
-import mekanism.api.math.MathUtils;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,12 +25,16 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
     CREATIVE("Creative", new int[]{88, 88, 88}, MapColor.TERRACOTTA_CYAN);
 
     /**
-     * Gets a tier by index.
+     * Gets a tier by index, wrapping for out of bounds indices.
      *
      * @since 10.6.0
      */
     public static final IntFunction<BaseTier> BY_ID = ByIdMap.continuous(BaseTier::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    //TODO - 1.20.5: DOCS
+    /**
+     * Stream codec for syncing tiers by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, BaseTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BaseTier::ordinal);
 
     private final String name;

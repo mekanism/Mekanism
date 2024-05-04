@@ -63,10 +63,18 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * Retrieve a codec which can (de)encode a single or multi ingredient of this type.
      *
      * @return a codec for this ingredient type
+     *
+     * @since 10.5.0
      */
     Codec<INGREDIENT> codec();
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Retrieve a stream codec which can be used to encode and decode ingredients of this type over the network.
+     *
+     * @return a stream codec for this ingredient type
+     *
+     * @since 10.6.0
+     */
     StreamCodec<RegistryFriendlyByteBuf, INGREDIENT> streamCodec();
 
     /**

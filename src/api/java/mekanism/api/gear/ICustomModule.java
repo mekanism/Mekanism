@@ -51,7 +51,8 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to collect any HUD strings that should be displayed. This will only be called if {@link ModuleData#rendersHUD()} is {@code true}.
+     * Called to collect any HUD strings that should be displayed. This will only be called if the module is configured to render to the HUD, and
+     * {@link mekanism.api.gear.ModuleData.ModuleDataBuilder#rendersHUD()} was called.
      *
      * @param module          Module instance.
      * @param moduleContainer The container this module is part of.
@@ -64,8 +65,8 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to collect any HUD elements that should be displayed when the MekaSuit is rendering the HUD. This will only be called if {@link ModuleData#rendersHUD()} is
-     * {@code true}.
+     * Called to collect any HUD elements that should be displayed when the MekaSuit is rendering the HUD. This will only be called if the module is configured to render
+     * to the HUD, and {@link mekanism.api.gear.ModuleData.ModuleDataBuilder#rendersHUD()} was called.
      *
      * @param module          Module instance.
      * @param moduleContainer The container this module is part of.
@@ -106,7 +107,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to get the text component to display when the mode is changed via the scroll wheel. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * Called to get the text component to display when the mode is changed via the scroll wheel. This will only be called if {@link IModule#handlesModeChange()} is
      * {@code true}.
      *
      * @param module Module instance.
@@ -122,7 +123,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to change the mode of the module. This will only be called if {@link ModuleData#handlesModeChange()} is {@code true}.
+     * Called to change the mode of the module. This will only be called if {@link IModule#handlesModeChange()} is {@code true}.
      * {@link IModule#displayModeChange(Player, Component, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is
      * {@code true}.
      *
@@ -139,7 +140,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called by the Meka-Tool to attempt to add all supported radial types of the module. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * Called by the Meka-Tool to attempt to add all supported radial types of the module. This will only be called if {@link IModule#handlesModeChange()} is
      * {@code true}.
      *
      * @param module Module instance.
@@ -153,7 +154,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called by the Meka-Tool to attempt to get the mode of the module for the given radial data. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * Called by the Meka-Tool to attempt to get the mode of the module for the given radial data. This will only be called if {@link IModule#handlesModeChange()} is
      * {@code true}, but may be called when this module does not support or handle the given radial type, so the radial type should be validated.
      *
      * @param module     Module instance.
@@ -172,7 +173,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called by the Meka-Tool to attempt to set the mode of the module for the given radial data. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * Called by the Meka-Tool to attempt to set the mode of the module for the given radial data. This will only be called if {@link IModule#handlesModeChange()} is
      * {@code true}, but may be called when this module does not support or handle the given radial type, so the radial type should be validated.
      *
      * @param <MODE>          Radial Mode.

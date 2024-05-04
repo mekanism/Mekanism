@@ -232,7 +232,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public boolean isTypeEqual(STACK other) {
-        return stored.isTypeEqual(other);
+        return ChemicalStack.isSameChemical(stored, other);
     }
 
     /**
@@ -274,16 +274,6 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             nbt.put(NBTConstants.STORED, stored.save(provider));
         }
         return nbt;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
-        return getClass() == other.getClass() && stored.equals(other.getStack());
     }
 
     @Override

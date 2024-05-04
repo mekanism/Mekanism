@@ -45,7 +45,7 @@ public class ChemicalUtils {
             STACK inTank = inTankGetter.getStored(tank, side);
             if (inTank.isEmpty()) {
                 emptyTanks.add(tank);
-            } else if (inTank.isTypeEqual(stack)) {
+            } else if (ChemicalStack.isSameChemical(inTank, stack)) {
                 STACK remainder = insertChemical.interact(tank, toInsert, side, action);
                 if (remainder.isEmpty()) {
                     //If we have no remaining chemical, return that we fit it all
@@ -131,7 +131,7 @@ public class ChemicalUtils {
         STACK extracted = empty;
         long toDrain = amount;
         for (int tank = 0; tank < tanks; tank++) {
-            if (extracted.isEmpty() || extracted.isTypeEqual(inTankGetter.getStored(tank, side))) {
+            if (extracted.isEmpty() || ChemicalStack.isSameChemical(extracted, inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we have started draining, or we haven't found a type yet
                 STACK drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {
@@ -211,7 +211,7 @@ public class ChemicalUtils {
             return empty;
         } else if (tanks == 1) {
             STACK inTank = inTankGetter.getStored(0, side);
-            if (inTank.isEmpty() || !inTank.isTypeEqual(stack)) {
+            if (inTank.isEmpty() || !ChemicalStack.isSameChemical(inTank, stack)) {
                 return empty;
             }
             return extractChemical.interact(0, stack.getAmount(), side, action);
@@ -219,7 +219,7 @@ public class ChemicalUtils {
         STACK extracted = empty;
         long toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
-            if (stack.isTypeEqual(inTankGetter.getStored(tank, side))) {
+            if (ChemicalStack.isSameChemical(stack, inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
                 STACK drained = extractChemical.interact(tank, toDrain, side, action);
                 if (!drained.isEmpty()) {

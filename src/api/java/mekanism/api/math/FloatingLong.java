@@ -13,7 +13,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -40,9 +39,9 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
         return DataResult.success(f);
     });
-    //TODO - 1.20.5: Docs and maybe deprecate the non stream codec methods
     public static final StreamCodec<ByteBuf, FloatingLong> STREAM_CODEC = StreamCodec.composite(
-          //TODO - 1.20.5: Non var long variant so that when it wraps we don't use extra space??
+          //Note: Even though we might wrap into the negative, we expect our numbers to not be that large, so we use a var long instead of a normal long
+          // as in general it will still provide an improvement
           ByteBufCodecs.VAR_LONG, FloatingLong::getValue,
           ByteBufCodecs.SHORT, FloatingLong::getDecimal,
           FloatingLong::create

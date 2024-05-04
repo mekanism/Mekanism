@@ -75,17 +75,4 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundTag>, IContents
         nbt.putDouble(NBTConstants.STORED, getHeat());
         return nbt;
     }
-
-    /**
-     * Checks if this heat capacitor is equivalent to another one for the purposes of attachments.
-     *
-     * @param other Heat capacitor to compare to.
-     *
-     * @return {@code true} If this heat capacitor can be considered equivalent and compatible with the other capacitor.
-     *
-     * @since 10.5.0
-     */
-    default boolean isCompatible(IHeatCapacitor other) {
-        return getClass() == other.getClass() && getHeat() == other.getHeat();
-    }
 }

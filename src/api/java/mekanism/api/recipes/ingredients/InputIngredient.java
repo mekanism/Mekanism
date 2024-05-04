@@ -58,6 +58,12 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      */
     List<TYPE> getRepresentations();
 
-    //TODO - 1.20.5: JavaDocs
+    /**
+     * Gets the implementation type of this ingredient. For the most part this won't matter to consumers, as we just use this as part of the codec implementations.
+     *
+     * @return Size/Implementation Type of this ingredient.
+     *
+     * @since 10.6.0
+     */
     IngredientType getType();
 }

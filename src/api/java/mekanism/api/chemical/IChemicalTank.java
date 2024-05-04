@@ -303,7 +303,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isTypeEqual(STACK other) {
-        return getStack().isTypeEqual(other);
+        return ChemicalStack.isSameChemical(getStack(), other);
     }
 
     /**
@@ -335,18 +335,5 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             nbt.put(NBTConstants.STORED, getStack().save(provider));
         }
         return nbt;
-    }
-
-    /**
-     * Checks if this chemical tank is equivalent to another one for the purposes of attachments.
-     *
-     * @param other Chemical tank to compare to.
-     *
-     * @return {@code true} If this chemical tank can be considered equivalent and compatible with the other tank.
-     *
-     * @since 10.5.0
-     */
-    default boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
-        return getClass() == other.getClass() && getStack().equals(other.getStack());
     }
 }

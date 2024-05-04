@@ -11,9 +11,6 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public class ModuleElytraUnit implements ICustomModule<ModuleElytraUnit> {
 
-    public ModuleElytraUnit(IModule<ModuleElytraUnit> module) {
-    }
-
     @Override
     public boolean canChangeModeWhenDisabled(IModule<ModuleElytraUnit> module) {
         return true;

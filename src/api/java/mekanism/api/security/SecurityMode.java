@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -37,14 +36,23 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComp
      */
     TRUSTED(APILang.TRUSTED, EnumColor.INDIGO);
 
-    //TODO - 1.20.5: DOCS
+    /**
+     * Codec for serializing security modes based on their name.
+     *
+     * @since 10.6.0
+     */
     public static final Codec<SecurityMode> CODEC = StringRepresentable.fromEnum(SecurityMode::values);
     /**
-     * Gets a security mode by index.
+     * Gets a security mode by index, wrapping for out of bounds indices.
      *
      * @since 10.6.0
      */
     public static final IntFunction<SecurityMode> BY_ID = ByIdMap.continuous(SecurityMode::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    /**
+     * Stream codec for syncing security modes by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, SecurityMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, SecurityMode::ordinal);
 
     private final String serializedName;

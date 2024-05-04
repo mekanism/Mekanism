@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 
 /**
- *
+ * Helper class to keep track of chemicals and what specific type they are
  */
 @NothingNullByDefault
 public class BoxedChemical implements IHasTextComponent {
@@ -27,10 +27,33 @@ public class BoxedChemical implements IHasTextComponent {
      * Empty Boxed Chemical instance.
      */
     public static final BoxedChemical EMPTY = new BoxedChemical(ChemicalType.GAS, MekanismAPI.EMPTY_GAS);
-    //TODO - 1.20.5: Docs
+    /**
+     * Codec to get any kind of chemical (that does not accept empty types) as a boxed chemical.
+     *
+     * @see Chemical#BOXED_CODEC
+     * @since 10.6.0
+     */
     public static final Codec<BoxedChemical> CODEC = Chemical.BOXED_CODEC.xmap(BoxedChemical::box, BoxedChemical::getChemical);
+    /**
+     * Codec to get any kind of chemical as a boxed chemical.
+     *
+     * @see Chemical#BOXED_OPTIONAL_CODEC
+     * @since 10.6.0
+     */
     public static final Codec<BoxedChemical> OPTIONAL_CODEC = Chemical.BOXED_OPTIONAL_CODEC.xmap(BoxedChemical::box, BoxedChemical::getChemical);
+    /**
+     * StreamCodec to get any kind of chemical (that does not accept the empty type) as a boxed chemical.
+     *
+     * @see Chemical#BOXED_STREAM_CODEC
+     * @since 10.6.0
+     */
     public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> STREAM_CODEC = Chemical.BOXED_STREAM_CODEC.map(BoxedChemical::box, BoxedChemical::getChemical);
+    /**
+     * StreamCodec to get any kind of chemical as a boxed chemical.
+     *
+     * @see Chemical#BOXED_OPTIONAL_STREAM_CODEC
+     * @since 10.6.0
+     */
     public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemical> OPTIONAL_STREAM_CODEC = Chemical.BOXED_OPTIONAL_STREAM_CODEC.map(BoxedChemical::box, BoxedChemical::getChemical);
 
     /**
@@ -119,6 +142,8 @@ public class BoxedChemical implements IHasTextComponent {
 
     /**
      * Saves this boxed chemical to a new tag. Empty boxed chemical are supported and will be saved as an empty tag.
+     *
+     * @since 10.6.0
      */
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmpty() ? new CompoundTag() : save(lookupProvider);
@@ -140,8 +165,7 @@ public class BoxedChemical implements IHasTextComponent {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+        } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
         BoxedChemical other = (BoxedChemical) o;

@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.energy;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.attachments.containers.ContainerType;
@@ -52,11 +51,6 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         CompoundTag nbt = super.serializeNBT(provider);
         nbt.putString(NBTConstants.ENERGY_USAGE, energyPerTick.toString());
         return nbt;
-    }
-
-    @Override
-    public boolean isCompatible(IEnergyContainer other) {
-        return super.isCompatible(other) && energyPerTick.equals(((ComponentBackedResistiveEnergyContainer) other).energyPerTick);
     }
 
     @Override

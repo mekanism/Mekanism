@@ -26,9 +26,6 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "nutritional_injection_unit.png");
 
-    public ModuleNutritionalInjectionUnit(IModule<ModuleNutritionalInjectionUnit> module) {
-    }
-
     @Override
     public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();

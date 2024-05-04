@@ -104,14 +104,24 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         return ret;
     }
 
-    //throws IllegalStateException
     @Override
     public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config) {
         return replaceModuleConfig(stack, type, config, false);
     }
 
-    //throws IllegalArgumentException
-    //throws IllegalStateException
+    /**
+     * Helper to replace the given config for the installed module of the given type.
+     *
+     * @param stack  The stack the container is stored on.
+     * @param type   Module type to replace the config for.
+     * @param config Config to replace.
+     *
+     * @return New immutable module container with the config using the replaced value.
+     *
+     * @throws IllegalStateException    If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
+     *                                  given type.
+     * @throws IllegalArgumentException If fromPacket is true, and the config does not represent a value that is valid for the module.
+     */
     public <MODULE extends ICustomModule<MODULE>> ModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config, boolean fromPacket) {
         Module<MODULE> module = get(type);
         if (module == null) {

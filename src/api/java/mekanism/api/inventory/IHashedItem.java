@@ -64,7 +64,7 @@ public interface IHashedItem {
      *
      * @since 10.5.0
      */
-    //TODO - 1.20.5: Docs and re-evaluate this
+    //TODO - 1.20.5: Docs and re-evaluate this. Do we want to be working on the components, or the component patch?
     default DataComponentMap getInternalComponents() {
         return getInternalStack().getComponents();
     }

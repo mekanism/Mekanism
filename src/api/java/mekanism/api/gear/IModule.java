@@ -26,26 +26,43 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     ModuleData<MODULE> getData();
 
     /**
-     * {@return the config item with the given name}
+     * Gets the config with the given name.
      *
-     * @param name Config to look up.
+     * @param name Name of the config to look up.
+     *
+     * @return Immutable config instance, or {@code null} if no config was found with the given name.
      *
      * @since 10.6.0
      */
-    @Nullable//TODO - 1.20.5: Docs
+    @Nullable
     <TYPE> ModuleConfig<TYPE> getConfig(String name);
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Gets the value of a boolean config with the given name.
+     *
+     * @param name Name of the config to look up.
+     *
+     * @return The value of the stored config, or {@code false} if the config does not exist.
+     *
+     * @since 10.6.0
+     */
     default boolean getBooleanConfigOrFalse(String name) {
         ModuleConfig<Boolean> config = getConfig(name);
         return config != null && config.get();
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * {@return the config with the given name}
+     *
+     * @param name Name of the config to look up.
+     *
+     * @throws IllegalArgumentException If this module does not contain a config with the given name.
+     * @since 10.6.0
+     */
     default <TYPE> ModuleConfig<TYPE> getConfigOrThrow(String name) {
         ModuleConfig<TYPE> config = getConfig(name);
         if (config == null) {
-            throw new IllegalStateException("Expected module to contain a config with name " + name);
+            throw new IllegalArgumentException("Expected module to contain a config with name " + name);
         }
         return config;
     }

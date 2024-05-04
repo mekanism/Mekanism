@@ -279,15 +279,18 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public boolean handlesRadialModeChange() {
-        return data.handlesModeChange() && (isEnabled() || customModule.canChangeRadialModeWhenDisabled(this));
+        if (getConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY) == null) {
+            return false;
+        }
+        return isEnabled() || customModule.canChangeRadialModeWhenDisabled(this);
     }
 
     @Override
     public boolean handlesAnyModeChange() {
-        if (data.handlesModeChange()) {
-            return isEnabled() || handleModeChange && customModule.canChangeModeWhenDisabled(this) || customModule.canChangeRadialModeWhenDisabled(this);
+        if (getConfig(ModuleConfig.HANDLES_MODE_CHANGE_KEY) == null) {
+            return false;
         }
-        return false;
+        return isEnabled() || handleModeChange && customModule.canChangeModeWhenDisabled(this) || customModule.canChangeRadialModeWhenDisabled(this);
     }
 
     @Override

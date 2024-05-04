@@ -23,15 +23,23 @@ public enum RelativeSide implements IHasTranslationKey, StringRepresentable {
     TOP(APILang.TOP),
     BOTTOM(APILang.BOTTOM);
 
-    //TODO - 1.20.5: DOCS
+    /**
+     * Codec for serializing sides based on their name.
+     *
+     * @since 10.6.0
+     */
     public static final Codec<RelativeSide> CODEC = StringRepresentable.fromEnum(RelativeSide::values);
     /**
-     * Gets a side by index.
+     * Gets a side by index, wrapping for out of bounds indices.
      *
      * @since 10.6.0
      */
     public static final IntFunction<RelativeSide> BY_ID = ByIdMap.continuous(RelativeSide::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    //TODO - 1.20.5: DOCS
+    /**
+     * Stream codec for syncing sides by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, RelativeSide> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RelativeSide::ordinal);
 
     private final String serializedName;

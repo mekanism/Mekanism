@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SupportsColorMap;
-import mekanism.api.math.MathUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
@@ -45,15 +43,23 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     BROWN("§6", APILang.COLOR_BROWN, "Brown", "brown", new int[]{161, 118, 73}, DyeColor.BROWN),
     BRIGHT_PINK("§d", APILang.COLOR_BRIGHT_PINK, "Pink", "pink", new int[]{255, 188, 196}, DyeColor.PINK);
 
-    //TODO - 1.20.5: DOCS
+    /**
+     * Codec for serializing colors based on their name.
+     *
+     * @since 10.6.0
+     */
     public static final Codec<EnumColor> CODEC = StringRepresentable.fromEnum(EnumColor::values);
     /**
-     * Gets a color by index.
+     * Gets a color by index, wrapping for out of bounds indices.
      *
      * @since 10.6.0
      */
     public static final IntFunction<EnumColor> BY_ID = ByIdMap.continuous(EnumColor::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    //TODO - 1.20.5: DOCS
+    /**
+     * Stream codec for syncing colors by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, EnumColor> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnumColor::ordinal);
     /**
      * The color code that will be displayed

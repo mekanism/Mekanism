@@ -28,9 +28,6 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
 
-    public ModuleDosimeterUnit(IModule<ModuleDosimeterUnit> module) {
-    }
-
     @Override
     public void addHUDElements(IModule<ModuleDosimeterUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {

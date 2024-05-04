@@ -9,23 +9,39 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-//TODO - 1.20.5: Docs
+/**
+ * Immutable class representing a color based module config (name and int value).
+ *
+ * @since 10.6.0
+ */
 @NothingNullByDefault
 public class ModuleColorConfig extends ModuleConfig<Integer> {
 
+    /**
+     * Codec for (de)serializing ARGB based color module configs.
+     */
     public static final Codec<ModuleColorConfig> ARGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
           .and(Codec.INT.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleColorConfig::argb));
+    /**
+     * Stream codec for encoding and decoding ARGB based color module configs over the network.
+     */
     public static final StreamCodec<ByteBuf, ModuleColorConfig> ARGB_STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
-          //Note: We don't do varint as we include alpha data
+          //Note: We don't do var-int as we include alpha data
           ByteBufCodecs.INT, ModuleConfig::get,
           ModuleColorConfig::argb
     );
+    /**
+     * Codec for (de)serializing RGB based color module configs.
+     */
     public static final Codec<ModuleColorConfig> RGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
           .and(Codec.INT.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
           //If we don't handle alpha make sure we do have the alpha component present
           .apply(instance, ModuleColorConfig::rgb));
+    /**
+     * Stream codec for encoding and decoding RGB based color module configs over the network.
+     */
     public static final StreamCodec<ByteBuf, ModuleColorConfig> RGB_STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
           //Note: We can use var int here and just not send the alpha data over the network
@@ -43,7 +59,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     /**
-     * Creates a new {@link ModuleColorData} that supports alpha and has the given default color.
+     * Creates a new {@link ModuleColorConfig} that supports alpha and has the given default color.
      *
      * @param defaultColor Default color.
      *
@@ -54,7 +70,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     /**
-     * Creates a new {@link ModuleColorData} that doesn't support alpha and has a default value of white ({@code 0xFFFFFFFF}).
+     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has a default value of white ({@code 0xFFFFFFFF}).
      *
      * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
      */
@@ -63,7 +79,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     /**
-     * Creates a new {@link ModuleColorData} that doesn't support alpha and has the given default color.
+     * Creates a new {@link ModuleColorConfig} that doesn't support alpha and has the given default color.
      *
      * @param defaultColor Default color.
      *
@@ -84,6 +100,11 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
         this.value = this.supportsAlpha ? value : value | 0xFF000000;
     }
 
+    /**
+     * Gets whether this module config supports alpha, if it does not the color returned will fully opaque.
+     *
+     * @return {@code true} if this data can handle alpha.
+     */
     public boolean supportsAlpha() {
         return supportsAlpha;
     }
@@ -98,6 +119,11 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
         return ByteBufCodecs.VAR_INT.map(val -> ModuleColorConfig.rgb(name, val), module -> module.get() & 0x00FFFFFF);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote If this config does not support alpha, the alpha component is locked to {@code 0xFF} instead of being missing.
+     */
     @Override
     public Integer get() {
         return value;

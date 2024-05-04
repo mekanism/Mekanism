@@ -9,7 +9,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.core.HolderLookup;
@@ -228,15 +227,6 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             nbt.putBoolean(NBTConstants.FILLING, true);
         }
         return nbt;
-    }
-
-    @Override
-    public boolean isCompatible(IInventorySlot o) {
-        if (super.isCompatible(o)) {
-            FluidInventorySlot other = (FluidInventorySlot) o;
-            return isDraining == other.isDraining && isFilling == other.isFilling;
-        }
-        return false;
     }
 
     @Override

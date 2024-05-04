@@ -9,22 +9,42 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-//TODO - 1.20.5: Docs
+/**
+ * Immutable class representing a boolean module config (name and boolean value).
+ *
+ * @since 10.6.0
+ */
 @NothingNullByDefault
 public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
 
+    /**
+     * Codec for (de)serializing boolean module configs.
+     */
     public static final Codec<ModuleBooleanConfig> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
           .and(Codec.BOOL.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleBooleanConfig::new));
+    /**
+     * Stream codec for encoding and decoding boolean module configs over the network.
+     */
     public static final StreamCodec<ByteBuf, ModuleBooleanConfig> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
           ByteBufCodecs.BOOL, ModuleConfig::get,
           ModuleBooleanConfig::new
     );
 
+    /**
+     * Creates a new boolean module config with the given name, and value.
+     *
+     * @param name   Name of the config option.
+     * @param value  Value of the config option.
+     */
+    public static ModuleBooleanConfig create(String name, boolean value) {
+        return new ModuleBooleanConfig(name, value);
+    }
+
     private final boolean value;
 
-    public ModuleBooleanConfig(String name, boolean value) {
+    protected ModuleBooleanConfig(String name, boolean value) {
         super(name);
         this.value = value;
     }
@@ -42,10 +62,7 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
     @Override
     public ModuleBooleanConfig with(Boolean value) {
         Objects.requireNonNull(value, "Value cannot be null.");
-        if (this.value == value) {
-            return this;
-        }
-        return new ModuleBooleanConfig(name(), value);
+        return this.value == value ? this : new ModuleBooleanConfig(name(), value);
     }
 
     @Override

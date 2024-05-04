@@ -162,11 +162,6 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public boolean isCompatible(IInventorySlot other) {
-        return super.isCompatible(other) && ItemStack.isSameItemSameComponents(getLockStack(), ((BinInventorySlot) other).getLockStack());
-    }
-
-    @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setItemStackOrEmpty(provider, nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserializeNBT(provider, nbt);

@@ -45,9 +45,6 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
         return map;
     });
 
-    public ModuleGeothermalGeneratorUnit(IModule<ModuleGeothermalGeneratorUnit> module) {
-    }
-
     @Override
     public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);

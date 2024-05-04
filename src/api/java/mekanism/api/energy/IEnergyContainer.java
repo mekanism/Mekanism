@@ -165,17 +165,4 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
         }
         return nbt;
     }
-
-    /**
-     * Checks if this energy container is equivalent to another one for the purposes of attachments.
-     *
-     * @param other Energy container to compare to.
-     *
-     * @return {@code true} If this energy container can be considered equivalent and compatible with the other container.
-     *
-     * @since 10.5.0
-     */
-    default boolean isCompatible(IEnergyContainer other) {
-        return getClass() == other.getClass() && getEnergy().equals(other.getEnergy());
-    }
 }

@@ -303,18 +303,4 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
         }
         return nbt;
     }
-
-    /**
-     * Checks if this inventory slot is equivalent to another one for the purposes of attachments.
-     *
-     * @param other Inventory slot to compare to.
-     *
-     * @return {@code true} If this inventory slot can be considered equivalent and compatible with the other slot.
-     *
-     * @since 10.5.0
-     */
-    default boolean isCompatible(IInventorySlot other) {
-        //TODO - 1.20.5: Remove this? I don't think it is necessary anymore
-        return getClass() == other.getClass() && ItemStack.matches(getStack(), other.getStack());
-    }
 }

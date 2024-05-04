@@ -32,9 +32,6 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         return base.multiply(Math.pow(2, module.getInstalledCount()));
     }
 
-    public ModuleEnergyUnit(IModule<ModuleEnergyUnit> module) {
-    }
-
     @Override
     public void onRemoved(IModule<ModuleEnergyUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean wasLast) {
         //Note: While technically we could use IModule#getEnergyContainer as it is just a helper,

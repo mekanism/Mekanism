@@ -48,9 +48,6 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
-    public ModuleShearingUnit(IModule<ModuleShearingUnit> module) {
-    }
-
     @Override
     public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ItemStack stack, ToolAction action) {
         if (action == ToolActions.SHEARS_DISARM) {

@@ -18,6 +18,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Helper class to keep track of chemical stacks and what specific type they are
+ */
 public class BoxedChemicalStack implements IHasTextComponent {
 
     /**
@@ -25,10 +28,33 @@ public class BoxedChemicalStack implements IHasTextComponent {
      */
     public static final BoxedChemicalStack EMPTY = new BoxedChemicalStack(ChemicalType.GAS, GasStack.EMPTY);
 
-    //TODO - 1.20.5: Docs
-    //TODO - 1.20.5: Do we want Codec variant of OPTIONAL_CODEC?
+    /**
+     * Codec to get any kind of chemical stack (that does not accept empty stacks) as a boxed chemical stack.
+     *
+     * @see ChemicalStack#BOXED_CODEC
+     * @since 10.6.0
+     */
     public static final Codec<BoxedChemicalStack> CODEC = ChemicalStack.BOXED_CODEC.xmap(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
+    /**
+     * Codec to get any kind of chemical stack as a boxed chemical stack.
+     *
+     * @see ChemicalStack#BOXED_OPTIONAL_CODEC
+     * @since 10.6.0
+     */
+    public static final Codec<BoxedChemicalStack> OPTIONAL_CODEC = ChemicalStack.BOXED_OPTIONAL_CODEC.xmap(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
+    /**
+     * StreamCodec to get any kind of chemical stack (that does not accept empty stacks) as a boxed chemical stack.
+     *
+     * @see ChemicalStack#BOXED_STREAM_CODEC
+     * @since 10.6.0
+     */
     public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> STREAM_CODEC = ChemicalStack.BOXED_STREAM_CODEC.map(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
+    /**
+     * StreamCodec to get any kind of chemical stack as a boxed chemical stack.
+     *
+     * @see ChemicalStack#BOXED_OPTIONAL_STREAM_CODEC
+     * @since 10.6.0
+     */
     public static final StreamCodec<RegistryFriendlyByteBuf, BoxedChemicalStack> OPTIONAL_STREAM_CODEC = ChemicalStack.BOXED_OPTIONAL_STREAM_CODEC.map(BoxedChemicalStack::box, BoxedChemicalStack::getChemicalStack);
 
     /**
@@ -127,6 +153,8 @@ public class BoxedChemicalStack implements IHasTextComponent {
 
     /**
      * Saves this stack to a new tag. Empty stacks are supported and will be saved as an empty tag.
+     *
+     * @since 10.6.0
      */
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmpty() ? new CompoundTag() : save(lookupProvider);
@@ -156,8 +184,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+        } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
         BoxedChemicalStack other = (BoxedChemicalStack) o;

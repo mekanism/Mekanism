@@ -20,9 +20,6 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");
 
-    public ModuleVisionEnhancementUnit(IModule<ModuleVisionEnhancementUnit> module) {
-    }
-
     @Override
     public void tickServer(IModule<ModuleVisionEnhancementUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());

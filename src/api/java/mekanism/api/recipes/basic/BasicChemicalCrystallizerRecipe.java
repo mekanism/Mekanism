@@ -100,16 +100,6 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
         return this.output;
     }
 
-    /**
-     * For Serializer usage.
-     *
-     * @return the chemical type of the input
-     */
-    public ChemicalType getChemicalType() {
-        //TODO - 1.20.5: Depending how we handle serialization maybe we want to just remove this?
-        return chemicalType;
-    }
-
     @Override
     public RecipeSerializer<BasicChemicalCrystallizerRecipe> getSerializer() {
         return MekanismRecipeSerializers.CRYSTALLIZING.get();

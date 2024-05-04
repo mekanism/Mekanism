@@ -59,7 +59,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
         }
 
         protected Long simulate(@NotNull STACK chemicalStack) {
-            if (!currentStored.isEmpty() && !currentStored.isTypeEqual(chemicalStack)) {
+            if (!currentStored.isEmpty() && !ChemicalStack.isSameChemical(currentStored, chemicalStack)) {
                 return 0L;
             }
             return Math.min(chemicalStack.getAmount(), transmitter.getCapacity() - currentStored.getAmount());

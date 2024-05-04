@@ -41,6 +41,7 @@ import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.registration.impl.ModuleDeferredRegister;
+import mekanism.common.registration.impl.ModuleDeferredRegister.SimpleEnchantmentAwareModule;
 import mekanism.common.registration.impl.ModuleRegistryObject;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -54,7 +55,7 @@ public class MekanismModules {
     public static final ModuleDeferredRegister MODULES = new ModuleDeferredRegister(Mekanism.MODID);
 
     //Shared
-    public static final ModuleRegistryObject<ModuleEnergyUnit> ENERGY_UNIT = MODULES.register("energy_unit", ModuleEnergyUnit::new,
+    public static final ModuleRegistryObject<ModuleEnergyUnit> ENERGY_UNIT = MODULES.registerInstanced("energy_unit", ModuleEnergyUnit::new,
           () -> MekanismItems.MODULE_ENERGY.asItem(), builder -> builder.maxStackSize(8).noDisable());
     //Shared Armor
     public static final ModuleRegistryObject<ModuleColorModulationUnit> COLOR_MODULATION_UNIT = MODULES.register("color_modulation_unit",
@@ -91,11 +92,11 @@ public class MekanismModules {
                       installed -> ModuleEnumConfig.streamCodec(FarmingRadius.STREAM_CODEC, FarmingRadius.class, installed + 1)
                 )
     );
-    public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
+    public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.registerInstanced("shearing_unit", ModuleShearingUnit::new,
           () -> MekanismItems.MODULE_SHEARING.asItem(), builder -> builder.exclusive(ExclusiveFlag.INTERACT_ENTITY, ExclusiveFlag.INTERACT_BLOCK));
-    public static final ModuleRegistryObject<?> SILK_TOUCH_UNIT = MODULES.registerEnchantBased("silk_touch_unit", () -> Enchantments.SILK_TOUCH,
-          () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.exclusive(ExclusiveFlag.OVERRIDE_DROPS));
-    public static final ModuleRegistryObject<?> FORTUNE_UNIT = MODULES.registerEnchantBased("fortune_unit", () -> Enchantments.FORTUNE,
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> SILK_TOUCH_UNIT = MODULES.registerEnchantBased("silk_touch_unit",
+          () -> Enchantments.SILK_TOUCH, () -> MekanismItems.MODULE_SILK_TOUCH.asItem(), builder -> builder.exclusive(ExclusiveFlag.OVERRIDE_DROPS));
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FORTUNE_UNIT = MODULES.registerEnchantBased("fortune_unit", () -> Enchantments.FORTUNE,
           () -> MekanismItems.MODULE_FORTUNE.asItem(), builder -> builder.maxStackSize(3).exclusive(ExclusiveFlag.OVERRIDE_DROPS));
     public static final ModuleRegistryObject<ModuleBlastingUnit> BLASTING_UNIT = MODULES.register("blasting_unit", ModuleBlastingUnit::new,
           () -> MekanismItems.MODULE_BLASTING.asItem(), builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
@@ -116,30 +117,30 @@ public class MekanismModules {
     );
     public static final ModuleRegistryObject<ModuleTeleportationUnit> TELEPORTATION_UNIT = MODULES.register("teleportation_unit", ModuleTeleportationUnit::new,
           () -> MekanismItems.MODULE_TELEPORTATION.asItem(), builder -> builder.exclusive(ExclusiveFlag.INTERACT_ANY)
-                .addConfig(new ModuleBooleanConfig(ModuleTeleportationUnit.REQUIRE_TARGET, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleTeleportationUnit.REQUIRE_TARGET, true))
     );
 
     //Helmet
     public static final ModuleRegistryObject<ModuleElectrolyticBreathingUnit> ELECTROLYTIC_BREATHING_UNIT = MODULES.register("electrolytic_breathing_unit",
           ModuleElectrolyticBreathingUnit::new, () -> MekanismItems.MODULE_ELECTROLYTIC_BREATHING.asItem(), builder -> builder.maxStackSize(4)
-                .addConfig(new ModuleBooleanConfig(ModuleElectrolyticBreathingUnit.FILL_HELD, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleElectrolyticBreathingUnit.FILL_HELD, true))
     );
     public static final ModuleRegistryObject<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = MODULES.register("inhalation_purification_unit",
           ModuleInhalationPurificationUnit::new, () -> MekanismItems.MODULE_INHALATION_PURIFICATION.asItem(), builder -> builder
-                .addConfig(new ModuleBooleanConfig(ModuleInhalationPurificationUnit.BENEFICIAL_EFFECTS, false))
-                .addConfig(new ModuleBooleanConfig(ModuleInhalationPurificationUnit.NEUTRAL_EFFECTS, true))
-                .addConfig(new ModuleBooleanConfig(ModuleInhalationPurificationUnit.HARMFUL_EFFECTS, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.BENEFICIAL_EFFECTS, false))
+                .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.NEUTRAL_EFFECTS, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.HARMFUL_EFFECTS, true))
     );
-    public static final ModuleRegistryObject<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = MODULES.register("vision_enhancement_unit",
+    public static final ModuleRegistryObject<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = MODULES.registerInstanced("vision_enhancement_unit",
           ModuleVisionEnhancementUnit::new, () -> MekanismItems.MODULE_VISION_ENHANCEMENT.asItem(), builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
                 .disabledByDefault());
-    public static final ModuleRegistryObject<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = MODULES.register("nutritional_injection_unit",
+    public static final ModuleRegistryObject<ModuleNutritionalInjectionUnit> NUTRITIONAL_INJECTION_UNIT = MODULES.registerInstanced("nutritional_injection_unit",
           ModuleNutritionalInjectionUnit::new, () -> MekanismItems.MODULE_NUTRITIONAL_INJECTION.asItem(), builder -> builder.rendersHUD());
 
     //Chestplate
-    public static final ModuleRegistryObject<ModuleDosimeterUnit> DOSIMETER_UNIT = MODULES.register("dosimeter_unit",
+    public static final ModuleRegistryObject<ModuleDosimeterUnit> DOSIMETER_UNIT = MODULES.registerInstanced("dosimeter_unit",
           ModuleDosimeterUnit::new, () -> MekanismItems.MODULE_DOSIMETER.asItem(), builder -> builder.rendersHUD());
-    public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.register("geiger_unit",
+    public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.registerInstanced("geiger_unit",
           ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER.asItem(), builder -> builder.rendersHUD());
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.register("jetpack_unit",
           ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.asItem(), builder -> builder.maxStackSize(4).handlesModeChange().rendersHUD()
@@ -160,8 +161,8 @@ public class MekanismModules {
     );
     public static final ModuleRegistryObject<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = MODULES.register("charge_distribution_unit",
           ModuleChargeDistributionUnit::new, () -> MekanismItems.MODULE_CHARGE_DISTRIBUTION.asItem(), builder -> builder
-                .addConfig(new ModuleBooleanConfig(ModuleChargeDistributionUnit.CHARGE_SUIT, true))
-                .addConfig(new ModuleBooleanConfig(ModuleChargeDistributionUnit.CHARGE_INVENTORY, false))
+                .addConfig(ModuleBooleanConfig.create(ModuleChargeDistributionUnit.CHARGE_SUIT, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleChargeDistributionUnit.CHARGE_INVENTORY, false))
     );
     public static final ModuleRegistryObject<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = MODULES.register("gravitational_modulating_unit",
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.asItem(), builder -> builder.handlesModeChange()
@@ -173,7 +174,7 @@ public class MekanismModules {
                       ModuleEnumConfig.streamCodec(SprintBoost.STREAM_CODEC)
                 )
     );
-    public static final ModuleRegistryObject<ModuleElytraUnit> ELYTRA_UNIT = MODULES.register("elytra_unit", ModuleElytraUnit::new,
+    public static final ModuleRegistryObject<ModuleElytraUnit> ELYTRA_UNIT = MODULES.registerInstanced("elytra_unit", ModuleElytraUnit::new,
           () -> MekanismItems.MODULE_ELYTRA.asItem(), builder -> builder.handlesModeChange().modeChangeDisabledByDefault());
 
     //Pants
@@ -192,13 +193,13 @@ public class MekanismModules {
                 .addInstalledCountConfig(
                       //Conditionally add the config option for when we are max installed
                       installed -> installed >= ModuleHydrostaticRepulsorUnit.BOOST_STACKS,
-                      installed -> new ModuleBooleanConfig(ModuleHydrostaticRepulsorUnit.SWIM_BOOST, true),
+                      installed -> ModuleBooleanConfig.create(ModuleHydrostaticRepulsorUnit.SWIM_BOOST, true),
                       installed -> ModuleBooleanConfig.CODEC,
                       installed -> ModuleBooleanConfig.STREAM_CODEC
                 )
     );
-    public static final ModuleRegistryObject<?> MOTORIZED_SERVO_UNIT = MODULES.registerEnchantBased("motorized_servo_unit", () -> Enchantments.SWIFT_SNEAK,
-          () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> MOTORIZED_SERVO_UNIT = MODULES.registerEnchantBased("motorized_servo_unit",
+          () -> Enchantments.SWIFT_SNEAK, () -> MekanismItems.MODULE_MOTORIZED_SERVO.asItem(), builder -> builder.maxStackSize(5));
 
     //Boots
     public static final ModuleRegistryObject<ModuleHydraulicPropulsionUnit> HYDRAULIC_PROPULSION_UNIT = MODULES.register("hydraulic_propulsion_unit",
@@ -221,8 +222,8 @@ public class MekanismModules {
                       installed -> ModuleEnumConfig.streamCodec(Range.STREAM_CODEC, Range.class, installed + 1)
                 )
     );
-    public static final ModuleRegistryObject<?> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit", () -> Enchantments.FROST_WALKER,
-          () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2));
-    public static final ModuleRegistryObject<?> SOUL_SURFER_UNIT = MODULES.registerEnchantBased("soul_surfer_unit", () -> Enchantments.SOUL_SPEED,
-          () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> FROST_WALKER_UNIT = MODULES.registerEnchantBased("frost_walker_unit",
+          () -> Enchantments.FROST_WALKER, () -> MekanismItems.MODULE_FROST_WALKER.asItem(), builder -> builder.maxStackSize(2));
+    public static final ModuleRegistryObject<SimpleEnchantmentAwareModule> SOUL_SURFER_UNIT = MODULES.registerEnchantBased("soul_surfer_unit",
+          () -> Enchantments.SOUL_SPEED, () -> MekanismItems.MODULE_SOUL_SURFER.asItem(), builder -> builder.maxStackSize(3));
 }

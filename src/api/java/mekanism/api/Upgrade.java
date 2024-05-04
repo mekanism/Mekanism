@@ -32,15 +32,23 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN),
     STONE_GENERATOR("stone_generator", APILang.UPGRADE_STONE_GENERATOR, APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, 1, EnumColor.ORANGE);
 
-    //TODO - 1.20.5: DOCS
+    /**
+     * Codec for serializing upgrades based on their name.
+     *
+     * @since 10.6.0
+     */
     public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
     /**
-     * Gets an upgrade by index.
+     * Gets an upgrade by index, wrapping for out of bounds indices.
      *
      * @since 10.6.0
      */
     public static final IntFunction<Upgrade> BY_ID = ByIdMap.continuous(Upgrade::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    //TODO - 1.20.5: DOCS
+    /**
+     * Stream codec for syncing upgrades by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, Upgrade> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Upgrade::ordinal);
 
     private final String name;

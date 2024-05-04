@@ -13,23 +13,51 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Docs
+/**
+ * Immutable class representing an enum based module config (name and enum value).
+ *
+ * @param <TYPE> Type of the data stored by this config.
+ *
+ * @since 10.6.0
+ */
 @NothingNullByDefault
 public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> extends ModuleConfig<TYPE> {
 
+    /**
+     * Codec for (de)serializing enum module configs, with no limits on what options are valid.
+     *
+     * @param enumCodec Codec for (de)serializing the enum value.
+     * @param <TYPE>    Type of the data stored by this config.
+     */
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> Codec<ModuleEnumConfig<TYPE>> codec(Codec<TYPE> enumCodec) {
         return RecordCodecBuilder.create(instance -> baseCodec(instance)
               .and(enumCodec.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
               .apply(instance, ModuleEnumConfig::new));
     }
 
+    /**
+     * Codec for (de)serializing enum module configs, limited to the specified range of values.
+     *
+     * @param enumCodec       Codec for (de)serializing the enum value.
+     * @param enumClass       Enum class
+     * @param selectableCount The number of selectable elements.
+     * @param <TYPE>          Type of the data stored by this config.
+     *
+     * @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
+     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #codec(Codec)} was called instead.
+     */
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> Codec<ModuleEnumConfig<TYPE>> codec(Codec<TYPE> enumCodec, Class<TYPE> enumClass, int selectableCount) {
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
         }
         //We calculate and then capture this so that we can have a single list instance used
         List<TYPE> enumConstants = getEnumConstants(enumClass, selectableCount);
+        if (enumConstants == null) {
+            //Don't bother validating the index as we can select any of the values
+            return codec(enumCodec);
+        }
         return RecordCodecBuilder.create(instance -> baseCodec(instance)
               .and(enumCodec.validate(value -> value.ordinal() < selectableCount ? DataResult.success(value) :
                                                DataResult.error(() -> "Invalid value" + value.name() + ", it is out of range of the selectable values."))
@@ -37,6 +65,12 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
               .apply(instance, (name, value) -> new ModuleEnumConfig<>(name, value, enumConstants)));
     }
 
+    /**
+     * Stream codec for encoding and decoding enum module configs, with no limits on what options are valid, over the network.
+     *
+     * @param enumCodec Stream codec for encoding and decoding the enum value.
+     * @param <TYPE>    Type of the data stored by this config.
+     */
     public static <BUF extends ByteBuf, TYPE extends Enum<TYPE> & IHasTextComponent> StreamCodec<BUF, ModuleEnumConfig<TYPE>> streamCodec(StreamCodec<BUF, TYPE> enumCodec) {
         return StreamCodec.composite(
               ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
@@ -45,6 +79,17 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         );
     }
 
+    /**
+     * Stream codec for encoding and decoding enum module configs, limited to the specified range of values, over the network
+     *
+     * @param enumCodec       Stream codec for encoding and decoding the enum value.
+     * @param enumClass       Enum class
+     * @param selectableCount The number of selectable elements.
+     * @param <TYPE>          Type of the data stored by this config.
+     *
+     * @throws IllegalArgumentException If selectableCount is less than one, or greater than the number of elements in the enum.
+     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #streamCodec(StreamCodec)} was called instead.
+     */
     public static <BUF extends ByteBuf, TYPE extends Enum<TYPE> & IHasTextComponent> StreamCodec<BUF, ModuleEnumConfig<TYPE>> streamCodec(StreamCodec<BUF, TYPE> enumCodec,
           Class<TYPE> enumClass, int selectableCount) {
         if (selectableCount <= 0) {
@@ -52,6 +97,10 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         }
         //We calculate and then capture this so that we can have a single list instance used
         List<TYPE> enumConstants = getEnumConstants(enumClass, selectableCount);
+        if (enumConstants == null) {
+            //Don't bother validating the index as we can select any of the values
+            return streamCodec(enumCodec);
+        }
         return StreamCodec.composite(
               ByteBufCodecs.STRING_UTF8, ModuleConfig::name,
               enumCodec, ModuleConfig::get,
@@ -59,10 +108,27 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         );
     }
 
+    /**
+     * Creates a new enum module config with the given name, value, and no limits on what options are valid.
+     *
+     * @param name   Name of the config option.
+     * @param value  Value of the config option.
+     * @param <TYPE> Type of the data stored by this config.
+     */
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> create(String name, TYPE value) {
         return new ModuleEnumConfig<>(name, value);
     }
 
+    /**
+     * Creates a new enum module config with the given name, value, and is limited to the specified range of values.
+     *
+     * @param name            Name of the config option.
+     * @param value           Value of the config option.
+     * @param selectableCount The number of selectable elements.
+     * @param <TYPE>          Type of the data stored by this config.
+     *
+     * @implNote If selectedCount is equal to the number of elements in the enum, this acts as if {@link #create(String, Enum)} was called instead.
+     */
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> ModuleEnumConfig<TYPE> createBounded(String name, TYPE value, int selectableCount) {
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
@@ -70,20 +136,20 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
             throw new IllegalArgumentException("Invalid value, it is out of range of the selectable values.");
         }
         Class<TYPE> enumClass = value.getDeclaringClass();
-        TYPE[] constants = enumClass.getEnumConstants();
-        if (constants.length < selectableCount) {
-            throw new IllegalArgumentException("Selectable count is larger than the number of elements in " + enumClass.getSimpleName());
+        List<TYPE> enumConstants = getEnumConstants(enumClass, selectableCount);
+        if (enumConstants == null) {
+            return create(name, value);
         }
-        return new ModuleEnumConfig<>(name, value, getEnumConstants(enumClass, selectableCount));
+        return new ModuleEnumConfig<>(name, value, enumConstants);
     }
 
+    @Nullable
     private static <TYPE extends Enum<TYPE> & IHasTextComponent> List<TYPE> getEnumConstants(Class<TYPE> enumClass, int selectableCount) {
         TYPE[] constants = enumClass.getEnumConstants();
         if (constants.length < selectableCount) {
             throw new IllegalArgumentException("Selectable count is larger than the number of elements in " + enumClass.getSimpleName());
-        }
-        if (constants.length == selectableCount) {
-            return List.of(constants);
+        } else if (constants.length == selectableCount) {
+            return null;
         }
         return List.of(constants).subList(0, selectableCount);
     }
@@ -114,6 +180,9 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         return value;
     }
 
+    /**
+     * {@return an immutable list of enum constants that this config supports}
+     */
     public List<TYPE> getEnumConstants() {
         return enumConstants;
     }
@@ -122,7 +191,6 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
     public ModuleEnumConfig<TYPE> with(TYPE value) {
         Objects.requireNonNull(value, "Value cannot be null.");
         if (value.ordinal() >= enumConstants.size()) {
-            //TODO - 1.20.5: Do we want an exception or for this to just default to something either being this or the value at index zero?
             throw new IllegalArgumentException("Invalid value, it is out of range of the selectable values.");
         } else if (this.value == value) {
             return this;
@@ -130,9 +198,17 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         return new ModuleEnumConfig<>(name(), value);
     }
 
+    /**
+     * Creates a new immutable enum module config object that has a value equal to the nth enum value.
+     *
+     * @param index Enum index of the desired value.
+     *
+     * @return A new module config using the value with the specific index.
+     *
+     * @throws IllegalArgumentException If the specified value is not valid in the range of constants this config supports (used for invalid packets)
+     */
     public ModuleEnumConfig<TYPE> with(int index) {
         if (index < 0 || index >= enumConstants.size()) {
-            //TODO - 1.20.5: Do we want an exception or for this to just default to something either being this or the value at index zero?
             throw new IllegalArgumentException("Invalid value, it is out of range of the selectable values.");
         } else if (value.ordinal() == index) {
             return this;

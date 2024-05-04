@@ -156,14 +156,6 @@ public abstract class ChemicalTankWrapper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
-    public boolean isCompatible(IChemicalTank<CHEMICAL, STACK> other) {
-        if (getClass() == other.getClass()) {
-            return internal.isCompatible(((ChemicalTankWrapper<CHEMICAL, STACK>) other).internal);
-        }
-        return internal.isCompatible(other);
-    }
-
-    @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         internal.deserializeNBT(provider, nbt);
     }

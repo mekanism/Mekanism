@@ -13,14 +13,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.gear.config.ModuleConfig;
 
-//TODO - 1.20.5: Docs?
-//Based off of ListCodec
+/**
+ * Based off of {@link com.mojang.serialization.codecs.ListCodec}, but uses a list of codecs to encode each separate element in the list
+ *
+ * @since 10.6.0
+ */
 class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
 
     private final List<Codec<ModuleConfig<?>>> codecs;
 
-    ModuleConfigListCodec(List<Codec<ModuleConfig<?>>> codecs) {
-        this.codecs = codecs;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    ModuleConfigListCodec(List<Codec<? extends ModuleConfig<?>>> codecs) {
+        this.codecs = (List) codecs;
     }
 
     @Override

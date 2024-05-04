@@ -47,7 +47,8 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean testType(STACK chemicalStack) {
-        return chemicalInstance.isTypeEqual(Objects.requireNonNull(chemicalStack));
+        Objects.requireNonNull(chemicalStack);
+        return ChemicalStack.isSameChemical(chemicalInstance, chemicalStack);
     }
 
     @Override

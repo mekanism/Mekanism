@@ -62,7 +62,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> MapCodec<STACK> codec(Codec<CHEMICAL> nonEmptyCodec,
           BiFunction<CHEMICAL, Long, STACK> constructor) {
-        //TODO - 1.20.%: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
+        //TODO - 1.20.5: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
               nonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical),
               SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
@@ -78,7 +78,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Codec<STACK> fixedAmountCodec(
           Codec<CHEMICAL> chemicalNonEmptyCodec, BiFunction<CHEMICAL, Long, STACK> constructor, long amount) {
-        //TODO - 1.20.%: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
+        //TODO - 1.20.5: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
         return RecordCodecBuilder.create(instance -> instance.group(
               chemicalNonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical)
         ).apply(instance, holder -> constructor.apply(holder, amount)));
@@ -169,7 +169,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @see mekanism.api.chemical.merged.BoxedChemicalStack
      * @since 10.6.0
      */
-    //TODO - 1.20.5: Re-evaluate if we wan this defaulting to an empty gas stack or to try and get the same stack type as it was?
+    //TODO - 1.20.5: Re-evaluate if we want this defaulting to an empty gas stack or to try and get the same stack type as it was?
     public static final Codec<ChemicalStack<?>> BOXED_OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(BOXED_CODEC).xmap(optional -> optional.orElse(GasStack.EMPTY),
           stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
     /**
@@ -251,6 +251,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     /**
      * Creates a copy of this stack with {@code 0} amount.
+     *
+     * @since 10.6.0
      */
     public abstract ChemicalStack<CHEMICAL> copyAndClear();
 
@@ -306,6 +308,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @param predicate - Predicate to test
      *
      * @return if the ChemicalStack's type matches the given predicate
+     *
+     * @since 10.6.0
      */
     public boolean is(Predicate<Holder<CHEMICAL>> predicate) {
         return predicate.test(getChemicalHolder());
@@ -317,6 +321,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @param holder - Chemical holder to check
      *
      * @return if the ChemicalStack's type is the same as the given holder's chemical
+     *
+     * @since 10.6.0
      */
     public boolean is(Holder<CHEMICAL> holder) {
         return is(holder.value());
@@ -345,18 +351,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Whether this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
-     *
-     * @param stack - ChemicalStack to check
-     *
-     * @return if the ChemicalStacks contain the same chemical type
-     */
-    public boolean isTypeEqual(ChemicalStack<CHEMICAL> stack) {
-        //TODO - 1.20.5: Should we replace this with the static method?
-        return is(stack.getChemical());
-    }
-
-    /**
      * Saves this stack to a tag, directly writing the keys into the passed tag.
      *
      * @throws IllegalStateException if this stack is empty
@@ -374,6 +368,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     /**
      * Saves this stack to a new tag. Empty stacks are supported and will be saved as an empty tag.
+     *
+     * @since 10.6.0
      */
     public Tag saveOptional(HolderLookup.Provider lookupProvider) {
         return isEmpty() ? new CompoundTag() : save(lookupProvider);
@@ -548,6 +544,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * Checks if the two chemical stacks have the same chemical type. Ignores amount.
      *
      * @return {@code true} if the two chemical stacks have the same chemical
+     *
+     * @since 10.6.0 Previously was isTypeEqual
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>> boolean isSameChemical(ChemicalStack<CHEMICAL> first, ChemicalStack<CHEMICAL> second) {
         return first.is(second.getChemical());

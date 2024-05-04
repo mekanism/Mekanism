@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an item that can contain modules. Do not implement this interface directly, register new containers via
- * {@link mekanism.api.MekanismIMC#addModuleContainer(ModuleContainerTarget)}.
+ * {@link mekanism.api.MekanismIMC#addModuleContainer(ModuleContainerTarget)}. Module containers are immutable.
  *
  * @since 10.5.0
  */
@@ -41,7 +41,18 @@ public interface IModuleContainer {
         return typedModules().keySet();
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Helper to replace the given config for the installed module of the given type.
+     *
+     * @param stack  The stack the container is stored on.
+     * @param type   Module type to replace the config for.
+     * @param config Config to replace.
+     *
+     * @return New immutable module container with the config using the replaced value.
+     *
+     * @throws IllegalStateException If no module of the given type is installed, or there is no config with the same name is not found installed on the module of the
+     *                               given type.
+     */
     <MODULE extends ICustomModule<MODULE>> IModuleContainer replaceModuleConfig(ItemStack stack, ModuleData<MODULE> type, ModuleConfig<?> config);
 
     /**
@@ -78,7 +89,8 @@ public interface IModuleContainer {
      *
      * @param typeProvider Module type.
      */
-    @Nullable <MODULE extends ICustomModule<MODULE>> IModule<MODULE> get(IModuleDataProvider<MODULE> typeProvider);
+    @Nullable
+    <MODULE extends ICustomModule<MODULE>> IModule<MODULE> get(IModuleDataProvider<MODULE> typeProvider);
 
     /**
      * {@return the module if it is installed in this container and is currently enabled}
@@ -113,15 +125,17 @@ public interface IModuleContainer {
      * Gets all the HUD elements that should be displayed when the MekaSuit is rendering the HUD.
      *
      * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
+     * @param stack  The stack the container is stored on.
      */
-    List<IHUDElement> getHUDElements(Player player, ItemStack stack);//TODO - 1.20.5: Document stack
+    List<IHUDElement> getHUDElements(Player player, ItemStack stack);
 
     /**
      * Gets all the text that should be displayed on the HUD.
      *
      * @param player Player using or wearing the container. In general this will be the client player, but is passed to make sidedness safer and easier.
+     * @param stack  The stack the container is stored on.
      *
      * @apiNote These strings will be rendered without requiring the MekaSuit to be worn unlike {@link #getHUDElements(Player, ItemStack)}.
      */
-    List<Component> getHUDStrings(Player player, ItemStack stack);//TODO - 1.20.5: Document stack
+    List<Component> getHUDStrings(Player player, ItemStack stack);
 }

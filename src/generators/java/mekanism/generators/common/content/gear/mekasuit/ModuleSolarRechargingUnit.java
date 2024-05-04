@@ -21,9 +21,6 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
 
     private static final FloatingLong RAIN_MULTIPLIER = FloatingLong.createConst(0.2);
 
-    public ModuleSolarRechargingUnit(IModule<ModuleSolarRechargingUnit> module) {
-    }
-
     @Override
     public void tickServer(IModule<ModuleSolarRechargingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer(stack);

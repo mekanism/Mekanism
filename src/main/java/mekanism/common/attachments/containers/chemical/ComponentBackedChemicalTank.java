@@ -111,7 +111,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
-        } else if (stored.isEmpty() || stored.isTypeEqual(stack)) {
+        } else if (stored.isEmpty() || ChemicalStack.isSameChemical(stored, stack)) {
             long toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //Note: We let setStack handle updating the backing holding stack

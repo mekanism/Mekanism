@@ -50,9 +50,23 @@ public enum ChemicalType implements StringRepresentable {
         }
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Codec for serializing chemical types based on their name.
+     *
+     * @since 10.6.0
+     */
     public static final Codec<ChemicalType> CODEC = StringRepresentable.fromEnum(ChemicalType::values);
+    /**
+     * Gets a chemical type by index, wrapping for out of bounds indices.
+     *
+     * @since 10.6.0
+     */
     public static final IntFunction<ChemicalType> BY_ID = ByIdMap.continuous(ChemicalType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    /**
+     * Stream codec for syncing chemical types by index.
+     *
+     * @since 10.6.0
+     */
     public static final StreamCodec<ByteBuf, ChemicalType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ChemicalType::ordinal);
 
     private final Predicate<Chemical<?>> instanceCheck;

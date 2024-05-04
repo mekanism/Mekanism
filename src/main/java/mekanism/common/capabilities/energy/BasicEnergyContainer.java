@@ -166,16 +166,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
         return nbt;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isCompatible(IEnergyContainer other) {
-        return getClass() == other.getClass() && stored.equals(((BasicEnergyContainer) other).stored);
-    }
-
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, this::setEnergy);

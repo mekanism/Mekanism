@@ -5,7 +5,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -156,10 +155,5 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         NBTUtils.setItemStackOrEmpty(provider, nbt, NBTConstants.LOCK_STACK, this::setLockStack);
         super.deserializeNBT(provider, nbt);
-    }
-
-    @Override
-    public boolean isCompatible(IInventorySlot other) {
-        return super.isCompatible(other) && ItemStack.isSameItemSameComponents(getLockStack(), ((ComponentBackedBinInventorySlot) other).getLockStack());
     }
 }

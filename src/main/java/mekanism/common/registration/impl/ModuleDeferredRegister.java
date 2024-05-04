@@ -32,19 +32,22 @@ public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<
         return registerBuilder(name, () -> builderModifier.apply(ModuleDataBuilder.custom(constructor, itemProvider)));
     }
 
-    public ModuleRegistryObject<?> registerEnchantBased(String name, Supplier<Enchantment> enchantment, IItemProvider itemProvider,
-          UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
-        return registerBuilder(name, () -> {
-            SimpleEnchantmentAwareModule customModule = new SimpleEnchantmentAwareModule(enchantment.get());
-            Function<IModule<SimpleEnchantmentAwareModule>, SimpleEnchantmentAwareModule> function = module -> customModule;
-            return builderModifier.apply(ModuleDataBuilder.custom(function, itemProvider));
-        });
+    //Do not use this method if you have any config options
+    public ModuleRegistryObject<SimpleEnchantmentAwareModule> registerEnchantBased(String name, Supplier<Enchantment> enchantment, IItemProvider itemProvider,
+          UnaryOperator<ModuleDataBuilder<SimpleEnchantmentAwareModule>> builderModifier) {
+        return registerInstanced(name, () -> new SimpleEnchantmentAwareModule(enchantment.get()), itemProvider, builderModifier);
+    }
+
+    //Do not use this method if you have any config options
+    public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> registerInstanced(String name, Supplier<MODULE> constructor,
+          IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<MODULE>> builderModifier) {
+        return registerBuilder(name, () -> builderModifier.apply(ModuleDataBuilder.customInstanced(constructor, itemProvider)));
     }
 
     public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> registerBuilder(String name, Supplier<ModuleDataBuilder<MODULE>> builder) {
         return (ModuleRegistryObject<MODULE>) register(name, () -> new ModuleData<>(builder.get()));
     }
 
-    private record SimpleEnchantmentAwareModule(Enchantment enchantment) implements EnchantmentAwareModule<SimpleEnchantmentAwareModule> {
+    public record SimpleEnchantmentAwareModule(Enchantment enchantment) implements EnchantmentAwareModule<SimpleEnchantmentAwareModule> {
     }
 }

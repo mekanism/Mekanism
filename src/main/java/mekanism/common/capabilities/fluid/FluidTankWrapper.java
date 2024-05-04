@@ -108,14 +108,6 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
-    public boolean isCompatible(IExtendedFluidTank other) {
-        if (getClass() == other.getClass()) {
-            return internal.isCompatible(((FluidTankWrapper) other).internal);
-        }
-        return internal.isCompatible(other);
-    }
-
-    @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         internal.deserializeNBT(provider, nbt);
     }
