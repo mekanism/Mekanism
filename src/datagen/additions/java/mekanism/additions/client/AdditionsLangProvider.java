@@ -2,6 +2,7 @@ package mekanism.additions.client;
 
 import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
+import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.advancements.AdditionsAdvancements;
 import mekanism.additions.common.item.ItemBalloon;
@@ -23,12 +24,38 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addTags();
         addItems();
         addBlocks();
         addEntities();
         addSubtitles();
         addAdvancements();
         addMisc();
+    }
+
+    private void addTags() {
+        addTag(AdditionsTags.Items.BALLOONS, "Balloons");
+
+        addTag(AdditionsTags.Items.FENCES_PLASTIC, "Plastic Fences");
+        addTag(AdditionsTags.Items.FENCE_GATES_PLASTIC, "Plastic Fence Gates");
+        addTag(AdditionsTags.Items.STAIRS_PLASTIC, "Plastic Stairs");
+        addTag(AdditionsTags.Items.SLABS_PLASTIC, "Plastic Slabs");
+        addTag(AdditionsTags.Items.STAIRS_PLASTIC_GLOW, "Glow Plastic Stairs");
+        addTag(AdditionsTags.Items.SLABS_PLASTIC_GLOW, "Glow Plastic Slabs");
+        addTag(AdditionsTags.Items.STAIRS_PLASTIC_TRANSPARENT, "Transparent Plastic Stairs");
+        addTag(AdditionsTags.Items.SLABS_PLASTIC_TRANSPARENT, "Transparent Plastic Slabs");
+
+        addTag(AdditionsTags.Items.GLOW_PANELS, "Glow Panels");
+
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS, "All Types of Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, "Glow Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, "Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS, "Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, "Reinforced Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, "Plastic Roads");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, "Slick Plastic Blocks");
+        addTag(AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT, "Transparent Plastic Blocks");
+
     }
 
     private void addItems() {

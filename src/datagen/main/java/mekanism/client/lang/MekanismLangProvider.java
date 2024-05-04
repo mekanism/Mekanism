@@ -53,11 +53,13 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
@@ -68,6 +70,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addTags();
         addItems();
         addBlocks();
         addFluids();
@@ -81,6 +84,137 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addSubtitles();
         addMisc();
         addAdvancements();
+    }
+
+    private void addTags() {
+        addTag(MekanismTags.Items.CONFIGURATORS, "Configurators");
+        addTag(MekanismTags.Items.TOOLS_WRENCHES, "Wrenches");
+        addTag(MekanismTags.Items.PERSONAL_STORAGE, "Personal Storage");
+
+        addTag(MekanismTags.Items.RODS_PLASTIC, "Plastic Rods");
+
+        addTag(MekanismTags.Items.FUELS, "Fuels");
+        addTag(MekanismTags.Items.FUELS_BIO, "Bio Fuels");
+        addTag(MekanismTags.Items.FUELS_BLOCK_BIO, "Bio Storage Block Fuels");
+
+        addTag(MekanismTags.Items.PELLETS_ANTIMATTER, "Antimatter Pellets");
+        addTag(MekanismTags.Items.PELLETS_PLUTONIUM, "Plutonium Pellets");
+        addTag(MekanismTags.Items.PELLETS_POLONIUM, "Polonium Pellets");
+
+        addTag(MekanismTags.Items.DUSTS_BRONZE, "Bronze Dusts");
+        addTag(MekanismTags.Items.DUSTS_CHARCOAL, "Charcoal Dusts");
+        addTag(MekanismTags.Items.DUSTS_COAL, "Coal Dusts");
+        addTag(MekanismTags.Items.DUSTS_DIAMOND, "Diamond Dusts");
+        addTag(MekanismTags.Items.DUSTS_EMERALD, "Emerald Dusts");
+        addTag(MekanismTags.Items.DUSTS_NETHERITE, "Netherite Dusts");
+        addTag(MekanismTags.Items.DUSTS_LAPIS, "Lapis Dusts");
+        addTag(MekanismTags.Items.DUSTS_LITHIUM, "Lithium Dusts");
+        addTag(MekanismTags.Items.DUSTS_OBSIDIAN, "Obsidian Dusts");
+        addTag(MekanismTags.Items.DUSTS_QUARTZ, "Quartz Dusts");
+        addTag(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN, "Refined Obsidian Dusts");
+        addTag(MekanismTags.Items.DUSTS_SALT, "Salts");
+        addTag(MekanismTags.Items.DUSTS_STEEL, "Steel Dusts");
+        addTag(MekanismTags.Items.DUSTS_SULFUR, "Sulphur Dusts");
+        addTag(MekanismTags.Items.DUSTS_WOOD, "Sawdusts");
+        addTag(MekanismTags.Items.DUSTS_FLUORITE, "Fluorite Dusts");
+
+        addTag(MekanismTags.Items.NUGGETS_BRONZE, "Bronze Nuggets");
+        addTag(MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE, "Refined Glowstone Nuggets");
+        addTag(MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN, "Refined Obsidian Nuggets");
+        addTag(MekanismTags.Items.NUGGETS_STEEL, "Steel Nuggets");
+
+        addTag(MekanismTags.Items.INGOTS_BRONZE, "Bronze Ingots");
+        addTag(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, "Refined Glowstone Ingots");
+        addTag(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, "Refined Obsidian Ingots");
+        addTag(MekanismTags.Items.INGOTS_STEEL, "Steel Ingots");
+
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_BRONZE, "Bronze Storage Blocks");
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL, "Charcoal Storage Blocks");
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE, "Refined Glowstone Storage Blocks");
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN, "Refined Obsidian Storage Blocks");
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_STEEL, "Steel Storage Blocks");
+        addTag(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE, "Fluorite Storage Blocks");
+
+        addTag(MekanismTags.Items.CIRCUITS, "Circuits");
+        addTag(MekanismTags.Items.CIRCUITS_BASIC, "Basic Circuits");
+        addTag(MekanismTags.Items.CIRCUITS_ADVANCED, "Advanced Circuits");
+        addTag(MekanismTags.Items.CIRCUITS_ELITE, "Elite Circuits");
+        addTag(MekanismTags.Items.CIRCUITS_ULTIMATE, "Ultimate Circuits");
+
+        addTag(MekanismTags.Items.ALLOYS, "Alloys");
+        addTag(MekanismTags.Items.ALLOYS_BASIC, "Basic Alloys");
+        addTag(MekanismTags.Items.ALLOYS_INFUSED, "Infused Alloys");
+        addTag(MekanismTags.Items.ALLOYS_REINFORCED, "Reinforced Alloys");
+        addTag(MekanismTags.Items.ALLOYS_ATOMIC, "Atomic Alloys");
+
+        addTag(MekanismTags.Items.COMMON_ALLOYS, "Alloys");
+        addTag(MekanismTags.Items.ALLOYS_ADVANCED, "Advanced Alloys");
+        addTag(MekanismTags.Items.ALLOYS_ELITE, "Elite Alloys");
+        addTag(MekanismTags.Items.ALLOYS_ULTIMATE, "Ultimate Alloys");
+
+        addTag(MekanismTags.Items.ENRICHED, "Enriched");
+        addTag(MekanismTags.Items.ENRICHED_CARBON, "Enriched Carbon");
+        addTag(MekanismTags.Items.ENRICHED_DIAMOND, "Enriched Diamond");
+        addTag(MekanismTags.Items.ENRICHED_OBSIDIAN, "Enriched Obsidian");
+        addTag(MekanismTags.Items.ENRICHED_REDSTONE, "Enriched Redstone");
+        addTag(MekanismTags.Items.ENRICHED_GOLD, "Enriched Gold");
+        addTag(MekanismTags.Items.ENRICHED_TIN, "Enriched Tin");
+
+        addTag(MekanismTags.Items.DIRTY_DUSTS, "Dirty Dusts");
+        addTag(MekanismTags.Items.CLUMPS, "Clumps");
+        addTag(MekanismTags.Items.SHARDS, "Shards");
+        addTag(MekanismTags.Items.CRYSTALS, "Crystals");
+
+        addTag(MekanismTags.Items.GEMS_FLUORITE, "Fluorite");
+
+        addTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, "Render's MekaSuit HUD");
+        addTag(MekanismTags.Items.STONE_CRAFTING_MATERIALS, "Stone Crafting Materials");
+        addTag(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Center");
+
+        addTag(MekanismTags.Items.COLORABLE_WOOL, "Colorable Wool");
+        addTag(MekanismTags.Items.COLORABLE_CARPETS, "Colorable Carpets");
+        addTag(MekanismTags.Items.COLORABLE_BEDS, "Colorable Beds");
+        addTag(MekanismTags.Items.COLORABLE_GLASS, "Colorable Glass");
+        addTag(MekanismTags.Items.COLORABLE_GLASS_PANES, "Colorable Glass Panes");
+        addTag(MekanismTags.Items.COLORABLE_TERRACOTTA, "Colorable Terracotta");
+        addTag(MekanismTags.Items.COLORABLE_CANDLE, "Colorable Candles");
+        addTag(MekanismTags.Items.COLORABLE_CONCRETE, "Colorable Concrete");
+        addTag(MekanismTags.Items.COLORABLE_CONCRETE_POWDER, "Colorable Concrete Powders");
+        addTag(MekanismTags.Items.COLORABLE_BANNERS, "Colorable Banners");
+
+        addTag(MekanismTags.Fluids.BRINE, "Brine");
+        addTag(MekanismTags.Fluids.CHLORINE, "Chlorine");
+        addTag(MekanismTags.Fluids.ETHENE, "Ethylene");
+        addTag(MekanismTags.Fluids.HEAVY_WATER, "Heavy Water");
+        addTag(MekanismTags.Fluids.HYDROGEN, "Hydrogen");
+        addTag(MekanismTags.Fluids.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
+        addTag(MekanismTags.Fluids.URANIUM_OXIDE, "Uranium Oxide");
+        addTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
+        addTag(MekanismTags.Fluids.LITHIUM, "Lithium");
+        addTag(MekanismTags.Fluids.OXYGEN, "Oxygen");
+        addTag(MekanismTags.Fluids.SODIUM, "Sodium");
+        addTag(MekanismTags.Fluids.SUPERHEATED_SODIUM, "Superheated Sodium");
+        addTag(MekanismTags.Fluids.STEAM, "Steam");
+        addTag(MekanismTags.Fluids.SULFUR_DIOXIDE, "Sulfur Dioxide");
+        addTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, "Sulfur Trioxide");
+        addTag(MekanismTags.Fluids.SULFURIC_ACID, "Sulfuric Acid");
+        addTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
+        addTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, "Nutritional Paste");
+
+        addTag(MekanismTags.Gases.WATER_VAPOR, "Water Vapor");
+        addTag(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST, "Waste Barrel Does Not Decay");
+
+        addTag(MekanismTags.InfuseTypes.CARBON, "Carbon");
+        addTag(MekanismTags.InfuseTypes.REDSTONE, "Redstone");
+        addTag(MekanismTags.InfuseTypes.DIAMOND, "Diamond");
+        addTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian ");
+        addTag(MekanismTags.InfuseTypes.BIO, "Bio");
+        addTag(MekanismTags.InfuseTypes.FUNGI, "Fungi");
+        addTag(MekanismTags.InfuseTypes.GOLD, "Gold");
+        addTag(MekanismTags.InfuseTypes.TIN, "Tin");
+
+        addTag(MekanismTags.Slurries.DIRTY, "Dirty Slurry");
+        addTag(MekanismTags.Slurries.CLEAN, "Clean Slurry");
     }
 
     private void addItems() {
@@ -195,17 +329,42 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             String resourceName = formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
-            add(item.getValue(), switch (item.getRowKey()) {
-                case SHARD -> resourceName + " Shard";
-                case CRYSTAL -> resourceName + " Crystal";
-                case DUST -> resourceName + " Dust";
-                case DIRTY_DUST -> "Dirty " + resourceName + " Dust";
-                case CLUMP -> resourceName + " Clump";
-                case INGOT -> resourceName + " Ingot";
-                case RAW -> "Raw " + resourceName;
-                case NUGGET -> resourceName + " Nugget";
+            TagKey<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(item.getRowKey(), item.getColumnKey());
+            switch (item.getRowKey()) {
+                case SHARD -> {
+                    add(item.getValue(), resourceName + " Shard");
+                    addTag(tag, resourceName + " Shards");
+                }
+                case CRYSTAL -> {
+                    add(item.getValue(), resourceName + " Crystal");
+                    addTag(tag, resourceName + " Crystals");
+                }
+                case DUST -> {
+                    add(item.getValue(), resourceName + " Dust");
+                    addTag(tag, resourceName + " Dusts");
+                }
+                case DIRTY_DUST -> {
+                    add(item.getValue(), "Dirty " + resourceName + " Dust");
+                    addTag(tag, "Dirty " + resourceName + " Dusts");
+                }
+                case CLUMP -> {
+                    add(item.getValue(), resourceName + " Clump");
+                    addTag(tag, resourceName + " Clumps");
+                }
+                case INGOT -> {
+                    add(item.getValue(), resourceName + " Ingot");
+                    addTag(tag, resourceName + " Ingots");
+                }
+                case RAW -> {
+                    add(item.getValue(), "Raw " + resourceName);
+                    addTag(tag, "Raw " + resourceName);
+                }
+                case NUGGET -> {
+                    add(item.getValue(), resourceName + " Nugget");
+                    addTag(tag, resourceName + " Nuggets");
+                }
                 default -> throw new IllegalStateException("Unexpected resource type for primary resource.");
-            });
+            }
         }
     }
 
@@ -313,7 +472,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            add(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()) + " Block");
+            IResource key = entry.getKey();
+            String name = formatAndCapitalize(key.getRegistrySuffix());
+            add(entry.getValue(), name + " Block");
+            addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + "Storage Blocks");
         }
 
         //Tiered things
@@ -1575,6 +1737,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(oreBlockType.stone(), name + " Ore");
         add(oreBlockType.stoneBlock().getDescriptionTranslationKey(), description);
         add(oreBlockType.deepslate(), "Deepslate " + name + " Ore");
+        addTag(MekanismTags.Items.ORES.get(type), name + " Ores");
     }
 
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {

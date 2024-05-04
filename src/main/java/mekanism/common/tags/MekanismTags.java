@@ -270,6 +270,7 @@ public class MekanismTags {
         public static final TagKey<Fluid> SULFUR_TRIOXIDE = commonTag("sulfur_trioxide");
         public static final TagKey<Fluid> SULFURIC_ACID = commonTag("sulfuric_acid");
         public static final TagKey<Fluid> HYDROFLUORIC_ACID = commonTag("hydrofluoric_acid");
+        public static final TagKey<Fluid> NUTRITIONAL_PASTE = commonTag("nutritional_paste");
 
         private static TagKey<Fluid> commonTag(String name) {
             return FluidTags.create(new ResourceLocation("c", name));

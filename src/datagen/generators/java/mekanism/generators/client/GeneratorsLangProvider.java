@@ -1,6 +1,7 @@
 package mekanism.generators.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
@@ -20,6 +21,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addTags();
         addItems();
         addBlocks();
         addFluids();
@@ -27,6 +29,17 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         addSubtitles();
         addAdvancements();
         addMisc();
+    }
+
+    private void addTags() {
+        addTag(GeneratorTags.Fluids.BIOETHANOL, "Bioethanol");
+        addTag(GeneratorTags.Fluids.DEUTERIUM, "Deuterium");
+        addTag(GeneratorTags.Fluids.TRITIUM, "Tritium");
+        addTag(GeneratorTags.Fluids.FUSION_FUEL, "D-T Fuels");
+
+        addTag(GeneratorTags.Gases.DEUTERIUM, "Deuterium");
+        addTag(GeneratorTags.Gases.TRITIUM, "Tritium");
+        addTag(GeneratorTags.Gases.FUSION_FUEL, "D-T Fuels");
     }
 
     private void addItems() {

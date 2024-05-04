@@ -6,6 +6,7 @@ import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.util.EnumUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.advancements.ToolsAdvancements;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.PackOutput;
@@ -18,9 +19,14 @@ public class ToolsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
+        addTags();
         addItems();
         addAdvancements();
         addMisc();
+    }
+
+    private void addTags() {
+        addTag(ToolsTags.Items.TOOLS_PAXELS, "Paxels");
     }
 
     private void addItems() {

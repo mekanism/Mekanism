@@ -528,6 +528,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
         addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
+        addToTag(MekanismTags.Fluids.NUTRITIONAL_PASTE, MekanismFluids.NUTRITIONAL_PASTE);
         addToTag(MekanismTags.Fluids.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE);
         addToTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE);
         addToTag(Tags.Fluids.GASEOUS, MekanismFluids.STEAM);
