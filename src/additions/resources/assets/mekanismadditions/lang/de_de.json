@@ -291,6 +291,8 @@
   "entity.mekanismadditions.baby_wither_skeleton": "Baby Wither Skelett",
   "entity.mekanismadditions.balloon": "Ballon",
   "entity.mekanismadditions.obsidian_tnt": "Obsidian-TNT",
+  "fml.menu.mods.info.description.mekanismadditions": "Fügt Module für Mekanism hinzu, die nicht ganz zu anderen Modulen passen",
+  "fml.menu.mods.info.displayname.mekanismadditions": "Mekanism: Additions",
   "item.mekanismadditions.aqua_balloon": "Türkiser Ballon",
   "item.mekanismadditions.baby_creeper_spawn_egg": "Baby-Creeper-Spawnei",
   "item.mekanismadditions.baby_enderman_spawn_egg": "Baby-Enderman-Spawnei",

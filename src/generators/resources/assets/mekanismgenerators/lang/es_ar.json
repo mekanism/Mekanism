@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "No se pudo formar la estructura, no hay Bobinas Electromagnéticas.",
   "turbine.mekanismgenerators.invalid_missing_complex": "No se pudo formar, no hay ningún Complejo Rotacional presente.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "No se pudo crear, esperado, pero el Disipador de Presión no fue encontrado en %1$s.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "No se pudo crear, no hay desperdiciadores de presión presentes.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "No se pudo formar, los rotors no son válidos (no contiguos).",
   "turbine.mekanismgenerators.invalid_too_narrow": "No se pudo formar, la estructura es demasiado estrecha para soportar el tamaño de la turbina.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "No se pudo formar, se encontró una Vent de turbina debajo de la capa de dispersor de presión. Los ventiladores deben estar en la posición vertical o superior de la capa de dispersor.",

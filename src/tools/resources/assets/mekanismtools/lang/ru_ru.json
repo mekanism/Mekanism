@@ -13,6 +13,7 @@
   "advancements.mekanismtools.paxel.title": "Многофункциональный инструмент",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Ресурсы, используемые для Mekanism: Tools",
+  "fml.menu.mods.info.displayname.mekanismtools": "Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Бронзовый топор",
   "item.mekanismtools.bronze_boots": "Бронзовые ботинки",
   "item.mekanismtools.bronze_chestplate": "Бронзовый нагрудник",

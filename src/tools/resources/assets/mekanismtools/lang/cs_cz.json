@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Nedostatek štítů",
   "advancements.mekanismtools.paxel.description": "Vyrob jakýkoliv Paxel (krumpáč, sekera, lopata)",
   "advancements.mekanismtools.paxel.title": "Víceúčelový nástroj",
+  "constants.mekanismtools.mod_name": "Mekanism: Nástroje",
+  "constants.mekanismtools.pack_description": "Zdroje použité pro Mekanism: Nástroje",
   "item.mekanismtools.bronze_axe": "Bronzová Sekyra",
   "item.mekanismtools.bronze_boots": "Bronzové Boty",
   "item.mekanismtools.bronze_chestplate": "Bronzové Brnění",
