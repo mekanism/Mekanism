@@ -1,5 +1,8 @@
 package mekanism.additions.common.registries;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.additions.common.entity.EntityObsidianTNT;
@@ -10,25 +13,96 @@ import mekanism.additions.common.entity.baby.EntityBabyStray;
 import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
+import net.minecraft.SharedConstants;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 
 public class AdditionsEntityTypes {
 
     private AdditionsEntityTypes() {
     }
 
+    //COPY of Zombie SPEED_MODIFIER_BABY_UUID and SPEED_MODIFIER_BABY
+    private static final AttributeModifier BABY_SPEED_BOOST_MODIFIER = new AttributeModifier(UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836"), "Baby speed boost", 0.5D, Operation.ADD_MULTIPLIED_BASE);
+
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 
-    //TODO - 1.20.5: Modify baby mob dimensions here instead of by scaling and overriding?
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyCreeper>> BABY_CREEPER = ENTITY_TYPES.register("baby_creeper", EntityType.Builder.of(EntityBabyCreeper::new, MobCategory.MONSTER).sized(0.6F, 1.7F), Creeper::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyEnderman>> BABY_ENDERMAN = ENTITY_TYPES.register("baby_enderman", EntityType.Builder.of(EntityBabyEnderman::new, MobCategory.MONSTER).sized(0.6F, 2.9F), EnderMan::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabySkeleton>> BABY_SKELETON = ENTITY_TYPES.register("baby_skeleton", EntityType.Builder.of(EntityBabySkeleton::new, MobCategory.MONSTER).sized(0.6F, 1.99F), AbstractSkeleton::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyStray>> BABY_STRAY = ENTITY_TYPES.register("baby_stray", EntityType.Builder.of(EntityBabyStray::new, MobCategory.MONSTER).sized(0.6F, 1.99F), AbstractSkeleton::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyWitherSkeleton>> BABY_WITHER_SKELETON = ENTITY_TYPES.register("baby_wither_skeleton", EntityType.Builder.of(EntityBabyWitherSkeleton::new, MobCategory.MONSTER).fireImmune().sized(0.7F, 2.4F), AbstractSkeleton::createAttributes);
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBalloon>> BALLOON = ENTITY_TYPES.register("balloon", EntityType.Builder.of(EntityBalloon::new, MobCategory.MISC).sized(0.4F, 0.45F).eyeHeight(0.45F - EntityBalloon.OFFSET));
-    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityObsidianTNT>> OBSIDIAN_TNT = ENTITY_TYPES.register("obsidian_tnt", EntityType.Builder.of(EntityObsidianTNT::new, MobCategory.MISC).fireImmune().sized(0.98F, 0.98F));
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyCreeper>> BABY_CREEPER = ENTITY_TYPES.registerBasicMonster("baby_creeper", () -> baby(EntityBabyCreeper::new, EntityType.CREEPER, 0.625F), Creeper::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyEnderman>> BABY_ENDERMAN = ENTITY_TYPES.registerBasicMonster("baby_enderman", () -> baby(EntityBabyEnderman::new, EntityType.ENDERMAN, 0.525F), EnderMan::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabySkeleton>> BABY_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_skeleton", () -> baby(EntityBabySkeleton::new, EntityType.SKELETON), AbstractSkeleton::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyStray>> BABY_STRAY = ENTITY_TYPES.registerBasicPlacement("baby_stray", () -> baby(EntityBabyStray::new, EntityType.STRAY), AbstractSkeleton::createAttributes, EntityBabyStray::spawnRestrictions);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBabyWitherSkeleton>> BABY_WITHER_SKELETON = ENTITY_TYPES.registerBasicMonster("baby_wither_skeleton", () -> baby(EntityBabyWitherSkeleton::new, EntityType.WITHER_SKELETON), AbstractSkeleton::createAttributes);
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityBalloon>> BALLOON = ENTITY_TYPES.registerBuilder("balloon", () -> EntityType.Builder.of(EntityBalloon::new, MobCategory.MISC)
+          .sized(0.4F, 0.45F)
+          .eyeHeight(0.45F - EntityBalloon.OFFSET)
+    );
+    public static final MekanismDeferredHolder<EntityType<?>, EntityType<EntityObsidianTNT>> OBSIDIAN_TNT = ENTITY_TYPES.registerBuilder("obsidian_tnt", () -> EntityType.Builder.of(EntityObsidianTNT::new, MobCategory.MISC)
+          //Copied from EntityType.TNT
+          .fireImmune()
+          .sized(0.98F, 0.98F)
+          .eyeHeight(0.15F)
+          .clientTrackingRange(10)
+          .updateInterval(SharedConstants.TICKS_PER_SECOND / 2)
+    );
+
+    public static void setupBabyModifiers(LivingEntity entity) {
+        if (!entity.level().isClientSide) {
+            AttributeInstance attributeInstance = entity.getAttribute(Attributes.MOVEMENT_SPEED);
+            if (attributeInstance != null) {
+                attributeInstance.addPermanentModifier(BABY_SPEED_BOOST_MODIFIER);
+            }
+        }
+    }
+
+    private static <ENTITY extends Entity> EntityType.Builder<ENTITY> baby(EntityType.EntityFactory<ENTITY> factory, EntityType<?> parent) {
+        //Vanilla's 0.5 scaling for baby mobs is too small compared to the visual of the mob
+        return baby(factory, parent, 0.5625F);
+    }
+
+    private static <ENTITY extends Entity> EntityType.Builder<ENTITY> baby(EntityType.EntityFactory<ENTITY> factory, EntityType<?> parent, float scale) {
+        EntityType.Builder<ENTITY> builder = Builder.of(factory, parent.getCategory());
+        if (!parent.canSerialize()) {
+            builder.noSave();
+        }
+        if (!parent.canSummon()) {
+            builder.noSummon();
+        }
+        if (parent.fireImmune()) {
+            builder.fireImmune();
+        }
+        if (parent.canSpawnFarFromPlayer()) {
+            builder.canSpawnFarFromPlayer();
+        }
+        builder.immuneTo(parent.immuneTo.toArray(Block[]::new))
+              .setShouldReceiveVelocityUpdates(parent.trackDeltas())
+              .clientTrackingRange(parent.clientTrackingRange())
+              .setTrackingRange(parent.clientTrackingRange())
+              .updateInterval(parent.updateInterval())
+              .setUpdateInterval(parent.updateInterval());
+        EntityDimensions babyDimensions = parent.getDimensions().scale(scale);
+        builder.sized(babyDimensions.width(), babyDimensions.height());
+        //Note: We use a custom value rather than the 0.85 multiplier default as babies have larger heads than normal
+        builder.eyeHeight(babyDimensions.height() * 0.83F);
+        for (Map.Entry<EntityAttachment, List<Vec3>> entry : babyDimensions.attachments().attachments.entrySet()) {
+            EntityAttachment attachment = entry.getKey();
+            for (Vec3 vec3 : entry.getValue()) {
+                builder.attach(attachment, vec3);
+            }
+        }
+        return builder;
+    }
 }

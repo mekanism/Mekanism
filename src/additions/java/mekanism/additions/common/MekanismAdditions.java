@@ -1,10 +1,8 @@
 package mekanism.additions.common;
 
-import java.util.function.Supplier;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
-import mekanism.additions.common.entity.baby.EntityBabyStray;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsCreativeTabs;
@@ -22,13 +20,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -36,7 +30,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.SpawnPlacementRegisterEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +59,6 @@ public class MekanismAdditions implements IModModule {
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
-        modEventBus.addListener(this::spawnPlacements);
         AdditionsDataComponents.DATA_COMPONENTS.register(modEventBus);
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
@@ -123,25 +115,6 @@ public class MekanismAdditions implements IModModule {
             });
         });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
-    }
-
-    //TODO - 1.20.5: Do we want to move the spawn placements to being registered as part of mek entity type creation like we do for attributes
-    private void spawnPlacements(SpawnPlacementRegisterEvent event) {
-        //Setup some stuff related to entities
-        //Register spawn controls for the baby entities based on the vanilla spawn controls
-        registerSpawnControls(event, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
-              AdditionsEntityTypes.BABY_WITHER_SKELETON);
-        //Slightly different restrictions for the baby stray, as strays have a slightly different spawn restriction
-        event.register(AdditionsEntityTypes.BABY_STRAY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityBabyStray::spawnRestrictions,
-              SpawnPlacementRegisterEvent.Operation.AND);
-    }
-
-    @SafeVarargs
-    private static void registerSpawnControls(SpawnPlacementRegisterEvent event, Supplier<? extends EntityType<? extends Monster>>... entityTypeROs) {
-        for (Supplier<? extends EntityType<? extends Monster>> entityTypeRO : entityTypeROs) {
-            event.register(entityTypeRO.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules,
-                  SpawnPlacementRegisterEvent.Operation.AND);
-        }
     }
 
     private void serverStarting(ServerStartingEvent event) {
