@@ -6,6 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 
 //TODO - 1.20.5: Docs
@@ -34,6 +36,8 @@ public abstract class ModuleConfig<DATA> {
     public final String name() {
         return name;
     }
+
+    public abstract StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<DATA>> namedStreamCodec(String name);
 
     public abstract DATA get();
 

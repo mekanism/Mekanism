@@ -173,6 +173,18 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     }
 
     //TODO - 1.20.5: Docs
+    @Nullable
+    public final ModuleConfig<?> getNamedConfig(int installed, String name) {
+        ConfigData data = this.configData.get(installed);
+        for (ModuleConfig<?> config : data.configs()) {
+            if (config.name().equals(name)) {
+                return config;
+            }
+        }
+        return null;
+    }
+
+    //TODO - 1.20.5: Docs
     public final List<ModuleConfig<?>> defaultConfigs(int installed) {
         return this.configData.get(installed).configs();
     }

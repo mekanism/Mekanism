@@ -265,6 +265,11 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
         }
 
         @Override
+        public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(String name) {
+            return ByteBufCodecs.BOOL.map(val -> new ModuleExtendedModeConfig(name, val), ModuleConfig::get);
+        }
+
+        @Override
         public ModuleBooleanConfig with(Boolean value) {
             Objects.requireNonNull(value, "Value cannot be null.");
             if (get().equals(value)) {

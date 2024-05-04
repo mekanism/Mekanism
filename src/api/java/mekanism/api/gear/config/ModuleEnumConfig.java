@@ -9,8 +9,10 @@ import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 //TODO - 1.20.5: Docs
 @NothingNullByDefault
@@ -97,6 +99,14 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         super(name);
         this.value = value;
         this.enumConstants = enumConstants;
+    }
+
+    @Override
+    public StreamCodec<FriendlyByteBuf, ModuleConfig<TYPE>> namedStreamCodec(String name) {
+        return NeoForgeStreamCodecs.enumCodec(value.getDeclaringClass()).map(
+              value -> new ModuleEnumConfig<>(name, value, enumConstants),
+              ModuleConfig::get
+        );
     }
 
     @Override

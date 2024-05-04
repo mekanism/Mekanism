@@ -57,7 +57,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 IModule<?> module = moduleScreen.getCurrentModule();
                 if (module != null && selected != -1) {//Shouldn't be null but validate just in case
                     int slotIndex = menu.slots.get(selected).getSlotIndex();
-                    PacketUtils.sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), configItem));
+                    PacketUtils.sendToServer(PacketUpdateModuleSettings.create(slotIndex, module.getData(), module.getInstalledCount(), configItem));
                 }
             }
         };

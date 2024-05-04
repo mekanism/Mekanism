@@ -89,6 +89,16 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     @Override
+    public StreamCodec<ByteBuf, ModuleConfig<Integer>> namedStreamCodec(String name) {
+        if (supportsAlpha) {
+            //Note: We don't do varint as we include alpha data
+            return ByteBufCodecs.INT.map(val -> ModuleColorConfig.argb(name, val), ModuleConfig::get);
+        }
+        //Note: We can use var int here and just not send the alpha data over the network
+        return ByteBufCodecs.VAR_INT.map(val -> ModuleColorConfig.rgb(name, val), module -> module.get() & 0x00FFFFFF);
+    }
+
+    @Override
     public Integer get() {
         return value;
     }

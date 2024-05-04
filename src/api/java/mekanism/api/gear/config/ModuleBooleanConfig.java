@@ -30,6 +30,11 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
     }
 
     @Override
+    public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(String name) {
+        return ByteBufCodecs.BOOL.map(val -> new ModuleBooleanConfig(name, val), ModuleConfig::get);
+    }
+
+    @Override
     public Boolean get() {
         return value;
     }
