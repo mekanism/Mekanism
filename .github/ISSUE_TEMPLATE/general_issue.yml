@@ -25,6 +25,7 @@ body:
       description: What version of Minecraft are you using?
       options:
         - 1.20.4 (Latest)
+        - 1.20.6 (Dev Branch, Manually Compiled)
         - 1.20.1 or earlier (No longer being developed)
     validations:
       required: true

@@ -5,7 +5,7 @@
       "type": "neoforge:intersection",
       "children": [
         {
-          "tag": "c:glass_panes"
+          "tag": "mekanism:colorable/glass_panes"
         },
         {
           "tag": "c:dyed/gray"

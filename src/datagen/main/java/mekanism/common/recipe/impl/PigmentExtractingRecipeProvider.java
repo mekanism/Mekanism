@@ -197,14 +197,13 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                       IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
                       pigment.getStack(BANNER_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
-                //TODO - 1.20.5: Do we want to use vanilla tags for candles and carpets etc?
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CARPETS, pigment, CARPET_RATE, basePath + "carpet/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_TERRACOTTA, pigment, CONCRETE_RATE, basePath + "terracotta/");
-                addExtractionRecipe(consumer, color, Tags.Items.GLASS_BLOCKS_CHEAP, pigment, STAINED_GLASS_RATE, basePath + "stained_glass/");
-                addExtractionRecipe(consumer, color, Tags.Items.GLASS_PANES, pigment, STAINED_GLASS_PANE_RATE, basePath + "stained_glass_pane/");
+                addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_GLASS, pigment, STAINED_GLASS_RATE, basePath + "stained_glass/");
+                addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_GLASS_PANES, pigment, STAINED_GLASS_PANE_RATE, basePath + "stained_glass_pane/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_WOOL, pigment, WOOL_RATE, basePath + "wool/");
             }
         }

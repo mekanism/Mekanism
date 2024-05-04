@@ -5,7 +5,7 @@
       "type": "neoforge:intersection",
       "children": [
         {
-          "tag": "c:glass_blocks/cheap"
+          "tag": "mekanism:colorable/glass"
         },
         {
           "tag": "c:dyed/green"

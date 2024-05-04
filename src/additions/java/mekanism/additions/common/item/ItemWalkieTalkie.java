@@ -81,7 +81,6 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         public static final WalkieData DEFAULT = new WalkieData(1, false);
 
         public static final Codec<WalkieData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              //TODO - 1.20.5: Validate this range
               ExtraCodecs.intRange(1, 8).fieldOf(NBTConstants.CHANNEL).forGetter(WalkieData::channel),
               Codec.BOOL.fieldOf(NBTConstants.RUNNING).forGetter(WalkieData::running)
         ).apply(instance, WalkieData::new));

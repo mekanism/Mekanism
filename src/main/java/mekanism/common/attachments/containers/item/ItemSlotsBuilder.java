@@ -66,7 +66,7 @@ public class ItemSlotsBuilder {
 
     //Copy of predicates from FuelInventorySlot
     private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FUEL_CAN_EXTRACT = (stack, automationType) -> automationType == AutomationType.MANUAL || stack.getBurnTime(null) == 0;
-    private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FUEL_CAN_INSERT = (stack, automationType) -> stack.getBurnTime(null) > 0;
+    private static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> FUEL_CAN_INSERT = (stack, automationType) -> stack.getBurnTime(null) != 0;
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FUEL_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, FUEL_CAN_EXTRACT, FUEL_CAN_INSERT, BasicInventorySlot.alwaysTrue);
 

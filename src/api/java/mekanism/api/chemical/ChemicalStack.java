@@ -62,7 +62,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> MapCodec<STACK> codec(Codec<CHEMICAL> nonEmptyCodec,
           BiFunction<CHEMICAL, Long, STACK> constructor) {
-        //TODO - 1.20.5: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
               nonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical),
               SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
@@ -78,7 +77,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Codec<STACK> fixedAmountCodec(
           Codec<CHEMICAL> chemicalNonEmptyCodec, BiFunction<CHEMICAL, Long, STACK> constructor, long amount) {
-        //TODO - 1.20.5: Figure out if this needs to be lazily initialized. I don't think it does, but for fluids and items it is, probably because of components?
         return RecordCodecBuilder.create(instance -> instance.group(
               chemicalNonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical)
         ).apply(instance, holder -> constructor.apply(holder, amount)));
