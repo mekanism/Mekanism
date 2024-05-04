@@ -41,15 +41,13 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
 
     @NotNull
     @Override
-    @Deprecated
-    public FluidState getFluidState(@NotNull BlockState state) {
+    protected FluidState getFluidState(@NotNull BlockState state) {
         return getFluid(state);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);

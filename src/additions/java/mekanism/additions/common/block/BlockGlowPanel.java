@@ -43,8 +43,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+    protected BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
@@ -53,8 +52,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     }
 
     @Override
-    @Deprecated
-    public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
+    protected boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
         Direction side = Attribute.getFacing(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);

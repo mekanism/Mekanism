@@ -78,14 +78,13 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    @Deprecated
-    public boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
+    protected boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
         return false;
     }
 
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
         ItemStack stack = new ItemStack(this);
         //TODO - 1.20.5: Figure this out, we want to make sure we copy components
         /*TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
@@ -96,8 +95,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    @Deprecated
-    public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
+    protected boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
         boolean triggered = super.triggerEvent(state, level, pos, id, param);
         if (this instanceof IHasTileEntity<?> hasTileEntity) {
             return hasTileEntity.triggerBlockEntityEvent(state, level, pos, id, param);
@@ -119,8 +117,7 @@ public abstract class BlockMekanism extends Block {
 
     @NotNull
     @Override
-    @Deprecated
-    public FluidState getFluidState(BlockState state) {
+    protected FluidState getFluidState(BlockState state) {
         if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
             return fluidLoggable.getFluid(state);
         }
@@ -129,8 +126,7 @@ public abstract class BlockMekanism extends Block {
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos,
+    protected BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos,
           @NotNull BlockPos facingPos) {
         if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
             fluidLoggable.updateFluids(state, world, currentPos);
@@ -139,8 +135,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    @Deprecated
-    public void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
+    protected void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
             if (hasBounding != null) {
@@ -180,7 +175,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         if (!world.isClientSide) {
             AttributeMultiblock multiblockAttribute = Attribute.get(state, AttributeMultiblock.class);
             if (multiblockAttribute != null && explosion instanceof MeltdownExplosion meltdown) {
@@ -193,34 +188,31 @@ public abstract class BlockMekanism extends Block {
         super.onBlockExploded(state, world, pos, explosion);
     }
 
+    @NotNull
     @Override
-    public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
+    public BlockState rotate(@NotNull BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull Rotation rotation) {
         return AttributeStateFacing.rotate(state, world, pos, rotation);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState rotate(@NotNull BlockState state, @NotNull Rotation rotation) {
+    protected BlockState rotate(@NotNull BlockState state, @NotNull Rotation rotation) {
         return AttributeStateFacing.rotate(state, rotation);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState mirror(@NotNull BlockState state, @NotNull Mirror mirror) {
+    protected BlockState mirror(@NotNull BlockState state, @NotNull Mirror mirror) {
         return AttributeStateFacing.mirror(state, mirror);
     }
 
     @Override
-    @Deprecated
-    public boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
+    protected boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
         return Attribute.has(this, AttributeComparator.class);
     }
 
     @Override
-    @Deprecated
-    public int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
@@ -232,8 +224,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    @Deprecated
-    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos) {
+    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos) {
         return getDestroyProgress(state, player, blockGetter, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(blockGetter, pos) : null);
     }
 

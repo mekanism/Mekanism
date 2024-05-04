@@ -19,8 +19,7 @@ public class BlockPersonalChest extends BlockPersonalStorage<TileEntityPersonalC
     }
 
     @Override
-    @Deprecated
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.tick(state, level, pos, random);
         TileEntityPersonalChest chest = WorldUtils.getTileEntity(TileEntityPersonalChest.class, level, pos);
         if (chest != null) {

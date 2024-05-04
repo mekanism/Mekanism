@@ -18,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-//TODO: Eventually it would be nice to make this more generic in terms of how it can sync module data so that we can support custom types
-// though given the module tweaker screen doesn't currently have a way to support custom types it isn't that big a deal to make this support it yet either
 @NothingNullByDefault
 public record PacketUpdateModuleSettings(int slotId, ModuleConfigTarget<?> target) implements IMekanismPacket {
 

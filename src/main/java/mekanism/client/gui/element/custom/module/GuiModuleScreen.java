@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO: Eventually try to add support for defining ways to render custom config types
 public class GuiModuleScreen extends GuiScrollableElement {
 
     private static final int ELEMENT_SPACER = 4;
@@ -37,7 +38,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     @Nullable
     private Module<?> currentModule;
-    private Map<String, MiniElement> miniElements = new LinkedHashMap<>();
+    private Map<String, MiniElement<?>> miniElements = new LinkedHashMap<>();
     private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
@@ -52,7 +53,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     public void setModule(@Nullable Module<?> module) {
-        Map<String, MiniElement> newElements = new LinkedHashMap<>();
+        Map<String, MiniElement<?>> newElements = new LinkedHashMap<>();
 
         if (module != null) {
             int startY = getStartY(module);
@@ -63,20 +64,21 @@ public class GuiModuleScreen extends GuiScrollableElement {
                 }
                 Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", module.getData().getRegistryName().withPath(configItem.name())));
                 String name = configItem.name();
-                MiniElement element = null;
-                // Don't show the enabled option if this is enabled by default
-                if (configItem instanceof ModuleBooleanConfig config && (!name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable())) {
-                    element = new BooleanToggle(this, config, description, 2, startY);
-                } else if (configItem instanceof ModuleEnumConfig<?> config) {
-                    EnumToggle<?> toggle = new EnumToggle<>(this, config, description, 2, startY);
-                    element = toggle;
-                    // allow the dragger to continue sliding, even when we reset the config element
-                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
-                        toggle.dragging = enumToggle.dragging;
+                MiniElement<?> element = switch (configItem) {
+                    // Don't show the enabled option if this is enabled by default
+                    case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !module.getData().isNoDisable() ->
+                          new BooleanToggle(this, config, description, 2, startY);
+                    case ModuleEnumConfig<?> config -> {
+                        EnumToggle<?> toggle = new EnumToggle<>(this, config, description, 2, startY);
+                        // allow the dragger to continue sliding, even when we reset the config element
+                        if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(name) instanceof EnumToggle<?> enumToggle) {
+                            toggle.dragging = enumToggle.dragging;
+                        }
+                        yield toggle;
                     }
-                } else if (configItem instanceof ModuleColorConfig config) {
-                    element = new ColorSelection(this, config, description, 2, startY, armorPreview);
-                }
+                    case ModuleColorConfig config -> new ColorSelection(this, config, description, 2, startY, armorPreview);
+                    default -> null;
+                };
                 if (element != null) {
                     newElements.put(name, element);
                     startY += element.getNeededHeight() + ELEMENT_SPACER;
@@ -150,7 +152,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         super.onClick(mouseX, mouseY, button);
         //Shift the mouse y by the proper amount so that we click the correct spots
         mouseY += getCurrentSelection();
-        for (MiniElement element : miniElements.values()) {
+        for (MiniElement<?> element : miniElements.values()) {
             element.click(mouseX, mouseY);
         }
     }
@@ -160,7 +162,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         super.onRelease(mouseX, mouseY);
         //Shift the mouse y by the proper amount so that we click the correct spots
         mouseY += getCurrentSelection();
-        for (MiniElement element : miniElements.values()) {
+        for (MiniElement<?> element : miniElements.values()) {
             element.release(mouseX, mouseY);
         }
     }
@@ -170,7 +172,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
         //Shift the mouse y by the proper amount so that we click the correct spots
         mouseY += getCurrentSelection();
-        for (MiniElement element : miniElements.values()) {
+        for (MiniElement<?> element : miniElements.values()) {
             element.onDrag(mouseX, mouseY, deltaX, deltaY);
         }
     }
@@ -221,7 +223,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         //Draw any needed text and calculate where our elements will start rendering
         int startY = renderer.render(guiGraphics, mouseX, mouseY, currentModule, shift);
         //Draw elements
-        for (MiniElement element : miniElements.values()) {
+        for (MiniElement<?> element : miniElements.values()) {
             if (startY >= shift + height) {
                 //If we are past the max draw spot, stop attempting to draw
                 break;
@@ -245,6 +247,6 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @FunctionalInterface
     private interface ScissorMiniElementRender {
 
-        void render(MiniElement element, GuiGraphics guiGraphics, int mouseX, int mouseY);
+        void render(MiniElement<?> element, GuiGraphics guiGraphics, int mouseX, int mouseY);
     }
 }

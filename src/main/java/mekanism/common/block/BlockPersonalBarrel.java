@@ -18,8 +18,7 @@ public class BlockPersonalBarrel extends BlockPersonalStorage<TileEntityPersonal
     }
 
     @Override
-    @Deprecated
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.tick(state, level, pos, random);
         TileEntityPersonalBarrel barrel = WorldUtils.getTileEntity(TileEntityPersonalBarrel.class, level, pos);
         if (barrel != null) {

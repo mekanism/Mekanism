@@ -43,7 +43,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Internal
     public <CONTAINER extends INBTSerializable<CompoundTag>> ItemRegistryObject<ITEM> addAttachmentOnlyContainers(ContainerType<CONTAINER, ?, ?> containerType,
           Supplier<IContainerCreator<? extends CONTAINER, ?>> defaultCreator) {
-        //TODO - 1.20.5: Should we use Lazy instead of Supplier? As in theory the container creators are fine as is once made, they don't have to be reconstructed
         if (defaultCreators == null) {
             //In case any containers have deps on others make this linked even though it really shouldn't matter
             // as nothing should be trying to construct the containers between register calls

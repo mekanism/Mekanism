@@ -24,8 +24,7 @@ public class BlockChargepad extends BlockTileModel<TileEntityChargepad, BlockTyp
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         if (!(context instanceof EntityCollisionContext entityCollisionContext) || !(entityCollisionContext.getEntity() instanceof Projectile)) {
             return BASE;
         }

@@ -83,14 +83,13 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
+    public float getExplosionResistance(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         AttributeCustomResistance customResistance = type.get(AttributeCustomResistance.class);
         return customResistance == null ? super.getExplosionResistance(state, world, pos, explosion) : customResistance.resistance();
     }
 
     @Override
-    @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType pathType) {
+    protected boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, pathType);
@@ -98,8 +97,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         AttributeCustomShape customShape = type.get(AttributeCustomShape.class);
         if (customShape != null) {
             VoxelShape[] bounds = customShape.bounds();

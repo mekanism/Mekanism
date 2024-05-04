@@ -104,8 +104,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(BlockState state, @NotNull Direction dir, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos pos,
+    protected BlockState updateShape(BlockState state, @NotNull Direction dir, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos pos,
           @NotNull BlockPos neighborPos) {
         if (!world.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);

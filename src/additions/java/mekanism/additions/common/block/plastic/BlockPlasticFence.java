@@ -51,8 +51,7 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
 
     @NotNull
     @Override
-    @Deprecated
-    public FluidState getFluidState(@NotNull BlockState state) {
+    protected FluidState getFluidState(@NotNull BlockState state) {
         return getFluid(state);
     }
 
@@ -68,8 +67,7 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
@@ -91,7 +89,7 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
 
     @NotNull
     @Override
-    public Optional<SoundEvent> getPickupSound(BlockState state) {
+    public Optional<SoundEvent> getPickupSound(@NotNull BlockState state) {
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound(state);
     }

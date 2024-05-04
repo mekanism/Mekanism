@@ -73,7 +73,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+    public int getFlammability(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction face) {
         //300 is 100% chance fire will spread to this block, 100 is default for TNT
         // Given we are "obsidian" make ours slightly more stable against fire being spread than vanilla TNT
         return 75;
@@ -98,29 +98,25 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
+    protected boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         return false;
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return bounds;
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public FluidState getFluidState(@NotNull BlockState state) {
+    protected FluidState getFluidState(@NotNull BlockState state) {
         return getFluid(state);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);

@@ -23,14 +23,12 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    @Deprecated
-    public float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return 0.8F;
     }
 
     @Override
-    @Deprecated
-    public boolean useShapeForLightOcclusion(@NotNull BlockState state) {
+    protected boolean useShapeForLightOcclusion(@NotNull BlockState state) {
         return true;
     }
 
@@ -40,13 +38,12 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    @Deprecated
-    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
+    protected boolean skipRendering(@NotNull BlockState state, @NotNull BlockState adjacentBlockState, @NotNull Direction side) {
         return isSideInvisible(this, state, adjacentBlockState, side);
     }
 
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, LevelReader world, BlockPos pos, BlockPos beaconPos) {
+    public float[] getBeaconColorMultiplier(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockPos beaconPos) {
         return getColor().getRgbCodeFloat();
     }
 

@@ -248,8 +248,10 @@ public class TextComponentUtil {
                 //If we didn't format it, and it is a string make sure we clean it up
                 component = cleanString(str);
             } else if (!TranslatableContents.isAllowedPrimitiveArgument(component)) {
-                //Ensure that any types that aren't allowed for sync purposes get converted to their string representation while creating the component
-                current = getString(component.toString());
+                //If it isn't a supported primitive type, turn it into a string, as that is a supported type
+                //Note: We don't have to turn it into a component as strings are valid for parameters,
+                // though we will turn it into one lower down if we have a style to apply
+                component = cleanString(component.toString());
             }
             if (!cachedStyle.isEmpty()) {
                 //If we don't have a text component, then we have to just ignore the formatting and
@@ -277,7 +279,9 @@ public class TextComponentUtil {
                 //Odds are this will never be true, but we check it to see if we can avoid having to convert it to a string
                 args.add(lastComponent);
             } else {
-                args.add(getString(lastComponent.toString()));
+                //If it isn't a supported primitive type, turn it into a string, as that is a supported type
+                //Note: We don't have to turn it into a component as strings are valid for parameters
+                args.add(cleanString(lastComponent.toString()));
             }
             //TODO: If we have multiple trailing formatting types such as a color and italics, we may want to eventually
             // handle how we add them to the arguments better?

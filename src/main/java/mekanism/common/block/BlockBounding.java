@@ -86,8 +86,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
+    protected boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
         return false;
     }
 
@@ -117,8 +116,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
+    protected void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
         if (!state.is(newState.getBlock())) {
@@ -139,7 +137,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      */
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
@@ -149,8 +147,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public boolean onDestroyedByPlayer(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest,
-          FluidState fluidState) {
+    public boolean onDestroyedByPlayer(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest,
+          @NotNull FluidState fluidState) {
         if (willHarvest) {
             return true;
         }
@@ -166,8 +164,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public void onExplosionHit(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Explosion explosion,
+    protected void onExplosionHit(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Explosion explosion,
           @NotNull BiConsumer<ItemStack, BlockPos> dropConsumer) {
         BlockPos mainPos = getMainBlockPos(level, pos);
         if (mainPos == null) {
@@ -179,8 +176,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public void spawnAfterBreak(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull ItemStack stack, boolean dropExperience) {
+    protected void spawnAfterBreak(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull ItemStack stack, boolean dropExperience) {
         BlockPos mainPos = getMainBlockPos(level, pos);
         if (mainPos != null) {
             BlockState mainState = level.getBlockState(mainPos);
@@ -206,8 +202,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
+    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isClientSide) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
@@ -222,15 +217,13 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
+    protected boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
         //TODO: Figure out if there is a better way to do this so it doesn't have to return true for all bounding blocks
         return true;
     }
 
     @Override
-    @Deprecated
-    public int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
         if (!world.isClientSide) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
@@ -241,8 +234,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    @Deprecated
-    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getDestroyProgress(state, player, world, pos);
@@ -251,7 +243,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
+    public float getExplosionResistance(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getExplosionResistance(state, world, pos, explosion);
@@ -261,14 +253,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    @Deprecated
-    public RenderShape getRenderShape(@NotNull BlockState state) {
+    protected RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
     @Override
-    @Deprecated
-    public boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
+    protected boolean triggerEvent(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, int id, int param) {
         super.triggerEvent(state, level, pos, id, param);
         return triggerBlockEntityEvent(state, level, pos, id, param);
     }
@@ -280,43 +270,37 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return proxyShape(world, pos, context, BlockStateBase::getShape);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return proxyShape(world, pos, context, BlockStateBase::getCollisionShape);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return proxyShape(world, pos, context, BlockStateBase::getVisualShape);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getBlockSupportShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected VoxelShape getBlockSupportShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getBlockSupportShape(level, p));
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getInteractionShape(level, p));
     }
 
@@ -336,23 +320,20 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    @Deprecated
-    public FluidState getFluidState(@NotNull BlockState state) {
+    protected FluidState getFluidState(@NotNull BlockState state) {
         return getFluid(state);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
-    @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
+    protected boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
         return false;
     }

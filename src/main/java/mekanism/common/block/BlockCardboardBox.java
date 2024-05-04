@@ -35,8 +35,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
 
     @NotNull
     @Override
-    @Deprecated
-    public InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!canReplace(world, player, pos, state)) {

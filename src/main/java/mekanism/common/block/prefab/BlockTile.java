@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
@@ -97,8 +98,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    @Deprecated
-    public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
+    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isClientSide) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
@@ -109,19 +109,17 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    @Deprecated
-    public boolean isSignalSource(@NotNull BlockState state) {
+    protected boolean isSignalSource(@NotNull BlockState state) {
         return type.has(AttributeRedstoneEmitter.class);
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @Nullable Direction side) {
         return type.has(AttributeRedstoneEmitter.class) || super.canConnectRedstone(state, world, pos, side);
     }
 
     @Override
-    @Deprecated
-    public int getSignal(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction side) {
+    protected int getSignal(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction side) {
         AttributeRedstoneEmitter<TileEntityMekanism> redstoneEmitter = type.get(AttributeRedstoneEmitter.class);
         if (redstoneEmitter != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);

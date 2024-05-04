@@ -35,8 +35,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     }
 
     @Override
-    @Deprecated
-    public void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
+    protected void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
         if (!world.isClientSide) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin != null) {

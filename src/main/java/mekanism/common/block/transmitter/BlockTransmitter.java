@@ -57,8 +57,7 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     }
 
     @Override
-    @Deprecated
-    public void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
+    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
@@ -68,15 +67,13 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     }
 
     @Override
-    @Deprecated
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
+    protected boolean isPathfindable(@NotNull BlockState state, @NotNull PathComputationType type) {
         return false;
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, CollisionContext context) {
+    protected VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.asItem())) {
             return getRealShape(world, pos);
         }
@@ -101,16 +98,14 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }
 
     @NotNull
     @Override
-    @Deprecated
-    public VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }
