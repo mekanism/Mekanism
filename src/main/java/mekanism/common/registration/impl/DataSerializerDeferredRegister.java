@@ -16,7 +16,6 @@ public class DataSerializerDeferredRegister extends MekanismDeferredRegister<Ent
         super(NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, modid);
     }
 
-    //TODO - 1.20.5: Do we need to make this lazy
     public <T> MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<T>> register(String name, StreamCodec<? super RegistryFriendlyByteBuf, T> codec) {
         return register(name, () -> EntityDataSerializer.forValueType(codec));
     }

@@ -27,7 +27,6 @@ public class MekanismRobitSkins {
     private static final DatapackDeferredRegister<RobitSkin> ROBIT_SKINS = DatapackDeferredRegister.robitSkins(Mekanism.MODID);
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        //TODO - 1.20.5: Make a PR to neo changing the datapack to maybe take a stream codec??
         ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC.codec());
     }
 

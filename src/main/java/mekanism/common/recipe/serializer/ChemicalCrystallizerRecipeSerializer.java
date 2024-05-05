@@ -30,7 +30,6 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
               chemicalStackIngredientMapEncoder.forGetter(BasicChemicalCrystallizerRecipe::getInput),
               ItemStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
         ).apply(instance, factory));
-        //TODO - 1.20.5: Figure this out. I think this technically works but it is messy
         this.streamCodec = StreamCodec.composite(
               ChemicalType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(ChemicalType::getTypeFor,
                     chemicalType -> IngredientCreatorAccess.getCreatorForType(chemicalType).streamCodec()), BasicChemicalCrystallizerRecipe::getInput,

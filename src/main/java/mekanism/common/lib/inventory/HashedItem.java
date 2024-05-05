@@ -5,13 +5,11 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
-import mekanism.common.attachments.OverflowAware;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +22,13 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class HashedItem implements IHashedItem {
 
-    //TODO - 1.20.5: Some sort of note that this doesn't handle the uuid based ones?
+    /**
+     * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
+     */
     public static final Codec<HashedItem> CODEC = ItemStack.CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
+    /**
+     * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
+     */
     public static final StreamCodec<RegistryFriendlyByteBuf, HashedItem> STREAM_CODEC = ItemStack.STREAM_CODEC.map(HashedItem::raw, HashedItem::getInternalStack);
 
     public static HashedItem create(ItemStack stack) {

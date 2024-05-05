@@ -46,6 +46,17 @@ public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
         return output;
     }
 
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic output
+     *
+     * @since 10.6.0
+     */
+    public FloatingLong getOutputRaw() {
+        return output;
+    }
+
     @Override
     public List<FloatingLong> getOutputDefinition() {
         return Collections.singletonList(output);

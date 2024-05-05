@@ -31,6 +31,7 @@ import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.basic.BasicGasToGasRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
@@ -94,13 +95,13 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
         ));
     }
 
-    public static <RECIPE extends ItemStackToEnergyRecipe> MekanismRecipeSerializer<RECIPE> itemToEnergy(BiFunction<ItemStackIngredient, FloatingLong, RECIPE> factory) {
+    public static <RECIPE extends BasicItemStackToEnergyRecipe> MekanismRecipeSerializer<RECIPE> itemToEnergy(BiFunction<ItemStackIngredient, FloatingLong, RECIPE> factory) {
         return new MekanismRecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToEnergyRecipe::getInput),
-              FloatingLong.NONZERO_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r -> r.getOutput(ItemStack.EMPTY))
+              FloatingLong.NONZERO_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicItemStackToEnergyRecipe::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
               IngredientCreatorAccess.item().streamCodec(), ItemStackToEnergyRecipe::getInput,
-              FloatingLong.STREAM_CODEC, r -> r.getOutput(ItemStack.EMPTY),//TODO - 1.20.5: Re-evaluate passing empty to this??
+              FloatingLong.STREAM_CODEC, BasicItemStackToEnergyRecipe::getOutputRaw,
               factory
         ));
     }

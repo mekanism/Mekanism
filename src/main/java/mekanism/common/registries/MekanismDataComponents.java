@@ -234,7 +234,6 @@ public class MekanismDataComponents {//TODO - 1.20.5: Organize this class
                 .networkSynchronized(ByteBufCodecs.registry(Registries.ITEM))
     );
 
-    //TODO - 1.20.5: Validate this doesn't have to be optional
     //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<HashedItem>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
           builder -> builder.persistent(HashedItem.CODEC)
