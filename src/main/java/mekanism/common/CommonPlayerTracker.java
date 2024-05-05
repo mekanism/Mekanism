@@ -6,7 +6,6 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketPlayerData;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_client.radiation.PacketPlayerRadiationData;

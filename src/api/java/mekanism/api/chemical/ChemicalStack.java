@@ -39,6 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -161,15 +162,19 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         case SLURRY -> SlurryStack.MAP_CODEC;
     });
     /**
-     * Codec to get any kind of chemical stack, based on a "chemicalType" field.
+     * Codec to get any kind of chemical stack, based on a "chemicalType" field, serializing them as {@code {chemicalType:"chemicalType"}}. Falls back to the empty stack
+     * of the given type.
      *
      * @see ChemicalType
      * @see mekanism.api.chemical.merged.BoxedChemicalStack
      * @since 10.6.0
      */
-    //TODO - 1.20.5: Re-evaluate if we want this defaulting to an empty gas stack or to try and get the same stack type as it was?
-    public static final Codec<ChemicalStack<?>> BOXED_OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(BOXED_CODEC).xmap(optional -> optional.orElse(GasStack.EMPTY),
-          stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+    public static final Codec<ChemicalStack<?>> BOXED_OPTIONAL_CODEC = NeoForgeExtraCodecs.withAlternative(BOXED_CODEC, ChemicalType.CODEC.xmap(type -> switch (type) {
+        case GAS -> GasStack.EMPTY;
+        case INFUSION -> InfusionStack.EMPTY;
+        case PIGMENT -> PigmentStack.EMPTY;
+        case SLURRY -> SlurryStack.EMPTY;
+    }, ChemicalType::getTypeFor));
     /**
      * StreamCodec to get any kind of chemical stack (that does not accept empty stacks), based on a "chemicalType" field.
      *
