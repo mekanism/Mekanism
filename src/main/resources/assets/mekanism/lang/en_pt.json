@@ -143,7 +143,6 @@
   "command.mekanism.radiation.add": "Made %1$s radiat'n at (%2$s) in %3$s.",
   "command.mekanism.radiation.clear": "Clear'd pirate's radiat'n.",
   "command.mekanism.radiation.remove_all": "Clear'd all radiat'n places.",
-  "config.jade.plugin_mekanism.pigment": "Pigment",
   "configuration.mekanism.no_eject": "Ye can't do that!",
   "configurator.mekanism.configurate": "Modify (%1$s)",
   "configurator.mekanism.configure_state": "Modify State: %1$s",
