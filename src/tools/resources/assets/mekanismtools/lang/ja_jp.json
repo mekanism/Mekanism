@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "鋼鉄の剣",
   "item.mekanismtools.stone_paxel": "石のパクセル",
   "item.mekanismtools.wood_paxel": "木のパクセル",
+  "tag.item.c.tools.paxels": "パクセル",
   "tooltip.mekanismtools.hp": "HP: %1$s"
 }
