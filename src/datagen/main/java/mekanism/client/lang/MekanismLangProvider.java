@@ -114,7 +114,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN, "Refined Obsidian Dusts");
         addTag(MekanismTags.Items.DUSTS_SALT, "Salts");
         addTag(MekanismTags.Items.DUSTS_STEEL, "Steel Dusts");
-        addTag(MekanismTags.Items.DUSTS_SULFUR, "Sulphur Dusts");
+        addTag(MekanismTags.Items.DUSTS_SULFUR, "Sulfur Dusts");
         addTag(MekanismTags.Items.DUSTS_WOOD, "Sawdusts");
         addTag(MekanismTags.Items.DUSTS_FLUORITE, "Fluorite Dusts");
 
@@ -169,7 +169,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         addTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, "Render's MekaSuit HUD");
         addTag(MekanismTags.Items.STONE_CRAFTING_MATERIALS, "Stone Crafting Materials");
-        addTag(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Center");
+        addTag(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Usable Ingots");
 
         addTag(MekanismTags.Items.COLORABLE_WOOL, "Colorable Wool");
         addTag(MekanismTags.Items.COLORABLE_CARPETS, "Colorable Carpets");
@@ -207,7 +207,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTag(MekanismTags.InfuseTypes.CARBON, "Carbon");
         addTag(MekanismTags.InfuseTypes.REDSTONE, "Redstone");
         addTag(MekanismTags.InfuseTypes.DIAMOND, "Diamond");
-        addTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian ");
+        addTag(MekanismTags.InfuseTypes.REFINED_OBSIDIAN, "Refined Obsidian");
         addTag(MekanismTags.InfuseTypes.BIO, "Bio");
         addTag(MekanismTags.InfuseTypes.FUNGI, "Fungi");
         addTag(MekanismTags.InfuseTypes.GOLD, "Gold");
@@ -475,7 +475,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
             IResource key = entry.getKey();
             String name = formatAndCapitalize(key.getRegistrySuffix());
             add(entry.getValue(), name + " Block");
-            addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + "Storage Blocks");
+            addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
         }
 
         //Tiered things

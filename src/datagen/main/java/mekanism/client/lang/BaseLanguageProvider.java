@@ -104,7 +104,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void addFluid(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO, String name) {
         add(fluidRO.getBlock(), name);
         add(fluidRO.getBucket(), name + " Bucket");
-        addTag(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), name + "Buckets");
+        addTag(ItemTags.create(Tags.Items.BUCKETS.location().withSuffix("/" + fluidRO.getName())), name + " Buckets");
     }
 
     protected void add(MekanismAdvancement advancement, String title, String description) {

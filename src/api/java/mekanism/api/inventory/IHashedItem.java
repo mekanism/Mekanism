@@ -1,7 +1,6 @@
 package mekanism.api.inventory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -47,25 +46,5 @@ public interface IHashedItem {
      */
     default int getMaxStackSize() {
         return getInternalStack().getMaxStackSize();
-    }
-
-    /**
-     * Helper to get the tag of the internal {@link ItemStack} that backs this item type. It is <strong>IMPORTANT</strong> to not modify the returned tag.
-     *
-     * @return Tag of the internal {@link ItemStack} that backs this item type.
-     *
-     * @apiNote Do not modify the returned tag.
-     */
-
-    /**
-     * Helper to serialize the attachments of the internal {@link ItemStack} that backs this item type.
-     *
-     * @return New serialization of the internal {@link ItemStack} that backs this item type.
-     *
-     * @since 10.5.0
-     */
-    //TODO - 1.20.5: Docs and re-evaluate this. Do we want to be working on the components, or the component patch?
-    default DataComponentMap getInternalComponents() {
-        return getInternalStack().getComponents();
     }
 }
