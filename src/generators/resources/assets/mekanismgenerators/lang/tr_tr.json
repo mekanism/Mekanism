@@ -181,6 +181,7 @@
   "turbine.mekanismgenerators.invalid_missing_coils": "Yapı oluşturulamadı, elektromanyetik bobin eksik.",
   "turbine.mekanismgenerators.invalid_missing_complex": "Yapı oluşturulamadı, Rotasyonel Kompleks eksik.",
   "turbine.mekanismgenerators.invalid_missing_disperser": "Yapı oluşturulamadı, %1$s'de Basınç Dağıtıcı bekleniyor ancak bulunamadı.",
+  "turbine.mekanismgenerators.invalid_missing_dispersers": "Yapı oluşturulamadı, hiçbir Basınç Yayıcısı bulunamadı.",
   "turbine.mekanismgenerators.invalid_rotors_not_contiguous": "Yapı oluşturulamadı, pervaneler geçersiz (bitişik değil).",
   "turbine.mekanismgenerators.invalid_too_narrow": "Oluşturulamadı, yapı türbin boyutunu desteklemek için çok dar.",
   "turbine.mekanismgenerators.invalid_vent_below_complex": "Yapı oluşturulamadı, Basınç Dağıtıcı katmanı altında bir Türbin Havalandırması bulundu. Havalandırmalar, dağıtıcı katmanı hizasında ya da üzerinde olmalıdır.",
