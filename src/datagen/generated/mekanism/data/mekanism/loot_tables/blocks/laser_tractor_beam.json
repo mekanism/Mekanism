@@ -12,17 +12,12 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:owner",
-                "mekanism:security"
+                "mekanism:security",
+                "mekanism:energy",
+                "mekanism:items"
               ],
               "source": "block_entity"
             }

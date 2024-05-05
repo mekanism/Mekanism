@@ -13,8 +13,11 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "type": "mekanism:energy",
-              "function": "mekanism:copy_containers"
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:energy"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:chargepad"

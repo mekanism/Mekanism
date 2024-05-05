@@ -8,8 +8,11 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "type": "mekanism:items",
-              "function": "mekanism:copy_containers"
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:items"
+              ],
+              "source": "block_entity"
             }
           ],
           "name": "mekanism:advanced_bin"

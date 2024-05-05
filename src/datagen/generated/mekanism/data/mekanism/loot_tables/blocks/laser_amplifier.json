@@ -17,10 +17,6 @@
               "source": "block_entity"
             },
             {
-              "type": "mekanism:energy",
-              "function": "mekanism:copy_containers"
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:delay",
@@ -29,7 +25,8 @@
                 "mekanism:owner",
                 "mekanism:redstone_control",
                 "mekanism:redstone_output",
-                "mekanism:security"
+                "mekanism:security",
+                "mekanism:energy"
               ],
               "source": "block_entity"
             }

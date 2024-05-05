@@ -12,18 +12,13 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:fluids",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:edit_mode",
                 "mekanism:owner",
-                "mekanism:security"
+                "mekanism:security",
+                "mekanism:items",
+                "mekanism:fluids"
               ],
               "source": "block_entity"
             }

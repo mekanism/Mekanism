@@ -468,7 +468,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ContainerType.ITEM.copyTo(level().registryAccess(), getInventorySlots(null), stack);
+        ContainerType.ITEM.copyToStack(level().registryAccess(), getInventorySlots(null), stack);
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }

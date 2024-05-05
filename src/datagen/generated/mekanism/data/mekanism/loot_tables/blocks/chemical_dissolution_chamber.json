@@ -12,17 +12,6 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:gases",
-                "mekanism:infuse_types",
-                "mekanism:items",
-                "mekanism:pigments",
-                "mekanism:slurries"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:ejector",
@@ -30,7 +19,13 @@
                 "mekanism:redstone_control",
                 "mekanism:security",
                 "mekanism:side_config",
-                "mekanism:upgrades"
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items",
+                "mekanism:gases",
+                "mekanism:infuse_types",
+                "mekanism:pigments",
+                "mekanism:slurries"
               ],
               "source": "block_entity"
             }

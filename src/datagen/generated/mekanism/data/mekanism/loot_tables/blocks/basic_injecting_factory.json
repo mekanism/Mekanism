@@ -12,14 +12,6 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:gases",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:ejector",
@@ -28,7 +20,10 @@
                 "mekanism:security",
                 "mekanism:side_config",
                 "mekanism:sorting",
-                "mekanism:upgrades"
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items",
+                "mekanism:gases"
               ],
               "source": "block_entity"
             }

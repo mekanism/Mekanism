@@ -5,7 +5,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.factory.TileEntityFactory;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -27,11 +26,5 @@ public class FactoryInputInventorySlot extends InputInventorySlot {
           @Nullable IContentsListener listener, int x, int y) {
         super(stack -> factory.isItemValidForSlot(stack) && factory.inputProducesOutput(process, stack, outputSlot, secondaryOutputSlot, false),
               factory::isValidInputItem, listener, x, y);
-    }
-
-    //Increase access level of setStackUnchecked
-    @Override
-    public void setStackUnchecked(ItemStack stack) {
-        super.setStackUnchecked(stack);
     }
 }

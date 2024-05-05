@@ -12,13 +12,6 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:eject",
@@ -35,7 +28,9 @@
                 "mekanism:replace_stack",
                 "mekanism:security",
                 "mekanism:silk_touch",
-                "mekanism:upgrades"
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items"
               ],
               "source": "block_entity"
             }

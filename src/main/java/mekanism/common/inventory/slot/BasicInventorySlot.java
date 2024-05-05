@@ -122,7 +122,7 @@ public class BasicInventorySlot implements IInventorySlot {
         setStack(stack, true);
     }
 
-    protected void setStackUnchecked(ItemStack stack) {
+    public void setStackUnchecked(ItemStack stack) {
         setStack(stack, false);
     }
 

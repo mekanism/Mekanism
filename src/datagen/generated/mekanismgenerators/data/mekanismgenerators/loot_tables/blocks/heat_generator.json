@@ -12,21 +12,16 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:fluids",
-                "mekanism:heat_data",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:owner",
                 "mekanism:redstone_control",
                 "mekanism:security",
-                "mekanism:upgrades"
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items",
+                "mekanism:fluids",
+                "mekanism:heat_data"
               ],
               "source": "block_entity"
             }

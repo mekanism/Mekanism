@@ -11,6 +11,12 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "source": "block_entity"
+            }
+          ],
           "name": "mekanism:radioactive_waste_barrel"
         }
       ],

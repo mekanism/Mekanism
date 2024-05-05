@@ -46,7 +46,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     @Override
-    protected void setStackUnchecked(ItemStack stack) {
+    public void setStackUnchecked(ItemStack stack) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
         // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
         if (!isRemote() && !isEmpty()) {

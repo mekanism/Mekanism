@@ -23,6 +23,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.chemical.gas.AttachedGases;
 import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasHandler;
 import mekanism.common.attachments.containers.chemical.infuse.AttachedInfuseTypes;
@@ -76,7 +77,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
           NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY,
-          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::canHandleEnergy) {
+          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy) {
         @Override
         @SuppressWarnings("unchecked")
         public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
@@ -85,25 +86,25 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
           NBTConstants.ITEMS, NBTConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, TileEntityMekanism::getInventorySlots,
-          TileEntityMekanism::hasInventory);
+          TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory);
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           NBTConstants.FLUID_TANKS, NBTConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, TileEntityMekanism::getFluidTanks,
-          TileEntityMekanism::canHandleFluid);
+          TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
     public static final ContainerType<IGasTank, AttachedGases, ComponentBackedGasHandler> GAS = new ContainerType<>(MekanismDataComponents.ATTACHED_GASES,
           NBTConstants.GAS_TANKS, NBTConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, TileEntityMekanism::getGasTanks,
-          TileEntityMekanism::canHandleGas);
+          TileEntityMekanism::collectGasTanks, TileEntityMekanism::applyGasTanks, TileEntityMekanism::canHandleGas);
     public static final ContainerType<IInfusionTank, AttachedInfuseTypes, ComponentBackedInfusionHandler> INFUSION = new ContainerType<>(
           MekanismDataComponents.ATTACHED_INFUSE_TYPES, NBTConstants.INFUSION_TANKS, NBTConstants.TANK, ComponentBackedInfusionHandler::new, Capabilities.INFUSION,
-          TileEntityMekanism::getInfusionTanks, TileEntityMekanism::canHandleInfusion);
+          TileEntityMekanism::getInfusionTanks, TileEntityMekanism::collectInfusionTanks, TileEntityMekanism::applyInfusionTanks, TileEntityMekanism::canHandleInfusion);
     public static final ContainerType<IPigmentTank, AttachedPigments, ComponentBackedPigmentHandler> PIGMENT = new ContainerType<>(MekanismDataComponents.ATTACHED_PIGMENTS,
           NBTConstants.PIGMENT_TANKS, NBTConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT,
-          TileEntityMekanism::getPigmentTanks, TileEntityMekanism::canHandlePigment);
+          TileEntityMekanism::getPigmentTanks, TileEntityMekanism::collectPigmentTanks, TileEntityMekanism::applyPigmentTanks, TileEntityMekanism::canHandlePigment);
     public static final ContainerType<ISlurryTank, AttachedSlurries, ComponentBackedSlurryHandler> SLURRY = new ContainerType<>(MekanismDataComponents.ATTACHED_SLURRIES,
           NBTConstants.SLURRY_TANKS, NBTConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, TileEntityMekanism::getSlurryTanks,
-          TileEntityMekanism::canHandleSlurry);
+          TileEntityMekanism::collectSlurryTanks, TileEntityMekanism::applySlurryTanks, TileEntityMekanism::canHandleSlurry);
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           NBTConstants.HEAT_CAPACITORS, NBTConstants.CONTAINER, ComponentBackedHeatHandler::new, null, TileEntityMekanism::getHeatCapacitors,
-          TileEntityMekanism::canHandleHeat);
+          TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat);
 
     //TODO - 1.20.5: Re-evaluate this codec implementation
     public static final Codec<ContainerType<?, ?, ?>> CODEC = BuiltInRegistries.DATA_COMPONENT_TYPE.byNameCodec().comapFlatMap(componentType -> {
@@ -118,6 +119,8 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     private final Map<Item, Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
     private final Function<ItemStack, HANDLER> handlerConstructor;
     private final BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile;
+    private final CopyFromTile<CONTAINER, ATTACHED> copyFromTile;
+    private final CopyToTile<CONTAINER, ATTACHED> copyToTile;
     private final DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component;
     @Nullable
     private final IMultiTypeCapability<? super HANDLER, ?> capability;
@@ -127,13 +130,16 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     private ContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
           Function<ItemStack, HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability,
-          BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, Predicate<TileEntityMekanism> canHandle) {
+          BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, CopyFromTile<CONTAINER, ATTACHED> copyFromTile,
+          CopyToTile<CONTAINER, ATTACHED> copyToTile, Predicate<TileEntityMekanism> canHandle) {
         TYPES_INTERNAL.add(this);
         this.component = component;
         this.containerTag = containerTag;
         this.containerKey = containerKey;
         this.handlerConstructor = handlerConstructor;
         this.containersFromTile = containersFromTile;
+        this.copyFromTile = copyFromTile;
+        this.copyToTile = copyToTile;
         this.capability = capability;
         this.canHandle = canHandle;
     }
@@ -216,8 +222,6 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         if (creator != null) {
             return creator.get().create(this, attachedTo, containerIndex);
         }
-        //TODO - 1.20.5: Do we want to throw something if there is an error in creating the slot? Or do we want to mark this as nullable
-        // and then fail further up the line?
         throw new IllegalArgumentException("No known containers for item " + attachedTo.getItem());
     }
 
@@ -252,11 +256,11 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return stack.has(component) || knownDefaultCreators.containsKey(stack.getItem());
     }
 
-    ListTag save(HolderLookup.Provider provider, List<CONTAINER> containers) {
+    private ListTag save(HolderLookup.Provider provider, List<CONTAINER> containers) {
         return DataHandlerUtils.writeContents(provider, containers, containerKey);
     }
 
-    void read(HolderLookup.Provider provider, List<CONTAINER> containers, @Nullable ListTag storedContainers) {
+    private void read(HolderLookup.Provider provider, List<CONTAINER> containers, @Nullable ListTag storedContainers) {
         if (storedContainers != null) {
             DataHandlerUtils.readContents(provider, containers, storedContainers, containerKey);
         }
@@ -281,33 +285,39 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         read(provider, containers, tag.getList(containerTag, Tag.TAG_COMPOUND));
     }
 
-    public void copyTo(TileEntityMekanism tile, DataComponentMap.Builder builder) {
-        //TODO - 1.20.5: Figure out container copying
-        //copyTo(provider, getContainers(tile), stack);
-    }
-
-    public void copyTo(HolderLookup.Provider provider, List<CONTAINER> containers, ItemStack stack) {
-        //TODO - 1.20.5: Figure out container copying
-        /*ATTACHMENT attachment = getAttachment(stack);
-        if (attachment != null) {
-            attachment.deserializeNBT(provider, save(provider, containers));
+    public void copyToStack(HolderLookup.Provider provider, List<CONTAINER> containers, ItemStack stack) {
+        HANDLER handler = createHandler(stack);
+        if (handler != null) {
+            read(provider, handler.getContainers(), save(provider, containers));
+            stack.set(component, handler.getAttached());
             if (stack.getCount() > 1) {
                 Mekanism.logger.error("Copied {} to a stack ({}). This might lead to duplication of data.", getComponentName(), stack);
             }
-        }*/
+        }
     }
 
-    public void copyFrom(TileEntityMekanism tile, BlockEntity.DataComponentInput input) {
-        //TODO - 1.20.5: Figure out container copying
-        //copyFrom(provider, stack, getContainers(tile));
+    public void copyToTile(TileEntityMekanism tile, BlockEntity.DataComponentInput input) {
+        ATTACHED attachedData = input.get(component);
+        if (attachedData != null) {
+            copyToTile.copy(tile, input, getContainers(tile), attachedData);
+        }
     }
 
-    public void copyFrom(HolderLookup.Provider provider, ItemStack stack, List<CONTAINER> containers) {
-        //TODO - 1.20.5: Figure out container copying
-        /*ATTACHMENT attachment = getAttachment(stack);
-        if (attachment != null) {
-            read(provider, containers, attachment.serializeNBT(provider));
-        }*/
+    public void copyFromStack(HolderLookup.Provider provider, ItemStack stack, List<CONTAINER> containers) {
+        HANDLER handler = createHandler(stack);
+        if (handler != null) {
+            read(provider, containers, save(provider, handler.getContainers()));
+        }
+    }
+
+    public void copyFromTile(TileEntityMekanism tile, DataComponentMap.Builder builder) {
+        List<CONTAINER> containers = getContainers(tile);
+        if (!containers.isEmpty()) {
+            ATTACHED attachedData = copyFromTile.copy(tile, builder, containers);
+            if (attachedData != null) {
+                builder.set(component, attachedData);
+            }
+        }
     }
 
     public boolean canHandle(TileEntityMekanism tile) {
@@ -316,5 +326,18 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public List<CONTAINER> getContainers(TileEntityMekanism tile) {
         return containersFromTile.apply(tile, null);
+    }
+
+    @FunctionalInterface
+    public interface CopyToTile<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
+
+        void copy(TileEntityMekanism tile, BlockEntity.DataComponentInput input, List<CONTAINER> containers, ATTACHED attachedData);
+    }
+
+    @FunctionalInterface
+    public interface CopyFromTile<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
+
+        @Nullable
+        ATTACHED copy(TileEntityMekanism tile, DataComponentMap.Builder builder, List<CONTAINER> containers);
     }
 }

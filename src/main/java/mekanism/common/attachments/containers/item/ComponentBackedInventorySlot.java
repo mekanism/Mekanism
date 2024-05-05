@@ -108,7 +108,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
                 //Note: We let setStack handle updating the backing holding stack
                 // We use current.getCount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                //TODO - 1.20.5: FIXME?? If same type we want to add it by x
                 setContents(attachedItems, stack.copyWithCount(current.getCount() + toAdd));
             }
             return stack.copyWithCount(stack.getCount() - toAdd);
@@ -212,6 +211,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         //TODO - 1.20.5: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
+        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
         CompoundTag nbt = new CompoundTag();
         ItemStack current = getStack();
         if (!current.isEmpty()) {

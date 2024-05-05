@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
@@ -17,7 +18,6 @@ import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
-import mekanism.common.item.loot.CopyContainersLootFunction;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -171,11 +171,15 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (tile instanceof TileEntityUpdateable tileEntity) {
                 List<DataComponentType<?>> components = tileEntity.getRemapEntries();
                 if (!components.isEmpty()) {
+                    Set<DataComponentType<?>> skipTypes = ContainerType.TYPES.stream().map(type -> type.getComponentType().get()).collect(Collectors.toSet());
                     hasComponents = true;
                     //Sort the components so that the order is consistent when writing to json
                     components.sort(Comparator.comparing(BuiltInRegistries.DATA_COMPONENT_TYPE::getKey, ResourceLocation::compareNamespaced));
                     for (DataComponentType<?> remapEntry : components) {
-                        componentsBuilder.include(remapEntry);
+                        //Allow containers to be handled below where we do extra validation that the stack actually supports it
+                        if (!skipTypes.contains(remapEntry)) {
+                            componentsBuilder.include(remapEntry);
+                        }
                     }
                 }
             }
@@ -183,15 +187,13 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 if (tileEntity.isNameable()) {
                     itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
-                boolean hasContainers = false;
-                CopyContainersLootFunction.Builder containerBuilder = CopyContainersLootFunction.builder();
                 for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
                     List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
                     int attachmentContainers = type.getContainerCount(stack);
                     if (containers.size() == attachmentContainers) {
                         if (!containers.isEmpty()) {
-                            containerBuilder.copy(type);
-                            hasContainers = true;
+                            componentsBuilder.include(type.getComponentType().get());
+                            hasComponents = true;
                             if (type != ContainerType.ENERGY && type != ContainerType.HEAT) {
                                 hasContents = true;
                             }
@@ -210,9 +212,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                         Mekanism.logger.warn("Container type: {}, has {} item attachments and block has {} containers: {}", type.getComponentName(), attachmentContainers,
                               containers.size(), RegistryUtils.getName(block));
                     }
-                }
-                if (hasContainers) {
-                    itemLootPool.apply(containerBuilder);
                 }
             }
             @SuppressWarnings("unchecked")

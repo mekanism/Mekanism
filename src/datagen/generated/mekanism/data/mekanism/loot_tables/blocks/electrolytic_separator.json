@@ -12,15 +12,6 @@
               "source": "block_entity"
             },
             {
-              "function": "mekanism:copy_containers",
-              "types": [
-                "mekanism:energy",
-                "mekanism:fluids",
-                "mekanism:gases",
-                "mekanism:items"
-              ]
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:dump_mode",
@@ -30,7 +21,11 @@
                 "mekanism:secondary_dump_mode",
                 "mekanism:security",
                 "mekanism:side_config",
-                "mekanism:upgrades"
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items",
+                "mekanism:fluids",
+                "mekanism:gases"
               ],
               "source": "block_entity"
             }
