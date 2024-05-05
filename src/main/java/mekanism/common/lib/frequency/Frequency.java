@@ -194,30 +194,6 @@ public abstract class Frequency implements IFrequency {
         return new FrequencyIdentity(getKey(), securityMode, ownerUUID);
     }
 
-    public boolean areIdentitiesEqual(Frequency other) {
-        //TODO: Decide if we want to "inline" this to not require creating new identity objects
-        return getIdentity().equals(other.getIdentity());
-    }
-
-    public CompoundTag serializeIdentity() {
-        return frequencyType.getIdentitySerializer().serialize(getIdentity());
-    }
-
-    /**
-     * Like {@link #serializeIdentity()} except ensures the owner information is added if need be.
-     */
-    public CompoundTag serializeIdentityWithOwner() {
-        CompoundTag serializedIdentity = serializeIdentity();
-        if (!serializedIdentity.hasUUID(NBTConstants.OWNER_UUID) && ownerUUID != null) {
-            serializedIdentity.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
-        }
-        return serializedIdentity;
-    }
-
     public record FrequencyIdentity(Object key, SecurityMode securityMode, @Nullable UUID ownerUUID) {
-
-        public static FrequencyIdentity load(FrequencyType<?> type, CompoundTag tag) {
-            return type.getIdentitySerializer().load(tag);
-        }
     }
 }

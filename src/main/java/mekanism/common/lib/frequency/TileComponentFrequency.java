@@ -1,5 +1,7 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +33,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -260,6 +264,15 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         //TODO - 1.20.5: Implement this
+        /*if (hasCustomFrequencies()) {
+            CompoundTag frequencyComponent = input.get(MekanismDataComponents.FREQUENCY_COMPONENT);
+            if (frequencyComponent != null) {
+                deserialize(frequencyComponent, );
+            }
+            //TODO - 1.20.5: Figure out if we need to check the non security frequencies and the specific frequency components?
+            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            }
+        }*/
     }
 
     @Override
@@ -337,8 +350,9 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    public void readConfiguredFrequencies(Player player, CompoundTag data) {
+    public void readConfiguredFrequencies(HolderLookup.Provider provider, Player player, CompoundTag data) {
         if (hasCustomFrequencies() && data.contains(getComponentKey(), Tag.TAG_COMPOUND)) {
+            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             CompoundTag frequencyNBT = data.getCompound(getComponentKey());
             for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
                 FrequencyType<?> type = entry.getKey();
@@ -348,13 +362,13 @@ public class TileComponentFrequency implements ITileComponent {
                 }
                 if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
                     CompoundTag frequencyData = frequencyNBT.getCompound(type.getName());
-                    if (frequencyData.hasUUID(NBTConstants.OWNER_UUID)) {
-                        FrequencyIdentity identity = FrequencyIdentity.load(type, frequencyData);
-                        if (identity != null) {
-                            UUID owner = frequencyData.getUUID(NBTConstants.OWNER_UUID);
-                            if (identity.securityMode() == SecurityMode.PUBLIC || owner.equals(player.getUUID())) {
+                    DataResult<Pair<FrequencyIdentity, Tag>> decoded = type.getIdentitySerializer().codec().decode(registryOps, frequencyData);
+                    if (decoded.isSuccess()) {
+                        FrequencyIdentity identity = decoded.getOrThrow().getFirst();
+                        if (identity.ownerUUID() != null) {
+                            if (identity.securityMode() == SecurityMode.PUBLIC || identity.ownerUUID().equals(player.getUUID())) {
                                 //If the frequency is public or the player is the owner allow setting the frequency
-                                setFrequencyFromData(type, identity, owner, entry.getValue());
+                                setFrequencyFromData(type, identity, identity.ownerUUID(), entry.getValue());
                             }
                             continue;
                         }
@@ -366,13 +380,15 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    public void writeConfiguredFrequencies(CompoundTag data) {
+    public void writeConfiguredFrequencies(HolderLookup.Provider provider, CompoundTag data) {
+        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
         CompoundTag frequencyNBT = new CompoundTag();
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            FrequencyType<?> type = entry.getKey();
             Frequency frequency = entry.getValue().selectedFrequency;
-            if (frequency != null && entry.getKey() != FrequencyType.SECURITY) {
+            if (frequency != null && type != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards
-                frequencyNBT.put(entry.getKey().getName(), frequency.serializeIdentityWithOwner());
+                frequencyNBT.put(type.getName(), type.getIdentitySerializer().codec().encodeStart(registryOps, frequency.getIdentity()).getOrThrow());
             }
         }
         if (!frequencyNBT.isEmpty()) {

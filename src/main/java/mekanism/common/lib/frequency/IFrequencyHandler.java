@@ -2,9 +2,7 @@ package mekanism.common.lib.frequency;
 
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import net.minecraft.nbt.CompoundTag;
 
 public interface IFrequencyHandler {
 
@@ -12,18 +10,6 @@ public interface IFrequencyHandler {
 
     default <FREQ extends Frequency> FREQ getFrequency(FrequencyType<FREQ> type) {
         return getFrequencyComponent().getFrequency(type);
-    }
-
-    /**
-     * Sets the frequency from a stored super saturated identifier.
-     *
-     * @param frequencyCompound Frequency identity super saturated with the owner of the frequency.
-     */
-    default void setFrequency(FrequencyType<?> type, CompoundTag frequencyCompound) {
-        FrequencyIdentity freq = FrequencyIdentity.load(type, frequencyCompound);
-        if (freq != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-            setFrequency(type, freq, frequencyCompound.getUUID(NBTConstants.OWNER_UUID));
-        }
     }
 
     /**

@@ -1528,14 +1528,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
         CompoundTag data = new CompoundTag();
         writeSustainedData(provider, data);
-        getFrequencyComponent().writeConfiguredFrequencies(data);
+        getFrequencyComponent().writeConfiguredFrequencies(provider, data);
         return data;
     }
 
     @Override
     public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
         readSustainedData(provider, data);
-        getFrequencyComponent().readConfiguredFrequencies(player, data);
+        getFrequencyComponent().readConfiguredFrequencies(provider, player, data);
     }
 
     @Override
