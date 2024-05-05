@@ -85,7 +85,7 @@ public abstract class BlockMekanism extends Block {
     @NotNull
     @Override
     public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
-        ItemStack stack = new ItemStack(this);
+        ItemStack stack = super.getCloneItemStack(state, target, world, pos, player);
         //TODO - 1.20.5: Figure this out, we want to make sure we copy components
         /*TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
         if (tile != null) {

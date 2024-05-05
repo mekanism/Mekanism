@@ -238,7 +238,7 @@ builtInTables:
     description: A stack of Item(s)
     fields:
       components:
-        description: Any NBT of the item, in Command JSON format
+        description: Any non default components of the item, in Command JSON format
         javaType: java.lang.String
         type: String
       count:
@@ -271,7 +271,7 @@ builtInTables:
         javaType: int
         type: Number (int)
       components:
-        description: Any NBT of the fluid, in Command JSON format
+        description: Any non default components of the fluid, in Command JSON format
         javaType: java.lang.String
         type: String
       name:

@@ -1,5 +1,6 @@
 package mekanism.common.integration.computer;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -19,8 +20,11 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,16 +54,16 @@ public class SpecialConverters {
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack = new ItemStack(item);
-        //TODO - 1.20.5: Add support for components
-        /*if (rawComponents != null) {
+        if (rawComponents != null) {
             try {
-                stack.setTag(NbtUtils.snbtToStructure(rawComponents));
+                DataComponentPatch dataComponents = DataComponentPatch.CODEC.decode(NbtOps.INSTANCE, NbtUtils.snbtToStructure(rawComponents))
+                      .getOrThrow(ComputerException::new).getFirst();
+                return new ItemStack(item.builtInRegistryHolder(), 1, dataComponents);
             } catch (CommandSyntaxException ex) {
                 throw new ComputerException("Invalid SNBT: " + ex.getMessage());
             }
-        }*/
-        return stack;
+        }
+        return new ItemStack(item);
     }
 
     private static Item tryCreateItem(@Nullable Object rawName) {
@@ -212,7 +216,7 @@ public class SpecialConverters {
         itemFilter.setItemStack(stack);
     }
 
-    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @NotNull DataComponentMap components) {
+    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @NotNull DataComponentPatch components) {
         int elements = 2;
         boolean hasComponents = !components.isEmpty() && amount > 0;
         if (hasComponents) {
@@ -227,9 +231,7 @@ public class SpecialConverters {
         return wrapped;
     }
 
-    static String wrapComponents(@NotNull DataComponentMap components) {
-        //TODO - 1.20.5: Add support for components
-        //return NbtUtils.structureToSnbt(components);
-        return "";
+    static String wrapComponents(@NotNull DataComponentPatch components) {
+        return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(NbtOps.INSTANCE, components).getOrThrow());
     }
 }

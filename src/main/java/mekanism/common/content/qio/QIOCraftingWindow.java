@@ -865,7 +865,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         if (!stack.isEmpty()) {
                             //Note: This should never happen as we pre-validate attempting to insert, but in case it does, log it
                             Mekanism.logger.error("Failed to insert item ({} with components: {}) into crafting window: {}.", removed.getItem(),
-                                  removed.getComponents(), windowIndex);
+                                  removed.getComponentsPatch(), windowIndex);
                         }
                         //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player
                         // that something about the slot changed.
