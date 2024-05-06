@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers.chemical.slurry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.NBTConstants;
@@ -22,13 +24,18 @@ public record AttachedSlurries(List<SlurryStack> containers) implements IAttache
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedSlurries> STREAM_CODEC =
           SlurryStack.OPTIONAL_STREAM_CODEC.<List<SlurryStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedSlurries::new, AttachedSlurries::containers);
+    private static final Int2ObjectMap<AttachedSlurries> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
+
+    public static AttachedSlurries create(int containers) {
+        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedSlurries::new);
+    }
 
     public AttachedSlurries {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
     }
 
-    public AttachedSlurries(int containers) {
+    private AttachedSlurries(int containers) {
         this(NonNullList.withSize(containers, SlurryStack.EMPTY));
     }
 

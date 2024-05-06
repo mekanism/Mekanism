@@ -2,9 +2,8 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.security.IItemSecurityUtils;
-import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem, ICapabilityAware {
 
     public ItemPortableTeleporter(Properties properties) {
-        super(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy, properties.rarity(Rarity.RARE));
+        super(properties.rarity(Rarity.RARE).stacksTo(1));
     }
 
     @Override

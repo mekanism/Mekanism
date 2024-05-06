@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemSeismicReader extends ItemEnergized {
 
     public ItemSeismicReader(Properties properties) {
-        super(MekanismConfig.gear.seismicReaderChargeRate, MekanismConfig.gear.seismicReaderMaxEnergy, properties.rarity(Rarity.UNCOMMON));
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1));
     }
 
     @Override

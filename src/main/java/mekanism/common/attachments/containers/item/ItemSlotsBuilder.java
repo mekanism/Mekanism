@@ -683,7 +683,7 @@ public class ItemSlotsBuilder {
 
         @Override
         public AttachedItems initStorage(int containers) {
-            return new AttachedItems(containers);
+            return AttachedItems.create(containers);
         }
     }
 }

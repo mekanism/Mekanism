@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers.fluid;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.NBTConstants;
@@ -22,13 +24,18 @@ public record AttachedFluids(List<FluidStack> containers) implements IAttachedCo
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedFluids> STREAM_CODEC =
           FluidStack.OPTIONAL_STREAM_CODEC.<List<FluidStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedFluids::new, AttachedFluids::containers);
+    private static final Int2ObjectMap<AttachedFluids> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
+
+    public static AttachedFluids create(int containers) {
+        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedFluids::new);
+    }
 
     public AttachedFluids {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
     }
 
-    public AttachedFluids(int containers) {
+    private AttachedFluids(int containers) {
         this(NonNullList.withSize(containers, FluidStack.EMPTY));
     }
 

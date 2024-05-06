@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers.chemical.pigment;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.NBTConstants;
@@ -22,13 +24,18 @@ public record AttachedPigments(List<PigmentStack> containers) implements IAttach
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedPigments> STREAM_CODEC =
           PigmentStack.OPTIONAL_STREAM_CODEC.<List<PigmentStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedPigments::new, AttachedPigments::containers);
+    private static final Int2ObjectMap<AttachedPigments> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
+
+    public static AttachedPigments create(int containers) {
+        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedPigments::new);
+    }
 
     public AttachedPigments {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
     }
 
-    public AttachedPigments(int containers) {
+    private AttachedPigments(int containers) {
         this(NonNullList.withSize(containers, PigmentStack.EMPTY));
     }
 

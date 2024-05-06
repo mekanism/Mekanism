@@ -37,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemNetworkReader extends ItemEnergized {
 
     public ItemNetworkReader(Properties properties) {
-        super(MekanismConfig.gear.networkReaderChargeRate, MekanismConfig.gear.networkReaderMaxEnergy, properties.rarity(Rarity.UNCOMMON));
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1));
     }
 
     private void displayBorder(Player player, Object toDisplay, boolean brackets) {

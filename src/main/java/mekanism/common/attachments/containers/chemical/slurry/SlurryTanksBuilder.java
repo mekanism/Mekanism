@@ -52,7 +52,7 @@ public class SlurryTanksBuilder extends ChemicalTanksBuilder<Slurry, SlurryStack
 
         @Override
         public AttachedSlurries initStorage(int containers) {
-            return new AttachedSlurries(containers);
+            return AttachedSlurries.create(containers);
         }
     }
 }

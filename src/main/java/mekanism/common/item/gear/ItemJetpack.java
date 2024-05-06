@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.LongSupplier;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
@@ -10,8 +9,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
@@ -45,16 +42,6 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IJetp
     @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.jetpack());
-    }
-
-    @Override
-    protected CachedLongValue getMaxGas() {
-        return MekanismConfig.gear.jetpackMaxGas;
-    }
-
-    @Override
-    protected LongSupplier getFillRate() {
-        return MekanismConfig.gear.jetpackFillRate;
     }
 
     @Override

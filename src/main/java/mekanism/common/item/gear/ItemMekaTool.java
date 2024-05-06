@@ -26,8 +26,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IRadialModuleContainerItem;
@@ -37,7 +35,6 @@ import mekanism.common.content.gear.mekatool.ModuleBlastingUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
-import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.network.PacketUtils;
@@ -91,8 +88,8 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     private final Int2ObjectMap<AttributeCache> attributeCaches = new Int2ObjectArrayMap<>(ModuleAttackAmplificationUnit.AttackDamage.values().length);
 
     public ItemMekaTool(Properties properties) {
-        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, IModuleHelper.INSTANCE.applyModuleContainerProperties(
-              properties.rarity(Rarity.EPIC).setNoRepair().component(DataComponents.TOOL, ItemAtomicDisassembler.MINE_ANY_TOOL)
+        super(IModuleHelper.INSTANCE.applyModuleContainerProperties(
+              properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1).component(DataComponents.TOOL, ItemAtomicDisassembler.MINE_ANY_TOOL)
         ));
     }
 
@@ -466,13 +463,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return false;
-    }
-
-    @Override
-    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        return builder.addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, canExtract, canInsert,
-              () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
-              () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get())));
     }
 
     @Override

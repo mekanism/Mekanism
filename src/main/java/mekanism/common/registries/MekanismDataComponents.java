@@ -70,42 +70,34 @@ public class MekanismDataComponents {
                 .networkSynchronized(ModuleContainer.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things, might need to use ModifyDefaultComponentsEvent
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergy>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy",
           builder -> builder.persistent(AttachedEnergy.CODEC)
                 .networkSynchronized(AttachedEnergy.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedItems>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
           builder -> builder.persistent(AttachedItems.CODEC)
                 .networkSynchronized(AttachedItems.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluids>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
           builder -> builder.persistent(AttachedFluids.CODEC)
                 .networkSynchronized(AttachedFluids.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedGases>> ATTACHED_GASES = DATA_COMPONENTS.simple("gases",
           builder -> builder.persistent(AttachedGases.CODEC)
                 .networkSynchronized(AttachedGases.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInfuseTypes>> ATTACHED_INFUSE_TYPES = DATA_COMPONENTS.simple("infuse_types",
           builder -> builder.persistent(AttachedInfuseTypes.CODEC)
                 .networkSynchronized(AttachedInfuseTypes.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedPigments>> ATTACHED_PIGMENTS = DATA_COMPONENTS.simple("pigments",
           builder -> builder.persistent(AttachedPigments.CODEC)
                 .networkSynchronized(AttachedPigments.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSlurries>> ATTACHED_SLURRIES = DATA_COMPONENTS.simple("slurries",
           builder -> builder.persistent(AttachedSlurries.CODEC)
                 .networkSynchronized(AttachedSlurries.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)
                 .networkSynchronized(AttachedHeat.STREAM_CODEC)

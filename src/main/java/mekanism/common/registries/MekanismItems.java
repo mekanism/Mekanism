@@ -14,11 +14,14 @@ import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
 import mekanism.common.attachments.containers.chemical.infuse.InfusionTanksBuilder;
 import mekanism.common.attachments.containers.chemical.pigment.PigmentTanksBuilder;
 import mekanism.common.attachments.containers.chemical.slurry.SlurryTanksBuilder;
+import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
 import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.attachments.containers.item.ItemSlotsBuilder;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -85,15 +88,34 @@ public class MekanismItems {
                 .addInput(MekanismRecipeType.SMELTING, SingleInputRecipeCache::containsInput)
                 .addOutput()
                 .build()
+          ).addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY)
+                .build()
           );
-    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(new Item.Properties().rarity(Rarity.UNCOMMON)))
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.registerItem("configurator", ItemConfigurator::new);
-    public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.registerItem("network_reader", ItemNetworkReader::new);
+    public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.registerItem("network_reader", ItemNetworkReader::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.networkReaderChargeRate, MekanismConfig.gear.networkReaderMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemDictionary> DICTIONARY = ITEMS.registerItem("dictionary", ItemDictionary::new);
-    public static final ItemRegistryObject<ItemPortableTeleporter> PORTABLE_TELEPORTER = ITEMS.registerItem("portable_teleporter", ItemPortableTeleporter::new);
+    public static final ItemRegistryObject<ItemPortableTeleporter> PORTABLE_TELEPORTER = ITEMS.registerItem("portable_teleporter", ItemPortableTeleporter::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.portableTeleporterChargeRate, MekanismConfig.gear.portableTeleporterMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemConfigurationCard> CONFIGURATION_CARD = ITEMS.registerItem("configuration_card", ItemConfigurationCard::new);
     public static final ItemRegistryObject<ItemCraftingFormula> CRAFTING_FORMULA = ITEMS.registerItem("crafting_formula", ItemCraftingFormula::new);
-    public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new);
+    public static final ItemRegistryObject<ItemSeismicReader> SEISMIC_READER = ITEMS.registerItem("seismic_reader", ItemSeismicReader::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.seismicReaderChargeRate, MekanismConfig.gear.seismicReaderMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
           .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
           .addAttachedContainerCapabilities(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
@@ -115,23 +137,55 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemQIODrive> TIME_DILATING_QIO_DRIVE = registerQIODrive(QIODriveTier.TIME_DILATING);
     public static final ItemRegistryObject<ItemQIODrive> SUPERMASSIVE_QIO_DRIVE = registerQIODrive(QIODriveTier.SUPERMASSIVE);
     // Tools
-    public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.registerItem("atomic_disassembler", ItemAtomicDisassembler::new);
+    public static final ItemRegistryObject<ItemAtomicDisassembler> ATOMIC_DISASSEMBLER = ITEMS.registerItem("atomic_disassembler", ItemAtomicDisassembler::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.registerItem("electric_bow", ItemElectricBow::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
                 .addBasic(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy)
-                .build(), MekanismConfig.gear);
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemFlamethrower> FLAMETHROWER = ITEMS.registerItem("flamethrower", ItemFlamethrower::new)
           .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
                 .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical()
-                ).build(), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new);
+                ).build(), MekanismConfig.gear
+          );
+    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
+                      BasicEnergyContainer.alwaysTrue, () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaToolBaseChargeRate.get()),
+                      () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaToolBaseEnergyCapacity.get())))
+                .build(), MekanismConfig.gear
+          );
     // Armor
-    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new);
-    public static final ItemRegistryObject<ItemArmoredFreeRunners> ARMORED_FREE_RUNNERS = ITEMS.registerItem("free_runners_armored", ItemArmoredFreeRunners::new);
+    public static final ItemRegistryObject<ItemFreeRunners> FREE_RUNNERS = ITEMS.registerItem("free_runners", ItemFreeRunners::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
+    public static final ItemRegistryObject<ItemArmoredFreeRunners> ARMORED_FREE_RUNNERS = ITEMS.registerItem("free_runners_armored", ItemArmoredFreeRunners::new)
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
+                .addBasic(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy)
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemScubaMask> SCUBA_MASK = ITEMS.registerItem("scuba_mask", ItemScubaMask::new);
-    public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.registerItem("scuba_tank", ItemScubaTank::new);
-    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", ItemJetpack::new);
-    public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", ItemArmoredJetpack::new);
+    public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.registerItem("scuba_tank", ItemScubaTank::new)
+          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.scubaFillRate, MekanismConfig.gear.scubaMaxGas, gas -> gas == MekanismGases.OXYGEN.getChemical())
+                .build(), MekanismConfig.gear
+          );
+    public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.registerItem("jetpack", ItemJetpack::new)
+          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical())
+                .build(), MekanismConfig.gear
+          );
+    public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.registerItem("jetpack_armored", ItemArmoredJetpack::new)
+          .addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder()
+                .addInternalStorage(MekanismConfig.gear.jetpackFillRate, MekanismConfig.gear.jetpackMaxGas, gas -> gas == MekanismGases.HYDROGEN.getChemical())
+                .build(), MekanismConfig.gear
+          );
     public static final ItemRegistryObject<ItemHDPEElytra> HDPE_REINFORCED_ELYTRA = ITEMS.registerItem("hdpe_elytra", props -> new ItemHDPEElytra(props.durability(648).rarity(Rarity.RARE)));
 
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.registerItem("hazmat_mask", props -> new ItemHazmatSuitArmor(ArmorItem.Type.HELMET, props));
@@ -139,10 +193,14 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", props -> new ItemHazmatSuitArmor(ArmorItem.Type.LEGGINGS, props));
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", props -> new ItemHazmatSuitArmor(ArmorItem.Type.BOOTS, props));
 
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerUnburnable("mekasuit_helmet", props -> new ItemMekaSuitArmor(ArmorItem.Type.HELMET, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerUnburnable("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(ArmorItem.Type.CHESTPLATE, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerUnburnable("mekasuit_pants", props -> new ItemMekaSuitArmor(ArmorItem.Type.LEGGINGS, props));
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerUnburnable("mekasuit_boots", props -> new ItemMekaSuitArmor(ArmorItem.Type.BOOTS, props));
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerUnburnable("mekasuit_helmet", props -> new ItemMekaSuitArmor(ArmorItem.Type.HELMET, props))
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerUnburnable("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(ArmorItem.Type.CHESTPLATE, props))
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerUnburnable("mekasuit_pants", props -> new ItemMekaSuitArmor(ArmorItem.Type.LEGGINGS, props))
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerUnburnable("mekasuit_boots", props -> new ItemMekaSuitArmor(ArmorItem.Type.BOOTS, props))
+          .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
 

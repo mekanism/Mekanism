@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -23,6 +24,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +46,16 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
                 forEntries(registryObject -> registryObject.attachDefaultContainers(bus));
             }
         });
+
+        bus.addListener(EventPriority.LOWEST, ModifyDefaultComponentsEvent.class, event -> forEntries(registryObject -> {
+            if (ContainerType.anySupports(registryObject)) {
+                event.modify(registryObject, builder -> {
+                    for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
+                        type.addDefault(registryObject, builder);
+                    }
+                });
+            }
+        }));
     }
 
     private void forEntries(Consumer<ItemRegistryObject<?>> consumer) {

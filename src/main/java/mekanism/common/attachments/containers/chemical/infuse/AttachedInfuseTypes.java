@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers.chemical.infuse;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.NBTConstants;
@@ -22,13 +24,18 @@ public record AttachedInfuseTypes(List<InfusionStack> containers) implements IAt
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedInfuseTypes> STREAM_CODEC =
           InfusionStack.OPTIONAL_STREAM_CODEC.<List<InfusionStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedInfuseTypes::new, AttachedInfuseTypes::containers);
+    private static final Int2ObjectMap<AttachedInfuseTypes> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
+
+    public static AttachedInfuseTypes create(int containers) {
+        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedInfuseTypes::new);
+    }
 
     public AttachedInfuseTypes {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
     }
 
-    public AttachedInfuseTypes(int containers) {
+    private AttachedInfuseTypes(int containers) {
         this(NonNullList.withSize(containers, InfusionStack.EMPTY));
     }
 

@@ -8,9 +8,17 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import org.jetbrains.annotations.NotNull;
 
 public class EnergyContainersBuilder {
+
+    private static final IBasicContainerCreator<? extends ComponentBackedEnergyContainer> MEKASUIT = (type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
+          BasicEnergyContainer.alwaysTrue,
+          () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
+          () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
+    );
 
     public static EnergyContainersBuilder builder() {
         return new EnergyContainersBuilder();
@@ -23,6 +31,10 @@ public class EnergyContainersBuilder {
 
     public BaseContainerCreator<AttachedEnergy, ComponentBackedEnergyContainer> build() {
         return new BaseEnergyContainerCreator(containerCreators);
+    }
+
+    public EnergyContainersBuilder addMekaSuit() {
+        return addContainer(MEKASUIT);
     }
 
     public EnergyContainersBuilder addBasic(FloatingLongSupplier rate, FloatingLongSupplier maxEnergy) {
@@ -48,7 +60,7 @@ public class EnergyContainersBuilder {
 
         @Override
         public AttachedEnergy initStorage(int containers) {
-            return new AttachedEnergy(containers);
+            return AttachedEnergy.create(containers);
         }
     }
 }

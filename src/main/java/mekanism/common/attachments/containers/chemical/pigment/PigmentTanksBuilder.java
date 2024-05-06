@@ -52,7 +52,7 @@ public class PigmentTanksBuilder extends ChemicalTanksBuilder<Pigment, PigmentSt
 
         @Override
         public AttachedPigments initStorage(int containers) {
-            return new AttachedPigments(containers);
+            return AttachedPigments.create(containers);
         }
     }
 }

@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers.chemical.gas;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.NBTConstants;
@@ -22,13 +24,18 @@ public record AttachedGases(List<GasStack> containers) implements IAttachedConta
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedGases> STREAM_CODEC =
           GasStack.OPTIONAL_STREAM_CODEC.<List<GasStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                       .map(AttachedGases::new, AttachedGases::containers);
+    private static final Int2ObjectMap<AttachedGases> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
+
+    public static AttachedGases create(int containers) {
+        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedGases::new);
+    }
 
     public AttachedGases {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
     }
 
-    public AttachedGases(int containers) {
+    private AttachedGases(int containers) {
         this(NonNullList.withSize(containers, GasStack.EMPTY));
     }
 

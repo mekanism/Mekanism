@@ -32,13 +32,10 @@ import mekanism.common.attachments.IAttachmentAware;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.gas.ComponentBackedGasTank;
 import mekanism.common.attachments.containers.chemical.gas.GasTanksBuilder;
-import mekanism.common.attachments.containers.energy.ComponentBackedNoClampEnergyContainer;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
@@ -50,7 +47,6 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
-import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
@@ -284,13 +280,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void attachAttachments(IEventBus eventBus) {
-        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> EnergyContainersBuilder.builder()
-              .addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
-                    BasicEnergyContainer.alwaysTrue,
-                    () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaSuitBaseChargeRate.get()),
-                    () -> ModuleEnergyUnit.getEnergyCapacity(attachedTo, MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get())
-              )).build(), MekanismConfig.gear);
-
         if (!gasTankSpecs.isEmpty()) {
             ContainerType.GAS.addDefaultCreators(eventBus, this, () -> {
                 GasTanksBuilder builder = GasTanksBuilder.builder();

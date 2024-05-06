@@ -52,7 +52,7 @@ public class GasTanksBuilder extends ChemicalTanksBuilder<Gas, GasStack, Compone
 
         @Override
         public AttachedGases initStorage(int containers) {
-            return new AttachedGases(containers);
+            return AttachedGases.create(containers);
         }
     }
 }

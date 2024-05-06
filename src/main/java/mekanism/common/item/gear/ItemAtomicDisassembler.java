@@ -104,7 +104,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     private final AttributeCache attributeCache;
 
     public ItemAtomicDisassembler(Properties properties) {
-        super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair()
+        super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
               .component(DataComponents.TOOL, MINE_ANY_TOOL)
         );

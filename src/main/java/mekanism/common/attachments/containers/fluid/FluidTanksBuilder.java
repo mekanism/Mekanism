@@ -71,7 +71,7 @@ public class FluidTanksBuilder {
 
         @Override
         public AttachedFluids initStorage(int containers) {
-            return new AttachedFluids(containers);
+            return AttachedFluids.create(containers);
         }
     }
 }

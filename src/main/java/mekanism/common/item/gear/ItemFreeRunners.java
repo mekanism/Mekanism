@@ -13,9 +13,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
@@ -44,11 +41,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode>, IAttachmentAware {
+public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<FreeRunnerMode> {
 
     public ItemFreeRunners(Properties properties) {
         this(MekanismArmorMaterials.FREE_RUNNERS, properties);
@@ -117,13 +113,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
             return mutable.toImmutable();
         }
         return enchantments;
-    }
-
-    @Override
-    public void attachAttachments(IEventBus eventBus) {
-        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> EnergyContainersBuilder.builder()
-              .addBasic(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy)
-              .build(), MekanismConfig.gear);
     }
 
     @Override

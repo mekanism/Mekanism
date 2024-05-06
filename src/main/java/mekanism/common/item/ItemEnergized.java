@@ -1,13 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.function.Predicate;
-import mekanism.api.AutomationType;
-import mekanism.api.math.FloatingLongSupplier;
-import mekanism.common.attachments.IAttachmentAware;
-import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.energy.EnergyContainersBuilder;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.StorageUtils;
@@ -16,27 +9,12 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemEnergized extends Item implements ICustomCreativeTabContents, IAttachmentAware {
+public class ItemEnergized extends Item implements ICustomCreativeTabContents {
 
-    private final FloatingLongSupplier chargeRateSupplier;
-    private final FloatingLongSupplier maxEnergySupplier;
-    protected final Predicate<@NotNull AutomationType> canExtract;
-    protected final Predicate<@NotNull AutomationType> canInsert;
-
-    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Properties properties) {
-        this(chargeRateSupplier, maxEnergySupplier, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue, properties.stacksTo(1));
-    }
-
-    public ItemEnergized(FloatingLongSupplier chargeRateSupplier, FloatingLongSupplier maxEnergySupplier, Predicate<@NotNull AutomationType> canExtract,
-          Predicate<@NotNull AutomationType> canInsert, Properties properties) {
+    public ItemEnergized(Properties properties) {
         super(properties);
-        this.chargeRateSupplier = chargeRateSupplier;
-        this.maxEnergySupplier = maxEnergySupplier;
-        this.canExtract = canExtract;
-        this.canInsert = canInsert;
     }
 
     @Override
@@ -63,17 +41,6 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
     @Override
     public void addItems(CreativeModeTab.Output tabOutput) {
         tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
-    }
-
-    protected EnergyContainersBuilder addDefaultEnergyContainers(EnergyContainersBuilder builder) {
-        return builder.addBasic(canExtract, canInsert, chargeRateSupplier, maxEnergySupplier);
-    }
-
-    @Override
-    public void attachAttachments(IEventBus eventBus) {
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-        ContainerType.ENERGY.addDefaultCreators(eventBus, this, () -> addDefaultEnergyContainers(EnergyContainersBuilder.builder()).build(), MekanismConfig.gear);
     }
 
     @Override

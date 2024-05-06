@@ -52,7 +52,7 @@ public class InfusionTanksBuilder extends ChemicalTanksBuilder<InfuseType, Infus
 
         @Override
         public AttachedInfuseTypes initStorage(int containers) {
-            return new AttachedInfuseTypes(containers);
+            return AttachedInfuseTypes.create(containers);
         }
     }
 }
