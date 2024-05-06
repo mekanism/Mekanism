@@ -23,8 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> {
 
-    public ItemBlockChemicalTank(BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>> block) {
-        super(block, true, new Item.Properties().component(MekanismDataComponents.DUMP_MODE, GasMode.IDLE));
+    public ItemBlockChemicalTank(BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>> block, Item.Properties properties) {
+        super(block, true, properties.component(MekanismDataComponents.DUMP_MODE, GasMode.IDLE));
     }
 
     @Override

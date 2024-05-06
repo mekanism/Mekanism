@@ -1,10 +1,19 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.security.SecurityMode;
+import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeUpgradeSupport;
+import mekanism.common.block.attribute.Attributes.AttributeRedstone;
+import mekanism.common.block.attribute.Attributes.AttributeSecurity;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.DoubleDeferredRegister;
+import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -19,20 +28,31 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
     }
 
     public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
-        return registerDefaultProperties(name, () -> new Block(BlockStateHelper.applyLightLevelAdjustments(properties)), BlockItem::new);
+        return register(name, () -> new Block(BlockStateHelper.applyLightLevelAdjustments(properties)), BlockItem::new);
     }
 
     public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
-        return registerDefaultProperties(name, blockSupplier, BlockItem::new);
+        return register(name, blockSupplier, BlockItem::new);
     }
 
-    public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerDefaultProperties(String name, Supplier<? extends BLOCK> blockSupplier,
-          BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        return register(name, blockSupplier, block -> itemCreator.apply(block, new Item.Properties()));
+    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerDetails(String name, Supplier<? extends BLOCK> blockSupplier) {
+        return register(name, blockSupplier, (block, properties) -> new ItemBlockTooltip<>(block, true, properties));
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,
-          Function<BLOCK, ITEM> itemCreator) {
-        return register(name, blockSupplier, itemCreator, BlockRegistryObject::new);
+          BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
+        return register(name, blockSupplier, block -> {
+            Item.Properties properties = new Item.Properties();
+            if (Attribute.has(block, AttributeSecurity.class)) {
+                properties.component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
+            }
+            if (Attribute.has(block, AttributeRedstone.class)) {
+                properties.component(MekanismDataComponents.REDSTONE_CONTROL, RedstoneControl.DISABLED);
+            }
+            if (Attribute.has(block, AttributeUpgradeSupport.class)) {
+                properties.component(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
+            }
+            return itemCreator.apply(block, properties);
+        }, BlockRegistryObject::new);
     }
 }

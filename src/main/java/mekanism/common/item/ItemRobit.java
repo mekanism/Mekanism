@@ -6,6 +6,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -48,6 +49,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     public ItemRobit(Properties properties) {
         super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE)
               .component(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE)
+              .component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC)
         );
     }
 

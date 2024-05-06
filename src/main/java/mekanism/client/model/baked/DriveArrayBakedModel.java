@@ -160,8 +160,8 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
 
         private boolean hasFrequency(ItemStack stack) {
             if (stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == FrequencyType.QIO) {
-                FrequencyAware<QIOFrequency> frequencyAware = stack.get(MekanismDataComponents.QIO_FREQUENCY);
-                return frequencyAware != null && frequencyAware.identity().isPresent() && frequencyAware.getOwner() != null;
+                FrequencyAware<QIOFrequency> frequencyAware = stack.getOrDefault(MekanismDataComponents.QIO_FREQUENCY, FrequencyAware.none());
+                return frequencyAware.identity().isPresent() && frequencyAware.getOwner() != null;
             }
             return false;
         }

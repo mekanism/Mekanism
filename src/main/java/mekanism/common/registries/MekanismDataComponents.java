@@ -143,7 +143,6 @@ public class MekanismDataComponents {
           builder -> builder.persistent(GasMode.CODEC)
                 .networkSynchronized(GasMode.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<RedstoneControl>> REDSTONE_CONTROL = DATA_COMPONENTS.simple("redstone_control",
           builder -> builder.persistent(RedstoneControl.CODEC)
                 .networkSynchronized(RedstoneControl.STREAM_CODEC)
@@ -208,7 +207,6 @@ public class MekanismDataComponents {
                 .networkSynchronized(StabilizedChunks.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Component>> ROBIT_NAME = DATA_COMPONENTS.registerComponent("robit_name");
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<RobitSkin>>> ROBIT_SKIN = DATA_COMPONENTS.registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
 
@@ -219,68 +217,54 @@ public class MekanismDataComponents {
                 .networkSynchronized(LockData.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FormulaAttachment>> FORMULA_HOLDER = DATA_COMPONENTS.simple("formula",
           builder -> builder.persistent(FormulaAttachment.CODEC)
                 .networkSynchronized(FormulaAttachment.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CONFIGURATION_DATA = DATA_COMPONENTS.simple("configuration_data",
           builder -> builder.persistent(CompoundTag.CODEC)
                 .networkSynchronized(ByteBufCodecs.TRUSTED_COMPOUND_TAG)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<BlockData>> BLOCK_DATA = DATA_COMPONENTS.simple("block_data",
           builder -> builder.persistent(BlockData.CODEC)
                 .networkSynchronized(BlockData.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<EnumColor>> COLOR = DATA_COMPONENTS.simple("color",
           builder -> builder.persistent(EnumColor.CODEC)
                 .networkSynchronized(EnumColor.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UUID>> OWNER = DATA_COMPONENTS.registerUUID("owner");
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<SecurityMode>> SECURITY = DATA_COMPONENTS.simple("security",
           builder -> builder.persistent(SecurityMode.CODEC)
                 .networkSynchronized(SecurityMode.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEjector>> EJECTOR = DATA_COMPONENTS.simple("ejector",
           builder -> builder.persistent(AttachedEjector.CODEC)
                 .networkSynchronized(AttachedEjector.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSideConfig>> SIDE_CONFIG = DATA_COMPONENTS.simple("side_config",
           builder -> builder.persistent(AttachedSideConfig.CODEC)
                 .networkSynchronized(AttachedSideConfig.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UpgradeAware>> UPGRADES = DATA_COMPONENTS.simple("upgrades",
           builder -> builder.persistent(UpgradeAware.CODEC)
                 .networkSynchronized(UpgradeAware.STREAM_CODEC)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FilterAware>> FILTER_AWARE = DATA_COMPONENTS.simple("filters",
           builder -> builder.persistent(FilterAware.CODEC)
                 .networkSynchronized(FilterAware.STREAM_CODEC)
     );
 
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> FREQUENCY_COMPONENT = DATA_COMPONENTS.simple("frequencies",
           builder -> builder.persistent(CompoundTag.CODEC)
                 .networkSynchronized(ByteBufCodecs.TRUSTED_COMPOUND_TAG)
     );
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<TeleporterFrequency>>> TELEPORTER_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("teleporter_frequency", () -> FrequencyType.TELEPORTER);
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<InventoryFrequency>>> INVENTORY_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("inventory_frequency", () -> FrequencyType.INVENTORY);
-    //TODO - 1.20.5: Add to default things
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<QIOFrequency>>> QIO_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("qio_frequency", () -> FrequencyType.QIO);
 
     @Nullable//TODO - 1.20.5: Can we make this work without raw types?

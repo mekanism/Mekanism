@@ -24,10 +24,18 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity> identity, Optional<FREQ> frequency) {
+
+    public static final FrequencyAware<?> NONE = new FrequencyAware<>(Optional.empty(), Optional.empty());
+
+    @SuppressWarnings("unchecked")
+    public static <FREQ extends Frequency> FrequencyAware<FREQ> none() {
+        return (FrequencyAware<FREQ>) NONE;
+    }
 
     public static <FREQ extends Frequency> Codec<FrequencyAware<FREQ>> codec(FrequencyType<FREQ> frequencyType) {
         return RecordCodecBuilder.create(instance -> instance.group(
@@ -62,8 +70,8 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
           DriveMetadata::new
     );
 
-    public FrequencyAware(@Nullable FREQ freq) {
-        this(freq == null ? Optional.empty() : Optional.of(freq.getIdentity()), Optional.ofNullable(freq));
+    public FrequencyAware(@NotNull FREQ freq) {
+        this(Optional.of(freq.getIdentity()), Optional.of(freq));
     }
 
     @Nullable

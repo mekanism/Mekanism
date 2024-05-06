@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockMechanicalPipe extends ItemBlockTooltip<BlockLargeTransmitter<TileEntityMechanicalPipe>> {
 
-    public ItemBlockMechanicalPipe(BlockLargeTransmitter<TileEntityMechanicalPipe> block) {
-        super(block);
+    public ItemBlockMechanicalPipe(BlockLargeTransmitter<TileEntityMechanicalPipe> block, Item.Properties properties) {
+        super(block, true, properties);
     }
 
     @NotNull

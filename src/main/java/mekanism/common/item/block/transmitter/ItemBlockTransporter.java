@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,12 +19,12 @@ public class ItemBlockTransporter<TILE extends TileEntityLogisticalTransporterBa
     @Nullable
     private final ILangEntry extraDetails;
 
-    public ItemBlockTransporter(BlockLargeTransmitter<TILE> block) {
-        this(block, null);
+    public ItemBlockTransporter(BlockLargeTransmitter<TILE> block, Item.Properties properties) {
+        this(block, properties, null);
     }
 
-    public ItemBlockTransporter(BlockLargeTransmitter<TILE> block, @Nullable ILangEntry extraDetails) {
-        super(block);
+    public ItemBlockTransporter(BlockLargeTransmitter<TILE> block, Item.Properties properties, @Nullable ILangEntry extraDetails) {
+        super(block, true, properties);
         this.extraDetails = extraDetails;
     }
 

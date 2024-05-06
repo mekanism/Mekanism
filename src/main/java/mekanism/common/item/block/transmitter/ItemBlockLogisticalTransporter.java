@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockLogisticalTransporter extends ItemBlockTransporter<TileEntityLogisticalTransporter> {
 
-    public ItemBlockLogisticalTransporter(BlockLargeTransmitter<TileEntityLogisticalTransporter> block) {
-        super(block);
+    public ItemBlockLogisticalTransporter(BlockLargeTransmitter<TileEntityLogisticalTransporter> block, Item.Properties properties) {
+        super(block, properties);
     }
 
     @NotNull

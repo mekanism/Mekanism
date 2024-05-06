@@ -79,9 +79,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implements IAttachmentBasedModeItem<Boolean> {
 
-    public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, true, new Item.Properties().component(MekanismDataComponents.BUCKET_MODE, false)
-              .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH));
+    public ItemBlockFluidTank(BlockFluidTank block, Item.Properties properties) {
+        super(block, true, properties.component(MekanismDataComponents.BUCKET_MODE, false)
+              .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH)
+        );
     }
 
     @Override

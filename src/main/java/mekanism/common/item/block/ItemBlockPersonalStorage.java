@@ -20,6 +20,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -32,8 +33,8 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
 
     private final ResourceLocation openStat;
 
-    public ItemBlockPersonalStorage(BLOCK block, ResourceLocation openStat) {
-        super(block);
+    public ItemBlockPersonalStorage(BLOCK block, Item.Properties properties, ResourceLocation openStat) {
+        super(block, true, properties);
         this.openStat = openStat;
     }
 

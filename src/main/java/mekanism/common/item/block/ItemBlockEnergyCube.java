@@ -49,8 +49,8 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
     });
 
-    public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block);
+    public ItemBlockEnergyCube(BlockEnergyCube block, Item.Properties properties) {
+        super(block, true, properties);
     }
 
     @Override

@@ -19,8 +19,8 @@ public interface IColoredItem {
     default <FREQ extends Frequency> void syncColorWithFrequency(ItemStack stack) {
         DataComponentType<FrequencyAware<FREQ>> frequencyComponent = (DataComponentType<FrequencyAware<FREQ>>) getFrequencyComponent();
         if (frequencyComponent != null) {
-            FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
-            if (frequencyAware != null && frequencyAware.getFrequency(stack, frequencyComponent) instanceof IColorableFrequency frequency) {
+            FrequencyAware<FREQ> frequencyAware = stack.getOrDefault(frequencyComponent, FrequencyAware.none());
+            if (frequencyAware.getFrequency(stack, frequencyComponent) instanceof IColorableFrequency frequency) {
                 stack.set(MekanismDataComponents.COLOR, frequency.getColor());
             } else {
                 stack.remove(MekanismDataComponents.COLOR);

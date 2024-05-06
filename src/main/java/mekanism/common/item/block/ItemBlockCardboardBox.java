@@ -34,8 +34,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
-    public ItemBlockCardboardBox(BlockCardboardBox block) {
-        super(block, new Item.Properties().stacksTo(16));
+    public ItemBlockCardboardBox(BlockCardboardBox block, Item.Properties properties) {
+        super(block, properties.stacksTo(16));
     }
 
     @Override

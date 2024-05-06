@@ -276,6 +276,21 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
+    public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
+        if (hasCustomFrequencies()) {
+            if (!remapEntries.contains(MekanismDataComponents.FREQUENCY_COMPONENT.get())) {
+                remapEntries.add(MekanismDataComponents.FREQUENCY_COMPONENT.get());
+            }
+            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+                DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(entry.getKey());
+                if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
+                    remapEntries.add(frequencyComponent);
+                }
+            }
+        }
+    }
+
+    @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
         if (hasCustomFrequencies()) {
             CompoundTag serializedComponent = serialize();
@@ -283,7 +298,9 @@ public class TileComponentFrequency implements ITileComponent {
                 //Don't persist security frequency to items as that is instead stored from the security component to the SecurityObject
                 serializedComponent.remove(FrequencyType.SECURITY.getName());
             }
-            builder.set(MekanismDataComponents.FREQUENCY_COMPONENT, serializedComponent);
+            if (!serializedComponent.isEmpty()) {
+                builder.set(MekanismDataComponents.FREQUENCY_COMPONENT, serializedComponent);
+            }
             for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
                 collectFrequencyComponents(builder, entry.getKey(), entry.getValue());
             }
@@ -291,13 +308,15 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private <FREQ extends Frequency> void collectFrequencyComponents(DataComponentMap.Builder builder, FrequencyType<FREQ> type, FrequencyData frequencyData) {
-        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
-        if (frequencyComponent != null) {
-            builder.set(frequencyComponent, new FrequencyAware<>((FREQ) frequencyData.selectedFrequency));
-            //TODO: Do we want to support multiple frequency types each having a colored frequency?
-            if (frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
-                //TODO - 1.20.5: Validate the item is IColoredItem???
-                builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
+        if (frequencyData.selectedFrequency != null) {
+            DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
+            if (frequencyComponent != null) {
+                builder.set(frequencyComponent, new FrequencyAware<>((FREQ) frequencyData.selectedFrequency));
+                //TODO: Do we want to support multiple frequency types each having a colored frequency?
+                if (frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
+                    //TODO - 1.20.5: Validate the item is IColoredItem???
+                    builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
+                }
             }
         }
     }

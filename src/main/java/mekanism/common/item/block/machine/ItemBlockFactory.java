@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
-    public ItemBlockFactory(BlockFactory<?> block) {
-        super(block, true, new Item.Properties().component(MekanismDataComponents.SORTING, false));
+    public ItemBlockFactory(BlockFactory<?> block, Item.Properties properties) {
+        super(block, true, properties.component(MekanismDataComponents.SORTING, false));
     }
 
     @Override

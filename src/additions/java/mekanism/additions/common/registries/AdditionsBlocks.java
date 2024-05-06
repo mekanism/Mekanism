@@ -97,6 +97,6 @@ public class AdditionsBlocks {
 
     private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,
           String blockTypeSuffix, EnumColor color) {
-        return BLOCKS.registerDefaultProperties(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockMekanism::new);
+        return BLOCKS.register(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockMekanism::new);
     }
 }
