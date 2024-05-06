@@ -490,15 +490,7 @@ dependencies {
     //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
     datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:biomes-youll-go-247560:${byg_id}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:i-like-wood-324164:${ilikewood_id}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
-    //TODO - 1.20.2: Switch back to datagenMainImplementation
-    datagenMainCompileOnly("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated
     //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
@@ -764,9 +756,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     //Tweakers
                     'crafttweaker', 'jeitweaker',
                     //World gen
-                    'biomes-o-plenty', 'oh-the-biomes-youll-go',
-                    //Wood types
-                    'i-like-wood', 'i-like-wood-biomes-o-plenty-plugin', 'i-like-wood-oh-the-biomes-youll-go-plugin',
+                    'biomes-o-plenty',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
                     'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'

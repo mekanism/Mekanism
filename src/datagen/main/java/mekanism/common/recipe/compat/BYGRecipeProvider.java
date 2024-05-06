@@ -1,4 +1,4 @@
-package mekanism.common.recipe.compat;
+/*package mekanism.common.recipe.compat;
 
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
@@ -431,4 +431,4 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(path));
     }
-}
+}*/
