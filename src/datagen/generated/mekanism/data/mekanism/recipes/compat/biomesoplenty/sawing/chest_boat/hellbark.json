@@ -12,10 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:hellbark_boat"
+    "count": 1,
+    "id": "biomesoplenty:hellbark_boat"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:chest"
+    "count": 1,
+    "id": "minecraft:chest"
   }
 }

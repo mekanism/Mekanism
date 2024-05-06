@@ -13,6 +13,6 @@
   },
   "mainOutput": {
     "count": 3,
-    "item": "biomesoplenty:mahogany_planks"
+    "id": "biomesoplenty:mahogany_planks"
   }
 }

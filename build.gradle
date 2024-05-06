@@ -485,10 +485,9 @@ dependencies {
 
     //Dependencies for data generators for mod compat reference
     datagenMainImplementation("appeng:appliedenergistics2-neoforge:${ae2_version}")
-    //TODO - 1.20.5: Switch back to datagenMainImplementation
-    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${previous_minor_minecraft_version}-${glitchcore_version}")
-    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${previous_minor_minecraft_version}-${terrablender_version}")
-    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${previous_minor_minecraft_version}-${biomesoplenty_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20.2: Re-enable after projecte is updated

@@ -12,11 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:maple_planks"
+    "count": 1,
+    "id": "biomesoplenty:maple_planks"
   },
   "secondaryChance": 0.25,
   "secondaryOutput": {
     "count": 2,
-    "item": "mekanism:sawdust"
+    "id": "mekanism:sawdust"
   }
 }

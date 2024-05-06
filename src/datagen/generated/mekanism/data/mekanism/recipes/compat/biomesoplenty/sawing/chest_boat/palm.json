@@ -12,10 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:palm_boat"
+    "count": 1,
+    "id": "biomesoplenty:palm_boat"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:chest"
+    "count": 1,
+    "id": "minecraft:chest"
   }
 }

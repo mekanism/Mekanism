@@ -13,11 +13,11 @@
   },
   "mainOutput": {
     "count": 2,
-    "item": "biomesoplenty:hellbark_planks"
+    "id": "biomesoplenty:hellbark_planks"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
     "count": 4,
-    "item": "minecraft:stick"
+    "id": "minecraft:stick"
   }
 }

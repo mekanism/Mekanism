@@ -12,10 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:fir_boat"
+    "count": 1,
+    "id": "biomesoplenty:fir_boat"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:chest"
+    "count": 1,
+    "id": "minecraft:chest"
   }
 }

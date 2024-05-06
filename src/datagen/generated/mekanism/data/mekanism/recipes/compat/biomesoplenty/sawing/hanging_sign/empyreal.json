@@ -13,10 +13,11 @@
   },
   "mainOutput": {
     "count": 2,
-    "item": "biomesoplenty:empyreal_planks"
+    "id": "biomesoplenty:empyreal_planks"
   },
   "secondaryChance": 0.5,
   "secondaryOutput": {
-    "item": "mekanism:sawdust"
+    "count": 1,
+    "id": "mekanism:sawdust"
   }
 }

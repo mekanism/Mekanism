@@ -13,10 +13,11 @@
   },
   "mainOutput": {
     "count": 6,
-    "item": "biomesoplenty:redwood_planks"
+    "id": "biomesoplenty:redwood_planks"
   },
   "secondaryChance": 0.25,
   "secondaryOutput": {
-    "item": "mekanism:sawdust"
+    "count": 1,
+    "id": "mekanism:sawdust"
   }
 }

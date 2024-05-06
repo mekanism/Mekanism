@@ -18,6 +18,6 @@
   },
   "output": {
     "amount": 768,
-    "pigment": "mekanism:orange"
+    "id": "mekanism:orange"
   }
 }

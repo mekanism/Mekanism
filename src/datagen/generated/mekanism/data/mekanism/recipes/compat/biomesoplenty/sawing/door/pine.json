@@ -13,6 +13,6 @@
   },
   "mainOutput": {
     "count": 2,
-    "item": "biomesoplenty:pine_planks"
+    "id": "biomesoplenty:pine_planks"
   }
 }

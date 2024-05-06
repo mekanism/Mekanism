@@ -13,6 +13,6 @@
   },
   "output": {
     "count": 4,
-    "item": "minecraft:purple_dye"
+    "id": "minecraft:purple_dye"
   }
 }

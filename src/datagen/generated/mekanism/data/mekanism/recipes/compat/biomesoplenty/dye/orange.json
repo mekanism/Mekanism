@@ -18,6 +18,6 @@
   },
   "output": {
     "count": 2,
-    "item": "minecraft:orange_dye"
+    "id": "minecraft:orange_dye"
   }
 }

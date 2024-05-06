@@ -13,6 +13,6 @@
   },
   "mainOutput": {
     "count": 5,
-    "item": "biomesoplenty:willow_planks"
+    "id": "biomesoplenty:willow_planks"
   }
 }

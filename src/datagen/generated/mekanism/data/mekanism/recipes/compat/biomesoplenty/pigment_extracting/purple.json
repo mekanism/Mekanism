@@ -18,6 +18,6 @@
   },
   "output": {
     "amount": 768,
-    "pigment": "mekanism:purple"
+    "id": "mekanism:purple"
   }
 }

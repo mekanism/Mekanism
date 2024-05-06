@@ -13,6 +13,6 @@
   },
   "mainOutput": {
     "count": 2,
-    "item": "biomesoplenty:redwood_planks"
+    "id": "biomesoplenty:redwood_planks"
   }
 }

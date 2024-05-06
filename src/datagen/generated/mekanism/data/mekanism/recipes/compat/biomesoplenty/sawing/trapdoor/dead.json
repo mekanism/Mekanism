@@ -13,6 +13,6 @@
   },
   "mainOutput": {
     "count": 3,
-    "item": "biomesoplenty:dead_planks"
+    "id": "biomesoplenty:dead_planks"
   }
 }

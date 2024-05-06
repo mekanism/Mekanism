@@ -89,6 +89,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addPellets();
         addColorableItems();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
+        getBlockBuilder(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER);
+        getBlockBuilder(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL);
         addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         getItemBuilder(ItemTags.PIGLIN_LOVED).add(

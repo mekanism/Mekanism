@@ -13,10 +13,11 @@
   },
   "mainOutput": {
     "count": 2,
-    "item": "biomesoplenty:mahogany_planks"
+    "id": "biomesoplenty:mahogany_planks"
   },
   "secondaryChance": 0.5,
   "secondaryOutput": {
-    "item": "mekanism:sawdust"
+    "count": 1,
+    "id": "mekanism:sawdust"
   }
 }

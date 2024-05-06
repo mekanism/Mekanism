@@ -13,6 +13,6 @@
   },
   "output": {
     "amount": 1536,
-    "pigment": "mekanism:white"
+    "id": "mekanism:white"
   }
 }

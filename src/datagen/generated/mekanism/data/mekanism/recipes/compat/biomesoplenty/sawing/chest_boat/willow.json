@@ -12,10 +12,12 @@
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:willow_boat"
+    "count": 1,
+    "id": "biomesoplenty:willow_boat"
   },
   "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:chest"
+    "count": 1,
+    "id": "minecraft:chest"
   }
 }
