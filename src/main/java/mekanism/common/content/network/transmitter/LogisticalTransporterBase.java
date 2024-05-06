@@ -253,7 +253,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
-                    PacketUtils.sendToAllTracking(new PacketTransporterBatch(getLevel().registryAccess(), pos, deletes, needsSync), getTransmitterTile());
+                    PacketUtils.sendToAllTracking(PacketTransporterBatch.create(pos, deletes, needsSync), getTransmitterTile());
                     // Now remove any entries from transit that have been deleted
                     OfInt ofInt = deletes.iterator();
                     while (ofInt.hasNext()) {
@@ -441,7 +441,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);
-                PacketUtils.sendToAllTracking(new PacketTransporterSync(getLevel().registryAccess(), getBlockPos(), stackId, stack), getTransmitterTile());
+                PacketUtils.sendToAllTracking(PacketTransporterSync.create(getBlockPos(), stackId, stack), getTransmitterTile());
                 getTransmitterTile().markForSave();
             }
         }

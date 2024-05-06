@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntFunction;
 import mekanism.api.NBTConstants;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
@@ -26,7 +25,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,11 +32,34 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TransporterStack {
+
+    //Make sure to call updateForPos before calling this method
+    public static StreamCodec<RegistryFriendlyByteBuf, TransporterStack> STREAM_CODEC = NeoForgeStreamCodecs.composite(
+          ByteBufCodecs.optional(EnumColor.STREAM_CODEC), stack -> Optional.ofNullable(stack.color),
+          ByteBufCodecs.VAR_INT, stack -> stack.progress,
+          BlockPos.STREAM_CODEC, stack -> stack.originalLocation,
+          Path.STREAM_CODEC, TransporterStack::getPathType,
+          ByteBufCodecs.optional(BlockPos.STREAM_CODEC), stack -> Optional.ofNullable(stack.clientNext),
+          BlockPos.STREAM_CODEC, stack -> stack.clientPrev,
+          ItemStack.OPTIONAL_STREAM_CODEC, stack -> stack.itemStack,
+          (color, progress, originalLocation, pathType, clientNext, clientPrev, itemStack) -> {
+              TransporterStack stack = new TransporterStack();
+              stack.color = color.orElse(null);
+              stack.progress = progress == 0 ? 5 : progress;
+              stack.originalLocation = originalLocation;
+              stack.pathType = pathType;
+              stack.clientNext = clientNext.orElse(null);
+              stack.clientPrev = clientPrev;
+              stack.itemStack = itemStack;
+              return stack;
+          }
+    );
 
     public ItemStack itemStack = ItemStack.EMPTY;
 
@@ -51,6 +72,7 @@ public class TransporterStack {
     public Direction idleDir = null;
     public BlockPos originalLocation;
     public BlockPos homeLocation;
+    @Nullable
     private BlockPos clientNext;
     private BlockPos clientPrev;
     @Nullable
@@ -67,38 +89,6 @@ public class TransporterStack {
         TransporterStack stack = new TransporterStack();
         stack.readFromUpdateTag(provider, nbtTags);
         return stack;
-    }
-
-    public static TransporterStack readFromPacket(RegistryFriendlyByteBuf dataStream) {
-        TransporterStack stack = new TransporterStack();
-        stack.read(dataStream);
-        if (stack.progress == 0) {
-            stack.progress = 5;
-        }
-        return stack;
-    }
-
-    public void write(RegistryFriendlyByteBuf buf, BlockPos pos) {
-        buf.writeVarInt(TransporterUtils.getColorIndex(color));
-        buf.writeVarInt(progress);
-        buf.writeBlockPos(originalLocation);
-        buf.writeEnum(getPathType());
-        buf.writeNullable(getNext(pos), (b, p) -> b.writeBlockPos(p));
-        buf.writeBlockPos(getPrev(pos));
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemStack);
-    }
-
-    public void read(RegistryFriendlyByteBuf dataStream) {
-        color = TransporterUtils.readColor(dataStream.readVarInt());
-        progress = dataStream.readVarInt();
-        originalLocation = dataStream.readBlockPos();
-        pathType = dataStream.readEnum(Path.class);
-        //TODO - 1.20.4: SP: The clientNext and clientPrev have issues in single player as they won't get set
-        // though in all our use cases we are forcing a read/write to prevent mutation or leaking from one side to another
-        // so at least for now it doesn't fully matter
-        clientNext = dataStream.readNullable(buf -> buf.readBlockPos());
-        clientPrev = dataStream.readBlockPos();
-        itemStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(dataStream);
     }
 
     public void writeToUpdateTag(HolderLookup.Provider provider, LogisticalTransporterBase transporter, CompoundTag updateTag) {
@@ -246,6 +236,13 @@ public class TransporterStack {
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
         return pathToTarget.indexOf(transporter.getBlockPos()) == (getPathType().hasTarget() ? 1 : 0);
+    }
+
+    //TODO - 1.20.5: Re-evaluate this method
+    public TransporterStack updateForPos(BlockPos pos) {
+        clientNext = getNext(pos);
+        clientPrev = getPrev(pos);
+        return this;
     }
 
     @Nullable
