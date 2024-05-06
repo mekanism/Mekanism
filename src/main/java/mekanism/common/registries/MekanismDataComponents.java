@@ -68,39 +68,48 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ModuleContainer>> MODULE_CONTAINER = DATA_COMPONENTS.simple("module_container",
           builder -> builder.persistent(ModuleContainer.CODEC)
                 .networkSynchronized(ModuleContainer.STREAM_CODEC)
+                .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEnergy>> ATTACHED_ENERGY = DATA_COMPONENTS.simple("energy",
           builder -> builder.persistent(AttachedEnergy.CODEC)
                 .networkSynchronized(AttachedEnergy.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedItems>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
           builder -> builder.persistent(AttachedItems.CODEC)
                 .networkSynchronized(AttachedItems.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluids>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
           builder -> builder.persistent(AttachedFluids.CODEC)
                 .networkSynchronized(AttachedFluids.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedGases>> ATTACHED_GASES = DATA_COMPONENTS.simple("gases",
           builder -> builder.persistent(AttachedGases.CODEC)
                 .networkSynchronized(AttachedGases.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedInfuseTypes>> ATTACHED_INFUSE_TYPES = DATA_COMPONENTS.simple("infuse_types",
           builder -> builder.persistent(AttachedInfuseTypes.CODEC)
                 .networkSynchronized(AttachedInfuseTypes.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedPigments>> ATTACHED_PIGMENTS = DATA_COMPONENTS.simple("pigments",
           builder -> builder.persistent(AttachedPigments.CODEC)
                 .networkSynchronized(AttachedPigments.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSlurries>> ATTACHED_SLURRIES = DATA_COMPONENTS.simple("slurries",
           builder -> builder.persistent(AttachedSlurries.CODEC)
                 .networkSynchronized(AttachedSlurries.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)
                 .networkSynchronized(AttachedHeat.STREAM_CODEC)
+                .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DisassemblerMode>> DISASSEMBLER_MODE = DATA_COMPONENTS.simple("disassembler_mode",
@@ -168,6 +177,7 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<OverflowAware>> OVERFLOW_AWARE = DATA_COMPONENTS.simple("overflow",
           builder -> builder.persistent(OverflowAware.CODEC)
                 .networkSynchronized(OverflowAware.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Item>> REPLACE_STACK = DATA_COMPONENTS.simple("replace_stack",
           builder -> builder.persistent(BuiltInRegistries.ITEM.byNameCodec())
@@ -192,6 +202,7 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DriveContents>> DRIVE_CONTENTS = DATA_COMPONENTS.simple("drive_contents",
           builder -> builder.persistent(DriveContents.CODEC)
                 .networkSynchronized(DriveContents.STREAM_CODEC)
+                .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<StabilizedChunks>> STABILIZER_CHUNKS = DATA_COMPONENTS.simple("stabilzer_chunks",
@@ -237,18 +248,22 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedEjector>> EJECTOR = DATA_COMPONENTS.simple("ejector",
           builder -> builder.persistent(AttachedEjector.CODEC)
                 .networkSynchronized(AttachedEjector.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedSideConfig>> SIDE_CONFIG = DATA_COMPONENTS.simple("side_config",
           builder -> builder.persistent(AttachedSideConfig.CODEC)
                 .networkSynchronized(AttachedSideConfig.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<UpgradeAware>> UPGRADES = DATA_COMPONENTS.simple("upgrades",
           builder -> builder.persistent(UpgradeAware.CODEC)
                 .networkSynchronized(UpgradeAware.STREAM_CODEC)
+                .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FilterAware>> FILTER_AWARE = DATA_COMPONENTS.simple("filters",
           builder -> builder.persistent(FilterAware.CODEC)
                 .networkSynchronized(FilterAware.STREAM_CODEC)
+                .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> FREQUENCY_COMPONENT = DATA_COMPONENTS.simple("frequencies",
@@ -277,5 +292,6 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<PortableDashboardContents>> QIO_DASHBOARD = DATA_COMPONENTS.simple("qio_dashboard",
           builder -> builder.persistent(PortableDashboardContents.CODEC)
                 .networkSynchronized(PortableDashboardContents.STREAM_CODEC)
+                .cacheEncoding()
     );
 }

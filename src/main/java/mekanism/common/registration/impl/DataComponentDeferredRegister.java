@@ -22,7 +22,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 
-//TODO - 1.20.5: Should we be setting cacheEncoding on any of our builders?
 @NothingNullByDefault
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
