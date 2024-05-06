@@ -197,6 +197,8 @@ public class MekanismTags {
         public static final TagKey<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
         public static final TagKey<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final TagKey<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
+        public static final TagKey<Block> INCORRECT_FOR_DISASSEMBLER = tag("incorrect_for_disassembler");
+        public static final TagKey<Block> INCORRECT_FOR_MEKA_TOOL = tag("incorrect_for_meka_tool");
         /**
          * For use in the farming module to target blocks that should be effectively ignored when checking if the block below should be targeted.
          */

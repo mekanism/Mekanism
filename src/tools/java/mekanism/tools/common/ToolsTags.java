@@ -18,13 +18,6 @@ public class ToolsTags {
         }
 
         public static final TagKey<Block> MINEABLE_WITH_PAXEL = commonTag("mineable/paxel");
-        public static final TagKey<Block> NEEDS_BRONZE_TOOL = tag("needs_bronze_tool");
-        public static final TagKey<Block> NEEDS_LAPIS_LAZULI_TOOL = tag("needs_lapis_lazuli_tool");
-        public static final TagKey<Block> NEEDS_OSMIUM_TOOL = tag("needs_osmium_tool");
-        public static final TagKey<Block> NEEDS_REFINED_GLOWSTONE_TOOL = tag("needs_refined_glowstone_tool");
-        public static final TagKey<Block> NEEDS_REFINED_OBSIDIAN_TOOL = tag("needs_refined_obsidian_tool");
-        public static final TagKey<Block> NEEDS_STEEL_TOOL = tag("needs_steel_tool");
-
         public static final TagKey<Block> INCORRECT_FOR_BRONZE_TOOL = tag("incorrect_for_bronze_tool");
         public static final TagKey<Block> INCORRECT_FOR_LAPIS_LAZULI_TOOL = tag("incorrect_for_lapis_lazuli_tool");
         public static final TagKey<Block> INCORRECT_FOR_OSMIUM_TOOL = tag("incorrect_for_osmium_tool");
