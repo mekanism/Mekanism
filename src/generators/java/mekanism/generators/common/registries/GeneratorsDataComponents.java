@@ -23,5 +23,5 @@ public class GeneratorsDataComponents {
                 .networkSynchronized(FusionReactorLogic.STREAM_CODEC)
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE_COOLED = DATA_COMPONENTS.registerBoolean("active_cooled", false);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ACTIVE_COOLED = DATA_COMPONENTS.registerBoolean("active_cooled");
 }

@@ -3,11 +3,13 @@ package mekanism.common.item.block;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.interfaces.IDroppableContents.IDroppableAttachmentContents;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
 
     public ItemBlockBin(BlockBin block) {
-        super(block, new Item.Properties());
+        super(block, new Item.Properties().component(MekanismDataComponents.LOCK, LockData.EMPTY));
     }
 
     @Override

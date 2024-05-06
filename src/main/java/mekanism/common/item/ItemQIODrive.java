@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.registries.MekanismDataComponents;
@@ -20,7 +21,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     private final QIODriveTier tier;
 
     public ItemQIODrive(QIODriveTier tier, Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties.stacksTo(1).component(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY)
+              .component(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY)
+        );
         this.tier = tier;
     }
 

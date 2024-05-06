@@ -91,8 +91,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     private final Int2ObjectMap<AttributeCache> attributeCaches = new Int2ObjectArrayMap<>(ModuleAttackAmplificationUnit.AttackDamage.values().length);
 
     public ItemMekaTool(Properties properties) {
-        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, properties.rarity(Rarity.EPIC).setNoRepair()
-              .component(DataComponents.TOOL, ItemAtomicDisassembler.MINE_ANY_TOOL));
+        super(MekanismConfig.gear.mekaToolBaseChargeRate, MekanismConfig.gear.mekaToolBaseEnergyCapacity, IModuleHelper.INSTANCE.applyModuleContainerProperties(
+              properties.rarity(Rarity.EPIC).setNoRepair().component(DataComponents.TOOL, ItemAtomicDisassembler.MINE_ANY_TOOL)
+        ));
     }
 
     @Override

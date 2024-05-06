@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> implements IColoredItem, IFrequencyItem {
 
-    public ItemBlockQIOComponent(BlockTile<?, ?> block) {
-        super(block);
+    public ItemBlockQIOComponent(BlockTile<?, ?> block, Item.Properties properties) {
+        super(block, true, properties);
     }
 
     @Override

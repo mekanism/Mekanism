@@ -1,7 +1,6 @@
 package mekanism.api;
 
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
@@ -30,7 +29,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.5.20";
+    public static final String API_VERSION = "10.6.0";
     /**
      * Mekanism's Mod ID
      */

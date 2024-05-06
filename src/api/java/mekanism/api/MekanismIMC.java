@@ -20,6 +20,8 @@ public class MekanismIMC {
      * {@link #addModuleContainer(ModuleContainerTarget)} can be used as a helper to send properly structured messages of this type.
      *
      * @since 10.5.0
+     * 
+     * @see mekanism.api.gear.IModuleHelper#applyModuleContainerProperties(Item.Properties) 
      */
     public static final String ADD_MODULE_CONTAINER = "add_module_container";
     /**

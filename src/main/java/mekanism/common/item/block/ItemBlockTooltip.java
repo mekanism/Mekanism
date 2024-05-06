@@ -63,7 +63,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         this(block, true, new Item.Properties());
     }
 
-    protected ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
+    public ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {
         super(block, properties);
         this.hasDetails = hasDetails;
     }

@@ -1,9 +1,7 @@
 package mekanism.common.registration.impl;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.api.SerializerHelper;
@@ -25,7 +23,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 
 //TODO - 1.20.5: Should we be setting cacheEncoding on any of our builders?
-//TODO - 1.20.5: Figure out how to handle the default values
 @NothingNullByDefault
 public class DataComponentDeferredRegister extends MekanismDeferredRegister<DataComponentType<?>> {
 
@@ -46,29 +43,23 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
         });
     }
 
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBoolean(String name, boolean defaultValue) {
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBoolean(String name) {
         return simple(name, builder -> builder.persistent(Codec.BOOL)
               .networkSynchronized(ByteBufCodecs.BOOL));
     }
 
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerNonNegativeInt(String name, int defaultValue) {
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerNonNegativeInt(String name) {
         return simple(name, builder -> builder.persistent(ExtraCodecs.POSITIVE_INT)
               .networkSynchronized(ByteBufCodecs.VAR_INT));
     }
 
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerInt(String name, int defaultValue, int min, int max) {
-        return simple(name, builder -> builder.persistent(Codec.intRange(min, max))
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Integer>> registerInt(String name) {
+        return simple(name, builder -> builder.persistent(Codec.INT)
               .networkSynchronized(ByteBufCodecs.VAR_INT));
     }
 
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name, long defaultValue) {
+    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name) {
         return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_NONZERO_LONG_CODEC)
-              .networkSynchronized(ByteBufCodecs.VAR_LONG));
-    }
-
-    public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerLong(String name, long defaultValue, long min, long max) {
-        final Function<Long, DataResult<Long>> checker = Codec.checkRange(min, max);
-        return simple(name, builder -> builder.persistent(Codec.LONG.flatXmap(checker, checker))
               .networkSynchronized(ByteBufCodecs.VAR_LONG));
     }
 
@@ -87,7 +78,8 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
               .networkSynchronized(ComponentSerialization.TRUSTED_STREAM_CODEC));
     }
 
-    public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<TYPE>>> registerResourceKey(String name, ResourceKey<? extends Registry<TYPE>> registryKey) {
+    public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<TYPE>>> registerResourceKey(String name,
+          ResourceKey<? extends Registry<TYPE>> registryKey) {
         return simple(name, builder -> builder.persistent(ResourceKey.codec(registryKey))
               .networkSynchronized(ResourceKey.streamCodec(registryKey)));
     }

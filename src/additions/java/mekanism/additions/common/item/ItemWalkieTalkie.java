@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemWalkieTalkie extends Item implements IModeItem {
 
     public ItemWalkieTalkie(Item.Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties.stacksTo(1).component(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT));
     }
 
     @Override

@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 public class ClearConfigurationRecipe extends CustomRecipe {
 
     //TODO: Evaluate supporting some of these in some sort of generic way in RecipeUpgradeType?
+    //TODO - 1.20.5: Validate how this is handled, and whether removing removes from the patch and sets it back to default or if it entirely gets rid of it
     private static final Set<Holder<DataComponentType<?>>> CLEARABLE_ATTACHMENTS = Util.make(new HashSet<>(), set -> {
         set.add(MekanismDataComponents.EDIT_MODE);
         set.add(MekanismDataComponents.DUMP_MODE);

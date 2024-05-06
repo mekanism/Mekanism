@@ -13,14 +13,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockFusionLogicAdapter extends ItemBlockTooltip<BlockBasicMultiblock<TileEntityFusionReactorLogicAdapter>> {
 
     public ItemBlockFusionLogicAdapter(BlockBasicMultiblock<TileEntityFusionReactorLogicAdapter> block, Properties properties) {
-        super(block, true, properties);
+        super(block, true, properties.component(GeneratorsDataComponents.FUSION_LOGIC_TYPE, FusionReactorLogic.DISABLED));
     }
 
     @Override

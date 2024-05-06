@@ -46,7 +46,9 @@ import org.jetbrains.annotations.NotNull;
 public class ItemRobit extends ItemEnergized implements ICapabilityAware {
 
     public ItemRobit(Properties properties) {
-        super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE));
+        super(() -> EntityRobit.MAX_ENERGY.multiply(0.005), () -> EntityRobit.MAX_ENERGY, properties.rarity(Rarity.RARE)
+              .component(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE)
+        );
     }
 
     @Override

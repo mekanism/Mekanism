@@ -8,7 +8,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -43,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
-        super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
+        super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1).component(MekanismDataComponents.ELECTRIC_BOW_MODE, false));
     }
 
     @Override

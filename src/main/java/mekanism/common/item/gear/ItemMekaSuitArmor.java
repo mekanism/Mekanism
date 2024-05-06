@@ -121,7 +121,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private final double laserRefraction;
 
     public ItemMekaSuitArmor(ArmorItem.Type armorType, Properties properties) {
-        super(MekanismArmorMaterials.MEKASUIT, armorType, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
+        super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
+              properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
+        ));
         CachedIntValue armorConfig;
         switch (armorType) {
             case HELMET -> {

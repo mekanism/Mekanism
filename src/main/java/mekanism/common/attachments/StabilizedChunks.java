@@ -14,6 +14,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record StabilizedChunks(byte[] chunks) {
 
     private static final int ARRAY_SIZE = TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER;
+    public static final StabilizedChunks NONE = new StabilizedChunks(new byte[ARRAY_SIZE]);
 
     public static final Codec<StabilizedChunks> CODEC = Codec.BYTE.listOf(ARRAY_SIZE, ARRAY_SIZE).xmap(bytes -> {
         byte[] chunks = new byte[ARRAY_SIZE];

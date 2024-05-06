@@ -8,8 +8,10 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
+import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
@@ -17,14 +19,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> {
 
     public ItemBlockChemicalTank(BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>> block) {
-        super(block);
+        super(block, true, new Item.Properties().component(MekanismDataComponents.DUMP_MODE, GasMode.IDLE));
     }
 
     @Override

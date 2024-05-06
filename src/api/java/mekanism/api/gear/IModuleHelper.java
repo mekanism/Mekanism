@@ -53,6 +53,17 @@ public interface IModuleHelper {
     Item createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties);
 
     /**
+     * Helper method to add an empty component to represent an empty module container.
+     *
+     * @param properties Properties for the item.
+     *
+     * @return The properties with the component for no stored modules in place
+     *
+     * @since 10.6.0
+     */
+    Item.Properties applyModuleContainerProperties(Item.Properties properties);
+
+    /**
      * Helper to drop any modules stored in a custom module container. Call this from {@link Item#onDestroyed(ItemEntity, DamageSource)}.
      *
      * @param entity Entity that is being destroyed.

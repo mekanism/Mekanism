@@ -21,6 +21,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.StorageUtils;
@@ -79,7 +80,8 @@ import org.jetbrains.annotations.Nullable;
 public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implements IAttachmentBasedModeItem<Boolean> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block);
+        super(block, true, new Item.Properties().component(MekanismDataComponents.BUCKET_MODE, false)
+              .component(MekanismDataComponents.EDIT_MODE, ContainerEditMode.BOTH));
     }
 
     @Override

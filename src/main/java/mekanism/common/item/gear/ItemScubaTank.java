@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IAttachmentBasedModeItem<Boolean> {
 
     public ItemScubaTank(Properties properties) {
-        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.CHESTPLATE, properties);
+        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.CHESTPLATE, properties.component(MekanismDataComponents.SCUBA_TANK_MODE, false));
     }
 
     @Override

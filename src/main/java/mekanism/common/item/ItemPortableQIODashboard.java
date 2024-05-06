@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IColoredItem, ICapabilityAware {
 
     public ItemPortableQIODashboard(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.RARE));
+        super(properties.stacksTo(1).rarity(Rarity.RARE).component(MekanismDataComponents.INSERT_INTO_FREQUENCY, true));
     }
 
     @Override

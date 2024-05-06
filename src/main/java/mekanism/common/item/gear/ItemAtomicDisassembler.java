@@ -88,6 +88,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     //Allow harvesting everything, things that are unbreakable are caught elsewhere
     public static final Tool MINE_ANY_TOOL = new Tool(
           //TODO - 1.20.5: Can speed be empty like it is here?
+          // Maybe we want it to be denies drop and an empty tag?
           List.of(new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))),
           //TODO - 1.20.5: Figure out what these values are meant to be
           1, 0
@@ -104,7 +105,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     public ItemAtomicDisassembler(Properties properties) {
         super(MekanismConfig.gear.disassemblerChargeRate, MekanismConfig.gear.disassemblerMaxEnergy, properties.rarity(Rarity.RARE).setNoRepair()
-              .component(DataComponents.TOOL, MINE_ANY_TOOL));
+              .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
+              .component(DataComponents.TOOL, MINE_ANY_TOOL)
+        );
         this.attributeCache = new AttributeCache(this, MekanismConfig.gear.disassemblerMaxDamage, MekanismConfig.gear.disassemblerAttackSpeed);
     }
 

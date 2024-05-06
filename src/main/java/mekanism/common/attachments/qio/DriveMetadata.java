@@ -27,4 +27,8 @@ public record DriveMetadata(long count, int types) {
     public DriveMetadata(QIODriveData data) {
         this(data.getTotalCount(), data.getTotalTypes());
     }
+
+    public boolean isEmpty() {
+        return count == 0 && types == 0;
+    }
 }

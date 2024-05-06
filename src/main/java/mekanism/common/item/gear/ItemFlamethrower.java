@@ -33,7 +33,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -55,7 +54,9 @@ import org.jetbrains.annotations.NotNull;
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair());
+        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair()
+              .component(MekanismDataComponents.FLAMETHROWER_MODE, FlamethrowerMode.COMBAT)
+        );
     }
 
     @Override

@@ -121,6 +121,11 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
+    public Item.Properties applyModuleContainerProperties(Item.Properties properties) {
+        return properties.component(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY);
+    }
+
+    @Override
     public void dropModuleContainerContents(ItemEntity entity, DamageSource source) {
         InventoryUtils.dropItemContents(entity, source);
     }
@@ -157,14 +162,7 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     @Nullable
     public ModuleContainer getModuleContainer(ItemStack stack) {
-        if (isModuleContainer(stack)) {
-            if (stack.has(MekanismDataComponents.MODULE_CONTAINER)) {
-                return stack.get(MekanismDataComponents.MODULE_CONTAINER);
-            }
-            stack.set(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY);
-            return ModuleContainer.EMPTY;
-        }
-        return null;
+        return isModuleContainer(stack) ? stack.getOrDefault(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY) : null;
     }
 
     @Override

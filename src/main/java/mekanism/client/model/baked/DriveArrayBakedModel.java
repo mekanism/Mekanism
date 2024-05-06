@@ -123,26 +123,29 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
                     } else {
                         driveStack = ItemStack.EMPTY;
                     }
-                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem) || !driveStack.has(MekanismDataComponents.DRIVE_METADATA)) {
+                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem)) {
                         status = DriveStatus.NONE;
-                    } else if (hasFrequency) {
-                        allEmpty = false;
-                        //Note: Should never be able to get here if it isn't present
-                        DriveMetadata metadata = driveStack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
-                        long countCapacity = driveItem.getCountCapacity(driveStack);
-                        if (metadata.count() == countCapacity) {
-                            //If we are at max item capacity: Full
-                            status = DriveStatus.FULL;
-                        } else if (metadata.types() == driveItem.getTypeCapacity(driveStack) || metadata.count() >= countCapacity * 0.75) {
-                            //If we are at max type capacity OR we are at 75% or more capacity: Near full
-                            status = DriveStatus.NEAR_FULL;
-                        } else {
-                            //Otherwise: Ready
-                            status = DriveStatus.READY;
-                        }
                     } else {
-                        allEmpty = false;
-                        status = DriveStatus.OFFLINE;
+                        DriveMetadata metadata = driveStack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
+                        if (metadata.isEmpty()) {
+                            status = DriveStatus.NONE;
+                        } else if (hasFrequency) {
+                            allEmpty = false;
+                            long countCapacity = driveItem.getCountCapacity(driveStack);
+                            if (metadata.count() == countCapacity) {
+                                //If we are at max item capacity: Full
+                                status = DriveStatus.FULL;
+                            } else if (metadata.types() == driveItem.getTypeCapacity(driveStack) || metadata.count() >= countCapacity * 0.75) {
+                                //If we are at max type capacity OR we are at 75% or more capacity: Near full
+                                status = DriveStatus.NEAR_FULL;
+                            } else {
+                                //Otherwise: Ready
+                                status = DriveStatus.READY;
+                            }
+                        } else {
+                            allEmpty = false;
+                            status = DriveStatus.OFFLINE;
+                        }
                     }
                     driveStatus[i] = status.status();
                 }
