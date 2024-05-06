@@ -103,7 +103,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     protected ItemModelBuilder armorWithTrim(ArmorItem armorItem, ResourceLocation texture) {
         ItemModelBuilder builder = generated(armorItem, texture);
         for (TrimModelData trimModelData : ItemModelGenerators.GENERATED_TRIM_MODELS) {
-            String trimId = trimModelData.name();
+            String trimId = trimModelData.name(armorItem.getMaterial());
             ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
                   .texture("layer0", texture)
                   .texture("layer1", new ResourceLocation("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));

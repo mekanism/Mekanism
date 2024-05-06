@@ -14,6 +14,10 @@ public interface IMekanismConfig {
         return getConfigSpec().isLoaded();
     }
 
+    default boolean loadImmediately() {
+        return false;
+    }
+
     ModConfig.Type getConfigType();
 
     default void save() {

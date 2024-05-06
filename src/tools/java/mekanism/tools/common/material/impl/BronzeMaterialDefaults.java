@@ -11,7 +11,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
@@ -46,17 +45,6 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Block> getIncorrectBlocksForDrops() {
-        return null;
-    }
-
-    //TODO - 1.20.5: ??
-    //@Override
-    public int getLevel() {
-        return 2;
-    }
-
-    @Override
     public int getEnchantmentValue() {
         return 10;
     }
@@ -82,7 +70,8 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
             case BOOTS -> 2;
             case LEGGINGS -> 6;
             case CHESTPLATE -> 7;
-            case HELMET, BODY -> 3;
+            case HELMET -> 3;
+            default -> 0;
         };
     }
 
@@ -98,10 +87,10 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
         return "bronze";
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public TagKey<Block> getTag() {
-        return ToolsTags.Blocks.NEEDS_BRONZE_TOOL;
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return ToolsTags.Blocks.INCORRECT_FOR_BRONZE_TOOL;
     }
 
     @NotNull

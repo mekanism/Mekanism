@@ -2,16 +2,17 @@ package mekanism.tools.common.item;
 
 import java.util.function.Consumer;
 import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
-import mekanism.tools.common.material.MaterialCreator;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
 
-    public ItemRefinedGlowstoneArmor(MaterialCreator material, ArmorItem.Type armorType, Properties properties) {
+    public ItemRefinedGlowstoneArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
         super(material, armorType, properties);
     }
 

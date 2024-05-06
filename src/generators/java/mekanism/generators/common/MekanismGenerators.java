@@ -44,6 +44,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 @Mod(MekanismGenerators.MODID)
@@ -73,7 +74,8 @@ public class MekanismGenerators implements IModModule {
 
     public MekanismGenerators(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismGeneratorsConfig.registerConfigs(modContainer);
+        //Ensure that configs don't get added or early initialized in an async way
+        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismGeneratorsConfig.registerConfigs(modContainer)));
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);

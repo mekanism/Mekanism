@@ -3,25 +3,27 @@ package mekanism.tools.common.item;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
-import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.util.ToolsUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
+public class ItemMekanismShield extends ShieldItem {
 
-    private final BaseMekanismMaterial material;
+    private final Tier tier;
 
     public ItemMekanismShield(BaseMekanismMaterial material, Item.Properties properties) {
-        super(properties.durability(material.getShieldDurability()));
-        this.material = material;
+        super(properties.durability(material.getShieldDurability()).component(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY));
+        this.tier = material;
     }
 
     @Override
@@ -36,14 +38,8 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @NotNull
-    @Override
     public Ingredient getRepairMaterial() {
-        return material.getRepairIngredient();
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return material.getShieldDurability();
+        return tier.getRepairIngredient();
     }
 
     @Override
@@ -52,7 +48,8 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @Override
+    @Deprecated
     public int getEnchantmentValue() {
-        return material.getEnchantmentValue();
+        return tier.getEnchantmentValue();
     }
 }

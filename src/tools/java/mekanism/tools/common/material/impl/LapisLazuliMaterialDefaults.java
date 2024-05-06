@@ -11,7 +11,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
@@ -45,12 +44,6 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return 1;
     }
 
-    //TODO - 1.20.5: ??
-    //@Override
-    public int getLevel() {
-        return 1;
-    }
-
     @Override
     public int getEnchantmentValue() {
         return 32;
@@ -76,7 +69,8 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS, HELMET -> 1;
             case LEGGINGS -> 3;
-            case CHESTPLATE, BODY -> 4;
+            case CHESTPLATE -> 4;
+            default -> 0;
         };
     }
 
@@ -92,10 +86,10 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return "lapis_lazuli";
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public TagKey<Block> getTag() {
-        return ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL;
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return ToolsTags.Blocks.INCORRECT_FOR_LAPIS_LAZULI_TOOL;
     }
 
     @NotNull

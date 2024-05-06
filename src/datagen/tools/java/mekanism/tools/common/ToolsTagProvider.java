@@ -13,6 +13,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -40,17 +41,24 @@ public class ToolsTagProvider extends BaseTagProvider {
               ToolsItems.REFINED_GLOWSTONE_BOOTS,
               ToolsItems.REFINED_GLOWSTONE_SHIELD
         );
+        //Make refined glowstone armor make you immune to freezing because of the light it gives off
+        addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES,
+              ToolsItems.REFINED_GLOWSTONE_HELMET,
+              ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
+              ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
+              ToolsItems.REFINED_GLOWSTONE_BOOTS
+        );
         getBlockBuilder(ToolsTags.Blocks.MINEABLE_WITH_PAXEL).add(
               BlockTags.MINEABLE_WITH_AXE,
               BlockTags.MINEABLE_WITH_PICKAXE,
               BlockTags.MINEABLE_WITH_SHOVEL
         );
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_BRONZE_TOOL);
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL);
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_OSMIUM_TOOL);
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_GLOWSTONE_TOOL);
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL);
-        getBlockBuilder(ToolsTags.Blocks.NEEDS_STEEL_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_BRONZE_TOOL).add(BlockTags.INCORRECT_FOR_IRON_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_LAPIS_LAZULI_TOOL).add(BlockTags.INCORRECT_FOR_STONE_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_OSMIUM_TOOL).add(BlockTags.INCORRECT_FOR_IRON_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_REFINED_GLOWSTONE_TOOL).add(BlockTags.INCORRECT_FOR_DIAMOND_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_REFINED_OBSIDIAN_TOOL).add(BlockTags.INCORRECT_FOR_NETHERITE_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.INCORRECT_FOR_STEEL_TOOL).add(BlockTags.INCORRECT_FOR_DIAMOND_TOOL);
         createTag(getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES), item -> item instanceof ItemMekanismPickaxe || item instanceof ItemMekanismPaxel);
     }
 
@@ -67,18 +75,14 @@ public class ToolsTagProvider extends BaseTagProvider {
         addChestplates();
         addLeggings();
         addBoots();
-        addToTag(ItemTags.TRIMMABLE_ARMOR,
-              ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS,
-              ToolsItems.LAPIS_LAZULI_HELMET, ToolsItems.LAPIS_LAZULI_CHESTPLATE, ToolsItems.LAPIS_LAZULI_LEGGINGS, ToolsItems.LAPIS_LAZULI_BOOTS,
-              ToolsItems.OSMIUM_HELMET, ToolsItems.OSMIUM_CHESTPLATE, ToolsItems.OSMIUM_LEGGINGS, ToolsItems.OSMIUM_BOOTS,
-              ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS,
-              ToolsItems.REFINED_OBSIDIAN_HELMET, ToolsItems.REFINED_OBSIDIAN_CHESTPLATE, ToolsItems.REFINED_OBSIDIAN_LEGGINGS, ToolsItems.REFINED_OBSIDIAN_BOOTS,
-              ToolsItems.STEEL_HELMET, ToolsItems.STEEL_CHESTPLATE, ToolsItems.STEEL_LEGGINGS, ToolsItems.STEEL_BOOTS
-        );
     }
 
     private void addPaxels() {
         getItemBuilder(ItemTags.BREAKS_DECORATED_POTS).add(ToolsTags.Items.TOOLS_PAXELS);
+        getItemBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
+        getItemBuilder(ItemTags.MINING_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
+        getItemBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
+        getItemBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXELS);
         getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
         addToTag(ToolsTags.Items.TOOLS_PAXELS,
               //Vanilla Paxels
@@ -154,14 +158,16 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addShields() {
-        addToTag(Tags.Items.TOOLS_SHIELDS,
+        ItemLike[] shields = {
               ToolsItems.BRONZE_SHIELD,
               ToolsItems.LAPIS_LAZULI_SHIELD,
               ToolsItems.OSMIUM_SHIELD,
               ToolsItems.REFINED_GLOWSTONE_SHIELD,
               ToolsItems.REFINED_OBSIDIAN_SHIELD,
               ToolsItems.STEEL_SHIELD
-        );
+        };
+        addToTag(Tags.Items.TOOLS_SHIELDS, shields);
+        addToTag(ItemTags.DURABILITY_ENCHANTABLE, shields);
     }
 
     private void addHelmets() {

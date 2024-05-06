@@ -28,6 +28,7 @@ import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 
 public class EnumUtils {
 
@@ -190,4 +191,9 @@ public class EnumUtils {
      * Cached value of {@link DriveStatus#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final DriveStatus[] DRIVE_STATUSES = DriveStatus.values();
+
+    /**
+     * Cached value of {@link ArmorItem.Type#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final ArmorItem.Type[] ARMOR_TYPES = ArmorItem.Type.values();
 }

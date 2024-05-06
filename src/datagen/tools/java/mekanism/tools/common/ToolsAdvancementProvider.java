@@ -5,20 +5,20 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.tools.common.advancements.ToolsAdvancements;
-import mekanism.tools.common.item.ItemMekanismArmor;
-import mekanism.tools.common.item.ItemMekanismAxe;
-import mekanism.tools.common.item.ItemMekanismHoe;
 import mekanism.tools.common.item.ItemMekanismPaxel;
-import mekanism.tools.common.item.ItemMekanismPickaxe;
 import mekanism.tools.common.item.ItemMekanismShield;
-import mekanism.tools.common.item.ItemMekanismShovel;
-import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -37,12 +37,12 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_ARMOR)
               .display(ToolsItems.OSMIUM_CHESTPLATE, AdvancementType.TASK, false)
-              .orCriteria("armor", getItems(item -> item instanceof ItemMekanismArmor))
+              .orCriteria("armor", getItems(item -> item instanceof ArmorItem))
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_TOOLS)
               .display(ToolsItems.OSMIUM_PICKAXE, AdvancementType.TASK, false)
-              .orCriteria("tools", getItems(item -> item instanceof ItemMekanismAxe || item instanceof ItemMekanismHoe || item instanceof ItemMekanismPickaxe ||
-                                                    item instanceof ItemMekanismShovel || item instanceof ItemMekanismSword))
+              .orCriteria("tools", getItems(item -> item instanceof HoeItem || item instanceof PickaxeItem || item instanceof ShovelItem || item instanceof SwordItem ||
+                                                    (item instanceof AxeItem && !(item instanceof ItemMekanismPaxel))))
               .save(consumer);
         advancement(ToolsAdvancements.NOT_ENOUGH_SHIELDING)
               .display(ToolsItems.OSMIUM_SHIELD, AdvancementType.TASK, false)

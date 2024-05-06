@@ -160,9 +160,9 @@ public class MekAnnotationScanner {
                     //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
                     // directly from the default value
                     try {
-                        return Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.getValue());
+                        return Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.value());
                     } catch (IllegalArgumentException e) {
-                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.getValue());
+                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.value());
                     }
                 } else {
                     Mekanism.logger.warn("Unknown property value for enum should have been an enum holder. Defaulting.");
@@ -197,12 +197,12 @@ public class MekAnnotationScanner {
                     //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
                     // directly from the default value
                     try {
-                        T returnValue = Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.getValue());
+                        T returnValue = Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.value());
                         if (validator.test(returnValue)) {
                             return returnValue;
                         }
                     } catch (IllegalArgumentException e) {
-                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.getValue());
+                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.value());
                     }
                 } else {
                     Mekanism.logger.warn("Unknown property value for enum should have been an enum holder. Defaulting.");

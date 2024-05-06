@@ -167,7 +167,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         addTag(MekanismTags.Items.GEMS_FLUORITE, "Fluorite");
 
-        addTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, "Render's MekaSuit HUD");
+        addTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, "Renders MekaSuit HUD");
         addTag(MekanismTags.Items.STONE_CRAFTING_MATERIALS, "Stone Crafting Materials");
         addTag(MekanismTags.Items.MUFFLING_CENTER, "Muffling Upgrade Usable Ingots");
 

@@ -1,19 +1,24 @@
-// 1.20.6	2024-05-03T19:24:11.6914503	Tags: mekanismtools
+// 1.20.6	2024-05-06T11:53:30.9248339	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/c/tags/blocks/mineable/paxel.json
 a9787da0ef849477f89bcef6d04e6df7f8f297e4 data/c/tags/items/tools.json
 c16ef9d24f9f676bc1bd0e4b6061fb5ac7e2455f data/c/tags/items/tools/paxels.json
 6e3b9e4ae09c24327f7264b4e22d031964f76244 data/c/tags/items/tools/shields.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_bronze_tool.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_lapis_lazuli_tool.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_osmium_tool.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_glowstone_tool.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_obsidian_tool.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_steel_tool.json
+950a086f855d118e00d3fc9697663c7721c42db1 data/mekanismtools/tags/blocks/incorrect_for_bronze_tool.json
+b239e7b03736ed687b12fa515c9a1139f07cc1a8 data/mekanismtools/tags/blocks/incorrect_for_lapis_lazuli_tool.json
+950a086f855d118e00d3fc9697663c7721c42db1 data/mekanismtools/tags/blocks/incorrect_for_osmium_tool.json
+f57a1c0d935679dbbcab3f2e8a06cae2238a6735 data/mekanismtools/tags/blocks/incorrect_for_refined_glowstone_tool.json
+edb717ba8ce70db0f1c3d09fbaab29aed6d4e5ff data/mekanismtools/tags/blocks/incorrect_for_refined_obsidian_tool.json
+f57a1c0d935679dbbcab3f2e8a06cae2238a6735 data/mekanismtools/tags/blocks/incorrect_for_steel_tool.json
 4027877538c5084db414743e0f49becd5c1c3a2b data/minecraft/tags/items/axes.json
 a9787da0ef849477f89bcef6d04e6df7f8f297e4 data/minecraft/tags/items/breaks_decorated_pots.json
 cf56f9aea1d1e35302b87399545199f9945e4509 data/minecraft/tags/items/chest_armor.json
 e803e7c6cf8511602cd6292cf9a1d6c3bf0fa63c data/minecraft/tags/items/cluster_max_harvestables.json
+9184155ea10120f5ac538436b831bd210b774bb2 data/minecraft/tags/items/enchantable/durability.json
+a9787da0ef849477f89bcef6d04e6df7f8f297e4 data/minecraft/tags/items/enchantable/mining.json
+a9787da0ef849477f89bcef6d04e6df7f8f297e4 data/minecraft/tags/items/enchantable/mining_loot.json
+a9787da0ef849477f89bcef6d04e6df7f8f297e4 data/minecraft/tags/items/enchantable/sharp_weapon.json
 61aac4830507ca1aeaeffcbd3b2c6ffd2eb5b58c data/minecraft/tags/items/foot_armor.json
+4b2c0ee85fec7ddd4d5fd69eb7b305bd1d38c389 data/minecraft/tags/items/freeze_immune_wearables.json
 1a7d9b6b6074ff3c9b5bcf285768e9fdeb843a27 data/minecraft/tags/items/head_armor.json
 e01d70e305d942a3815bfa2630c32f18c7b58537 data/minecraft/tags/items/hoes.json
 33c4fcf2117cb7b8b7b18f179bb867c552c06a21 data/minecraft/tags/items/leg_armor.json
@@ -21,4 +26,3 @@ e01d70e305d942a3815bfa2630c32f18c7b58537 data/minecraft/tags/items/hoes.json
 963dabde7436e2cfac6afb1312f24e0eea0b43d4 data/minecraft/tags/items/piglin_loved.json
 bef824ca84f695663461f1a65d4b105b1b7fc41f data/minecraft/tags/items/shovels.json
 17a4d9ee96b1da5b6913541a1e593e2444fb4882 data/minecraft/tags/items/swords.json
-24b012fc7c9892521a590536279bdb6bad72db6e data/minecraft/tags/items/trimmable_armor.json

@@ -12,7 +12,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class MaterialCreator implements BaseMekanismMaterial {
@@ -20,35 +19,35 @@ public class MaterialCreator implements BaseMekanismMaterial {
     private final BaseMekanismMaterial fallBack;
 
     private final CachedIntValue shieldDurability;
-    public final CachedFloatValue swordDamage;
-    public final CachedFloatValue swordAtkSpeed;
-    public final CachedFloatValue shovelDamage;
-    public final CachedFloatValue shovelAtkSpeed;
-    public final CachedFloatValue axeDamage;
-    public final CachedFloatValue axeAtkSpeed;
-    public final CachedFloatValue pickaxeDamage;
-    public final CachedFloatValue pickaxeAtkSpeed;
-    public final CachedFloatValue hoeDamage;
-    public final CachedFloatValue hoeAtkSpeed;
-    public final CachedFloatValue paxelDamage;
-    public final CachedFloatValue paxelAtkSpeed;
+    private final CachedFloatValue swordDamage;
+    private final CachedFloatValue swordAtkSpeed;
+    private final CachedFloatValue shovelDamage;
+    private final CachedFloatValue shovelAtkSpeed;
+    private final CachedFloatValue axeDamage;
+    private final CachedFloatValue axeAtkSpeed;
+    private final CachedFloatValue pickaxeDamage;
+    private final CachedFloatValue pickaxeAtkSpeed;
+    private final CachedFloatValue hoeDamage;
+    private final CachedFloatValue hoeAtkSpeed;
+    private final CachedFloatValue paxelDamage;
+    private final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelMaxUses;
     private final CachedIntValue toolMaxUses;
     private final CachedFloatValue efficiency;
-    public final CachedFloatValue attackDamage;
+    private final CachedFloatValue attackDamage;
     private final CachedIntValue enchantability;
-    public final CachedFloatValue toughness;
-    public final CachedFloatValue knockbackResistance;
+    private final CachedFloatValue toughness;
+    private final CachedFloatValue knockbackResistance;
     private final CachedIntValue bootDurability;
     private final CachedIntValue leggingDurability;
     private final CachedIntValue chestplateDurability;
     private final CachedIntValue helmetDurability;
-    public final CachedIntValue bootArmor;
-    public final CachedIntValue leggingArmor;
-    public final CachedIntValue chestplateArmor;
-    public final CachedIntValue helmetArmor;
+    private final CachedIntValue bootArmor;
+    private final CachedIntValue leggingArmor;
+    private final CachedIntValue chestplateArmor;
+    private final CachedIntValue helmetArmor;
 
     public MaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
@@ -200,7 +199,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
 
     @Override
     public float getPaxelEfficiency() {
-        return paxelEfficiency.get();
+        return paxelEfficiency.getOrDefault();
     }
 
     @Override
@@ -228,10 +227,9 @@ public class MaterialCreator implements BaseMekanismMaterial {
         return attackDamage.getOrDefault();
     }
 
-    @Nullable
     @Override
-    public TagKey<Block> getTag() {
-        return fallBack.getTag();
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return fallBack.getIncorrectBlocksForDrops();
     }
 
     @Override
@@ -249,14 +247,15 @@ public class MaterialCreator implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> bootArmor.getOrDefault();
             case LEGGINGS -> leggingArmor.getOrDefault();
-            case CHESTPLATE, BODY -> chestplateArmor.getOrDefault();
+            case CHESTPLATE -> chestplateArmor.getOrDefault();
             case HELMET -> helmetArmor.getOrDefault();
+            default -> 0;
         };
     }
 
     @Override
     public int getEnchantmentValue() {
-        return enchantability.get();
+        return enchantability.getOrDefault();
     }
 
     @Override
@@ -291,7 +290,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
 
     @Override
     public int getPaxelEnchantability() {
-        return paxelEnchantability.get();
+        return paxelEnchantability.getOrDefault();
     }
 
     @Override

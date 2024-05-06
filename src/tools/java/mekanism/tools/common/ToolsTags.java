@@ -25,6 +25,13 @@ public class ToolsTags {
         public static final TagKey<Block> NEEDS_REFINED_OBSIDIAN_TOOL = tag("needs_refined_obsidian_tool");
         public static final TagKey<Block> NEEDS_STEEL_TOOL = tag("needs_steel_tool");
 
+        public static final TagKey<Block> INCORRECT_FOR_BRONZE_TOOL = tag("incorrect_for_bronze_tool");
+        public static final TagKey<Block> INCORRECT_FOR_LAPIS_LAZULI_TOOL = tag("incorrect_for_lapis_lazuli_tool");
+        public static final TagKey<Block> INCORRECT_FOR_OSMIUM_TOOL = tag("incorrect_for_osmium_tool");
+        public static final TagKey<Block> INCORRECT_FOR_REFINED_GLOWSTONE_TOOL = tag("incorrect_for_refined_glowstone_tool");
+        public static final TagKey<Block> INCORRECT_FOR_REFINED_OBSIDIAN_TOOL = tag("incorrect_for_refined_obsidian_tool");
+        public static final TagKey<Block> INCORRECT_FOR_STEEL_TOOL = tag("incorrect_for_steel_tool");
+
         private static TagKey<Block> commonTag(String name) {
             return BlockTags.create(new ResourceLocation("c", name));
         }

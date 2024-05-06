@@ -29,6 +29,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -53,7 +54,8 @@ public class MekanismAdditions implements IModModule {
 
     public MekanismAdditions(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismAdditionsConfig.registerConfigs(modContainer);
+        //Ensure that configs don't get added or early initialized in an async way
+        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismAdditionsConfig.registerConfigs(modContainer)));
         NeoForge.EVENT_BUS.addListener(this::serverStarting);
         NeoForge.EVENT_BUS.addListener(this::serverStopping);
 

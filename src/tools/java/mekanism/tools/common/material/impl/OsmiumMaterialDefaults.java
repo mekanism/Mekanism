@@ -13,7 +13,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
@@ -47,12 +46,6 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         return 4;
     }
 
-    //TODO - 1.20.5: ??
-    //@Override
-    public int getLevel() {
-        return 2;
-    }
-
     @Override
     public int getEnchantmentValue() {
         return 14;
@@ -78,8 +71,9 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 3;
             case LEGGINGS -> 6;
-            case CHESTPLATE, BODY -> 8;
+            case CHESTPLATE -> 8;
             case HELMET -> 4;
+            default -> 0;
         };
     }
 
@@ -95,10 +89,10 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
         return "osmium";
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public TagKey<Block> getTag() {
-        return ToolsTags.Blocks.NEEDS_OSMIUM_TOOL;
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return ToolsTags.Blocks.INCORRECT_FOR_OSMIUM_TOOL;
     }
 
     @NotNull

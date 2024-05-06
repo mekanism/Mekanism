@@ -11,7 +11,6 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
 
@@ -45,12 +44,6 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         return 8;
     }
 
-    //TODO - 1.20.5: ??
-    //@Override
-    public int getLevel() {
-        return 4;
-    }
-
     @Override
     public int getEnchantmentValue() {
         return 18;
@@ -81,8 +74,9 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         return switch (armorType) {
             case BOOTS -> 5;
             case LEGGINGS -> 8;
-            case CHESTPLATE, BODY -> 12;
+            case CHESTPLATE -> 12;
             case HELMET -> 6;
+            default -> 0;
         };
     }
 
@@ -98,10 +92,10 @@ public class RefinedObsidianMaterialDefaults implements BaseMekanismMaterial {
         return "refined_obsidian";
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public TagKey<Block> getTag() {
-        return ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL;
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return ToolsTags.Blocks.INCORRECT_FOR_REFINED_OBSIDIAN_TOOL;
     }
 
     @NotNull
