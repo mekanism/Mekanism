@@ -1,23 +1,42 @@
 package mekanism.common.content.teleporter;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.tile.interfaces.ITileWrapper;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class TeleporterFrequency extends Frequency implements IColorableFrequency {
+
+    public static final Codec<TeleporterFrequency> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
+          .and(EnumColor.CODEC.fieldOf(NBTConstants.COLOR).forGetter(TeleporterFrequency::getColor))
+          .apply(instance, (name, owner, securityMode, color) -> {
+              TeleporterFrequency frequency = new TeleporterFrequency(name, owner.orElse(null), securityMode);
+              frequency.color = color;
+              return frequency;
+          }));
+    public static final StreamCodec<ByteBuf, TeleporterFrequency> STREAM_CODEC = StreamCodec.composite(
+          baseStreamCodec(TeleporterFrequency::new), Function.identity(),
+          EnumColor.STREAM_CODEC, TeleporterFrequency::getColor,
+          (frequency, color) -> {
+              frequency.color = color;
+              return frequency;
+          }
+    );
+
 
     private final Set<GlobalPos> activeCoords = new ObjectOpenHashSet<>();
     private EnumColor color = EnumColor.PURPLE;
@@ -25,12 +44,12 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     /**
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
-    public TeleporterFrequency(String n, @Nullable UUID uuid) {
-        super(FrequencyType.TELEPORTER, n, uuid);
+    public TeleporterFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
+        super(FrequencyType.TELEPORTER, n, uuid, securityMode);
     }
 
-    public TeleporterFrequency() {
-        super(FrequencyType.TELEPORTER);
+    private TeleporterFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
+        super(FrequencyType.TELEPORTER, name, owner, ownerName, securityMode);
     }
 
     public Set<GlobalPos> getActiveCoords() {
@@ -99,29 +118,5 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
             }
         }
         return closest;
-    }
-
-    @Override
-    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
-    }
-
-    @Override
-    protected void read(RegistryFriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        this.color = dataStream.readEnum(EnumColor.class);
-    }
-
-    @Override
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
-    }
-
-    @Override
-    public void write(RegistryFriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeEnum(color);
     }
 }

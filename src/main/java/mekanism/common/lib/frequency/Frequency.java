@@ -1,21 +1,44 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.datafixers.Products.P3;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
+import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
+import io.netty.buffer.ByteBuf;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.IFrequency;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Frequency implements IFrequency {
+
+    protected static <FREQ extends Frequency> P3<Mu<FREQ>, String, Optional<UUID>, SecurityMode> baseCodec(Instance<FREQ> instance) {
+        return instance.group(
+              ExtraCodecs.NON_EMPTY_STRING.fieldOf(NBTConstants.NAME).forGetter(Frequency::getName),
+              UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+              SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(Frequency::getSecurity)
+        );
+    }
+
+    protected static <BUF extends ByteBuf, FREQ extends Frequency> StreamCodec<BUF, FREQ> baseStreamCodec(FrequencyConstructor<FREQ> constructor) {
+        return StreamCodec.composite(
+              ByteBufCodecs.STRING_UTF8, Frequency::getName,
+              ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), freq -> Optional.ofNullable(freq.getOwner()),
+              ByteBufCodecs.stringUtf8(PacketUtils.LAST_USERNAME_LENGTH), Frequency::getOwnerName,
+              SecurityMode.STREAM_CODEC, Frequency::getSecurity,
+              (name, owner, ownerName, security) -> constructor.create(name, owner.orElse(null), ownerName, security)
+        );
+    }
 
     protected boolean dirty;
     private boolean removed;
@@ -26,21 +49,26 @@ public abstract class Frequency implements IFrequency {
     private String ownerName;
 
     private boolean valid = true;
-    private SecurityMode securityMode = SecurityMode.PUBLIC;
+    private SecurityMode securityMode;
 
     private final FrequencyType<?> frequencyType;
 
     /**
-     * @param uuid Should only be null if we have incomplete data that we are loading
+     * @param owner Should only be null if we have incomplete data that we are loading
      */
-    public Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID uuid) {
-        this(frequencyType);
+    protected Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID owner, SecurityMode securityMode) {
+        this.frequencyType = frequencyType;
         this.name = name;
-        setOwnerUUID(uuid);
+        this.securityMode = securityMode;
+        setOwnerUUID(owner);
     }
 
-    public Frequency(FrequencyType<?> frequencyType) {
+    protected Frequency(FrequencyType<?> frequencyType, String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
         this.frequencyType = frequencyType;
+        this.name = name;
+        this.ownerUUID = owner;
+        this.ownerName = ownerName;
+        this.securityMode = securityMode;
     }
 
     /**
@@ -121,42 +149,10 @@ public abstract class Frequency implements IFrequency {
         return ownerName;
     }
 
-    public void writeComponentData(CompoundTag nbtTags) {
-        nbtTags.putString(NBTConstants.NAME, name);
-        if (ownerUUID != null) {
-            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
-        }
-        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, securityMode);
-    }
-
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        writeComponentData(nbtTags);
-    }
-
-    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        name = nbtTags.getString(NBTConstants.NAME);
-        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
-    }
-
     private void setOwnerUUID(@Nullable UUID uuid) {
         ownerUUID = uuid;
         //Look up the username of the owner so that we can sync it (and more importantly have it set in single player when network connections don't serialize and deserialize)
         ownerName = MekanismUtils.getLastKnownUsername(ownerUUID);
-    }
-
-    public void write(RegistryFriendlyByteBuf buffer) {
-        buffer.writeUtf(name);
-        buffer.writeNullable(ownerUUID, (buf, uuid) -> buf.writeUUID(uuid));
-        buffer.writeUtf(ownerName, PacketUtils.LAST_USERNAME_LENGTH);
-        buffer.writeEnum(securityMode);
-    }
-
-    protected void read(RegistryFriendlyByteBuf dataStream) {
-        name = dataStream.readUtf();
-        ownerUUID = dataStream.readNullable(buf -> buf.readUUID());
-        ownerName = dataStream.readUtf(PacketUtils.LAST_USERNAME_LENGTH);
-        securityMode = dataStream.readEnum(SecurityMode.class);
     }
 
     /**
@@ -195,5 +191,11 @@ public abstract class Frequency implements IFrequency {
     }
 
     public record FrequencyIdentity(Object key, SecurityMode securityMode, @Nullable UUID ownerUUID) {
+    }
+
+    @FunctionalInterface
+    protected interface FrequencyConstructor<FREQ extends Frequency> {
+
+        FREQ create(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode);
     }
 }

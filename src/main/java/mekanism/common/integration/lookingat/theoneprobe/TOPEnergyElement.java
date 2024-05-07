@@ -14,15 +14,15 @@ public class TOPEnergyElement extends EnergyElement implements IElement {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
-        STREAM_CODEC.encode(buf, this);
+    public void toBytes(RegistryFriendlyByteBuf buffer) {
+        STREAM_CODEC.encode(buffer, this);
     }
 
     public static class Factory implements IElementFactory {
 
         @Override
-        public TOPEnergyElement createElement(RegistryFriendlyByteBuf buf) {
-            return new TOPEnergyElement(STREAM_CODEC.decode(buf));
+        public TOPEnergyElement createElement(RegistryFriendlyByteBuf buffer) {
+            return new TOPEnergyElement(STREAM_CODEC.decode(buffer));
         }
 
         @Override

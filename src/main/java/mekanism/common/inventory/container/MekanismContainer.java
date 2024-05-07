@@ -645,8 +645,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             case SyncableByteArray syncable -> syncable.set(value);
             case SyncableFrequency<?> syncable -> syncable.set(getLevel().registryAccess(), value);
             case SyncableList<?> syncable -> syncable.set(getLevel().registryAccess(), value);
-            case SyncableCollection<?> syncable -> syncable.set(getLevel().registryAccess(), value);
-            default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data.getClass().getName());
+            case SyncableCollection<?, ?> syncable -> syncable.set(getLevel().registryAccess(), value);
+            case null, default -> Mekanism.logger.error("Unknown byte value type: {}, please report", data == null ? null : data.getClass().getName());
         }
     }
 

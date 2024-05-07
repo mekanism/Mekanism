@@ -47,11 +47,11 @@ public class MekanismItemContainerType<ITEM extends Item, CONTAINER extends Abst
     }
 
     @NotNull
-    private static <ITEM extends Item> ItemStack getStackFromBuffer(RegistryFriendlyByteBuf buf, Class<ITEM> type) {
-        if (buf == null) {
+    private static <ITEM extends Item> ItemStack getStackFromBuffer(RegistryFriendlyByteBuf buffer, Class<ITEM> type) {
+        if (buffer == null) {
             throw new IllegalArgumentException("Null packet buffer");
         }
-        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
         if (type.isInstance(stack.getItem())) {
             return stack;
         }

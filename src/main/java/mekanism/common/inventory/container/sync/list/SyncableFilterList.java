@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling filter lists
  */
-public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableCollection<FILTER> {
+public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableCollection<FILTER, Collection<FILTER>> {
 
     public static <FILTER extends IFilter<?>> SyncableFilterList<FILTER> create(Supplier<@NotNull Collection<FILTER>> getter, Consumer<@NotNull Collection<FILTER>> setter) {
         return new SyncableFilterList<>(getter, setter);

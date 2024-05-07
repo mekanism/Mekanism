@@ -306,27 +306,27 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf data) {
-        data.writeEnum(color);
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeEnum(color);
         if (latched != null) {
-            data.writeByte((byte) 1);
-            data.writeBlockPos(latched);
+            buffer.writeByte((byte) 1);
+            buffer.writeBlockPos(latched);
         } else if (latchedEntity != null) {
-            data.writeByte((byte) 2);
-            data.writeVarInt(latchedEntity.getId());
+            buffer.writeByte((byte) 2);
+            buffer.writeVarInt(latchedEntity.getId());
         } else {
-            data.writeByte((byte) 0);
+            buffer.writeByte((byte) 0);
         }
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf data) {
-        color = data.readEnum(EnumColor.class);
-        byte type = data.readByte();
+    public void readSpawnData(RegistryFriendlyByteBuf buffer) {
+        color = buffer.readEnum(EnumColor.class);
+        byte type = buffer.readByte();
         if (type == 1) {
-            latched = data.readBlockPos();
+            latched = buffer.readBlockPos();
         } else if (type == 2) {
-            latchedEntity = (LivingEntity) level().getEntity(data.readVarInt());
+            latchedEntity = (LivingEntity) level().getEntity(buffer.readVarInt());
         } else {
             latched = null;
         }

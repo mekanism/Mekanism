@@ -45,6 +45,6 @@ public class SyncableFrequencyList<FREQUENCY extends Frequency> extends Syncable
 
     @Override
     protected void serializeListElement(RegistryFriendlyByteBuf buffer, FREQUENCY frequency) {
-        frequency.write(buffer);
+        type.streamCodec().encode(buffer, frequency);
     }
 }

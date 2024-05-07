@@ -73,8 +73,8 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical<?>> BOXED_STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public Chemical<?> decode(RegistryFriendlyByteBuf buf) {
-            Chemical<?> chemical = BOXED_OPTIONAL_STREAM_CODEC.decode(buf);
+        public Chemical<?> decode(RegistryFriendlyByteBuf buffer) {
+            Chemical<?> chemical = BOXED_OPTIONAL_STREAM_CODEC.decode(buffer);
             if (chemical.isEmptyType()) {
                 throw new DecoderException("Empty Chemicals are not allowed");
             }
@@ -82,11 +82,11 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         }
 
         @Override
-        public void encode(RegistryFriendlyByteBuf buf, Chemical<?> chemical) {
+        public void encode(RegistryFriendlyByteBuf buffer, Chemical<?> chemical) {
             if (chemical.isEmptyType()) {
                 throw new EncoderException("Empty Chemicals are not allowed");
             }
-            BOXED_OPTIONAL_STREAM_CODEC.encode(buf, chemical);
+            BOXED_OPTIONAL_STREAM_CODEC.encode(buffer, chemical);
         }
     };
 

@@ -6,7 +6,6 @@ import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -273,12 +272,12 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public void writeSpawnData(RegistryFriendlyByteBuf dataStream) {
-        dataStream.writeEnum(getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
+    public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
+        buffer.writeEnum(getData(MekanismAttachmentTypes.FLAMETHROWER_MODE));
     }
 
     @Override
-    public void readSpawnData(RegistryFriendlyByteBuf dataStream) {
-        setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, dataStream.readEnum(FlamethrowerMode.class));
+    public void readSpawnData(RegistryFriendlyByteBuf buffer) {
+        setData(MekanismAttachmentTypes.FLAMETHROWER_MODE, buffer.readEnum(FlamethrowerMode.class));
     }
 }

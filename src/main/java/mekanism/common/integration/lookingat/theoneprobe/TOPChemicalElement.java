@@ -14,15 +14,15 @@ public class TOPChemicalElement extends ChemicalElement implements IElement {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
-        STREAM_CODEC.encode(buf, this);
+    public void toBytes(RegistryFriendlyByteBuf buffer) {
+        STREAM_CODEC.encode(buffer, this);
     }
 
     public static class ChemicalElementFactory implements IElementFactory {
 
         @Override
-        public TOPChemicalElement createElement(RegistryFriendlyByteBuf buf) {
-            return new TOPChemicalElement(STREAM_CODEC.decode(buf));
+        public TOPChemicalElement createElement(RegistryFriendlyByteBuf buffer) {
+            return new TOPChemicalElement(STREAM_CODEC.decode(buffer));
         }
 
         @Override

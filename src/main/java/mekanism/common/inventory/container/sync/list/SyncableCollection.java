@@ -14,13 +14,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling Collections
  */
-public abstract class SyncableCollection<TYPE> implements ISyncableData {
+public abstract class SyncableCollection<TYPE, COLLECTION extends Collection<TYPE>> implements ISyncableData {
 
     private final Supplier<? extends @NotNull Collection<TYPE>> getter;
-    private final Consumer<@NotNull Collection<TYPE>> setter;
+    private final Consumer<@NotNull COLLECTION> setter;
     private int lastKnownHashCode;
 
-    protected SyncableCollection(Supplier<? extends @NotNull Collection<TYPE>> getter, Consumer<@NotNull Collection<TYPE>> setter) {
+    protected SyncableCollection(Supplier<? extends @NotNull Collection<TYPE>> getter, Consumer<@NotNull COLLECTION> setter) {
         this.getter = getter;
         this.setter = setter;
     }
@@ -43,7 +43,7 @@ public abstract class SyncableCollection<TYPE> implements ISyncableData {
         setter.accept(PacketUtils.read(registryAccess, rawData, this::deserializeList));
     }
 
-    protected abstract Collection<TYPE> deserializeList(RegistryFriendlyByteBuf buffer);
+    protected abstract COLLECTION deserializeList(RegistryFriendlyByteBuf buffer);
 
     protected abstract void serializeListElement(RegistryFriendlyByteBuf buffer, TYPE element);
 

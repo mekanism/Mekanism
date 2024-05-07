@@ -102,20 +102,20 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         StreamCodec<RegistryFriendlyByteBuf, CHEMICAL> chemicalStreamCodec = ByteBufCodecs.registry(registry);
         return new StreamCodec<>() {
             @Override
-            public STACK decode(RegistryFriendlyByteBuf buf) {
-                long amount = buf.readVarLong();
+            public STACK decode(RegistryFriendlyByteBuf buffer) {
+                long amount = buffer.readVarLong();
                 if (amount <= 0) {
                     return empty;
                 }
-                CHEMICAL chemical = chemicalStreamCodec.decode(buf);
+                CHEMICAL chemical = chemicalStreamCodec.decode(buffer);
                 return constructor.apply(chemical, amount);
             }
 
             @Override
-            public void encode(RegistryFriendlyByteBuf buf, STACK stack) {
-                buf.writeVarLong(stack.getAmount());
+            public void encode(RegistryFriendlyByteBuf buffer, STACK stack) {
+                buffer.writeVarLong(stack.getAmount());
                 if (!stack.isEmpty()) {
-                    chemicalStreamCodec.encode(buf, stack.getChemical());
+                    chemicalStreamCodec.encode(buffer, stack.getChemical());
                 }
             }
         };
@@ -130,8 +130,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
           StreamCodec<RegistryFriendlyByteBuf, STACK> optionalStreamCodec) {
         return new StreamCodec<>() {
             @Override
-            public STACK decode(RegistryFriendlyByteBuf buf) {
-                STACK stack = optionalStreamCodec.decode(buf);
+            public STACK decode(RegistryFriendlyByteBuf buffer) {
+                STACK stack = optionalStreamCodec.decode(buffer);
                 if (stack.isEmpty()) {
                     throw new DecoderException("Empty ChemicalStack not allowed");
                 }
@@ -139,11 +139,11 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
             }
 
             @Override
-            public void encode(RegistryFriendlyByteBuf buf, STACK stack) {
+            public void encode(RegistryFriendlyByteBuf buffer, STACK stack) {
                 if (stack.isEmpty()) {
                     throw new EncoderException("Empty ChemicalStack not allowed");
                 }
-                optionalStreamCodec.encode(buf, stack);
+                optionalStreamCodec.encode(buffer, stack);
             }
         };
     }

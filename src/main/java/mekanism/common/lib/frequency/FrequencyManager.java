@@ -1,5 +1,6 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,9 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,8 +157,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
         FREQ freq = frequencies.get(identity.key());
         if (freq == null) {
-            freq = frequencyType.create(identity.key(), ownerUUID);
-            freq.setSecurityMode(identity.securityMode());
+            freq = frequencyType.create(identity.key(), ownerUUID, identity.securityMode());
             frequencies.put(identity.key(), freq);
             markDirty();
         }
@@ -225,11 +227,11 @@ public class FrequencyManager<FREQ extends Frequency> {
             if (ownerUUID != null) {
                 nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }
+            Codec<FREQ> codec = frequencyType.codec();
+            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             ListTag list = new ListTag();
             for (FREQ freq : frequencies.values()) {
-                CompoundTag compound = new CompoundTag();
-                freq.write(provider, compound);
-                list.add(compound);
+                list.add(codec.encodeStart(registryOps, freq).getOrThrow());
             }
             nbtTags.put(NBTConstants.FREQUENCY_LIST, list);
             return nbtTags;

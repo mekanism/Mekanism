@@ -1,13 +1,17 @@
 package mekanism.common.content.entangloporter;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -35,6 +39,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -47,10 +52,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.network.PacketUtils;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -60,10 +67,12 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -75,6 +84,55 @@ import org.jetbrains.annotations.Nullable;
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
+    public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          ExtraCodecs.NON_EMPTY_STRING.fieldOf(NBTConstants.NAME).forGetter(Frequency::getName),
+          UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+          SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
+          FloatingLong.CODEC.fieldOf(NBTConstants.ENERGY_STORED).forGetter(freq -> freq.storedEnergy.getEnergy()),
+          FluidStack.OPTIONAL_CODEC.fieldOf(NBTConstants.FLUID_STORED).forGetter(freq -> freq.storedFluid.getFluid()),
+          GasStack.OPTIONAL_CODEC.fieldOf(NBTConstants.GAS_STORED).forGetter(freq -> freq.storedGas.getStack()),
+          InfusionStack.OPTIONAL_CODEC.fieldOf(NBTConstants.INFUSE_TYPE_STORED).forGetter(freq -> freq.storedInfusion.getStack()),
+          PigmentStack.OPTIONAL_CODEC.fieldOf(NBTConstants.PIGMENT_STORED).forGetter(freq -> freq.storedPigment.getStack()),
+          SlurryStack.OPTIONAL_CODEC.fieldOf(NBTConstants.SLURRY_STORED).forGetter(freq -> freq.storedSlurry.getStack()),
+          ItemStack.OPTIONAL_CODEC.fieldOf(NBTConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
+          Codec.DOUBLE.fieldOf(NBTConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
+          Codec.DOUBLE.fieldOf(NBTConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
+    ).apply(instance, (name, owner, securityMode, energy, fluid, gas, infusion, pigment, slurry, item, heat, heatCapacity) -> {
+        InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
+        frequency.storedEnergy.setEnergy(energy);
+        frequency.storedFluid.setStackUnchecked(fluid);
+        frequency.storedGas.setStackUnchecked(gas);
+        frequency.storedInfusion.setStackUnchecked(infusion);
+        frequency.storedPigment.setStackUnchecked(pigment);
+        frequency.storedSlurry.setStackUnchecked(slurry);
+        frequency.storedItem.setStackUnchecked(item);
+        frequency.storedHeat.setHeat(heat);
+        frequency.storedHeat.setHeatCapacity(heatCapacity, false);
+        return frequency;
+    }));
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = PacketUtils.composite(
+          baseStreamCodec(InventoryFrequency::new), Function.identity(),
+          FloatingLong.STREAM_CODEC, freq -> freq.storedEnergy.getEnergy(),
+          FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
+          GasStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedGas.getStack(),
+          InfusionStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedInfusion.getStack(),
+          PigmentStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedPigment.getStack(),
+          SlurryStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedSlurry.getStack(),
+          ItemStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedItem.getStack(),
+          ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
+          (frequency, energy, fluid, gas, infusion, pigment, slurry, item, heat) -> {
+              frequency.storedEnergy.setEnergy(energy);
+              frequency.storedFluid.setStack(fluid);
+              frequency.storedGas.setStack(gas);
+              frequency.storedInfusion.setStack(infusion);
+              frequency.storedPigment.setStack(pigment);
+              frequency.storedSlurry.setStack(slurry);
+              frequency.storedItem.setStack(item);
+              frequency.storedHeat.setHeat(heat);
+              return frequency;
+          }
+    );
+
     private final Map<GlobalPos, TileEntityQuantumEntangloporter> activeQEs = new Object2ObjectOpenHashMap<>();
     private long lastEject = -1;
 
@@ -83,7 +141,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     private IInfusionTank storedInfusion;
     private IPigmentTank storedPigment;
     private ISlurryTank storedSlurry;
-    private IInventorySlot storedItem;
+    private BasicInventorySlot storedItem;
     public IEnergyContainer storedEnergy;
     private BasicHeatCapacitor storedHeat;
 
@@ -99,13 +157,13 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     /**
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
-    public InventoryFrequency(String n, @Nullable UUID uuid) {
-        super(FrequencyType.INVENTORY, n, uuid);
+    public InventoryFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
+        super(FrequencyType.INVENTORY, n, uuid, securityMode);
         presetVariables();
     }
 
-    public InventoryFrequency() {
-        super(FrequencyType.INVENTORY);
+    private InventoryFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
+        super(FrequencyType.INVENTORY, name, owner, ownerName, securityMode);
         presetVariables();
     }
 
@@ -119,59 +177,6 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
         heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
               1_000, null, this));
-    }
-
-    @Override
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
-        nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT(provider));
-        nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT(provider));
-        nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT(provider));
-        nbtTags.put(NBTConstants.INFUSE_TYPE_STORED, storedInfusion.serializeNBT(provider));
-        nbtTags.put(NBTConstants.PIGMENT_STORED, storedPigment.serializeNBT(provider));
-        nbtTags.put(NBTConstants.SLURRY_STORED, storedSlurry.serializeNBT(provider));
-        nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT(provider));
-        nbtTags.put(NBTConstants.HEAT_STORED, storedHeat.serializeNBT(provider));
-    }
-
-    @Override
-    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
-        storedEnergy.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.ENERGY_STORED));
-        storedFluid.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.FLUID_STORED));
-        storedGas.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.GAS_STORED));
-        storedInfusion.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.INFUSE_TYPE_STORED));
-        storedPigment.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.PIGMENT_STORED));
-        storedSlurry.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.SLURRY_STORED));
-        storedItem.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.ITEM));
-        storedHeat.deserializeNBT(provider, nbtTags.getCompound(NBTConstants.HEAT_STORED));
-    }
-
-    @Override
-    public void write(RegistryFriendlyByteBuf buffer) {
-        super.write(buffer);
-        FloatingLong.STREAM_CODEC.encode(buffer, storedEnergy.getEnergy());
-        FluidStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedFluid.getFluid());
-        GasStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedGas.getStack());
-        InfusionStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedInfusion.getStack());
-        PigmentStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedPigment.getStack());
-        SlurryStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedSlurry.getStack());
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, storedItem.getStack());
-        buffer.writeDouble(storedHeat.getHeat());
-    }
-
-    @Override
-    protected void read(RegistryFriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        presetVariables();
-        storedEnergy.setEnergy(FloatingLong.STREAM_CODEC.decode(dataStream));
-        storedFluid.setStack(FluidStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedGas.setStack(GasStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedInfusion.setStack(InfusionStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedPigment.setStack(PigmentStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedSlurry.setStack(SlurryStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedItem.setStack(ItemStack.OPTIONAL_STREAM_CODEC.decode(dataStream));
-        storedHeat.setHeat(dataStream.readDouble());
     }
 
     @NotNull

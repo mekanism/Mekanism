@@ -54,7 +54,7 @@ public class SyncableFrequency<FREQUENCY extends Frequency> implements ISyncable
     public ByteArrayPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
         // whenever we send this as a packet rather than potentially allowing the frequency to leak from one side to the other in single player
-        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeNullable(get(), (buf, val) -> val.write(buffer)), registryAccess);
+        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeNullable(get(), (buf, val) -> type.streamCodec().encode(buffer, val)), registryAccess);
         return new ByteArrayPropertyData(property, rawData);
     }
 }

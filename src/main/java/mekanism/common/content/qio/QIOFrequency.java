@@ -2,6 +2,9 @@ package mekanism.common.content.qio;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -18,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.SequencedMap;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
@@ -44,11 +48,9 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
@@ -61,6 +63,31 @@ import org.jetbrains.annotations.Nullable;
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
 
     private static final RandomSource rand = RandomSource.create();
+    public static final Codec<QIOFrequency> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
+          .and(EnumColor.CODEC.fieldOf(NBTConstants.COLOR).forGetter(QIOFrequency::getColor))
+          .apply(instance, (name, owner, securityMode, color) -> {
+              QIOFrequency frequency = new QIOFrequency(name, owner.orElse(null), securityMode);
+              frequency.color = color;
+              return frequency;
+          }));
+    public static final StreamCodec<ByteBuf, QIOFrequency> STREAM_CODEC = StreamCodec.composite(
+          baseStreamCodec(QIOFrequency::new), Function.identity(),
+          ByteBufCodecs.VAR_LONG, QIOFrequency::getTotalItemCount,
+          ByteBufCodecs.VAR_LONG, QIOFrequency::getTotalItemCountCapacity,
+          ByteBufCodecs.VAR_INT, freq -> freq.getTotalItemTypes(false),
+          ByteBufCodecs.VAR_INT, QIOFrequency::getTotalItemTypeCapacity,
+          EnumColor.STREAM_CODEC, QIOFrequency::getColor,
+          (frequency, totalCount, totalCountCapacity, totalTypes, totalTypeCapacity, color) -> {
+              frequency.totalCount = totalCount;
+              frequency.totalCountCapacity = totalCountCapacity;
+              //TODO - 1.20.4: SP: This isn't set in single player so I think we need to fall back to querying against the itemDataMap
+              // though now that we force handle the serialization/deserialization maybe this isn't actually necessary to adjust
+              frequency.clientTypes = totalTypes;
+              frequency.totalTypeCapacity = totalTypeCapacity;
+              frequency.color = color;
+              return frequency;
+          }
+    );
 
     private final SequencedMap<QIODriveKey, QIODriveData> driveMap = new LinkedHashMap<>();
     private final SequencedMap<HashedItem, QIOItemTypeData> itemDataMap = new LinkedHashMap<>();
@@ -96,12 +123,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     /**
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
-    public QIOFrequency(String n, @Nullable UUID uuid) {
-        super(FrequencyType.QIO, n, uuid);
+    public QIOFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
+        super(FrequencyType.QIO, n, uuid, securityMode);
     }
 
-    public QIOFrequency() {
-        super(FrequencyType.QIO);
+    private QIOFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
+        super(FrequencyType.QIO, name, owner, ownerName, securityMode);
     }
 
     /**
@@ -565,40 +592,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         code = 31 * code + totalTypeCapacity;
         code = 31 * code + color.ordinal();
         return code;
-    }
-
-    @Override
-    public void write(RegistryFriendlyByteBuf buf) {
-        super.write(buf);
-        buf.writeVarLong(totalCount);
-        buf.writeVarLong(totalCountCapacity);
-        buf.writeVarInt(itemDataMap.size());
-        buf.writeVarInt(totalTypeCapacity);
-        buf.writeEnum(color);
-    }
-
-    @Override
-    public void read(RegistryFriendlyByteBuf buf) {
-        super.read(buf);
-        totalCount = buf.readVarLong();
-        totalCountCapacity = buf.readVarLong();
-        //TODO - 1.20.4: SP: This isn't set in single player so I think we need to fall back to querying against the itemDataMap
-        // though now that we force handle the serialization/deserialization maybe this isn't actually necessary to adjust
-        clientTypes = buf.readVarInt();
-        totalTypeCapacity = buf.readVarInt();
-        this.color = buf.readEnum(EnumColor.class);
-    }
-
-    @Override
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
-    }
-
-    @Override
-    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
     }
 
     public void addDrive(QIODriveKey key) {

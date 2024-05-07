@@ -14,15 +14,15 @@ public class TOPFluidElement extends FluidElement implements IElement {
     }
 
     @Override
-    public void toBytes(RegistryFriendlyByteBuf buf) {
-        STREAM_CODEC.encode(buf, this);
+    public void toBytes(RegistryFriendlyByteBuf buffer) {
+        STREAM_CODEC.encode(buffer, this);
     }
 
     public static class Factory implements IElementFactory {
 
         @Override
-        public TOPFluidElement createElement(RegistryFriendlyByteBuf buf) {
-            return new TOPFluidElement(STREAM_CODEC.decode(buf));
+        public TOPFluidElement createElement(RegistryFriendlyByteBuf buffer) {
+            return new TOPFluidElement(STREAM_CODEC.decode(buffer));
         }
 
         @Override

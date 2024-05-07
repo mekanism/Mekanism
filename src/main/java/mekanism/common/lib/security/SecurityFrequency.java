@@ -1,6 +1,11 @@
 package mekanism.common.lib.security;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
@@ -9,18 +14,41 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 public class SecurityFrequency extends Frequency {
 
     public static final String SECURITY = "Security";
+
+    public static final Codec<SecurityFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+          SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(SecurityFrequency::getSecurity),
+          Codec.BOOL.fieldOf(NBTConstants.OVERRIDE).forGetter(SecurityFrequency::isOverridden),
+          UUIDUtil.CODEC.listOf().optionalFieldOf(NBTConstants.TRUSTED, Collections.emptyList()).forGetter(freq -> freq.trusted.elements())
+    ).apply(instance, (owner, securityMode, override, trustedCache) -> {
+        SecurityFrequency frequency = new SecurityFrequency(owner.orElse(null), securityMode);
+        frequency.override = override;
+        for (UUID trusted : trustedCache) {
+            frequency.addTrustedRaw(trusted, MekanismUtils.getLastKnownUsername(trusted));
+        }
+        return frequency;
+    }));
+    public static final StreamCodec<ByteBuf, SecurityFrequency> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), freq -> Optional.ofNullable(freq.getOwner()),
+          ByteBufCodecs.stringUtf8(PacketUtils.LAST_USERNAME_LENGTH), SecurityFrequency::getOwnerName,
+          SecurityMode.STREAM_CODEC, SecurityFrequency::getSecurity,
+          ByteBufCodecs.BOOL, SecurityFrequency::isOverridden,
+          ByteBufCodecs.stringUtf8(PacketUtils.LAST_USERNAME_LENGTH).<HashList<String>>apply(buf -> ByteBufCodecs.collection(HashList::new, buf)), freq -> freq.trustedCache,
+          (owner, ownerName, securityMode, override, trustedCache) -> {
+              SecurityFrequency frequency = new SecurityFrequency(owner.orElse(null), ownerName, securityMode);
+              frequency.override = override;
+              frequency.trustedCache = trustedCache;
+              return frequency;
+          }
+    );
 
     private boolean override = false;
 
@@ -31,57 +59,17 @@ public class SecurityFrequency extends Frequency {
     /**
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
-    public SecurityFrequency(@Nullable UUID uuid) {
-        super(FrequencyType.SECURITY, SECURITY, uuid);
+    public SecurityFrequency(@Nullable UUID uuid, SecurityMode securityMode) {
+        super(FrequencyType.SECURITY, SECURITY, uuid, securityMode);
     }
 
-    public SecurityFrequency() {
-        super(FrequencyType.SECURITY, SECURITY, null);
+    private SecurityFrequency(@Nullable UUID owner, String ownerName, SecurityMode securityMode) {
+        super(FrequencyType.SECURITY, SECURITY, owner, ownerName, securityMode);
     }
 
     @Override
     public UUID getKey() {
         return getOwner();
-    }
-
-    @Override
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
-        nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
-        if (!trusted.isEmpty()) {
-            ListTag trustedList = new ListTag();
-            for (UUID uuid : trusted) {
-                trustedList.add(NbtUtils.createUUID(uuid));
-            }
-            nbtTags.put(NBTConstants.TRUSTED, trustedList);
-        }
-    }
-
-    @Override
-    protected void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.OVERRIDE, value -> override = value);
-        if (nbtTags.contains(NBTConstants.TRUSTED, Tag.TAG_LIST)) {
-            ListTag trustedList = nbtTags.getList(NBTConstants.TRUSTED, Tag.TAG_INT_ARRAY);
-            for (Tag trusted : trustedList) {
-                UUID uuid = NbtUtils.loadUUID(trusted);
-                addTrustedRaw(uuid, MekanismUtils.getLastKnownUsername(uuid));
-            }
-        }
-    }
-
-    @Override
-    public void write(RegistryFriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeBoolean(override);
-        buffer.writeCollection(trustedCache, (buf, name) -> buf.writeUtf(name, PacketUtils.LAST_USERNAME_LENGTH));
-    }
-
-    @Override
-    protected void read(RegistryFriendlyByteBuf dataStream) {
-        super.read(dataStream);
-        override = dataStream.readBoolean();
-        trustedCache = dataStream.readCollection(HashList::new, buf -> buf.readUtf(PacketUtils.LAST_USERNAME_LENGTH));
     }
 
     @Override

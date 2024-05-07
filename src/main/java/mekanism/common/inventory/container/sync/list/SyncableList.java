@@ -5,69 +5,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.common.inventory.container.sync.ISyncableData;
-import mekanism.common.network.PacketUtils;
-import mekanism.common.network.to_client.container.property.ByteArrayPropertyData;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling lists
  */
-public abstract class SyncableList<TYPE> implements ISyncableData {
-
-    private final Supplier<? extends @NotNull Collection<TYPE>> getter;
-    private final Consumer<@NotNull List<TYPE>> setter;
-    private int lastKnownHashCode;
+public abstract class SyncableList<TYPE> extends SyncableCollection<TYPE, List<TYPE>> {
 
     protected SyncableList(Supplier<? extends @NotNull Collection<TYPE>> getter, Consumer<@NotNull List<TYPE>> setter) {
-        this.getter = getter;
-        this.setter = setter;
+        super(getter, setter);
     }
 
     @NotNull
+    @Override
     public List<TYPE> get() {
         Collection<TYPE> collection = getRaw();
         return collection instanceof List<TYPE> list ? list : new ArrayList<>(collection);
-    }
-
-    @NotNull
-    protected Collection<TYPE> getRaw() {
-        return getter.get();
-    }
-
-    protected int getValueHashCode() {
-        return getRaw().hashCode();
-    }
-
-    public void set(RegistryAccess registryAccess, byte[] rawData) {
-        setter.accept(PacketUtils.read(registryAccess, rawData, this::deserializeList));
-    }
-
-    protected abstract List<TYPE> deserializeList(RegistryFriendlyByteBuf buffer);
-
-    protected abstract void serializeListElement(RegistryFriendlyByteBuf buffer, TYPE element);
-
-    @Override
-    public ByteArrayPropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
-        //Note: We write it to a byte array so that we make sure to effectively copy it (force a serialization and deserialization)
-        // whenever we send this as a packet rather than potentially allowing the list to leak from one side to the other in single player
-        byte[] rawData = FriendlyByteBufUtil.writeCustomData(buffer -> buffer.writeCollection(getRaw(), (buf, element) -> serializeListElement(buffer, element)), registryAccess);
-        return new ByteArrayPropertyData(property, rawData);
-    }
-
-    @Override
-    public DirtyType isDirty() {
-        int valuesHashCode = getValueHashCode();
-        if (lastKnownHashCode == valuesHashCode) {
-            return DirtyType.CLEAN;
-        }
-        //TODO: Create a way to declare changes so we don't have to sync the entire list, when a single element changes
-        // Both for removal as well as addition. Note that GuiFrequencySelector makes some assumptions based on the fact
-        // that this is not currently possible so a new list will occur each time
-        lastKnownHashCode = valuesHashCode;
-        return DirtyType.DIRTY;
     }
 }

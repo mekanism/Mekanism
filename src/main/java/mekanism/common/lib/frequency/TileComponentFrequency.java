@@ -2,6 +2,7 @@ package mekanism.common.lib.frequency;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -293,7 +294,7 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
         if (hasCustomFrequencies()) {
-            CompoundTag serializedComponent = serialize();
+            CompoundTag serializedComponent = serialize(NbtOps.INSTANCE);
             if (serializedComponent.contains(FrequencyType.SECURITY.getName(), Tag.TAG_COMPOUND)) {
                 //Don't persist security frequency to items as that is instead stored from the security component to the SecurityObject
                 serializedComponent.remove(FrequencyType.SECURITY.getName());
@@ -342,26 +343,24 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public CompoundTag serialize(HolderLookup.Provider provider) {
-        return serialize();
+        return serialize(provider.createSerializationContext(NbtOps.INSTANCE));
     }
 
-    private CompoundTag serialize() {
+    private CompoundTag serialize(DynamicOps<Tag> ops) {
         CompoundTag frequencyNBT = new CompoundTag();
         if (securityFrequency != null) {
-            serializeFrequency(securityFrequency, frequencyNBT);
+            serializeFrequency(ops, FrequencyType.SECURITY, securityFrequency, frequencyNBT);
         }
-        for (FrequencyData frequencyData : nonSecurityFrequencies.values()) {
-            serializeFrequency(frequencyData, frequencyNBT);
+        for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            serializeFrequency(ops, entry.getKey(), entry.getValue(), frequencyNBT);
         }
         return frequencyNBT;
     }
 
-    private static void serializeFrequency(FrequencyData frequencyData, CompoundTag frequencyNBT) {
+    private static void serializeFrequency(DynamicOps<Tag> ops, FrequencyType<?> type, FrequencyData frequencyData, CompoundTag frequencyNBT) {
         Frequency frequency = frequencyData.selectedFrequency;
         if (frequency != null) {
-            //TODO: Can this be transitioned over to frequency.serializeIdentityWithOwner()
-            CompoundTag frequencyTag = new CompoundTag();
-            frequency.writeComponentData(frequencyTag);
+            CompoundTag frequencyTag = (CompoundTag) type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity()).getOrThrow();
             //Note: While we save the full frequency data, and do make some use of it in reading
             // in general this isn't needed and won't be used as the frequency will be grabbed
             // from the frequency manager
