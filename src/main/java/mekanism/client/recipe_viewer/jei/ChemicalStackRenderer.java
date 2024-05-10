@@ -13,6 +13,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
@@ -77,6 +78,11 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         }
         List<Component> tooltips = new ArrayList<>();
         tooltips.add(TextComponentUtil.build(chemical));
+        if (stack.getChemical() == MekanismGases.ETHENE.get()) {
+            //TODO - 1.22: Remove this
+            //TODO - 1.20.6: Test this when JEI updates
+            tooltips.add(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
+        }
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
             tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {

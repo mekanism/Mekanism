@@ -43,8 +43,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue heatGenerationFluidRate;
 
     public final CachedLongValue gbgTankCapacity;
-    public final CachedIntValue ethyleneBurnTicks;
-    public final CachedFloatingLongValue ethyleneDensityMultiplier;
+    public final CachedIntValue etheneBurnTicks;
+    public final CachedFloatingLongValue etheneDensityMultiplier;
 
     public final CachedFloatingLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
@@ -120,10 +120,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         builder.comment("Gas-Burning Generator Settings").push(GAS_CATEGORY);
         gbgTankCapacity = CachedLongValue.wrap(this, builder.comment("The capacity in mB of the gas tank in the Gas-Burning Generator.")
               .defineInRange("tankCapacity", 18L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        ethyleneBurnTicks = CachedIntValue.wrap(this, builder.comment("The number of ticks each mB of Ethylene burns for in the Gas-Burning Generator.")
-              .defineInRange("ethyleneBurnTicks", 2 * SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
-        ethyleneDensityMultiplier = CachedFloatingLongValue.define(this, builder, "Multiplier for calculating the energy density of Ethylene (1 mB Hydrogen + 2 * bioGeneration * densityMultiplier).",
-              "ethyleneDensityMultiplier", FloatingLong.createConst(40), CachedFloatingLongValue.POSITIVE);
+        etheneBurnTicks = CachedIntValue.wrap(this, builder.comment("The number of ticks each mB of Ethene burns for in the Gas-Burning Generator.")
+              .defineInRange("etheneBurnTicks", 2 * SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
+        etheneDensityMultiplier = CachedFloatingLongValue.define(this, builder, "Multiplier for calculating the energy density of Ethene (1 mB Hydrogen + 2 * bioGeneration * densityMultiplier).",
+              "etheneDensityMultiplier", FloatingLong.createConst(40), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);

@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi;
 
+import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.serializer.EmiStackSerializer;
 import java.util.Optional;
@@ -13,17 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>, EMI_STACK extends ChemicalEmiStack<CHEMICAL>> implements EmiStackSerializer<EMI_STACK> {
 
     private final EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator;
-    final Registry<CHEMICAL> registry;
+    private final Registry<CHEMICAL> registry;
     private final String type;
 
-    public ChemicalEmiIngredientSerializer(String type, Registry<CHEMICAL> registry, EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator) {
-        this.type = type;
+    ChemicalEmiIngredientSerializer(Registry<CHEMICAL> registry, EmiStackCreator<CHEMICAL, EMI_STACK> stackCreator) {
         this.registry = registry;
         this.stackCreator = stackCreator;
-    }
-
-    public EmiStack create(CHEMICAL chemical) {
-        return stackCreator.create(chemical, 1);
+        this.type = registry.key().location().toString().replace(':', '_');
     }
 
     @Override
@@ -38,6 +35,14 @@ public class ChemicalEmiIngredientSerializer<CHEMICAL extends Chemical<CHEMICAL>
     @Override
     public String getType() {
         return type;
+    }
+
+    void addEmiStacks(EmiRegistry emiRegistry) {
+        for (CHEMICAL chemical : registry) {
+            if (!chemical.isHidden()) {
+                emiRegistry.addEmiStack(stackCreator.create(chemical, 1));
+            }
+        }
     }
 
     @FunctionalInterface

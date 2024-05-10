@@ -214,6 +214,11 @@ public enum MekanismLang implements ILangEntry {
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
     DECAY_IMMUNE("tooltip", "decay_immune"),
+    //Aliases
+    ALSO_KNOWN_AS("tooltip", "known_as"),
+    //TODO - 1.20.5: Given how nice the system in EMI is for aliases, we probably want to add aliases to a variety of more things
+    // for example to make our transmitters support some of the commonly searched names, or energy cubes have batteries etc
+    ETHENE_ETHYLENE_ALIAS("alias", "ethene.ethylene"),
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),

@@ -102,7 +102,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsAdvancements.HEAT_GENERATOR, "Your First Generator", "Craft a Heat Generator to start making power");
         add(GeneratorsAdvancements.SOLAR_GENERATOR, "Power of the Sun", "Renewable daytime energy");
         add(GeneratorsAdvancements.WIND_GENERATOR, "Spin Baby Spin", "Hopefully there is some wind nearby");
-        add(GeneratorsAdvancements.BURN_THE_GAS, "Burn the Gas", "Craft a Gas-Burning Generator to burn Ethylene");
+        add(GeneratorsAdvancements.BURN_THE_GAS, "Burn the Gas", "Craft a Gas-Burning Generator to burn Ethene");
     }
 
     private void addMisc() {

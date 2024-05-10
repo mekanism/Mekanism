@@ -1,0 +1,11 @@
+{
+  "aliases": [
+    {
+      "stacks": [
+        "fluid:mekanism:ethene",
+        "mekanism_gas:mekanism:ethene"
+      ],
+      "text": "alias.mekanism.ethene.ethylene"
+    }
+  ]
+}

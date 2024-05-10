@@ -98,16 +98,16 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 public class MekanismEmi implements EmiPlugin {
 
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Gas, GasEmiStack> GAS_SERIALIZER = new ChemicalEmiIngredientSerializer<Gas, GasEmiStack>("Gas", MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer<Gas, GasEmiStack> GAS_SERIALIZER = new ChemicalEmiIngredientSerializer<Gas, GasEmiStack>(MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
     private static final EmiRegistryAdapter<Gas> GAS_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Gas.class, MekanismAPI.GAS_REGISTRY, GasEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack> INFUSION_SERIALIZER = new ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack>("Infuse Type", MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack> INFUSION_SERIALIZER = new ChemicalEmiIngredientSerializer<InfuseType, InfusionEmiStack>(MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
     private static final EmiRegistryAdapter<InfuseType> INFUSE_TYPE_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(InfuseType.class, MekanismAPI.INFUSE_TYPE_REGISTRY, InfusionEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack> PIGMENT_SERIALIZER = new ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack>("Pigment", MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack> PIGMENT_SERIALIZER = new ChemicalEmiIngredientSerializer<Pigment, PigmentEmiStack>(MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
     private static final EmiRegistryAdapter<Pigment> PIGMENT_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Pigment.class, MekanismAPI.PIGMENT_REGISTRY, PigmentEmiStack::new);
     @SuppressWarnings("Convert2Diamond")//Can't be detected properly
-    private static final ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack> SLURRY_SERIALIZER = new ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack>("Slurry", MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
+    private static final ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack> SLURRY_SERIALIZER = new ChemicalEmiIngredientSerializer<Slurry, SlurryEmiStack>(MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
     private static final EmiRegistryAdapter<Slurry> SLURRY_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Slurry.class, MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
 
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
@@ -215,20 +215,12 @@ public class MekanismEmi implements EmiPlugin {
         registry.addRegistryAdapter(SLURRY_REGISTRY_ADAPTER);
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>> void addEmiStacks(EmiRegistry emiRegistry, ChemicalEmiIngredientSerializer<CHEMICAL, ?> serializer) {
-        for (CHEMICAL chemical : serializer.registry) {
-            if (!chemical.isHidden()) {
-                emiRegistry.addEmiStack(serializer.create(chemical));
-            }
-        }
-    }
-
     @Override
     public void register(EmiRegistry registry) {
-        addEmiStacks(registry, GAS_SERIALIZER);
-        addEmiStacks(registry, INFUSION_SERIALIZER);
-        addEmiStacks(registry, PIGMENT_SERIALIZER);
-        addEmiStacks(registry, SLURRY_SERIALIZER);
+        GAS_SERIALIZER.addEmiStacks(registry);
+        INFUSION_SERIALIZER.addEmiStacks(registry);
+        PIGMENT_SERIALIZER.addEmiStacks(registry);
+        SLURRY_SERIALIZER.addEmiStacks(registry);
 
         //Note: We have to add these as generic and then instance check the class so that we can have them be generic across our classes
         registry.addGenericExclusionArea(new EmiExclusionHandler());

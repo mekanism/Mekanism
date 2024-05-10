@@ -184,7 +184,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         addTag(MekanismTags.Fluids.BRINE, "Brine");
         addTag(MekanismTags.Fluids.CHLORINE, "Chlorine");
-        addTag(MekanismTags.Fluids.ETHENE, "Ethylene");
+        addTag(MekanismTags.Fluids.ETHENE, "Ethene");
         addTag(MekanismTags.Fluids.HEAVY_WATER, "Heavy Water");
         addTag(MekanismTags.Fluids.HYDROGEN, "Hydrogen");
         addTag(MekanismTags.Fluids.HYDROGEN_CHLORIDE, "Hydrogen Chloride");
@@ -512,7 +512,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.HYDROFLUORIC_ACID, "Liquid Hydrofluoric Acid");
         addFluid(MekanismFluids.URANIUM_OXIDE, "Liquid Uranium Oxide");
         addFluid(MekanismFluids.URANIUM_HEXAFLUORIDE, "Liquid Uranium Hexafluoride");
-        addFluid(MekanismFluids.ETHENE, "Liquid Ethylene");
+        addFluid(MekanismFluids.ETHENE, "Liquid Ethene");
         addFluid(MekanismFluids.SODIUM, "Liquid Sodium");
         addFluid(MekanismFluids.SUPERHEATED_SODIUM, "Liquid Superheated Sodium");
         addFluid(MekanismFluids.BRINE, "Brine");
@@ -541,7 +541,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.HYDROFLUORIC_ACID, "Hydrofluoric Acid");
         add(MekanismGases.URANIUM_OXIDE, "Uranium Oxide");
         add(MekanismGases.URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride");
-        add(MekanismGases.ETHENE, "Ethylene");
+        add(MekanismGases.ETHENE, "Ethene");
         add(MekanismGases.SODIUM, "Sodium");
         add(MekanismGases.SUPERHEATED_SODIUM, "Superheated Sodium");
         add(MekanismGases.BRINE, "Gaseous Brine");
@@ -1033,6 +1033,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %1$s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %1$s");
         add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
+        //Alias stuff
+        add(MekanismLang.ALSO_KNOWN_AS, "Also known as %1$s");
+        add(MekanismLang.ETHENE_ETHYLENE_ALIAS, "Ethylene");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");

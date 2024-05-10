@@ -53,9 +53,9 @@ public class MekanismGenerators implements IModModule {
     public static final String MODID = "mekanismgenerators";
     private static final ConfigBasedCachedFLSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedFLSupplier(() -> {
         FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
-              .timesEqual(MekanismGeneratorsConfig.generators.ethyleneDensityMultiplier.get());
+              .timesEqual(MekanismGeneratorsConfig.generators.etheneDensityMultiplier.get());
         return energy.plusEqual(MekanismConfig.general.FROM_H2.get());
-    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.ethyleneDensityMultiplier);
+    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.etheneDensityMultiplier);
 
     public static MekanismGenerators instance;
 
@@ -106,7 +106,7 @@ public class MekanismGenerators implements IModModule {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             //Add fuel attribute to ethene
-            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.ethyleneBurnTicks, ETHENE_ENERGY_DENSITY));
+            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.etheneBurnTicks, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)
