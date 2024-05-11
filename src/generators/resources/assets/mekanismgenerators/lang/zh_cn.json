@@ -1,4 +1,5 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "合成一台燃气发电机来燃烧乙烯",
   "advancements.mekanismgenerators.burn_the_gas.title": "燃烧气体",
   "advancements.mekanismgenerators.heat_generator.description": "合成热力发电机来发电",
   "advancements.mekanismgenerators.heat_generator.title": "你的第一台发电机",
@@ -169,6 +170,10 @@
   "tag.fluid.c.deuterium": "氘",
   "tag.fluid.c.fusion_fuel": "氘氚燃料",
   "tag.fluid.c.tritium": "氚",
+  "tag.item.c.buckets.bioethanol": "生物乙醇桶",
+  "tag.item.c.buckets.deuterium": "液态氘桶",
+  "tag.item.c.buckets.fusion_fuel": "液态氘氚燃料桶",
+  "tag.item.c.buckets.tritium": "液态氚桶",
   "tag.mekanism.gas.mekanism.deuterium": "氘",
   "tag.mekanism.gas.mekanism.fusion_fuel": "氘氚燃料",
   "tag.mekanism.gas.mekanism.tritium": "氚",
