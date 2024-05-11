@@ -44,7 +44,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
               ByteBufCodecs.BOOL, filter -> filter.sizeMode,
               ByteBufCodecs.VAR_INT, filter -> filter.min,
               ByteBufCodecs.VAR_INT, filter -> filter.max,
-              ByteBufCodecs.optional(EnumColor.STREAM_CODEC), filter -> Optional.ofNullable(filter.color),
+              EnumColor.OPTIONAL_STREAM_CODEC, filter -> Optional.ofNullable(filter.color),
               (filter, allowDefault, sizeMode, min, max, color) -> {
                   filter.allowDefault = allowDefault;
                   filter.color = color.orElse(null);

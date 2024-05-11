@@ -2,6 +2,7 @@ package mekanism.api.text;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SupportsColorMap;
@@ -61,6 +62,12 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
      * @since 10.6.0
      */
     public static final StreamCodec<ByteBuf, EnumColor> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, EnumColor::ordinal);
+    /**
+     * Stream codec for syncing optional colors by index.
+     *
+     * @since 10.6.0
+     */
+    public static final StreamCodec<ByteBuf, Optional<EnumColor>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.optional(STREAM_CODEC);
     /**
      * The color code that will be displayed
      */

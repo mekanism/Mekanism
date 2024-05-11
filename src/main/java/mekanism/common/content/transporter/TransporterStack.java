@@ -41,7 +41,7 @@ public class TransporterStack {
 
     //Make sure to call updateForPos before calling this method
     public static StreamCodec<RegistryFriendlyByteBuf, TransporterStack> STREAM_CODEC = NeoForgeStreamCodecs.composite(
-          ByteBufCodecs.optional(EnumColor.STREAM_CODEC), stack -> Optional.ofNullable(stack.color),
+          EnumColor.OPTIONAL_STREAM_CODEC, stack -> Optional.ofNullable(stack.color),
           ByteBufCodecs.VAR_INT, stack -> stack.progress,
           BlockPos.STREAM_CODEC, stack -> stack.originalLocation,
           Path.STREAM_CODEC, TransporterStack::getPathType,

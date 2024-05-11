@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.20.5: Should we set the defaults for things via the default attached components so that then if it is equal to the default on break it doesn't get applied?
 @NothingNullByDefault
 public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
 

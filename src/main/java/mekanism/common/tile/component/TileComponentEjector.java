@@ -9,7 +9,6 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -406,7 +405,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         AttachedEjector ejector = input.get(MekanismDataComponents.EJECTOR);
         if (ejector != null) {
             for (int i = 0; i < inputColors.length; i++) {
-                inputColors[i] = ejector.inputColors().get(i);
+                inputColors[i] = ejector.inputColors().get(i).orElse(null);
             }
             strictInput = ejector.strictInput();
             outputColor = ejector.outputColor().orElse(null);
@@ -415,8 +414,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
-        //Note: We have to use Arrays#asList instead of List#of as our inputColors can contain null elements
-        builder.set(MekanismDataComponents.EJECTOR, new AttachedEjector(Arrays.asList(inputColors), strictInput, Optional.ofNullable(outputColor)));
+        builder.set(MekanismDataComponents.EJECTOR, AttachedEjector.create(inputColors, strictInput, outputColor));
     }
 
     @Override
