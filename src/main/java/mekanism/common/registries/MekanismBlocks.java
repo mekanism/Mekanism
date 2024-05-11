@@ -952,10 +952,10 @@ public class MekanismBlocks {
               .forItemHolder(holder -> {
                         final MergedTankCreator mergedTankCreator = new MergedTankCreator(ComponentBackedChemicalTankGasTank::create, ComponentBackedChemicalTankInfusionTank::create,
                               ComponentBackedChemicalTankPigmentTank::create, ComponentBackedChemicalTankSlurryTank::create);
-                        holder.addAttachmentOnlyContainers(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(mergedTankCreator).build())
-                              .addAttachmentOnlyContainers(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
-                              .addAttachmentOnlyContainers(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
-                              .addAttachmentOnlyContainers(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
+                        holder.addAttachedContainerCapabilities(ContainerType.GAS, () -> GasTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachedContainerCapabilities(ContainerType.INFUSION, () -> InfusionTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachedContainerCapabilities(ContainerType.PIGMENT, () -> PigmentTanksBuilder.builder().addTank(mergedTankCreator).build())
+                              .addAttachedContainerCapabilities(ContainerType.SLURRY, () -> SlurryTanksBuilder.builder().addTank(mergedTankCreator).build())
                               .addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                                     .addMergedChemicalDrainSlot(0, 0, 0, 0)
                                     .addMergedChemicalFillSlot(0, 0, 0, 0)
