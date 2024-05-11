@@ -98,7 +98,7 @@ public class MekanismCreativeTabs {
                 }
             }
             CreativeTabDeferredRegister.addToDisplay(event, MekanismBlocks.SECURITY_DESK, MekanismBlocks.RADIOACTIVE_WASTE_BARREL, MekanismBlocks.PERSONAL_CHEST,
-                  MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.CHARGEPAD, MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_AMPLIFIER,
+                  MekanismBlocks.PERSONAL_BARREL, MekanismBlocks.CHARGEPAD, MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
                   MekanismBlocks.QUANTUM_ENTANGLOPORTER, MekanismBlocks.OREDICTIONIFICATOR, MekanismBlocks.FUELWOOD_HEATER, MekanismBlocks.MODIFICATION_STATION,
                   MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
         } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {

@@ -17,7 +17,7 @@ import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 
 public class MobEquipmentHelper {
 
@@ -40,7 +40,7 @@ public class MobEquipmentHelper {
         return entity instanceof Zombie && !(entity instanceof Drowned) && !(entity instanceof ZombifiedPiglin);
     }
 
-    public static void onLivingSpecialSpawn(MobSpawnEvent.FinalizeSpawn event) {
+    public static void onLivingSpecialSpawn(FinalizeSpawnEvent event) {
         LivingEntity entity = event.getEntity();
         boolean isZombie = isZombie(entity);
         if (isZombie || entity instanceof Skeleton || entity instanceof Stray || entity instanceof Piglin) {
