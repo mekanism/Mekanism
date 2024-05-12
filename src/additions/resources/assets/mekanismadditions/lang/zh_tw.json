@@ -319,6 +319,8 @@
   "item.mekanismadditions.yellow_balloon": "黃色氣球",
   "key.mekanismadditions.voice": "語音",
   "sound_event.mekanismadditions.entity.balloon.pop": "氣球破裂",
+  "tag.item.c.fence_gates.plastic": "塑膠柵欄門",
+  "tag.item.c.fences.plastic": "塑膠柵欄",
   "walkie.mekanismadditions.channel": "頻道: %1$s",
   "walkie.mekanismadditions.channel.change": "頻道切換至: %1$s",
   "walkie.mekanismadditions.disabled": "語音伺服器禁用"
