@@ -46,6 +46,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
@@ -180,14 +181,18 @@ public class ChemicalUtil {
      *
      * @return empty chemical tank
      */
-    private static ItemStack getEmptyChemicalTank(ChemicalTankTier tier) {
-        return (switch (tier) {
+    private static ItemLike getEmptyChemicalTank(ChemicalTankTier tier) {
+        return switch (tier) {
             case BASIC -> MekanismBlocks.BASIC_CHEMICAL_TANK;
             case ADVANCED -> MekanismBlocks.ADVANCED_CHEMICAL_TANK;
             case ELITE -> MekanismBlocks.ELITE_CHEMICAL_TANK;
             case ULTIMATE -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK;
             case CREATIVE -> MekanismBlocks.CREATIVE_CHEMICAL_TANK;
-        }).getItemStack();
+        };
+    }
+
+    public static ItemStack getFilledVariant(ItemLike toFill, IChemicalProvider<?> provider) {
+        return getFilledVariant(new ItemStack(toFill), provider);
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, IChemicalProvider<?> provider) {

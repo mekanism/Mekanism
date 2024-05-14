@@ -66,7 +66,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
     }
 
     @Override

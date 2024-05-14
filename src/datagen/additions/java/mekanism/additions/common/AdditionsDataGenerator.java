@@ -2,6 +2,7 @@ package mekanism.additions.common;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.client.AdditionsBlockStateProvider;
+import mekanism.additions.client.integration.AdditionsEmiAliasProvider;
 import mekanism.additions.client.AdditionsItemModelProvider;
 import mekanism.additions.client.AdditionsLangProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
@@ -39,6 +40,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new AdditionsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new AdditionsEmiAliasProvider(output, lookupProvider));
         //Server side data generators
         gen.addProvider(event.includeServer(), new AdditionsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new AdditionsLootProvider(output, lookupProvider));

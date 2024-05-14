@@ -2,9 +2,7 @@ package mekanism.common.integration.computer;
 
 import com.google.common.hash.Hashing;
 import com.google.common.hash.HashingOutputStream;
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thiakil.yamlops.SnakeYamlOps;
 import com.thiakil.yamlops.YamlHelper;
@@ -54,6 +52,7 @@ import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.MekCodecs;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -70,37 +69,40 @@ public class ComputerHelpProvider implements DataProvider {
 
     private static final String[] METHOD_CSV_HEADERS = {"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
     private static final String[] ENUM_CSV_HEADERS = {"Type Name", "Values"};
+    private final CompletableFuture<HolderLookup.Provider> registries;
     private final PackOutput.PathProvider pathProvider;
     private final String modid;
 
-    public ComputerHelpProvider(PackOutput output, String modid) {
+    public ComputerHelpProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String modid) {
         this.modid = modid;
+        this.registries = registries;
         this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "computer_help");
     }
 
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
-        //Manually initialize the computer method factory registry
-        FactoryRegistry.load();
+        return this.registries.thenCompose(lookupProvider -> {
+            //Manually initialize the computer method factory registry
+            FactoryRegistry.load();
 
-        //gather common data
-        Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
-        Map<Class<?>, List<String>> enumValues = getEnumValues(helpData);
+            //gather common data
+            Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
+            Map<Class<?>, List<String>> enumValues = getEnumValues(helpData);
 
-        //generate
-        return CompletableFuture.allOf(
-              makeJson(output, helpData, METHODS_DATA_CODEC, "methods"),
-              makeJekyllData(output, helpData, enumValues),
-              makeMethodsCsv(output, helpData),
-              makeJson(output, enumValues, ENUMS_CODEC, "enums"),
-              makeEnumsCsv(output, enumValues)
-        );
+            //generate
+            return CompletableFuture.allOf(
+                  makeJson(output, lookupProvider, helpData, METHODS_DATA_CODEC, "methods"),
+                  makeJekyllData(output, helpData, enumValues),
+                  makeMethodsCsv(output, helpData),
+                  makeJson(output, lookupProvider, enumValues, ENUMS_CODEC, "enums"),
+                  makeEnumsCsv(output, enumValues)
+            );
+        });
     }
 
     @NotNull
-    private <DATA> CompletableFuture<?> makeJson(CachedOutput pOutput, DATA helpData, Codec<DATA> codec, String path) {
-        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow();
-        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, path)));
+    private <DATA> CompletableFuture<?> makeJson(CachedOutput output, HolderLookup.Provider lookupProvider, DATA helpData, Codec<DATA> codec, String path) {
+        return DataProvider.saveStable(output, lookupProvider, codec, helpData, this.pathProvider.json(new ResourceLocation(this.modid, path)));
     }
 
     @NotNull

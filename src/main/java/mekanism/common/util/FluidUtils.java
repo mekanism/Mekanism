@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -28,6 +29,10 @@ import org.jetbrains.annotations.Nullable;
 public final class FluidUtils {
 
     private FluidUtils() {
+    }
+
+    public static ItemStack getFilledVariant(ItemLike toFill, Fluid fluid) {
+        return getFilledVariant(new ItemStack(toFill), fluid);
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Fluid fluid) {

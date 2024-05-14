@@ -1,0 +1,72 @@
+{
+  "aliases": [
+    {
+      "stacks": [
+        "fluid:mekanismgenerators:fusion_fuel",
+        "mekanism_gas:mekanismgenerators:fusion_fuel"
+      ],
+      "text": "alias.mekanismgenerators.fusion_fuel"
+    },
+    {
+      "stacks": "item:mekanismgenerators:reactor_glass",
+      "text": [
+        "alias.mekanism.multiblock.boiler",
+        "alias.mekanism.multiblock.evaporation",
+        "alias.mekanism.multiblock.matrix",
+        "alias.mekanism.multiblock.sps",
+        "alias.mekanism.multiblock.sps.full",
+        "alias.mekanism.multiblock.tank"
+      ]
+    },
+    {
+      "stacks": "item:mekanismgenerators:advanced_solar_generator",
+      "text": "alias.mekanism.multiblock.evaporation"
+    },
+    {
+      "stacks": [
+        "item:mekanismgenerators:fission_reactor_casing",
+        "item:mekanismgenerators:fission_reactor_port",
+        "item:mekanismgenerators:fission_reactor_logic_adapter",
+        "item:mekanismgenerators:fission_fuel_assembly",
+        "item:mekanismgenerators:control_rod_assembly",
+        "item:mekanismgenerators:reactor_glass"
+      ],
+      "text": "alias.mekanismgenerators.multiblock.fission"
+    },
+    {
+      "stacks": [
+        "item:mekanismgenerators:fusion_reactor_controller",
+        "item:mekanismgenerators:fusion_reactor_frame",
+        "item:mekanismgenerators:fusion_reactor_port",
+        "item:mekanismgenerators:fusion_reactor_logic_adapter",
+        "item:mekanismgenerators:laser_focus_matrix",
+        "item:mekanismgenerators:reactor_glass",
+        "item:mekanismgenerators:hohlraum{\"mekanism:gases\":{GasTanks:[{amount:10L,id:\"mekanismgenerators:fusion_fuel\"}]}}"
+      ],
+      "text": "alias.mekanismgenerators.multiblock.fusion"
+    },
+    {
+      "stacks": [
+        "item:mekanismgenerators:turbine_casing",
+        "item:mekanismgenerators:turbine_vent",
+        "item:mekanismgenerators:turbine_valve",
+        "item:mekanismgenerators:turbine_rotor",
+        "item:mekanismgenerators:turbine_blade",
+        "item:mekanismgenerators:saturating_condenser",
+        "item:mekanismgenerators:electromagnetic_coil",
+        "item:mekanismgenerators:rotational_complex",
+        "item:mekanismgenerators:reactor_glass",
+        "item:mekanism:pressure_disperser",
+        "item:mekanism:structural_glass"
+      ],
+      "text": "alias.mekanismgenerators.multiblock.turbine"
+    },
+    {
+      "stacks": "item:mekanismgenerators:gas_burning_generator",
+      "text": [
+        "alias.mekanismgenerators.gbg.ethene",
+        "alias.mekanismgenerators.gbg.ethylene"
+      ]
+    }
+  ]
+}

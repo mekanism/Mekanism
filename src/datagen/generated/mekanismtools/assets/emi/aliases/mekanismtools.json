@@ -1,0 +1,112 @@
+{
+  "aliases": [
+    {
+      "stacks": "item:mekanismtools:wood_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.wooden_axe",
+        "item.minecraft.wooden_pickaxe",
+        "item.minecraft.wooden_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:stone_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.stone_axe",
+        "item.minecraft.stone_pickaxe",
+        "item.minecraft.stone_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:gold_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.golden_axe",
+        "item.minecraft.golden_pickaxe",
+        "item.minecraft.golden_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:iron_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.iron_axe",
+        "item.minecraft.iron_pickaxe",
+        "item.minecraft.iron_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:diamond_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.diamond_axe",
+        "item.minecraft.diamond_pickaxe",
+        "item.minecraft.diamond_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:netherite_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.minecraft.netherite_axe",
+        "item.minecraft.netherite_pickaxe",
+        "item.minecraft.netherite_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:bronze_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.bronze_axe",
+        "item.mekanismtools.bronze_pickaxe",
+        "item.mekanismtools.bronze_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:lapis_lazuli_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.lapis_lazuli_axe",
+        "item.mekanismtools.lapis_lazuli_pickaxe",
+        "item.mekanismtools.lapis_lazuli_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:osmium_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.osmium_axe",
+        "item.mekanismtools.osmium_pickaxe",
+        "item.mekanismtools.osmium_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:refined_glowstone_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.refined_glowstone_axe",
+        "item.mekanismtools.refined_glowstone_pickaxe",
+        "item.mekanismtools.refined_glowstone_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:refined_obsidian_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.refined_obsidian_axe",
+        "item.mekanismtools.refined_obsidian_pickaxe",
+        "item.mekanismtools.refined_obsidian_shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanismtools:steel_paxel",
+      "text": [
+        "alias.mekanism.tool.multi",
+        "item.mekanismtools.steel_axe",
+        "item.mekanismtools.steel_pickaxe",
+        "item.mekanismtools.steel_shovel"
+      ]
+    }
+  ]
+}

@@ -47,6 +47,6 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), getGasType()));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(this, getGasType()));
     }
 }

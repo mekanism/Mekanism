@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.generators.client.GeneratorsBlockStateProvider;
+import mekanism.generators.client.integration.GeneratorsEmiAliasProvider;
 import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
@@ -37,6 +38,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new GeneratorsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new GeneratorsEmiAliasProvider(output, lookupProvider));
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output, lookupProvider));

@@ -4,6 +4,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.util.EnumUtils;
+import mekanism.tools.client.integration.ToolsAliases;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.ToolsTags;
@@ -23,6 +24,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         addItems();
         addAdvancements();
         addMisc();
+        addAliases(ToolsAliases.values());
     }
 
     private void addTags() {

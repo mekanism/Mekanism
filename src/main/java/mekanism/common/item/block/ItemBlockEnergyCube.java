@@ -28,19 +28,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
 
-    private static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
+    public static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
         for (RelativeSide side : EnumUtils.SIDES) {
             sideData.put(side, DataType.INPUT);
         }
         return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
     });
-    private static final AttachedSideConfig ALL_OUTPUT = Util.make(() -> {
+    public static final AttachedSideConfig ALL_OUTPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
         for (RelativeSide side : EnumUtils.SIDES) {
             sideData.put(side, DataType.OUTPUT);
@@ -96,10 +97,10 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         EnergyCubeTier tier = getTier();
         if (tier == EnergyCubeTier.CREATIVE) {
             //Add the empty and charged variants
-            tabOutput.accept(withEnergyCubeSideConfig(ALL_INPUT));
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(ALL_OUTPUT)));
+            tabOutput.accept(withEnergyCubeSideConfig(this, ALL_INPUT));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(withEnergyCubeSideConfig(this, ALL_OUTPUT)));
         } else {
-            tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
+            tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
         }
     }
 
@@ -108,8 +109,8 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
         return getTier() != EnergyCubeTier.CREATIVE;
     }
 
-    private ItemStack withEnergyCubeSideConfig(AttachedSideConfig config) {
-        ItemStack stack = new ItemStack(this);
+    public static ItemStack withEnergyCubeSideConfig(ItemLike item, AttachedSideConfig config) {
+        ItemStack stack = new ItemStack(item);
         stack.set(MekanismDataComponents.SIDE_CONFIG, config);
         return stack;
     }

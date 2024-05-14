@@ -1,6 +1,7 @@
 package mekanism.additions.client;
 
 import java.util.Map;
+import mekanism.additions.client.integration.AdditionsAliases;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
@@ -31,6 +32,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
         addSubtitles();
         addAdvancements();
         addMisc();
+        addAliases(AdditionsAliases.values());
     }
 
     private void addTags() {

@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import mekanism.client.integration.emi.MekanismEmiAliasProvider;
 import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
@@ -57,6 +58,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeClient(), new MekanismSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new MekanismItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new MekanismBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new MekanismEmiAliasProvider(output, lookupProvider));
         //Server side data generators
         gen.addProvider(event.includeServer(), new MekanismTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new MekanismLootProvider(output, lookupProvider));
@@ -65,7 +67,7 @@ public class MekanismDataGenerator {
         MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, lookupProvider, existingFileHelper);
         gen.addProvider(event.includeServer(), recipeProvider);
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
+        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, recipeProvider.getDisabledCompats());

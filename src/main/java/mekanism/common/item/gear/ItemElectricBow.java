@@ -181,7 +181,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
+        tabOutput.accept(StorageUtils.getFilledEnergyVariant(this));
     }
 
     @Override

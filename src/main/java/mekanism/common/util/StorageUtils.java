@@ -32,6 +32,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -302,6 +303,10 @@ public class StorageUtils {
             energy = energy.plusEqual(energyContainer.getEnergy());
         }
         return energy;
+    }
+
+    public static ItemStack getFilledEnergyVariant(ItemLike toFill) {
+        return getFilledEnergyVariant(new ItemStack(toFill));
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {

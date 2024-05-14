@@ -151,6 +151,7 @@ public class QIOGlobalItemLookup {
 
         public Tag getNbtRepresentation(@NotNull HolderLookup.Provider provider) {
             if (nbtRepresentation == null) {
+                //TODO - 1.20.5: Only bother converting the patch to nbt so that we have a smaller save and also if defaults change then they get properly updated?
                 nbtRepresentation = internalToNBT(provider);
                 //Override to ensure that it gets stored with a count of one in case it was raw
                 // and that then when we read it we don't create it with extra size

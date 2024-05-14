@@ -15,6 +15,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -25,11 +26,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> extends EmiStack {
@@ -133,7 +132,8 @@ public abstract class ChemicalEmiStack<CHEMICAL extends Chemical<CHEMICAL>> exte
         return create(stack.getChemical(), stack.getAmount());
     }
 
-    public static ChemicalEmiStack<?> create(Chemical<?> chemical, long amount) {
+    public static ChemicalEmiStack<?> create(IChemicalProvider<?> chemicalProvider, long amount) {
+        Chemical<?> chemical = chemicalProvider.getChemical();
         ChemicalType type = ChemicalType.getTypeFor(chemical);
         return switch (type) {
             case GAS -> new GasEmiStack((Gas) chemical, amount);

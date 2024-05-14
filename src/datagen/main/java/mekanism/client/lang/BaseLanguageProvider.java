@@ -6,6 +6,7 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.client.integration.IAliasedTranslation;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismAdvancement;
@@ -18,6 +19,7 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -110,6 +112,16 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(MekanismAdvancement advancement, String title, String description) {
         add(advancement.title(), title);
         add(advancement.description(), description);
+    }
+
+    protected void addAliases(IAliasedTranslation... translations) {
+        for (IAliasedTranslation translation : translations) {
+            add(translation, translation.getAlias());
+        }
+    }
+
+    protected void addAlias(String path, String translation) {
+        add(Util.makeDescriptionId("alias", new ResourceLocation(modid, path)), translation);
     }
 
     @Override

@@ -1,0 +1,54 @@
+{
+  "aliases": [
+    {
+      "stacks": "item:mekanismadditions:walkie_talkie",
+      "text": "alias.mekanismadditions.walkie_talkie.radio"
+    },
+    {
+      "stacks": [
+        "item:mekanismadditions:black_glow_panel",
+        "item:mekanismadditions:blue_glow_panel",
+        "item:mekanismadditions:green_glow_panel",
+        "item:mekanismadditions:cyan_glow_panel",
+        "item:mekanismadditions:dark_red_glow_panel",
+        "item:mekanismadditions:purple_glow_panel",
+        "item:mekanismadditions:orange_glow_panel",
+        "item:mekanismadditions:light_gray_glow_panel",
+        "item:mekanismadditions:gray_glow_panel",
+        "item:mekanismadditions:light_blue_glow_panel",
+        "item:mekanismadditions:lime_glow_panel",
+        "item:mekanismadditions:aqua_glow_panel",
+        "item:mekanismadditions:red_glow_panel",
+        "item:mekanismadditions:magenta_glow_panel",
+        "item:mekanismadditions:yellow_glow_panel",
+        "item:mekanismadditions:white_glow_panel",
+        "item:mekanismadditions:brown_glow_panel",
+        "item:mekanismadditions:pink_glow_panel"
+      ],
+      "text": "alias.mekanismadditions.glow_panel.light_source"
+    },
+    {
+      "stacks": [
+        "item:mekanismadditions:black_plastic_road",
+        "item:mekanismadditions:blue_plastic_road",
+        "item:mekanismadditions:green_plastic_road",
+        "item:mekanismadditions:cyan_plastic_road",
+        "item:mekanismadditions:dark_red_plastic_road",
+        "item:mekanismadditions:purple_plastic_road",
+        "item:mekanismadditions:orange_plastic_road",
+        "item:mekanismadditions:light_gray_plastic_road",
+        "item:mekanismadditions:gray_plastic_road",
+        "item:mekanismadditions:light_blue_plastic_road",
+        "item:mekanismadditions:lime_plastic_road",
+        "item:mekanismadditions:aqua_plastic_road",
+        "item:mekanismadditions:red_plastic_road",
+        "item:mekanismadditions:magenta_plastic_road",
+        "item:mekanismadditions:yellow_plastic_road",
+        "item:mekanismadditions:white_plastic_road",
+        "item:mekanismadditions:brown_plastic_road",
+        "item:mekanismadditions:pink_plastic_road"
+      ],
+      "text": "alias.mekanismadditions.plastic_road.path"
+    }
+  ]
+}

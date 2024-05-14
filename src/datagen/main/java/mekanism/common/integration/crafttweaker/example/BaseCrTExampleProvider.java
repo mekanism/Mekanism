@@ -7,11 +7,7 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
-import com.google.common.hash.Hashing;
-import com.google.common.hash.HashingOutputStream;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,6 +39,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -65,7 +62,6 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
-import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -285,7 +281,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
         for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
             Path path = pathProvider.file(new ResourceLocation(modid, entry.getKey()), "zs");
-            list.add(save(cache, entry.getValue().build(), path));
+            list.add(MekanismDataGenerator.save(cache, stream -> stream.write(entry.getValue().build().getBytes(StandardCharsets.UTF_8)), path));
         }
         return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
     }
@@ -418,22 +414,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             return builder.toString();
         }
         return null;
-    }
-
-    /**
-     * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
-     */
-    @SuppressWarnings({"UnstableApiUsage", "deprecation"})
-    private static CompletableFuture<?> save(CachedOutput cache, String contents, Path path) {
-        return CompletableFuture.runAsync(() -> {
-            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                 HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
-                hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
-                cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
-            } catch (IOException ioexception) {
-                LOGGER.error("Failed to save file to {}", path, ioexception);
-            }
-        }, Util.backgroundExecutor());
     }
 
     protected static class WeightedItemStack {

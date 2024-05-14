@@ -51,7 +51,7 @@ public class MekanismCreativeTabs {
             if (MekanismConfig.general.prefilledFluidTanks.get()) {
                 for (Fluid fluid : BuiltInRegistries.FLUID) {
                     if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
-                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), fluid));
+                        output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK, fluid));
                     }
                 }
             }
@@ -69,7 +69,7 @@ public class MekanismCreativeTabs {
         if (shouldAdd.getAsBoolean()) {
             for (CHEMICAL type : registry) {
                 if (!type.isHidden()) {
-                    tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), type));
+                    tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK, type));
                 }
             }
         }

@@ -439,9 +439,15 @@ dependencies {
     }
 
     compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
+    //TODO - 1.20.5: Re-evaluate
+    //Compile against full emi in datagen
+    datagenMainCompileOnly(emi)
     if (recipe_viewer == "emi" || recipe_viewer == "hybrid") {
-        localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+        localRuntime(emi)
+    } else {
+        //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
+        datagenMainRuntimeOnly(emi)
     }
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged

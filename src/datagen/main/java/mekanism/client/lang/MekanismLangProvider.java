@@ -10,6 +10,7 @@ import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
+import mekanism.client.integration.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismAdvancements;
@@ -84,6 +85,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addSubtitles();
         addMisc();
         addAdvancements();
+        addAliases();
     }
 
     private void addTags() {
@@ -778,6 +780,14 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Completely fill a Canteen with Nutritional Paste");
     }
 
+    private void addAliases() {
+        add(MekanismLang.ALSO_KNOWN_AS, "Also known as %1$s");
+        addAliases(MekanismAliases.values());
+        for (FactoryType type : EnumUtils.FACTORY_TYPES) {
+            addAlias(type.getRegistryNameComponent(), type.getRegistryNameComponentCapitalized());
+        }
+    }
+
     private void addJade() {
         addJadeConfigTooltip(JadeConstants.REMOVE_BUILTIN, "Remove overwritten builtin renderings");
         addJadeConfigTooltip(JadeConstants.ENTITY_DATA, "Jade entity data provider");
@@ -1033,9 +1043,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %1$s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %1$s");
         add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
-        //Alias stuff
-        add(MekanismLang.ALSO_KNOWN_AS, "Also known as %1$s");
-        add(MekanismLang.ETHENE_ETHYLENE_ALIAS, "Ethylene");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");

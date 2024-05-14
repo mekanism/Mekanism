@@ -3,6 +3,7 @@ package mekanism.tools.common;
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
+import mekanism.tools.client.integration.ToolsEmiAliasProvider;
 import mekanism.tools.client.ToolsItemModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
@@ -33,6 +34,7 @@ public class ToolsDataGenerator {
         gen.addProvider(event.includeClient(), new ToolsLangProvider(output));
         gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new ToolsEmiAliasProvider(output, lookupProvider));
         //Server side data generators
         gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ToolsRecipeProvider(output, lookupProvider, existingFileHelper));

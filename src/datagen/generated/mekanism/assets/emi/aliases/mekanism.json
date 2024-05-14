@@ -1,0 +1,740 @@
+{
+  "aliases": [
+    {
+      "stacks": [
+        "fluid:mekanism:ethene",
+        "mekanism_gas:mekanism:ethene"
+      ],
+      "text": "alias.mekanism.ethene.ethylene"
+    },
+    {
+      "stacks": "item:mekanism:modification_station",
+      "text": [
+        "alias.mekanism.unit.installer",
+        "alias.mekanism.unit.installer.module"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_radiation_shielding_unit",
+      "text": "alias.mekanism.radiation_protection"
+    },
+    {
+      "stacks": "item:mekanism:module_energy_unit",
+      "text": "alias.mekanism.storage.energy"
+    },
+    {
+      "stacks": "item:mekanism:module_fortune_unit",
+      "text": "enchantment.minecraft.fortune"
+    },
+    {
+      "stacks": "item:mekanism:module_attack_amplification_unit",
+      "text": [
+        "alias.mekanism.unit.damage",
+        "enchantment.minecraft.sharpness"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_excavation_escalation_unit",
+      "text": [
+        "alias.mekanism.unit.speed.dig",
+        "enchantment.minecraft.efficiency"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_blasting_unit",
+      "text": [
+        "alias.mekanism.tool.hammer",
+        "alias.mekanism.unit.aoe",
+        "alias.mekanism.unit.aoe.long"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_farming_unit",
+      "text": [
+        "alias.mekanism.tool.axe",
+        "alias.mekanism.tool.hoe",
+        "alias.mekanism.tool.shovel"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_vision_enhancement_unit",
+      "text": "effect.minecraft.night_vision"
+    },
+    {
+      "stacks": "item:mekanism:module_nutritional_injection_unit",
+      "text": "alias.mekanism.unit.feeder"
+    },
+    {
+      "stacks": "item:mekanism:module_gravitational_modulating_unit",
+      "text": "alias.mekanism.flight.creative"
+    },
+    {
+      "stacks": "item:mekanism:module_charge_distribution_unit",
+      "text": "alias.mekanism.item_charger"
+    },
+    {
+      "stacks": "item:mekanism:module_hydraulic_propulsion_unit",
+      "text": [
+        "alias.mekanism.auto_step",
+        "alias.mekanism.step_assist",
+        "effect.minecraft.jump_boost"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_hydrostatic_repulsor_unit",
+      "text": [
+        "alias.mekanism.unit.speed.hydrostatic",
+        "enchantment.minecraft.depth_strider"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:module_motorized_servo_unit",
+      "text": "enchantment.minecraft.swift_sneak"
+    },
+    {
+      "stacks": "item:mekanism:module_locomotive_boosting_unit",
+      "text": "effect.minecraft.speed"
+    },
+    {
+      "stacks": "item:mekanism:module_soul_surfer_unit",
+      "text": "enchantment.minecraft.soul_speed"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_smelting_factory",
+        "item:mekanism:advanced_smelting_factory",
+        "item:mekanism:elite_smelting_factory",
+        "item:mekanism:ultimate_smelting_factory"
+      ],
+      "text": "block.mekanism.energized_smelter"
+    },
+    {
+      "stacks": "item:mekanism:energized_smelter",
+      "text": "alias.mekanism.smelting"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_enriching_factory",
+        "item:mekanism:advanced_enriching_factory",
+        "item:mekanism:elite_enriching_factory",
+        "item:mekanism:ultimate_enriching_factory"
+      ],
+      "text": "block.mekanism.enrichment_chamber"
+    },
+    {
+      "stacks": "item:mekanism:enrichment_chamber",
+      "text": "alias.mekanism.enriching"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_crushing_factory",
+        "item:mekanism:advanced_crushing_factory",
+        "item:mekanism:elite_crushing_factory",
+        "item:mekanism:ultimate_crushing_factory"
+      ],
+      "text": "block.mekanism.crusher"
+    },
+    {
+      "stacks": "item:mekanism:crusher",
+      "text": "alias.mekanism.crushing"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_compressing_factory",
+        "item:mekanism:advanced_compressing_factory",
+        "item:mekanism:elite_compressing_factory",
+        "item:mekanism:ultimate_compressing_factory"
+      ],
+      "text": "block.mekanism.osmium_compressor"
+    },
+    {
+      "stacks": "item:mekanism:osmium_compressor",
+      "text": "alias.mekanism.compressing"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_combining_factory",
+        "item:mekanism:advanced_combining_factory",
+        "item:mekanism:elite_combining_factory",
+        "item:mekanism:ultimate_combining_factory"
+      ],
+      "text": "block.mekanism.combiner"
+    },
+    {
+      "stacks": "item:mekanism:combiner",
+      "text": "alias.mekanism.combining"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_purifying_factory",
+        "item:mekanism:advanced_purifying_factory",
+        "item:mekanism:elite_purifying_factory",
+        "item:mekanism:ultimate_purifying_factory"
+      ],
+      "text": "block.mekanism.purification_chamber"
+    },
+    {
+      "stacks": "item:mekanism:purification_chamber",
+      "text": "alias.mekanism.purifying"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_injecting_factory",
+        "item:mekanism:advanced_injecting_factory",
+        "item:mekanism:elite_injecting_factory",
+        "item:mekanism:ultimate_injecting_factory"
+      ],
+      "text": "block.mekanism.chemical_injection_chamber"
+    },
+    {
+      "stacks": "item:mekanism:chemical_injection_chamber",
+      "text": "alias.mekanism.injecting"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_infusing_factory",
+        "item:mekanism:advanced_infusing_factory",
+        "item:mekanism:elite_infusing_factory",
+        "item:mekanism:ultimate_infusing_factory"
+      ],
+      "text": "block.mekanism.metallurgic_infuser"
+    },
+    {
+      "stacks": "item:mekanism:metallurgic_infuser",
+      "text": "alias.mekanism.infusing"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_sawing_factory",
+        "item:mekanism:advanced_sawing_factory",
+        "item:mekanism:elite_sawing_factory",
+        "item:mekanism:ultimate_sawing_factory"
+      ],
+      "text": "block.mekanism.precision_sawmill"
+    },
+    {
+      "stacks": "item:mekanism:precision_sawmill",
+      "text": "alias.mekanism.sawing"
+    },
+    {
+      "stacks": "item:mekanism:atomic_disassembler",
+      "text": [
+        "alias.mekanism.tool.axe",
+        "alias.mekanism.tool.multi",
+        "alias.mekanism.tool.pickaxe",
+        "alias.mekanism.tool.shovel",
+        "alias.mekanism.tool.sword",
+        "alias.mekanism.tool.weapon",
+        "item.mekanism.meka_tool"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:configurator",
+      "text": [
+        "alias.mekanism.tool.diagnostic",
+        "alias.mekanism.tool.wrench"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:network_reader",
+        "item:mekanism:configuration_card"
+      ],
+      "text": "alias.mekanism.tool.diagnostic"
+    },
+    {
+      "stacks": [
+        "item:mekanism:jetpack",
+        "item:mekanism:jetpack_armored",
+        "item:mekanism:module_jetpack_unit"
+      ],
+      "text": "alias.mekanism.flight"
+    },
+    {
+      "stacks": [
+        "item:mekanism:hazmat_mask",
+        "item:mekanism:hazmat_gown",
+        "item:mekanism:hazmat_pants",
+        "item:mekanism:hazmat_boots"
+      ],
+      "text": "alias.mekanism.radiation_protection"
+    },
+    {
+      "stacks": [
+        "item:mekanism:free_runners",
+        "item:mekanism:free_runners_armored"
+      ],
+      "text": [
+        "alias.mekanism.auto_step",
+        "alias.mekanism.free_runner.fall_protection",
+        "alias.mekanism.free_runner.long_fall",
+        "alias.mekanism.step_assist"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:mekasuit_boots",
+      "text": [
+        "alias.mekanism.free_runner.fall_protection",
+        "alias.mekanism.free_runner.long_fall",
+        "alias.mekanism.mekasuit"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:mekasuit_helmet",
+        "item:mekanism:mekasuit_bodyarmor",
+        "item:mekanism:mekasuit_pants"
+      ],
+      "text": "alias.mekanism.mekasuit"
+    },
+    {
+      "stacks": "item:mekanism:canteen{\"mekanism:fluids\":{FluidTanks:[{amount:64000,id:\"mekanism:nutritional_paste\"}]}}",
+      "text": [
+        "alias.mekanism.canteen.edible",
+        "alias.mekanism.canteen.storage"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:boiler_casing",
+        "item:mekanism:boiler_valve",
+        "item:mekanism:pressure_disperser",
+        "item:mekanism:superheating_element",
+        "item:mekanism:structural_glass"
+      ],
+      "text": "alias.mekanism.multiblock.boiler"
+    },
+    {
+      "stacks": [
+        "item:mekanism:thermal_evaporation_controller",
+        "item:mekanism:thermal_evaporation_block",
+        "item:mekanism:thermal_evaporation_valve",
+        "item:mekanism:structural_glass"
+      ],
+      "text": "alias.mekanism.multiblock.evaporation"
+    },
+    {
+      "stacks": [
+        "item:mekanism:induction_casing",
+        "item:mekanism:induction_port",
+        "item:mekanism:basic_induction_cell",
+        "item:mekanism:basic_induction_provider",
+        "item:mekanism:advanced_induction_cell",
+        "item:mekanism:advanced_induction_provider",
+        "item:mekanism:elite_induction_cell",
+        "item:mekanism:elite_induction_provider",
+        "item:mekanism:ultimate_induction_cell",
+        "item:mekanism:ultimate_induction_provider",
+        "item:mekanism:structural_glass"
+      ],
+      "text": "alias.mekanism.multiblock.matrix"
+    },
+    {
+      "stacks": [
+        "item:mekanism:induction_casing",
+        "item:mekanism:induction_port",
+        "item:mekanism:basic_induction_cell",
+        "item:mekanism:advanced_induction_cell",
+        "item:mekanism:elite_induction_cell",
+        "item:mekanism:ultimate_induction_cell"
+      ],
+      "text": [
+        "alias.mekanism.item_charger",
+        "alias.mekanism.storage.energy",
+        "alias.mekanism.storage.energy.battery"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:induction_port",
+        "item:mekanism:basic_induction_provider",
+        "item:mekanism:advanced_induction_provider",
+        "item:mekanism:elite_induction_provider",
+        "item:mekanism:ultimate_induction_provider"
+      ],
+      "text": [
+        "alias.mekanism.item_charger",
+        "alias.mekanism.transfer.energy",
+        "alias.mekanism.transfer.energy.throughput"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:sps_casing",
+        "item:mekanism:sps_port",
+        "item:mekanism:supercharged_coil",
+        "item:mekanism:structural_glass"
+      ],
+      "text": [
+        "alias.mekanism.multiblock.sps",
+        "alias.mekanism.multiblock.sps.full"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:dynamic_tank",
+        "item:mekanism:dynamic_valve",
+        "item:mekanism:structural_glass"
+      ],
+      "text": [
+        "alias.mekanism.multiblock.tank",
+        "alias.mekanism.storage.chemical",
+        "alias.mekanism.storage.fluid",
+        "alias.mekanism.storage.gas",
+        "alias.mekanism.storage.infuse_type",
+        "alias.mekanism.storage.infusion",
+        "alias.mekanism.storage.pigment",
+        "alias.mekanism.storage.slurry"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:qio_redstone_adapter",
+      "text": [
+        "alias.mekanism.qio.adapter.emitter",
+        "alias.mekanism.qio.full"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:qio_drive_array",
+      "text": [
+        "alias.mekanism.qio.drive.bay",
+        "alias.mekanism.qio.full"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:portable_qio_dashboard",
+      "text": [
+        "alias.mekanism.crafting.portable",
+        "alias.mekanism.qio.dashboard.wireless",
+        "alias.mekanism.qio.full"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:qio_dashboard",
+        "item:mekanism:portable_qio_dashboard"
+      ],
+      "text": [
+        "alias.mekanism.qio.dashboard.grid",
+        "alias.mekanism.qio.dashboard.terminal",
+        "alias.mekanism.qio.full"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:qio_drive_base",
+        "item:mekanism:qio_drive_hyper_dense",
+        "item:mekanism:qio_drive_time_dilating",
+        "item:mekanism:qio_drive_supermassive"
+      ],
+      "text": [
+        "alias.mekanism.qio.drive.cell",
+        "alias.mekanism.qio.drive.disk",
+        "alias.mekanism.qio.full",
+        "alias.mekanism.storage.item"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:qio_exporter",
+      "text": [
+        "alias.mekanism.qio.full",
+        "alias.mekanism.round_robin"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:qio_importer",
+      "text": "alias.mekanism.qio.full"
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_bin",
+        "item:mekanism:advanced_bin",
+        "item:mekanism:elite_bin",
+        "item:mekanism:ultimate_bin",
+        "item:mekanism:creative_bin"
+      ],
+      "text": [
+        "alias.mekanism.bin.drawer",
+        "alias.mekanism.storage.item"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:personal_barrel",
+        "item:mekanism:personal_chest"
+      ],
+      "text": [
+        "alias.mekanism.personal_storage.backpack",
+        "alias.mekanism.storage.item",
+        "alias.mekanism.storage.portable"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_fluid_tank",
+        "item:mekanism:advanced_fluid_tank",
+        "item:mekanism:elite_fluid_tank",
+        "item:mekanism:ultimate_fluid_tank",
+        "item:mekanism:creative_fluid_tank"
+      ],
+      "text": [
+        "alias.mekanism.storage.fluid",
+        "alias.mekanism.storage.portable",
+        "item.minecraft.bucket"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_chemical_tank",
+        "item:mekanism:advanced_chemical_tank",
+        "item:mekanism:elite_chemical_tank",
+        "item:mekanism:ultimate_chemical_tank",
+        "item:mekanism:creative_chemical_tank"
+      ],
+      "text": [
+        "alias.mekanism.storage.chemical",
+        "alias.mekanism.storage.gas",
+        "alias.mekanism.storage.infuse_type",
+        "alias.mekanism.storage.infusion",
+        "alias.mekanism.storage.pigment",
+        "alias.mekanism.storage.slurry"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_energy_cube",
+        "item:mekanism:advanced_energy_cube",
+        "item:mekanism:elite_energy_cube",
+        "item:mekanism:ultimate_energy_cube",
+        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{EnergyContainers:[1.8446744073709552E19d]},\"mekanism:side_config\":{config:{energy:{side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}}}}}"
+      ],
+      "text": [
+        "alias.mekanism.item_charger",
+        "alias.mekanism.storage.energy",
+        "alias.mekanism.storage.energy.battery"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:energy_tablet",
+      "text": [
+        "alias.mekanism.storage.energy",
+        "alias.mekanism.storage.energy.battery"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:creative_bin",
+        "item:mekanism:creative_fluid_tank",
+        "item:mekanism:creative_chemical_tank",
+        "item:mekanism:creative_energy_cube{\"mekanism:side_config\":{config:{energy:{side:{back:\"input\",bottom:\"input\",front:\"input\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
+      ],
+      "text": [
+        "alias.mekanism.storage.trash",
+        "alias.mekanism.storage.void"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_universal_cable",
+        "item:mekanism:advanced_universal_cable",
+        "item:mekanism:elite_universal_cable",
+        "item:mekanism:ultimate_universal_cable"
+      ],
+      "text": [
+        "alias.mekanism.transfer.energy",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.pipe",
+        "alias.mekanism.transmitter.tube"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_thermodynamic_conductor",
+        "item:mekanism:advanced_thermodynamic_conductor",
+        "item:mekanism:elite_thermodynamic_conductor",
+        "item:mekanism:ultimate_thermodynamic_conductor"
+      ],
+      "text": [
+        "alias.mekanism.transfer.heat",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.pipe",
+        "alias.mekanism.transmitter.tube"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_mechanical_pipe",
+        "item:mekanism:advanced_mechanical_pipe",
+        "item:mekanism:elite_mechanical_pipe",
+        "item:mekanism:ultimate_mechanical_pipe"
+      ],
+      "text": [
+        "alias.mekanism.transfer.fluid",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.tube"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_logistical_transporter",
+        "item:mekanism:advanced_logistical_transporter",
+        "item:mekanism:elite_logistical_transporter",
+        "item:mekanism:ultimate_logistical_transporter",
+        "item:mekanism:restrictive_transporter",
+        "item:mekanism:diversion_transporter"
+      ],
+      "text": [
+        "alias.mekanism.transfer.item",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.pipe",
+        "alias.mekanism.transmitter.tube"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:diversion_transporter",
+      "text": "alias.mekanism.redstone_control"
+    },
+    {
+      "stacks": "item:mekanism:logistical_sorter",
+      "text": [
+        "alias.mekanism.round_robin",
+        "alias.mekanism.transfer.item"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_pressurized_tube",
+        "item:mekanism:advanced_pressurized_tube",
+        "item:mekanism:elite_pressurized_tube",
+        "item:mekanism:ultimate_pressurized_tube"
+      ],
+      "text": [
+        "alias.mekanism.transfer.chemical",
+        "alias.mekanism.transfer.gas",
+        "alias.mekanism.transfer.infuse_type",
+        "alias.mekanism.transfer.infusion",
+        "alias.mekanism.transfer.pigment",
+        "alias.mekanism.transfer.slurry",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.pipe"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:quantum_entangloporter",
+      "text": [
+        "alias.mekanism.qe.ender.tank",
+        "alias.mekanism.qe.tesseract",
+        "alias.mekanism.transfer.chemical",
+        "alias.mekanism.transfer.energy",
+        "alias.mekanism.transfer.fluid",
+        "alias.mekanism.transfer.gas",
+        "alias.mekanism.transfer.heat",
+        "alias.mekanism.transfer.infuse_type",
+        "alias.mekanism.transfer.infusion",
+        "alias.mekanism.transfer.item",
+        "alias.mekanism.transfer.pigment",
+        "alias.mekanism.transfer.slurry",
+        "alias.mekanism.transmitter",
+        "alias.mekanism.transmitter.conduit",
+        "alias.mekanism.transmitter.pipe",
+        "alias.mekanism.transmitter.tube"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_speed",
+      "text": [
+        "alias.mekanism.upgrade.augment",
+        "alias.mekanism.upgrade.overclock"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_energy",
+      "text": [
+        "alias.mekanism.storage.energy",
+        "alias.mekanism.upgrade.augment"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_filter",
+      "text": "alias.mekanism.upgrade.augment"
+    },
+    {
+      "stacks": "item:mekanism:upgrade_muffling",
+      "text": [
+        "alias.mekanism.upgrade.augment",
+        "alias.mekanism.upgrade.muffler"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_gas",
+      "text": [
+        "alias.mekanism.upgrade.augment",
+        "alias.mekanism.upgrade.chemical"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_anchor",
+      "text": [
+        "alias.mekanism.chunk_loader",
+        "alias.mekanism.upgrade.augment"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:upgrade_stone_generator",
+      "text": [
+        "alias.mekanism.upgrade.augment",
+        "alias.mekanism.upgrade.hole_filler"
+      ]
+    },
+    {
+      "stacks": [
+        "item:mekanism:basic_tier_installer",
+        "item:mekanism:advanced_tier_installer",
+        "item:mekanism:elite_tier_installer",
+        "item:mekanism:ultimate_tier_installer"
+      ],
+      "text": [
+        "alias.mekanism.installer.factory",
+        "alias.mekanism.installer.upgrade"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:crafting_formula",
+      "text": "alias.mekanism.crafting.pattern"
+    },
+    {
+      "stacks": "item:mekanism:formulaic_assemblicator",
+      "text": "alias.mekanism.crafting.auto"
+    },
+    {
+      "stacks": "item:mekanism:dimensional_stabilizer",
+      "text": "alias.mekanism.chunk_loader"
+    },
+    {
+      "stacks": "item:mekanism:fluidic_plenisher",
+      "text": [
+        "alias.mekanism.plenisher.placer",
+        "alias.mekanism.plenisher.reverse"
+      ]
+    },
+    {
+      "stacks": "item:mekanism:oredictionificator",
+      "text": "alias.mekanism.tag_converter"
+    },
+    {
+      "stacks": "item:mekanism:rotary_condensentrator",
+      "text": [
+        "alias.mekanism.rotary.chemical_to_fluid",
+        "alias.mekanism.rotary.decondensentrator",
+        "alias.mekanism.rotary.fluid_to_chemical",
+        "alias.mekanism.rotary.fluid_to_gas",
+        "alias.mekanism.rotary.gas_to_fluid"
+      ]
+    }
+  ]
+}

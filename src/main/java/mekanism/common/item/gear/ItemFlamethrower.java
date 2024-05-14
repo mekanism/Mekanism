@@ -151,7 +151,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
 
     @Override
     public void addItems(Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGases.HYDROGEN));
+        tabOutput.accept(ChemicalUtil.getFilledVariant(this, MekanismGases.HYDROGEN));
     }
 
     @Override
