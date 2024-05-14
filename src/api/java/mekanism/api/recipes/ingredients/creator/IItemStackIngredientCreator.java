@@ -1,9 +1,13 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,8 +41,17 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         stack = stack.copy();
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
-        if (!stack.getComponentsPatch().isEmpty()) {
-            return from(DataComponentIngredient.of(false, stack), amount);
+        if (!stack.isComponentsPatchEmpty()) {
+            DataComponentPredicate.Builder builder = DataComponentPredicate.builder();
+            for (Map.Entry<DataComponentType<?>, Optional<?>> entry : stack.getComponentsPatch().entrySet()) {
+                Optional<?> value = entry.getValue();
+                //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
+                if (value.isPresent()) {
+                    //noinspection rawtypes,unchecked
+                    builder.expect((DataComponentType) entry.getKey(), value);
+                }
+            }
+            return from(DataComponentIngredient.of(false, builder.build(), stack.getItemHolder()), amount);
         }
         return from(Ingredient.of(stack), amount);
     }

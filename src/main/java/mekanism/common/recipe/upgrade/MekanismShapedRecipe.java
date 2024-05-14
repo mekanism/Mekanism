@@ -37,7 +37,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
         List<ItemStack> componentInputs = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);
-            if (!stack.isEmpty() && !stack.getComponentsPatch().isEmpty()) {
+            if (!stack.isEmpty() && !stack.isComponentsPatchEmpty()) {
                 componentInputs.add(stack);
             }
         }
