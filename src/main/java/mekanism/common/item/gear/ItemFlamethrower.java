@@ -40,7 +40,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -151,7 +150,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IGasItem
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGases.HYDROGEN));
     }
 

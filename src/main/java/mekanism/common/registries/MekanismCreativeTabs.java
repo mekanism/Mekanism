@@ -139,7 +139,7 @@ public class MekanismCreativeTabs {
                   MekanismItems.ARMORED_FREE_RUNNERS, MekanismItems.ARMORED_JETPACK);
         } else if (tabKey == CreativeModeTabs.FOOD_AND_DRINKS) {
             //Only add the filled canteen
-            MekanismItems.CANTEEN.get().addItems(event);
+            MekanismItems.CANTEEN.get().addItems(stack -> event.accept(stack, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY));
         } else if (tabKey == CreativeModeTabs.INGREDIENTS) {
             CreativeTabDeferredRegister.addToDisplay(event,
                   MekanismItems.MODULE_BASE, MekanismItems.INFUSED_ALLOY, MekanismItems.REINFORCED_ALLOY, MekanismItems.ATOMIC_ALLOY,

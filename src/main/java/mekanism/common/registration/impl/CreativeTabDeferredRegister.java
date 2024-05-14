@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
@@ -65,13 +66,21 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
     }
 
     public static void addToDisplay(CreativeModeTab.Output output, ItemLike itemLike) {
+        CreativeModeTab.TabVisibility visibility;
+        if (output instanceof BuildCreativeModeTabContentsEvent) {
+            //If we are added from the event, only add the item to the parent tab, as we will already be contained in the search tab
+            // from when we are adding to our tabs
+            visibility = CreativeModeTab.TabVisibility.PARENT_TAB_ONLY;
+        } else {
+            visibility = CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS;
+        }
         if (itemLike.asItem() instanceof ICustomCreativeTabContents contents) {
             if (contents.addDefault()) {
-                output.accept(itemLike);
+                output.accept(itemLike, visibility);
             }
-            contents.addItems(output);
+            contents.addItems(stack -> output.accept(stack, visibility));
         } else {
-            output.accept(itemLike);
+            output.accept(itemLike, visibility);
         }
     }
 
@@ -99,7 +108,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
 
     public interface ICustomCreativeTabContents {
 
-        void addItems(CreativeModeTab.Output tabOutput);
+        void addItems(Consumer<ItemStack> addToTab);
 
         default boolean addDefault() {
             return true;

@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -13,7 +14,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -25,7 +25,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
@@ -54,7 +53,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
     }
 

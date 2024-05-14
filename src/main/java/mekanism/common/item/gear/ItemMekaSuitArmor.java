@@ -81,7 +81,6 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -261,7 +260,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 

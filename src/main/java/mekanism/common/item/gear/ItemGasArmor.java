@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -10,7 +11,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -46,7 +46,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), getGasType()));
     }
 }

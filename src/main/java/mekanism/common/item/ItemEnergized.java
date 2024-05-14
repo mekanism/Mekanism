@@ -1,11 +1,11 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,7 +39,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this)));
     }
 

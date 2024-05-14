@@ -1,6 +1,7 @@
 package mekanism.generators.common.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
@@ -12,13 +13,10 @@ import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
 
@@ -62,7 +60,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput) {
+    public void addItems(Consumer<ItemStack> tabOutput) {
         tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), GeneratorsGases.FUSION_FUEL));
     }
 }
