@@ -2,16 +2,19 @@ package mekanism.client.integration.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.integration.MekanismAliases;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.IResource;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -180,6 +183,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
     }
 
     private void addStorageAliases() {
+        addStorageBlockAliases();
         addQIOAliases();
         addAliases(List.of(
               MekanismBlocks.BASIC_BIN,
@@ -235,6 +239,18 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
               EmiStack.of(MekanismBlocks.CREATIVE_CHEMICAL_TANK),
               EmiStack.of(ItemBlockEnergyCube.withEnergyCubeSideConfig(MekanismBlocks.CREATIVE_ENERGY_CUBE, ItemBlockEnergyCube.ALL_INPUT))
         ), MekanismAliases.STORAGE_TRASHCAN, MekanismAliases.STORAGE_VOID);
+    }
+
+    private void addStorageBlockAliases() {
+        addAliases(MekanismBlocks.BRONZE_BLOCK, MekanismAliases.BLOCK_BRONZE);
+        addAliases(MekanismBlocks.CHARCOAL_BLOCK, MekanismAliases.BLOCK_CHARCOAL);
+        addAliases(MekanismBlocks.STEEL_BLOCK, MekanismAliases.BLOCK_STEEL);
+        addAliases(MekanismBlocks.FLUORITE_BLOCK, MekanismAliases.BLOCK_FLUORITE);
+        //Dynamic storage blocks
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            BlockRegistryObject<?, ?> block = entry.getValue();
+            addAliases(block, () -> Util.makeDescriptionId("alias", block.getId().withPath(entry.getKey().getRegistrySuffix())));
+        }
     }
 
     private void addQIOAliases() {

@@ -466,17 +466,18 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
         addOre(OreType.LEAD, "A somewhat rare metal that is excellent at resisting radioactive particles.");
         //Storage blocks
-        add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
+        add(MekanismBlocks.BRONZE_BLOCK, "Block of Bronze");
+        add(MekanismBlocks.CHARCOAL_BLOCK, "Block of Charcoal");
+        add(MekanismBlocks.STEEL_BLOCK, "Block of Steel");
+        add(MekanismBlocks.FLUORITE_BLOCK, "Block of Fluorite");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
-        add(MekanismBlocks.CHARCOAL_BLOCK, "Charcoal Block");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
-        add(MekanismBlocks.STEEL_BLOCK, "Steel Block");
-        add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             IResource key = entry.getKey();
             String name = formatAndCapitalize(key.getRegistrySuffix());
-            add(entry.getValue(), name + " Block");
+            add(entry.getValue(), "Block of " + name);
+            addAlias(key.getRegistrySuffix(), name + " Block");
             addTag(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(key), name + " Storage Blocks");
         }
 

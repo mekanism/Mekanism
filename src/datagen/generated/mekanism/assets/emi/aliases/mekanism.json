@@ -388,6 +388,54 @@
       ]
     },
     {
+      "stacks": "item:mekanism:block_bronze",
+      "text": "alias.mekanism.block.bronze"
+    },
+    {
+      "stacks": "item:mekanism:block_charcoal",
+      "text": "alias.mekanism.block.charcoal"
+    },
+    {
+      "stacks": "item:mekanism:block_steel",
+      "text": "alias.mekanism.block.steel"
+    },
+    {
+      "stacks": "item:mekanism:block_fluorite",
+      "text": "alias.mekanism.block.fluorite"
+    },
+    {
+      "stacks": "item:mekanism:block_osmium",
+      "text": "alias.mekanism.osmium"
+    },
+    {
+      "stacks": "item:mekanism:block_raw_osmium",
+      "text": "alias.mekanism.raw_osmium"
+    },
+    {
+      "stacks": "item:mekanism:block_tin",
+      "text": "alias.mekanism.tin"
+    },
+    {
+      "stacks": "item:mekanism:block_raw_tin",
+      "text": "alias.mekanism.raw_tin"
+    },
+    {
+      "stacks": "item:mekanism:block_lead",
+      "text": "alias.mekanism.lead"
+    },
+    {
+      "stacks": "item:mekanism:block_raw_lead",
+      "text": "alias.mekanism.raw_lead"
+    },
+    {
+      "stacks": "item:mekanism:block_uranium",
+      "text": "alias.mekanism.uranium"
+    },
+    {
+      "stacks": "item:mekanism:block_raw_uranium",
+      "text": "alias.mekanism.raw_uranium"
+    },
+    {
       "stacks": "item:mekanism:qio_redstone_adapter",
       "text": [
         "alias.mekanism.qio.adapter.emitter",

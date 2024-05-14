@@ -6,7 +6,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import net.minecraft.Util;
 
-//TODO - 1.20.5: Osmium Block (and other storage blocks) -> Block of Osmium (etc, though maybe we want to change the base lang entry instead for some to better match vanilla)
 @NothingNullByDefault
 public enum MekanismAliases implements IAliasedTranslation {
     BIN_DRAWER("bin.drawer", "Drawer"),
@@ -16,6 +15,11 @@ public enum MekanismAliases implements IAliasedTranslation {
     REDSTONE_CONTROL("redstone_control", "Redstone Control"),
     ROUND_ROBIN("round_robin", "Round-Robin"),
     TAG_CONVERTER("tag_converter", "Tag Converter"),
+    //Storage Block
+    BLOCK_BRONZE("block.bronze", "Bronze Block"),
+    BLOCK_CHARCOAL("block.charcoal", "Charcoal Block"),
+    BLOCK_STEEL("block.steel", "Steel Block"),
+    BLOCK_FLUORITE("block.fluorite", "Fluorite Block"),
     //Canteen
     CANTEEN_EDIBLE("canteen.edible", "Edible"),
     CANTEEN_FOOD_STORAGE("canteen.storage", "Food Storage"),
