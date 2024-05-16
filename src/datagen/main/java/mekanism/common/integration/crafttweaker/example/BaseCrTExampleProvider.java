@@ -37,7 +37,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIng
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -53,14 +52,9 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
-import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -294,77 +288,56 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
-              (imports, ingredient) -> {
-                  if (ingredient instanceof SingleItemStackIngredient single) {
-                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw());
-                  }
-                  return null;
-              });
+              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient()));
     }
 
     @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
-        if (ingredient instanceof SingleItemStackIngredient single) {
-            SizedIngredient vanillaIngredient = single.getInputRaw();
-            int amount = vanillaIngredient.count();
-            String representation = null;
-            if (amount > 1) {
-                //Special case handling for when we would want to use a different constructor
-                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
-                if (representation != null) {
-                    amount = 1;
-                }
+        SizedIngredient vanillaIngredient = ingredient.ingredient();
+        int amount = vanillaIngredient.count();
+        String representation = null;
+        if (amount > 1) {
+            //Special case handling for when we would want to use a different constructor
+            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
+            if (representation != null) {
+                amount = 1;
             }
-            if (representation == null) {
-                representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
-            }
-            String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
-            if (amount == 1) {
-                return path + ".from(" + representation + ")";
-            }
-            return path + ".from(" + representation + ", " + amount + ")";
-        } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
-            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_ITEM_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
-        return null;
+        if (representation == null) {
+            representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+        }
+        String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
+        if (amount == 1) {
+            return path + ".from(" + representation + ")";
+        }
+        return path + ".from(" + representation + ", " + amount + ")";
     }
 
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
-              (imports, ingredient) -> {
-                  if (ingredient instanceof SingleFluidStackIngredient single) {
-                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw());
-                  }
-                  return null;
-              });
+              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient()));
     }
 
-    @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
-        if (ingredient instanceof SingleFluidStackIngredient single) {
-            SizedFluidIngredient vanillaIngredient = single.getInputRaw();
-            int amount = vanillaIngredient.amount();
-            String representation = null;
-            if (amount > 1) {
-                //Special case handling for when we would want to use a different constructor
-                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
-                if (representation != null) {
-                    amount = 1;
-                }
+        SizedFluidIngredient vanillaIngredient = ingredient.ingredient();
+        int amount = vanillaIngredient.amount();
+        String representation = null;
+        if (amount > 1) {
+            //Special case handling for when we would want to use a different constructor
+            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
+            if (representation != null) {
+                amount = 1;
             }
-            if (representation == null) {
-                //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
-                //representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
-            }
-            String path = imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT);
-            if (amount == 1) {
-                return path + ".from(" + representation + ")";
-            }
-            return path + ".from(" + representation + ", " + amount + ")";
-        } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
-            return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
-        return null;
+        if (representation == null) {
+            //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+            //representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+        }
+        String path = imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT);
+        if (amount == 1) {
+            return path + ".from(" + representation + ")";
+        }
+        return path + ".from(" + representation + ", " + amount + ")";
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
@@ -397,33 +370,21 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = tagManager.tag(tagged.getTag()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            return getMultiIngredientRepresentation(ingredientType, multiIngredient, i -> getIngredientRepresentation(i, ingredientType, singleDescription, tagManager));
-        }
-        return null;
-    }
-
-    @Nullable
-    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String getMultiIngredientRepresentation(CrTImportsComponent imports, String crtClass,
-          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, BiFunction<CrTImportsComponent, INGREDIENT, String> basicRepresentation) {
-        return getMultiIngredientRepresentation(imports.addImport(crtClass), multiIngredient, ingredient -> basicRepresentation.apply(imports, ingredient));
-    }
-
-    @Nullable
-    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String getMultiIngredientRepresentation(String type,
-          IMultiIngredient<TYPE, INGREDIENT> multiIngredient, Function<INGREDIENT, String> basicRepresentation) {
-        StringBuilder builder = new StringBuilder(type + ".createMulti(");
-        if (!multiIngredient.forEachIngredient(i -> {
-            String rep = basicRepresentation.apply(i);
-            if (rep == null) {
-                return true;
+            StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
+            if (!multiIngredient.forEachIngredient(i -> {
+                String rep = getIngredientRepresentation(i, ingredientType, singleDescription, tagManager);
+                if (rep == null) {
+                    return true;
+                }
+                builder.append(rep).append(", ");
+                return false;
+            })) {
+                //Remove trailing comma and space
+                builder.setLength(builder.length() - 2);
+                builder.append(")");
+                return builder.toString();
             }
-            builder.append(rep).append(", ");
-            return false;
-        })) {
-            //Remove trailing comma and space
-            builder.setLength(builder.length() - 2);
-            builder.append(")");
-            return builder.toString();
+            return null;
         }
         return null;
     }

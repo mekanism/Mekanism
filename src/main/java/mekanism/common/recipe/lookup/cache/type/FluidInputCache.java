@@ -3,8 +3,6 @@ package mekanism.common.recipe.lookup.cache.type;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.lib.collection.FluidHashStrategy;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
@@ -19,14 +17,7 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends ComponentSen
 
     @Override
     public boolean mapInputs(RECIPE recipe, FluidStackIngredient inputIngredient) {
-        if (inputIngredient instanceof SingleFluidStackIngredient single) {
-            return mapIngredient(recipe, single.getInputRaw().ingredient());
-        } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {
-            return mapMultiInputs(recipe, multi);
-        }
-        //This should never really happen as we don't really allow for custom ingredients especially for networking,
-        // but if it does add it as a fallback
-        return true;
+        return mapIngredient(recipe, inputIngredient.ingredient().ingredient());
     }
 
     private boolean mapIngredient(RECIPE recipe, FluidIngredient input) {

@@ -142,5 +142,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @throws IllegalArgumentException if the given instance is empty.
      * @since 10.6.0
      */
-    ItemStackIngredient from(SizedIngredient ingredient);
+    default ItemStackIngredient from(SizedIngredient ingredient) {
+        return ItemStackIngredient.of(ingredient);
+    }
 }

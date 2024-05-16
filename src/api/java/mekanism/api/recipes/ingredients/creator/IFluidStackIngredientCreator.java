@@ -36,6 +36,8 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
 
     @Override
     default FluidStackIngredient from(FluidStack instance) {
+        //TODO - 1.20.5: Helper for this and item stack ingredient creator to create compound ingredients?
+        // Maybe by having a var-arg variant of this?
         Objects.requireNonNull(instance, "FluidStackIngredients cannot be created from a null FluidStack.");
         if (instance.isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty stack.");
@@ -81,5 +83,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      * @throws IllegalArgumentException if the given instance is empty.
      * @since 10.6.0
      */
-    FluidStackIngredient from(SizedFluidIngredient ingredient);
+    default FluidStackIngredient from(SizedFluidIngredient ingredient) {
+        return FluidStackIngredient.of(ingredient);
+    }
 }

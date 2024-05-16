@@ -1,6 +1,7 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -64,4 +65,29 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
     INGREDIENT from(TagKey<CHEMICAL> tag, long amount);
+
+    /**
+     * Combines multiple Ingredients into a single Ingredient.
+     *
+     * @param ingredients Ingredients to combine.
+     *
+     * @return Combined Ingredient.
+     *
+     * @throws NullPointerException     if the given array is null.
+     * @throws IllegalArgumentException if the given array is empty.
+     */
+    @SuppressWarnings("unchecked")
+    INGREDIENT createMulti(INGREDIENT... ingredients);
+
+    /**
+     * Creates an Ingredient out of a stream of Ingredients.
+     *
+     * @param ingredients Ingredient(s) to combine.
+     *
+     * @return Given Ingredient or Combined Ingredient if multiple were in the stream.
+     *
+     * @throws NullPointerException     if the given stream is null.
+     * @throws IllegalArgumentException if the given stream is empty.
+     */
+    INGREDIENT from(Stream<INGREDIENT> ingredients);
 }

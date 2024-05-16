@@ -8,6 +8,7 @@ import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
@@ -18,6 +19,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -99,20 +102,10 @@ public class CrTFluidStackIngredient {
               //Note: The ingredient creator will copy the stack to ensure it does not get modified
               fluidStack -> ingredientCreator.from(fluidStack.<FluidStack>getInternal()),
               ingredientCreator::from,
-              ingredientCreator::from
-        );
-    }
+              //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+              stream -> stream.reduce(CrTFluidStackIngredient::or).orElseThrow()
 
-    /**
-     * Combines multiple {@link FluidStackIngredient}s into a single {@link FluidStackIngredient}.
-     *
-     * @param ingredients Ingredients to combine
-     *
-     * @return A single {@link FluidStackIngredient} representing all the passed in ingredients.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static FluidStackIngredient createMulti(FluidStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("FluidStackIngredients", IngredientCreatorAccess.fluid(), ingredients);
+        );
     }
 
     /**
@@ -123,7 +116,7 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(FluidStackIngredient _this) {
-        return IngredientCreatorAccess.fluid().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return FluidStackIngredient.CODEC.encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**
@@ -198,6 +191,20 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static FluidStackIngredient or(FluidStackIngredient _this, FluidStackIngredient other) {
-        return IngredientCreatorAccess.fluid().createMulti(_this, other);
+        if (_this.ingredient().amount() != other.ingredient().amount()) {
+            throw new IllegalStateException("FluidStack ingredients can only be or'd if they have the same counts");
+        }
+        List<FluidIngredient> ingredients = new ArrayList<>();
+        addIngredient(ingredients, _this.ingredient().ingredient());
+        addIngredient(ingredients, other.ingredient().ingredient());
+        return IngredientCreatorAccess.fluid().from(CompoundFluidIngredient.of(ingredients.toArray(FluidIngredient[]::new)), _this.ingredient().amount());
+    }
+
+    private static void addIngredient(List<FluidIngredient> ingredients, FluidIngredient ingredient) {
+        if (ingredient instanceof CompoundFluidIngredient compoundIngredient) {
+            ingredients.addAll(compoundIngredient.children());
+        } else {
+            ingredients.add(ingredient);
+        }
     }
 }

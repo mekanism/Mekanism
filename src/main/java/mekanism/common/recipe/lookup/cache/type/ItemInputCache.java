@@ -3,8 +3,6 @@ package mekanism.common.recipe.lookup.cache.type;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.lib.collection.ItemHashStrategy;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,14 +17,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends ComponentSens
 
     @Override
     public boolean mapInputs(RECIPE recipe, ItemStackIngredient inputIngredient) {
-        if (inputIngredient instanceof SingleItemStackIngredient single) {
-            return mapIngredient(recipe, single.getInputRaw().ingredient());
-        } else if (inputIngredient instanceof MultiItemStackIngredient multi) {
-            return mapMultiInputs(recipe, multi);
-        }
-        //This should never really happen as we don't really allow for custom ingredients especially for networking,
-        // but if it does add it as a fallback
-        return true;
+        return mapIngredient(recipe, inputIngredient.ingredient().ingredient());
     }
 
     private boolean mapIngredient(RECIPE recipe, Ingredient input) {
