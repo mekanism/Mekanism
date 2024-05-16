@@ -14,7 +14,6 @@ import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -26,7 +25,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 @NothingNullByDefault
 public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecipe> {
 
-    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredientCreator.INSTANCE.codec().validate(
+    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC.validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(JsonConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(JsonConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
@@ -93,7 +92,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
 
         //Note: This doesn't need to be optional gas, as we only use this if we have a fluid to gas recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidToGas> STREAM_CODEC = StreamCodec.composite(
-              IngredientCreatorAccess.fluid().streamCodec(), FluidToGas::input,
+              FluidStackIngredient.STREAM_CODEC, FluidToGas::input,
               GasStack.STREAM_CODEC, FluidToGas::output,
               FluidToGas::new
         );

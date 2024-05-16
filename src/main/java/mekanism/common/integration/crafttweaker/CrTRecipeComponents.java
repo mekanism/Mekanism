@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker.api.recipe.component.RecipeComponentEqualityCheckers;
 import com.google.gson.reflect.TypeToken;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +38,9 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.recipe.ingredient.IMultiIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 
 public class CrTRecipeComponents {
 
@@ -61,20 +62,16 @@ public class CrTRecipeComponents {
           Mekanism.rl("input/item"),
           new TypeToken<>() {},
           CrTRecipeComponents::ingredientsMatch,
-          CrTRecipeComponents::unwrapIngredient,
-          ingredients -> IngredientCreatorAccess.item().from(ingredients.stream())
+          Collections::singletonList,
+          ingredients -> ingredients.stream().reduce(CrTItemStackIngredient::or).orElseThrow()
     ), BuiltinRecipeComponents.Output.ITEMS);
     public static final PairedRecipeComponent<FluidStackIngredient, IFluidStack> FLUID = new PairedRecipeComponent<>(IRecipeComponent.composite(
           Mekanism.rl("input/fluid"),
           new TypeToken<>() {},
           CrTRecipeComponents::ingredientsMatch,
-          CrTRecipeComponents::unwrapIngredient,
-          ingredients -> IngredientCreatorAccess.fluid().from(ingredients.stream())
-    ), IRecipeComponent.simple(
-          Mekanism.rl("output/fluid"),
-          new TypeToken<>() {},
-          RecipeComponentEqualityCheckers::areFluidStacksEqual
-    ));
+          Collections::singletonList,
+          ingredients -> ingredients.stream().reduce(CrTFluidStackIngredient::or).orElseThrow()
+    ), BuiltinRecipeComponents.Output.FLUIDS);
 
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")
@@ -116,13 +113,6 @@ public class CrTRecipeComponents {
         return Objects.equals(a, b) || a.getRepresentations().stream().allMatch(b) && b.getRepresentations().stream().allMatch(a);
     }
 
-    private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> Collection<INGREDIENT> unwrapIngredient(INGREDIENT ingredient) {
-        if (ingredient instanceof IMultiIngredient) {
-            return ((IMultiIngredient<TYPE, INGREDIENT>) ingredient).getIngredients();
-        }
-        return Collections.singletonList(ingredient);
-    }
-
     public record PairedRecipeComponent<INPUT, OUTPUT>(IRecipeComponent<INPUT> input, IRecipeComponent<OUTPUT> output) {
     }
 
@@ -141,7 +131,12 @@ public class CrTRecipeComponents {
                   Mekanism.rl("input/" + chemicalType.getSerializedName()),
                   inputType,
                   CrTRecipeComponents::ingredientsMatch,
-                  CrTRecipeComponents::unwrapIngredient,
+                  ingredient -> {
+                      if (ingredient instanceof MultiChemicalStackIngredient) {
+                          return ((MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>) ingredient).getIngredients();
+                      }
+                      return Collections.singletonList(ingredient);
+                  },
                   ingredients -> ingredientCreator.from(ingredients.stream())
             ), IRecipeComponent.simple(
                   Mekanism.rl("output/" + chemicalType.getSerializedName()),

@@ -12,7 +12,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,7 +31,7 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
         RecordCodecBuilder<BasicSawmillRecipe, Optional<ItemStack>> secondaryOutputField = ItemStack.CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(BasicSawmillRecipe::getSecondaryOutputRaw);
 
         this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
-              IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),
+              ItemStackIngredient.CODEC.fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),
               SerializerHelper.oneRequired(secondaryOutputField, mainOutputFieldBase, BasicSawmillRecipe::getMainOutputRaw),
               secondaryOutputField,
               SerializerHelper.dependentOptionality(secondaryOutputField, secondaryChanceFieldBase, sawmillRecipe -> {
@@ -43,7 +42,7 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
               factory.apply(input, mainOutput.orElse(ItemStack.EMPTY), secondaryOutput.orElse(ItemStack.EMPTY), secondChance.orElse(0D))
         ));
         this.streamCodec = StreamCodec.composite(
-              IngredientCreatorAccess.item().streamCodec(), SawmillRecipe::getInput,
+              ItemStackIngredient.STREAM_CODEC, SawmillRecipe::getInput,
               ItemStack.OPTIONAL_STREAM_CODEC, (BasicSawmillRecipe recipe) -> recipe.getMainOutputRaw().orElse(ItemStack.EMPTY),
               ItemStack.OPTIONAL_STREAM_CODEC, (BasicSawmillRecipe recipe) -> recipe.getSecondaryOutputRaw().orElse(ItemStack.EMPTY),
               ByteBufCodecs.DOUBLE, SawmillRecipe::getSecondaryChance,

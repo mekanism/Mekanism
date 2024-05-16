@@ -22,7 +22,7 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
                 }
             }
             case MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multi -> {
-                return mapMultiInputs(recipe, multi);
+                return multi.forEachIngredient(recipe, this::mapInputs);
             }
             default -> {
                 //This should never really happen as we don't really allow for custom ingredients especially for networking,

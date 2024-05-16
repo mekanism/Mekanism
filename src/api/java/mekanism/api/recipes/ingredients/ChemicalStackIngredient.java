@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
  */
 public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NotNull STACK>,
-      IEmptyStackProvider<CHEMICAL, STACK> {
+      IEmptyStackProvider<CHEMICAL, STACK> {//TODO - 1.20.5: Rewrite this to be more like neo's fluid ingredient system
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -31,6 +31,15 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
     boolean testType(@NotNull CHEMICAL chemical);
+
+    /**
+     * Gets the implementation type of this ingredient. For the most part this won't matter to consumers, as we just use this as part of the codec implementations.
+     *
+     * @return Size/Implementation Type of this ingredient.
+     *
+     * @since 10.6.0
+     */
+    IngredientType getType();
 
     /**
      * Base implementation for how Mekanism handle's GasStack Ingredients.

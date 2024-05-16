@@ -21,7 +21,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.IngredientType;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
     public static <
           CHEMICAL extends Chemical<CHEMICAL>,
@@ -50,7 +49,9 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         this.ingredients = ingredients;
     }
 
-    @Override
+    /**
+     * @apiNote For use in flattening multi ingredients, this should return an immutable view.
+     */
     public final List<INGREDIENT> getIngredients() {
         return List.of(ingredients);
     }
@@ -126,7 +127,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return representations;
     }
 
-    @Override
+    /**
+     * For use in recipe input caching, checks all ingredients even if some match.
+     *
+     * @return {@code true} if any ingredient matches.
+     */
     public boolean forEachIngredient(Predicate<INGREDIENT> checker) {
         boolean result = false;
         for (INGREDIENT ingredient : ingredients) {
@@ -135,7 +140,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         return result;
     }
 
-    @Override
+    /**
+     * For use in recipe input caching, checks all ingredients even if some match.
+     *
+     * @return {@code true} if any ingredient matches.
+     */
     public <DATA> boolean forEachIngredient(DATA data, BiPredicate<DATA, INGREDIENT> checker) {
         boolean result = false;
         for (INGREDIENT ingredient : ingredients) {

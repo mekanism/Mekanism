@@ -1,12 +1,134 @@
 package mekanism.api.recipes.ingredients;
 
+import com.mojang.serialization.Codec;
+import java.util.List;
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Base implementation for how Mekanism handle's FluidStack Ingredients.
+ * Implementation for how Mekanism handle's FluidStack Ingredients.
  * <p>
  * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()}.
+ *
+ * @implNote This is a wrapper around {@link SizedFluidIngredient}
  */
-public abstract class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {
+@NothingNullByDefault
+public final class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {
+
+    /**
+     * A codec which can (de)encode fluid stack ingredients.
+     *
+     * @implNote This must be a lazily initialized so that this class can be loaded in tests
+     * @since 10.6.0
+     */
+    public static final Codec<FluidStackIngredient> CODEC = Codec.lazyInitialized(() -> SizedFluidIngredient.FLAT_CODEC.xmap(
+          FluidStackIngredient::new, FluidStackIngredient::ingredient
+    ));
+    /**
+     * A stream codec which can be used to encode and decode fluid stack ingredients over the network.
+     *
+     * @implNote This must be a lazily initialized so that this class can be loaded in tests
+     * @since 10.6.0
+     */
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+          SizedFluidIngredient.STREAM_CODEC.map(FluidStackIngredient::new, FluidStackIngredient::ingredient)
+    );
+
+    /**
+     * Creates a Fluid Stack Ingredient that matches a given ingredient and amount. Prefer calling via
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#fluid()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator#from(SizedFluidIngredient)}.
+     *
+     * @param ingredient Sized ingredient to match.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty.
+     * @since 10.6.0
+     */
+    public static FluidStackIngredient of(SizedFluidIngredient ingredient) {
+        Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null ingredient.");
+        if (ingredient.ingredient().isEmpty()) {
+            throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty ingredient.");
+        }
+        return new FluidStackIngredient(ingredient);
+    }
+
+    private final SizedFluidIngredient ingredient;
+    @Nullable
+    private List<FluidStack> representations;
+
+    private FluidStackIngredient(SizedFluidIngredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    @Override
+    public boolean test(FluidStack stack) {
+        Objects.requireNonNull(stack);
+        return ingredient.test(stack);
+    }
+
+    @Override
+    public boolean testType(FluidStack stack) {
+        Objects.requireNonNull(stack);
+        return ingredient.ingredient().test(stack);
+    }
+
+    @Override
+    public FluidStack getMatchingInstance(FluidStack stack) {
+        return test(stack) ? stack.copyWithAmount(ingredient.amount()) : FluidStack.EMPTY;
+    }
+
+    @Override
+    public long getNeededAmount(FluidStack stack) {
+        return testType(stack) ? ingredient.amount() : 0;
+    }
+
+    @Override
+    public boolean hasNoMatchingInstances() {
+        return ingredient.ingredient().hasNoFluids();
+    }
+
+    @Override
+    public List<@NotNull FluidStack> getRepresentations() {
+        if (this.representations == null) {
+            this.representations = List.of(ingredient.getFluids());
+        }
+        return representations;
+    }
+
+    /**
+     * For use in recipe input caching. Gets the internal NeoSized  Fluid Ingredient.
+     *
+     * @since 10.6.0
+     */
+    @Internal
+    public SizedFluidIngredient ingredient() {
+        return ingredient;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FluidStackIngredient other = (FluidStackIngredient) o;
+        //TODO - 1.20.5: Replace this once sized ingredient implements equals and hashcode
+        return ingredient.amount() == other.ingredient.amount() && ingredient.ingredient().equals(other.ingredient.ingredient());
+    }
+
+    @Override
+    public int hashCode() {
+        //return ingredient.hashCode();
+        return Objects.hash(ingredient.amount(), ingredient.ingredient());
+    }
 }

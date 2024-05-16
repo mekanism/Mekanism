@@ -39,7 +39,6 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.MekanismClient;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
@@ -70,6 +69,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -223,15 +223,13 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                     if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();
-                        ItemStackIngredient input;
                         if (ingredients.isEmpty()) {
                             //Something went wrong
                             continue;
-                        } else {
-                            IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
-                            input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add(new RecipeHolder<>(RecipeViewerUtils.synthetic(smeltingRecipe.id(), "mekanism_generated"), castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
+                        ItemStackIngredient input = IngredientCreatorAccess.item().from(CompoundIngredient.of(ingredients.toArray(Ingredient[]::new)));
+                        recipes.add(new RecipeHolder<>(RecipeViewerUtils.synthetic(smeltingRecipe.id(), "mekanism_generated"),
+                              castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
                     }
                 }
             }

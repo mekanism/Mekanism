@@ -11,7 +11,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.IngredientType;
-import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
@@ -57,7 +56,7 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
                   return Either.left(ingredientClass.cast(input));
               }
         ).xmap(ingredientClass::cast, Function.identity());
-        myStreamCodec = IngredientType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(InputIngredient::getType, type -> (StreamCodec<RegistryFriendlyByteBuf, INGREDIENT>) switch (type) {
+        myStreamCodec = IngredientType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(ChemicalStackIngredient::getType, type -> (StreamCodec<RegistryFriendlyByteBuf, INGREDIENT>) switch (type) {
             case SINGLE -> singleStreamCodec;
             case TAGGED -> taggedStreamCodec;
             case MULTI -> multiStreamCodec;

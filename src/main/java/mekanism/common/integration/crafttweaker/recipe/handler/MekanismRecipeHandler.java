@@ -54,14 +54,9 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInf
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -74,7 +69,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> implements IRecipeHandler<RECIPE> {
@@ -234,43 +228,32 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(ItemStackIngredient ingredient) {
-        if (ingredient instanceof SingleItemStackIngredient single) {
-            SizedIngredient vanillaIngredient = single.getInputRaw();
-            int amount = vanillaIngredient.count();
-            String rep = basicImplicitIngredient(vanillaIngredient);
-            if (rep == null) {
-                rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
-                if (amount > 1) {
-                    return CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
-                }
+        SizedIngredient vanillaIngredient = ingredient.ingredient();
+        int amount = vanillaIngredient.count();
+        String rep = basicImplicitIngredient(vanillaIngredient);
+        if (rep == null) {
+            rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+            if (amount > 1) {
+                return CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
             }
-            //Note: Handled via implicit casts
-            return rep;
-        } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
-            return convertMultiIngredient(CrTConstants.CLASS_ITEM_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }
-        //Shouldn't happen
-        return "Unimplemented itemstack ingredient: " + ingredient;
+        //Note: Handled via implicit casts
+        return rep;
     }
 
     private String convertIngredient(FluidStackIngredient ingredient) {
-        if (ingredient instanceof SingleFluidStackIngredient single) {
-            SizedFluidIngredient vanillaIngredient = single.getInputRaw();
-            String rep = basicImplicitIngredient(vanillaIngredient);
-            if (rep == null) {
-                int amount = vanillaIngredient.amount();
-                //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
-                //rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
-                if (amount > 1) {
-                    return CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
-                }
+        SizedFluidIngredient vanillaIngredient = ingredient.ingredient();
+        String rep = basicImplicitIngredient(vanillaIngredient);
+        if (rep == null) {
+            int amount = vanillaIngredient.amount();
+            //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+            //rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+            if (amount > 1) {
+                return CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
             }
-            //Note: Handled via implicit casts
-            return rep;
-        } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
-            return convertMultiIngredient(CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }
-        return "Unimplemented fluidstack ingredient: " + ingredient;
+        //Note: Handled via implicit casts
+        return rep;
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
@@ -288,23 +271,18 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
         } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            return convertMultiIngredient(crtClass, multiIngredient, i -> convertIngredient(crtClass, tagManager, i));
+            StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
+            multiIngredient.forEachIngredient(i -> {
+                builder.append(convertIngredient(crtClass, tagManager, i)).append(", ");
+                return false;
+            });
+            //Remove trailing comma and space
+            builder.setLength(builder.length() - 2);
+            builder.append(")");
+            return builder.toString();
         }
         //Shouldn't happen
         return "Unimplemented chemical stack ingredient: " + ingredient;
-    }
-
-    private <TYPE, INGREDIENT extends InputIngredient<@NotNull TYPE>> String convertMultiIngredient(String crtClass, IMultiIngredient<TYPE, INGREDIENT> multiIngredient,
-          Function<INGREDIENT, String> converter) {
-        StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
-        multiIngredient.forEachIngredient(i -> {
-            builder.append(converter.apply(i)).append(", ");
-            return false;
-        });
-        //Remove trailing comma and space
-        builder.setLength(builder.length() - 2);
-        builder.append(")");
-        return builder.toString();
     }
 
     /**

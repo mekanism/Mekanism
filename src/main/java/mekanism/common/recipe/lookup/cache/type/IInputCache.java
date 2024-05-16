@@ -3,7 +3,6 @@ package mekanism.common.recipe.lookup.cache.type;
 import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import mekanism.common.recipe.ingredient.IMultiIngredient;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -64,19 +63,6 @@ public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, R
      * or {@code false} if we were able to fully cache the ingredient's components.
      */
     boolean mapInputs(RECIPE recipe, INGREDIENT inputIngredient);
-
-    /**
-     * Helper for mapping {@link IMultiIngredient}s and calling {@link #mapInputs(MekanismRecipe, InputIngredient)} for each sub ingredient.
-     *
-     * @param recipe Recipe the given ingredient is an input of.
-     * @param multi  Multi ingredient to map and cache.
-     *
-     * @return {@code true} if any part of the ingredient is complex and the {@link mekanism.common.recipe.lookup.cache.IInputRecipeCache} will need to do extra handling,
-     * or {@code false} if we were able to fully cache the ingredient's components.
-     */
-    default boolean mapMultiInputs(RECIPE recipe, IMultiIngredient<INPUT, ? extends INGREDIENT> multi) {
-        return multi.forEachIngredient(recipe, this::mapInputs);
-    }
 
     /**
      * Clears this {@link IInputCache}
