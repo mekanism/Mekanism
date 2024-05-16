@@ -2,7 +2,7 @@ package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.lib.collection.ItemHashStrategy;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.world.item.Item;
@@ -11,12 +11,16 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
-public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveInputCache<Item, HashedItem, ItemStack, ItemStackIngredient, RECIPE> {
+public class ItemInputCache<RECIPE extends MekanismRecipe> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
+
+    public ItemInputCache() {
+        super(ItemHashStrategy.INSTANCE);
+    }
 
     @Override
     public boolean mapInputs(RECIPE recipe, ItemStackIngredient inputIngredient) {
         if (inputIngredient instanceof SingleItemStackIngredient single) {
-            return mapIngredient(recipe, single.getInputRaw());
+            return mapIngredient(recipe, single.getInputRaw().ingredient());
         } else if (inputIngredient instanceof MultiItemStackIngredient multi) {
             return mapMultiInputs(recipe, multi);
         }
@@ -46,7 +50,9 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
         } else if (input.getCustomIngredient() instanceof DataComponentIngredient componentIngredient && componentIngredient.isStrict()) {
             //Special handling for neo's NBT Ingredient as it requires an exact component match
             for (ItemStack item : input.getItems()) {
-                addNbtInputCache(HashedItem.create(item), recipe);
+                //Note: We copy it with a count of one, as we need to copy it anyway to ensure nothing somehow causes our backing map to mutate it,
+                // so while we are at it, we just set the size to one, as we don't care about the size
+                addNbtInputCache(item.copyWithCount(1), recipe);
             }
         } else {
             //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
@@ -59,13 +65,6 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
     @Override
     protected Item createKey(ItemStack stack) {
         return stack.getItem();
-    }
-
-    @Override
-    protected HashedItem createNbtKey(ItemStack stack) {
-        //TODO: I don't think this is an issue currently but if it ever comes up we may need to create a
-        // version of HashedItem for input cache purposes that ignores cap data
-        return HashedItem.raw(stack);
     }
 
     @Override

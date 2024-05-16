@@ -32,7 +32,7 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
      *
      * @since 10.6.0
      */
-    private static final Codec<Pigment> PIGMENT_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.PIGMENT_REGISTRY);
+    public static final Codec<Pigment> PIGMENT_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.PIGMENT_REGISTRY);
     /**
      * A standard map codec for pigment stacks that does not accept empty stacks.
      *

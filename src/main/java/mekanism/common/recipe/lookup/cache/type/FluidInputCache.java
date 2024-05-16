@@ -2,32 +2,62 @@ package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.common.lib.collection.FluidHashStrategy;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
-public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveInputCache<Fluid, FluidStack, FluidStack, FluidStackIngredient, RECIPE> {
+public class FluidInputCache<RECIPE extends MekanismRecipe> extends ComponentSensitiveInputCache<Fluid, FluidStack, FluidStackIngredient, RECIPE> {
+
+    public FluidInputCache() {
+        super(FluidHashStrategy.INSTANCE);
+    }
 
     @Override
     public boolean mapInputs(RECIPE recipe, FluidStackIngredient inputIngredient) {
-        switch (inputIngredient) {
-            case SingleFluidStackIngredient single -> addNbtInputCache(single.getInputRaw(), recipe);
-            case TaggedFluidStackIngredient tagged -> {
-                for (Holder<Fluid> input : tagged.getRawInput()) {
-                    addInputCache(input, recipe);
+        if (inputIngredient instanceof SingleFluidStackIngredient single) {
+            return mapIngredient(recipe, single.getInputRaw().ingredient());
+        } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {
+            return mapMultiInputs(recipe, multi);
+        }
+        //This should never really happen as we don't really allow for custom ingredients especially for networking,
+        // but if it does add it as a fallback
+        return true;
+    }
+
+    private boolean mapIngredient(RECIPE recipe, FluidIngredient input) {
+        if (input.isSimple()) {
+            //Simple ingredients don't actually check anything related to NBT,
+            // so we can add the items to our base/raw input cache directly
+            for (FluidStack fluid : input.getStacks()) {
+                if (!fluid.isEmpty()) {
+                    //Ignore empty stacks as some mods have ingredients that some stacks are empty
+                    addInputCache(fluid.getFluid(), recipe);
                 }
             }
-            case MultiFluidStackIngredient multi -> {
-                return mapMultiInputs(recipe, multi);
+        } else if (input instanceof CompoundFluidIngredient compoundIngredient) {
+            //Special handling for neo's compound ingredient to map all children as best as we can
+            // as maybe some of them are simple
+            boolean result = false;
+            for (FluidIngredient child : compoundIngredient.children()) {
+                result |= mapIngredient(recipe, child);
             }
-            default -> {
-                //This should never really happen as we don't really allow for custom ingredients especially for networking,
-                // but if it does add it as a fallback
-                return true;
+            return result;
+        } else if (input instanceof DataComponentFluidIngredient componentIngredient && componentIngredient.isStrict()) {
+            //Special handling for neo's NBT Ingredient as it requires an exact component match
+            for (FluidStack fluid : input.getStacks()) {
+                //Note: We copy it with a count of one, as we need to copy it anyway to ensure nothing somehow causes our backing map to mutate it,
+                // so while we are at it, we just set the size to one, as we don't care about the size
+                addNbtInputCache(fluid.copyWithAmount(1), recipe);
             }
+        } else {
+            //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
+            // and instead have to just mark it as complex and test as needed
+            return true;
         }
         return false;
     }
@@ -35,13 +65,6 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitive
     @Override
     protected Fluid createKey(FluidStack stack) {
         return stack.getFluid();
-    }
-
-    @Override
-    protected FluidStack createNbtKey(FluidStack stack) {
-        //Note: We can use FluidStacks directly as the Nbt key as they compare only on fluid and tag on equals and hashcode
-        // and don't take the amount into account
-        return stack;
     }
 
     @Override

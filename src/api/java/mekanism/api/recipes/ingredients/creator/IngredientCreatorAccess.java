@@ -1,5 +1,7 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import java.util.Map;
+import java.util.Optional;
 import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.Gas;
@@ -14,6 +16,10 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponentType;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Provides access to helpers for creating various types of ingredients.
@@ -79,5 +85,27 @@ public class IngredientCreatorAccess {
      */
     public static IChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> slurry() {
         return IMekanismAccess.INSTANCE.slurryStackIngredientCreator();
+    }
+
+    /**
+     * Private helper to create a predicate out of a component patch.
+     *
+     * @since 10.6.0
+     */
+    @Nullable
+    static DataComponentPredicate getComponentPatchPredicate(DataComponentPatch patch) {
+        if (!patch.isEmpty()) {
+            DataComponentPredicate.Builder builder = DataComponentPredicate.builder();
+            for (Map.Entry<DataComponentType<?>, Optional<?>> entry : patch.entrySet()) {
+                Optional<?> value = entry.getValue();
+                //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
+                if (value.isPresent()) {
+                    //noinspection rawtypes,unchecked
+                    builder.expect((DataComponentType) entry.getKey(), value);
+                }
+            }
+            return builder.build();
+        }
+        return null;
     }
 }

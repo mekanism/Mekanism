@@ -2,7 +2,6 @@ package mekanism.common.recipe.ingredient.creator;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +11,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.IngredientType;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -20,15 +18,15 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
@@ -71,15 +69,13 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     }
 
     @Override
-    public ItemStackIngredient from(Ingredient ingredient, int amount) {
+    public ItemStackIngredient from(SizedIngredient ingredient) {
         Objects.requireNonNull(ingredient, "ItemStackIngredients cannot be created from a null ingredient.");
-        if (ingredient == Ingredient.EMPTY) {
+        if (ingredient.ingredient() == Ingredient.EMPTY) {
             //Instance check for empty ingredient, because we could just be empty currently during datagen and want to allow it
             throw new IllegalArgumentException("ItemStackIngredients cannot be created using the empty ingredient.");
-        } else if (amount <= 0) {
-            throw new IllegalArgumentException("ItemStackIngredients must have an amount of at least one. Received size was: " + amount);
         }
-        return new SingleItemStackIngredient(ingredient, amount);
+        return new SingleItemStackIngredient(ingredient);
     }
 
     /**
@@ -120,68 +116,57 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     public static class SingleItemStackIngredient extends ItemStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        public static final Codec<SingleItemStackIngredient> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(i -> i.group(
-              Ingredient.CODEC.fieldOf(JsonConstants.INGREDIENT).forGetter(SingleItemStackIngredient::getInputRaw),
-              ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
-        ).apply(i, SingleItemStackIngredient::new)));
-        public static final StreamCodec<RegistryFriendlyByteBuf, SingleItemStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> StreamCodec.composite(
-              Ingredient.CONTENTS_STREAM_CODEC, SingleItemStackIngredient::getInputRaw,
-              ByteBufCodecs.VAR_INT, SingleItemStackIngredient::getAmountRaw,
-              SingleItemStackIngredient::new
+        public static final Codec<SingleItemStackIngredient> CODEC = Codec.lazyInitialized(() -> SizedIngredient.FLAT_CODEC.xmap(
+              SingleItemStackIngredient::new, SingleItemStackIngredient::getInputRaw
         ));
+        public static final StreamCodec<RegistryFriendlyByteBuf, SingleItemStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
+              SizedIngredient.STREAM_CODEC.map(SingleItemStackIngredient::new, SingleItemStackIngredient::getInputRaw)
+        );
 
-        //TODO - 1.20.5: Evaluate if we want to use Neo's SizedIngredient
-        private final Ingredient ingredient;
-        private final int amount;
+        private final SizedIngredient ingredient;
+        @Nullable
+        private List<ItemStack> representations;
 
-        private SingleItemStackIngredient(Ingredient ingredient, int amount) {
-            this.ingredient = Objects.requireNonNull(ingredient);
-            this.amount = amount;
+        private SingleItemStackIngredient(SizedIngredient ingredient) {
+            Objects.requireNonNull(ingredient);
+            this.ingredient = ingredient;
         }
 
         @Override
         public boolean test(ItemStack stack) {
-            return testType(stack) && stack.getCount() >= amount;
-        }
-
-        @Override
-        public boolean testType(ItemStack stack) {
+            Objects.requireNonNull(stack);
             return ingredient.test(stack);
         }
 
         @Override
+        public boolean testType(ItemStack stack) {
+            Objects.requireNonNull(stack);
+            return ingredient.ingredient().test(stack);
+        }
+
+        @Override
         public ItemStack getMatchingInstance(ItemStack stack) {
-            return test(stack) ? stack.copyWithCount(amount) : ItemStack.EMPTY;
+            Objects.requireNonNull(stack);
+            return test(stack) ? stack.copyWithCount(ingredient.count()) : ItemStack.EMPTY;
         }
 
         @Override
         public long getNeededAmount(ItemStack stack) {
-            return testType(stack) ? amount : 0;
+            Objects.requireNonNull(stack);
+            return testType(stack) ? ingredient.count() : 0;
         }
 
         @Override
         public boolean hasNoMatchingInstances() {
-            ItemStack[] items = ingredient.getItems();
-            if (items.length == 0) {
-                return true;
-            } else if (items.length == 1) {
-                //Manually compare it as we want to make sure we don't initialize the capabilities on it
-                // to ensure we reduce any potential lag from this comparison
-                ItemStack item = items[0];
-                return item.getItem() == Items.BARRIER && item.getHoverName().getContents() instanceof PlainTextContents contents && contents.text().startsWith("Empty Tag: ");
-            }
-            return false;
+            return ingredient.ingredient().hasNoItems();
         }
 
         @Override
         public List<@NotNull ItemStack> getRepresentations() {
-            //TODO: Can this be cached somehow
-            List<@NotNull ItemStack> representations = new ArrayList<>();
-            for (ItemStack stack : ingredient.getItems()) {
-                if (!stack.isEmpty()) {
-                    //Ignore empty stacks as some mods have ingredients that some stacks are empty
-                    representations.add(stack.copyWithCount(amount));
-                }
+            if (this.representations == null) {
+                //TODO: See if quark or whatever mods used to occasionally have empty stacks in their ingredients still do
+                // if so we probably should filter them out of this
+                this.representations = List.of(ingredient.getItems());
             }
             return representations;
         }
@@ -189,20 +174,31 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         /**
          * For use in recipe input caching. Do not use this to modify the backing stack.
          */
-        public Ingredient getInputRaw() {
+        public SizedIngredient getInputRaw() {
             return ingredient;
-        }
-
-        /**
-         * For use in CrT comparing.
-         */
-        public int getAmountRaw() {
-            return amount;
         }
 
         @Override
         public IngredientType getType() {
             return IngredientType.SINGLE;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SingleItemStackIngredient other = (SingleItemStackIngredient) o;
+            //TODO - 1.20.5: Replace this once sized ingredient implements equals and hashcode
+            return ingredient.count() == other.ingredient.count() && ingredient.ingredient().equals(other.ingredient.ingredient());
+        }
+
+        @Override
+        public int hashCode() {
+            //return ingredient.hashCode();
+            return Objects.hash(ingredient.count(), ingredient.ingredient());
         }
     }
 

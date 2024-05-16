@@ -32,7 +32,7 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
      *
      * @since 10.6.0
      */
-    private static final Codec<Slurry> SLURRY_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.SLURRY_REGISTRY);
+    public static final Codec<Slurry> SLURRY_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.SLURRY_REGISTRY);
     /**
      * A standard map codec for slurry stacks that does not accept empty stacks.
      *

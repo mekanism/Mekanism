@@ -59,7 +59,6 @@ import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.data.CachedOutput;
@@ -71,10 +70,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -296,7 +296,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleItemStackIngredient single) {
-                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), single.getAmountRaw());
+                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw());
                   }
                   return null;
               });
@@ -305,18 +305,18 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
         if (ingredient instanceof SingleItemStackIngredient single) {
-            Ingredient vanillaIngredient = single.getInputRaw();
-            int amount = single.getAmountRaw();
+            SizedIngredient vanillaIngredient = single.getInputRaw();
+            int amount = vanillaIngredient.count();
             String representation = null;
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
-                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, amount, true);
+                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
                 if (representation != null) {
                     amount = 1;
                 }
             }
             if (representation == null) {
-                representation = IIngredient.fromIngredient(vanillaIngredient).getCommandString();
+                representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
             }
             String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
             if (amount == 1) {
@@ -333,9 +333,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleFluidStackIngredient single) {
-                      return IFluidStack.of(single.getInputRaw()).getCommandString();
-                  } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
-                      return CrTUtils.fluidTags().tag(tagged.getTag()).withAmount(tagged.getRawAmount()).getCommandString();
+                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw());
                   }
                   return null;
               });
@@ -344,11 +342,25 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
         if (ingredient instanceof SingleFluidStackIngredient single) {
-            String stackRepresentation = IFluidStack.of(single.getInputRaw()).getCommandString();
-            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
-            String tagRepresentation = CrTUtils.fluidTags().tag(tagged.getTag()).getCommandString();
-            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
+            SizedFluidIngredient vanillaIngredient = single.getInputRaw();
+            int amount = vanillaIngredient.amount();
+            String representation = null;
+            if (amount > 1) {
+                //Special case handling for when we would want to use a different constructor
+                representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
+                if (representation != null) {
+                    amount = 1;
+                }
+            }
+            if (representation == null) {
+                //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+                //representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+            }
+            String path = imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT);
+            if (amount == 1) {
+                return path + ".from(" + representation + ")";
+            }
+            return path + ".from(" + representation + ", " + amount + ")";
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             return getMultiIngredientRepresentation(imports, CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::getIngredientRepresentation);
         }
