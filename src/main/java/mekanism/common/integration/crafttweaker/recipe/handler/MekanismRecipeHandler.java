@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
@@ -59,7 +60,6 @@ import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.world.item.Item;
@@ -67,8 +67,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -167,8 +172,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     @Nullable
-    public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount) {
-        return basicImplicitIngredient(vanillaIngredient, amount, false);
+    public static String basicImplicitIngredient(SizedIngredient ingredient) {
+        return basicImplicitIngredient(ingredient.ingredient(), ingredient.count(), false);
     }
 
     @Nullable
@@ -197,13 +202,44 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         return null;
     }
 
+    @Nullable
+    public static String basicImplicitIngredient(SizedFluidIngredient ingredient) {
+        return basicImplicitIngredient(ingredient.ingredient(), ingredient.amount(), false);
+    }
+
+    @Nullable
+    public static String basicImplicitIngredient(FluidIngredient vanillaIngredient, int amount, boolean skipTags) {
+        Optional<JsonElement> result = FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, vanillaIngredient).result().filter(JsonElement::isJsonObject);
+        if (result.isEmpty()) {
+            return null;
+        }
+        JsonObject serializedIngredient = result.get().getAsJsonObject();
+        if (serializedIngredient.has(JsonConstants.TAG)) {
+            if (skipTags) {
+                return null;
+            }
+            KnownTag<Fluid> tag = CrTUtils.fluidTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
+            return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
+        } else if (vanillaIngredient.isSimple() || vanillaIngredient instanceof DataComponentFluidIngredient) {//TODO - 1.20.5: Is this even necessary/useful anymore?
+            //Note: CrT doesn't technically have strict nbt handling so all are treated as partial
+            // we also handle any ingredients that are synchronized by just writing their contents
+            // as then we can build a grouped ingredient for them
+            List<CTFluidIngredient> list = new ArrayList<>();
+            for (FluidStack stack : vanillaIngredient.getStacks()) {
+                list.add(new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(stack.copyWithAmount(amount))));
+            }
+            return new CTFluidIngredient.CompoundFluidIngredient(list).getCommandString();
+        }
+        return null;
+    }
+
     private String convertIngredient(ItemStackIngredient ingredient) {
         if (ingredient instanceof SingleItemStackIngredient single) {
-            Ingredient vanillaIngredient = single.getInputRaw();
-            int amount = single.getAmountRaw();
-            String rep = basicImplicitIngredient(vanillaIngredient, amount);
+            SizedIngredient vanillaIngredient = single.getInputRaw();
+            int amount = vanillaIngredient.count();
+            String rep = basicImplicitIngredient(vanillaIngredient);
             if (rep == null) {
-                rep = IIngredient.fromIngredient(vanillaIngredient).getCommandString();
+                rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
                 if (amount > 1) {
                     return CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
                 }
@@ -218,11 +254,19 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(FluidStackIngredient ingredient) {
-        if (ingredient instanceof SingleFluidStackIngredient singleFluidStackIngredient) {
-            return IFluidStack.of(singleFluidStackIngredient.getInputRaw()).getCommandString();
-        } else if (ingredient instanceof TaggedFluidStackIngredient tagged) {
+        if (ingredient instanceof SingleFluidStackIngredient single) {
+            SizedFluidIngredient vanillaIngredient = single.getInputRaw();
+            String rep = basicImplicitIngredient(vanillaIngredient);
+            if (rep == null) {
+                int amount = vanillaIngredient.amount();
+                //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+                //rep = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
+                if (amount > 1) {
+                    return CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".from(" + rep + ", " + amount + ")";
+                }
+            }
             //Note: Handled via implicit casts
-            return CrTUtils.fluidTags().tag(tagged.getTag()).withAmount(tagged.getRawAmount()).getCommandString();
+            return rep;
         } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             return convertMultiIngredient(CrTConstants.CLASS_FLUID_STACK_INGREDIENT, multiIngredient, this::convertIngredient);
         }

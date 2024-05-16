@@ -32,7 +32,7 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
      *
      * @since 10.6.0
      */
-    private static final Codec<InfuseType> INFUSE_TYPE_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.INFUSE_TYPE_REGISTRY);
+    public static final Codec<InfuseType> INFUSE_TYPE_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.INFUSE_TYPE_REGISTRY);
     /**
      * A standard map codec for infusion stacks that does not accept empty stacks.
      *

@@ -9,15 +9,11 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
-import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -135,10 +131,11 @@ public class CrTFluidStackIngredient {
      *
      * @return {@link FluidStackIngredient} as a {@link CTFluidIngredient}.
      */
-    @ZenCodeType.Method
-    @ZenCodeType.Caster(implicit = true)
+    //@ZenCodeType.Method
+    //@ZenCodeType.Caster(implicit = true)
     public static CTFluidIngredient asCTFluidIngredient(FluidStackIngredient _this) {
-        if (_this instanceof SingleFluidStackIngredient single) {
+        //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+        /*if (_this instanceof SingleFluidStackIngredient single) {
             //Note: We likely don't need to copy this, but just in case we want to make sure the raw input doesn't somehow leak
             return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(single.getInputRaw().copy()));
         } else if (_this instanceof TaggedFluidStackIngredient tagged) {
@@ -152,7 +149,7 @@ public class CrTFluidStackIngredient {
                   //Collect to an array list as CompoundFluidIngredient assumes it is mutable
                   .collect(Collectors.toList())
             );
-        }
+        }*/
         CrTConstants.CRT_LOGGER.error("Unknown fluid ingredient type {}, this should never happen. Returning empty.", _this.getClass().getName());
         return CTFluidIngredient.EMPTY.get();
     }

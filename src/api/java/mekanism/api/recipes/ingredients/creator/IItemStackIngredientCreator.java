@@ -1,19 +1,17 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPredicate;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -41,17 +39,9 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         stack = stack.copy();
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
-        if (!stack.isComponentsPatchEmpty()) {
-            DataComponentPredicate.Builder builder = DataComponentPredicate.builder();
-            for (Map.Entry<DataComponentType<?>, Optional<?>> entry : stack.getComponentsPatch().entrySet()) {
-                Optional<?> value = entry.getValue();
-                //Note: We only add if the value is added, we don't check ones that have been removed from default, as that isn't easily feasible
-                if (value.isPresent()) {
-                    //noinspection rawtypes,unchecked
-                    builder.expect((DataComponentType) entry.getKey(), value);
-                }
-            }
-            return from(DataComponentIngredient.of(false, builder.build(), stack.getItemHolder()), amount);
+        DataComponentPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
+        if (predicate != null) {
+            return from(DataComponentIngredient.of(false, predicate, stack.getItemHolder()), amount);
         }
         return from(Ingredient.of(stack), amount);
     }
@@ -134,6 +124,23 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param ingredient Ingredient to match.
      * @param amount     Amount needed.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
      */
-    ItemStackIngredient from(Ingredient ingredient, int amount);
+    default ItemStackIngredient from(Ingredient ingredient, int amount) {
+        Objects.requireNonNull(ingredient, "ItemStackIngredients cannot be created from a null ingredient.");
+        return from(new SizedIngredient(ingredient, amount));
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a given ingredient and amount.
+     *
+     * @param ingredient Sized ingredient to match.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty.
+     * @since 10.6.0
+     */
+    ItemStackIngredient from(SizedIngredient ingredient);
 }
