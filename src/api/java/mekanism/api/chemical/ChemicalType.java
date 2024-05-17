@@ -20,15 +20,21 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
+import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.ByIdMap.OutOfBoundsStrategy;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +67,7 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @since 10.6.0
      */
-    public static final IntFunction<ChemicalType> BY_ID = ByIdMap.continuous(ChemicalType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final IntFunction<ChemicalType> BY_ID = ByIdMap.continuous(ChemicalType::ordinal, values(), OutOfBoundsStrategy.WRAP);
     /**
      * Stream codec for syncing chemical types by index.
      *
@@ -168,17 +174,32 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getTypeFor(ChemicalStackIngredient<?, ?> ingredient) {
-        if (ingredient instanceof GasStackIngredient) {
-            return GAS;
-        } else if (ingredient instanceof InfusionStackIngredient) {
-            return INFUSION;
-        } else if (ingredient instanceof PigmentStackIngredient) {
-            return PIGMENT;
-        } else if (ingredient instanceof SlurryStackIngredient) {
-            return SLURRY;
-        }
-        throw new IllegalStateException("Unknown chemical ingredient type");
+    public static ChemicalType getTypeFor(ChemicalStackIngredient<?, ?, ?> ingredient) {
+        return switch (ingredient) {
+            case GasStackIngredient gas -> GAS;
+            case InfusionStackIngredient infusion -> INFUSION;
+            case PigmentStackIngredient pigment -> PIGMENT;
+            case SlurryStackIngredient slurry -> SLURRY;
+        };
+    }
+
+    /**
+     * Gets the Chemical Type of a chemical ingredient.
+     *
+     * @param ingredient Ingredient.
+     *
+     * @return Chemical Type.
+     *
+     * @since 10.6.0
+     */
+    public static ChemicalType getTypeFor(IChemicalIngredient<?, ?> ingredient) {
+        return switch (ingredient) {
+            case IGasIngredient gas -> GAS;
+            case IInfusionIngredient infusion -> INFUSION;
+            case IPigmentIngredient pigment -> PIGMENT;
+            case ISlurryIngredient slurry -> SLURRY;
+            default -> throw new IllegalStateException("Chemical ingredient should implement an ingredient type");
+        };
     }
 
     /**

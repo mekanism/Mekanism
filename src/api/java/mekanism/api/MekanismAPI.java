@@ -12,6 +12,10 @@ import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
+import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -58,35 +62,63 @@ public class MekanismAPI {
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Gas gases}.
      *
-     * @apiNote When registering {@link Gas gases} using {@link DeferredRegister <Gas>}, use this field to get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link Gas gases} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Gas>> GAS_REGISTRY_NAME = registryKey(Gas.class, "gas");
     /**
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link IGasIngredient} ingredient type serializers.
+     *
+     * @apiNote When registering gas ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Registry<MapCodec<? extends IGasIngredient>>> GAS_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IGasIngredient.class, "gas_ingredient_type");
+    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link InfuseType infuse types}.
      *
-     * @apiNote When registering {@link InfuseType infuse types} using {@link DeferredRegister <InfuseType>}, use this field to get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link InfuseType infuse types} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<InfuseType>> INFUSE_TYPE_REGISTRY_NAME = registryKey(InfuseType.class, "infuse_type");
     /**
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link IInfusionIngredient} ingredient type serializers.
+     *
+     * @apiNote When registering infusion ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Registry<MapCodec<? extends IInfusionIngredient>>> INFUSION_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IInfusionIngredient.class, "infusion_ingredient_type");
+    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Pigment pigments}.
      *
-     * @apiNote When registering {@link Pigment pigments} using {@link DeferredRegister <Pigment>}, use this field to get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link Pigment pigments} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Pigment>> PIGMENT_REGISTRY_NAME = registryKey(Pigment.class, "pigment");
     /**
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link IPigmentIngredient} ingredient type serializers.
+     *
+     * @apiNote When registering pigment ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Registry<MapCodec<? extends IPigmentIngredient>>> PIGMENT_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(IPigmentIngredient.class, "pigment_ingredient_type");
+    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Slurry sluries}.
      *
-     * @apiNote When registering {@link Slurry sluries} using {@link DeferredRegister <Slurry>}, use this field to get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link Slurry sluries} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<Slurry>> SLURRY_REGISTRY_NAME = registryKey(Slurry.class, "slurry");
     /**
+     * Gets the {@link ResourceKey} representing the name of the Registry for {@link ISlurryIngredient} ingredient type serializers.
+     *
+     * @apiNote When registering slurry ingredient types using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
+     * @since 10.6.0
+     */
+    public static final ResourceKey<Registry<MapCodec<? extends ISlurryIngredient>>> SLURRY_INGREDIENT_TYPE_REGISTRY_NAME = codecRegistryKey(ISlurryIngredient.class, "slurry_ingredient_type");
+    /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link ModuleData modules}.
      *
-     * @apiNote When registering {@link ModuleData modules} using {@link DeferredRegister <ModuleData>}, use this field to get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link ModuleData modules} using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -100,8 +132,7 @@ public class MekanismAPI {
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link RobitSkin robit skin} serializers.
      *
-     * @apiNote When registering {@link RobitSkin robit skin} serializers using {@link DeferredRegister DeferredRegister< Codec<? extends RobitSkin>>}, use this field to
-     * get access to the {@link ResourceKey}.
+     * @apiNote When registering {@link RobitSkin robit skin} serializers using {@link DeferredRegister}, use this field to get access to the {@link ResourceKey}.
      * @since 10.4.0
      */
     public static final ResourceKey<Registry<MapCodec<? extends RobitSkin>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
@@ -117,6 +148,15 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
+     * Gets the Registry for {@link IGasIngredient} type serializers.
+     *
+     * @see #GAS_INGREDIENT_TYPE_REGISTRY_NAME
+     * @since 10.6.0
+     */
+    public static final Registry<MapCodec<? extends IGasIngredient>> GAS_INGREDIENT_TYPES = new RegistryBuilder<>(GAS_INGREDIENT_TYPE_REGISTRY_NAME)
+          .sync(true)
+          .create();
+    /**
      * Gets the Registry for {@link InfuseType}.
      *
      * @see #INFUSE_TYPE_REGISTRY_NAME
@@ -124,6 +164,15 @@ public class MekanismAPI {
      */
     public static final Registry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<>(INFUSE_TYPE_REGISTRY_NAME)
           .defaultKey(rl("empty"))
+          .sync(true)
+          .create();
+    /**
+     * Gets the Registry for {@link IInfusionIngredient} type serializers.
+     *
+     * @see #INFUSION_INGREDIENT_TYPE_REGISTRY_NAME
+     * @since 10.6.0
+     */
+    public static final Registry<MapCodec<? extends IInfusionIngredient>> INFUSION_INGREDIENT_TYPES = new RegistryBuilder<>(INFUSION_INGREDIENT_TYPE_REGISTRY_NAME)
           .sync(true)
           .create();
     /**
@@ -137,6 +186,15 @@ public class MekanismAPI {
           .sync(true)
           .create();
     /**
+     * Gets the Registry for {@link IPigmentIngredient} type serializers.
+     *
+     * @see #PIGMENT_INGREDIENT_TYPE_REGISTRY_NAME
+     * @since 10.6.0
+     */
+    public static final Registry<MapCodec<? extends IPigmentIngredient>> PIGMENT_INGREDIENT_TYPES = new RegistryBuilder<>(PIGMENT_INGREDIENT_TYPE_REGISTRY_NAME)
+          .sync(true)
+          .create();
+    /**
      * Gets the Registry for {@link Slurry}.
      *
      * @see #SLURRY_REGISTRY_NAME
@@ -144,6 +202,15 @@ public class MekanismAPI {
      */
     public static final Registry<Slurry> SLURRY_REGISTRY = new RegistryBuilder<>(SLURRY_REGISTRY_NAME)
           .defaultKey(rl("empty"))
+          .sync(true)
+          .create();
+    /**
+     * Gets the Registry for {@link ISlurryIngredient} type serializers.
+     *
+     * @see #SLURRY_INGREDIENT_TYPE_REGISTRY_NAME
+     * @since 10.6.0
+     */
+    public static final Registry<MapCodec<? extends ISlurryIngredient>> SLURRY_INGREDIENT_TYPES = new RegistryBuilder<>(SLURRY_INGREDIENT_TYPE_REGISTRY_NAME)
           .sync(true)
           .create();
     /**
@@ -162,6 +229,9 @@ public class MekanismAPI {
      * @since 10.5.0
      */
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME).create();
+
+    //TODO - 1.20.5: Docs
+    public static final ResourceLocation EMPTY_CHEMICAL_NAME = new ResourceLocation(MEKANISM_MODID, "empty");
 
     //TODO: Potentially define these with DeferredHolder for purposes of fully defining them outside of the API
     // would have some minor issues with how the empty stacks are declared

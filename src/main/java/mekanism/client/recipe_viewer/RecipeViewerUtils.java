@@ -17,7 +17,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
@@ -96,7 +96,7 @@ public class RecipeViewerUtils {
 
     @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> List<ItemStack> getStacksFor(
-          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, boolean displayConversions) {
+          ChemicalStackIngredient<CHEMICAL, STACK, ?> ingredient, boolean displayConversions) {
         Set<CHEMICAL> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemical).collect(Collectors.toSet());
         if (!displayConversions) {
             return getStacksFor(chemicals, null);

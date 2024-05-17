@@ -22,14 +22,14 @@ import org.jetbrains.annotations.NotNull;
 public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe {
 
     protected final ChemicalType chemicalType;
-    protected final ChemicalStackIngredient<?, ?> input;
+    protected final ChemicalStackIngredient<?, ?, ?> input;
     protected final ItemStack output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient<?, ?> input, ItemStack output) {
+    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient<?, ?, ?> input, ItemStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.chemicalType = ChemicalType.getTypeFor(input);
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -78,16 +78,16 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testInternal(STACK stack) {
-        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
+        return ((ChemicalStackIngredient<CHEMICAL, STACK, ?>) input).test(stack);
     }
 
     @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testTypeInternal(STACK stack) {
-        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
+        return ((ChemicalStackIngredient<CHEMICAL, STACK, ?>) input).testType(stack);
     }
 
     @Override
-    public ChemicalStackIngredient<?, ?> getInput() {
+    public ChemicalStackIngredient<?, ?, ?> getInput() {
         return input;
     }
 

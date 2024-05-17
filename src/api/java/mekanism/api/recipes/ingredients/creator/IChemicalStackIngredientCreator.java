@@ -1,27 +1,35 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
 public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends IIngredientCreator<CHEMICAL, STACK, INGREDIENT> {
+      INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>, STACK_INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>>
+      extends IIngredientCreator<CHEMICAL, STACK, STACK_INGREDIENT> {
+
+    /**
+     * {@return the basic internal chemical ingredient creator}
+     *
+     * @since 10.6.0
+     */
+    IChemicalIngredientCreator<CHEMICAL, INGREDIENT> chemicalCreator();
 
     @Override
-    default INGREDIENT from(STACK instance) {
+    default STACK_INGREDIENT from(STACK instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
         return from(instance.getChemical(), instance.getAmount());
     }
 
     @Override
-    default INGREDIENT from(CHEMICAL instance, int amount) {
+    default STACK_INGREDIENT from(CHEMICAL instance, int amount) {
         return from(instance, (long) amount);
     }
 
@@ -34,7 +42,10 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given provider is null.
      * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
      */
-    INGREDIENT from(IChemicalProvider<CHEMICAL> provider, long amount);
+    default STACK_INGREDIENT from(IChemicalProvider<CHEMICAL> provider, long amount) {
+        Objects.requireNonNull(provider, "ChemicalStackIngredients cannot be created from a null chemical provider.");
+        return from(chemicalCreator().of(provider), amount);
+    }
 
     /**
      * Creates a Chemical Stack Ingredient that matches a provided chemical and amount.
@@ -46,12 +57,12 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
      * @since 10.5.0
      */
-    default INGREDIENT fromHolder(Holder<CHEMICAL> instance, long amount) {
+    default STACK_INGREDIENT fromHolder(Holder<CHEMICAL> instance, long amount) {
         return from(instance.value(), amount);
     }
 
     @Override
-    default INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {
+    default STACK_INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {
         return from(tag, (long) amount);
     }
 
@@ -64,30 +75,19 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(TagKey<CHEMICAL> tag, long amount);
+    default STACK_INGREDIENT from(TagKey<CHEMICAL> tag, long amount) {
+        Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
+        return from(chemicalCreator().tag(tag), amount);
+    }
 
     /**
-     * Combines multiple Ingredients into a single Ingredient.
+     * Creates a Chemical Stack Ingredient that matches a given chemical ingredient and amount.
      *
-     * @param ingredients Ingredients to combine.
+     * @param ingredient Ingredient to match.
+     * @param amount     Amount needed.
      *
-     * @return Combined Ingredient.
-     *
-     * @throws NullPointerException     if the given array is null.
-     * @throws IllegalArgumentException if the given array is empty.
+     * @throws NullPointerException     if the given ingredient is null.
+     * @throws IllegalArgumentException if the ingredient is explicitly empty or the given amount smaller than one.
      */
-    @SuppressWarnings("unchecked")
-    INGREDIENT createMulti(INGREDIENT... ingredients);
-
-    /**
-     * Creates an Ingredient out of a stream of Ingredients.
-     *
-     * @param ingredients Ingredient(s) to combine.
-     *
-     * @return Given Ingredient or Combined Ingredient if multiple were in the stream.
-     *
-     * @throws NullPointerException     if the given stream is null.
-     * @throws IllegalArgumentException if the given stream is empty.
-     */
-    INGREDIENT from(Stream<INGREDIENT> ingredients);
+    STACK_INGREDIENT from(INGREDIENT ingredient, long amount);
 }

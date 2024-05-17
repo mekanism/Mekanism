@@ -24,6 +24,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
@@ -308,6 +309,22 @@ public class CrTUtils {
      */
     public static KnownTagManager<Slurry> slurryTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.SLURRY_REGISTRY_NAME);
+    }
+
+    /**
+     * Helper to get CraftTweaker's slurry tag manager.
+     */
+    public static KnownTagManager<? extends Chemical<?>> chemicalTags(ChemicalType chemicalType) {
+        return switch (chemicalType) {
+            case GAS -> gasTags();
+            case INFUSION -> infuseTypeTags();
+            case PIGMENT -> pigmentTags();
+            case SLURRY -> slurryTags();
+        };
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>> KnownTag<CHEMICAL> tag(TagChemicalIngredient<?, ?> ingredient) {
+        return (KnownTag<CHEMICAL>) chemicalTags(ChemicalType.getTypeFor(ingredient)).tag(ingredient.tag());
     }
 
     public record UnaryTypePair<TYPE>(TYPE a, TYPE b) {

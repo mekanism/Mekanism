@@ -20,12 +20,12 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
 
     private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(JsonConstants.CHEMICAL_TYPE);
     @SuppressWarnings("unchecked")
-    private static final MapCodec<ChemicalStackIngredient<?, ?>> chemicalStackIngredientMapEncoder = new DependentMapCodec<>(JsonConstants.INPUT, type -> (Codec<ChemicalStackIngredient<?, ?>>) IngredientCreatorAccess.getCreatorForType(type).codec(), chemicalTypeMapCodec, ChemicalType::getTypeFor);
+    private static final MapCodec<ChemicalStackIngredient<?, ?, ?>> chemicalStackIngredientMapEncoder = new DependentMapCodec<>(JsonConstants.INPUT, type -> (Codec<ChemicalStackIngredient<?, ?, ?>>) IngredientCreatorAccess.getCreatorForType(type).codec(), chemicalTypeMapCodec, ChemicalType::getTypeFor);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicChemicalCrystallizerRecipe> streamCodec;
     private final MapCodec<BasicChemicalCrystallizerRecipe> codec;
 
-    public ChemicalCrystallizerRecipeSerializer(BiFunction<ChemicalStackIngredient<?, ?>, ItemStack, BasicChemicalCrystallizerRecipe> factory) {
+    public ChemicalCrystallizerRecipeSerializer(BiFunction<ChemicalStackIngredient<?, ?, ?>, ItemStack, BasicChemicalCrystallizerRecipe> factory) {
         this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
               chemicalStackIngredientMapEncoder.forGetter(BasicChemicalCrystallizerRecipe::getInput),
               ItemStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)

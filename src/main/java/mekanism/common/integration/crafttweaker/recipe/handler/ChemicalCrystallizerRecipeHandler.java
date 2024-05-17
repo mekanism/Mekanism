@@ -39,14 +39,14 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
     @Override
     public Optional<ChemicalCrystallizerRecipe> recompose(IRecipeManager<? super ChemicalCrystallizerRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalCrystallizerRecipeManager manager) {
-            Optional<? extends ChemicalStackIngredient<?, ?>> found = Optional.empty();
+            Optional<? extends ChemicalStackIngredient<?, ?, ?>> found = Optional.empty();
             for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
                 found = CrTUtils.getSingleIfPresent(recipe, chemicalComponent.input());
                 if (found.isPresent()) {
                     break;
                 }
             }
-            ChemicalStackIngredient<?, ?> input = found.orElseThrow(() -> new IllegalArgumentException("No chemical input ingredient provided."));
+            ChemicalStackIngredient<?, ?, ?> input = found.orElseThrow(() -> new IllegalArgumentException("No chemical input ingredient provided."));
             return Optional.of(manager.makeRecipe(input, recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output())));
         }
         return Optional.empty();

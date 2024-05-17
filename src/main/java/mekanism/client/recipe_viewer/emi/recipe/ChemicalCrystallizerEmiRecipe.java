@@ -7,6 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -32,10 +33,10 @@ public class ChemicalCrystallizerEmiRecipe extends MekanismEmiHolderRecipe<Chemi
     public ChemicalCrystallizerEmiRecipe(MekanismEmiRecipeCategory category, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
         super(category, recipeHolder);
         addItemOutputDefinition(recipe.getOutputDefinition());
-        ChemicalStackIngredient<?, ?> input = recipe.getInput();
+        ChemicalStackIngredient<?, ?, ?> input = recipe.getInput();
         addInputDefinition(input);
         List<? extends ChemicalStack<?>> inputRepresentations = input.getRepresentations();
-        displayItems = input instanceof ChemicalStackIngredient.SlurryStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : Collections.emptyList();
+        displayItems = input instanceof SlurryStackIngredient ingredient ? RecipeViewerUtils.getDisplayItems(ingredient) : Collections.emptyList();
         oreInfo = new IOreInfo() {
             @NotNull
             @Override

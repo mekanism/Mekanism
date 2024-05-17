@@ -38,9 +38,9 @@ public class InputRecipeCache {
     }
 
     public static class SingleChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe & Predicate<STACK>>
-          extends SingleInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+          extends SingleInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
 
-        public SingleChemical(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK>> inputExtractor) {
+        public SingleChemical(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputExtractor) {
             super(recipeType, inputExtractor, new ChemicalInputCache<>());
         }
     }
@@ -55,28 +55,28 @@ public class InputRecipeCache {
     }
 
     public static class ItemChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
-          BiPredicate<ItemStack, STACK>> extends DoubleInputRecipeCache<ItemStack, ItemStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE,
+          BiPredicate<ItemStack, STACK>> extends DoubleInputRecipeCache<ItemStack, ItemStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE,
           ItemInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
 
         public ItemChemical(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, ItemStackIngredient> inputAExtractor,
-              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK>> inputBExtractor) {
+              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputBExtractor) {
             super(recipeType, inputAExtractor, new ItemInputCache<>(), inputBExtractor, new ChemicalInputCache<>());
         }
     }
 
     public static class FluidChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
-          BiPredicate<FluidStack, STACK>> extends DoubleInputRecipeCache<FluidStack, FluidStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE,
+          BiPredicate<FluidStack, STACK>> extends DoubleInputRecipeCache<FluidStack, FluidStackIngredient, STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE,
           FluidInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
 
         public FluidChemical(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, FluidStackIngredient> inputAExtractor,
-              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK>> inputBExtractor) {
+              Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputBExtractor) {
             super(recipeType, inputAExtractor, new FluidInputCache<>(), inputBExtractor, new ChemicalInputCache<>());
         }
     }
 
     public static class EitherSideChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK>>>
-          extends EitherSideInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>>>
+          extends EitherSideInputRecipeCache<STACK, ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
 
         public EitherSideChemical(MekanismRecipeType<RECIPE, ?> recipeType) {
             super(recipeType, ChemicalChemicalToChemicalRecipe::getLeftInput, ChemicalChemicalToChemicalRecipe::getRightInput, new ChemicalInputCache<>());
@@ -85,10 +85,10 @@ public class InputRecipeCache {
 
     public static class ItemFluidChemical<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe &
           TriPredicate<ItemStack, FluidStack, STACK>> extends TripleInputRecipeCache<ItemStack, ItemStackIngredient, FluidStack, FluidStackIngredient, STACK,
-          ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE, ItemInputCache<RECIPE>, FluidInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
+          ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE, ItemInputCache<RECIPE>, FluidInputCache<RECIPE>, ChemicalInputCache<CHEMICAL, STACK, RECIPE>> {
 
         public ItemFluidChemical(MekanismRecipeType<RECIPE, ?> recipeType, Function<RECIPE, ItemStackIngredient> inputAExtractor,
-              Function<RECIPE, FluidStackIngredient> inputBExtractor, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK>> inputCExtractor) {
+              Function<RECIPE, FluidStackIngredient> inputBExtractor, Function<RECIPE, ChemicalStackIngredient<CHEMICAL, STACK, ?>> inputCExtractor) {
             super(recipeType, inputAExtractor, new ItemInputCache<>(), inputBExtractor, new FluidInputCache<>(), inputCExtractor, new ChemicalInputCache<>());
         }
     }

@@ -11,10 +11,15 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.integration.emi.IMekanismEmiHelper;
 import mekanism.api.integration.jei.IMekanismJEIHelper;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
+import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
+import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
@@ -42,7 +47,6 @@ public interface IMekanismAccess {
      * Gets a helper to interact with some of Mekanism's EMI integration internals. This should only be called if EMI is loaded.
      *
      * @throws IllegalStateException if EMI is not loaded.
-     *
      * @since 10.5.10
      */
     IMekanismEmiHelper emiHelper();
@@ -66,26 +70,58 @@ public interface IMekanismAccess {
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()} instead.
      */
-    IChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> gasStackIngredientCreator();
+    IChemicalStackIngredientCreator<Gas, GasStack, IGasIngredient, GasStackIngredient> gasStackIngredientCreator();
+
+    /**
+     * Gets the gas ingredient creator.
+     *
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#basicGas()} instead.
+     * @since 10.6.0
+     */
+    IChemicalIngredientCreator<Gas, IGasIngredient> gasIngredientCreator();
 
     /**
      * Gets the infusion stack ingredient creator.
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()} instead.
      */
-    IChemicalStackIngredientCreator<InfuseType, InfusionStack, InfusionStackIngredient> infusionStackIngredientCreator();
+    IChemicalStackIngredientCreator<InfuseType, InfusionStack, IInfusionIngredient, InfusionStackIngredient> infusionStackIngredientCreator();
+
+    /**
+     * Gets the infusion ingredient creator.
+     *
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#basicInfusion()} instead.
+     * @since 10.6.0
+     */
+    IChemicalIngredientCreator<InfuseType, IInfusionIngredient> infusionIngredientCreator();
 
     /**
      * Gets the pigment stack ingredient creator.
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()} instead.
      */
-    IChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> pigmentStackIngredientCreator();
+    IChemicalStackIngredientCreator<Pigment, PigmentStack, IPigmentIngredient, PigmentStackIngredient> pigmentStackIngredientCreator();
+
+    /**
+     * Gets the pigment ingredient creator.
+     *
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#basicPigment()} instead.
+     * @since 10.6.0
+     */
+    IChemicalIngredientCreator<Pigment, IPigmentIngredient> pigmentIngredientCreator();
 
     /**
      * Gets the slurry stack ingredient creator.
      *
      * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()} instead.
      */
-    IChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> slurryStackIngredientCreator();
+    IChemicalStackIngredientCreator<Slurry, SlurryStack, ISlurryIngredient, SlurryStackIngredient> slurryStackIngredientCreator();
+
+    /**
+     * Gets the slurry ingredient creator.
+     *
+     * @apiNote Use {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#basicSlurry()} instead.
+     * @since 10.6.0
+     */
+    IChemicalIngredientCreator<Slurry, ISlurryIngredient> slurryIngredientCreator();
 }

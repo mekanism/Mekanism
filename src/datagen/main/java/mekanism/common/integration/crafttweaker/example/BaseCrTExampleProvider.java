@@ -32,12 +32,13 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -52,9 +53,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
-import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -288,7 +286,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
-              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient()));
+              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient(), false));
     }
 
     @Nullable
@@ -298,7 +296,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         String representation = null;
         if (amount > 1) {
             //Special case handling for when we would want to use a different constructor
-            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
+            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, true);
             if (representation != null) {
                 amount = 1;
             }
@@ -315,7 +313,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
-              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient()));
+              (imports, ingredient) -> MekanismRecipeHandler.basicImplicitIngredient(ingredient.ingredient(), false));
     }
 
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
@@ -324,13 +322,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         String representation = null;
         if (amount > 1) {
             //Special case handling for when we would want to use a different constructor
-            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient.ingredient(), amount, true);
+            representation = MekanismRecipeHandler.basicImplicitIngredient(vanillaIngredient, true);
             if (representation != null) {
                 amount = 1;
             }
         }
         if (representation == null) {
-            //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+            //TODO - CrT: Re-evaluate once CrT updates to support Neo's fluid ingredients
             //representation = IIngredient.fromIngredient(vanillaIngredient.ingredient()).getCommandString();
         }
         String path = imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT);
@@ -341,18 +339,21 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
-          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
+          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> ingredientClass,
           String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
         addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
         addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), singleDescription, tagManager),
               (imports, ingredient) -> {
-                  if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
-                      return singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
-                  } else if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
-                      long amount = tagged.getRawAmount();
+                  if (ingredient.ingredient() instanceof TagChemicalIngredient<CHEMICAL, ?> tagged) {
+                      long amount = ingredient.amount();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return tagManager.tag(tagged.getTag()).withAmount((int) amount).getCommandString();
+                          return tagManager.tag(tagged.tag()).withAmount((int) amount).getCommandString();
+                      }
+                  } else {
+                      List<STACK> chemicals = ingredient.getRepresentations();
+                      if (chemicals.size() == 1) {
+                          return singleDescription.apply(chemicals.getFirst()).getCommandString();
                       }
                   }
                   return null;
@@ -361,31 +362,18 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     @Nullable
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
-          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription,
+          ChemicalStackIngredient<CHEMICAL, STACK, ?> ingredient, String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription,
           KnownTagManager<CHEMICAL> tagManager) {
-        if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
-            String stackRepresentation = singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
-            return ingredientType + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof TaggedChemicalStackIngredient<?, ?> tagged) {
-            String tagRepresentation = tagManager.tag(tagged.getTag()).getCommandString();
-            return ingredientType + ".from(" + tagRepresentation + ", " + tagged.getRawAmount() + ")";
-        } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
-            StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
-            if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(i, ingredientType, singleDescription, tagManager);
-                if (rep == null) {
-                    return true;
-                }
-                builder.append(rep).append(", ");
-                return false;
-            })) {
-                //Remove trailing comma and space
-                builder.setLength(builder.length() - 2);
-                builder.append(")");
-                return builder.toString();
-            }
-            return null;
+        if (ingredient.ingredient() instanceof TagChemicalIngredient<?, ?> tagged) {
+            String tagRepresentation = tagManager.tag(tagged.tag()).getCommandString();
+            return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
+        List<STACK> chemicals = ingredient.getRepresentations();
+        if (chemicals.size() == 1) {
+            String stackRepresentation = singleDescription.apply(chemicals.getFirst()).getCommandString();
+            return ingredientType + ".from(" + stackRepresentation + ")";
+        }
+        //TODO - CrT: Do we want to add back in some form of multi translation?
         return null;
     }
 

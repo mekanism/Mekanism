@@ -5,10 +5,10 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -79,7 +79,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        ChemicalStackIngredient<?, ?> input = recipe.getInput();
+        ChemicalStackIngredient<?, ?, ?> input = recipe.getInput();
         switch (input) {
             case GasStackIngredient ingredient -> initChemical(builder, MekanismJEI.TYPE_GAS, ingredient);
             case InfusionStackIngredient ingredient -> initChemical(builder, MekanismJEI.TYPE_INFUSION, ingredient);
@@ -91,12 +91,10 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
                     initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot, displayItems).setSlotName(DISPLAYED_ITEM);
                 }
             }
-            default -> {
-            }
         }
     }
 
-    private <STACK extends ChemicalStack<?>> void initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, ChemicalStackIngredient<?, STACK> ingredient) {
+    private <STACK extends ChemicalStack<?>> void initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, ChemicalStackIngredient<?, STACK, ?> ingredient) {
         initChemical(builder, type, RecipeIngredientRole.INPUT, gauge, ingredient.getRepresentations())
               .setSlotName(CHEMICAL_INPUT);
     }

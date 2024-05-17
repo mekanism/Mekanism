@@ -123,14 +123,16 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ItemStackIngredient other = (ItemStackIngredient) o;
-        //TODO - 1.20.5: Replace this once sized ingredient implements equals and hashcode
-        return ingredient.count() == other.ingredient.count() && ingredient.ingredient().equals(other.ingredient.ingredient());
+        return ingredient.equals(((ItemStackIngredient) o).ingredient);
     }
 
     @Override
     public int hashCode() {
-        //return ingredient.hashCode();
-        return Objects.hash(ingredient.count(), ingredient.ingredient());
+        return ingredient.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ingredient.toString();
     }
 }

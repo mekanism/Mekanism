@@ -376,7 +376,7 @@ runs {
     }
 }
 
-void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
+static void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
     exclusiveRepo(handler, url, filter -> {
         for (def group : groups) {
             filter.includeGroup(group)
@@ -384,9 +384,7 @@ void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
     })
 }
 
-//Note: This cannot be static so that fg.repository can be properly accessed
-@SuppressWarnings('GrMethodMayBeStatic')
-void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
+static void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
     handler.exclusiveContent {
         it.forRepositories(handler.maven {
             setUrl(url)

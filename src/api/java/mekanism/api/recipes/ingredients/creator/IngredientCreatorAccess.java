@@ -6,16 +6,20 @@ import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponentType;
@@ -36,7 +40,7 @@ public class IngredientCreatorAccess {
      *
      * @return Chemical Stack ingredient creator.
      */
-    public static IChemicalStackIngredientCreator<?, ?, ?> getCreatorForType(ChemicalType chemicalType) {
+    public static IChemicalStackIngredientCreator<?, ?, ?, ?> getCreatorForType(ChemicalType chemicalType) {
         return switch (chemicalType) {
             case GAS -> gas();
             case INFUSION -> infusion();
@@ -62,29 +66,66 @@ public class IngredientCreatorAccess {
     /**
      * Gets the gas stack ingredient creator.
      */
-    public static IChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> gas() {
+    public static IChemicalStackIngredientCreator<Gas, GasStack, IGasIngredient, GasStackIngredient> gas() {
         return IMekanismAccess.INSTANCE.gasStackIngredientCreator();
+    }
+
+    /**
+     * Gets the gas ingredient creator.
+     *
+     * @since 10.6.0
+     */
+    public static IChemicalIngredientCreator<Gas, IGasIngredient> basicGas() {
+        //TODO - 1.20.5: Do we want to name this gas and the other one gasStack? (Probably)
+        return IMekanismAccess.INSTANCE.gasIngredientCreator();
     }
 
     /**
      * Gets the infusion stack ingredient creator.
      */
-    public static IChemicalStackIngredientCreator<InfuseType, InfusionStack, InfusionStackIngredient> infusion() {
+    public static IChemicalStackIngredientCreator<InfuseType, InfusionStack, IInfusionIngredient, InfusionStackIngredient> infusion() {
         return IMekanismAccess.INSTANCE.infusionStackIngredientCreator();
+    }
+
+    /**
+     * Gets the infusion ingredient creator.
+     *
+     * @since 10.6.0
+     */
+    public static IChemicalIngredientCreator<InfuseType, IInfusionIngredient> basicInfusion() {
+        return IMekanismAccess.INSTANCE.infusionIngredientCreator();
     }
 
     /**
      * Gets the pigment stack ingredient creator.
      */
-    public static IChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> pigment() {
+    public static IChemicalStackIngredientCreator<Pigment, PigmentStack, IPigmentIngredient, PigmentStackIngredient> pigment() {
         return IMekanismAccess.INSTANCE.pigmentStackIngredientCreator();
+    }
+
+    /**
+     * Gets the pigment ingredient creator.
+     *
+     * @since 10.6.0
+     */
+    public static IChemicalIngredientCreator<Pigment, IPigmentIngredient> basicPigment() {
+        return IMekanismAccess.INSTANCE.pigmentIngredientCreator();
     }
 
     /**
      * Gets the slurry stack ingredient creator.
      */
-    public static IChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> slurry() {
+    public static IChemicalStackIngredientCreator<Slurry, SlurryStack, ISlurryIngredient, SlurryStackIngredient> slurry() {
         return IMekanismAccess.INSTANCE.slurryStackIngredientCreator();
+    }
+
+    /**
+     * Gets the slurry ingredient creator.
+     *
+     * @since 10.6.0
+     */
+    public static IChemicalIngredientCreator<Slurry, ISlurryIngredient> basicSlurry() {
+        return IMekanismAccess.INSTANCE.slurryIngredientCreator();
     }
 
     /**

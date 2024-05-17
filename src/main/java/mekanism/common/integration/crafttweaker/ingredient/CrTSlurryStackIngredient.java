@@ -6,9 +6,11 @@ import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -77,18 +79,6 @@ public class CrTSlurryStackIngredient {
     }
 
     /**
-     * Combines multiple {@link SlurryStackIngredient}s into a single {@link SlurryStackIngredient}.
-     *
-     * @param ingredients Ingredients to combine
-     *
-     * @return A single {@link SlurryStackIngredient} representing all the passed in ingredients.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient createMulti(SlurryStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("SlurryStackIngredients", IngredientCreatorAccess.slurry(), ingredients);
-    }
-
-    /**
      * Converts this {@link SlurryStackIngredient} into JSON ({@link IData}).
      *
      * @return {@link SlurryStackIngredient} as JSON.
@@ -143,6 +133,12 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static SlurryStackIngredient or(SlurryStackIngredient _this, SlurryStackIngredient other) {
-        return IngredientCreatorAccess.slurry().createMulti(_this, other);
+        if (_this.amount() != other.amount()) {
+            throw new IllegalStateException("SlurryStack ingredients can only be or'd if they have the same counts");
+        }
+        List<ISlurryIngredient> ingredients = new ArrayList<>();
+        CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
+        CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
+        return IngredientCreatorAccess.slurry().from(IngredientCreatorAccess.basicSlurry().ofIngredients(ingredients), _this.amount());
     }
 }

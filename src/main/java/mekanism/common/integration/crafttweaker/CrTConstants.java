@@ -51,6 +51,13 @@ public class CrTConstants {
     public static final String CLASS_CUSTOM_MODULE = "mods." + Mekanism.MODID + ".api.gear.CustomModule";
     public static final String CLASS_MODULE_DATA_PROVIDER = "mods." + Mekanism.MODID + ".api.gear.ModuleDataProvider";
 
+    //TODO - CrT: Expose these to CrT as actual objects rather than just dummy classes? at least once it updates and we can test
+    public static final String CLASS_CHEMICAL_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalIngredient";
+    public static final String CLASS_GAS_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".GasIngredient";
+    public static final String CLASS_INFUSION_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".InfusionIngredient";
+    public static final String CLASS_PIGMENT_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".PigmentIngredient";
+    public static final String CLASS_SLURRY_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".SlurryIngredient";
+
     public static final String CLASS_FLOATING_LONG = "mods." + Mekanism.MODID + ".api.FloatingLong";
     public static final String CLASS_ITEM_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ItemStackIngredient";
     public static final String CLASS_FLUID_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.FluidStackIngredient";

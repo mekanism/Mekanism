@@ -2,7 +2,7 @@ package mekanism.client.recipe_viewer.recipe;
 
 import java.util.Map;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.common.Mekanism;

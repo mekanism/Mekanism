@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BinaryOperator;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -23,15 +24,13 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
@@ -39,8 +38,11 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTI
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
-import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
+import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
 
 public class CrTRecipeComponents {
 
@@ -78,28 +80,32 @@ public class CrTRecipeComponents {
     public static final ChemicalRecipeComponent<Gas, GasStack, GasStackIngredient, ICrTGasStack> GAS = new ChemicalRecipeComponent<>(
           ChemicalType.GAS,
           new TypeToken<GasStackIngredient>() {},
-          new TypeToken<ICrTGasStack>() {}
+          new TypeToken<ICrTGasStack>() {},
+          CrTGasStackIngredient::or
     );
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")
     public static final ChemicalRecipeComponent<InfuseType, InfusionStack, InfusionStackIngredient, ICrTInfusionStack> INFUSION = new ChemicalRecipeComponent<>(
           ChemicalType.INFUSION,
           new TypeToken<InfusionStackIngredient>() {},
-          new TypeToken<ICrTInfusionStack>() {}
+          new TypeToken<ICrTInfusionStack>() {},
+          CrTInfusionStackIngredient::or
     );
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")
     public static final ChemicalRecipeComponent<Pigment, PigmentStack, PigmentStackIngredient, ICrTPigmentStack> PIGMENT = new ChemicalRecipeComponent<>(
           ChemicalType.PIGMENT,
           new TypeToken<PigmentStackIngredient>() {},
-          new TypeToken<ICrTPigmentStack>() {}
+          new TypeToken<ICrTPigmentStack>() {},
+          CrTPigmentStackIngredient::or
     );
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")
     public static final ChemicalRecipeComponent<Slurry, SlurryStack, SlurryStackIngredient, ICrTSlurryStack> SLURRY = new ChemicalRecipeComponent<>(
           ChemicalType.SLURRY,
           new TypeToken<SlurryStackIngredient>() {},
-          new TypeToken<ICrTSlurryStack>() {}
+          new TypeToken<ICrTSlurryStack>() {},
+          CrTSlurryStackIngredient::or
     );
 
     public static final List<ChemicalRecipeComponent<?, ?, ?, ?>> CHEMICAL_COMPONENTS = List.of(
@@ -117,27 +123,17 @@ public class CrTRecipeComponents {
     }
 
     public record ChemicalRecipeComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
+          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
           (ChemicalType chemicalType, IRecipeComponent<INGREDIENT> input, IRecipeComponent<CRT_STACK> output) {
 
-        @SuppressWarnings("unchecked")
-        ChemicalRecipeComponent(ChemicalType chemicalType, TypeToken<INGREDIENT> inputType, TypeToken<CRT_STACK> outputType) {
-            this(chemicalType, inputType, outputType, (IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT>) IngredientCreatorAccess.getCreatorForType(chemicalType));
-        }
-
         private ChemicalRecipeComponent(ChemicalType chemicalType, TypeToken<INGREDIENT> inputType, TypeToken<CRT_STACK> outputType,
-              IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator) {
+              BinaryOperator<INGREDIENT> ingredientCombiner) {
             this(chemicalType, IRecipeComponent.composite(
                   Mekanism.rl("input/" + chemicalType.getSerializedName()),
                   inputType,
                   CrTRecipeComponents::ingredientsMatch,
-                  ingredient -> {
-                      if (ingredient instanceof MultiChemicalStackIngredient) {
-                          return ((MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>) ingredient).getIngredients();
-                      }
-                      return Collections.singletonList(ingredient);
-                  },
-                  ingredients -> ingredientCreator.from(ingredients.stream())
+                  Collections::singletonList,
+                  ingredients -> ingredients.stream().reduce(ingredientCombiner).orElseThrow()
             ), IRecipeComponent.simple(
                   Mekanism.rl("output/" + chemicalType.getSerializedName()),
                   outputType,

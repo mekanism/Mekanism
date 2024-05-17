@@ -16,10 +16,10 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 
 /**
  * Specialized version of {@link ILongInputHandler} for handling boxed chemicals.
@@ -65,7 +65,7 @@ public class BoxedChemicalInputHandler {
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    public BoxedChemicalStack getRecipeInput(ChemicalStackIngredient<?, ?> recipeIngredient) {
+    public BoxedChemicalStack getRecipeInput(ChemicalStackIngredient<?, ?, ?> recipeIngredient) {
         BoxedChemicalStack input = getInput();
         if (input.isEmpty()) {
             //All recipes currently require that we have an input. If we don't then return that we failed

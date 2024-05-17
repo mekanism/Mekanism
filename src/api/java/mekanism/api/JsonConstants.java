@@ -10,7 +10,15 @@ public class JsonConstants {//TODO - 1.20.5: Combine with NBTConstants into a si
 
     //Ingredients
     public static final String INGREDIENT = "ingredient";
+    /**
+     * @since 10.6.0
+     */
+    public static final String INGREDIENTS = "ingredients";
     public static final String AMOUNT = "amount";
+    /**
+     * @since 10.6.0
+     */
+    public static final String CHILDREN = "children";
     public static final String COUNT = "count";
     public static final String TAG = "tag";
     public static final String NBT = "nbt";
@@ -21,6 +29,10 @@ public class JsonConstants {//TODO - 1.20.5: Combine with NBTConstants into a si
     public static final String SLURRY = "slurry";
     public static final String FLUID = "fluid";
     public static final String BASE = "base";
+    /**
+     * @since 10.6.0
+     */
+    public static final String SUBTRACTED = "subtracted";
 
     //Recipes
     public static final String TYPE = "type";

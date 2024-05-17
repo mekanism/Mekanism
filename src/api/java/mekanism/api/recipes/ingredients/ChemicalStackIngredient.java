@@ -1,27 +1,56 @@
 package mekanism.api.recipes.ingredients;
 
+import java.util.List;
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IEmptyStackProvider;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IEmptyGasProvider;
-import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
-import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.IEmptySlurryProvider;
-import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
+ * Base implementation for a ChemicalIngredient with an amount.
+ *
+ * <p>{@link IChemicalIngredient}, like its item counterpart, explicitly does not perform count checks,
+ * so this class is used to (a) wrap a standard ChemicalIngredient with an amount and (b) provide a standard serialization format for mods to use.
+ *
+ * @see net.neoforged.neoforge.common.crafting.SizedIngredient
+ * @see GasStackIngredient
+ * @see InfusionStackIngredient
+ * @see PigmentStackIngredient
+ * @see SlurryStackIngredient
  */
-public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NotNull STACK>,
-      IEmptyStackProvider<CHEMICAL, STACK> {//TODO - 1.20.5: Rewrite this to be more like neo's fluid ingredient system
+@NothingNullByDefault
+public abstract sealed class ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+      INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> implements InputIngredient<@NotNull STACK>, IEmptyStackProvider<CHEMICAL, STACK>
+      permits GasStackIngredient, InfusionStackIngredient, PigmentStackIngredient, SlurryStackIngredient {
+
+    private final INGREDIENT ingredient;
+    private final long amount;
+
+    protected ChemicalStackIngredient(INGREDIENT ingredient, long amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Size must be positive");
+        }
+        this.ingredient = ingredient;
+        this.amount = amount;
+    }
+
+    @Nullable
+    private List<STACK> representations;
+
+    @Override
+    public boolean test(STACK stack) {
+        return testType(stack) && stack.getAmount() >= amount;
+    }
+
+    @Override
+    public boolean testType(STACK stack) {
+        Objects.requireNonNull(stack);
+        return testType(stack.getChemical());
+    }
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -30,46 +59,72 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@NotNull CHEMICAL chemical);
+    public boolean testType(CHEMICAL chemical) {
+        Objects.requireNonNull(chemical);
+        return ingredient.test(chemical);
+    }
+
+    @Override
+    public STACK getMatchingInstance(STACK stack) {
+        return test(stack) ? (STACK) stack.copyWithAmount(amount) : getEmptyStack();
+    }
+
+    @Override
+    public long getNeededAmount(STACK stack) {
+        return testType(stack) ? amount : 0;
+    }
+
+    @Override
+    public boolean hasNoMatchingInstances() {
+        return ingredient.hasNoChemicals();
+    }
+
+    @Override
+    public List<STACK> getRepresentations() {
+        if (this.representations == null) {
+            this.representations = ingredient.getChemicals().stream()
+                  .map(s -> (STACK) s.getStack(amount))
+                  .toList();
+        }
+        return representations;
+    }
 
     /**
-     * Gets the implementation type of this ingredient. For the most part this won't matter to consumers, as we just use this as part of the codec implementations.
-     *
-     * @return Size/Implementation Type of this ingredient.
+     * For use in recipe input caching. Gets the internal Chemical Ingredient.
      *
      * @since 10.6.0
      */
-    IngredientType getType();
-
-    /**
-     * Base implementation for how Mekanism handle's GasStack Ingredients.
-     * <p>
-     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
-     */
-    interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack>, IEmptyGasProvider {
+    public INGREDIENT ingredient() {
+        return ingredient;
     }
 
     /**
-     * Base implementation for how Mekanism handle's InfusionStack Ingredients.
-     * <p>
-     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
+     * For use in recipe input caching. Gets the internal amount this ingredient represents.
+     *
+     * @since 10.6.0
      */
-    interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack>, IEmptyInfusionProvider {
+    public long amount() {
+        return amount;
     }
 
-    /**
-     * Base implementation for how Mekanism handle's PigmentStack Ingredients.
-     * <p>
-     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
-     */
-    interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack>, IEmptyPigmentProvider {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChemicalStackIngredient<?, ?, ?> other = (ChemicalStackIngredient<?, ?, ?>) o;
+        return amount == other.amount && ingredient.equals(other.ingredient);
     }
 
-    /**
-     * Base implementation for how Mekanism handle's SlurryStack Ingredients.
-     * <p>
-     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
-     */
-    interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack>, IEmptySlurryProvider {
+    @Override
+    public int hashCode() {
+        return Objects.hash(ingredient, amount);
+    }
+
+    @Override
+    public String toString() {
+        return amount + "x " + ingredient;
     }
 }

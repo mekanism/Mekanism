@@ -2,14 +2,15 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -78,18 +79,6 @@ public class CrTPigmentStackIngredient {
     }
 
     /**
-     * Combines multiple {@link PigmentStackIngredient}s into a single {@link PigmentStackIngredient}.
-     *
-     * @param ingredients Ingredients to combine
-     *
-     * @return A single {@link PigmentStackIngredient} representing all the passed in ingredients.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient createMulti(PigmentStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("PigmentStackIngredients", IngredientCreatorAccess.pigment(), ingredients);
-    }
-
-    /**
      * Converts this {@link PigmentStackIngredient} into JSON ({@link IData}).
      *
      * @return {@link PigmentStackIngredient} as JSON.
@@ -144,6 +133,12 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static PigmentStackIngredient or(PigmentStackIngredient _this, PigmentStackIngredient other) {
-        return IngredientCreatorAccess.pigment().createMulti(_this, other);
+        if (_this.amount() != other.amount()) {
+            throw new IllegalStateException("InfusionStack ingredients can only be or'd if they have the same counts");
+        }
+        List<IPigmentIngredient> ingredients = new ArrayList<>();
+        CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
+        CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
+        return IngredientCreatorAccess.pigment().from(IngredientCreatorAccess.basicPigment().ofIngredients(ingredients), _this.amount());
     }
 }
