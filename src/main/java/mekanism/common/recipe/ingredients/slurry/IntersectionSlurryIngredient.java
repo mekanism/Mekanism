@@ -15,7 +15,7 @@ import mekanism.common.registries.MekanismSlurryIngredientTypes;
 public final class IntersectionSlurryIngredient extends IntersectionChemicalIngredient<Slurry, ISlurryIngredient> implements ISlurryIngredient {
 
     public static final MapCodec<IntersectionSlurryIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicSlurry().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionSlurryIngredient::children)
+          IngredientCreatorAccess.slurry().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionSlurryIngredient::children)
     ).apply(builder, IntersectionSlurryIngredient::new));
 
     IntersectionSlurryIngredient(List<ISlurryIngredient> children) {

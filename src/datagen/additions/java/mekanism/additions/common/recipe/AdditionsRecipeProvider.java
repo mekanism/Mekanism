@@ -29,7 +29,6 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -121,7 +120,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
-              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               result.getItemStack()
         ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }

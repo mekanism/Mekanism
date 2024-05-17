@@ -33,7 +33,7 @@ public class SlurryStackIngredientCreator implements IChemicalStackIngredientCre
 
     @Override
     public IChemicalIngredientCreator<Slurry, ISlurryIngredient> chemicalCreator() {
-        return IngredientCreatorAccess.basicSlurry();
+        return IngredientCreatorAccess.slurry();
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(Pigment instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "PigmentStackIngredients", "pigment");
-        return IngredientCreatorAccess.pigment().from(instance, amount);
+        return IngredientCreatorAccess.pigmentStack().from(instance, amount);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(ICrTPigmentStack instance) {
         CrTIngredientHelper.assertValid(instance, "PigmentStackIngredients");
-        return IngredientCreatorAccess.pigment().from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.pigmentStack().from(instance.getImmutableInternal());
     }
 
     /**
@@ -63,7 +63,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(KnownTag<Pigment> pigmentTag, long amount) {
         TagKey<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, "PigmentStackIngredients");
-        return IngredientCreatorAccess.pigment().from(tag, amount);
+        return IngredientCreatorAccess.pigmentStack().from(tag, amount);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(PigmentStackIngredient _this) {
-        return IngredientCreatorAccess.pigment().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.pigmentStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**
@@ -139,6 +139,6 @@ public class CrTPigmentStackIngredient {
         List<IPigmentIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
         CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
-        return IngredientCreatorAccess.pigment().from(IngredientCreatorAccess.basicPigment().ofIngredients(ingredients), _this.amount());
+        return IngredientCreatorAccess.pigmentStack().from(IngredientCreatorAccess.pigment().ofIngredients(ingredients), _this.amount());
     }
 }

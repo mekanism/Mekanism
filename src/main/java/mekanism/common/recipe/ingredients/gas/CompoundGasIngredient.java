@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @NothingNullByDefault
 public final class CompoundGasIngredient extends CompoundChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
-    public static final MapCodec<CompoundGasIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.basicGas().listCodecMultipleElements(),
+    public static final MapCodec<CompoundGasIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.gas().listCodecMultipleElements(),
           JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
           CompoundGasIngredient::new, CompoundGasIngredient::children
     );

@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @NothingNullByDefault
 public final class CompoundPigmentIngredient extends CompoundChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
-    public static final MapCodec<CompoundPigmentIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.basicPigment().listCodecMultipleElements(),
+    public static final MapCodec<CompoundPigmentIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.pigment().listCodecMultipleElements(),
           JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
           CompoundPigmentIngredient::new, CompoundPigmentIngredient::children
     );

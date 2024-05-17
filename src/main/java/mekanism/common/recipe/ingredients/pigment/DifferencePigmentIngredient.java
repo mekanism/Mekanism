@@ -14,8 +14,8 @@ import mekanism.common.registries.MekanismPigmentIngredientTypes;
 public final class DifferencePigmentIngredient extends DifferenceChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
     public static final MapCodec<DifferencePigmentIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicPigment().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferencePigmentIngredient::base),
-          IngredientCreatorAccess.basicPigment().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferencePigmentIngredient::subtracted)
+          IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferencePigmentIngredient::base),
+          IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferencePigmentIngredient::subtracted)
     ).apply(builder, DifferencePigmentIngredient::new));
 
     DifferencePigmentIngredient(IPigmentIngredient base, IPigmentIngredient subtracted) {

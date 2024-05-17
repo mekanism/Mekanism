@@ -36,7 +36,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(InfuseType instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "InfusionStackIngredients", "infuse type");
-        return IngredientCreatorAccess.infusion().from(instance, amount);
+        return IngredientCreatorAccess.infusionStack().from(instance, amount);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(ICrTInfusionStack instance) {
         CrTIngredientHelper.assertValid(instance, "InfusionStackIngredients");
-        return IngredientCreatorAccess.infusion().from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.infusionStack().from(instance.getImmutableInternal());
     }
 
     /**
@@ -63,7 +63,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(KnownTag<InfuseType> infuseTypeTag, long amount) {
         TagKey<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, "InfusionStackIngredients");
-        return IngredientCreatorAccess.infusion().from(tag, amount);
+        return IngredientCreatorAccess.infusionStack().from(tag, amount);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(InfusionStackIngredient _this) {
-        return IngredientCreatorAccess.infusion().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.infusionStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**
@@ -139,6 +139,6 @@ public class CrTInfusionStackIngredient {
         List<IInfusionIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
         CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
-        return IngredientCreatorAccess.infusion().from(IngredientCreatorAccess.basicInfusion().ofIngredients(ingredients), _this.amount());
+        return IngredientCreatorAccess.infusionStack().from(IngredientCreatorAccess.infusion().ofIngredients(ingredients), _this.amount());
     }
 }

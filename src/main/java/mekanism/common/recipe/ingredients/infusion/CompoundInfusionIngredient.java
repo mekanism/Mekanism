@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @NothingNullByDefault
 public final class CompoundInfusionIngredient extends CompoundChemicalIngredient<InfuseType, IInfusionIngredient> implements IInfusionIngredient {
 
-    public static final MapCodec<CompoundInfusionIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.basicInfusion().listCodecMultipleElements(),
+    public static final MapCodec<CompoundInfusionIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.infusion().listCodecMultipleElements(),
           JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
           CompoundInfusionIngredient::new, CompoundInfusionIngredient::children
     );

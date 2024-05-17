@@ -21,7 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
  * <p>{@link ISlurryIngredient}, like its item counterpart, explicitly does not perform count checks,
  * so this class is used to (a) wrap a standard SlurryIngredient with an amount and (b) provide a standard serialization format for mods to use.
  * <p>
- * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
+ * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurryStack()}.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
@@ -57,7 +57,7 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      * @since 10.6.0
      */
     public static final Codec<SlurryStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicSlurry().mapCodecNonEmpty().forGetter(SlurryStackIngredient::ingredient),
+          IngredientCreatorAccess.slurry().mapCodecNonEmpty().forGetter(SlurryStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
     ).apply(instance, SlurryStackIngredient::new));
 
@@ -78,7 +78,7 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      * @since 10.6.0
      */
     public static final Codec<SlurryStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicSlurry().codecNonEmpty().fieldOf("ingredient").forGetter(SlurryStackIngredient::ingredient),
+          IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf("ingredient").forGetter(SlurryStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
     ).apply(instance, SlurryStackIngredient::new));
 
@@ -88,14 +88,14 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      * @since 10.6.0
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, SlurryStackIngredient> STREAM_CODEC = StreamCodec.composite(
-          IngredientCreatorAccess.basicSlurry().streamCodec(), SlurryStackIngredient::ingredient,
+          IngredientCreatorAccess.slurry().streamCodec(), SlurryStackIngredient::ingredient,
           ByteBufCodecs.VAR_LONG, SlurryStackIngredient::amount,
           SlurryStackIngredient::new
     );
 
     /**
      * Creates a Slurry Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurryStack()} and
      * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
      *
      * @param ingredient Ingredient to match.

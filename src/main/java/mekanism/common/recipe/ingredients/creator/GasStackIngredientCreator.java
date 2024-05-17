@@ -33,7 +33,7 @@ public class GasStackIngredientCreator implements IChemicalStackIngredientCreato
 
     @Override
     public IChemicalIngredientCreator<Gas, IGasIngredient> chemicalCreator() {
-        return IngredientCreatorAccess.basicGas();
+        return IngredientCreatorAccess.gas();
     }
 
     @Override

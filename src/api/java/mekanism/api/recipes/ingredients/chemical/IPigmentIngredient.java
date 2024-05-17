@@ -16,6 +16,6 @@ public non-sealed interface IPigmentIngredient extends IChemicalIngredient<Pigme
     @NotNull
     @Override
     default IChemicalIngredientCreator<Pigment, IPigmentIngredient> ingredientCreator() {
-        return IngredientCreatorAccess.basicPigment();
+        return IngredientCreatorAccess.pigment();
     }
 }

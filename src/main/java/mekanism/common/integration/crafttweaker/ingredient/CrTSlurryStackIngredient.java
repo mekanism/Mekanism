@@ -36,7 +36,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(Slurry instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "SlurryStackIngredients", "slurry");
-        return IngredientCreatorAccess.slurry().from(instance, amount);
+        return IngredientCreatorAccess.slurryStack().from(instance, amount);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(ICrTSlurryStack instance) {
         CrTIngredientHelper.assertValid(instance, "SlurryStackIngredients");
-        return IngredientCreatorAccess.slurry().from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.slurryStack().from(instance.getImmutableInternal());
     }
 
     /**
@@ -63,7 +63,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(KnownTag<Slurry> slurryTag, long amount) {
         TagKey<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, "SlurryStackIngredients");
-        return IngredientCreatorAccess.slurry().from(tag, amount);
+        return IngredientCreatorAccess.slurryStack().from(tag, amount);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(SlurryStackIngredient _this) {
-        return IngredientCreatorAccess.slurry().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.slurryStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**
@@ -139,6 +139,6 @@ public class CrTSlurryStackIngredient {
         List<ISlurryIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
         CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
-        return IngredientCreatorAccess.slurry().from(IngredientCreatorAccess.basicSlurry().ofIngredients(ingredients), _this.amount());
+        return IngredientCreatorAccess.slurryStack().from(IngredientCreatorAccess.slurry().ofIngredients(ingredients), _this.amount());
     }
 }

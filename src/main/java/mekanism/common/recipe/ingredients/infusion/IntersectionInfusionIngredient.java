@@ -15,7 +15,7 @@ import mekanism.common.registries.MekanismInfusionIngredientTypes;
 public final class IntersectionInfusionIngredient extends IntersectionChemicalIngredient<InfuseType, IInfusionIngredient> implements IInfusionIngredient {
 
     public static final MapCodec<IntersectionInfusionIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicInfusion().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionInfusionIngredient::children)
+          IngredientCreatorAccess.infusion().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionInfusionIngredient::children)
     ).apply(builder, IntersectionInfusionIngredient::new));
 
     IntersectionInfusionIngredient(List<IInfusionIngredient> children) {

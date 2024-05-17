@@ -17,6 +17,6 @@ public non-sealed interface ISlurryIngredient extends IChemicalIngredient<Slurry
     @NotNull
     @Override
     default IChemicalIngredientCreator<Slurry, ISlurryIngredient> ingredientCreator() {
-        return IngredientCreatorAccess.basicSlurry();
+        return IngredientCreatorAccess.slurry();
     }
 }

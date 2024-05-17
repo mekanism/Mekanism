@@ -33,7 +33,7 @@ public class PigmentStackIngredientCreator implements IChemicalStackIngredientCr
 
     @Override
     public IChemicalIngredientCreator<Pigment, IPigmentIngredient> chemicalCreator() {
-        return IngredientCreatorAccess.basicPigment();
+        return IngredientCreatorAccess.pigment();
     }
 
     @Override

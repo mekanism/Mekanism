@@ -16,6 +16,6 @@ public non-sealed interface IGasIngredient extends IChemicalIngredient<Gas, IGas
     @NotNull
     @Override
     default IChemicalIngredientCreator<Gas, IGasIngredient> ingredientCreator() {
-        return IngredientCreatorAccess.basicGas();
+        return IngredientCreatorAccess.gas();
     }
 }

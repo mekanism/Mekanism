@@ -14,8 +14,8 @@ import mekanism.common.registries.MekanismSlurryIngredientTypes;
 public final class DifferenceSlurryIngredient extends DifferenceChemicalIngredient<Slurry, ISlurryIngredient> implements ISlurryIngredient {
 
     public static final MapCodec<DifferenceSlurryIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicSlurry().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceSlurryIngredient::base),
-          IngredientCreatorAccess.basicSlurry().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceSlurryIngredient::subtracted)
+          IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceSlurryIngredient::base),
+          IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceSlurryIngredient::subtracted)
     ).apply(builder, DifferenceSlurryIngredient::new));
 
     DifferenceSlurryIngredient(ISlurryIngredient base, ISlurryIngredient subtracted) {

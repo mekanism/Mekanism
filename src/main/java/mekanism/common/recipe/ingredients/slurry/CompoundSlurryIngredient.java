@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 @NothingNullByDefault
 public final class CompoundSlurryIngredient extends CompoundChemicalIngredient<Slurry, ISlurryIngredient> implements ISlurryIngredient {
 
-    public static final MapCodec<CompoundSlurryIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.basicSlurry().listCodecMultipleElements(),
+    public static final MapCodec<CompoundSlurryIngredient> CODEC = NeoForgeExtraCodecs.aliasedFieldOf(IngredientCreatorAccess.slurry().listCodecMultipleElements(),
           JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
           CompoundSlurryIngredient::new, CompoundSlurryIngredient::children
     );

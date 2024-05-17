@@ -36,7 +36,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(Gas instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "GasStackIngredients", "gas");
-        return IngredientCreatorAccess.gas().from(instance, amount);
+        return IngredientCreatorAccess.gasStack().from(instance, amount);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(ICrTGasStack instance) {
         CrTIngredientHelper.assertValid(instance, "GasStackIngredients");
-        return IngredientCreatorAccess.gas().from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.gasStack().from(instance.getImmutableInternal());
     }
 
     /**
@@ -63,7 +63,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(KnownTag<Gas> gasTag, long amount) {
         TagKey<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, "GasStackIngredients");
-        return IngredientCreatorAccess.gas().from(tag, amount);
+        return IngredientCreatorAccess.gasStack().from(tag, amount);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(GasStackIngredient _this) {
-        return IngredientCreatorAccess.gas().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.gasStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
     }
 
     /**
@@ -139,6 +139,6 @@ public class CrTGasStackIngredient {
         List<IGasIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
         CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
-        return IngredientCreatorAccess.gas().from(IngredientCreatorAccess.basicGas().ofIngredients(ingredients), _this.amount());
+        return IngredientCreatorAccess.gasStack().from(IngredientCreatorAccess.gas().ofIngredients(ingredients), _this.amount());
     }
 }

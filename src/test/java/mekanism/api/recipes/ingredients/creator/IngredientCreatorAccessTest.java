@@ -32,48 +32,48 @@ class IngredientCreatorAccessTest {
     @Test
     @DisplayName("Test getting GasStackIngredient creator")
     void testGetGasStackIngredientCreator() {
-        Assertions.assertInstanceOf(GasStackIngredientCreator.class, IngredientCreatorAccess.gas());
+        Assertions.assertInstanceOf(GasStackIngredientCreator.class, IngredientCreatorAccess.gasStack());
     }
 
     @Test
     @DisplayName("Test getting GasIngredient creator")
     void testGetGasIngredientCreator() {
-        Assertions.assertInstanceOf(GasIngredientCreator.class, IngredientCreatorAccess.basicGas());
+        Assertions.assertInstanceOf(GasIngredientCreator.class, IngredientCreatorAccess.gas());
     }
 
     @Test
     @DisplayName("Test getting InfusionStackIngredient creator")
     void testGetInfusionStackIngredientCreator() {
-        Assertions.assertInstanceOf(InfusionStackIngredientCreator.class, IngredientCreatorAccess.infusion());
+        Assertions.assertInstanceOf(InfusionStackIngredientCreator.class, IngredientCreatorAccess.infusionStack());
     }
 
     @Test
     @DisplayName("Test getting InfusionIngredient creator")
     void testGetInfusionIngredientCreator() {
-        Assertions.assertInstanceOf(InfusionIngredientCreator.class, IngredientCreatorAccess.basicInfusion());
+        Assertions.assertInstanceOf(InfusionIngredientCreator.class, IngredientCreatorAccess.infusion());
     }
 
     @Test
     @DisplayName("Test getting PigmentStackIngredient creator")
     void testGetPigmentStackIngredientCreator() {
-        Assertions.assertInstanceOf(PigmentStackIngredientCreator.class, IngredientCreatorAccess.pigment());
+        Assertions.assertInstanceOf(PigmentStackIngredientCreator.class, IngredientCreatorAccess.pigmentStack());
     }
 
     @Test
     @DisplayName("Test getting PigmentIngredient creator")
     void testGetPigmentIngredientCreator() {
-        Assertions.assertInstanceOf(PigmentIngredientCreator.class, IngredientCreatorAccess.basicPigment());
+        Assertions.assertInstanceOf(PigmentIngredientCreator.class, IngredientCreatorAccess.pigment());
     }
 
     @Test
     @DisplayName("Test getting SlurryStackIngredient creator")
     void testGetSlurryStackIngredientCreator() {
-        Assertions.assertInstanceOf(SlurryStackIngredientCreator.class, IngredientCreatorAccess.slurry());
+        Assertions.assertInstanceOf(SlurryStackIngredientCreator.class, IngredientCreatorAccess.slurryStack());
     }
 
     @Test
     @DisplayName("Test getting SlurryIngredient creator")
     void testGetSlurryIngredientCreator() {
-        Assertions.assertInstanceOf(SlurryIngredientCreator.class, IngredientCreatorAccess.basicSlurry());
+        Assertions.assertInstanceOf(SlurryIngredientCreator.class, IngredientCreatorAccess.slurry());
     }
 }
