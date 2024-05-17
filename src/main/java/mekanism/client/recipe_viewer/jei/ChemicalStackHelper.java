@@ -119,7 +119,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return getRegistry().getTags()
               .filter(pair -> {
                   Named<CHEMICAL> tag = pair.getSecond();
-                  return tag.size() == expected && tag.stream().allMatch(tag::contains);
+                  return tag.size() == expected && tag.stream().allMatch(holder -> values.contains(holder.value()));
               }).map(pair -> pair.getFirst().location())
               .findFirst();
     }

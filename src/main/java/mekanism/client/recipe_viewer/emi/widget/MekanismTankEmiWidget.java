@@ -64,7 +64,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
             int y = bounds.y() + 1;
             int width = bounds.width() - 2;
             int height = bounds.height() - 2;
-            int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacity);
+            int desiredHeight = MathUtils.clampToInt(height * (double) ingredient.getAmount() / capacity);
             if (desiredHeight < 1) {
                 desiredHeight = 1;
             }
