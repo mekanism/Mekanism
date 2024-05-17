@@ -6,7 +6,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 

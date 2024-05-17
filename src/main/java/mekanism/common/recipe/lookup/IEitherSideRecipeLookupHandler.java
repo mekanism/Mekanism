@@ -76,7 +76,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * Helper interface to make the generics that we have to pass to {@link IEitherSideRecipeLookupHandler} not as messy.
      */
     interface EitherSideChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK>>> extends
+          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK, ?>>> extends
           IEitherSideRecipeLookupHandler<STACK, RECIPE, EitherSideChemical<CHEMICAL, STACK, RECIPE>> {
 
         /**

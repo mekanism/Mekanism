@@ -9,7 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;

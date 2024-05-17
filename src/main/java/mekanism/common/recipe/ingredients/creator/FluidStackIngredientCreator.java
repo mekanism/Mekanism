@@ -1,4 +1,4 @@
-package mekanism.common.recipe.ingredient.creator;
+package mekanism.common.recipe.ingredients.creator;
 
 import com.mojang.serialization.Codec;
 import mekanism.api.annotations.NothingNullByDefault;

@@ -6,7 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;

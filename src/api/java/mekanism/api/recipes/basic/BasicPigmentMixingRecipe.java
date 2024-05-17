@@ -8,7 +8,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PigmentMixingRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 

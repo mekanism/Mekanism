@@ -7,6 +7,11 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
+import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
+import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
+import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import mekanism.common.Mekanism;
 
 /**
@@ -49,6 +54,46 @@ public class DummyCrTNatives {
     public static class CrTNativeModuleDataProvider {
 
         private CrTNativeModuleDataProvider() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IChemicalIngredient.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_INGREDIENT + DUMMY)
+    public static class CrTNativeChemicalIngredient {
+
+        private CrTNativeChemicalIngredient() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IGasIngredient.class, zenCodeName = CrTConstants.CLASS_GAS_INGREDIENT + DUMMY)
+    public static class CrTNativeGasIngredient {
+
+        private CrTNativeGasIngredient() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IInfusionIngredient.class, zenCodeName = CrTConstants.CLASS_INFUSION_INGREDIENT + DUMMY)
+    public static class CrTNativeInfusionIngredient {
+
+        private CrTNativeInfusionIngredient() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = IPigmentIngredient.class, zenCodeName = CrTConstants.CLASS_PIGMENT_INGREDIENT + DUMMY)
+    public static class CrTNativePigmentIngredient {
+
+        private CrTNativePigmentIngredient() {
+        }
+    }
+
+    @ZenRegister
+    @NativeTypeRegistration(value = ISlurryIngredient.class, zenCodeName = CrTConstants.CLASS_SLURRY_INGREDIENT + DUMMY)
+    public static class CrTNativeSlurryIngredient {
+
+        private CrTNativeSlurryIngredient() {
         }
     }
 

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<@NotNull STACK> outputHandler;

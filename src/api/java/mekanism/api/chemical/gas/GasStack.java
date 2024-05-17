@@ -39,6 +39,12 @@ public final class GasStack extends ChemicalStack<Gas> {
      */
     public static final Codec<Gas> GAS_NON_EMPTY_CODEC = chemicalNonEmptyCodec(MekanismAPI.GAS_REGISTRY);
     /**
+     * A standard codec for non-empty gas holders.
+     *
+     * @since 10.6.0
+     */
+    public static final Codec<Holder<Gas>> GAS_NON_EMPTY_HOLDER_CODEC = chemicalNonEmptyHolderCodec(MekanismAPI.GAS_REGISTRY);
+    /**
      * A standard map codec for gas stacks that does not accept empty stacks.
      *
      * @since 10.6.0

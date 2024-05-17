@@ -42,12 +42,8 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      * Checks if this ingredient has any matching instances, in most cases this should be {@code false}, but for cases like tags this may not always be the case.
      *
      * @return {@code true} for no matching instances, {@code false} if there are any matching instances.
-     *
-     * @implNote Defaults to checking that {@link #getRepresentations()} is empty, but usually this will be overridden with a more efficient implementation.
      */
-    default boolean hasNoMatchingInstances() {
-        return getRepresentations().isEmpty();
-    }
+    boolean hasNoMatchingInstances();
 
     /**
      * Primarily for JEI, a list of valid instances of the type

@@ -6,7 +6,7 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;

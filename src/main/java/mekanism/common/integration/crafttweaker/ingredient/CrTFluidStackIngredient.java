@@ -102,7 +102,7 @@ public class CrTFluidStackIngredient {
               //Note: The ingredient creator will copy the stack to ensure it does not get modified
               fluidStack -> ingredientCreator.from(fluidStack.<FluidStack>getInternal()),
               ingredientCreator::from,
-              //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+              //TODO - CrT: Re-evaluate once CrT updates to support Neo's fluid ingredients
               stream -> stream.reduce(CrTFluidStackIngredient::or).orElseThrow()
 
         );
@@ -127,7 +127,7 @@ public class CrTFluidStackIngredient {
     //@ZenCodeType.Method
     //@ZenCodeType.Caster(implicit = true)
     public static CTFluidIngredient asCTFluidIngredient(FluidStackIngredient _this) {
-        //TODO - 1.20.5: Re-evaluate once CrT updates to support Neo's fluid ingredients
+        //TODO - CrT: Re-evaluate once CrT updates to support Neo's fluid ingredients
         /*if (_this instanceof SingleFluidStackIngredient single) {
             //Note: We likely don't need to copy this, but just in case we want to make sure the raw input doesn't somehow leak
             return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(single.getInputRaw().copy()));

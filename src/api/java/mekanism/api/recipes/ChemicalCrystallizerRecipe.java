@@ -87,7 +87,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     /**
      * Gets the input ingredient.
      */
-    public abstract ChemicalStackIngredient<?, ?> getInput();
+    public abstract ChemicalStackIngredient<?, ?, ?> getInput();
 
     @Override
     public boolean isIncomplete() {

@@ -13,13 +13,17 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -59,10 +63,10 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, Chemical<?>> BOXED_OPTIONAL_STREAM_CODEC = ChemicalType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast()
           .dispatch(ChemicalType::getTypeFor, type -> switch (type) {
-              case GAS -> ByteBufCodecs.registry(MekanismAPI.GAS_REGISTRY_NAME);
-              case INFUSION -> ByteBufCodecs.registry(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME);
-              case PIGMENT -> ByteBufCodecs.registry(MekanismAPI.PIGMENT_REGISTRY_NAME);
-              case SLURRY -> ByteBufCodecs.registry(MekanismAPI.SLURRY_REGISTRY_NAME);
+              case GAS -> Gas.STREAM_CODEC;
+              case INFUSION -> InfuseType.STREAM_CODEC;
+              case PIGMENT -> Pigment.STREAM_CODEC;
+              case SLURRY -> Slurry.STREAM_CODEC;
           });
     /**
      * StreamCodec to get any kind of chemical (that does not accept the empty type), based on a "chemicalType" field.
@@ -239,7 +243,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
      */
     public boolean is(TagKey<CHEMICAL> tag) {
-        return getRegistry().wrapAsHolder((CHEMICAL) this).is(tag);
+        return getAsHolder().is(tag);
     }
 
     /**
@@ -248,7 +252,12 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @return All the tags this chemical is a part of.
      */
     public Stream<TagKey<CHEMICAL>> getTags() {
-        return getRegistry().wrapAsHolder((CHEMICAL) this).tags();
+        return getAsHolder().tags();
+    }
+
+    //TODO - 1.20.5: Docs
+    public Holder<CHEMICAL> getAsHolder() {
+        return getRegistry().wrapAsHolder((CHEMICAL) this);
     }
 
     /**

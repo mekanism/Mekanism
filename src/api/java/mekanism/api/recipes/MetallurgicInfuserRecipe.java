@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

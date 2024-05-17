@@ -57,6 +57,16 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
+     * A standard codec for chemicals.
+     *
+     * @since 10.6.0
+     */
+    protected static <CHEMICAL extends Chemical<CHEMICAL>> Codec<Holder<CHEMICAL>> chemicalNonEmptyHolderCodec(Registry<CHEMICAL> registry) {
+        return registry.holderByNameCodec().validate(chemical -> chemical.value().isEmptyType() ? DataResult.error(() -> "Chemical must not be mekanism:empty")
+                                                                                                : DataResult.success(chemical));
+    }
+
+    /**
      * A standard codec for chemical stacks that does not accept empty stacks.
      *
      * @since 10.6.0
@@ -278,7 +288,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @since 10.6.0
      */
     public Holder<CHEMICAL> getChemicalHolder() {
-        return getRegistry().wrapAsHolder(getChemical());
+        return getChemical().getAsHolder();
     }
 
     /**

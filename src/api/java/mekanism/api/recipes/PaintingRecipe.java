@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

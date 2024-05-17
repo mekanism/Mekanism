@@ -2,14 +2,15 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.data.op.IDataOps;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -78,18 +79,6 @@ public class CrTGasStackIngredient {
     }
 
     /**
-     * Combines multiple {@link GasStackIngredient}s into a single {@link GasStackIngredient}.
-     *
-     * @param ingredients Ingredients to combine
-     *
-     * @return A single {@link GasStackIngredient} representing all the passed in ingredients.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient createMulti(GasStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("GasStackIngredients", IngredientCreatorAccess.gas(), ingredients);
-    }
-
-    /**
      * Converts this {@link GasStackIngredient} into JSON ({@link IData}).
      *
      * @return {@link GasStackIngredient} as JSON.
@@ -144,6 +133,12 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static GasStackIngredient or(GasStackIngredient _this, GasStackIngredient other) {
-        return IngredientCreatorAccess.gas().createMulti(_this, other);
+        if (_this.amount() != other.amount()) {
+            throw new IllegalStateException("GasStack ingredients can only be or'd if they have the same counts");
+        }
+        List<IGasIngredient> ingredients = new ArrayList<>();
+        CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());
+        CrTIngredientHelper.addIngredient(ingredients, other.ingredient());
+        return IngredientCreatorAccess.gas().from(IngredientCreatorAccess.basicGas().ofIngredients(ingredients), _this.amount());
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;

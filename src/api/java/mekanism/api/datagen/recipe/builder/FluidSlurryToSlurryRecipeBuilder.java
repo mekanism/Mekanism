@@ -5,7 +5,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 
 @NothingNullByDefault

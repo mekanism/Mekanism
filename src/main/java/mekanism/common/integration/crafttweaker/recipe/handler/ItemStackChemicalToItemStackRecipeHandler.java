@@ -17,9 +17,9 @@ import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
+import mekanism.api.recipes.ingredients.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents.ChemicalRecipeComponent;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager;
@@ -28,7 +28,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public abstract class ItemStackChemicalToItemStackRecipeHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends MekanismRecipeHandler<RECIPE> {
 
     @Override

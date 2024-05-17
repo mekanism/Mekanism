@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NotNull STACK, @NotNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> extends MekanismRecipe implements BiPredicate<@NotNull STACK, @NotNull STACK> {
 
     @Override
     public abstract boolean test(STACK input1, STACK input2);

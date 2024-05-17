@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;

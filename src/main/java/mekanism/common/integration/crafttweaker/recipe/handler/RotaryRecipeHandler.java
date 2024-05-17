@@ -6,7 +6,7 @@ import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;

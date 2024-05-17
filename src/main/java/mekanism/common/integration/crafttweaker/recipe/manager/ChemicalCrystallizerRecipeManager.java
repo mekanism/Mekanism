@@ -29,7 +29,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
      * @param output {@link IItemStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ChemicalStackIngredient<?, ?> input, IItemStack output) {
+    public void addRecipe(String name, ChemicalStackIngredient<?, ?, ?> input, IItemStack output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
@@ -39,7 +39,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
      * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
      * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient<?, ?> input, IItemStack output) {
+    public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient<?, ?, ?> input, IItemStack output) {
         return new BasicChemicalCrystallizerRecipe(input, getAndValidateNotEmpty(output));
     }
 

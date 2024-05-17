@@ -84,18 +84,22 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
+import mekanism.common.registries.MekanismGasIngredientTypes;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismHeightProviderTypes;
 import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismInfusionIngredientTypes;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismPigmentIngredientTypes;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
+import mekanism.common.registries.MekanismSlurryIngredientTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -232,6 +236,10 @@ public class Mekanism {
         MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
         MekanismPigments.PIGMENTS.register(modEventBus);
         MekanismSlurries.SLURRIES.register(modEventBus);
+        MekanismGasIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
+        MekanismInfusionIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
+        MekanismPigmentIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
+        MekanismSlurryIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
         MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.register(modEventBus);
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
@@ -265,11 +273,10 @@ public class Mekanism {
 
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemicals
-        ResourceLocation emptyName = rl("empty");
-        event.register(MekanismAPI.GAS_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_GAS);
-        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
-        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
-        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
+        event.register(MekanismAPI.GAS_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_GAS);
+        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
+        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_PIGMENT);
+        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, MekanismAPI.EMPTY_CHEMICAL_NAME, () -> MekanismAPI.EMPTY_SLURRY);
     }
 
     public static ResourceLocation rl(String path) {

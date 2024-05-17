@@ -6,7 +6,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

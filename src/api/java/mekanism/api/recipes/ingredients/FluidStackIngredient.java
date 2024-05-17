@@ -105,7 +105,7 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     }
 
     /**
-     * For use in recipe input caching. Gets the internal NeoSized  Fluid Ingredient.
+     * For use in recipe input caching. Gets the internal Neo Sized Fluid Ingredient.
      *
      * @since 10.6.0
      */
@@ -121,14 +121,16 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FluidStackIngredient other = (FluidStackIngredient) o;
-        //TODO - 1.20.5: Replace this once sized ingredient implements equals and hashcode
-        return ingredient.amount() == other.ingredient.amount() && ingredient.ingredient().equals(other.ingredient.ingredient());
+        return ingredient.equals(((FluidStackIngredient) o).ingredient);
     }
 
     @Override
     public int hashCode() {
-        //return ingredient.hashCode();
-        return Objects.hash(ingredient.amount(), ingredient.ingredient());
+        return ingredient.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ingredient.toString();
     }
 }

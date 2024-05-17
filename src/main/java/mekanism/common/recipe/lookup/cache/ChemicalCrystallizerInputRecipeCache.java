@@ -133,7 +133,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     @SuppressWarnings("unchecked")
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalCrystallizerRecipe findFirstRecipe(STACK input, Iterable<ChemicalCrystallizerRecipe> recipes) {
         for (ChemicalCrystallizerRecipe recipe : recipes) {
-            if (((ChemicalStackIngredient<CHEMICAL, STACK>) recipe.getInput()).test(input)) {
+            if (((ChemicalStackIngredient<CHEMICAL, STACK, ?>) recipe.getInput()).test(input)) {
                 return recipe;
             }
         }
@@ -144,7 +144,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     protected void initCache(List<RecipeHolder<ChemicalCrystallizerRecipe>> recipes) {
         for (RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder : recipes) {
             ChemicalCrystallizerRecipe recipe = recipeHolder.value();
-            ChemicalStackIngredient<?, ?> ingredient = recipe.getInput();
+            ChemicalStackIngredient<?, ?, ?> ingredient = recipe.getInput();
             ChemicalType type = ChemicalType.getTypeFor(ingredient);
             if (mapInputs(recipe, type, ingredient)) {
                 typeBasedComplexRecipes.get(type).add(recipe);
@@ -153,7 +153,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
     }
 
     @SuppressWarnings("unchecked")
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> boolean mapInputs(
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK, ?>> boolean mapInputs(
           ChemicalCrystallizerRecipe recipe, ChemicalType type, INGREDIENT ingredient) {
         return ((ChemicalInputCache<CHEMICAL, STACK, ChemicalCrystallizerRecipe>) typeBasedCache.get(type)).mapInputs(recipe, ingredient);
     }

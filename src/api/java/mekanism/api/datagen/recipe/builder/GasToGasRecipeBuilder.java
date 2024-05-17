@@ -6,7 +6,7 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.GasStackIngredient;
 
 @NothingNullByDefault
 public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeBuilder> {
