@@ -26,7 +26,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         String basePath = "control_circuit/";
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.REDSTONE, 20),
+              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.REDSTONE, 20),
               MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "basic"));
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");

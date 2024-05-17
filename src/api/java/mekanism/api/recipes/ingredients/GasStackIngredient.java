@@ -21,7 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
  * <p>{@link IGasIngredient}, like its item counterpart, explicitly does not perform count checks,
  * so this class is used to (a) wrap a standard GasIngredient with an amount and (b) provide a standard serialization format for mods to use.
  * <p>
- * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
+ * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gasStack()}.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
@@ -57,7 +57,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      * @since 10.6.0
      */
     public static final Codec<GasStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicGas().mapCodecNonEmpty().forGetter(GasStackIngredient::ingredient),
+          IngredientCreatorAccess.gas().mapCodecNonEmpty().forGetter(GasStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(GasStackIngredient::amount)
     ).apply(instance, GasStackIngredient::new));//TODO - 1.20.5: Re-evaluate how compound ingredients get serialized?? can we just make it a list
 
@@ -78,7 +78,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      * @since 10.6.0
      */
     public static final Codec<GasStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicGas().codecNonEmpty().fieldOf("ingredient").forGetter(GasStackIngredient::ingredient),
+          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf("ingredient").forGetter(GasStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(GasStackIngredient::amount)
     ).apply(instance, GasStackIngredient::new));
 
@@ -88,14 +88,14 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      * @since 10.6.0
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, GasStackIngredient> STREAM_CODEC = StreamCodec.composite(
-          IngredientCreatorAccess.basicGas().streamCodec(), GasStackIngredient::ingredient,
+          IngredientCreatorAccess.gas().streamCodec(), GasStackIngredient::ingredient,
           ByteBufCodecs.VAR_LONG, GasStackIngredient::amount,
           GasStackIngredient::new
     );
 
     /**
      * Creates a Gas Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gasStack()} and
      * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
      *
      * @param ingredient Ingredient to match.

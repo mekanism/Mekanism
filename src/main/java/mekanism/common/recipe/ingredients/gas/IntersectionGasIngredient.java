@@ -15,7 +15,7 @@ import mekanism.common.registries.MekanismGasIngredientTypes;
 public final class IntersectionGasIngredient extends IntersectionChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
     public static final MapCodec<IntersectionGasIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicGas().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionGasIngredient::children)
+          IngredientCreatorAccess.gas().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionGasIngredient::children)
     ).apply(builder, IntersectionGasIngredient::new));
 
     IntersectionGasIngredient(List<IGasIngredient> children) {

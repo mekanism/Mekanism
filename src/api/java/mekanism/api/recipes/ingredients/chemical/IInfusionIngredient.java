@@ -16,6 +16,6 @@ public non-sealed interface IInfusionIngredient extends IChemicalIngredient<Infu
     @NotNull
     @Override
     default IChemicalIngredientCreator<InfuseType, IInfusionIngredient> ingredientCreator() {
-        return IngredientCreatorAccess.basicInfusion();
+        return IngredientCreatorAccess.infusion();
     }
 }

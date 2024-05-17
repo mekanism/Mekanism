@@ -33,7 +33,7 @@ public record FissionRecipeViewerRecipe(@Nullable GasStackIngredient inputCoolan
         double energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue();
         //Special case water recipe
         long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
-        recipes.put(RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"), new FissionRecipeViewerRecipe(null, IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
+        recipes.put(RecipeViewerUtils.synthetic(MekanismGenerators.rl("water"), "fission"), new FissionRecipeViewerRecipe(null, IngredientCreatorAccess.gasStack().from(MekanismGases.FISSILE_FUEL, 1),
               MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.GAS_REGISTRY) {
@@ -42,8 +42,8 @@ public record FissionRecipeViewerRecipe(@Nullable GasStackIngredient inputCoolan
                 //If it is a cooled coolant add a recipe for it
                 Gas heatedCoolant = cooledCoolant.getHeatedGas();
                 long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
-                recipes.put(RecipeViewerUtils.synthetic(gas.getRegistryName(), "fission", MekanismGenerators.MODID), new FissionRecipeViewerRecipe(IngredientCreatorAccess.gas().from(gas, amount),
-                      IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1), heatedCoolant.getStack(amount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
+                recipes.put(RecipeViewerUtils.synthetic(gas.getRegistryName(), "fission", MekanismGenerators.MODID), new FissionRecipeViewerRecipe(IngredientCreatorAccess.gasStack().from(gas, amount),
+                      IngredientCreatorAccess.gasStack().from(MekanismGases.FISSILE_FUEL, 1), heatedCoolant.getStack(amount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
             }
         }
         return recipes;

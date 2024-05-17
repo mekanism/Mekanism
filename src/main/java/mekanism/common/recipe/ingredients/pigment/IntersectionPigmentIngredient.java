@@ -15,7 +15,7 @@ import mekanism.common.registries.MekanismPigmentIngredientTypes;
 public final class IntersectionPigmentIngredient extends IntersectionChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
     public static final MapCodec<IntersectionPigmentIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicPigment().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionPigmentIngredient::children)
+          IngredientCreatorAccess.pigment().listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionPigmentIngredient::children)
     ).apply(builder, IntersectionPigmentIngredient::new));
 
     IntersectionPigmentIngredient(List<IPigmentIngredient> children) {

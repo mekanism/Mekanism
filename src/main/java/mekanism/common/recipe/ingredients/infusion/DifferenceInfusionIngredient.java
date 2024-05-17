@@ -14,8 +14,8 @@ import mekanism.common.registries.MekanismInfusionIngredientTypes;
 public final class DifferenceInfusionIngredient extends DifferenceChemicalIngredient<InfuseType, IInfusionIngredient> implements IInfusionIngredient {
 
     public static final MapCodec<DifferenceInfusionIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicInfusion().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceInfusionIngredient::base),
-          IngredientCreatorAccess.basicInfusion().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceInfusionIngredient::subtracted)
+          IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceInfusionIngredient::base),
+          IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceInfusionIngredient::subtracted)
     ).apply(builder, DifferenceInfusionIngredient::new));
 
     DifferenceInfusionIngredient(IInfusionIngredient base, IInfusionIngredient subtracted) {

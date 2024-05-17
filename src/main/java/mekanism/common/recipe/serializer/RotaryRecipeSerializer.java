@@ -106,7 +106,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
 
         //Note: This doesn't need to be optional fluid, as we only use this if we have a gas to fluid recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, GasToFluid> STREAM_CODEC = StreamCodec.composite(
-              IngredientCreatorAccess.gas().streamCodec(), GasToFluid::input,
+              IngredientCreatorAccess.gasStack().streamCodec(), GasToFluid::input,
               FluidStack.STREAM_CODEC, GasToFluid::output,
               GasToFluid::new
         );

@@ -129,7 +129,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, ItemLike dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
-              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(dye)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
@@ -152,7 +152,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     private static void addRecoloringRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
-              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),
+              IngredientCreatorAccess.pigmentStack().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }

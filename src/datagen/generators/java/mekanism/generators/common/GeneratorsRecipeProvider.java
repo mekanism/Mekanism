@@ -90,7 +90,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
           TagKey<Fluid> fluidInput, TagKey<Gas> gasInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
-              IngredientCreatorAccess.gas().from(gasInput, 1),
+              IngredientCreatorAccess.gasStack().from(gasInput, 1),
               gas.getStack(1),
               fluidOutput.getFluidStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
@@ -100,8 +100,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
-              IngredientCreatorAccess.gas().from(GeneratorsGases.DEUTERIUM, 1),
-              IngredientCreatorAccess.gas().from(GeneratorsGases.TRITIUM, 1),
+              IngredientCreatorAccess.gasStack().from(GeneratorsGases.DEUTERIUM, 1),
+              IngredientCreatorAccess.gasStack().from(GeneratorsGases.TRITIUM, 1),
               GeneratorsGases.FUSION_FUEL.getStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
@@ -109,7 +109,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private void addSolarNeutronActivatorRecipes(RecipeOutput consumer) {
         String basePath = "activating/";
         GasToGasRecipeBuilder.activating(
-              IngredientCreatorAccess.gas().from(MekanismGases.LITHIUM, 1),
+              IngredientCreatorAccess.gasStack().from(MekanismGases.LITHIUM, 1),
               GeneratorsGases.TRITIUM.getStack(1)
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
@@ -269,7 +269,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
-              IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.CARBON, 10),
+              IngredientCreatorAccess.infusionStack().from(MekanismTags.InfuseTypes.CARBON, 10),
               GeneratorsItems.HOHLRAUM.getItemStack()
         ).build(consumer);
         //Laser Focus Matrix

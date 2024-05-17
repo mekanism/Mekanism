@@ -14,8 +14,8 @@ import mekanism.common.registries.MekanismGasIngredientTypes;
 public final class DifferenceGasIngredient extends DifferenceChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
     public static final MapCodec<DifferenceGasIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.basicGas().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceGasIngredient::base),
-          IngredientCreatorAccess.basicGas().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceGasIngredient::subtracted)
+          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceGasIngredient::base),
+          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceGasIngredient::subtracted)
     ).apply(builder, DifferenceGasIngredient::new));
 
     DifferenceGasIngredient(IGasIngredient base, IGasIngredient subtracted) {

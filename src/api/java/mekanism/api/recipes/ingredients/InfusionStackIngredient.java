@@ -21,7 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
  * <p>{@link IInfusionIngredient}, like its item counterpart, explicitly does not perform count checks,
  * so this class is used to (a) wrap a standard InfusionIngredient with an amount and (b) provide a standard serialization format for mods to use.
  * <p>
- * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
+ * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusionStack()}.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
@@ -57,7 +57,7 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      * @since 10.6.0
      */
     public static final Codec<InfusionStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicInfusion().mapCodecNonEmpty().forGetter(InfusionStackIngredient::ingredient),
+          IngredientCreatorAccess.infusion().mapCodecNonEmpty().forGetter(InfusionStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
     ).apply(instance, InfusionStackIngredient::new));
 
@@ -78,7 +78,7 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      * @since 10.6.0
      */
     public static final Codec<InfusionStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicInfusion().codecNonEmpty().fieldOf("ingredient").forGetter(InfusionStackIngredient::ingredient),
+          IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf("ingredient").forGetter(InfusionStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
     ).apply(instance, InfusionStackIngredient::new));
 
@@ -88,14 +88,14 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      * @since 10.6.0
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, InfusionStackIngredient> STREAM_CODEC = StreamCodec.composite(
-          IngredientCreatorAccess.basicInfusion().streamCodec(), InfusionStackIngredient::ingredient,
+          IngredientCreatorAccess.infusion().streamCodec(), InfusionStackIngredient::ingredient,
           ByteBufCodecs.VAR_LONG, InfusionStackIngredient::amount,
           InfusionStackIngredient::new
     );
 
     /**
      * Creates an Infusion Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusionStack()} and
      * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
      *
      * @param ingredient Ingredient to match.

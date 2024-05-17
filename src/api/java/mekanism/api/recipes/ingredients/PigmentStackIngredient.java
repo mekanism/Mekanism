@@ -21,7 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
  * <p>{@link IPigmentIngredient}, like its item counterpart, explicitly does not perform count checks,
  * so this class is used to (a) wrap a standard PigmentIngredient with an amount and (b) provide a standard serialization format for mods to use.
  * <p>
- * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
+ * * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigmentStack()}.
  *
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
@@ -57,7 +57,7 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      * @since 10.6.0
      */
     public static final Codec<PigmentStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicPigment().mapCodecNonEmpty().forGetter(PigmentStackIngredient::ingredient),
+          IngredientCreatorAccess.pigment().mapCodecNonEmpty().forGetter(PigmentStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
     ).apply(instance, PigmentStackIngredient::new));
 
@@ -78,7 +78,7 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      * @since 10.6.0
      */
     public static final Codec<PigmentStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.basicPigment().codecNonEmpty().fieldOf("ingredient").forGetter(PigmentStackIngredient::ingredient),
+          IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf("ingredient").forGetter(PigmentStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
     ).apply(instance, PigmentStackIngredient::new));
 
@@ -88,14 +88,14 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      * @since 10.6.0
      */
     public static final StreamCodec<RegistryFriendlyByteBuf, PigmentStackIngredient> STREAM_CODEC = StreamCodec.composite(
-          IngredientCreatorAccess.basicPigment().streamCodec(), PigmentStackIngredient::ingredient,
+          IngredientCreatorAccess.pigment().streamCodec(), PigmentStackIngredient::ingredient,
           ByteBufCodecs.VAR_LONG, PigmentStackIngredient::amount,
           PigmentStackIngredient::new
     );
 
     /**
      * Creates a Pigment Stack Ingredient that matches a given ingredient and amount. Prefer calling via
-     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()} and
+     * {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigmentStack()} and
      * {@link mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator#from(IChemicalIngredient, long)}.
      *
      * @param ingredient Ingredient to match.

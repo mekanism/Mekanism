@@ -33,7 +33,7 @@ public class InfusionStackIngredientCreator implements IChemicalStackIngredientC
 
     @Override
     public IChemicalIngredientCreator<InfuseType, IInfusionIngredient> chemicalCreator() {
-        return IngredientCreatorAccess.basicInfusion();
+        return IngredientCreatorAccess.infusion();
     }
 
     @Override

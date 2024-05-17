@@ -40,7 +40,7 @@ public record BoilerRecipeViewerRecipe(@Nullable GasStackIngredient superHeatedC
                 Gas cooledCoolant = heatedCoolant.getCooledGas();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
                 recipes.put(RecipeViewerUtils.synthetic(gas.getRegistryName(), "boiler", Mekanism.MODID),
-                      new BoilerRecipeViewerRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
+                      new BoilerRecipeViewerRecipe(IngredientCreatorAccess.gasStack().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
                             MekanismGases.STEAM.getStack(waterAmount), cooledCoolant.getStack(coolantAmount), HeatUtils.BASE_BOIL_TEMP));
             }
         }

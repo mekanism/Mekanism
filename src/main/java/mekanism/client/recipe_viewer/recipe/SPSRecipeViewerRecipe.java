@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 public record SPSRecipeViewerRecipe(GasStackIngredient input, GasStack output) {
 
     public static Map<ResourceLocation, SPSRecipeViewerRecipe> getSPSRecipes() {
-        return Map.of(RecipeViewerUtils.synthetic(Mekanism.rl("antimatter"), "sps"), new SPSRecipeViewerRecipe(IngredientCreatorAccess.gas().from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
+        return Map.of(RecipeViewerUtils.synthetic(Mekanism.rl("antimatter"), "sps"), new SPSRecipeViewerRecipe(IngredientCreatorAccess.gasStack().from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
               MekanismGases.ANTIMATTER.getStack(1)));
     }
 }
