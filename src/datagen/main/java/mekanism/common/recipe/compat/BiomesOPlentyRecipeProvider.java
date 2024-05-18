@@ -16,7 +16,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
@@ -118,7 +117,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void dye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(inputs));
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, 2)
@@ -134,7 +133,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void largeDye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(inputs));
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, 4)

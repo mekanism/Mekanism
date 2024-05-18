@@ -138,7 +138,7 @@ public class RecipeProviderUtil {
 
     public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, ItemLike sand, TagKey<Item> sandstoneTag) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Ingredient.of(sandstoneTag)),
+              IngredientCreatorAccess.item().from(sandstoneTag),
               new ItemStack(sand, 2)
         ), path, condition);
     }
@@ -146,7 +146,7 @@ public class RecipeProviderUtil {
     @Deprecated
     public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, ItemLike sand, ItemLike... sandstones) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Ingredient.of(sandstones)),
+              IngredientCreatorAccess.item().from(sandstones),
               new ItemStack(sand, 2)
         ), path, condition);
     }

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import java.util.Arrays;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
@@ -23,21 +24,61 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      *
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
      */
     default FluidStackIngredient from(IFluidProvider provider, int amount) {
         Objects.requireNonNull(provider, "FluidStackIngredients cannot be created from a null fluid provider.");
         return from(provider.getFluidStack(amount));
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a provided items and amount.
+     *
+     * @param amount Amount needed.
+     * @param fluids Fluid providers that provides the items to match.
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     * @since 10.6.0
+     */
+    default FluidStackIngredient from(int amount, IFluidProvider... fluids) {
+        return from(amount, Arrays.stream(fluids).map(IFluidProvider::getFluid).toArray(Fluid[]::new));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     */
     @Override
     default FluidStackIngredient from(Fluid instance, int amount) {
         return from(SizedFluidIngredient.of(instance, amount));
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This wraps via {@link #from(FluidIngredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the
+     * ingredient. If this is not desired, manually create the ingredient via {@link DataComponentFluidIngredient} and call {@link #from(FluidIngredient, int)}.
+     * @since 10.6.0
+     */
+    @Override
+    default FluidStackIngredient from(int amount, Fluid... fluids) {
+        if (fluids.length < 2) {
+            throw new IllegalArgumentException("Attempted to create an FluidStackIngredient with less than two fluids. At least one fluid is required, and if you only have one use from(Fluid, int) instead.");
+        }
+        return from(FluidIngredient.of(fluids), amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
+     */
     @Override
     default FluidStackIngredient from(FluidStack instance) {
-        //TODO - 1.20.5: Helper for this and item stack ingredient creator to create compound ingredients?
-        // Maybe by having a var-arg variant of this?
         Objects.requireNonNull(instance, "FluidStackIngredients cannot be created from a null FluidStack.");
         if (instance.isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty stack.");
@@ -45,7 +86,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         //Copy the stack to ensure it doesn't get modified afterward
         instance = instance.copy();
         //Support Components that are on the stack in case it matters
-        // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
+        // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
         DataComponentPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(instance.getComponentsPatch());
         if (predicate != null) {
             return from(DataComponentFluidIngredient.of(false, predicate, instance.getFluidHolder()), instance.getAmount());
