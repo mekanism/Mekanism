@@ -10,7 +10,6 @@ import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -129,11 +128,6 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
      */
     public static SlurryStack parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
         return tag.isEmpty() ? EMPTY : parse(lookupProvider, tag).orElse(EMPTY);
-    }
-
-    @Override
-    protected Registry<Slurry> getRegistry() {
-        return MekanismAPI.SLURRY_REGISTRY;
     }
 
     @Override

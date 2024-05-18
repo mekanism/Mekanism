@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -47,7 +47,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     @Override
-    protected final Registry<Gas> getRegistry() {
+    protected final DefaultedRegistry<Gas> getRegistry() {
         return MekanismAPI.GAS_REGISTRY;
     }
 

@@ -17,6 +17,7 @@ import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
 import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
 import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
 import mekanism.api.robit.RobitSkin;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +59,13 @@ public class MekanismAPI {
     private static <T> ResourceKey<Registry<MapCodec<? extends T>>> codecRegistryKey(@SuppressWarnings("unused") Class<T> compileTimeTypeValidator, String path) {
         return ResourceKey.createRegistryKey(rl(path));
     }
+
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     */
+    public static final ResourceLocation EMPTY_CHEMICAL_NAME = rl("empty");
 
     /**
      * Gets the {@link ResourceKey} representing the name of the Registry for {@link Gas gases}.
@@ -143,8 +151,8 @@ public class MekanismAPI {
      * @see #GAS_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<Gas> GAS_REGISTRY = new RegistryBuilder<>(GAS_REGISTRY_NAME)
-          .defaultKey(rl("empty"))
+    public static final DefaultedRegistry<Gas> GAS_REGISTRY = (DefaultedRegistry<Gas>) new RegistryBuilder<>(GAS_REGISTRY_NAME)
+          .defaultKey(EMPTY_CHEMICAL_NAME)
           .sync(true)
           .create();
     /**
@@ -162,8 +170,8 @@ public class MekanismAPI {
      * @see #INFUSE_TYPE_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<>(INFUSE_TYPE_REGISTRY_NAME)
-          .defaultKey(rl("empty"))
+    public static final DefaultedRegistry<InfuseType> INFUSE_TYPE_REGISTRY = (DefaultedRegistry<InfuseType>) new RegistryBuilder<>(INFUSE_TYPE_REGISTRY_NAME)
+          .defaultKey(EMPTY_CHEMICAL_NAME)
           .sync(true)
           .create();
     /**
@@ -181,8 +189,8 @@ public class MekanismAPI {
      * @see #PIGMENT_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<Pigment> PIGMENT_REGISTRY = new RegistryBuilder<>(PIGMENT_REGISTRY_NAME)
-          .defaultKey(rl("empty"))
+    public static final DefaultedRegistry<Pigment> PIGMENT_REGISTRY = (DefaultedRegistry<Pigment>) new RegistryBuilder<>(PIGMENT_REGISTRY_NAME)
+          .defaultKey(EMPTY_CHEMICAL_NAME)
           .sync(true)
           .create();
     /**
@@ -200,8 +208,8 @@ public class MekanismAPI {
      * @see #SLURRY_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<Slurry> SLURRY_REGISTRY = new RegistryBuilder<>(SLURRY_REGISTRY_NAME)
-          .defaultKey(rl("empty"))
+    public static final DefaultedRegistry<Slurry> SLURRY_REGISTRY = (DefaultedRegistry<Slurry>) new RegistryBuilder<>(SLURRY_REGISTRY_NAME)
+          .defaultKey(EMPTY_CHEMICAL_NAME)
           .sync(true)
           .create();
     /**
@@ -228,14 +236,8 @@ public class MekanismAPI {
      * @see #ROBIT_SKIN_SERIALIZER_REGISTRY_NAME
      * @since 10.5.0
      */
-    public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME).create();
-
-    /**
-     * Constant location representing the name all empty chemicals will be registered under.
-     *
-     * @since 10.6.0
-     */
-    public static final ResourceLocation EMPTY_CHEMICAL_NAME = new ResourceLocation(MEKANISM_MODID, "empty");
+    public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME)
+          .create();
 
     //TODO: Potentially define these with DeferredHolder for purposes of fully defining them outside of the API
     // would have some minor issues with how the empty stacks are declared

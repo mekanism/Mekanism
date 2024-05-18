@@ -20,8 +20,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -273,9 +273,8 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     public abstract boolean isEmptyType();
 
     @Override
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    @SuppressWarnings("unchecked")
     public ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
         return getRegistry().getKey((CHEMICAL) this);
     }
 
@@ -286,5 +285,5 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      *
      * @since 10.5.0
      */
-    protected abstract Registry<CHEMICAL> getRegistry();
+    protected abstract DefaultedRegistry<CHEMICAL> getRegistry();
 }

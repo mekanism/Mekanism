@@ -16,11 +16,7 @@ public class LazyGasProvider implements IGasProvider {
      * Helper class to cache the result of the {@link Gas} supplier after doing a registry lookup once it has properly been added to the registry.
      */
     public LazyGasProvider(ResourceLocation gasRegistryName) {
-        this(() -> {
-            Gas gas = MekanismAPI.GAS_REGISTRY.get(gasRegistryName);
-            //Note: Gas should never actually be null as the registry is defaulted, but we validate it anyway
-            return gas == null ? MekanismAPI.EMPTY_GAS : gas;
-        });
+        this(() -> MekanismAPI.GAS_REGISTRY.get(gasRegistryName));
     }
 
     /**

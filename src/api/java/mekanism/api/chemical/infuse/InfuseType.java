@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -42,7 +42,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
-    protected final Registry<InfuseType> getRegistry() {
+    protected final DefaultedRegistry<InfuseType> getRegistry() {
         return MekanismAPI.INFUSE_TYPE_REGISTRY;
     }
 

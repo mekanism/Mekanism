@@ -232,11 +232,6 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Registry the chemical is a part of.
-     */
-    protected abstract Registry<CHEMICAL> getRegistry();
-
-    /**
      * Helper ot get the empty version of this chemical.
      */
     protected abstract CHEMICAL getEmptyChemical();

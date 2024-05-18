@@ -10,7 +10,6 @@ import mekanism.api.providers.IPigmentProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -129,11 +128,6 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
      */
     public static PigmentStack parseOptional(HolderLookup.Provider lookupProvider, CompoundTag tag) {
         return tag.isEmpty() ? EMPTY : parse(lookupProvider, tag).orElse(EMPTY);
-    }
-
-    @Override
-    protected Registry<Pigment> getRegistry() {
-        return MekanismAPI.PIGMENT_REGISTRY;
     }
 
     @Override

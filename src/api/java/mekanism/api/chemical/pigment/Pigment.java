@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IPigmentProvider;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -45,7 +45,7 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     @Override
-    protected final Registry<Pigment> getRegistry() {
+    protected final DefaultedRegistry<Pigment> getRegistry() {
         return MekanismAPI.PIGMENT_REGISTRY;
     }
 

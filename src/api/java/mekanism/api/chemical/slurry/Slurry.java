@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -52,7 +52,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     @Override
-    protected final Registry<Slurry> getRegistry() {
+    protected final DefaultedRegistry<Slurry> getRegistry() {
         return MekanismAPI.SLURRY_REGISTRY;
     }
 
