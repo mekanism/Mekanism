@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:red"
+    "pigment": "mekanism:red"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/wool"
-      },
-      "subtracted": {
-        "item": "minecraft:red_wool"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/wool"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:red_wool"
     }
   },
   "output": {

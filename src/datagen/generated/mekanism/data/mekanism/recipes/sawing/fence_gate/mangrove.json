@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:mangrove_fence_gate"
-    }
+    "count": 1,
+    "item": "minecraft:mangrove_fence_gate"
   },
   "mainOutput": {
     "count": 2,

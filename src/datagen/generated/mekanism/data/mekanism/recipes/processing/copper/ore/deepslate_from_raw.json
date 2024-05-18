@@ -1,15 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "tag": "c:cobblestones/deepslate"
-    }
+    "count": 1,
+    "tag": "c:cobblestones/deepslate"
   },
   "mainInput": {
-    "amount": 20,
-    "ingredient": {
-      "tag": "c:raw_materials/copper"
-    }
+    "count": 20,
+    "tag": "c:raw_materials/copper"
   },
   "output": {
     "count": 1,

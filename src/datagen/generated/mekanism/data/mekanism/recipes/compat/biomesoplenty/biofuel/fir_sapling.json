@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:fir_sapling"
-    }
+    "count": 1,
+    "item": "biomesoplenty:fir_sapling"
   },
   "output": {
     "count": 2,

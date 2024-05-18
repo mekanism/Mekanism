@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:waxed_copper_block"
-    }
+    "count": 1,
+    "item": "minecraft:waxed_copper_block"
   },
   "output": {
     "count": 1,

@@ -3,12 +3,11 @@
   "duration": 1250,
   "gasInput": {
     "amount": 5,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:nether_stars"
-    }
+    "count": 1,
+    "tag": "c:nether_stars"
   },
   "output": {
     "count": 1,

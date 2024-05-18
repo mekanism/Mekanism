@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:twisting_vines"
-    }
+    "count": 1,
+    "item": "minecraft:twisting_vines"
   },
   "output": {
     "count": 4,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:gems/lapis"
-    }
+    "count": 1,
+    "tag": "c:gems/lapis"
   },
   "output": {
     "count": 1,

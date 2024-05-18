@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/gold"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/gold"
   },
   "output": {
     "amount": 80,

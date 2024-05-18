@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:yellow"
+    "pigment": "mekanism:yellow"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/beds"
-      },
-      "subtracted": {
-        "item": "minecraft:yellow_bed"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/beds"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:yellow_bed"
     }
   },
   "output": {

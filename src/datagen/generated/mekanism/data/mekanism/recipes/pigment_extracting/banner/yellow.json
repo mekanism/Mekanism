@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:yellow_banner"
-    }
+    "count": 1,
+    "item": "minecraft:yellow_banner"
   },
   "output": {
     "amount": 64,

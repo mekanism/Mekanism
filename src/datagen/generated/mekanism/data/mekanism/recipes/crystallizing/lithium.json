@@ -3,7 +3,7 @@
   "chemicalType": "gas",
   "input": {
     "amount": 100,
-    "id": "mekanism:lithium"
+    "gas": "mekanism:lithium"
   },
   "output": {
     "count": 1,

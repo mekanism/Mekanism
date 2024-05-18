@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:sulfur_trioxide"
+    "gas": "mekanism:sulfur_trioxide"
   },
   "gasOutput": {
     "amount": 1,

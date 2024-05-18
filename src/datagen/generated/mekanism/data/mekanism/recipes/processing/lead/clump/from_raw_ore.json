@@ -2,12 +2,11 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:raw_materials/lead"
-    }
+    "count": 1,
+    "tag": "c:raw_materials/lead"
   },
   "output": {
     "count": 2,

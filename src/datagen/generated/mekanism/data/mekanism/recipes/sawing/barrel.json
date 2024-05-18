@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:barrel"
-    }
+    "count": 1,
+    "item": "minecraft:barrel"
   },
   "mainOutput": {
     "count": 7,

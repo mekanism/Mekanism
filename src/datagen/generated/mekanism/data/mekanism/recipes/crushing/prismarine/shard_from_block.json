@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:prismarine"
-    }
+    "count": 1,
+    "item": "minecraft:prismarine"
   },
   "output": {
     "count": 4,

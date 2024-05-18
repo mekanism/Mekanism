@@ -20,7 +20,6 @@ public class ChemicalIngredientUtil {
     private ChemicalIngredientUtil() {
     }
 
-    //TODO - 1.20.5: Test this
     @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>, SINGLE extends SingleChemicalIngredient<CHEMICAL, INGREDIENT>,
           TAG extends TagChemicalIngredient<CHEMICAL, INGREDIENT>> MapCodec<INGREDIENT> singleOrTagCodec(MapCodec<SINGLE> singleCodec, MapCodec<TAG> tagCodec) {

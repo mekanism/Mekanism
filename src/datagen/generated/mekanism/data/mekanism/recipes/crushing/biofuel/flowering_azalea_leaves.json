@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:flowering_azalea_leaves"
-    }
+    "count": 1,
+    "item": "minecraft:flowering_azalea_leaves"
   },
   "output": {
     "count": 4,

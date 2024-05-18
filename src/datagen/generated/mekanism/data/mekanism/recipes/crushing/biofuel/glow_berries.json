@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:glow_berries"
-    }
+    "count": 1,
+    "item": "minecraft:glow_berries"
   },
   "output": {
     "count": 2,

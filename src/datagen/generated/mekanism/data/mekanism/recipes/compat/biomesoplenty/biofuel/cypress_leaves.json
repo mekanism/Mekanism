@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:cypress_leaves"
-    }
+    "count": 1,
+    "item": "biomesoplenty:cypress_leaves"
   },
   "output": {
     "count": 2,

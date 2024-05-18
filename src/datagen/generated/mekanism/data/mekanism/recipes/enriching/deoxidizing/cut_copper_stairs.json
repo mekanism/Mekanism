@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:exposed_cut_copper_stairs"
-    }
+    "count": 1,
+    "item": "minecraft:exposed_cut_copper_stairs"
   },
   "output": {
     "count": 1,

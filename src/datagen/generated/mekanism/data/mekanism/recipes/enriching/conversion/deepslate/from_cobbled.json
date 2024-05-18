@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:cobblestones/deepslate"
-    }
+    "count": 1,
+    "tag": "c:cobblestones/deepslate"
   },
   "output": {
     "count": 1,

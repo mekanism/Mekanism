@@ -2,12 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:weathered_chiseled_copper"
-    }
+    "count": 1,
+    "item": "minecraft:weathered_chiseled_copper"
   },
   "output": {
     "count": 1,

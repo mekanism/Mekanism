@@ -3,7 +3,7 @@
   "chemicalType": "gas",
   "input": {
     "amount": 15,
-    "id": "mekanism:brine"
+    "gas": "mekanism:brine"
   },
   "output": {
     "count": 1,

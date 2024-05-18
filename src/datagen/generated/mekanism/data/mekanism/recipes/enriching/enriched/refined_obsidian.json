@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/refined_obsidian"
-    }
+    "count": 1,
+    "tag": "c:dusts/refined_obsidian"
   },
   "output": {
     "count": 1,

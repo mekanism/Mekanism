@@ -2,12 +2,11 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:shards/uranium"
-    }
+    "count": 1,
+    "tag": "c:shards/uranium"
   },
   "output": {
     "count": 1,

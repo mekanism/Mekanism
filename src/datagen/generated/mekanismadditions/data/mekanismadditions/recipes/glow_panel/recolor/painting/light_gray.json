@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:light_gray"
+    "pigment": "mekanism:light_gray"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:glow_panels"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_gray_glow_panel"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:glow_panels"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:light_gray_glow_panel"
     }
   },
   "output": {

@@ -5,9 +5,8 @@
     "tag": "mekanism:bio"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:cobblestone_wall"
-    }
+    "count": 1,
+    "item": "minecraft:cobblestone_wall"
   },
   "output": {
     "count": 1,

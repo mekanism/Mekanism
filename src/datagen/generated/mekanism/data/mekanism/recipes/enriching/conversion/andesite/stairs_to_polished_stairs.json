@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:andesite_stairs"
-    }
+    "count": 1,
+    "item": "minecraft:andesite_stairs"
   },
   "output": {
     "count": 1,

@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:empyreal_fence_gate"
-    }
+    "count": 1,
+    "item": "biomesoplenty:empyreal_fence_gate"
   },
   "mainOutput": {
     "count": 2,

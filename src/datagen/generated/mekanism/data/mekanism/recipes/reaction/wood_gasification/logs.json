@@ -7,17 +7,15 @@
   },
   "gasInput": {
     "amount": 400,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 400,
     "id": "mekanism:hydrogen"
   },
   "itemInput": {
-    "amount": 4,
-    "ingredient": {
-      "tag": "minecraft:logs"
-    }
+    "count": 4,
+    "tag": "minecraft:logs"
   },
   "itemOutput": {
     "count": 1,

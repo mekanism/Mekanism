@@ -2,12 +2,11 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:sulfuric_acid"
+    "gas": "mekanism:sulfuric_acid"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:gems/fluorite"
-    }
+    "count": 1,
+    "tag": "c:gems/fluorite"
   },
   "output": {
     "amount": 1000,

@@ -1,14 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "minecraft:cornflower"
       },
       {
         "item": "minecraft:lapis_lazuli"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 768,

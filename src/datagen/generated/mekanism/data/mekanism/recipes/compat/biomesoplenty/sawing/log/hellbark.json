@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "biomesoplenty:hellbark_logs"
-    }
+    "count": 1,
+    "tag": "biomesoplenty:hellbark_logs"
   },
   "mainOutput": {
     "count": 6,

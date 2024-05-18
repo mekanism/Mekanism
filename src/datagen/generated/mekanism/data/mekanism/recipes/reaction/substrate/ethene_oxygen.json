@@ -8,12 +8,11 @@
   },
   "gasInput": {
     "amount": 10,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "mekanism:substrate"
-    }
+    "count": 1,
+    "item": "mekanism:substrate"
   },
   "itemOutput": {
     "count": 1,

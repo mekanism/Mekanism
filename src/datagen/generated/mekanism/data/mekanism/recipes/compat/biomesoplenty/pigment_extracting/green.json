@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:tiny_cactus"
-    }
+    "count": 1,
+    "item": "biomesoplenty:tiny_cactus"
   },
   "output": {
     "amount": 768,

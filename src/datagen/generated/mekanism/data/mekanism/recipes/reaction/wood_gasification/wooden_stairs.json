@@ -7,20 +7,22 @@
   },
   "gasInput": {
     "amount": 15,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 15,
     "id": "mekanism:hydrogen"
   },
   "itemInput": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "tag": "minecraft:wooden_stairs"
       },
       {
         "item": "minecraft:bamboo_mosaic_stairs"
       }
-    ]
+    ],
+    "count": 1
   }
 }

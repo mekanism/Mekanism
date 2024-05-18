@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:magic_pressure_plate"
-    }
+    "count": 1,
+    "item": "biomesoplenty:magic_pressure_plate"
   },
   "mainOutput": {
     "count": 1,

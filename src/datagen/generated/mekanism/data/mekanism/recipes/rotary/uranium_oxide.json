@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:uranium_oxide"
+    "gas": "mekanism:uranium_oxide"
   },
   "gasOutput": {
     "amount": 1,

@@ -1,17 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "type": "neoforge:intersection",
-      "children": [
-        {
-          "tag": "mekanism:colorable/carpets"
-        },
-        {
-          "tag": "c:dyed/gray"
-        }
-      ]
-    }
+    "type": "neoforge:intersection",
+    "children": [
+      {
+        "tag": "mekanism:colorable/carpets"
+      },
+      {
+        "tag": "c:dyed/gray"
+      }
+    ],
+    "count": 1
   },
   "output": {
     "amount": 128,

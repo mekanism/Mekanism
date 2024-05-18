@@ -2,12 +2,11 @@
   "type": "mekanism:compressing",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:osmium"
+    "gas": "mekanism:osmium"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:dusts/refined_obsidian"
-    }
+    "count": 1,
+    "tag": "c:dusts/refined_obsidian"
   },
   "output": {
     "count": 1,

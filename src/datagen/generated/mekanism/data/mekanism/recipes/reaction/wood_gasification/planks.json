@@ -7,22 +7,23 @@
   },
   "gasInput": {
     "amount": 400,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 400,
     "id": "mekanism:hydrogen"
   },
   "itemInput": {
-    "amount": 20,
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "tag": "minecraft:planks"
       },
       {
         "item": "minecraft:bamboo_mosaic"
       }
-    ]
+    ],
+    "count": 20
   },
   "itemOutput": {
     "count": 1,

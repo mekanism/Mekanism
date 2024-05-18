@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:spruce_leaves"
-    }
+    "count": 1,
+    "item": "minecraft:spruce_leaves"
   },
   "output": {
     "count": 2,

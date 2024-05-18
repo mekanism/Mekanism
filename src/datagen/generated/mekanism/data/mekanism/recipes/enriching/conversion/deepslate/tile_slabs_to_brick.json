@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:deepslate_tile_slab"
-    }
+    "count": 1,
+    "item": "minecraft:deepslate_tile_slab"
   },
   "output": {
     "count": 1,

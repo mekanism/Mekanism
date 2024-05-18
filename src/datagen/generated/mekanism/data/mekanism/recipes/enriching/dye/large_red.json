@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:rose_bush"
-    }
+    "count": 1,
+    "item": "minecraft:rose_bush"
   },
   "output": {
     "count": 4,

@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:purple"
+    "pigment": "mekanism:purple"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/reinforced"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:purple_reinforced_plastic"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/reinforced"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:purple_reinforced_plastic"
     }
   },
   "output": {

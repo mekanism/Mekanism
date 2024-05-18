@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:dark_oak_logs"
-    }
+    "count": 1,
+    "tag": "minecraft:dark_oak_logs"
   },
   "mainOutput": {
     "count": 6,

@@ -5,9 +5,8 @@
     "tag": "mekanism:water_vapor"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:dead_fire_coral"
-    }
+    "count": 1,
+    "item": "minecraft:dead_fire_coral"
   },
   "output": {
     "count": 1,

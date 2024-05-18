@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:acacia_door"
-    }
+    "count": 1,
+    "item": "minecraft:acacia_door"
   },
   "mainOutput": {
     "count": 2,

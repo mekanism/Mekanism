@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/refined_obsidian"
-    }
+    "count": 1,
+    "tag": "c:dusts/refined_obsidian"
   },
   "output": {
     "amount": 10,

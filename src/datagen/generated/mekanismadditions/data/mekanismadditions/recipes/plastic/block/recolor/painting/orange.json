@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:orange"
+    "pigment": "mekanism:orange"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/plastic"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:orange_plastic"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/plastic"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:orange_plastic"
     }
   },
   "output": {

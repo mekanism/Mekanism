@@ -2,12 +2,11 @@
   "type": "mekanism:compressing",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:osmium"
+    "gas": "mekanism:osmium"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:dusts/glowstone"
-    }
+    "count": 1,
+    "tag": "c:dusts/glowstone"
   },
   "output": {
     "count": 1,

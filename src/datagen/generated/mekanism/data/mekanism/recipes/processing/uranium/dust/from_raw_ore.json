@@ -1,10 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:raw_materials/uranium"
-    }
+    "count": 3,
+    "tag": "c:raw_materials/uranium"
   },
   "output": {
     "count": 4,

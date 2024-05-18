@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:planks"
-    }
+    "count": 1,
+    "tag": "minecraft:planks"
   },
   "mainOutput": {
     "count": 6,

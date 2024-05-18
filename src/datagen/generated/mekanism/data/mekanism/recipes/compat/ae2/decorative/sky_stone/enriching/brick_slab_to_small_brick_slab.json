@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "ae2:sky_stone_brick_slab"
-    }
+    "count": 1,
+    "item": "ae2:sky_stone_brick_slab"
   },
   "output": {
     "count": 1,

@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:cyan"
+    "pigment": "mekanism:cyan"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/road"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:cyan_plastic_road"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/road"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:cyan_plastic_road"
     }
   },
   "output": {

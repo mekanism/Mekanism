@@ -7,21 +7,23 @@
   },
   "gasInput": {
     "amount": 100,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "gasOutput": {
     "amount": 100,
     "id": "mekanism:hydrogen"
   },
   "itemInput": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "tag": "c:dusts/coal"
       },
       {
         "tag": "c:dusts/charcoal"
       }
-    ]
+    ],
+    "count": 1
   },
   "itemOutput": {
     "count": 1,

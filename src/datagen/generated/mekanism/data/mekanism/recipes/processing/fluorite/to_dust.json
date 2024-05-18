@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:gems/fluorite"
-    }
+    "count": 1,
+    "tag": "c:gems/fluorite"
   },
   "output": {
     "count": 1,

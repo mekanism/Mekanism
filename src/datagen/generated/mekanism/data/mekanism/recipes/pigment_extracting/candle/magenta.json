@@ -1,17 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "type": "neoforge:intersection",
-      "children": [
-        {
-          "tag": "mekanism:colorable/candle"
-        },
-        {
-          "tag": "c:dyed/magenta"
-        }
-      ]
-    }
+    "type": "neoforge:intersection",
+    "children": [
+      {
+        "tag": "mekanism:colorable/candle"
+      },
+      {
+        "tag": "c:dyed/magenta"
+      }
+    ],
+    "count": 1
   },
   "output": {
     "amount": 224,

@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_lead"
+    "slurry": "mekanism:clean_lead"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/fluorite"
-    }
+    "count": 1,
+    "tag": "c:dusts/fluorite"
   },
   "output": {
     "count": 1,

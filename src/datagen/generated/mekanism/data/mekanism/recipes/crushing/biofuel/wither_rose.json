@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:wither_rose"
-    }
+    "count": 1,
+    "item": "minecraft:wither_rose"
   },
   "output": {
     "count": 5,

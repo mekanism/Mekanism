@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:fir_hanging_sign"
-    }
+    "count": 1,
+    "item": "biomesoplenty:fir_hanging_sign"
   },
   "mainOutput": {
     "count": 2,

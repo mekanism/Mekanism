@@ -2,12 +2,11 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:ores/osmium"
-    }
+    "count": 1,
+    "tag": "c:ores/osmium"
   },
   "output": {
     "count": 3,

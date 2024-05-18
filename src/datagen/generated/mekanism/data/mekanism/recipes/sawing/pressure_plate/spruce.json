@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:spruce_pressure_plate"
-    }
+    "count": 1,
+    "item": "minecraft:spruce_pressure_plate"
   },
   "mainOutput": {
     "count": 1,

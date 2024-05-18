@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/quartz"
-    }
+    "count": 1,
+    "tag": "c:dusts/quartz"
   },
   "output": {
     "count": 1,

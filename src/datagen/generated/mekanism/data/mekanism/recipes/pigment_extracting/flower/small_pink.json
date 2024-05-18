@@ -1,14 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "minecraft:pink_tulip"
       },
       {
         "item": "minecraft:pink_petals"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 768,

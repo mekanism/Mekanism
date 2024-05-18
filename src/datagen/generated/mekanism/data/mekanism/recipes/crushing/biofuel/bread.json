@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:bread"
-    }
+    "count": 1,
+    "item": "minecraft:bread"
   },
   "output": {
     "count": 7,

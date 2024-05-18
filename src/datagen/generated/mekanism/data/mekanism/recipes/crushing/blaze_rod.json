@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:rods/blaze"
-    }
+    "count": 1,
+    "tag": "c:rods/blaze"
   },
   "output": {
     "count": 4,

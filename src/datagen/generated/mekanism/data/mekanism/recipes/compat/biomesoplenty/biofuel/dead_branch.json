@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:dead_branch"
-    }
+    "count": 1,
+    "item": "biomesoplenty:dead_branch"
   },
   "output": {
     "count": 2,

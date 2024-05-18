@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:black"
+    "pigment": "mekanism:black"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/slick"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:black_slick_plastic"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/slick"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:black_slick_plastic"
     }
   },
   "output": {

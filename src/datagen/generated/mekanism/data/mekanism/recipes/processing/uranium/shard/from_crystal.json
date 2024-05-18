@@ -2,12 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:hydrogen_chloride"
+    "gas": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:crystals/uranium"
-    }
+    "count": 1,
+    "tag": "c:crystals/uranium"
   },
   "output": {
     "count": 1,

@@ -1,14 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "item": "minecraft:honeycomb"
-    }
+    "count": 1,
+    "item": "minecraft:honeycomb"
   },
   "mainInput": {
-    "ingredient": {
-      "item": "minecraft:exposed_copper"
-    }
+    "count": 1,
+    "item": "minecraft:exposed_copper"
   },
   "output": {
     "count": 1,

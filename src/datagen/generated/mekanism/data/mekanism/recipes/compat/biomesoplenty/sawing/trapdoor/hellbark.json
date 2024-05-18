@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:hellbark_trapdoor"
-    }
+    "count": 1,
+    "item": "biomesoplenty:hellbark_trapdoor"
   },
   "mainOutput": {
     "count": 3,

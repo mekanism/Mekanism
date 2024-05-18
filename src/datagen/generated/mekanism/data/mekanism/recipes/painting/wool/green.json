@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:green"
+    "pigment": "mekanism:green"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/wool"
-      },
-      "subtracted": {
-        "item": "minecraft:green_wool"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/wool"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:green_wool"
     }
   },
   "output": {

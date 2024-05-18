@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:blue_hydrangea"
-    }
+    "count": 1,
+    "item": "biomesoplenty:blue_hydrangea"
   },
   "output": {
     "count": 5,

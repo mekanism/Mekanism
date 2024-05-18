@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:cornflower"
-    }
+    "count": 1,
+    "item": "minecraft:cornflower"
   },
   "output": {
     "count": 5,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/gold"
-    }
+    "count": 1,
+    "tag": "c:dusts/gold"
   },
   "output": {
     "amount": 10,

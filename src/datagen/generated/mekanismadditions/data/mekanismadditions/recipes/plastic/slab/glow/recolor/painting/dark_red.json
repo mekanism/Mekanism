@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:dark_red"
+    "pigment": "mekanism:dark_red"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:slabs/plastic/glow"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:dark_red_plastic_glow_slab"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:slabs/plastic/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:dark_red_plastic_glow_slab"
     }
   },
   "output": {

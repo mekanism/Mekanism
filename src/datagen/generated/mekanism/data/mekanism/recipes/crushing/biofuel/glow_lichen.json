@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:glow_lichen"
-    }
+    "count": 1,
+    "item": "minecraft:glow_lichen"
   },
   "output": {
     "count": 4,

@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:white_petals"
-    }
+    "count": 1,
+    "item": "biomesoplenty:white_petals"
   },
   "output": {
     "count": 2,

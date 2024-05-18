@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:light_blue"
+    "pigment": "mekanism:light_blue"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/banners"
-      },
-      "subtracted": {
-        "item": "minecraft:light_blue_banner"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/banners"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:light_blue_banner"
     }
   },
   "output": {

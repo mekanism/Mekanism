@@ -5,9 +5,8 @@
     "tag": "mekanism:redstone"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:ingots/osmium"
-    }
+    "count": 1,
+    "tag": "c:ingots/osmium"
   },
   "output": {
     "count": 1,

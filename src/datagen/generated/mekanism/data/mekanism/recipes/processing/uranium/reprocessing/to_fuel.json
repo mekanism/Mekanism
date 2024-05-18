@@ -1,9 +1,8 @@
 {
   "type": "mekanism:oxidizing",
   "input": {
-    "ingredient": {
-      "item": "mekanism:reprocessed_fissile_fragment"
-    }
+    "count": 1,
+    "item": "mekanism:reprocessed_fissile_fragment"
   },
   "output": {
     "amount": 2000,

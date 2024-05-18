@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:ingots/gold"
-    }
+    "count": 1,
+    "tag": "c:ingots/gold"
   },
   "output": {
     "count": 1,

@@ -5,9 +5,8 @@
     "tag": "mekanism:bio"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:stone_brick_slab"
-    }
+    "count": 1,
+    "item": "minecraft:stone_brick_slab"
   },
   "output": {
     "count": 1,

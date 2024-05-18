@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:crimson_stems"
-    }
+    "count": 1,
+    "tag": "minecraft:crimson_stems"
   },
   "mainOutput": {
     "count": 6,

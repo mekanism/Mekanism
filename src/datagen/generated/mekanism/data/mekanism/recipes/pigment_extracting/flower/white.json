@@ -1,14 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "minecraft:bone_meal"
       },
       {
         "item": "minecraft:lily_of_the_valley"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 768,

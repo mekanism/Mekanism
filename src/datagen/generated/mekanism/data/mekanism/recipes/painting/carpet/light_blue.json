@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:light_blue"
+    "pigment": "mekanism:light_blue"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/carpets"
-      },
-      "subtracted": {
-        "item": "minecraft:light_blue_carpet"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/carpets"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:light_blue_carpet"
     }
   },
   "output": {

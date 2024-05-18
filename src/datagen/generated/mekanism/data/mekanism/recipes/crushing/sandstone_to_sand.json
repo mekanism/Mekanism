@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:sandstone/uncolored_blocks"
-    }
+    "count": 1,
+    "tag": "c:sandstone/uncolored_blocks"
   },
   "output": {
     "count": 2,

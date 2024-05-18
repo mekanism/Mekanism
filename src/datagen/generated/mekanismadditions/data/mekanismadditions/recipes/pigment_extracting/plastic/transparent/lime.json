@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:lime_plastic_transparent"
-    }
+    "count": 1,
+    "item": "mekanismadditions:lime_plastic_transparent"
   },
   "output": {
     "amount": 42,

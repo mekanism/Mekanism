@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:high_grass_plant"
-    }
+    "count": 1,
+    "item": "biomesoplenty:high_grass_plant"
   },
   "output": {
     "count": 4,

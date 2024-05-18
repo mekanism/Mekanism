@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:jungle_pressure_plate"
-    }
+    "count": 1,
+    "item": "minecraft:jungle_pressure_plate"
   },
   "mainOutput": {
     "count": 1,

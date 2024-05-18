@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:lime"
+    "pigment": "mekanism:lime"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/reinforced"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:lime_reinforced_plastic"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/reinforced"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:lime_reinforced_plastic"
     }
   },
   "output": {

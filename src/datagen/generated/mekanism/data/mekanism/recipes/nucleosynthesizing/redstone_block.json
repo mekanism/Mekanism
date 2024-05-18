@@ -3,12 +3,11 @@
   "duration": 500,
   "gasInput": {
     "amount": 2,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:red_wool"
-    }
+    "count": 1,
+    "item": "minecraft:red_wool"
   },
   "output": {
     "count": 1,

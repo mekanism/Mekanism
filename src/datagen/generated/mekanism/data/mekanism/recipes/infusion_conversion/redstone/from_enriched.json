@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/redstone"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/redstone"
   },
   "output": {
     "amount": 80,

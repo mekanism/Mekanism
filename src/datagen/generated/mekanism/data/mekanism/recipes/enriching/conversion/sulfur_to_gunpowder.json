@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/sulfur"
-    }
+    "count": 1,
+    "tag": "c:dusts/sulfur"
   },
   "output": {
     "count": 1,

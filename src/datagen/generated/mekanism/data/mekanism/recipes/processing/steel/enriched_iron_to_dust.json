@@ -5,9 +5,8 @@
     "tag": "mekanism:carbon"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "mekanism:enriched_iron"
-    }
+    "count": 1,
+    "item": "mekanism:enriched_iron"
   },
   "output": {
     "count": 1,

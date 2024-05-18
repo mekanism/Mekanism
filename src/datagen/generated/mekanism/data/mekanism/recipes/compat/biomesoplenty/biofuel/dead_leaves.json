@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:dead_leaves"
-    }
+    "count": 1,
+    "item": "biomesoplenty:dead_leaves"
   },
   "output": {
     "count": 2,

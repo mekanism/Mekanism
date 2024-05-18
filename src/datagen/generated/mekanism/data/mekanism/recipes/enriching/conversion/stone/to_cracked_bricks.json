@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:stone"
-    }
+    "count": 1,
+    "item": "minecraft:stone"
   },
   "output": {
     "count": 1,

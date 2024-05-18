@@ -2,13 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:hydrogen_chloride"
+    "gas": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:raw_materials/copper"
-    }
+    "count": 3,
+    "tag": "c:raw_materials/copper"
   },
   "output": {
     "count": 8,

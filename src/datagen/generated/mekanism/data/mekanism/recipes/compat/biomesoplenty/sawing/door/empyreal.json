@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:empyreal_door"
-    }
+    "count": 1,
+    "item": "biomesoplenty:empyreal_door"
   },
   "mainOutput": {
     "count": 2,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:birch_trapdoor"
-    }
+    "count": 1,
+    "item": "minecraft:birch_trapdoor"
   },
   "mainOutput": {
     "count": 3,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:cobbled_deepslate_stairs"
-    }
+    "count": 1,
+    "item": "minecraft:cobbled_deepslate_stairs"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:fuels/bio"
-    }
+    "count": 1,
+    "tag": "c:fuels/bio"
   },
   "output": {
     "amount": 5,

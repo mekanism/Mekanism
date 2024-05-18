@@ -2,13 +2,11 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:sulfuric_acid"
+    "gas": "mekanism:sulfuric_acid"
   },
   "itemInput": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:raw_materials/copper"
-    }
+    "count": 3,
+    "tag": "c:raw_materials/copper"
   },
   "output": {
     "amount": 2000,

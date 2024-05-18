@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:trapped_chest"
-    }
+    "count": 1,
+    "item": "minecraft:trapped_chest"
   },
   "mainOutput": {
     "count": 8,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "mekanism:block_salt"
-    }
+    "count": 1,
+    "item": "mekanism:block_salt"
   },
   "output": {
     "count": 4,

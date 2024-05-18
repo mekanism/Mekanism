@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "c:fences/wooden"
-    }
+    "count": 1,
+    "tag": "c:fences/wooden"
   },
   "mainOutput": {
     "count": 3,

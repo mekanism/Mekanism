@@ -1,9 +1,8 @@
 {
   "type": "mekanism:gas_conversion",
   "input": {
-    "ingredient": {
-      "item": "minecraft:flint"
-    }
+    "count": 1,
+    "item": "minecraft:flint"
   },
   "output": {
     "amount": 10,

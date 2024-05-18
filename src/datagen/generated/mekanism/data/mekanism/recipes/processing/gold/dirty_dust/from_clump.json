@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:clumps/gold"
-    }
+    "count": 1,
+    "tag": "c:clumps/gold"
   },
   "output": {
     "count": 1,

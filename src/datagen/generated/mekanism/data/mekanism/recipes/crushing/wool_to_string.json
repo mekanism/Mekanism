@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:wool"
-    }
+    "count": 1,
+    "tag": "minecraft:wool"
   },
   "output": {
     "count": 4,

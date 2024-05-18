@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_gold"
+    "slurry": "mekanism:clean_gold"
   },
   "output": {
     "count": 1,

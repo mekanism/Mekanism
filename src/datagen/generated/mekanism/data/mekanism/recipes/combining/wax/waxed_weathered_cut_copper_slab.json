@@ -1,14 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "item": "minecraft:honeycomb"
-    }
+    "count": 1,
+    "item": "minecraft:honeycomb"
   },
   "mainInput": {
-    "ingredient": {
-      "item": "minecraft:weathered_cut_copper_slab"
-    }
+    "count": 1,
+    "item": "minecraft:weathered_cut_copper_slab"
   },
   "output": {
     "count": 1,

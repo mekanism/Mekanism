@@ -7,16 +7,15 @@
   },
   "gasInput": {
     "amount": 1000,
-    "id": "mekanism:polonium"
+    "gas": "mekanism:polonium"
   },
   "gasOutput": {
     "amount": 1000,
     "id": "mekanism:spent_nuclear_waste"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:dusts/fluorite"
-    }
+    "count": 1,
+    "tag": "c:dusts/fluorite"
   },
   "itemOutput": {
     "count": 1,

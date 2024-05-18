@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:cattail"
-    }
+    "count": 1,
+    "item": "biomesoplenty:cattail"
   },
   "output": {
     "amount": 1536,

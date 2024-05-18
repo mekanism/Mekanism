@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:waxed_cut_copper_stairs"
-    }
+    "count": 1,
+    "item": "minecraft:waxed_cut_copper_stairs"
   },
   "output": {
     "count": 1,

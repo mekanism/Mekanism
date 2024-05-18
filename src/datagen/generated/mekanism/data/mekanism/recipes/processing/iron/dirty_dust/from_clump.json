@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:clumps/iron"
-    }
+    "count": 1,
+    "tag": "c:clumps/iron"
   },
   "output": {
     "count": 1,

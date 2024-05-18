@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/coal"
-    }
+    "count": 1,
+    "tag": "c:ores/coal"
   },
   "output": {
     "count": 2,

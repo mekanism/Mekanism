@@ -2,12 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:copper_bulb"
-    }
+    "count": 1,
+    "item": "minecraft:copper_bulb"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:storage_blocks/coal"
-    }
+    "count": 1,
+    "tag": "c:storage_blocks/coal"
   },
   "output": {
     "amount": 90,

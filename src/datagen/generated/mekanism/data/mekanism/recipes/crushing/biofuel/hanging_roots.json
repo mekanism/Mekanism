@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:hanging_roots"
-    }
+    "count": 1,
+    "item": "minecraft:hanging_roots"
   },
   "output": {
     "count": 2,

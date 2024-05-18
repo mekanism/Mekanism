@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_uranium"
+    "slurry": "mekanism:clean_uranium"
   },
   "output": {
     "count": 1,

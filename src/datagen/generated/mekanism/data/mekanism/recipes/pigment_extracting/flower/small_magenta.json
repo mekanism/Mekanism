@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:allium"
-    }
+    "count": 1,
+    "item": "minecraft:allium"
   },
   "output": {
     "amount": 768,

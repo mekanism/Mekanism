@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:mushroom_stem"
-    }
+    "count": 1,
+    "item": "minecraft:mushroom_stem"
   },
   "output": {
     "count": 5,

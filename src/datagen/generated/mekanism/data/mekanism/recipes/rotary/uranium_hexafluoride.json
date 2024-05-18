@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:uranium_hexafluoride"
+    "gas": "mekanism:uranium_hexafluoride"
   },
   "gasOutput": {
     "amount": 1,

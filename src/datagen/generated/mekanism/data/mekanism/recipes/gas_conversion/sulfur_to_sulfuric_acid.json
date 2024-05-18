@@ -1,9 +1,8 @@
 {
   "type": "mekanism:gas_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/sulfur"
-    }
+    "count": 1,
+    "tag": "c:dusts/sulfur"
   },
   "output": {
     "amount": 2,

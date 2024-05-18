@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:coal"
-    }
+    "count": 1,
+    "item": "minecraft:coal"
   },
   "output": {
     "count": 1,

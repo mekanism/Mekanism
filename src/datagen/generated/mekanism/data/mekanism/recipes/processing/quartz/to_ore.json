@@ -1,15 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "item": "minecraft:netherrack"
-    }
+    "count": 1,
+    "item": "minecraft:netherrack"
   },
   "mainInput": {
-    "amount": 14,
-    "ingredient": {
-      "tag": "c:dusts/quartz"
-    }
+    "count": 14,
+    "tag": "c:dusts/quartz"
   },
   "output": {
     "count": 1,

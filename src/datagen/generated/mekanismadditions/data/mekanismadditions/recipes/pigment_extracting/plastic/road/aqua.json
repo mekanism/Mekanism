@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:aqua_plastic_road"
-    }
+    "count": 1,
+    "item": "mekanismadditions:aqua_plastic_road"
   },
   "output": {
     "amount": 42,

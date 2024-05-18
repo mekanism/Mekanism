@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:birch_logs"
-    }
+    "count": 1,
+    "tag": "minecraft:birch_logs"
   },
   "mainOutput": {
     "count": 6,

@@ -7,14 +7,16 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "biomesoplenty:orange_cosmos"
       },
       {
         "item": "biomesoplenty:burning_blossom"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 768,

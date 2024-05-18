@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:crafting_table"
-    }
+    "count": 1,
+    "item": "minecraft:crafting_table"
   },
   "mainOutput": {
     "count": 4,

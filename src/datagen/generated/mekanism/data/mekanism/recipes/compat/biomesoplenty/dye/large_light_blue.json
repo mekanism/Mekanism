@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:icy_iris"
-    }
+    "count": 1,
+    "item": "biomesoplenty:icy_iris"
   },
   "output": {
     "count": 4,

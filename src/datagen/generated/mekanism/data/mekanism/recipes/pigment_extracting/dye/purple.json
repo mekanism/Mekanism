@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "tag": "c:dyes/purple"
-    }
+    "count": 1,
+    "tag": "c:dyes/purple"
   },
   "output": {
     "amount": 256,

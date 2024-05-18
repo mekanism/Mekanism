@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/fluorite"
-    }
+    "count": 1,
+    "tag": "c:ores/fluorite"
   },
   "output": {
     "count": 6,

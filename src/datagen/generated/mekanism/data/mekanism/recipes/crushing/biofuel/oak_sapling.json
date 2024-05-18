@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:oak_sapling"
-    }
+    "count": 1,
+    "item": "minecraft:oak_sapling"
   },
   "output": {
     "count": 2,

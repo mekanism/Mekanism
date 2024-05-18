@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:redwood_boat"
-    }
+    "count": 1,
+    "item": "biomesoplenty:redwood_boat"
   },
   "mainOutput": {
     "count": 5,

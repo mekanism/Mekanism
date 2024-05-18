@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:storage_blocks/raw_uranium"
-    }
+    "count": 1,
+    "tag": "c:storage_blocks/raw_uranium"
   },
   "output": {
     "count": 12,

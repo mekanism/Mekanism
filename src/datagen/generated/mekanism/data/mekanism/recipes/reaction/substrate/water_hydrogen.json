@@ -7,17 +7,15 @@
   },
   "gasInput": {
     "amount": 100,
-    "id": "mekanism:hydrogen"
+    "gas": "mekanism:hydrogen"
   },
   "gasOutput": {
     "amount": 100,
     "id": "mekanism:ethene"
   },
   "itemInput": {
-    "amount": 2,
-    "ingredient": {
-      "tag": "c:fuels/bio"
-    }
+    "count": 2,
+    "tag": "c:fuels/bio"
   },
   "itemOutput": {
     "count": 1,

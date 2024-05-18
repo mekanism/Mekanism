@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:willow_door"
-    }
+    "count": 1,
+    "item": "biomesoplenty:willow_door"
   },
   "mainOutput": {
     "count": 2,

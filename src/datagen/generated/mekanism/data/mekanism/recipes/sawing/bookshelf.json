@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "c:bookshelves"
-    }
+    "count": 1,
+    "tag": "c:bookshelves"
   },
   "mainOutput": {
     "count": 6,

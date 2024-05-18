@@ -5,9 +5,8 @@
     "tag": "mekanism:carbon"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:ingots/iron"
-    }
+    "count": 1,
+    "tag": "c:ingots/iron"
   },
   "output": {
     "count": 1,

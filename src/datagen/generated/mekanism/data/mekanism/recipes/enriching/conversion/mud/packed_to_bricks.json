@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:packed_mud"
-    }
+    "count": 1,
+    "item": "minecraft:packed_mud"
   },
   "output": {
     "count": 1,

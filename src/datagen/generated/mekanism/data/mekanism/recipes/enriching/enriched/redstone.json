@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/redstone"
-    }
+    "count": 1,
+    "tag": "c:dusts/redstone"
   },
   "output": {
     "count": 1,

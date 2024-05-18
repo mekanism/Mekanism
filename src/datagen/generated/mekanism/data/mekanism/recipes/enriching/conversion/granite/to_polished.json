@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:granite"
-    }
+    "count": 1,
+    "item": "minecraft:granite"
   },
   "output": {
     "count": 1,

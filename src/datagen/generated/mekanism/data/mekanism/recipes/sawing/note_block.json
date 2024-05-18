@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:note_block"
-    }
+    "count": 1,
+    "item": "minecraft:note_block"
   },
   "mainOutput": {
     "count": 8,

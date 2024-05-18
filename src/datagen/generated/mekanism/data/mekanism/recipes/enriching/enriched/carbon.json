@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:coals"
-    }
+    "count": 1,
+    "tag": "minecraft:coals"
   },
   "output": {
     "count": 1,

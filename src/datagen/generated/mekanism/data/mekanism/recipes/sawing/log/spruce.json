@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:spruce_logs"
-    }
+    "count": 1,
+    "tag": "minecraft:spruce_logs"
   },
   "mainOutput": {
     "count": 6,

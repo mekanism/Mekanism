@@ -1,17 +1,16 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "type": "neoforge:intersection",
-      "children": [
-        {
-          "tag": "mekanism:colorable/wool"
-        },
-        {
-          "tag": "c:dyed/black"
-        }
-      ]
-    }
+    "type": "neoforge:intersection",
+    "children": [
+      {
+        "tag": "mekanism:colorable/wool"
+      },
+      {
+        "tag": "c:dyed/black"
+      }
+    ],
+    "count": 1
   },
   "output": {
     "amount": 192,

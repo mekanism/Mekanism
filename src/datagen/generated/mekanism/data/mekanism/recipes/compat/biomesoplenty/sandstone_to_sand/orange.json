@@ -7,7 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "biomesoplenty:orange_sandstone"
       },
@@ -20,7 +21,8 @@
       {
         "item": "biomesoplenty:smooth_orange_sandstone"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "count": 2,

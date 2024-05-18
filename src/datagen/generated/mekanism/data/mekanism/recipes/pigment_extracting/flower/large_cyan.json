@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:pitcher_plant"
-    }
+    "count": 1,
+    "item": "minecraft:pitcher_plant"
   },
   "output": {
     "amount": 1536,

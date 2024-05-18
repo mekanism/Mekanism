@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:soul_soil"
-    }
+    "count": 1,
+    "item": "minecraft:soul_soil"
   },
   "output": {
     "count": 1,

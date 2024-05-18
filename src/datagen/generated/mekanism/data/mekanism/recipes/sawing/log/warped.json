@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:warped_stems"
-    }
+    "count": 1,
+    "tag": "minecraft:warped_stems"
   },
   "mainOutput": {
     "count": 6,

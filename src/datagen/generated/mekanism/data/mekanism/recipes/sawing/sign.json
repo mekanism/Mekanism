@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:signs"
-    }
+    "count": 1,
+    "tag": "minecraft:signs"
   },
   "mainOutput": {
     "count": 3,

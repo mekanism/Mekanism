@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:orange"
+    "pigment": "mekanism:orange"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/concrete_powder"
-      },
-      "subtracted": {
-        "item": "minecraft:orange_concrete_powder"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete_powder"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:orange_concrete_powder"
     }
   },
   "output": {

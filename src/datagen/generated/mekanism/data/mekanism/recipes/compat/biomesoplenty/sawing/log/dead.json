@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "biomesoplenty:dead_logs"
-    }
+    "count": 1,
+    "tag": "biomesoplenty:dead_logs"
   },
   "mainOutput": {
     "count": 6,

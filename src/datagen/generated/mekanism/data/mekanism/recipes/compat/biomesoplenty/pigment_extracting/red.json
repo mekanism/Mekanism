@@ -7,14 +7,16 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "biomesoplenty:rose"
       },
       {
         "item": "biomesoplenty:waterlily"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 768,

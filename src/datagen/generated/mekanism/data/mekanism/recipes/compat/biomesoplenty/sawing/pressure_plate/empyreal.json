@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:empyreal_pressure_plate"
-    }
+    "count": 1,
+    "item": "biomesoplenty:empyreal_pressure_plate"
   },
   "mainOutput": {
     "count": 1,

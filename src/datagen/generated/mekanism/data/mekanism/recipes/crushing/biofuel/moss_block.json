@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:moss_block"
-    }
+    "count": 1,
+    "item": "minecraft:moss_block"
   },
   "output": {
     "count": 5,

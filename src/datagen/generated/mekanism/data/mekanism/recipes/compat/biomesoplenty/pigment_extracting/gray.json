@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:wilted_lily"
-    }
+    "count": 1,
+    "item": "biomesoplenty:wilted_lily"
   },
   "output": {
     "amount": 768,

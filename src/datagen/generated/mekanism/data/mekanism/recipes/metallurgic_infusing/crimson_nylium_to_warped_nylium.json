@@ -5,9 +5,8 @@
     "tag": "mekanism:fungi"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:crimson_nylium"
-    }
+    "count": 1,
+    "item": "minecraft:crimson_nylium"
   },
   "output": {
     "count": 1,

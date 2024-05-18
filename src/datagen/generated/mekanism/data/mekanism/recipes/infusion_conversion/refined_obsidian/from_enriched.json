@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/obsidian"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/obsidian"
   },
   "output": {
     "amount": 80,

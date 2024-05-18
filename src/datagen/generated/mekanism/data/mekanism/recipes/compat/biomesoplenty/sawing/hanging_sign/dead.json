@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:dead_hanging_sign"
-    }
+    "count": 1,
+    "item": "biomesoplenty:dead_hanging_sign"
   },
   "mainOutput": {
     "count": 2,

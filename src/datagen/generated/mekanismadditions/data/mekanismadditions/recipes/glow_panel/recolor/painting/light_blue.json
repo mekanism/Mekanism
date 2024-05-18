@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:light_blue"
+    "pigment": "mekanism:light_blue"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:glow_panels"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_blue_glow_panel"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:glow_panels"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:light_blue_glow_panel"
     }
   },
   "output": {

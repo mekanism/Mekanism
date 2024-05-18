@@ -1,10 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:raw_materials/osmium"
-    }
+    "count": 3,
+    "tag": "c:raw_materials/osmium"
   },
   "output": {
     "count": 4,
