@@ -21,16 +21,19 @@ public class ChemicalIngredientUtil {
     }
 
     //TODO - 1.20.5: Test this
+    @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>, SINGLE extends SingleChemicalIngredient<CHEMICAL, INGREDIENT>,
           TAG extends TagChemicalIngredient<CHEMICAL, INGREDIENT>> MapCodec<INGREDIENT> singleOrTagCodec(MapCodec<SINGLE> singleCodec, MapCodec<TAG> tagCodec) {
-        return NeoForgeExtraCodecs.xor(singleCodec, tagCodec).xmap(either -> either.map(i -> (INGREDIENT) i, i -> (INGREDIENT) i), ingredient -> {
-            if (ingredient instanceof SingleChemicalIngredient) {
-                return Either.left((SINGLE) ingredient);
-            } else if (ingredient instanceof TagChemicalIngredient) {
-                return Either.right((TAG) ingredient);
-            }
-            throw new IllegalStateException("Basic chemical ingredient should be either a chemical or a tag!");
-        });
+        return NeoForgeExtraCodecs.xor(singleCodec, tagCodec).flatXmap(
+              either -> DataResult.success(either.map(i -> (INGREDIENT) i, i -> (INGREDIENT) i)),
+              ingredient -> {
+                  if (ingredient instanceof SingleChemicalIngredient) {
+                      return DataResult.success(Either.left((SINGLE) ingredient));
+                  } else if (ingredient instanceof TagChemicalIngredient) {
+                      return DataResult.success(Either.right((TAG) ingredient));
+                  }
+                  return DataResult.error(() -> "Basic chemical ingredient should be either a chemical or a tag!");
+              });
     }
 
     @SuppressWarnings("RedundantTypeArguments")
@@ -54,6 +57,7 @@ public class ChemicalIngredientUtil {
         });
     }
 
+    @SuppressWarnings("unchecked")
     public static <CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>> Codec<INGREDIENT> codec(Codec<List<INGREDIENT>> listCodec,
           Codec<INGREDIENT> mapCodecCodec, Function<List<? extends INGREDIENT>, INGREDIENT> compoundCreator) {
         // [{...}, {...}] is turned into a CompoundChemicalIngredient instance

@@ -267,6 +267,10 @@ public class Mekanism {
         event.register(MekanismAPI.INFUSE_TYPE_REGISTRY);
         event.register(MekanismAPI.PIGMENT_REGISTRY);
         event.register(MekanismAPI.SLURRY_REGISTRY);
+        event.register(MekanismAPI.GAS_INGREDIENT_TYPES);
+        event.register(MekanismAPI.INFUSION_INGREDIENT_TYPES);
+        event.register(MekanismAPI.PIGMENT_INGREDIENT_TYPES);
+        event.register(MekanismAPI.SLURRY_INGREDIENT_TYPES);
         event.register(MekanismAPI.MODULE_REGISTRY);
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
