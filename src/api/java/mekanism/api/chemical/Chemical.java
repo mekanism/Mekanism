@@ -255,7 +255,12 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         return getAsHolder().tags();
     }
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Helper method to get the holder for this chemical. Unlike {@link net.minecraft.world.item.Item#builtInRegistryHolder()} and similar, this looks up the holder from
+     * the registry when called.
+     *
+     * @since 10.6.0
+     */
     public Holder<CHEMICAL> getAsHolder() {
         return getRegistry().wrapAsHolder((CHEMICAL) this);
     }

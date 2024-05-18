@@ -230,7 +230,11 @@ public class MekanismAPI {
      */
     public static final Registry<MapCodec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY = new RegistryBuilder<>(ROBIT_SKIN_SERIALIZER_REGISTRY_NAME).create();
 
-    //TODO - 1.20.5: Docs
+    /**
+     * Constant location representing the name all empty chemicals will be registered under.
+     *
+     * @since 10.6.0
+     */
     public static final ResourceLocation EMPTY_CHEMICAL_NAME = new ResourceLocation(MEKANISM_MODID, "empty");
 
     //TODO: Potentially define these with DeferredHolder for purposes of fully defining them outside of the API

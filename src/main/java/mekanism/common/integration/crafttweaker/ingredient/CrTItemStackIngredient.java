@@ -233,7 +233,7 @@ public class CrTItemStackIngredient {
     }
 
     private static void addIngredient(List<Ingredient> ingredients, Ingredient ingredient) {
-        if (ingredient.isCustom() && ingredient.getCustomIngredient() instanceof CompoundIngredient compoundIngredient) {
+        if (ingredient.getCustomIngredient() instanceof CompoundIngredient compoundIngredient) {
             ingredients.addAll(compoundIngredient.children());
         } else {
             ingredients.add(ingredient);
