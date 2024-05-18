@@ -1,9 +1,14 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +23,18 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract non-sealed class DifferenceChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
       extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+
+    /**
+     * Helper to create the codec for difference ingredients.
+     */
+    @Internal
+    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, DIFFERENCE extends DifferenceChemicalIngredient<?, INGREDIENT>> MapCodec<DIFFERENCE> codec(
+          IChemicalIngredientCreator<?, INGREDIENT> creator, BiFunction<INGREDIENT, INGREDIENT, DIFFERENCE> constructor) {
+        return RecordCodecBuilder.mapCodec(builder -> builder.group(
+              creator.codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceChemicalIngredient::base),
+              creator.codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceChemicalIngredient::subtracted)
+        ).apply(builder, constructor));
+    }
 
     private final INGREDIENT base;
     private final INGREDIENT subtracted;

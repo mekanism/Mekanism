@@ -1,11 +1,15 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
+import java.util.function.Function;
 import java.util.stream.Stream;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +25,15 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract non-sealed class TagChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
       extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+
+    /**
+     * Helper to create the codec for tag ingredients.
+     */
+    @Internal
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, TAG extends TagChemicalIngredient<CHEMICAL, ?>> MapCodec<TAG> codec(
+          ResourceKey<? extends Registry<CHEMICAL>> registryName, Function<TagKey<CHEMICAL>, TAG> constructor) {
+        return TagKey.codec(registryName).xmap(constructor, TagChemicalIngredient::tag).fieldOf(JsonConstants.TAG);
+    }
 
     private final TagKey<CHEMICAL> tag;
 

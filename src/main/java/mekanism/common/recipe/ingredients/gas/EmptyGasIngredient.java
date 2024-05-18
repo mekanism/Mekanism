@@ -11,7 +11,6 @@ import mekanism.common.registries.MekanismGasIngredientTypes;
 public final class EmptyGasIngredient extends EmptyChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
     public static final EmptyGasIngredient INSTANCE = new EmptyGasIngredient();
-
     public static final MapCodec<EmptyGasIngredient> CODEC = MapCodec.unit(INSTANCE);
 
     private EmptyGasIngredient() {

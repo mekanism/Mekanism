@@ -1,7 +1,6 @@
 package mekanism.common.recipe.ingredients.slurry;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.slurry.Slurry;
@@ -14,8 +13,7 @@ import net.minecraft.tags.TagKey;
 @NothingNullByDefault
 public final class TagSlurryIngredient extends TagChemicalIngredient<Slurry, ISlurryIngredient> implements ISlurryIngredient {
 
-    public static final MapCodec<TagSlurryIngredient> CODEC = TagKey.codec(MekanismAPI.SLURRY_REGISTRY_NAME).xmap(TagSlurryIngredient::new, TagSlurryIngredient::tag)
-          .fieldOf(JsonConstants.TAG);
+    public static final MapCodec<TagSlurryIngredient> CODEC = codec(MekanismAPI.SLURRY_REGISTRY_NAME, TagSlurryIngredient::new);
 
     TagSlurryIngredient(TagKey<Slurry> tag) {
         super(tag);
@@ -27,7 +25,7 @@ public final class TagSlurryIngredient extends TagChemicalIngredient<Slurry, ISl
     }
 
     @Override
-    public Registry<Slurry> registry() {
+    protected Registry<Slurry> registry() {
         return MekanismAPI.SLURRY_REGISTRY;
     }
 }

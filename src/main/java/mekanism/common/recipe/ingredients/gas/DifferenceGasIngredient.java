@@ -1,8 +1,6 @@
 package mekanism.common.recipe.ingredients.gas;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.recipes.ingredients.chemical.DifferenceChemicalIngredient;
@@ -13,10 +11,7 @@ import mekanism.common.registries.MekanismGasIngredientTypes;
 @NothingNullByDefault
 public final class DifferenceGasIngredient extends DifferenceChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
-    public static final MapCodec<DifferenceGasIngredient> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceGasIngredient::base),
-          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceGasIngredient::subtracted)
-    ).apply(builder, DifferenceGasIngredient::new));
+    public static final MapCodec<DifferenceGasIngredient> CODEC = codec(IngredientCreatorAccess.gas(), DifferenceGasIngredient::new);
 
     DifferenceGasIngredient(IGasIngredient base, IGasIngredient subtracted) {
         super(base, subtracted);

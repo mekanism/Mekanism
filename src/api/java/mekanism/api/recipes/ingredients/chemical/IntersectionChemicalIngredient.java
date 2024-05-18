@@ -1,10 +1,15 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +21,17 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
       extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+
+    /**
+     * Helper to create the codec for intersection ingredients.
+     */
+    @Internal
+    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, INTERSECTION extends IntersectionChemicalIngredient<?, INGREDIENT>> MapCodec<INTERSECTION> codec(
+          IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, INTERSECTION> constructor) {
+        return RecordCodecBuilder.mapCodec(builder -> builder.group(
+              creator.listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
+        ).apply(builder, constructor));
+    }
 
     private final List<INGREDIENT> children;
 

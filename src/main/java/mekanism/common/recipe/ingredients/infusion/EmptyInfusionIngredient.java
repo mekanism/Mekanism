@@ -11,7 +11,6 @@ import mekanism.common.registries.MekanismInfusionIngredientTypes;
 public final class EmptyInfusionIngredient extends EmptyChemicalIngredient<InfuseType, IInfusionIngredient> implements IInfusionIngredient {
 
     public static final EmptyInfusionIngredient INSTANCE = new EmptyInfusionIngredient();
-
     public static final MapCodec<EmptyInfusionIngredient> CODEC = MapCodec.unit(INSTANCE);
 
     private EmptyInfusionIngredient() {

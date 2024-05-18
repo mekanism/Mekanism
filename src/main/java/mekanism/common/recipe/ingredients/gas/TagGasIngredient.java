@@ -1,7 +1,6 @@
 package mekanism.common.recipe.ingredients.gas;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
@@ -14,8 +13,7 @@ import net.minecraft.tags.TagKey;
 @NothingNullByDefault
 public final class TagGasIngredient extends TagChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
-    public static final MapCodec<TagGasIngredient> CODEC = TagKey.codec(MekanismAPI.GAS_REGISTRY_NAME).xmap(TagGasIngredient::new, TagGasIngredient::tag)
-          .fieldOf(JsonConstants.TAG);
+    public static final MapCodec<TagGasIngredient> CODEC = codec(MekanismAPI.GAS_REGISTRY_NAME, TagGasIngredient::new);
 
     TagGasIngredient(TagKey<Gas> tag) {
         super(tag);
@@ -27,7 +25,7 @@ public final class TagGasIngredient extends TagChemicalIngredient<Gas, IGasIngre
     }
 
     @Override
-    public Registry<Gas> registry() {
+    protected Registry<Gas> registry() {
         return MekanismAPI.GAS_REGISTRY;
     }
 }

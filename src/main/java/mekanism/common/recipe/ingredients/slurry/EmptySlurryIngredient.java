@@ -11,7 +11,6 @@ import mekanism.common.registries.MekanismSlurryIngredientTypes;
 public final class EmptySlurryIngredient extends EmptyChemicalIngredient<Slurry, ISlurryIngredient> implements ISlurryIngredient {
 
     public static final EmptySlurryIngredient INSTANCE = new EmptySlurryIngredient();
-
     public static final MapCodec<EmptySlurryIngredient> CODEC = MapCodec.unit(INSTANCE);
 
     private EmptySlurryIngredient() {
