@@ -13,7 +13,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -104,10 +103,10 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "soul_soil_to_soul_sand"));
         //Polished or Smooth Basalt -> Basalt
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(Ingredient.of(
+              IngredientCreatorAccess.item().from(
                     Blocks.POLISHED_BASALT,
                     Blocks.SMOOTH_BASALT
-              )),
+              ),
               new ItemStack(Blocks.BASALT)
         ).build(consumer, Mekanism.rl(basePath + "polished_or_smooth_basalt_to_basalt"));
         //Chiseled Nether Bricks -> Nether Bricks

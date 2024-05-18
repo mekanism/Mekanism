@@ -16,6 +16,11 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
+     */
     @Override
     default ItemStackIngredient from(ItemStack instance) {
         Objects.requireNonNull(instance, "ItemStackIngredients cannot be created from a null ItemStack.");
@@ -29,6 +34,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @param amount Amount needed.
      *
      * @apiNote If the amount needed is the same as the stack's size, {@link #from(ItemStack)} can be used instead.
+     * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
      */
     default ItemStackIngredient from(ItemStack stack, int amount) {
         Objects.requireNonNull(stack, "ItemStackIngredients cannot be created from a null ItemStack.");
@@ -38,7 +44,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         //Copy the stack to ensure it doesn't get modified afterward
         stack = stack.copy();
         //Support Components that are on the stack in case it matters
-        // Note: Only bother making it a data component ingredient if the stack has data, otherwise there is no point in doing the extra checks
+        // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
         DataComponentPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
         if (predicate != null) {
             return from(DataComponentIngredient.of(false, predicate, stack.getItemHolder()), amount);
@@ -64,8 +70,8 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param item Item provider that provides the item to match.
      *
-     * @implNote This wraps via {@link #from(ItemStack)} so if there is any durability or default NBT it will be included in the ingredient. If this is not desired,
-     * manually create an ingredient and call {@link #from(Ingredient)}.
+     * @implNote This wraps via {@link #from(Ingredient)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If this
+     * is not desired, manually create the ingredient via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
      */
     default ItemStackIngredient from(ItemLike item) {
         return from(item, 1);
@@ -77,22 +83,66 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @param item   Item provider that provides the item to match.
      * @param amount Amount needed.
      *
-     * @implNote This wraps via {@link #from(ItemStack, int)} so if there is any durability or default NBT it will be included in the ingredient. If this is not desired,
-     * manually create an ingredient and call {@link #from(Ingredient, int)}.
+     * @implNote This wraps via {@link #from(Ingredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If
+     * this is not desired, manually create the ingredient via {@link DataComponentIngredient} and call {@link #from(Ingredient, int)}.
      */
     default ItemStackIngredient from(ItemLike item, int amount) {
-        return from(new ItemStack(item), amount);
+        return from(Ingredient.of(item), amount);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a provided items.
+     *
+     * @param items Item providers that provides the items to match.
+     *
+     * @throws IllegalArgumentException if no items are passed, or only a single item is passed. Call via {@link #from(ItemLike)} if you only have one element.
+     * @implNote This wraps via {@link #from(Ingredient)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If this
+     * is not desired, manually create the ingredients via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
+     * @since 10.6.0
+     */
+    default ItemStackIngredient from(ItemLike... items) {
+        return from(1, items);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a provided items and amount.
+     *
+     * @param amount Amount needed.
+     * @param items  Item providers that provides the items to match.
+     *
+     * @throws IllegalArgumentException if no items are passed, or only a single item is passed. Call via {@link #from(ItemLike, int)} if you only have one element.
+     * @implNote This wraps via {@link #from(Ingredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If
+     * this is not desired, manually create the ingredients via {@link DataComponentIngredient} and call {@link #from(Ingredient, int)}.
+     * @since 10.6.0
+     */
+    default ItemStackIngredient from(int amount, ItemLike... items) {
+        if (items.length < 2) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with less than two items. At least one item is required, and if you only have one use from(ItemLike, int) instead.");
+        }
+        return from(Ingredient.of(items), amount);
     }
 
     /**
      * {@inheritDoc}
      *
-     * @implNote This wraps via {@link #from(ItemStack)} so if there is any durability or default NBT it will be included in the ingredient. If this is not desired,
-     * manually create an ingredient and call {@link #from(Ingredient)}.
+     * @implNote This wraps via {@link #from(Ingredient)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If this
+     * is not desired, manually create the ingredient via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
      */
     @Override
     default ItemStackIngredient from(Item item, int amount) {
         return from((ItemLike) item, amount);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This wraps via {@link #from(Ingredient)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If this
+     * is not desired, manually create the ingredient via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
+     * @since 10.6.0
+     */
+    @Override
+    default ItemStackIngredient from(int amount, Item... items) {
+        return from(amount, (ItemLike[]) items);
     }
 
     /**
