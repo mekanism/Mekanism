@@ -3,12 +3,11 @@
   "duration": 200,
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:ingots/tin"
-    }
+    "count": 1,
+    "tag": "c:ingots/tin"
   },
   "output": {
     "count": 1,

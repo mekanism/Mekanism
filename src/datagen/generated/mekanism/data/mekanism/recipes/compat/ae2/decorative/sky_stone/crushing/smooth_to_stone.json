@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "ae2:smooth_sky_stone_block"
-    }
+    "count": 1,
+    "item": "ae2:smooth_sky_stone_block"
   },
   "output": {
     "count": 1,

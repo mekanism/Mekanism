@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:barley"
-    }
+    "count": 1,
+    "item": "biomesoplenty:barley"
   },
   "output": {
     "count": 4,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:cyan_plastic_transparent_stairs"
-    }
+    "count": 1,
+    "item": "mekanismadditions:cyan_plastic_transparent_stairs"
   },
   "output": {
     "amount": 28,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/diamond"
-    }
+    "count": 1,
+    "tag": "c:dusts/diamond"
   },
   "output": {
     "amount": 10,

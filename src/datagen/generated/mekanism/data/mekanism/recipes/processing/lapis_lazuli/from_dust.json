@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/lapis"
-    }
+    "count": 1,
+    "tag": "c:dusts/lapis"
   },
   "output": {
     "count": 1,

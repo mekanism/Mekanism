@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:deepslate_tiles"
-    }
+    "count": 1,
+    "item": "minecraft:deepslate_tiles"
   },
   "output": {
     "count": 1,

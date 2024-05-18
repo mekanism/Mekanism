@@ -3,7 +3,7 @@
   "chemicalType": "gas",
   "input": {
     "amount": 1000,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "output": {
     "count": 1,

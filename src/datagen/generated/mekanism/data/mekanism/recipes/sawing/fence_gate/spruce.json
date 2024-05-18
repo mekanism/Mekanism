@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:spruce_fence_gate"
-    }
+    "count": 1,
+    "item": "minecraft:spruce_fence_gate"
   },
   "mainOutput": {
     "count": 2,

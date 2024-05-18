@@ -1,7 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "tag": "c:mushrooms"
       },
@@ -11,7 +12,8 @@
       {
         "item": "minecraft:crimson_fungus"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 10,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:orange_slick_plastic"
-    }
+    "count": 1,
+    "item": "mekanismadditions:orange_slick_plastic"
   },
   "output": {
     "amount": 42,

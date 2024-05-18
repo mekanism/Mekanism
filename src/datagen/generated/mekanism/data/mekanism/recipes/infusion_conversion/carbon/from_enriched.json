@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/carbon"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/carbon"
   },
   "output": {
     "amount": 80,

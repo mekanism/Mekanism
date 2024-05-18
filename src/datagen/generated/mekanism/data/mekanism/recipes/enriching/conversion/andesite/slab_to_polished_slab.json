@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:andesite_slab"
-    }
+    "count": 1,
+    "item": "minecraft:andesite_slab"
   },
   "output": {
     "count": 1,

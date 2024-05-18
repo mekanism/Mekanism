@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:deepslate"
-    }
+    "count": 1,
+    "item": "minecraft:deepslate"
   },
   "output": {
     "count": 1,

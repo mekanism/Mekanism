@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:cherry_logs"
-    }
+    "count": 1,
+    "tag": "minecraft:cherry_logs"
   },
   "mainOutput": {
     "count": 6,

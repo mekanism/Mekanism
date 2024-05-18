@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:glowing_moss_carpet"
-    }
+    "count": 1,
+    "item": "biomesoplenty:glowing_moss_carpet"
   },
   "output": {
     "count": 5,

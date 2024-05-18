@@ -5,10 +5,8 @@
     "tag": "mekanism:carbon"
   },
   "itemInput": {
-    "amount": 4,
-    "ingredient": {
-      "tag": "c:dusts/gold"
-    }
+    "count": 4,
+    "tag": "c:dusts/gold"
   },
   "output": {
     "count": 1,

@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "ae2:sky_stone_chest"
-    }
+    "count": 1,
+    "item": "ae2:sky_stone_chest"
   },
   "output": {
     "count": 1,

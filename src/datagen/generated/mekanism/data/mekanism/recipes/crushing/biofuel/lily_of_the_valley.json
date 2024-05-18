@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:lily_of_the_valley"
-    }
+    "count": 1,
+    "item": "minecraft:lily_of_the_valley"
   },
   "output": {
     "count": 5,

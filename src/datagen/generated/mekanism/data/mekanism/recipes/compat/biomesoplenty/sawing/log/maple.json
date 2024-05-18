@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "biomesoplenty:maple_logs"
-    }
+    "count": 1,
+    "tag": "biomesoplenty:maple_logs"
   },
   "mainOutput": {
     "count": 6,

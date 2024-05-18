@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:yellow"
+    "pigment": "mekanism:yellow"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:yellow_balloon"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:balloons"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:yellow_balloon"
     }
   },
   "output": {

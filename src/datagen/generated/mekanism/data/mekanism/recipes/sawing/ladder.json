@@ -1,10 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "amount": 3,
-    "ingredient": {
-      "item": "minecraft:ladder"
-    }
+    "count": 3,
+    "item": "minecraft:ladder"
   },
   "mainOutput": {
     "count": 7,

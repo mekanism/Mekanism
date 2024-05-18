@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:origin_leaves"
-    }
+    "count": 1,
+    "item": "biomesoplenty:origin_leaves"
   },
   "output": {
     "count": 2,

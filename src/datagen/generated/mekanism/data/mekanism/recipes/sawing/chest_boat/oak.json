@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:oak_chest_boat"
-    }
+    "count": 1,
+    "item": "minecraft:oak_chest_boat"
   },
   "mainOutput": {
     "count": 1,

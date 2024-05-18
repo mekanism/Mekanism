@@ -1,15 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "tag": "c:cobblestones/normal"
-    }
+    "count": 1,
+    "tag": "c:cobblestones/normal"
   },
   "mainInput": {
-    "amount": 27,
-    "ingredient": {
-      "tag": "c:dusts/lapis"
-    }
+    "count": 27,
+    "tag": "c:dusts/lapis"
   },
   "output": {
     "count": 1,

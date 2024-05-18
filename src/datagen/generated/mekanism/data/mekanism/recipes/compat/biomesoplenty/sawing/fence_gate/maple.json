@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:maple_fence_gate"
-    }
+    "count": 1,
+    "item": "biomesoplenty:maple_fence_gate"
   },
   "mainOutput": {
     "count": 2,

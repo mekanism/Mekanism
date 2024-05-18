@@ -5,9 +5,8 @@
     "tag": "mekanism:bio"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:sands"
-    }
+    "count": 1,
+    "tag": "c:sands"
   },
   "output": {
     "count": 1,

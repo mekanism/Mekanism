@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:blue_orchid"
-    }
+    "count": 1,
+    "item": "minecraft:blue_orchid"
   },
   "output": {
     "count": 2,

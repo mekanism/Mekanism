@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:seagrass"
-    }
+    "count": 1,
+    "item": "minecraft:seagrass"
   },
   "output": {
     "count": 2,

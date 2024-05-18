@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:lithium"
+    "gas": "mekanism:lithium"
   },
   "gasOutput": {
     "amount": 1,

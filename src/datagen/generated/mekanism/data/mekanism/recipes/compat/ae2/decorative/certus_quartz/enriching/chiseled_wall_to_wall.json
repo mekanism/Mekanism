@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "ae2:chiseled_quartz_wall"
-    }
+    "count": 1,
+    "item": "ae2:chiseled_quartz_wall"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/copper"
-    }
+    "count": 1,
+    "tag": "c:ores/copper"
   },
   "output": {
     "count": 2,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "tag": "c:dyes/light_blue"
-    }
+    "count": 1,
+    "tag": "c:dyes/light_blue"
   },
   "output": {
     "amount": 256,

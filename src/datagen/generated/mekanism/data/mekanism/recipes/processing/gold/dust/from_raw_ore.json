@@ -1,10 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:raw_materials/gold"
-    }
+    "count": 3,
+    "tag": "c:raw_materials/gold"
   },
   "output": {
     "count": 4,

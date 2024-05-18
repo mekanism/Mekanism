@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:lilac"
-    }
+    "count": 1,
+    "item": "minecraft:lilac"
   },
   "output": {
     "count": 4,

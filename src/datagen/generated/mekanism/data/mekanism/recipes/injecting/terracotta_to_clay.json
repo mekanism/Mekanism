@@ -5,9 +5,8 @@
     "tag": "mekanism:water_vapor"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:terracotta"
-    }
+    "count": 1,
+    "item": "minecraft:terracotta"
   },
   "output": {
     "count": 1,

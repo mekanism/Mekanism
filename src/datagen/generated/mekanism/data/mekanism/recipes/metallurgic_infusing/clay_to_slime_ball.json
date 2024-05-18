@@ -5,9 +5,8 @@
     "tag": "mekanism:bio"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:clay_ball"
-    }
+    "count": 1,
+    "item": "minecraft:clay_ball"
   },
   "output": {
     "count": 1,

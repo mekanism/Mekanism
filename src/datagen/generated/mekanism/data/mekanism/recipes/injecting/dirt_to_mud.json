@@ -5,9 +5,8 @@
     "tag": "mekanism:water_vapor"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:dirt"
-    }
+    "count": 1,
+    "item": "minecraft:dirt"
   },
   "output": {
     "count": 1,

@@ -2,12 +2,11 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:sulfuric_acid"
+    "gas": "mekanism:sulfuric_acid"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:ores/copper"
-    }
+    "count": 1,
+    "tag": "c:ores/copper"
   },
   "output": {
     "amount": 1000,

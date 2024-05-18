@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/tin"
-    }
+    "count": 1,
+    "tag": "c:dusts/tin"
   },
   "output": {
     "amount": 10,

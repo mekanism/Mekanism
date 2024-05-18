@@ -2,12 +2,11 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:brown"
+    "pigment": "mekanism:brown"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "mekanism:dye_base"
-    }
+    "count": 1,
+    "item": "mekanism:dye_base"
   },
   "output": {
     "count": 1,

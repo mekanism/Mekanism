@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:red"
+    "pigment": "mekanism:red"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:stairs/plastic/transparent"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:red_plastic_transparent_stairs"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:stairs/plastic/transparent"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:red_plastic_transparent_stairs"
     }
   },
   "output": {

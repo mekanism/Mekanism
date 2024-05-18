@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:cactus"
-    }
+    "count": 1,
+    "item": "minecraft:cactus"
   },
   "output": {
     "amount": 768,

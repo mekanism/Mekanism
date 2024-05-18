@@ -5,9 +5,8 @@
     "tag": "mekanism:gold"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:blackstone"
-    }
+    "count": 1,
+    "item": "minecraft:blackstone"
   },
   "output": {
     "count": 1,

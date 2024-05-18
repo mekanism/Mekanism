@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:torchflower_seeds"
-    }
+    "count": 1,
+    "item": "minecraft:torchflower_seeds"
   },
   "output": {
     "count": 2,

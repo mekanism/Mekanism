@@ -1,10 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "amount": 2,
-    "ingredient": {
-      "item": "minecraft:prismarine_brick_slab"
-    }
+    "count": 2,
+    "item": "minecraft:prismarine_brick_slab"
   },
   "output": {
     "count": 9,

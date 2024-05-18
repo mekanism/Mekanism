@@ -1,14 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "item": "minecraft:honeycomb"
-    }
+    "count": 1,
+    "item": "minecraft:honeycomb"
   },
   "mainInput": {
-    "ingredient": {
-      "item": "minecraft:oxidized_chiseled_copper"
-    }
+    "count": 1,
+    "item": "minecraft:oxidized_chiseled_copper"
   },
   "output": {
     "count": 1,

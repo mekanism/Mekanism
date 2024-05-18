@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:mud_bricks"
-    }
+    "count": 1,
+    "item": "minecraft:mud_bricks"
   },
   "output": {
     "count": 1,

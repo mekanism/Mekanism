@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:dead_boat"
-    }
+    "count": 1,
+    "item": "biomesoplenty:dead_boat"
   },
   "mainOutput": {
     "count": 5,

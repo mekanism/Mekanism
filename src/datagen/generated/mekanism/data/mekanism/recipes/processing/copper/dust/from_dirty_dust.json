@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dirty_dusts/copper"
-    }
+    "count": 1,
+    "tag": "c:dirty_dusts/copper"
   },
   "output": {
     "count": 1,

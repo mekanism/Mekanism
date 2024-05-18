@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:green_plastic"
-    }
+    "count": 1,
+    "item": "mekanismadditions:green_plastic"
   },
   "output": {
     "amount": 48,

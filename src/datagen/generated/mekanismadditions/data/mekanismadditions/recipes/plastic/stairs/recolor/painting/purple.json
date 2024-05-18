@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:purple"
+    "pigment": "mekanism:purple"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:stairs/plastic"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:purple_plastic_stairs"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:stairs/plastic"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:purple_plastic_stairs"
     }
   },
   "output": {

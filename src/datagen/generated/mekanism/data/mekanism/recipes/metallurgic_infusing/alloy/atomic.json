@@ -5,9 +5,8 @@
     "tag": "mekanism:refined_obsidian"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "mekanism:alloys/reinforced"
-    }
+    "count": 1,
+    "tag": "mekanism:alloys/reinforced"
   },
   "output": {
     "count": 1,

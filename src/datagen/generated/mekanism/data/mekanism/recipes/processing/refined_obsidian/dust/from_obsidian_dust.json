@@ -5,9 +5,8 @@
     "tag": "mekanism:diamond"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:dusts/obsidian"
-    }
+    "count": 1,
+    "tag": "c:dusts/obsidian"
   },
   "output": {
     "count": 1,

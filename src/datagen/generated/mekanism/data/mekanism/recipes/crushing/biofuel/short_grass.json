@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:short_grass"
-    }
+    "count": 1,
+    "item": "minecraft:short_grass"
   },
   "output": {
     "count": 2,

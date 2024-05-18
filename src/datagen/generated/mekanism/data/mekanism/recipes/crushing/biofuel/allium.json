@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:allium"
-    }
+    "count": 1,
+    "item": "minecraft:allium"
   },
   "output": {
     "count": 5,

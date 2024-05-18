@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:black"
+    "pigment": "mekanism:black"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/wool"
-      },
-      "subtracted": {
-        "item": "minecraft:black_wool"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/wool"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:black_wool"
     }
   },
   "output": {

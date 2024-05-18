@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:green"
+    "pigment": "mekanism:green"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:slabs/plastic"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:green_plastic_slab"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:slabs/plastic"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:green_plastic_slab"
     }
   },
   "output": {

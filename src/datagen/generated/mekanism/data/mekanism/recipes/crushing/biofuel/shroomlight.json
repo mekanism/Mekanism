@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:shroomlight"
-    }
+    "count": 1,
+    "item": "minecraft:shroomlight"
   },
   "output": {
     "count": 5,

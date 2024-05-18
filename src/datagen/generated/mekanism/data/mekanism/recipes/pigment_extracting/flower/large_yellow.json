@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:sunflower"
-    }
+    "count": 1,
+    "item": "minecraft:sunflower"
   },
   "output": {
     "amount": 1536,

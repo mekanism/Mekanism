@@ -3,12 +3,11 @@
   "duration": 750,
   "gasInput": {
     "amount": 3,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:golden_apple"
-    }
+    "count": 1,
+    "item": "minecraft:golden_apple"
   },
   "output": {
     "count": 1,

@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:magenta"
+    "pigment": "mekanism:magenta"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/candle"
-      },
-      "subtracted": {
-        "item": "minecraft:magenta_candle"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/candle"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:magenta_candle"
     }
   },
   "output": {

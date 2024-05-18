@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:white"
+    "pigment": "mekanism:white"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/terracotta"
-      },
-      "subtracted": {
-        "item": "minecraft:white_terracotta"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/terracotta"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:white_terracotta"
     }
   },
   "output": {

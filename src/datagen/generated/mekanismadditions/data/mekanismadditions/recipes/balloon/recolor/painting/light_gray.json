@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:light_gray"
+    "pigment": "mekanism:light_gray"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_gray_balloon"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:balloons"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:light_gray_balloon"
     }
   },
   "output": {

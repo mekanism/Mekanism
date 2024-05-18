@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:dried_kelp_block"
-    }
+    "count": 1,
+    "item": "minecraft:dried_kelp_block"
   },
   "output": {
     "count": 4,

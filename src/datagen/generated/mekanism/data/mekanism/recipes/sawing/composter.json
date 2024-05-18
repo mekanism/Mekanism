@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:composter"
-    }
+    "count": 1,
+    "item": "minecraft:composter"
   },
   "mainOutput": {
     "count": 7,

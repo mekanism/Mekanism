@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:spruce_trapdoor"
-    }
+    "count": 1,
+    "item": "minecraft:spruce_trapdoor"
   },
   "mainOutput": {
     "count": 3,

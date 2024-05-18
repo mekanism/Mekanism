@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:magenta"
+    "pigment": "mekanism:magenta"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/slick"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:magenta_slick_plastic"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/slick"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:magenta_slick_plastic"
     }
   },
   "output": {

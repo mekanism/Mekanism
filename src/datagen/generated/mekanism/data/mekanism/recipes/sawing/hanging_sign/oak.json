@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:oak_hanging_sign"
-    }
+    "count": 1,
+    "item": "minecraft:oak_hanging_sign"
   },
   "mainOutput": {
     "count": 2,

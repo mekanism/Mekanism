@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:magic_trapdoor"
-    }
+    "count": 1,
+    "item": "biomesoplenty:magic_trapdoor"
   },
   "mainOutput": {
     "count": 3,

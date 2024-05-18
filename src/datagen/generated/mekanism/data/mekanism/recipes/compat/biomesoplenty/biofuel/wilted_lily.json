@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:wilted_lily"
-    }
+    "count": 1,
+    "item": "biomesoplenty:wilted_lily"
   },
   "output": {
     "count": 5,

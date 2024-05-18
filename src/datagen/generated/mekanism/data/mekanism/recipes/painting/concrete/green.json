@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:green"
+    "pigment": "mekanism:green"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/concrete"
-      },
-      "subtracted": {
-        "item": "minecraft:green_concrete"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:green_concrete"
     }
   },
   "output": {

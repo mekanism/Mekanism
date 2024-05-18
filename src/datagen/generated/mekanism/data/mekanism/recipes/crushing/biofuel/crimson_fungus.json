@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:crimson_fungus"
-    }
+    "count": 1,
+    "item": "minecraft:crimson_fungus"
   },
   "output": {
     "count": 5,

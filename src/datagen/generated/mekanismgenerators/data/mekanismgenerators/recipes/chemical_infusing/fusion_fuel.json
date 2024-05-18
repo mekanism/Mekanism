@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_infusing",
   "leftInput": {
     "amount": 1,
-    "id": "mekanismgenerators:deuterium"
+    "gas": "mekanismgenerators:deuterium"
   },
   "output": {
     "amount": 2,
@@ -10,6 +10,6 @@
   },
   "rightInput": {
     "amount": 1,
-    "id": "mekanismgenerators:tritium"
+    "gas": "mekanismgenerators:tritium"
   }
 }

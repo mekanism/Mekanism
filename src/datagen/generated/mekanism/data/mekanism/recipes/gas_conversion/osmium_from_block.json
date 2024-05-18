@@ -1,9 +1,8 @@
 {
   "type": "mekanism:gas_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:storage_blocks/osmium"
-    }
+    "count": 1,
+    "tag": "c:storage_blocks/osmium"
   },
   "output": {
     "amount": 1800,

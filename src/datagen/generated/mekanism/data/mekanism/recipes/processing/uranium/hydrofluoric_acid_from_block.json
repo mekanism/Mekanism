@@ -2,12 +2,11 @@
   "type": "mekanism:dissolution",
   "gasInput": {
     "amount": 9,
-    "id": "mekanism:sulfuric_acid"
+    "gas": "mekanism:sulfuric_acid"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:storage_blocks/fluorite"
-    }
+    "count": 1,
+    "tag": "c:storage_blocks/fluorite"
   },
   "output": {
     "amount": 9000,

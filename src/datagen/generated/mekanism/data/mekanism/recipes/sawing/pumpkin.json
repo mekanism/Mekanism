@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:pumpkin"
-    }
+    "count": 1,
+    "item": "minecraft:pumpkin"
   },
   "mainOutput": {
     "count": 1,

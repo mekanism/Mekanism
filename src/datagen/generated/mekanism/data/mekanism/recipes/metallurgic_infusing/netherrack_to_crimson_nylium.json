@@ -5,9 +5,8 @@
     "tag": "mekanism:fungi"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:netherrack"
-    }
+    "count": 1,
+    "item": "minecraft:netherrack"
   },
   "output": {
     "count": 1,

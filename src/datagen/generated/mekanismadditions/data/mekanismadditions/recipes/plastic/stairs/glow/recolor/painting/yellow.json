@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:yellow"
+    "pigment": "mekanism:yellow"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:stairs/plastic/glow"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:yellow_plastic_glow_stairs"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:stairs/plastic/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:yellow_plastic_glow_stairs"
     }
   },
   "output": {

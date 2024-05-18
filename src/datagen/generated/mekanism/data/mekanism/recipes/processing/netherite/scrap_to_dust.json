@@ -5,10 +5,8 @@
     "tag": "mekanism:gold"
   },
   "itemInput": {
-    "amount": 4,
-    "ingredient": {
-      "item": "minecraft:netherite_scrap"
-    }
+    "count": 4,
+    "item": "minecraft:netherite_scrap"
   },
   "output": {
     "count": 1,

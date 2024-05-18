@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:gray"
+    "pigment": "mekanism:gray"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/beds"
-      },
-      "subtracted": {
-        "item": "minecraft:gray_bed"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/beds"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:gray_bed"
     }
   },
   "output": {

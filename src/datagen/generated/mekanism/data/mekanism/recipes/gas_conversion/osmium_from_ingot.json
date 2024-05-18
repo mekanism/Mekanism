@@ -1,9 +1,8 @@
 {
   "type": "mekanism:gas_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:ingots/osmium"
-    }
+    "count": 1,
+    "tag": "c:ingots/osmium"
   },
   "output": {
     "amount": 200,

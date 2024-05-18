@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "ae2:sky_dust"
-    }
+    "count": 1,
+    "item": "ae2:sky_dust"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:aqua_plastic_stairs"
-    }
+    "count": 1,
+    "item": "mekanismadditions:aqua_plastic_stairs"
   },
   "output": {
     "amount": 32,

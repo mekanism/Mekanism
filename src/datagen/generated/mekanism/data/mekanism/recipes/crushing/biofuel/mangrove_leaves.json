@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:mangrove_leaves"
-    }
+    "count": 1,
+    "item": "minecraft:mangrove_leaves"
   },
   "output": {
     "count": 2,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:diorite_stairs"
-    }
+    "count": 1,
+    "item": "minecraft:diorite_stairs"
   },
   "output": {
     "count": 1,

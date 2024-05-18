@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:spanish_moss"
-    }
+    "count": 1,
+    "item": "biomesoplenty:spanish_moss"
   },
   "output": {
     "count": 4,

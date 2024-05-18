@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:lectern"
-    }
+    "count": 1,
+    "item": "minecraft:lectern"
   },
   "mainOutput": {
     "count": 8,

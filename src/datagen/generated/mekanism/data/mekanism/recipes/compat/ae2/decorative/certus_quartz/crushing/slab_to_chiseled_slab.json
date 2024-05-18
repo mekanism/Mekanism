@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "ae2:quartz_slab"
-    }
+    "count": 1,
+    "item": "ae2:quartz_slab"
   },
   "output": {
     "count": 1,

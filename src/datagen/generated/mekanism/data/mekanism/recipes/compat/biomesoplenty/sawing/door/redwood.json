@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:redwood_door"
-    }
+    "count": 1,
+    "item": "biomesoplenty:redwood_door"
   },
   "mainOutput": {
     "count": 2,

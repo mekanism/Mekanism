@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:oxidized_copper_grate"
-    }
+    "count": 1,
+    "item": "minecraft:oxidized_copper_grate"
   },
   "output": {
     "count": 1,

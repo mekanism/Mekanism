@@ -3,12 +3,11 @@
   "duration": 200,
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:obsidians"
-    }
+    "count": 1,
+    "tag": "c:obsidians"
   },
   "output": {
     "count": 1,

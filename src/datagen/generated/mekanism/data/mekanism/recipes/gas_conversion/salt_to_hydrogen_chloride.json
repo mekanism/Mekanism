@@ -1,9 +1,8 @@
 {
   "type": "mekanism:gas_conversion",
   "input": {
-    "ingredient": {
-      "tag": "c:dusts/salt"
-    }
+    "count": 1,
+    "tag": "c:dusts/salt"
   },
   "output": {
     "amount": 2,

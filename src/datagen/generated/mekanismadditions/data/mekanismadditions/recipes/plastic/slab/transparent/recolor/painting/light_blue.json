@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:light_blue"
+    "pigment": "mekanism:light_blue"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:slabs/plastic/transparent"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_blue_plastic_transparent_slab"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:slabs/plastic/transparent"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:light_blue_plastic_transparent_slab"
     }
   },
   "output": {

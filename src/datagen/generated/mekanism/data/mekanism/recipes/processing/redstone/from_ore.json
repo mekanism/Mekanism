@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/redstone"
-    }
+    "count": 1,
+    "tag": "c:ores/redstone"
   },
   "output": {
     "count": 12,

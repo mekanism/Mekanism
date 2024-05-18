@@ -59,7 +59,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
     public static final Codec<GasStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.gas().mapCodecNonEmpty().forGetter(GasStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(GasStackIngredient::amount)
-    ).apply(instance, GasStackIngredient::new));//TODO - 1.20.5: Re-evaluate how compound ingredients get serialized?? can we just make it a list
+    ).apply(instance, GasStackIngredient::new));
 
     /**
      * The "nested" codec for {@link GasStackIngredient}.

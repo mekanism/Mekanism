@@ -5,9 +5,8 @@
     "tag": "mekanism:water_vapor"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:dead_horn_coral_fan"
-    }
+    "count": 1,
+    "item": "minecraft:dead_horn_coral_fan"
   },
   "output": {
     "count": 1,

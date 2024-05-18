@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:glowflower"
-    }
+    "count": 1,
+    "item": "biomesoplenty:glowflower"
   },
   "output": {
     "amount": 768,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:redstone_torch"
-    }
+    "count": 1,
+    "item": "minecraft:redstone_torch"
   },
   "mainOutput": {
     "count": 1,

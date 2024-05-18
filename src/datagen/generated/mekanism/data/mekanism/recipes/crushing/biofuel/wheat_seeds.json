@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:wheat_seeds"
-    }
+    "count": 1,
+    "item": "minecraft:wheat_seeds"
   },
   "output": {
     "count": 2,

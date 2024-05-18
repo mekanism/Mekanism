@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "tag": "c:dyes/brown"
-    }
+    "count": 1,
+    "tag": "c:dyes/brown"
   },
   "output": {
     "amount": 256,

@@ -10,6 +10,6 @@
   },
   "slurryInput": {
     "amount": 1,
-    "id": "mekanism:dirty_iron"
+    "slurry": "mekanism:dirty_iron"
   }
 }

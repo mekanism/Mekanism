@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 64,
-    "id": "mekanism:light_gray"
+    "pigment": "mekanism:light_gray"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "c:fences/plastic"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_gray_plastic_fence"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "c:fences/plastic"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:light_gray_plastic_fence"
     }
   },
   "output": {

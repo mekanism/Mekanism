@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:birch_sapling"
-    }
+    "count": 1,
+    "item": "minecraft:birch_sapling"
   },
   "output": {
     "count": 2,

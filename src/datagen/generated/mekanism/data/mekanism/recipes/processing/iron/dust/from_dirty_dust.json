@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:dirty_dusts/iron"
-    }
+    "count": 1,
+    "tag": "c:dirty_dusts/iron"
   },
   "output": {
     "count": 1,

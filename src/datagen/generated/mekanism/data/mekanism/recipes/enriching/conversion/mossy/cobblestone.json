@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:mossy_cobblestone"
-    }
+    "count": 1,
+    "item": "minecraft:mossy_cobblestone"
   },
   "output": {
     "count": 1,

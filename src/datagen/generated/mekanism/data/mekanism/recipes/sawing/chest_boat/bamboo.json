@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:bamboo_chest_raft"
-    }
+    "count": 1,
+    "item": "minecraft:bamboo_chest_raft"
   },
   "mainOutput": {
     "count": 1,

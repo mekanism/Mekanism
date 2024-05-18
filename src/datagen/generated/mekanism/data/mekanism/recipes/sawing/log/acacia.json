@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "minecraft:acacia_logs"
-    }
+    "count": 1,
+    "tag": "minecraft:acacia_logs"
   },
   "mainOutput": {
     "count": 6,

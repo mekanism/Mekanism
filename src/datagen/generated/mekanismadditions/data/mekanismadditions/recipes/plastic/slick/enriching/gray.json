@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "mekanismadditions:gray_plastic"
-    }
+    "count": 1,
+    "item": "mekanismadditions:gray_plastic"
   },
   "output": {
     "count": 1,

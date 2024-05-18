@@ -1,14 +1,16 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "tag": "c:dusts/coal"
       },
       {
         "item": "minecraft:coal"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "amount": 10,

@@ -3,12 +3,11 @@
   "duration": 1250,
   "gasInput": {
     "amount": 5,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:skeleton_skull"
-    }
+    "count": 1,
+    "item": "minecraft:skeleton_skull"
   },
   "output": {
     "count": 1,

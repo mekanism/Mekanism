@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:birch_boat"
-    }
+    "count": 1,
+    "item": "minecraft:birch_boat"
   },
   "mainOutput": {
     "count": 5,

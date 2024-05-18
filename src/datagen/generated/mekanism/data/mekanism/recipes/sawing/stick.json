@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "c:rods/wooden"
-    }
+    "count": 1,
+    "tag": "c:rods/wooden"
   },
   "mainOutput": {
     "count": 1,

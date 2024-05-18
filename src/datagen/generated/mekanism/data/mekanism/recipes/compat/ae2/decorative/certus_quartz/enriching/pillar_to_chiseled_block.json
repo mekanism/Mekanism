@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "ae2:quartz_pillar"
-    }
+    "count": 1,
+    "item": "ae2:quartz_pillar"
   },
   "output": {
     "count": 1,

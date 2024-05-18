@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:ingots/tin"
-    }
+    "count": 1,
+    "tag": "c:ingots/tin"
   },
   "output": {
     "count": 1,

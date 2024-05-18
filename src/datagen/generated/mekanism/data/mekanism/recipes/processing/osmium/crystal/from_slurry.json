@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_osmium"
+    "slurry": "mekanism:clean_osmium"
   },
   "output": {
     "count": 1,

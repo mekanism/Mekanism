@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:water_vapor"
+    "gas": "mekanism:water_vapor"
   },
   "gasOutput": {
     "amount": 1,

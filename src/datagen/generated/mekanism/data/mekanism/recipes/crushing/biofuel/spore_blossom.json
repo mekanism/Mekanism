@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:spore_blossom"
-    }
+    "count": 1,
+    "item": "minecraft:spore_blossom"
   },
   "output": {
     "count": 5,

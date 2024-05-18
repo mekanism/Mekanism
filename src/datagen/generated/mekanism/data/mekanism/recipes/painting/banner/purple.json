@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:purple"
+    "pigment": "mekanism:purple"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/banners"
-      },
-      "subtracted": {
-        "item": "minecraft:purple_banner"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/banners"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:purple_banner"
     }
   },
   "output": {

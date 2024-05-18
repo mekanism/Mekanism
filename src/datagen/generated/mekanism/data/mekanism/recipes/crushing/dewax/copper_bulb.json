@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:waxed_copper_bulb"
-    }
+    "count": 1,
+    "item": "minecraft:waxed_copper_bulb"
   },
   "output": {
     "count": 1,

@@ -3,12 +3,11 @@
   "duration": 200,
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:bow"
-    }
+    "count": 1,
+    "item": "minecraft:bow"
   },
   "output": {
     "count": 1,

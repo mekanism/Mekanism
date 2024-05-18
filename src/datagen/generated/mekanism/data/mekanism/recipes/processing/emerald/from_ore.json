@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/emerald"
-    }
+    "count": 1,
+    "tag": "c:ores/emerald"
   },
   "output": {
     "count": 2,

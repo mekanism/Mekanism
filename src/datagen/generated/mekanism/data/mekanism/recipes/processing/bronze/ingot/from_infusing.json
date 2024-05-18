@@ -5,10 +5,8 @@
     "tag": "mekanism:tin"
   },
   "itemInput": {
-    "amount": 3,
-    "ingredient": {
-      "tag": "c:ingots/copper"
-    }
+    "count": 3,
+    "tag": "c:ingots/copper"
   },
   "output": {
     "count": 4,

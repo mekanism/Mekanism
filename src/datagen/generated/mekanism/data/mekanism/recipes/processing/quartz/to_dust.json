@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:gems/quartz"
-    }
+    "count": 1,
+    "tag": "c:gems/quartz"
   },
   "output": {
     "count": 1,

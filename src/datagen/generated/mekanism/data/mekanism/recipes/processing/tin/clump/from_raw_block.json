@@ -2,12 +2,11 @@
   "type": "mekanism:purifying",
   "chemicalInput": {
     "amount": 2,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:storage_blocks/raw_tin"
-    }
+    "count": 1,
+    "tag": "c:storage_blocks/raw_tin"
   },
   "output": {
     "count": 18,

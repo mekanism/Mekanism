@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "biomesoplenty:redwood_logs"
-    }
+    "count": 1,
+    "tag": "biomesoplenty:redwood_logs"
   },
   "mainOutput": {
     "count": 6,

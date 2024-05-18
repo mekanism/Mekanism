@@ -1,9 +1,8 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:dandelion"
-    }
+    "count": 1,
+    "item": "minecraft:dandelion"
   },
   "output": {
     "amount": 768,

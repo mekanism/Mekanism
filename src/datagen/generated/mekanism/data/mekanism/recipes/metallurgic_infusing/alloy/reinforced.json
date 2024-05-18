@@ -5,9 +5,8 @@
     "tag": "mekanism:diamond"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "mekanism:alloys/infused"
-    }
+    "count": 1,
+    "tag": "mekanism:alloys/infused"
   },
   "output": {
     "count": 1,

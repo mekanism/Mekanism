@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:clumps/osmium"
-    }
+    "count": 1,
+    "tag": "c:clumps/osmium"
   },
   "output": {
     "count": 1,

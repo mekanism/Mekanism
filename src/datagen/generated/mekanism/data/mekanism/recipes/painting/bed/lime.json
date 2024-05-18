@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 256,
-    "id": "mekanism:lime"
+    "pigment": "mekanism:lime"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/beds"
-      },
-      "subtracted": {
-        "item": "minecraft:lime_bed"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/beds"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:lime_bed"
     }
   },
   "output": {

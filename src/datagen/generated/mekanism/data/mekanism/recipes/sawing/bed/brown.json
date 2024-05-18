@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:brown_bed"
-    }
+    "count": 1,
+    "item": "minecraft:brown_bed"
   },
   "mainOutput": {
     "count": 3,

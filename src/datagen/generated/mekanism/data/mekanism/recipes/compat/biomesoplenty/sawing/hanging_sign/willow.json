@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:willow_hanging_sign"
-    }
+    "count": 1,
+    "item": "biomesoplenty:willow_hanging_sign"
   },
   "mainOutput": {
     "count": 2,

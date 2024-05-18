@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "tag": "biomesoplenty:mahogany_logs"
-    }
+    "count": 1,
+    "tag": "biomesoplenty:mahogany_logs"
   },
   "mainOutput": {
     "count": 6,

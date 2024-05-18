@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "tag": "c:clumps/copper"
-    }
+    "count": 1,
+    "tag": "c:clumps/copper"
   },
   "output": {
     "count": 1,

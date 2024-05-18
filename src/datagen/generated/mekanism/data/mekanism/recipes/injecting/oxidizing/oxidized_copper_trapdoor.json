@@ -2,12 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:oxygen"
+    "gas": "mekanism:oxygen"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:weathered_copper_trapdoor"
-    }
+    "count": 1,
+    "item": "minecraft:weathered_copper_trapdoor"
   },
   "output": {
     "count": 1,

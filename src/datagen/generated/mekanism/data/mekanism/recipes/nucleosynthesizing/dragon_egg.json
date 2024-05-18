@@ -3,12 +3,11 @@
   "duration": 1000,
   "gasInput": {
     "amount": 4,
-    "id": "mekanism:antimatter"
+    "gas": "mekanism:antimatter"
   },
   "itemInput": {
-    "ingredient": {
-      "item": "minecraft:egg"
-    }
+    "count": 1,
+    "item": "minecraft:egg"
   },
   "output": {
     "count": 1,

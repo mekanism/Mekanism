@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_copper"
+    "slurry": "mekanism:clean_copper"
   },
   "output": {
     "count": 1,

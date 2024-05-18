@@ -1,14 +1,12 @@
 {
   "type": "mekanism:combining",
   "extraInput": {
-    "ingredient": {
-      "tag": "c:dusts/glowstone"
-    }
+    "count": 1,
+    "tag": "c:dusts/glowstone"
   },
   "mainInput": {
-    "ingredient": {
-      "item": "minecraft:item_frame"
-    }
+    "count": 1,
+    "item": "minecraft:item_frame"
   },
   "output": {
     "count": 1,

@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:quartz_slab"
-    }
+    "count": 1,
+    "item": "minecraft:quartz_slab"
   },
   "output": {
     "count": 1,

@@ -1,10 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "amount": 4,
-    "ingredient": {
-      "item": "minecraft:torch"
-    }
+    "count": 4,
+    "item": "minecraft:torch"
   },
   "mainOutput": {
     "count": 1,

@@ -7,9 +7,8 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "biomesoplenty:wildflower"
-    }
+    "count": 1,
+    "item": "biomesoplenty:wildflower"
   },
   "output": {
     "amount": 768,

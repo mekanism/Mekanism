@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/tin"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/tin"
   },
   "output": {
     "amount": 80,

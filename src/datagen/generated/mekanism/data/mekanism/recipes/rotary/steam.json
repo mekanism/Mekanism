@@ -10,7 +10,7 @@
   },
   "gasInput": {
     "amount": 1,
-    "id": "mekanism:steam"
+    "gas": "mekanism:steam"
   },
   "gasOutput": {
     "amount": 1,

@@ -2,12 +2,11 @@
   "type": "mekanism:injecting",
   "chemicalInput": {
     "amount": 1,
-    "id": "mekanism:hydrogen_chloride"
+    "gas": "mekanism:hydrogen_chloride"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:crystals/gold"
-    }
+    "count": 1,
+    "tag": "c:crystals/gold"
   },
   "output": {
     "count": 1,

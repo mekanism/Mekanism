@@ -1,14 +1,16 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": [
+    "type": "neoforge:compound",
+    "children": [
       {
         "item": "minecraft:ink_sac"
       },
       {
         "item": "minecraft:wither_rose"
       }
-    ]
+    ],
+    "count": 1
   },
   "output": {
     "count": 2,

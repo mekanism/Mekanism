@@ -2,17 +2,16 @@
   "type": "mekanism:painting",
   "chemicalInput": {
     "amount": 32,
-    "id": "mekanism:blue"
+    "pigment": "mekanism:blue"
   },
   "itemInput": {
-    "ingredient": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanism:colorable/concrete"
-      },
-      "subtracted": {
-        "item": "minecraft:blue_concrete"
-      }
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:blue_concrete"
     }
   },
   "output": {

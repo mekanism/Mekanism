@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:chiseled_bookshelf"
-    }
+    "count": 1,
+    "item": "minecraft:chiseled_bookshelf"
   },
   "mainOutput": {
     "count": 6,

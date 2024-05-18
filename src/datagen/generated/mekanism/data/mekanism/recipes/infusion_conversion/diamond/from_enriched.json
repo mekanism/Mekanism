@@ -1,9 +1,8 @@
 {
   "type": "mekanism:infusion_conversion",
   "input": {
-    "ingredient": {
-      "tag": "mekanism:enriched/diamond"
-    }
+    "count": 1,
+    "tag": "mekanism:enriched/diamond"
   },
   "output": {
     "amount": 80,

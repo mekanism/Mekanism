@@ -1,9 +1,8 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:poppy"
-    }
+    "count": 1,
+    "item": "minecraft:poppy"
   },
   "output": {
     "count": 5,

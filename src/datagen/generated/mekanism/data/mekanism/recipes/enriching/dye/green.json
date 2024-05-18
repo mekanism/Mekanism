@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:cactus"
-    }
+    "count": 1,
+    "item": "minecraft:cactus"
   },
   "output": {
     "count": 2,

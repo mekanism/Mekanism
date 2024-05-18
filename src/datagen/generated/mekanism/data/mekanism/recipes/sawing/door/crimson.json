@@ -1,9 +1,8 @@
 {
   "type": "mekanism:sawing",
   "input": {
-    "ingredient": {
-      "item": "minecraft:crimson_door"
-    }
+    "count": 1,
+    "item": "minecraft:crimson_door"
   },
   "mainOutput": {
     "count": 2,

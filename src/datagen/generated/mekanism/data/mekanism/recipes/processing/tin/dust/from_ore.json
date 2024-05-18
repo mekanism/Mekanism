@@ -1,9 +1,8 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "tag": "c:ores/tin"
-    }
+    "count": 1,
+    "tag": "c:ores/tin"
   },
   "output": {
     "count": 2,

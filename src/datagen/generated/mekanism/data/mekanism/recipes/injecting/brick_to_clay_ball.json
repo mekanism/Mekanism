@@ -5,9 +5,8 @@
     "tag": "mekanism:water_vapor"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "c:bricks/normal"
-    }
+    "count": 1,
+    "tag": "c:bricks/normal"
   },
   "output": {
     "count": 1,

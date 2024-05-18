@@ -3,7 +3,7 @@
   "chemicalType": "slurry",
   "input": {
     "amount": 200,
-    "id": "mekanism:clean_tin"
+    "slurry": "mekanism:clean_tin"
   },
   "output": {
     "count": 1,

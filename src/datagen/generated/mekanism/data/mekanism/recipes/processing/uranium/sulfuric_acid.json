@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_infusing",
   "leftInput": {
     "amount": 1,
-    "id": "mekanism:hydrofluoric_acid"
+    "gas": "mekanism:hydrofluoric_acid"
   },
   "output": {
     "amount": 2,
@@ -10,6 +10,6 @@
   },
   "rightInput": {
     "amount": 1,
-    "id": "mekanism:uranium_oxide"
+    "gas": "mekanism:uranium_oxide"
   }
 }
