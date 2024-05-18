@@ -1,7 +1,6 @@
 package mekanism.common.recipe.ingredients.infusion;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -14,8 +13,7 @@ import net.minecraft.tags.TagKey;
 @NothingNullByDefault
 public final class TagInfusionIngredient extends TagChemicalIngredient<InfuseType, IInfusionIngredient> implements IInfusionIngredient {
 
-    public static final MapCodec<TagInfusionIngredient> CODEC = TagKey.codec(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME).xmap(TagInfusionIngredient::new, TagInfusionIngredient::tag)
-          .fieldOf(JsonConstants.TAG);
+    public static final MapCodec<TagInfusionIngredient> CODEC = codec(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, TagInfusionIngredient::new);
 
     TagInfusionIngredient(TagKey<InfuseType> tag) {
         super(tag);
@@ -27,7 +25,7 @@ public final class TagInfusionIngredient extends TagChemicalIngredient<InfuseTyp
     }
 
     @Override
-    public Registry<InfuseType> registry() {
+    protected Registry<InfuseType> registry() {
         return MekanismAPI.INFUSE_TYPE_REGISTRY;
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.common.recipe.ingredients.pigment;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
@@ -14,8 +13,7 @@ import net.minecraft.tags.TagKey;
 @NothingNullByDefault
 public final class TagPigmentIngredient extends TagChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
-    public static final MapCodec<TagPigmentIngredient> CODEC = TagKey.codec(MekanismAPI.PIGMENT_REGISTRY_NAME).xmap(TagPigmentIngredient::new, TagPigmentIngredient::tag)
-          .fieldOf(JsonConstants.TAG);
+    public static final MapCodec<TagPigmentIngredient> CODEC = codec(MekanismAPI.PIGMENT_REGISTRY_NAME, TagPigmentIngredient::new);
 
     TagPigmentIngredient(TagKey<Pigment> tag) {
         super(tag);
@@ -27,7 +25,7 @@ public final class TagPigmentIngredient extends TagChemicalIngredient<Pigment, I
     }
 
     @Override
-    public Registry<Pigment> registry() {
+    protected Registry<Pigment> registry() {
         return MekanismAPI.PIGMENT_REGISTRY;
     }
 }

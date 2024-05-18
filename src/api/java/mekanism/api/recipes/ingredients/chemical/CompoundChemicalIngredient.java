@@ -1,10 +1,15 @@
 package mekanism.api.recipes.ingredients.chemical;
 
+import com.mojang.serialization.MapCodec;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +23,17 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Chemical<CHEMICAL>, INGREDIENT extends IChemicalIngredient<CHEMICAL, INGREDIENT>>
       extends ChemicalIngredient<CHEMICAL, INGREDIENT> {
+
+    /**
+     * Helper to create the codec for compound ingredients.
+     */
+    @Internal
+    protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, COMPOUND extends CompoundChemicalIngredient<?, INGREDIENT>> MapCodec<COMPOUND> codec(
+          IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, COMPOUND> constructor) {
+        return NeoForgeExtraCodecs.aliasedFieldOf(creator.listCodecMultipleElements(), JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
+              constructor, CompoundChemicalIngredient::children
+        );
+    }
 
     private final List<INGREDIENT> children;
 

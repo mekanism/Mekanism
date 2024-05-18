@@ -11,7 +11,6 @@ import mekanism.common.registries.MekanismPigmentIngredientTypes;
 public final class EmptyPigmentIngredient extends EmptyChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
     public static final EmptyPigmentIngredient INSTANCE = new EmptyPigmentIngredient();
-
     public static final MapCodec<EmptyPigmentIngredient> CODEC = MapCodec.unit(INSTANCE);
 
     private EmptyPigmentIngredient() {
