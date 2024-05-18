@@ -66,8 +66,8 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      */
     @Override
     default FluidStackIngredient from(int amount, Fluid... fluids) {
-        if (fluids.length < 2) {
-            throw new IllegalArgumentException("Attempted to create an FluidStackIngredient with less than two fluids. At least one fluid is required, and if you only have one use from(Fluid, int) instead.");
+        if (fluids.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an FluidStackIngredient with no fluids.");
         }
         return from(FluidIngredient.of(fluids), amount);
     }

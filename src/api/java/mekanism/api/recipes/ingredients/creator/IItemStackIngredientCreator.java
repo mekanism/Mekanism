@@ -95,7 +95,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param items Item providers that provides the items to match.
      *
-     * @throws IllegalArgumentException if no items are passed, or only a single item is passed. Call via {@link #from(ItemLike)} if you only have one element.
+     * @throws IllegalArgumentException if no items are passed.
      * @implNote This wraps via {@link #from(Ingredient)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If this
      * is not desired, manually create the ingredients via {@link DataComponentIngredient} and call {@link #from(Ingredient)}.
      * @since 10.6.0
@@ -110,14 +110,14 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @param amount Amount needed.
      * @param items  Item providers that provides the items to match.
      *
-     * @throws IllegalArgumentException if no items are passed, or only a single item is passed. Call via {@link #from(ItemLike, int)} if you only have one element.
+     * @throws IllegalArgumentException if no items are passed.
      * @implNote This wraps via {@link #from(Ingredient, int)} so if there is any durability or default NBT it will <strong>NOT</strong> be included in the ingredient. If
      * this is not desired, manually create the ingredients via {@link DataComponentIngredient} and call {@link #from(Ingredient, int)}.
      * @since 10.6.0
      */
     default ItemStackIngredient from(int amount, ItemLike... items) {
-        if (items.length < 2) {
-            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with less than two items. At least one item is required, and if you only have one use from(ItemLike, int) instead.");
+        if (items.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no items.");
         }
         return from(Ingredient.of(items), amount);
     }
