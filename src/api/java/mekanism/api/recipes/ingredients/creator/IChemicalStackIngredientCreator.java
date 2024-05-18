@@ -59,13 +59,12 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @param chemicals Chemicals to match.
      *
      * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no types or only a single type is passed. Call via
-     *                                  {@link #from(IChemicalProvider, long)} if you only have one element.
+     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
      * @since 10.6.0
      */
     default STACK_INGREDIENT from(long amount, IChemicalProvider<CHEMICAL>... chemicals) {
-        if (chemicals.length < 2) {
-            throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with less than two chemicals. At least one chemical is required, and if you only have one use from(IChemicalProvider, long) instead.");
+        if (chemicals.length == 0) {
+            throw new IllegalArgumentException("Attempted to create an ChemicalStackIngredients with no chemicals.");
         }
         return from(chemicalCreator().of(chemicals), amount);
     }

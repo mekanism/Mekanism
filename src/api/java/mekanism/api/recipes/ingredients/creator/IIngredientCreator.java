@@ -36,12 +36,11 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
     /**
      * Creates an Ingredient that matches any of the provided types.
      *
-     * @param amount   Amount needed.
-     * @param items Types to match.
+     * @param amount Amount needed.
+     * @param items  Types to match.
      *
      * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no types or only a single type is passed. Call via
-     *                                  {@link #from(Object, int)} if you only have one element.
+     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no types are passed.
      * @since 10.6.0
      */
     INGREDIENT from(int amount, TYPE... items);
