@@ -181,5 +181,6 @@
   "item.mekanismtools.steel_sword": "Épée en acier",
   "item.mekanismtools.stone_paxel": "Piachelle en pierre",
   "item.mekanismtools.wood_paxel": "Piachelle en bois",
+  "tag.item.c.tools.paxels": "Piachelles",
   "tooltip.mekanismtools.hp": "PV: %1$s"
 }
