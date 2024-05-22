@@ -3,6 +3,7 @@ package mekanism.common.tests.helpers;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +14,6 @@ import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
@@ -142,15 +143,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public Player makeMockPlayerLookingAt(BlockPos relativePos, Direction direction) {
         Player player = makeMockPlayer();
-        player.setXRot(direction == Direction.DOWN ? 90 : direction == Direction.UP ? -90 : 0);
-        float yRot = direction.toYRot();
-        player.setYRot(yRot);
-        player.setYHeadRot(yRot);
-        player.setPos(absolutePos(relativePos).getCenter().subtract(
-              0.45 * direction.getStepX(),
-              0.45 * direction.getStepY() + player.getEyeHeight(),
-              0.45 * direction.getStepZ()
-        ));
+        BlockPos targetPos = absolutePos(relativePos);
+        player.setPos(Vec3.upFromBottomCenterOf(targetPos.relative(direction.getOpposite()), -player.getEyeHeight()));
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, targetPos.getCenter());
         return player;
     }
 

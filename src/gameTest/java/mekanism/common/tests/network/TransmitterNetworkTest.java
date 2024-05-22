@@ -5,11 +5,18 @@ import java.util.function.Supplier;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tests.MekanismTests;
 import mekanism.common.tests.helpers.MekGameTestHelper;
+import mekanism.common.tests.helpers.TransmitterTestHelper;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkLevel;
@@ -35,6 +42,35 @@ public class TransmitterNetworkTest {
     public static final Supplier<StructureTemplate> STRAIGHT_CABLE_TEMPLATE = StructureTemplateBuilder.lazy(3 * 16, 1, 1,
           builder -> builder.fill(0, 0, 0, 3 * 16 - 1, 0, 0, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock())
     );
+
+    @GameTest(setupTicks = SharedConstants.TICKS_PER_SECOND)
+    @TestHolder(description = "Tests the GameTest helpers that use a configurator on a position, to ensure it properly interacts with each side.")
+    public static void testConfiguratorSideTargeting(final DynamicTest test) {
+        test.registerGameTestTemplate(() -> StructureTemplateBuilder.withSize(3, 3, 3)
+              .fill(1, 0, 1, 1, 2, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+              .fill(1, 1, 0, 1, 1, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+              .fill(0, 1, 1, 2, 1, 1, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState())
+        );
+
+        //Note: We make negative axis directions get changed twice so that we have a better estimate of if we properly clicked on the correct side of the block
+        test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
+              .thenExecute(() -> {
+                  //Use the configurator on all sides
+                  for (Direction direction : EnumUtils.DIRECTIONS) {
+                      helper.useConfigurator(1, 2, 1, direction, direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : 2);
+                  }
+              })
+              .thenMap(() -> helper.requireBlockEntity(1, 2, 1, TileEntityLogisticalTransporter.class).getTransmitter())
+              .thenExecute(transporter -> {
+                  //Validate all sides got properly changed
+                  for (Direction direction : EnumUtils.DIRECTIONS) {
+                      ConnectionType expected = direction.getAxisDirection() == AxisDirection.POSITIVE ? ConnectionType.PUSH : ConnectionType.PULL;
+                      helper.assertValueEqual(transporter.getConnectionTypeRaw(direction), expected, "Connection Type " + direction.getName());
+                  }
+              })
+              .thenSucceed()
+        );
+    }
 
     @GameTest(template = STRAIGHT_CABLE, batch = "1")
     @TestHolder(description = "Tests that reloading intermediary chunks does not cause a network to break.")
