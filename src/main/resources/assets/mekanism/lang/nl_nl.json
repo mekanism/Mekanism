@@ -715,7 +715,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Niet-ondersteunde tag",
   "filter.mekanism.select.title": "Nieuwe filter maken",
   "filter.mekanism.sorter.max_less_than_min": "Max < min",
-  "filter.mekanism.sorter.over_sized": "Max > 64",
   "filter.mekanism.sorter.size_missing": "Max/min",
   "filter.mekanism.sorter.size_mode": "Formaat modus",
   "filter.mekanism.sorter.size_mode.conflict": "Grootte modus - heeft momenteel geen effect, omdat één item modus is ingeschakeld.",
