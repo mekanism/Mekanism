@@ -858,7 +858,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Неподдерживаемый тег",
   "filter.mekanism.select.title": "Создать новый фильтр",
   "filter.mekanism.sorter.max_less_than_min": "Макс < мин",
-  "filter.mekanism.sorter.over_sized": "Макс > 64",
   "filter.mekanism.sorter.size_missing": "Макс/мин",
   "filter.mekanism.sorter.size_mode": "Режим Стопки",
   "filter.mekanism.sorter.size_mode.conflict": "Режим Стопки не работает, потому что включён одиночный режим.",
