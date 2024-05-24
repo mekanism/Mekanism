@@ -857,7 +857,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Label tidak didukung",
   "filter.mekanism.select.title": "Buat Filter Baru",
   "filter.mekanism.sorter.max_less_than_min": "Maks < min",
-  "filter.mekanism.sorter.over_sized": "Maks > 64",
   "filter.mekanism.sorter.size_missing": "Maks/min",
   "filter.mekanism.sorter.size_mode": "Mode Ukuran",
   "filter.mekanism.sorter.size_mode.conflict": "Mode Ukuran - tidak berpengaruh saat ini, sebab mode barang tunggal dihidupkan.",
