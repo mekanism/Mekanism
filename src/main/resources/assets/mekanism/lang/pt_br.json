@@ -855,7 +855,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Marcação não suportada",
   "filter.mekanism.select.title": "Criar Novo Filtro",
   "filter.mekanism.sorter.max_less_than_min": "Máx. < min",
-  "filter.mekanism.sorter.over_sized": "Máx. > 64",
   "filter.mekanism.sorter.size_missing": "Máx/min",
   "filter.mekanism.sorter.size_mode": "Modo de Tamanho",
   "filter.mekanism.sorter.size_mode.conflict": "Modo de Tamanho - não possui efeito atualmente, pois o modo de item único está ativado.",
