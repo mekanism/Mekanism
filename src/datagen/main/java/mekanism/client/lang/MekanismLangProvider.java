@@ -1303,7 +1303,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ITEM_FILTER_NO_ITEM, "No item");
         add(MekanismLang.SORTER_FILTER_SIZE_MODE, "%1$s!");
         add(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN, "Max < min");
-        add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
+        add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > %1$s");
         add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE, "Invalid tag namespace");

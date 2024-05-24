@@ -295,7 +295,7 @@ public class QIOCraftingTransferHelper {
                 }
                 stackSizes[slot] = remaining;
                 inventory[slot] = stack;
-                //Note: For our slots the max stack size of the slot itself is always 64, but we look it up anyway just in case things change
+                //Note: For our slots the max stack size of the slot itself is always Item.ABSOLUTE_MAX_STACK_SIZE, but we look it up anyway just in case things change
                 if (stack.isEmpty()) {
                     slotLimits[slot] = inventorySlot.getMaxStackSize(stack);
                 } else {

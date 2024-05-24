@@ -179,8 +179,8 @@ public class SpecialConverters {
         sorterFilter.sizeMode = getBooleanFromRaw(map.get("size"));
         sorterFilter.min = getIntFromRaw(map.get("min"));
         sorterFilter.max = getIntFromRaw(map.get("max"));
-        if (sorterFilter.min < 0 || sorterFilter.max < 0 || sorterFilter.min > sorterFilter.max || sorterFilter.max > 64) {
-            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= 64");
+        if (sorterFilter.min < 0 || sorterFilter.max < 0 || sorterFilter.min > sorterFilter.max || sorterFilter.max > Item.ABSOLUTE_MAX_STACK_SIZE) {
+            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= " + Item.ABSOLUTE_MAX_STACK_SIZE);
         }
         if (sorterFilter instanceof SorterItemStackFilter sorterItemFilter) {
             sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));

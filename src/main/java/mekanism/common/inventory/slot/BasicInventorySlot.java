@@ -19,6 +19,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,14 +34,13 @@ public class BasicInventorySlot implements IInventorySlot {
     public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> internalOnly = ConstantPredicates.internalOnly();
     public static final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> notExternal = ConstantPredicates.notExternal();
-    public static final int DEFAULT_LIMIT = 64;
 
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(alwaysTrue, listener, x, y);
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
-        return at(validator, listener, x, y, DEFAULT_LIMIT);
+        return at(validator, listener, x, y, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
     public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y, int limit) {
@@ -98,7 +98,7 @@ public class BasicInventorySlot implements IInventorySlot {
 
     protected BasicInventorySlot(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert,
           Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
-        this(DEFAULT_LIMIT, canExtract, canInsert, validator, listener, x, y);
+        this(Item.ABSOLUTE_MAX_STACK_SIZE, canExtract, canInsert, validator, listener, x, y);
     }
 
     protected BasicInventorySlot(int limit, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,

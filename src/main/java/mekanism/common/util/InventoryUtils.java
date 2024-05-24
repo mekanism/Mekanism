@@ -96,7 +96,7 @@ public final class InventoryUtils {
                 // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
                 // drop items past their max stack size
                 if (scalar > 1) {
-                    if (stackToDrop.getCount() > 64) {
+                    if (stackToDrop.getCount() > stackToDrop.getMaxStackSize()) {
                         //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
                         // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
                         // much in the first place.

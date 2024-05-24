@@ -325,7 +325,7 @@ public class QIOServerCraftingTransferHandler {
                     availableItemSpace += slotData.getUsed();
                     if (slotData.getAvailable() == 0) {
                         //If we used all that is available, we need to also free up an item type
-                        //Note: Given we can't use as much as a full integer as we have nine slots that stack up to a max of 64
+                        //Note: Given we can't use as much as a full integer as we have nine slots that stack up to a max of Item.ABSOLUTE_MAX_STACK_SIZE
                         // if we get down to zero then we know that we actually used it all, and it isn't just the case that we
                         // think we are at zero because of clamping a long to an int
                         availableItemTypes++;

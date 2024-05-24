@@ -30,6 +30,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -174,14 +175,14 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             } else {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
-                if (max >= min && max <= 64) {
+                if (max >= min && max <= Item.ABSOLUTE_MAX_STACK_SIZE) {
                     guiFilter.filter.min = min;
                     guiFilter.filter.max = max;
                     guiFilter.saveFilter();
                 } else if (min > max) {
                     guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN);
-                } else { //max > 64 || min > 64
-                    guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_OVER_SIZED);
+                } else { //max > Item.ABSOLUTE_MAX_STACK_SIZE || min > Item.ABSOLUTE_MAX_STACK_SIZE
+                    guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_OVER_SIZED, Item.ABSOLUTE_MAX_STACK_SIZE);
                 }
             }
         } else {

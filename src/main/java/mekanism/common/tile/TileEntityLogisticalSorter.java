@@ -42,6 +42,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -133,7 +134,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
                     }
 
                     if (!sentItems && autoEject) {
-                        TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : 64, strictFinder);
+                        //TODO - 1.20.5: Evaluate if this (and SorterFilter#mapInventory) should use a stack's max stack size or the absolute stack size
+                        TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, strictFinder);
                         TransitResponse response = emitItemToTransporter(frontCap, request, color, 0);
                         if (!response.isEmpty()) {
                             response.useAll();

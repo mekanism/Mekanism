@@ -9,7 +9,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
@@ -17,6 +16,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
 
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator) {
-        this(attachedTo, slotIndex, canExtract, canInsert, validator, true, BasicInventorySlot.DEFAULT_LIMIT);
+        this(attachedTo, slotIndex, canExtract, canInsert, validator, true, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,

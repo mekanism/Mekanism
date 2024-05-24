@@ -24,6 +24,7 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.Item;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer, ContainerEventHandler {
 
@@ -52,13 +53,14 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
             filter.allowDefault = !filter.allowDefault;
             return true;
         })).setTooltip(MekanismLang.FILTER_ALLOW_DEFAULT);
+        int maxStackSizeDigits = Integer.toString(Item.ABSOLUTE_MAX_STACK_SIZE).length();
         GuiTextField minField = new GuiTextField(gui, this, relativeX + 169, relativeY + 31, 20, 11);
-        minField.setMaxLength(2);
+        minField.setMaxLength(maxStackSizeDigits);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText(Integer.toString(getFilter().min));
         childAdder.apply(minField);
         GuiTextField maxField = new GuiTextField(gui, this, relativeX + 169, relativeY + 43, 20, 11);
-        maxField.setMaxLength(2);
+        maxField.setMaxLength(maxStackSizeDigits);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText(Integer.toString(getFilter().max));
         childAdder.apply(maxField);

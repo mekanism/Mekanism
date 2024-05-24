@@ -244,7 +244,8 @@ public class QIOCraftingWindow implements IContentsListener {
      */
     private int calculateMaxCraftAmount(@NotNull ItemStack stack, @Nullable QIOFrequency frequency) {
         int outputSize = stack.getCount();
-        int inputSize = 64;
+        //Note: We start at the absolute max stack size, rather than at integer max value just to be a little more accurate
+        int inputSize = Item.ABSOLUTE_MAX_STACK_SIZE;
         for (IInventorySlot inputSlot : inputSlots) {
             int count = inputSlot.getCount();
             if (count > 0 && count < inputSize) {

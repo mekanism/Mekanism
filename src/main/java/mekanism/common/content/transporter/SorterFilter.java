@@ -20,6 +20,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,7 +96,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         if (sizeMode && !singleItem) {
             return TransitRequest.definedItem(itemHandler, min, max, getFinder());
         }
-        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : 64, getFinder());
+        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, getFinder());
     }
 
     @Override
@@ -116,8 +117,8 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     @ComputerMethod(threadSafe = true)
     void setMinMax(int min, int max) throws ComputerException {
-        if (min < 0 || max < 0 || min > max || max > 64) {
-            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= 64");
+        if (min < 0 || max < 0 || min > max || max > Item.ABSOLUTE_MAX_STACK_SIZE) {
+            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= " + Item.ABSOLUTE_MAX_STACK_SIZE);
         }
         this.min = min;
         this.max = max;

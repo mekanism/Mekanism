@@ -1000,7 +1000,7 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Unsupported tag",
   "filter.mekanism.select.title": "Create New Filter",
   "filter.mekanism.sorter.max_less_than_min": "Max < min",
-  "filter.mekanism.sorter.over_sized": "Max > 64",
+  "filter.mekanism.sorter.over_sized": "Max > %1$s",
   "filter.mekanism.sorter.size_missing": "Max/min",
   "filter.mekanism.sorter.size_mode": "Size Mode",
   "filter.mekanism.sorter.size_mode.conflict": "Size Mode - has no effect currently, because single item mode is turned on.",
