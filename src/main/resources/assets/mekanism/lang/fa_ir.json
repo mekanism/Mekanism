@@ -585,7 +585,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "این نوع برچسب پشتیبانی نمی‌شود",
   "filter.mekanism.select.title": "ایجاد فیلتر جدید",
   "filter.mekanism.sorter.max_less_than_min": "بیشترین<کمترین",
-  "filter.mekanism.sorter.over_sized": "بیشترین>64",
   "filter.mekanism.sorter.size_missing": "بیشترین/کم ترین",
   "filter.mekanism.sorter.size_mode": "حالت اندازه",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
