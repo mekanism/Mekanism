@@ -1000,7 +1000,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "未対応のタグ",
   "filter.mekanism.select.title": "新しいフィルターを作成",
   "filter.mekanism.sorter.max_less_than_min": "最大 < 最小",
-  "filter.mekanism.sorter.over_sized": "最大 > 64",
   "filter.mekanism.sorter.size_missing": "最大/最小",
   "filter.mekanism.sorter.size_mode": "サイズモード",
   "filter.mekanism.sorter.size_mode.conflict": "サイズモード - 現在単一アイテムモードがオンになっているため、効果がありません。",
