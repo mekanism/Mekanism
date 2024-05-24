@@ -950,7 +950,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Desteklenmeyen etiket",
   "filter.mekanism.select.title": "Yeni Filtre Oluştur",
   "filter.mekanism.sorter.max_less_than_min": "Maks < min",
-  "filter.mekanism.sorter.over_sized": "Maks > 64",
   "filter.mekanism.sorter.size_missing": "Maks/min",
   "filter.mekanism.sorter.size_mode": "Boyut Modu",
   "filter.mekanism.sorter.size_mode.conflict": "Boyut Modu - Şuanda bir etkisi yok çünkü tekli eşya modu aktif durumda.",
