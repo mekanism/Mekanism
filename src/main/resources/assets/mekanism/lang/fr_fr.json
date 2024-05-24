@@ -939,7 +939,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Tag non supporté",
   "filter.mekanism.select.title": "Créer un nouveau filtre",
   "filter.mekanism.sorter.max_less_than_min": "Max < min",
-  "filter.mekanism.sorter.over_sized": "Max > 64",
   "filter.mekanism.sorter.size_missing": "Max/min",
   "filter.mekanism.sorter.size_mode": "Mode Taille",
   "filter.mekanism.sorter.size_mode.conflict": "Mode Taille - n'a pas d'effet actuellement, car le mode objet unique est activé.",
