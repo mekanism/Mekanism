@@ -868,7 +868,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Etiqueta no admitida",
   "filter.mekanism.select.title": "Crear Nuevo Filtro",
   "filter.mekanism.sorter.max_less_than_min": "Máx. < min",
-  "filter.mekanism.sorter.over_sized": "Máx. > 64",
   "filter.mekanism.sorter.size_missing": "Máx./min",
   "filter.mekanism.sorter.size_mode": "Modo Tamaño",
   "filter.mekanism.sorter.size_mode.conflict": "Modo Tamaño - no tiene efecto actualmente, porque el modo de objeto único está activado.",
