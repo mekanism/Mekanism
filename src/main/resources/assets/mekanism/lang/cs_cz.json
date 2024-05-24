@@ -650,7 +650,6 @@
   "filter.mekanism.oredictionificator": "Filtr Rudo-slovníku",
   "filter.mekanism.select.title": "Vytvořit Nový Filtr",
   "filter.mekanism.sorter.max_less_than_min": "Max < min",
-  "filter.mekanism.sorter.over_sized": "Max > 64",
   "filter.mekanism.sorter.size_missing": "Max/min",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
   "filter.mekanism.state": "Filtr: %1$s",
