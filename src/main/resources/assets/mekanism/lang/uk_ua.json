@@ -846,7 +846,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Мітка не підтримується",
   "filter.mekanism.select.title": "Створити новий фільтр",
   "filter.mekanism.sorter.max_less_than_min": "Макс < мін",
-  "filter.mekanism.sorter.over_sized": "Макс > 64",
   "filter.mekanism.sorter.size_missing": "Макс/мін",
   "filter.mekanism.sorter.size_mode": "Режим розміру",
   "filter.mekanism.sorter.size_mode.conflict": "Режим розміру - наразі не має ефекту, через увімкнений режим одного предмету.",
