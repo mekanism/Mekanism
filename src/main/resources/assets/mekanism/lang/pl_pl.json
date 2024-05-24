@@ -844,7 +844,6 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "Niewspierany tag",
   "filter.mekanism.select.title": "Utwórz nowy filtr",
   "filter.mekanism.sorter.max_less_than_min": "Max < min",
-  "filter.mekanism.sorter.over_sized": "Max > 64",
   "filter.mekanism.sorter.size_missing": "Max/min",
   "filter.mekanism.sorter.size_mode": "Tryb ilości",
   "filter.mekanism.sorter.size_mode.conflict": "Tryb ilości - nie ma obecnie efektu, ponieważ tryb pojedynczego elementu jest włączony.",
