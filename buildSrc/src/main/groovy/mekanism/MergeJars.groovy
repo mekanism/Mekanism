@@ -58,17 +58,17 @@ class MergeJars {
 
     static void merge(Project project, List<SourceSet> sourceSets) {
         //Generate folders, merge the access transformers and neoforge.mods.toml files
-        project.mkdir("$project.layout.buildDirectory/generated/META-INF")
+        project.mkdir(project.layout.buildDirectory.dir('generated/META-INF'))
         mergeBasic(project, sourceSets, 'META-INF/accesstransformer.cfg', (text, fileText) -> text + "\n" + fileText)
         mergeModsTOML(project, sourceSets)
         //Delete the data directory so that we don't accidentally leak bad old data into it
-        project.file("$project.layout.buildDirectory/generated/assets").deleteDir()
-        project.file("$project.layout.buildDirectory/generated/data").deleteDir()
-        project.file("$project.layout.buildDirectory/generated/META-INF/services").deleteDir()
+        project.file(project.layout.buildDirectory.dir('generated/assets')).deleteDir()
+        project.file(project.layout.buildDirectory.dir('generated/data')).deleteDir()
+        project.file(project.layout.buildDirectory.dir('generated/META-INF/services')).deleteDir()
         //And then recreate the directory so we can put stuff in it
-        project.mkdir("$project.layout.buildDirectory/generated/assets")
-        project.mkdir("$project.layout.buildDirectory/generated/data")
-        project.mkdir("$project.layout.buildDirectory/generated/META-INF/services")
+        project.mkdir(project.layout.buildDirectory.dir('generated/assets'))
+        project.mkdir(project.layout.buildDirectory.dir('generated/data'))
+        project.mkdir(project.layout.buildDirectory.dir('generated/META-INF/services'))
         mergeAtlases(project, sourceSets)
         mergeTags(project, sourceSets)
         mergeServices(project, sourceSets)
@@ -196,7 +196,7 @@ class MergeJars {
     }
 
     private static void writeOutputFile(Project project, String outputPath, String text) {
-        File outputFile = new File("$project.layout.buildDirectory/generated" + outputPath)
+        File outputFile = project.file(project.layout.buildDirectory.file('generated/' + outputPath))
         //Make all parent directories needed
         outputFile.getParentFile().mkdirs()
         outputFile.text = text
