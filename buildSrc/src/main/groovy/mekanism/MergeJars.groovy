@@ -11,9 +11,9 @@ import java.util.function.BinaryOperator
 import java.util.function.Function
 
 class MergeJars {
-    static Closure atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
-    static Closure serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
-    static Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
+    static Closure<PatternFilterable> atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+    static Closure<PatternFilterable> serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
+    static Closure<PatternFilterable> tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
     static Function<SourceSet, Set<File>> resourceLister = (SourceSet sourceSet) -> sourceSet.resources.srcDirs
     static Function<SourceSet, Set<File>> annotationGeneratedLister = (SourceSet sourceSet) -> {
         Set<File> combined = new HashSet<>(sourceSet.resources.srcDirs)
@@ -46,7 +46,7 @@ class MergeJars {
         }
     }
 
-    static Closure createExcludeClosure(List<String> baseExcludeData, String... extraExclusions) {
+    static Closure<CopySpec> createExcludeClosure(List<String> baseExcludeData, String... extraExclusions) {
         List<String> toExcludeFromAll = new ArrayList<>(baseExcludeData)
         for (String extraExclusion : extraExclusions) {
             toExcludeFromAll.add(extraExclusion)
@@ -58,17 +58,17 @@ class MergeJars {
 
     static void merge(Project project, List<SourceSet> sourceSets) {
         //Generate folders, merge the access transformers and neoforge.mods.toml files
-        project.mkdir("$project.buildDir/generated/META-INF")
+        project.mkdir("$project.layout.buildDirectory/generated/META-INF")
         mergeBasic(project, sourceSets, 'META-INF/accesstransformer.cfg', (text, fileText) -> text + "\n" + fileText)
         mergeModsTOML(project, sourceSets)
         //Delete the data directory so that we don't accidentally leak bad old data into it
-        project.file("$project.buildDir/generated/assets").deleteDir()
-        project.file("$project.buildDir/generated/data").deleteDir()
-        project.file("$project.buildDir/generated/META-INF/services").deleteDir()
+        project.file("$project.layout.buildDirectory/generated/assets").deleteDir()
+        project.file("$project.layout.buildDirectory/generated/data").deleteDir()
+        project.file("$project.layout.buildDirectory/generated/META-INF/services").deleteDir()
         //And then recreate the directory so we can put stuff in it
-        project.mkdir("$project.buildDir/generated/assets")
-        project.mkdir("$project.buildDir/generated/data")
-        project.mkdir("$project.buildDir/generated/META-INF/services")
+        project.mkdir("$project.layout.buildDirectory/generated/assets")
+        project.mkdir("$project.layout.buildDirectory/generated/data")
+        project.mkdir("$project.layout.buildDirectory/generated/META-INF/services")
         mergeAtlases(project, sourceSets)
         mergeTags(project, sourceSets)
         mergeServices(project, sourceSets)
@@ -109,11 +109,11 @@ class MergeJars {
         writeOutputFile(project, '/' + name, text)
     }
 
-    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, List<SourceSet> sourceSets) {
+    private static Map<String, List<String>> getReverseLookup(Project project, Closure<PatternFilterable> filter, List<SourceSet> sourceSets) {
         return getReverseLookup(project, filter, sourceSets, resourceLister)
     }
 
-    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, List<SourceSet> sourceSets, Function<SourceSet, Set<File>> fileLister) {
+    private static Map<String, List<String>> getReverseLookup(Project project, Closure<PatternFilterable> filter, List<SourceSet> sourceSets, Function<SourceSet, Set<File>> fileLister) {
         Map<String, List<String>> reverseLookup = new HashMap<>()
         for (SourceSet sourceSet : sourceSets) {
             fileLister.apply(sourceSet).each { srcDir ->
@@ -196,7 +196,7 @@ class MergeJars {
     }
 
     private static void writeOutputFile(Project project, String outputPath, String text) {
-        File outputFile = new File("$project.buildDir/generated" + outputPath)
+        File outputFile = new File("$project.layout.buildDirectory/generated" + outputPath)
         //Make all parent directories needed
         outputFile.getParentFile().mkdirs()
         outputFile.text = text
