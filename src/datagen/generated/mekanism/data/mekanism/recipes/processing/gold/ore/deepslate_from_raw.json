@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "tag": "c:cobblestones/deepslate"
   },
-  "mainInput": {
+  "main_input": {
     "count": 8,
     "tag": "c:raw_materials/gold"
   },

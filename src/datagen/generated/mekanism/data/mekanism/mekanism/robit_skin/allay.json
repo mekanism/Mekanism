@@ -1,7 +1,7 @@
 {
   "type": "mekanism:advancement_based",
   "advancement": "minecraft:husbandry/allay_deliver_item_to_player",
-  "customModel": "mekanism:item/robit_allay",
+  "custom_model": "mekanism:item/robit_allay",
   "textures": [
     "mekanism:allay",
     "mekanism:allay2"

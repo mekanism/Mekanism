@@ -10,12 +10,12 @@
     "count": 1,
     "item": "biomesoplenty:mahogany_fence_gate"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "biomesoplenty:mahogany_planks"
   },
-  "secondaryChance": 1.0,
-  "secondaryOutput": {
+  "secondary_chance": 1.0,
+  "secondary_output": {
     "count": 4,
     "id": "minecraft:stick"
   }

@@ -10,12 +10,12 @@
     "count": 1,
     "item": "biomesoplenty:magic_hanging_sign"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "biomesoplenty:magic_planks"
   },
-  "secondaryChance": 0.5,
-  "secondaryOutput": {
+  "secondary_chance": 0.5,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }

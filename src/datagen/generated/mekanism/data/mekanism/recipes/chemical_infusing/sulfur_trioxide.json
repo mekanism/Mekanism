@@ -1,6 +1,6 @@
 {
   "type": "mekanism:chemical_infusing",
-  "leftInput": {
+  "left_input": {
     "amount": 1,
     "gas": "mekanism:oxygen"
   },
@@ -8,7 +8,7 @@
     "amount": 2,
     "id": "mekanism:sulfur_trioxide"
   },
-  "rightInput": {
+  "right_input": {
     "amount": 2,
     "gas": "mekanism:sulfur_dioxide"
   }

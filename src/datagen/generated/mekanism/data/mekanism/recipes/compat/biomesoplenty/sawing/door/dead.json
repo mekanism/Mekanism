@@ -10,7 +10,7 @@
     "count": 1,
     "item": "biomesoplenty:dead_door"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "biomesoplenty:dead_planks"
   }

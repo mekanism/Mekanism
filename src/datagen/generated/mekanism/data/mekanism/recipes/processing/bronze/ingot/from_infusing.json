@@ -1,10 +1,10 @@
 {
   "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 10,
     "tag": "mekanism:tin"
   },
-  "itemInput": {
+  "item_input": {
     "count": 3,
     "tag": "c:ingots/copper"
   },

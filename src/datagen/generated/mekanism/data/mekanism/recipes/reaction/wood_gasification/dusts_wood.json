@@ -1,19 +1,19 @@
 {
   "type": "mekanism:reaction",
   "duration": 37,
-  "fluidInput": {
+  "fluid_input": {
     "amount": 25,
     "tag": "minecraft:water"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 25,
     "gas": "mekanism:oxygen"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 25,
     "id": "mekanism:hydrogen"
   },
-  "itemInput": {
+  "item_input": {
     "count": 8,
     "tag": "c:dusts/wood"
   }

@@ -4,12 +4,12 @@
     "count": 1,
     "item": "minecraft:trapped_chest"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 8,
     "id": "minecraft:oak_planks"
   },
-  "secondaryChance": 0.75,
-  "secondaryOutput": {
+  "secondary_chance": 0.75,
+  "secondary_output": {
     "count": 1,
     "id": "minecraft:tripwire_hook"
   }

@@ -10,12 +10,12 @@
     "count": 1,
     "item": "biomesoplenty:palm_pressure_plate"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 1,
     "id": "biomesoplenty:palm_planks"
   },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
+  "secondary_chance": 0.25,
+  "secondary_output": {
     "count": 2,
     "id": "mekanism:sawdust"
   }

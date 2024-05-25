@@ -1,10 +1,10 @@
 {
   "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 10,
     "tag": "mekanism:carbon"
   },
-  "itemInput": {
+  "item_input": {
     "count": 4,
     "tag": "c:dusts/gold"
   },

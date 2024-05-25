@@ -1,10 +1,10 @@
 {
   "type": "mekanism:purifying",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 1,
     "gas": "mekanism:oxygen"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:raw_materials/osmium"
   },

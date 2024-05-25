@@ -1,6 +1,6 @@
 {
   "type": "mekanism:chemical_infusing",
-  "leftInput": {
+  "left_input": {
     "amount": 1,
     "gas": "mekanismgenerators:deuterium"
   },
@@ -8,7 +8,7 @@
     "amount": 2,
     "id": "mekanismgenerators:fusion_fuel"
   },
-  "rightInput": {
+  "right_input": {
     "amount": 1,
     "gas": "mekanismgenerators:tritium"
   }

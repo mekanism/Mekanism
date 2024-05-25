@@ -1,10 +1,10 @@
 {
   "type": "mekanism:purifying",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 2,
     "gas": "mekanism:oxygen"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:storage_blocks/raw_copper"
   },

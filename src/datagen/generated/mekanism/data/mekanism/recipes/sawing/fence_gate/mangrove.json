@@ -4,12 +4,12 @@
     "count": 1,
     "item": "minecraft:mangrove_fence_gate"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "minecraft:mangrove_planks"
   },
-  "secondaryChance": 1.0,
-  "secondaryOutput": {
+  "secondary_chance": 1.0,
+  "secondary_output": {
     "count": 4,
     "id": "minecraft:stick"
   }

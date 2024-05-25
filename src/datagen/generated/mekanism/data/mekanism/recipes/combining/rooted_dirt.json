@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "item": "minecraft:dirt"
   },
-  "mainInput": {
+  "main_input": {
     "count": 3,
     "item": "minecraft:hanging_roots"
   },

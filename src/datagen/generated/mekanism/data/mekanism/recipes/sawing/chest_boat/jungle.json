@@ -4,12 +4,12 @@
     "count": 1,
     "item": "minecraft:jungle_chest_boat"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 1,
     "id": "minecraft:jungle_boat"
   },
-  "secondaryChance": 1.0,
-  "secondaryOutput": {
+  "secondary_chance": 1.0,
+  "secondary_output": {
     "count": 1,
     "id": "minecraft:chest"
   }

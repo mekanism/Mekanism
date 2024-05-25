@@ -1,11 +1,11 @@
 {
   "type": "mekanism:nucleosynthesizing",
   "duration": 750,
-  "gasInput": {
+  "gas_input": {
     "amount": 3,
     "gas": "mekanism:antimatter"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "item": "minecraft:golden_apple"
   },

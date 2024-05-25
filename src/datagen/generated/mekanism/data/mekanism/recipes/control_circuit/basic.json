@@ -1,10 +1,10 @@
 {
   "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 20,
     "tag": "mekanism:redstone"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:ingots/osmium"
   },

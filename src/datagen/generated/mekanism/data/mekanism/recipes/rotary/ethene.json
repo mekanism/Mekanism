@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
-  "fluidInput": {
+  "fluid_input": {
     "amount": 1,
     "tag": "c:ethene"
   },
-  "fluidOutput": {
+  "fluid_output": {
     "amount": 1,
     "id": "mekanism:ethene"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:ethene"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 1,
     "id": "mekanism:ethene"
   }

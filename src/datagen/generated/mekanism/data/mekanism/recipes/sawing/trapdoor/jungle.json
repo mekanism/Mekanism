@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:jungle_trapdoor"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 3,
     "id": "minecraft:jungle_planks"
   }

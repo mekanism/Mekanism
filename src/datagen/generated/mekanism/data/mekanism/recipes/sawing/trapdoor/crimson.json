@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:crimson_trapdoor"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 3,
     "id": "minecraft:crimson_planks"
   }

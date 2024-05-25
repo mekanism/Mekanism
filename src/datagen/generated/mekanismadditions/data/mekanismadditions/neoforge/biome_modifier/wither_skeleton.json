@@ -1,4 +1,4 @@
 {
   "type": "mekanismadditions:baby_mob_spawn",
-  "babyType": "wither_skeleton"
+  "baby_type": "wither_skeleton"
 }

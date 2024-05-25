@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
-  "fluidInput": {
+  "fluid_input": {
     "amount": 1,
     "tag": "c:hydrogen"
   },
-  "fluidOutput": {
+  "fluid_output": {
     "amount": 1,
     "id": "mekanism:hydrogen"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:hydrogen"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 1,
     "id": "mekanism:hydrogen"
   }

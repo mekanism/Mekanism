@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:acacia_boat"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 5,
     "id": "minecraft:acacia_planks"
   }

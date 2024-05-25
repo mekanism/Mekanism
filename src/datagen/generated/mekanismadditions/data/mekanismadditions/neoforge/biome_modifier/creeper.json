@@ -1,4 +1,4 @@
 {
   "type": "mekanismadditions:baby_mob_spawn",
-  "babyType": "creeper"
+  "baby_type": "creeper"
 }

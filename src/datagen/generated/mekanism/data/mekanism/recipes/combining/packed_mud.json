@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "item": "minecraft:mud"
   },
-  "mainInput": {
+  "main_input": {
     "count": 1,
     "tag": "c:crops/wheat"
   },

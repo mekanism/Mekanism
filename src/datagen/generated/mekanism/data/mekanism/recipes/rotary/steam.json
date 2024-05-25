@@ -1,18 +1,18 @@
 {
   "type": "mekanism:rotary",
-  "fluidInput": {
+  "fluid_input": {
     "amount": 1,
     "tag": "c:steam"
   },
-  "fluidOutput": {
+  "fluid_output": {
     "amount": 1,
     "id": "mekanism:steam"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:steam"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 1,
     "id": "mekanism:steam"
   }

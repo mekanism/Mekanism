@@ -1,23 +1,23 @@
 {
   "type": "mekanism:reaction",
   "duration": 100,
-  "fluidInput": {
+  "fluid_input": {
     "amount": 10,
     "tag": "minecraft:water"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 100,
     "gas": "mekanism:hydrogen"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 100,
     "id": "mekanism:ethene"
   },
-  "itemInput": {
+  "item_input": {
     "count": 2,
     "tag": "c:fuels/bio"
   },
-  "itemOutput": {
+  "item_output": {
     "count": 1,
     "id": "mekanism:substrate"
   }

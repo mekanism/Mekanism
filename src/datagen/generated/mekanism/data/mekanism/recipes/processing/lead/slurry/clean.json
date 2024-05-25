@@ -1,6 +1,6 @@
 {
   "type": "mekanism:washing",
-  "fluidInput": {
+  "fluid_input": {
     "amount": 5,
     "tag": "minecraft:water"
   },
@@ -8,7 +8,7 @@
     "amount": 1,
     "id": "mekanism:clean_lead"
   },
-  "slurryInput": {
+  "slurry_input": {
     "amount": 1,
     "slurry": "mekanism:dirty_lead"
   }

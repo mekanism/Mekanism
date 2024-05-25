@@ -1,23 +1,23 @@
 {
   "type": "mekanism:reaction",
   "duration": 100,
-  "fluidInput": {
+  "fluid_input": {
     "amount": 1000,
     "tag": "minecraft:water"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 1000,
     "gas": "mekanism:polonium"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 1000,
     "id": "mekanism:spent_nuclear_waste"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:dusts/fluorite"
   },
-  "itemOutput": {
+  "item_output": {
     "count": 1,
     "id": "mekanism:pellet_polonium"
   }

@@ -1,19 +1,19 @@
 {
   "type": "mekanism:reaction",
   "duration": 100,
-  "fluidInput": {
+  "fluid_input": {
     "amount": 100,
     "tag": "minecraft:water"
   },
-  "gasInput": {
+  "gas_input": {
     "amount": 100,
     "gas": "mekanism:oxygen"
   },
-  "gasOutput": {
+  "gas_output": {
     "amount": 100,
     "id": "mekanism:hydrogen"
   },
-  "itemInput": {
+  "item_input": {
     "type": "neoforge:compound",
     "children": [
       {
@@ -25,7 +25,7 @@
     ],
     "count": 1
   },
-  "itemOutput": {
+  "item_output": {
     "count": 1,
     "id": "mekanism:dust_sulfur"
   }

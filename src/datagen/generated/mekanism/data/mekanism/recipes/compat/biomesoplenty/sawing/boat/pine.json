@@ -10,7 +10,7 @@
     "count": 1,
     "item": "biomesoplenty:pine_boat"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 5,
     "id": "biomesoplenty:pine_planks"
   }

@@ -1,7 +1,7 @@
 {
   "type": "mekanism:ore_retrogen",
   "config": {
-    "oreVeinType": {
+    "ore_type": {
       "type": "fluorite",
       "index": 0
     },

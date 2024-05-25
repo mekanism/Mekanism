@@ -1,16 +1,16 @@
 {
   "type": "mekanism:dissolution",
-  "gasInput": {
+  "gas_input": {
     "amount": 2,
     "gas": "mekanism:sulfuric_acid"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:storage_blocks/raw_iron"
   },
   "output": {
+    "type": "slurry",
     "amount": 6000,
-    "chemicalType": "slurry",
     "id": "mekanism:dirty_iron"
   }
 }

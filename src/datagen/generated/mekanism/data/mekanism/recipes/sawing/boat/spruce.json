@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:spruce_boat"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 5,
     "id": "minecraft:spruce_planks"
   }

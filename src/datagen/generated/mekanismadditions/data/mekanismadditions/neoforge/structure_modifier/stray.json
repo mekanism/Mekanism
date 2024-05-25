@@ -1,4 +1,4 @@
 {
   "type": "mekanismadditions:baby_mob_spawn",
-  "babyType": "stray"
+  "baby_type": "stray"
 }

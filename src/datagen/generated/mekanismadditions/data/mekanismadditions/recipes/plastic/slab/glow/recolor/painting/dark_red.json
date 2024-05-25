@@ -1,10 +1,10 @@
 {
   "type": "mekanism:painting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 64,
     "pigment": "mekanism:dark_red"
   },
-  "itemInput": {
+  "item_input": {
     "type": "neoforge:difference",
     "base": {
       "tag": "c:slabs/plastic/glow"

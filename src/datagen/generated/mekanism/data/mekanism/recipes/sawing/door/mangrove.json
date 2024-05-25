@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:mangrove_door"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "minecraft:mangrove_planks"
   }

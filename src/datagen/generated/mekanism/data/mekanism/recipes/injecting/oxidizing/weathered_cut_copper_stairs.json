@@ -1,10 +1,10 @@
 {
   "type": "mekanism:injecting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 1,
     "gas": "mekanism:oxygen"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "item": "minecraft:exposed_cut_copper_stairs"
   },

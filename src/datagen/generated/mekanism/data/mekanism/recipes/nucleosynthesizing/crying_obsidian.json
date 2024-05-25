@@ -1,11 +1,11 @@
 {
   "type": "mekanism:nucleosynthesizing",
   "duration": 200,
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:antimatter"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:obsidians"
   },

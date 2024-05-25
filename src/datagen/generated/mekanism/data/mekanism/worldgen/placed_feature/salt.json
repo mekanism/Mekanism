@@ -3,7 +3,7 @@
   "placement": [
     {
       "type": "mekanism:disableable",
-      "retroGen": false
+      "retro_gen": false
     },
     {
       "type": "minecraft:count",

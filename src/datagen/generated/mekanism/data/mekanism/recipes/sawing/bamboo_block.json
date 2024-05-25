@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:bamboo_block"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 9,
     "id": "minecraft:bamboo"
   }

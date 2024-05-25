@@ -4,12 +4,12 @@
     "count": 1,
     "tag": "minecraft:wooden_buttons"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
+  "secondary_chance": 0.25,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }

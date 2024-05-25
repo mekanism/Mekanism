@@ -1,10 +1,10 @@
 {
   "type": "mekanism:injecting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 2,
     "gas": "mekanism:hydrogen_chloride"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:storage_blocks/raw_iron"
   },

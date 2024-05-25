@@ -1,15 +1,15 @@
 {
   "type": "mekanism:separating",
-  "energyMultiplier": 2,
+  "energy_multiplier": 2,
   "input": {
     "amount": 2,
     "tag": "c:heavy_water"
   },
-  "leftGasOutput": {
+  "left_gas_output": {
     "amount": 2,
     "id": "mekanismgenerators:deuterium"
   },
-  "rightGasOutput": {
+  "right_gas_output": {
     "amount": 1,
     "id": "mekanism:oxygen"
   }

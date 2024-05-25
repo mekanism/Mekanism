@@ -3,17 +3,17 @@
   "placement": [
     {
       "type": "mekanism:disableable",
-      "oreVeinType": {
+      "ore_type": {
         "type": "uranium",
         "index": 0
       },
-      "retroGen": false
+      "retro_gen": false
     },
     {
       "type": "minecraft:count",
       "count": {
         "type": "mekanism:configurable_constant",
-        "oreVeinType": {
+        "ore_type": {
           "type": "uranium",
           "index": 0
         }
@@ -26,7 +26,7 @@
       "type": "minecraft:height_range",
       "height": {
         "type": "mekanism:configurable",
-        "oreVeinType": {
+        "ore_type": {
           "type": "uranium",
           "index": 0
         }

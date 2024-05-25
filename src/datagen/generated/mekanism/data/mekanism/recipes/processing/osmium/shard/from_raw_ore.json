@@ -1,10 +1,10 @@
 {
   "type": "mekanism:injecting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 1,
     "gas": "mekanism:hydrogen_chloride"
   },
-  "itemInput": {
+  "item_input": {
     "count": 3,
     "tag": "c:raw_materials/osmium"
   },

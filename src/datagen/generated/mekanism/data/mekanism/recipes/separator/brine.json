@@ -4,11 +4,11 @@
     "amount": 10,
     "tag": "c:brine"
   },
-  "leftGasOutput": {
+  "left_gas_output": {
     "amount": 1,
     "id": "mekanism:sodium"
   },
-  "rightGasOutput": {
+  "right_gas_output": {
     "amount": 1,
     "id": "mekanism:chlorine"
   }

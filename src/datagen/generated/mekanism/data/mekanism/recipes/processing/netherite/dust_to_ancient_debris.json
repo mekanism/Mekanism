@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "item": "minecraft:basalt"
   },
-  "mainInput": {
+  "main_input": {
     "count": 2,
     "tag": "c:dusts/netherite"
   },

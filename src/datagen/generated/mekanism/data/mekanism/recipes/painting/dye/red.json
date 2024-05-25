@@ -1,10 +1,10 @@
 {
   "type": "mekanism:painting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 256,
     "pigment": "mekanism:red"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "item": "mekanism:dye_base"
   },

@@ -1,4 +1,4 @@
 {
   "type": "mekanismadditions:baby_mob_spawn",
-  "babyType": "enderman"
+  "baby_type": "enderman"
 }

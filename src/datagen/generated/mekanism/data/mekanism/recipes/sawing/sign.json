@@ -4,12 +4,12 @@
     "count": 1,
     "tag": "minecraft:signs"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 3,
     "id": "minecraft:stick"
   },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
+  "secondary_chance": 0.25,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }

@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:spruce_trapdoor"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 3,
     "id": "minecraft:spruce_planks"
   }

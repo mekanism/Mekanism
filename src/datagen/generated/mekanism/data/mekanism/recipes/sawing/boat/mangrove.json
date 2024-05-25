@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:mangrove_boat"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 5,
     "id": "minecraft:mangrove_planks"
   }

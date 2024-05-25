@@ -1,10 +1,10 @@
 {
   "type": "mekanism:painting",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 64,
     "pigment": "mekanism:green"
   },
-  "itemInput": {
+  "item_input": {
     "type": "neoforge:difference",
     "base": {
       "tag": "mekanismadditions:glow_panels"

@@ -4,12 +4,12 @@
     "count": 1,
     "item": "minecraft:black_bed"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 3,
     "id": "minecraft:oak_planks"
   },
-  "secondaryChance": 1.0,
-  "secondaryOutput": {
+  "secondary_chance": 1.0,
+  "secondary_output": {
     "count": 3,
     "id": "minecraft:black_wool"
   }

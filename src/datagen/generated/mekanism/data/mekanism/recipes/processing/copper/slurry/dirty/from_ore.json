@@ -1,16 +1,16 @@
 {
   "type": "mekanism:dissolution",
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:sulfuric_acid"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:ores/copper"
   },
   "output": {
+    "type": "slurry",
     "amount": 1000,
-    "chemicalType": "slurry",
     "id": "mekanism:dirty_copper"
   }
 }

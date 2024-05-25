@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:crafting_table"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 4,
     "id": "minecraft:oak_planks"
   }

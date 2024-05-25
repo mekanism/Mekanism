@@ -1,10 +1,10 @@
 {
   "type": "mekanism:metallurgic_infusing",
-  "chemicalInput": {
+  "chemical_input": {
     "amount": 10,
     "tag": "mekanism:bio"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "item": "minecraft:dirt"
   },

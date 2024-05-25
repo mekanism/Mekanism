@@ -1,16 +1,16 @@
 {
   "type": "mekanism:dissolution",
-  "gasInput": {
+  "gas_input": {
     "amount": 1,
     "gas": "mekanism:sulfuric_acid"
   },
-  "itemInput": {
+  "item_input": {
     "count": 1,
     "tag": "c:gems/fluorite"
   },
   "output": {
+    "type": "gas",
     "amount": 1000,
-    "chemicalType": "gas",
     "id": "mekanism:hydrofluoric_acid"
   }
 }

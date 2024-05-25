@@ -4,7 +4,7 @@
     "count": 1,
     "item": "minecraft:barrel"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 7,
     "id": "minecraft:oak_planks"
   }

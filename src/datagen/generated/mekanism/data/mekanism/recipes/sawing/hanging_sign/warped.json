@@ -4,12 +4,12 @@
     "count": 1,
     "item": "minecraft:warped_hanging_sign"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 2,
     "id": "minecraft:warped_planks"
   },
-  "secondaryChance": 0.5,
-  "secondaryOutput": {
+  "secondary_chance": 0.5,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }

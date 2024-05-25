@@ -288,7 +288,7 @@
       "text": "alias.mekanism.mekasuit"
     },
     {
-      "stacks": "item:mekanism:canteen{\"mekanism:fluids\":{FluidTanks:[{amount:64000,id:\"mekanism:nutritional_paste\"}]}}",
+      "stacks": "item:mekanism:canteen{\"mekanism:fluids\":{fluid_tanks:[{amount:64000,id:\"mekanism:nutritional_paste\"}]}}",
       "text": [
         "alias.mekanism.canteen.edible",
         "alias.mekanism.canteen.storage"
@@ -554,7 +554,7 @@
         "item:mekanism:advanced_energy_cube",
         "item:mekanism:elite_energy_cube",
         "item:mekanism:ultimate_energy_cube",
-        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{EnergyContainers:[1.8446744073709552E19d]},\"mekanism:side_config\":{config:{energy:{side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}}}}}"
+        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{energy_containers:[1.8446744073709552E19d]},\"mekanism:side_config\":{config:{energy:{side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}}}}}"
       ],
       "text": [
         "alias.mekanism.item_charger",

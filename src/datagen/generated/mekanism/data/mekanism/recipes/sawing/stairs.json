@@ -4,12 +4,12 @@
     "count": 1,
     "tag": "minecraft:wooden_stairs"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 9,
     "id": "minecraft:stick"
   },
-  "secondaryChance": 0.375,
-  "secondaryOutput": {
+  "secondary_chance": 0.375,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }

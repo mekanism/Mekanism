@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "item": "minecraft:honeycomb"
   },
-  "mainInput": {
+  "main_input": {
     "count": 1,
     "item": "minecraft:oxidized_chiseled_copper"
   },

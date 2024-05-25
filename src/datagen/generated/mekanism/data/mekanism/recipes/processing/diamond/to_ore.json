@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "tag": "c:cobblestones/normal"
   },
-  "mainInput": {
+  "main_input": {
     "count": 5,
     "tag": "c:dusts/diamond"
   },

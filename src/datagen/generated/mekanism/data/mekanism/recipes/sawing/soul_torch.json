@@ -4,12 +4,12 @@
     "count": 4,
     "item": "minecraft:soul_torch"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 4,
     "id": "minecraft:torch"
   },
-  "secondaryChance": 1.0,
-  "secondaryOutput": {
+  "secondary_chance": 1.0,
+  "secondary_output": {
     "count": 1,
     "id": "minecraft:soul_soil"
   }

@@ -1,10 +1,10 @@
 {
   "type": "mekanism:combining",
-  "extraInput": {
+  "extra_input": {
     "count": 1,
     "tag": "c:dusts/glowstone"
   },
-  "mainInput": {
+  "main_input": {
     "count": 1,
     "item": "minecraft:item_frame"
   },

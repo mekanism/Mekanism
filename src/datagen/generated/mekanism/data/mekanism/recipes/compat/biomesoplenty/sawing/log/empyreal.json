@@ -10,12 +10,12 @@
     "count": 1,
     "tag": "biomesoplenty:empyreal_logs"
   },
-  "mainOutput": {
+  "main_output": {
     "count": 6,
     "id": "biomesoplenty:empyreal_planks"
   },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
+  "secondary_chance": 0.25,
+  "secondary_output": {
     "count": 1,
     "id": "mekanism:sawdust"
   }
