@@ -8,8 +8,10 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -31,31 +33,15 @@ public class TransporterTestUtils {
     }
 
     public static CompoundTag containing(ItemStack... stacks) {
-        CompoundTag tag = new CompoundTag();
-        ListTag items = new ListTag();
-        for (int i = 0; i < stacks.length; i++) {
-            CompoundTag item = saveItem(stacks[i]);
-            item.putByte(SerializationConstants.SLOT, (byte) i);
-            items.add(item);
-        }
-        tag.put(SerializationConstants.ITEMS, items);
-        return tag;
+        return ContainerHelper.saveAllItems(new CompoundTag(), NonNullList.of(ItemStack.EMPTY, stacks), registryAccess());
     }
 
     public static CompoundTag containing(ItemStack stack, int slots) {
-        CompoundTag tag = new CompoundTag();
-        ListTag items = new ListTag();
-        for (int i = 0; i < slots; i++) {
-            CompoundTag item = saveItem(stack);
-            item.putByte(SerializationConstants.SLOT, (byte) i);
-            items.add(item);
-        }
-        tag.put(SerializationConstants.ITEMS, items);
-        return tag;
+        return ContainerHelper.saveAllItems(new CompoundTag(), NonNullList.withSize(slots, stack), registryAccess());
     }
 
-    private static CompoundTag saveItem(ItemStack stack) {
-        return (CompoundTag) stack.save(ServerLifecycleHooks.getCurrentServer().registryAccess(), new CompoundTag());
+    private static HolderLookup.Provider registryAccess() {
+        return ServerLifecycleHooks.getCurrentServer().registryAccess();
     }
 
     @Nullable
