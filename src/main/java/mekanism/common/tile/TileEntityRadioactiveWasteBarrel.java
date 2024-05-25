@@ -120,7 +120,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(SerializationConstants.GAS_STORED, gasTank.serializeNBT(provider));
+        updateTag.put(SerializationConstants.GAS, gasTank.serializeNBT(provider));
         updateTag.putInt(SerializationConstants.PROGRESS, processTicks);
         return updateTag;
     }
@@ -128,7 +128,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(provider, nbt));
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.GAS, nbt -> gasTank.deserializeNBT(provider, nbt));
         NBTUtils.setIntIfPresent(tag, SerializationConstants.PROGRESS, val -> processTicks = val);
     }
 

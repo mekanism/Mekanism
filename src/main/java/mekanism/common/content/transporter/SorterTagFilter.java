@@ -18,7 +18,7 @@ import net.minecraft.network.codec.StreamCodec;
 public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
 
     public static final MapCodec<SorterTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
-          .and(Codec.STRING.fieldOf(SerializationConstants.TAG_NAME).forGetter(SorterTagFilter::getTagName))
+          .and(Codec.STRING.fieldOf(SerializationConstants.TAG).forGetter(SorterTagFilter::getTagName))
           .apply(instance, SorterTagFilter::new));
     public static final StreamCodec<ByteBuf, SorterTagFilter> STREAM_CODEC = StreamCodec.composite(
           baseSorterStreamCodec(SorterTagFilter::new), Function.identity(),

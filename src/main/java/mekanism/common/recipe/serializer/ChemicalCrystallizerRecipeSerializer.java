@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<BasicChemicalCrystallizerRecipe> {
 
-    private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(SerializationConstants.CHEMICAL_TYPE);
+    private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(SerializationConstants.TYPE);
     @SuppressWarnings("unchecked")
     private static final MapCodec<ChemicalStackIngredient<?, ?, ?>> chemicalStackIngredientMapEncoder = new DependentMapCodec<>(SerializationConstants.INPUT,
           type -> (Codec<ChemicalStackIngredient<?, ?, ?>>) IngredientCreatorAccess.getCreatorForType(type).codec(), chemicalTypeMapCodec, ChemicalType::getTypeFor);

@@ -15,7 +15,7 @@ public record DriveMetadata(long count, int types) {
     public static final DriveMetadata EMPTY = new DriveMetadata(0, 0);
 
     public static final Codec<DriveMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.QIO_META_COUNT).forGetter(DriveMetadata::count),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.COUNT).forGetter(DriveMetadata::count),
           ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.QIO_META_TYPES).forGetter(DriveMetadata::types)
     ).apply(instance, DriveMetadata::new));
     public static final StreamCodec<ByteBuf, DriveMetadata> STREAM_CODEC = StreamCodec.composite(

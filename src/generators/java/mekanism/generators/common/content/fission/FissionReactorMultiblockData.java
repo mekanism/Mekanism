@@ -255,8 +255,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> fuelTank.setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> fluidCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS, value -> fuelTank.setStack(value));
         NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
         NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
@@ -264,7 +264,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
             ListTag list = tag.getList(SerializationConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
-                assemblies.add(FormedAssembly.read(list.getCompound(i)));
+                FormedAssembly assembly = FormedAssembly.read(list.getCompound(i));
+                if (assembly != null) {
+                    assemblies.add(assembly);
+                }
             }
         }
     }
@@ -277,8 +280,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         tag.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         tag.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(SerializationConstants.VOLUME, getVolume());
-        tag.put(SerializationConstants.FLUID_STORED, fluidCoolantTank.getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.GAS_STORED, fuelTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.FLUID, fluidCoolantTank.getFluid().saveOptional(provider));
+        tag.put(SerializationConstants.GAS, fuelTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.GAS_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
         writeValves(tag);

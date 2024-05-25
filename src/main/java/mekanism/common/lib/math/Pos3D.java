@@ -1,12 +1,10 @@
 package mekanism.common.lib.math;
 
-import mekanism.api.SerializationConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -58,17 +56,6 @@ public class Pos3D extends Vec3 {
         return new Pos3D(Vec3.atLowerCornerOf(vec));
     }
 
-    /**
-     * Returns a new Pos3D from a tag compound.
-     *
-     * @param tag - tag compound to read from
-     *
-     * @return the Pos3D from the tag compound
-     */
-    public static Pos3D read(CompoundTag tag) {
-        return new Pos3D(tag.getDouble(SerializationConstants.X), tag.getDouble(SerializationConstants.Y), tag.getDouble(SerializationConstants.Z));
-    }
-
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {
         double x = translation.x * matrix[0] + translation.y * matrix[1] + translation.z * matrix[2] + matrix[3];
         double y = translation.x * matrix[4] + translation.y * matrix[5] + translation.z * matrix[6] + matrix[7];
@@ -86,20 +73,6 @@ public class Pos3D extends Vec3 {
 
     public static AABB getAABB(Vec3 pos1, Vec3 pos2) {
         return new AABB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
-    }
-
-    /**
-     * Writes this Pos3D's data to an CompoundNBT.
-     *
-     * @param nbtTags - tag compound to write to
-     *
-     * @return the tag compound with this Pos3D's data
-     */
-    public CompoundTag write(CompoundTag nbtTags) {
-        nbtTags.putDouble(SerializationConstants.X, x);
-        nbtTags.putDouble(SerializationConstants.Y, y);
-        nbtTags.putDouble(SerializationConstants.Z, z);
-        return nbtTags;
     }
 
     /**

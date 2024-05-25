@@ -323,7 +323,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.saveAdditional(nbtTags, provider);
         nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            nbtTags.put(SerializationConstants.FLUID_STORED, activeType.save(provider));
+            nbtTags.put(SerializationConstants.FLUID, activeType.save(provider));
         }
         if (!recurringNodes.isEmpty()) {
             nbtTags.put(SerializationConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
@@ -334,7 +334,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
         operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.FLUID_STORED, fluid -> activeType = fluid);
+        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.FLUID, fluid -> activeType = fluid);
         NBTUtils.readBlockPositions(nbt, SerializationConstants.RECURRING_NODES, recurringNodes);
     }
 

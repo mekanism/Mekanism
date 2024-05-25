@@ -227,7 +227,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(SerializationConstants.FLUID_STORED, fluidTank.serializeNBT(provider));
+        updateTag.put(SerializationConstants.FLUID, fluidTank.serializeNBT(provider));
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
             lastPasteItem.getInternalStack().save(provider, item);
@@ -239,7 +239,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(provider, nbt));
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> fluidTank.deserializeNBT(provider, nbt));
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> {
             if (nbt.isEmpty()) {
                 lastPasteItem = null;

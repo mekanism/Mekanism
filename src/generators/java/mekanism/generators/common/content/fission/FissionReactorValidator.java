@@ -26,10 +26,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import org.jetbrains.annotations.Nullable;
 
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
@@ -158,16 +160,18 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
         public CompoundTag write() {
             CompoundTag ret = new CompoundTag();
-            ret.putInt(SerializationConstants.X, pos.getX());
-            ret.putInt(SerializationConstants.Y, pos.getY());
-            ret.putInt(SerializationConstants.Z, pos.getZ());
+            ret.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(pos));
             ret.putInt(SerializationConstants.HEIGHT, height);
             return ret;
         }
 
+        @Nullable
         public static FormedAssembly read(CompoundTag nbt) {
-            return new FormedAssembly(new BlockPos(nbt.getInt(SerializationConstants.X), nbt.getInt(SerializationConstants.Y), nbt.getInt(SerializationConstants.Z)),
-                  nbt.getInt(SerializationConstants.HEIGHT));
+            BlockPos blockPos = NbtUtils.readBlockPos(nbt, SerializationConstants.POSITION).orElse(null);
+            if (blockPos == null) {
+                return null;
+            }
+            return new FormedAssembly(blockPos, nbt.getInt(SerializationConstants.HEIGHT));
         }
     }
 

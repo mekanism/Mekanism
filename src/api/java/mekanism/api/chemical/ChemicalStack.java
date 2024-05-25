@@ -164,7 +164,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @see mekanism.api.chemical.merged.BoxedChemicalStack
      * @since 10.6.0
      */
-    public static final Codec<ChemicalStack<?>> BOXED_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
+    public static final Codec<ChemicalStack<?>> BOXED_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.TYPE, ChemicalType::getTypeFor, type -> switch (type) {
         case GAS -> GasStack.MAP_CODEC;
         case INFUSION -> InfusionStack.MAP_CODEC;
         case PIGMENT -> PigmentStack.MAP_CODEC;

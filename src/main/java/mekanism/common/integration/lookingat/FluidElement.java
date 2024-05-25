@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class FluidElement extends LookingAtElement {
 
     public static final MapCodec<FluidElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID_STORED).forGetter(FluidElement::getStored),
+          FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidElement::getStored),
           ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.MAX).forGetter(FluidElement::getCapacity)
     ).apply(instance, FluidElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidElement> STREAM_CODEC = StreamCodec.composite(

@@ -100,9 +100,9 @@ public class TransporterStack {
         NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
         BlockPos next = getNext(transporter);
         if (next != null) {
-            updateTag.put(SerializationConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
+            updateTag.put(SerializationConstants.NEXT, NbtUtils.writeBlockPos(next));
         }
-        updateTag.put(SerializationConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
+        updateTag.put(SerializationConstants.PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
         if (!itemStack.isEmpty()) {
             itemStack.save(provider, updateTag);
         }
@@ -113,8 +113,8 @@ public class TransporterStack {
         progress = updateTag.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.CLIENT_NEXT, coord -> clientNext = coord);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord);
         itemStack = ItemStack.parseOptional(provider, updateTag);
     }
 

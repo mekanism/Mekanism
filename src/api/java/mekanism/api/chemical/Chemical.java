@@ -40,7 +40,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @see mekanism.api.chemical.merged.BoxedChemical
      * @since 10.6.0
      */
-    public static final Codec<Chemical<?>> BOXED_OPTIONAL_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor,
+    public static final Codec<Chemical<?>> BOXED_OPTIONAL_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.TYPE, ChemicalType::getTypeFor,
           type -> switch (type) {
               case GAS -> MekanismAPI.GAS_REGISTRY.byNameCodec().fieldOf(SerializationConstants.GAS);
               case INFUSION -> MekanismAPI.INFUSE_TYPE_REGISTRY.byNameCodec().fieldOf(SerializationConstants.INFUSE_TYPE);

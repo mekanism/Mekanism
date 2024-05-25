@@ -279,7 +279,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(SerializationConstants.FLUID_STORED, fluidTank.getFluid().saveOptional(provider));
+        updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
         updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         updateTag.putFloat(SerializationConstants.SCALE, prevScale);
         return updateTag;
@@ -288,7 +288,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {
             if (prevScale != scale) {

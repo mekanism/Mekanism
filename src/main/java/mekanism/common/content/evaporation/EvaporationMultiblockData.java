@@ -169,7 +169,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> inputTank.setStack(fluid));
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
         readValves(tag);
     }
@@ -177,7 +177,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.put(SerializationConstants.FLUID_STORED, inputTank.getFluid().saveOptional(provider));
+        tag.put(SerializationConstants.FLUID, inputTank.getFluid().saveOptional(provider));
         tag.putFloat(SerializationConstants.SCALE, prevScale);
         writeValves(tag);
     }

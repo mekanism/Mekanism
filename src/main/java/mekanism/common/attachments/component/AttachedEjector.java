@@ -23,7 +23,7 @@ public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean str
     public static final Codec<AttachedEjector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.optionalEmptyMap(EnumColor.CODEC).listOf(EnumUtils.SIDES.length, EnumUtils.SIDES.length).fieldOf(SerializationConstants.INPUT_COLOR).forGetter(AttachedEjector::inputColors),
           Codec.BOOL.fieldOf(SerializationConstants.STRICT_INPUT).forGetter(AttachedEjector::strictInput),
-          EnumColor.CODEC.optionalFieldOf(SerializationConstants.QIO_META_TYPES).forGetter(AttachedEjector::outputColor)
+          EnumColor.CODEC.optionalFieldOf(SerializationConstants.TYPES).forGetter(AttachedEjector::outputColor)
     ).apply(instance, AttachedEjector::new));
     public static final StreamCodec<ByteBuf, AttachedEjector> STREAM_CODEC = StreamCodec.composite(
           EnumColor.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(EnumUtils.SIDES.length)), AttachedEjector::inputColors,

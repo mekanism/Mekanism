@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
@@ -29,8 +28,6 @@ import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
 import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
 import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
 import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
@@ -101,15 +98,6 @@ public enum ChemicalType implements StringRepresentable {
     }
 
     /**
-     * Writes a Chemical Type to NBT.
-     *
-     * @param nbt Tag to write to.
-     */
-    public void write(@NotNull CompoundTag nbt) {
-        nbt.putString(SerializationConstants.CHEMICAL_TYPE, getSerializedName());
-    }
-
-    /**
      * Gets a chemical type by name.
      *
      * @param name Name of the chemical type.
@@ -119,21 +107,6 @@ public enum ChemicalType implements StringRepresentable {
     @Nullable
     public static ChemicalType fromString(String name) {
         return nameToType.get(name);
-    }
-
-    /**
-     * Reads a Chemical Type from NBT.
-     *
-     * @param nbt NBT.
-     *
-     * @return Chemical Type.
-     */
-    @Nullable
-    public static ChemicalType fromNBT(@Nullable CompoundTag nbt) {
-        if (nbt != null && nbt.contains(SerializationConstants.CHEMICAL_TYPE, Tag.TAG_STRING)) {
-            return fromString(nbt.getString(SerializationConstants.CHEMICAL_TYPE));
-        }
-        return null;
     }
 
     /**

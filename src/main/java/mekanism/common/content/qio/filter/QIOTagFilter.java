@@ -16,7 +16,7 @@ import net.minecraft.network.codec.StreamCodec;
 public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
 
     public static final MapCodec<QIOTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
-          .and(Codec.STRING.fieldOf(SerializationConstants.TAG_NAME).forGetter(QIOTagFilter::getTagName))
+          .and(Codec.STRING.fieldOf(SerializationConstants.TAG).forGetter(QIOTagFilter::getTagName))
           .apply(instance, QIOTagFilter::new));
     public static final StreamCodec<ByteBuf, QIOTagFilter> STREAM_CODEC = StreamCodec.composite(
           baseQIOStreamCodec(QIOTagFilter::new), Function.identity(),

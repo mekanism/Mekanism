@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
     public static final MapCodec<MinerTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
-          .and(Codec.STRING.fieldOf(SerializationConstants.TAG_NAME).forGetter(MinerTagFilter::getTagName))
+          .and(Codec.STRING.fieldOf(SerializationConstants.TAG).forGetter(MinerTagFilter::getTagName))
           .apply(instance, MinerTagFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, MinerTagFilter> STREAM_CODEC = StreamCodec.composite(
           baseMinerStreamCodec(MinerTagFilter::new), Function.identity(),

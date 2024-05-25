@@ -235,8 +235,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setWaterVolume);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, this::setSteamVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, value -> waterTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> steamTank.setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> waterTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS, value -> steamTank.setStack(value));
         NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.RENDER_Y, value -> upperRenderLocation = value);
         readValves(tag);
     }
@@ -248,8 +248,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         tag.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
         tag.putInt(SerializationConstants.VOLUME, getWaterVolume());
         tag.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
-        tag.put(SerializationConstants.FLUID_STORED, waterTank.getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.GAS_STORED, steamTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.FLUID, waterTank.getFluid().saveOptional(provider));
+        tag.put(SerializationConstants.GAS, steamTank.getStack().saveOptional(provider));
         tag.put(SerializationConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
         writeValves(tag);
     }

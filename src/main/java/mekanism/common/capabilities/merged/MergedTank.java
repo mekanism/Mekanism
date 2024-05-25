@@ -52,19 +52,19 @@ public class MergedTank extends MergedChemicalTank {
     }
 
     public void addToUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag.put(SerializationConstants.FLUID_STORED, getFluidTank().getFluid().saveOptional(provider));
-        updateTag.put(SerializationConstants.GAS_STORED, getGasTank().getStack().saveOptional(provider));
-        updateTag.put(SerializationConstants.INFUSE_TYPE_NAME, getInfusionTank().getStack().saveOptional(provider));
-        updateTag.put(SerializationConstants.PIGMENT_STORED, getPigmentTank().getStack().saveOptional(provider));
-        updateTag.put(SerializationConstants.SLURRY_STORED, getSlurryTank().getStack().saveOptional(provider));
+        updateTag.put(SerializationConstants.FLUID, getFluidTank().getFluid().saveOptional(provider));
+        updateTag.put(SerializationConstants.GAS, getGasTank().getStack().saveOptional(provider));
+        updateTag.put(SerializationConstants.INFUSE_TYPE, getInfusionTank().getStack().saveOptional(provider));
+        updateTag.put(SerializationConstants.PIGMENT, getPigmentTank().getStack().saveOptional(provider));
+        updateTag.put(SerializationConstants.SLURRY, getSlurryTank().getStack().saveOptional(provider));
     }
 
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag tag) {
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, value -> getFluidTank().setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> getGasTank().setStack(value));
-        NBTUtils.setInfusionStackIfPresent(provider, tag, SerializationConstants.INFUSE_TYPE_NAME, value -> getInfusionTank().setStack(value));
-        NBTUtils.setPigmentStackIfPresent(provider, tag, SerializationConstants.PIGMENT_STORED, value -> getPigmentTank().setStack(value));
-        NBTUtils.setSlurryStackIfPresent(provider, tag, SerializationConstants.SLURRY_STORED, value -> getSlurryTank().setStack(value));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> getFluidTank().setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS, value -> getGasTank().setStack(value));
+        NBTUtils.setInfusionStackIfPresent(provider, tag, SerializationConstants.INFUSE_TYPE, value -> getInfusionTank().setStack(value));
+        NBTUtils.setPigmentStackIfPresent(provider, tag, SerializationConstants.PIGMENT, value -> getPigmentTank().setStack(value));
+        NBTUtils.setSlurryStackIfPresent(provider, tag, SerializationConstants.SLURRY, value -> getSlurryTank().setStack(value));
     }
 
     public enum CurrentType {
