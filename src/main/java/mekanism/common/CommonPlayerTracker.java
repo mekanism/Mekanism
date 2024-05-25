@@ -19,9 +19,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -87,11 +87,11 @@ public class CommonPlayerTracker {
             //it's a wrench, see if it's our block. Not the configurator, as it handles bypass correctly
             Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
             if (block instanceof BlockMekanism || block instanceof BlockBounding) {
-                event.setUseBlock(Event.Result.ALLOW);//force it to use the item on the block
+                event.setUseBlock(TriState.TRUE);//force it to use the item on the block
             }
         } else if (event.getEntity().isShiftKeyDown() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof BlockCardboardBox) {
-            event.setUseBlock(Event.Result.ALLOW);
-            event.setUseItem(Event.Result.DENY);
+            event.setUseBlock(TriState.TRUE);
+            event.setUseItem(TriState.FALSE);
         }
     }
 }

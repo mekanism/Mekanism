@@ -188,7 +188,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         level().setBlockAndUpdate(pos, newState);
         if (EventHooks.onBlockPlace(shooter, blockSnapshot, hitSide)) {
             level().restoringBlockSnapshots = true;
-            blockSnapshot.restore(true, false);
+            blockSnapshot.restore(blockSnapshot.getFlags() | Block.UPDATE_CLIENTS);
             level().restoringBlockSnapshots = false;
             return false;
         }

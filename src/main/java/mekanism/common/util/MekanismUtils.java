@@ -760,7 +760,7 @@ public final class MekanismUtils {
                 // block hardness values in a modded context
                 continue;
             }
-            int exp = CommonHooks.onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, foundPos);
+            int exp = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
             if (exp == -1) {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;

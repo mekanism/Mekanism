@@ -93,10 +93,10 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     public ItemMekaTool(Properties properties) {
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.rarity(Rarity.EPIC).setNoRepair()
-                    .component(DataComponents.TOOL, new Tool(List.of(
-                          Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL),
-                          new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))
-                    ), 1, 0))
+              .component(DataComponents.TOOL, new Tool(List.of(
+                    Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL),
+                    new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))
+              ), 1, 0))
         ));
     }
 
@@ -249,11 +249,31 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityliving) {
+    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+            boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
+            FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);
+            FloatingLong energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
+            //AOE/vein mining handling
+            if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() &&
+                energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
+                Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
+                blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
+
+                Reference2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
+                      bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, r) -> l, Reference2BooleanArrayMap::new));
+
+                Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
+                if (!veinedBlocks.isEmpty()) {
+                    //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
+                    FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
+                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness)
+                                .multiply(0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2)));
+                }
+            }
         }
         return true;
     }
@@ -300,38 +320,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             return ModuleVeinMiningUnit.findPositions(world, blocks, customInstance.extended() ? customInstance.getExcavationRange() : 0, oreTracker);
         }
         return blocks.entrySet().stream().collect(Collectors.toMap(Entry::getKey, be -> 0, (l, r) -> l, Object2IntArrayMap::new));
-    }
-
-    @Override
-    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide || player.isCreative()) {
-            return super.onBlockStartBreak(stack, pos, player);
-        }
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer != null) {
-            Level world = player.level();
-            BlockState state = world.getBlockState(pos);
-            boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);
-            FloatingLong energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
-            if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
-                Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
-                blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
-
-                Reference2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
-                      bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, r) -> l, Reference2BooleanArrayMap::new));
-
-                Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
-                if (!veinedBlocks.isEmpty()) {
-                    //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
-                    FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, (ServerPlayer) player, stack, this, veinedBlocks,
-                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness)
-                                .multiply(0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2)));
-                }
-            }
-        }
-        return super.onBlockStartBreak(stack, pos, player);
     }
 
     private static FloatingLong getDestroyEnergy(boolean silk) {

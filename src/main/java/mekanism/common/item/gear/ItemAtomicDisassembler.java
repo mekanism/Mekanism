@@ -164,37 +164,26 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityliving) {
+    public boolean mineBlock(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entity) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            energyContainer.extract(getDestroyEnergy(stack, state.getDestroySpeed(world, pos)), Action.EXECUTE, AutomationType.MANUAL);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide || player.isCreative()) {
-            return super.onBlockStartBreak(stack, pos, player);
-        }
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer != null && getMode(stack) == DisassemblerMode.VEIN) {
-            Level world = player.level();
-            BlockState state = world.getBlockState(pos);
             FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
             FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
-            if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
+            energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
+            //Vein mining handling
+            if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN &&
+                energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
                 // Only allow mining things that are considered an ore
                 if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
                           Reference2BooleanMaps.singleton(state.getBlock(), true));
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, FloatingLong.ZERO, baseDestroyEnergy, world, pos, (ServerPlayer) player, stack,
-                          this, found, (base, hardness) -> FloatingLong.ZERO,
+                    MekanismUtils.veinMineArea(energyContainer, energyRequired, FloatingLong.ZERO, baseDestroyEnergy, world, pos, player, stack, this, found,
+                          (base, hardness) -> FloatingLong.ZERO,
                           (base, hardness, distance, bs) -> getDestroyEnergy(base, hardness).multiply(0.5 * Math.pow(distance, 1.5)));
                 }
             }
         }
-        return super.onBlockStartBreak(stack, pos, player);
+        return true;
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness) {
