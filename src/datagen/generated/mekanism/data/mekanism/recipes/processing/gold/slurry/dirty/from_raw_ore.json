@@ -9,8 +9,8 @@
     "tag": "c:raw_materials/gold"
   },
   "output": {
-    "type": "slurry",
     "amount": 2000,
+    "chemical_type": "slurry",
     "id": "mekanism:dirty_gold"
   }
 }

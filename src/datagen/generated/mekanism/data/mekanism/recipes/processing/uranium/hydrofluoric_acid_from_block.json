@@ -9,8 +9,8 @@
     "tag": "c:storage_blocks/fluorite"
   },
   "output": {
-    "type": "gas",
     "amount": 9000,
+    "chemical_type": "gas",
     "id": "mekanism:hydrofluoric_acid"
   }
 }

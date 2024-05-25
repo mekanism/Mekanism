@@ -9,8 +9,8 @@
     "tag": "c:ores/tin"
   },
   "output": {
-    "type": "slurry",
     "amount": 1000,
+    "chemical_type": "slurry",
     "id": "mekanism:dirty_tin"
   }
 }

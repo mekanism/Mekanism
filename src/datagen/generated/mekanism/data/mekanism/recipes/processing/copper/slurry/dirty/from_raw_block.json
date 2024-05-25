@@ -9,8 +9,8 @@
     "tag": "c:storage_blocks/raw_copper"
   },
   "output": {
-    "type": "slurry",
     "amount": 6000,
+    "chemical_type": "slurry",
     "id": "mekanism:dirty_copper"
   }
 }

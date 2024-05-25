@@ -43,6 +43,7 @@ public final class SerializationConstants {
     public static final String TAG = "tag";
 
     //Recipes
+    public static final String CHEMICAL_TYPE = "chemical_type";
     public static final String TYPE = "type";
     public static final String ENERGY_MULTIPLIER = "energy_multiplier";
     public static final String ENERGY_REQUIRED = "energy_required";

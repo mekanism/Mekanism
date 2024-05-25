@@ -9,8 +9,8 @@
     "tag": "c:gems/fluorite"
   },
   "output": {
-    "type": "gas",
     "amount": 1000,
+    "chemical_type": "gas",
     "id": "mekanism:hydrofluoric_acid"
   }
 }

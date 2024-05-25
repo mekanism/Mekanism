@@ -1,5 +1,6 @@
 {
   "type": "mekanism:crystallizing",
+  "chemical_type": "gas",
   "input": {
     "amount": 100,
     "gas": "mekanism:lithium"

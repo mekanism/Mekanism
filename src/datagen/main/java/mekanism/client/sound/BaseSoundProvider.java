@@ -1,7 +1,7 @@
 package mekanism.client.sound;
 
 import java.util.function.UnaryOperator;
-import mekanism.api.text.ILangEntry;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +33,7 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
         addSoundEvent(soundEventRO, path, definition -> definition.subtitle(soundEventRO.getTranslationKey()), soundModifier);
     }
 
-    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, ILangEntry subtitle) {
+    protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, IHasTranslationKey subtitle) {
         addSoundEvent(soundEventRO, path, definition -> definition.subtitle(subtitle.getTranslationKey()), UnaryOperator.identity());
     }
 
