@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
@@ -110,21 +111,21 @@ public class SpecialConverters {
     public static <FILTER extends IFilter<FILTER>> FILTER convertMapToFilter(@NotNull Class<FILTER> expectedType, @NotNull Map<?, ?> map) throws ComputerException {
         //We may want to try improving this at some point, or somehow making it slightly less hardcoded
         // but for now this will have to do
-        Object type = map.get("type");
+        Object type = map.get(SerializationConstants.TYPE);
         if (!(type instanceof String string)) {
-            throw new ComputerException("Missing 'type' element");
+            throw new ComputerException("Missing '" + SerializationConstants.TYPE + "' element");
         }
         //Handle filters as arguments, this may not be the best implementation, but it will do for now
         FilterType filterType = sanitizeStringToEnum(FilterType.class, string);
         if (filterType == null) {
-            throw new ComputerException("Unknown 'type' value");
+            throw new ComputerException("Unknown '" + SerializationConstants.TYPE + "' value");
         }
         IFilter<?> filter = BaseFilter.fromType(filterType);
         if (!expectedType.isInstance(filter)) {
-            throw new ComputerException("Type is not of an expected format");
+            throw new ComputerException("Unexpected format for: " + SerializationConstants.TYPE);
         }
         //Validate the filter is of the type we expect
-        Object enabled = map.get("enabled");
+        Object enabled = map.get(SerializationConstants.ENABLED);
         if (enabled instanceof Boolean enable) {
             filter.setEnabled(enable);
         }
@@ -147,17 +148,17 @@ public class SpecialConverters {
     }
 
     private static void decodeOreDictFilter(@NotNull Map<?, ?> map, OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) throws ComputerException {
-        Object rawTag = map.get("target");
+        Object rawTag = map.get(SerializationConstants.TARGET);
         if (!(rawTag instanceof String tag) || tag.isEmpty()) {
-            throw new ComputerException("Missing 'target'");
+            throw new ComputerException("Missing '" + SerializationConstants.TARGET + "'");
         }
         ResourceLocation rl = ResourceLocation.tryParse(tag);
         if (rl == null || !TileEntityOredictionificator.isValidTarget(rl)) {
-            throw new ComputerException("Invalid 'target'");
+            throw new ComputerException("Invalid '" + SerializationConstants.TARGET + "'");
         }
         oredictionificatorFilter.setFilter(rl);
         if (oredictionificatorFilter instanceof OredictionificatorItemFilter itemFilter) {
-            Item item = tryCreateItem(map.get("selected"));
+            Item item = tryCreateItem(map.get(SerializationConstants.SELECTED));
             if (item != Items.AIR) {
                 itemFilter.setSelectedOutput(item.builtInRegistryHolder());
             }
@@ -166,34 +167,35 @@ public class SpecialConverters {
 
     private static void decodeQioFilter(@NotNull Map<?, ?> map, QIOFilter<?> qioFilter) {
         if (qioFilter instanceof QIOItemStackFilter qioItemFilter) {
-            qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
+            qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get(SerializationConstants.FUZZY));
         }
     }
 
     private static void decodeSorterFilter(@NotNull Map<?, ?> map, SorterFilter<?> sorterFilter) throws ComputerException {
-        sorterFilter.allowDefault = getBooleanFromRaw(map.get("allowDefault"));
-        Object rawColor = map.get("color");
+        sorterFilter.allowDefault = getBooleanFromRaw(map.get(SerializationConstants.ALLOW_DEFAULT));
+        Object rawColor = map.get(SerializationConstants.COLOR);
         if (rawColor instanceof String) {
             sorterFilter.color = sanitizeStringToEnum(EnumColor.class, (String) rawColor);
         }
-        sorterFilter.sizeMode = getBooleanFromRaw(map.get("size"));
-        sorterFilter.min = getIntFromRaw(map.get("min"));
-        sorterFilter.max = getIntFromRaw(map.get("max"));
+        sorterFilter.sizeMode = getBooleanFromRaw(map.get(SerializationConstants.SIZE));
+        sorterFilter.min = getIntFromRaw(map.get(SerializationConstants.MIN));
+        sorterFilter.max = getIntFromRaw(map.get(SerializationConstants.MAX));
         if (sorterFilter.min < 0 || sorterFilter.max < 0 || sorterFilter.min > sorterFilter.max || sorterFilter.max > Item.ABSOLUTE_MAX_STACK_SIZE) {
-            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= " + Item.ABSOLUTE_MAX_STACK_SIZE);
+            throw new ComputerException("Invalid " + SerializationConstants.MIN + "/" + SerializationConstants.MAX + ": 0 <= " + SerializationConstants.MIN +
+                                        " <= " + SerializationConstants.MAX + " <= " + Item.ABSOLUTE_MAX_STACK_SIZE);
         }
         if (sorterFilter instanceof SorterItemStackFilter sorterItemFilter) {
-            sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
+            sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get(SerializationConstants.FUZZY));
         }
     }
 
     private static void decodeMinerFilter(@NotNull Map<?, ?> map, MinerFilter<?> minerFilter) {
-        minerFilter.requiresReplacement = getBooleanFromRaw(map.get("requiresReplacement"));
-        minerFilter.replaceTarget = tryCreateItem(map.get("replaceTarget"));
+        minerFilter.requiresReplacement = getBooleanFromRaw(map.get(SerializationConstants.REQUIRES_REPLACEMENT));
+        minerFilter.replaceTarget = tryCreateItem(map.get(SerializationConstants.REPLACE_TARGET));
     }
 
     private static void decodeTagFilter(@NotNull Map<?, ?> map, ITagFilter<?> tagFilter) throws ComputerException {
-        String tag = tryGetFilterTag(map.get("tag"));
+        String tag = tryGetFilterTag(map.get(SerializationConstants.TAG));
         if (tag == null) {
             throw new ComputerException("Invalid or missing tag specified for Tag filter");
         }
@@ -201,7 +203,7 @@ public class SpecialConverters {
     }
 
     private static void decodeModIdFilter(@NotNull Map<?, ?> map, IModIDFilter<?> modIDFilter) throws ComputerException {
-        String modId = tryGetFilterModId(map.get("modId"));
+        String modId = tryGetFilterModId(map.get(SerializationConstants.MODID));
         if (modId == null) {
             throw new ComputerException("Invalid or missing modId specified for Mod Id filter");
         }
@@ -209,7 +211,7 @@ public class SpecialConverters {
     }
 
     private static void decodeItemStackFilter(@NotNull Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
-        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemComponents"));
+        ItemStack stack = tryCreateFilterItem((String) map.get(SerializationConstants.ITEM), (String) map.get(SerializationConstants.COMPONENTS));
         if (stack.isEmpty()) {
             throw new ComputerException("Invalid or missing item specified for ItemStack filter");
         }
@@ -223,10 +225,10 @@ public class SpecialConverters {
             elements++;
         }
         Map<String, Object> wrapped = new HashMap<>(elements);
-        wrapped.put("name", name == null ? "unknown" : name.toString());
+        wrapped.put(SerializationConstants.NAME, name == null ? "unknown" : name.toString());
         wrapped.put(sizeKey, amount);
         if (hasComponents) {
-            wrapped.put("nbt", wrapComponents(components));
+            wrapped.put(SerializationConstants.COMPONENTS, wrapComponents(components));
         }
         return wrapped;
     }

@@ -25,8 +25,8 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     protected static <FILTER extends MinerFilter<FILTER>> P3<Mu<FILTER>, Boolean, Item, Boolean> baseMinerCodec(Instance<FILTER> instance) {
         return baseCodec(instance)
-              .and(BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf(SerializationConstants.REPLACE_STACK, Items.AIR).forGetter(filter -> filter.replaceTarget))
-              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.REQUIRE_STACK, false).forGetter(filter -> filter.requiresReplacement))
+              .and(BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf(SerializationConstants.REPLACE_TARGET, Items.AIR).forGetter(filter -> filter.replaceTarget))
+              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.REQUIRES_REPLACEMENT, false).forGetter(filter -> filter.requiresReplacement))
               ;
     }
 

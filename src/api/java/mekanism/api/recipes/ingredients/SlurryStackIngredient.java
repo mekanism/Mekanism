@@ -78,7 +78,7 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      * @since 10.6.0
      */
     public static final Codec<SlurryStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf("ingredient").forGetter(SlurryStackIngredient::ingredient),
+          IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf(SerializationConstants.INGREDIENT).forGetter(SlurryStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
     ).apply(instance, SlurryStackIngredient::new));
 

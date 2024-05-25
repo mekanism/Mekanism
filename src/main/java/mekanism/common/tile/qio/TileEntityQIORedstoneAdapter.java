@@ -118,7 +118,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             dataMap.put(SerializationConstants.SINGLE_ITEM, itemType.internalToNBT(provider));
         }
         dataMap.putLong(SerializationConstants.AMOUNT, count);
-        dataMap.putBoolean(SerializationConstants.FUZZY_MODE, fuzzy);
+        dataMap.putBoolean(SerializationConstants.FUZZY, fuzzy);
         dataMap.putBoolean(SerializationConstants.INVERSE, inverted);
     }
 
@@ -127,7 +127,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.readSustainedData(provider, dataMap);
         NBTUtils.setItemStackIfPresent(provider, dataMap, SerializationConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(dataMap, SerializationConstants.AMOUNT, value -> count = value);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.FUZZY_MODE, value -> fuzzy = value);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.FUZZY, value -> fuzzy = value);
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, value -> inverted = value);
     }
 

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class ConfigurableHeightProvider extends HeightProvider {
 
     public static final MapCodec<ConfigurableHeightProvider> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          OreVeinType.CODEC.fieldOf("oreVeinType").forGetter(config -> config.oreVeinType)
+          OreVeinType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(config -> config.oreVeinType)
     ).apply(builder, type -> new ConfigurableHeightProvider(type, MekanismConfig.world.getVeinConfig(type))));
 
     private final OreVeinType oreVeinType;

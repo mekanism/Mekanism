@@ -78,7 +78,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      * @since 10.6.0
      */
     public static final Codec<GasStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf("ingredient").forGetter(GasStackIngredient::ingredient),
+          IngredientCreatorAccess.gas().codecNonEmpty().fieldOf(SerializationConstants.INGREDIENT).forGetter(GasStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(GasStackIngredient::amount)
     ).apply(instance, GasStackIngredient::new));
 

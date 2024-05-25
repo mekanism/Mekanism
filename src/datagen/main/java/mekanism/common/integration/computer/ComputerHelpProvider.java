@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismDataGenerator;
@@ -298,13 +299,11 @@ public class ComputerHelpProvider implements DataProvider {
     record JekyllData(Version version, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums, Map<Class<?>, TableType> builtInTables) {
 
         static Codec<Version> VERSION_CODEC = Codec.stringResolver(Version::toString, Version::get);
-        static Codec<JekyllData> CODEC = RecordCodecBuilder.create(instance ->
-              instance.group(
-                    VERSION_CODEC.fieldOf("version").forGetter(JekyllData::version),
-                    METHODS_DATA_CODEC.fieldOf("methods").forGetter(JekyllData::methods),
-                    ENUMS_CODEC.fieldOf("enums").forGetter(JekyllData::enums),
-                    TableType.TABLE_MAP_CODEC.fieldOf("builtInTables").forGetter(JekyllData::builtInTables)
-              ).apply(instance, JekyllData::new)
-        );
+        static Codec<JekyllData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              VERSION_CODEC.fieldOf(SerializationConstants.VERSION).forGetter(JekyllData::version),
+              METHODS_DATA_CODEC.fieldOf(SerializationConstants.METHODS).forGetter(JekyllData::methods),
+              ENUMS_CODEC.fieldOf(SerializationConstants.ENUMS).forGetter(JekyllData::enums),
+              TableType.TABLE_MAP_CODEC.fieldOf(SerializationConstants.BUILT_IN_TABLES).forGetter(JekyllData::builtInTables)
+        ).apply(instance, JekyllData::new));
     }
 }

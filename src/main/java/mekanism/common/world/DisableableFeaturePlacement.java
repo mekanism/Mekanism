@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import mekanism.api.SerializationConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.resource.ore.OreType.OreVeinType;
@@ -19,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 public class DisableableFeaturePlacement extends PlacementFilter {
 
     public static final MapCodec<DisableableFeaturePlacement> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          OreVeinType.CODEC.optionalFieldOf("oreVeinType").forGetter(config -> Optional.ofNullable(config.oreVeinType)),
-          Codec.BOOL.fieldOf("retroGen").forGetter(config -> config.retroGen)
+          OreVeinType.CODEC.optionalFieldOf(SerializationConstants.TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType)),
+          Codec.BOOL.fieldOf(SerializationConstants.RETRO_GEN).forGetter(config -> config.retroGen)
     ).apply(builder, (oreType, retroGen) -> {
         if (oreType.isPresent()) {
             OreVeinType type = oreType.get();

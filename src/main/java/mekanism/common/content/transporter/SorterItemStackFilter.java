@@ -21,7 +21,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
 
     public static final MapCodec<SorterItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
           .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(SorterItemStackFilter::getItemStack))
-          .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY_MODE, false).forGetter(filter -> filter.fuzzyMode))
+          .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, SorterItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, SorterItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseSorterStreamCodec(SorterItemStackFilter::new), Function.identity(),

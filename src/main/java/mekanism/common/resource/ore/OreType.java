@@ -3,6 +3,7 @@ package mekanism.common.resource.ore;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
+import mekanism.api.SerializationConstants;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.PrimaryResource;
@@ -88,8 +89,8 @@ public enum OreType implements StringRepresentable {
     public record OreVeinType(OreType type, int index) {
 
         public static final Codec<OreVeinType> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-              OreType.CODEC.fieldOf("type").forGetter(config -> config.type),
-              Codec.INT.fieldOf("index").forGetter(config -> config.index)
+              OreType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(config -> config.type),
+              Codec.INT.fieldOf(SerializationConstants.INDEX).forGetter(config -> config.index)
         ).apply(builder, OreVeinType::new));
 
         public OreVeinType {

@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -45,15 +46,16 @@ public class RobitSkinSerializationHelper {
      * conditions.
      */
     public static final MapCodec<RobitSkin> NETWORK_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf()).fieldOf("textures").forGetter(RobitSkin::textures),
-          ResourceLocation.CODEC.optionalFieldOf("customModel").forGetter(skin -> Optional.ofNullable(skin.customModel()))
+          ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf()).fieldOf(SerializationConstants.TEXTURES).forGetter(RobitSkin::textures),
+          //TODO - 1.20.5: Update wiki to state that in 1.20.6+ it is custom_model instead of customModel
+          ResourceLocation.CODEC.optionalFieldOf(SerializationConstants.CUSTOM_MODEL).forGetter(skin -> Optional.ofNullable(skin.customModel()))
     ).apply(builder, (textures, model) -> new BasicRobitSkin(textures, model.orElse(null))));
     /**
      * Codec for serializing and deserializing {@link AdvancementBasedRobitSkin}'s over the network.
      */
     public static final MapCodec<AdvancementBasedRobitSkin> ADVANCEMENT_BASED_ROBIT_SKIN_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf()).fieldOf("textures").forGetter(RobitSkin::textures),
-          ResourceLocation.CODEC.optionalFieldOf("customModel").forGetter(skin -> Optional.ofNullable(skin.customModel())),
-          ResourceLocation.CODEC.fieldOf("advancement").forGetter(AdvancementBasedRobitSkin::advancement)
+          ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf()).fieldOf(SerializationConstants.TEXTURES).forGetter(RobitSkin::textures),
+          ResourceLocation.CODEC.optionalFieldOf(SerializationConstants.CUSTOM_MODEL).forGetter(skin -> Optional.ofNullable(skin.customModel())),
+          ResourceLocation.CODEC.fieldOf(SerializationConstants.ADVANCEMENT).forGetter(AdvancementBasedRobitSkin::advancement)
     ).apply(builder, (textures, model, advancement) -> new AdvancementBasedRobitSkin(textures, model.orElse(null), advancement)));
 }

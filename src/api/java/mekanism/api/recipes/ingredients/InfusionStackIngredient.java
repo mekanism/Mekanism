@@ -78,7 +78,7 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      * @since 10.6.0
      */
     public static final Codec<InfusionStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf("ingredient").forGetter(InfusionStackIngredient::ingredient),
+          IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf(SerializationConstants.INGREDIENT).forGetter(InfusionStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
     ).apply(instance, InfusionStackIngredient::new));
 

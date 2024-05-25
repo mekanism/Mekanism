@@ -19,7 +19,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     public static final MapCodec<QIOItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
           .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
-          .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY_MODE, false).forGetter(filter -> filter.fuzzyMode))
+          .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, QIOItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, QIOItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseQIOStreamCodec(QIOItemStackFilter::new), Function.identity(),

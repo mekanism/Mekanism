@@ -1,6 +1,5 @@
 package mekanism.additions.common.world.modifier;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
@@ -8,6 +7,7 @@ import mekanism.additions.common.config.AdditionsConfig;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
+import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
@@ -61,7 +61,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
 
     public static MapCodec<BabyEntitySpawnBiomeModifier> makeCodec() {
         return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              BabyType.CODEC.fieldOf("babyType").forGetter(BabyEntitySpawnBiomeModifier::babyType)
+              BabyType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(BabyEntitySpawnBiomeModifier::babyType)
         ).apply(builder, BabyEntitySpawnBiomeModifier::new));
     }
 }

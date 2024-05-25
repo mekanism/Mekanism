@@ -21,11 +21,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
+import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.lib.collection.HashList;
 import net.minecraft.core.HolderLookup;
@@ -137,10 +139,10 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
               }, ingredient -> new Dynamic<>(JsonOps.INSTANCE, EmiIngredientSerializer.getSerialized(ingredient))
         );
         private static final Codec<AliasInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              singleOrListCodec(INGREDIENT_CODEC).fieldOf("stacks").forGetter(AliasInfo::ingredients),
-              singleOrListCodec(ExtraCodecs.NON_EMPTY_STRING).fieldOf("text").forGetter(AliasInfo::aliases)
+              singleOrListCodec(INGREDIENT_CODEC).fieldOf(DataGenSerializationConstants.STACKS).forGetter(AliasInfo::ingredients),
+              singleOrListCodec(ExtraCodecs.NON_EMPTY_STRING).fieldOf(SerializationConstants.TEXT).forGetter(AliasInfo::aliases)
         ).apply(instance, AliasInfo::new));
-        private static final Codec<List<AliasInfo>> LIST_CODEC = ExtraCodecs.nonEmptyList(CODEC.listOf()).fieldOf("aliases").codec();
+        private static final Codec<List<AliasInfo>> LIST_CODEC = ExtraCodecs.nonEmptyList(CODEC.listOf()).fieldOf(DataGenSerializationConstants.ALIASES).codec();
 
         private static <T> Codec<List<T>> singleOrListCodec(Codec<T> codec) {
             return Codec.either(codec, ExtraCodecs.nonEmptyList(codec.listOf())).xmap(

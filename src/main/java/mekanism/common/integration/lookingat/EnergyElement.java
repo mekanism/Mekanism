@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 public class EnergyElement extends LookingAtElement {
 
     public static final MapCodec<EnergyElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY_STORED).forGetter(EnergyElement::getEnergy),
+          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(EnergyElement::getEnergy),
           FloatingLong.CODEC.fieldOf(SerializationConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
     ).apply(instance, EnergyElement::new));
     public static final StreamCodec<ByteBuf, EnergyElement> STREAM_CODEC = StreamCodec.composite(

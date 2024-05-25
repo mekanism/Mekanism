@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
-import mekanism.common.DataGenJsonConstants;
+import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.util.RegistryUtils;
@@ -54,7 +54,7 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
         for (Holder<Block> blockEntry : register.getBlockEntries()) {
             //Note: We expect this to always be the case
             if (blockEntry.value() instanceof LiquidBlock block && block.fluid.getFluidType() instanceof MekanismFluidType fluidType) {
-                simpleBlock(block, models().getBuilder(RegistryUtils.getPath(block)).texture(DataGenJsonConstants.PARTICLE, fluidType.stillTexture));
+                simpleBlock(block, models().getBuilder(RegistryUtils.getPath(block)).texture(DataGenSerializationConstants.PARTICLE, fluidType.stillTexture));
             }
         }
     }

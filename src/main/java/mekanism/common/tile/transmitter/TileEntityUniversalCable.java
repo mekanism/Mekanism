@@ -83,7 +83,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.putString(SerializationConstants.ENERGY_STORED, network.energyContainer.getEnergy().toString());
+            updateTag.putString(SerializationConstants.ENERGY, network.energyContainer.getEnergy().toString());
             updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;

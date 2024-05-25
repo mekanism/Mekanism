@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
@@ -105,16 +106,14 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         return Arrays.stream(enumConstants).map(Enum::name).toList();
     }
 
-    public static final Codec<MethodHelpData> CODEC = RecordCodecBuilder.create(instance ->
-          instance.group(
-                Codec.STRING.fieldOf("methodName").forGetter(MethodHelpData::methodName),
-                Param.CODEC.listOf().optionalFieldOf("params", null).forGetter(MethodHelpData::params),
-                Returns.CODEC.optionalFieldOf("returns", Returns.NOTHING).forGetter(MethodHelpData::returns),
-                Codec.STRING.optionalFieldOf("description", null).forGetter(MethodHelpData::description),
-                MekCodecs.METHOD_RESTRICTION_CODEC.optionalFieldOf("restriction", MethodRestriction.NONE).forGetter(MethodHelpData::restriction),
-                Codec.BOOL.optionalFieldOf("requiresPublicSecurity", false).forGetter(MethodHelpData::requiresPublicSecurity)
-          ).apply(instance, MethodHelpData::new)
-    );
+    public static final Codec<MethodHelpData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          Codec.STRING.fieldOf(SerializationConstants.METHOD_NAME).forGetter(MethodHelpData::methodName),
+          Param.CODEC.listOf().optionalFieldOf(SerializationConstants.PARAMETERS, null).forGetter(MethodHelpData::params),
+          Returns.CODEC.optionalFieldOf(SerializationConstants.RETURNS, Returns.NOTHING).forGetter(MethodHelpData::returns),
+          Codec.STRING.optionalFieldOf(SerializationConstants.DESCRIPTION, null).forGetter(MethodHelpData::description),
+          MekCodecs.METHOD_RESTRICTION_CODEC.optionalFieldOf(SerializationConstants.RESTRICTION, MethodRestriction.NONE).forGetter(MethodHelpData::restriction),
+          Codec.BOOL.optionalFieldOf(SerializationConstants.REQUIRES_PUBLIC_SECURITY, false).forGetter(MethodHelpData::requiresPublicSecurity)
+    ).apply(instance, MethodHelpData::new));
 
     public record Param(String name, String type, Class<?> javaType, @Nullable List<String> values) {
 
@@ -122,14 +121,12 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             this(name, type, javaType, null);
         }
 
-        public static final Codec<Param> CODEC = RecordCodecBuilder.create(instance ->
-              instance.group(
-                    Codec.STRING.fieldOf("name").forGetter(Param::name),
-                    Codec.STRING.fieldOf("type").forGetter(Param::type),
-                    MekCodecs.CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Param::javaType)/*,
-                    Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Param::values)*/
-              ).apply(instance, Param::new)
-        );
+        public static final Codec<Param> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              Codec.STRING.fieldOf(SerializationConstants.NAME).forGetter(Param::name),
+              Codec.STRING.fieldOf(SerializationConstants.TYPE).forGetter(Param::type),
+              MekCodecs.CLASS_TO_STRING_CODEC.fieldOf(SerializationConstants.JAVA_TYPE).forGetter(Param::javaType)/*,
+              Codec.STRING.listOf().optionalFieldOf(SerializationConstants.VALUES, null).forGetter(Param::values)*/
+        ).apply(instance, Param::new));
 
         @NotNull
         private static Param from(Class<?> argClass, String paramName) {
@@ -145,10 +142,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
         public static final Returns NOTHING = new Returns("Nothing", void.class, NO_CLASSES, null);
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              Codec.STRING.fieldOf("type").forGetter(Returns::type),
-              MekCodecs.CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
-              MekCodecs.optionalClassArrayCodec("javaExtra").forGetter(Returns::javaExtra)/*,
-              Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)*/
+              Codec.STRING.fieldOf(SerializationConstants.TYPE).forGetter(Returns::type),
+              MekCodecs.CLASS_TO_STRING_CODEC.fieldOf(SerializationConstants.JAVA_TYPE).forGetter(Returns::javaType),
+              MekCodecs.optionalClassArrayCodec(SerializationConstants.JAVA_EXTRA).forGetter(Returns::javaExtra)/*,
+              Codec.STRING.listOf().optionalFieldOf(SerializationConstants.VALUES, null).forGetter(Returns::values)*/
         ).apply(instance, Returns::new));
 
         public static Returns from(MethodData<?> data) {

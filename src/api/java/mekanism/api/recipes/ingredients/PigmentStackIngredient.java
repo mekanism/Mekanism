@@ -78,7 +78,7 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      * @since 10.6.0
      */
     public static final Codec<PigmentStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf("ingredient").forGetter(PigmentStackIngredient::ingredient),
+          IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf(SerializationConstants.INGREDIENT).forGetter(PigmentStackIngredient::ingredient),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
     ).apply(instance, PigmentStackIngredient::new));
 

@@ -41,7 +41,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
 
     public static final Codec<BlockData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           BlockState.CODEC.fieldOf(SerializationConstants.STATE).forGetter(BlockData::blockState),
-          CompoundTag.CODEC.optionalFieldOf(SerializationConstants.BE_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
+          CompoundTag.CODEC.optionalFieldOf(SerializationConstants.BLOCK_ENTITY_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
     ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
     //TODO - 1.20.5: Test this and see if there is a proper stream codec for block states
     public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(

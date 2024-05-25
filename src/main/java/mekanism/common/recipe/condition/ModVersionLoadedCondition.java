@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
+import mekanism.api.SerializationConstants;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -29,8 +30,8 @@ public record ModVersionLoadedCondition(String modid, String minVersion) impleme
 
     public static MapCodec<ModVersionLoadedCondition> makeCodec() {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-              Codec.STRING.fieldOf("modid").forGetter(ModVersionLoadedCondition::modid),
-              Codec.STRING.fieldOf("minVersion").forGetter(ModVersionLoadedCondition::minVersion)
+              Codec.STRING.fieldOf(SerializationConstants.MODID).forGetter(ModVersionLoadedCondition::modid),
+              Codec.STRING.fieldOf(SerializationConstants.VERSION).forGetter(ModVersionLoadedCondition::minVersion)
         ).apply(instance, ModVersionLoadedCondition::new));
     }
 }

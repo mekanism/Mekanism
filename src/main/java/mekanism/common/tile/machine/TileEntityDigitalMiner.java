@@ -986,7 +986,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         dataMap.putBoolean(SerializationConstants.SILK_TOUCH, getSilkTouch());
         dataMap.putBoolean(SerializationConstants.INVERSE, inverse);
         if (inverseReplaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(dataMap, SerializationConstants.REPLACE_STACK, BuiltInRegistries.ITEM, inverseReplaceTarget);
+            NBTUtils.writeRegistryEntry(dataMap, SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM, inverseReplaceTarget);
         }
         dataMap.putBoolean(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         filterManager.writeToNBT(provider, dataMap);
@@ -1014,7 +1014,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.PULL, pull -> doPull = pull);
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.SILK_TOUCH, this::setSilkTouch);
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, inverse -> this.inverse = inverse);
-        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, SerializationConstants.REPLACE_STACK, BuiltInRegistries.ITEM, Items.AIR);
+        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM, Items.AIR);
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
         filterManager.readFromNBT(provider, dataMap);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item

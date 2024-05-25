@@ -31,7 +31,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     protected static <FILTER extends SorterFilter<FILTER>> P6<Mu<FILTER>, Boolean, Boolean, Boolean, Integer, Integer, Optional<EnumColor>> baseSorterCodec(Instance<FILTER> instance) {
         return baseCodec(instance)
               .and(Codec.BOOL.optionalFieldOf(SerializationConstants.ALLOW_DEFAULT, false).forGetter(filter -> filter.allowDefault))
-              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.SIZE_MODE, false).forGetter(filter -> filter.sizeMode))
+              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.SIZE, false).forGetter(filter -> filter.sizeMode))
               .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.MIN, 0).forGetter(filter -> filter.min))
               .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.MAX, 0).forGetter(filter -> filter.max))
               .and(EnumColor.CODEC.optionalFieldOf(SerializationConstants.COLOR).forGetter(filter -> Optional.ofNullable(filter.color)))
