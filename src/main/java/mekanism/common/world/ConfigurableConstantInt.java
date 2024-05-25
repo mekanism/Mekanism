@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class ConfigurableConstantInt extends IntProvider {
 
     public static final MapCodec<ConfigurableConstantInt> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          OreVeinType.CODEC.optionalFieldOf(SerializationConstants.TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType))
+          OreVeinType.CODEC.optionalFieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType))
     ).apply(builder, oreType -> {
         if (oreType.isPresent()) {
             OreVeinType type = oreType.get();

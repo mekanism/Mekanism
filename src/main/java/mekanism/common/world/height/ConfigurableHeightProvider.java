@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class ConfigurableHeightProvider extends HeightProvider {
 
     public static final MapCodec<ConfigurableHeightProvider> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          OreVeinType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(config -> config.oreVeinType)
+          OreVeinType.CODEC.fieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> config.oreVeinType)
     ).apply(builder, type -> new ConfigurableHeightProvider(type, MekanismConfig.world.getVeinConfig(type))));
 
     private final OreVeinType oreVeinType;

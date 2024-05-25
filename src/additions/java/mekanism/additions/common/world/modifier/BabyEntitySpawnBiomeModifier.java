@@ -61,7 +61,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
 
     public static MapCodec<BabyEntitySpawnBiomeModifier> makeCodec() {
         return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              BabyType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(BabyEntitySpawnBiomeModifier::babyType)
+              BabyType.CODEC.fieldOf(SerializationConstants.BABY_TYPE).forGetter(BabyEntitySpawnBiomeModifier::babyType)
         ).apply(builder, BabyEntitySpawnBiomeModifier::new));
     }
 }

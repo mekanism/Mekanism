@@ -52,7 +52,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
 
     public static MapCodec<BabyEntitySpawnStructureModifier> makeCodec() {
         return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              BabyType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(BabyEntitySpawnStructureModifier::babyType)
+              BabyType.CODEC.fieldOf(SerializationConstants.BABY_TYPE).forGetter(BabyEntitySpawnStructureModifier::babyType)
         ).apply(builder, BabyEntitySpawnStructureModifier::new));
     }
 }

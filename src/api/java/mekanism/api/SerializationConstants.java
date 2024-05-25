@@ -110,6 +110,7 @@ public final class SerializationConstants {
     public static final String AGE = "age";
     public static final String ASSEMBLIES = "assemblies";
     public static final String AUTO = "auto";
+    public static final String BABY_TYPE = "baby_type";
     public static final String BLADES = "blades";
     public static final String BLOCK = "block";
     public static final String BLOCK_ENTITY_TAG = "block_entity_tag";
@@ -216,6 +217,7 @@ public final class SerializationConstants {
     public static final String NAME = "name";
     public static final String NEXT = "next";
     public static final String NUM_POWERING = "num_powering";
+    public static final String ORE_TYPE = "ore_type";
     public static final String ORIGINAL_LOCATION = "original_location";
     public static final String OUTPUT_MODE = "output_mode";
     public static final String OVERFLOW = "overflow";

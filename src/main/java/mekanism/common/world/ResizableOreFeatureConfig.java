@@ -18,7 +18,7 @@ public record ResizableOreFeatureConfig(List<TargetBlockState> targetStates, Ore
 
     public static final Codec<ResizableOreFeatureConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
           Codec.list(OreConfiguration.TargetBlockState.CODEC).fieldOf(SerializationConstants.TARGETS).forGetter(config -> config.targetStates),
-          OreVeinType.CODEC.fieldOf(SerializationConstants.TYPE).forGetter(config -> config.oreVeinType)
+          OreVeinType.CODEC.fieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> config.oreVeinType)
     ).apply(builder, (targetStates, oreVeinType) -> {
         OreVeinConfig veinConfig = MekanismConfig.world.getVeinConfig(oreVeinType);
         return new ResizableOreFeatureConfig(targetStates, oreVeinType, veinConfig.maxVeinSize(), veinConfig.discardChanceOnAirExposure());

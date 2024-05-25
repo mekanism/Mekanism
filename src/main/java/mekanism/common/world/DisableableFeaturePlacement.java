@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class DisableableFeaturePlacement extends PlacementFilter {
 
     public static final MapCodec<DisableableFeaturePlacement> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-          OreVeinType.CODEC.optionalFieldOf(SerializationConstants.TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType)),
+          OreVeinType.CODEC.optionalFieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType)),
           Codec.BOOL.fieldOf(SerializationConstants.RETRO_GEN).forGetter(config -> config.retroGen)
     ).apply(builder, (oreType, retroGen) -> {
         if (oreType.isPresent()) {
