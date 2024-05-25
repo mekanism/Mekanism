@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
@@ -126,8 +126,8 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     @Override
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
-        if (nbtTags.contains(NBTConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
-            saveShare = FluidStack.parseOptional(provider, nbtTags.getCompound(NBTConstants.FLUID_STORED));
+        if (nbtTags.contains(SerializationConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
+            saveShare = FluidStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.FLUID_STORED));
         } else {
             saveShare = FluidStack.EMPTY;
         }
@@ -142,9 +142,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
-            nbtTags.remove(NBTConstants.FLUID_STORED);
+            nbtTags.remove(SerializationConstants.FLUID_STORED);
         } else {
-            nbtTags.put(NBTConstants.FLUID_STORED, saveShare.save(provider));
+            nbtTags.put(SerializationConstants.FLUID_STORED, saveShare.save(provider));
         }
         return nbtTags;
     }
@@ -260,7 +260,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     @Override
     protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, network::setLastFluid);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, network::setLastFluid);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

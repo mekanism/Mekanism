@@ -10,7 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -321,21 +321,21 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
+        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            nbtTags.put(NBTConstants.FLUID_STORED, activeType.save(provider));
+            nbtTags.put(SerializationConstants.FLUID_STORED, activeType.save(provider));
         }
         if (!recurringNodes.isEmpty()) {
-            nbtTags.put(NBTConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
+            nbtTags.put(SerializationConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
         }
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
-        NBTUtils.readBlockPositions(nbt, NBTConstants.RECURRING_NODES, recurringNodes);
+        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
+        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.FLUID_STORED, fluid -> activeType = fluid);
+        NBTUtils.readBlockPositions(nbt, SerializationConstants.RECURRING_NODES, recurringNodes);
     }
 
     @Override

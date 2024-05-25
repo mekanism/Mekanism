@@ -1,7 +1,7 @@
 package mekanism.common.recipe.ingredients.pigment;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 public final class SinglePigmentIngredient extends SingleChemicalIngredient<Pigment, IPigmentIngredient> implements IPigmentIngredient {
 
     public static final MapCodec<SinglePigmentIngredient> CODEC = PigmentStack.PIGMENT_NON_EMPTY_HOLDER_CODEC.xmap(SinglePigmentIngredient::new, SinglePigmentIngredient::chemical)
-          .fieldOf(JsonConstants.PIGMENT);
+          .fieldOf(SerializationConstants.PIGMENT);
 
     SinglePigmentIngredient(Holder<Pigment> pigment) {
         super(pigment);

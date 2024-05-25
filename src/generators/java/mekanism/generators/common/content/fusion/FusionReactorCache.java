@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.fusion;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -50,16 +50,16 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     @Override
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.load(provider, nbtTags);
-        plasmaTemperature = nbtTags.getDouble(NBTConstants.PLASMA_TEMP);
-        injectionRate = nbtTags.getInt(NBTConstants.INJECTION_RATE);
-        burning = nbtTags.getBoolean(NBTConstants.BURNING);
+        plasmaTemperature = nbtTags.getDouble(SerializationConstants.PLASMA_TEMP);
+        injectionRate = nbtTags.getInt(SerializationConstants.INJECTION_RATE);
+        burning = nbtTags.getBoolean(SerializationConstants.BURNING);
     }
 
     @Override
     public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.save(provider, nbtTags);
-        nbtTags.putDouble(NBTConstants.PLASMA_TEMP, plasmaTemperature);
-        nbtTags.putInt(NBTConstants.INJECTION_RATE, getInjectionRate());
-        nbtTags.putBoolean(NBTConstants.BURNING, burning);
+        nbtTags.putDouble(SerializationConstants.PLASMA_TEMP, plasmaTemperature);
+        nbtTags.putInt(SerializationConstants.INJECTION_RATE, getInjectionRate());
+        nbtTags.putBoolean(SerializationConstants.BURNING, burning);
     }
 }

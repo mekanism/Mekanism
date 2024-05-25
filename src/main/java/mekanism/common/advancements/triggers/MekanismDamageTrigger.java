@@ -3,7 +3,7 @@ package mekanism.common.advancements.triggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
@@ -37,9 +37,9 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
                                   boolean killed) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
-                    MekanismDamageTypes.CODEC.fieldOf(JsonConstants.DAMAGE).forGetter(TriggerInstance::damageType),
-                    Codec.BOOL.fieldOf(JsonConstants.KILLED).forGetter(TriggerInstance::killed)
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+                    MekanismDamageTypes.CODEC.fieldOf(SerializationConstants.DAMAGE).forGetter(TriggerInstance::damageType),
+                    Codec.BOOL.fieldOf(SerializationConstants.KILLED).forGetter(TriggerInstance::killed)
               ).apply(instance, TriggerInstance::new)
         );
 

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
@@ -213,8 +213,8 @@ public class FrequencyManager<FREQ extends Frequency> {
 
         @Override
         public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-            NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
-            ListTag list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
+            NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
+            ListTag list = nbtTags.getList(SerializationConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
             for (int i = 0; i < list.size(); i++) {
                 loadedFrequencies.add(frequencyType.create(provider, list.getCompound(i)));
@@ -225,7 +225,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         @Override
         public CompoundTag save(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
             if (ownerUUID != null) {
-                nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
+                nbtTags.putUUID(SerializationConstants.OWNER_UUID, ownerUUID);
             }
             Codec<FREQ> codec = frequencyType.codec();
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
@@ -233,7 +233,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             for (FREQ freq : frequencies.values()) {
                 list.add(codec.encodeStart(registryOps, freq).getOrThrow());
             }
-            nbtTags.put(NBTConstants.FREQUENCY_LIST, list);
+            nbtTags.put(SerializationConstants.FREQUENCY_LIST, list);
             return nbtTags;
         }
     }

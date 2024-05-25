@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -207,24 +207,24 @@ public class TurbineMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> lowerVolume = value);
-        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> gasTank.setStack(value));
-        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.COMPLEX, value -> complex = value);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> clientRotation = value);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevSteamScale = scale);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, value -> lowerVolume = value);
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> gasTank.setStack(value));
+        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.COMPLEX, value -> complex = value);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.ROTATION, value -> clientRotation = value);
         clientRotationMap.put(inventoryID, clientRotation);
     }
 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.putFloat(NBTConstants.SCALE, prevSteamScale);
-        tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().saveOptional(provider));
-        tag.put(NBTConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
-        tag.putFloat(NBTConstants.ROTATION, clientRotation);
+        tag.putFloat(SerializationConstants.SCALE, prevSteamScale);
+        tag.putInt(SerializationConstants.VOLUME, getVolume());
+        tag.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
+        tag.put(SerializationConstants.GAS_STORED, gasTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
+        tag.putFloat(SerializationConstants.ROTATION, clientRotation);
     }
 
     @ComputerMethod

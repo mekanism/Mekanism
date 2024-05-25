@@ -1,7 +1,7 @@
 package mekanism.common.tile.qio;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -93,13 +93,13 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        dataMap.putBoolean(NBTConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
+        dataMap.putBoolean(SerializationConstants.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INSERT_INTO_FREQUENCY, value -> insertIntoFrequency = value);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INSERT_INTO_FREQUENCY, value -> insertIntoFrequency = value);
     }
 
     @Override

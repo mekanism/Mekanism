@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -85,18 +85,18 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
 
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ExtraCodecs.NON_EMPTY_STRING.fieldOf(NBTConstants.NAME).forGetter(Frequency::getName),
-          UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
-          SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
-          FloatingLong.CODEC.fieldOf(NBTConstants.ENERGY_STORED).forGetter(freq -> freq.storedEnergy.getEnergy()),
-          FluidStack.OPTIONAL_CODEC.fieldOf(NBTConstants.FLUID_STORED).forGetter(freq -> freq.storedFluid.getFluid()),
-          GasStack.OPTIONAL_CODEC.fieldOf(NBTConstants.GAS_STORED).forGetter(freq -> freq.storedGas.getStack()),
-          InfusionStack.OPTIONAL_CODEC.fieldOf(NBTConstants.INFUSE_TYPE_STORED).forGetter(freq -> freq.storedInfusion.getStack()),
-          PigmentStack.OPTIONAL_CODEC.fieldOf(NBTConstants.PIGMENT_STORED).forGetter(freq -> freq.storedPigment.getStack()),
-          SlurryStack.OPTIONAL_CODEC.fieldOf(NBTConstants.SLURRY_STORED).forGetter(freq -> freq.storedSlurry.getStack()),
-          ItemStack.OPTIONAL_CODEC.fieldOf(NBTConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
-          Codec.DOUBLE.fieldOf(NBTConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
-          Codec.DOUBLE.fieldOf(NBTConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
+          ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
+          UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+          SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
+          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY_STORED).forGetter(freq -> freq.storedEnergy.getEnergy()),
+          FluidStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.FLUID_STORED).forGetter(freq -> freq.storedFluid.getFluid()),
+          GasStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.GAS_STORED).forGetter(freq -> freq.storedGas.getStack()),
+          InfusionStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INFUSE_TYPE_STORED).forGetter(freq -> freq.storedInfusion.getStack()),
+          PigmentStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.PIGMENT_STORED).forGetter(freq -> freq.storedPigment.getStack()),
+          SlurryStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.SLURRY_STORED).forGetter(freq -> freq.storedSlurry.getStack()),
+          ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
+          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
+          Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
     ).apply(instance, (name, owner, securityMode, energy, fluid, gas, infusion, pigment, slurry, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);

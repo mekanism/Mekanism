@@ -1,7 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -56,13 +56,13 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
+        nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
     }
 
     @Override

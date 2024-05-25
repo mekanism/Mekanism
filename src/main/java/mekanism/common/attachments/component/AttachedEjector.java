@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.EnumUtils;
@@ -21,9 +21,9 @@ import org.jetbrains.annotations.Nullable;
 public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean strictInput, Optional<EnumColor> outputColor) {
 
     public static final Codec<AttachedEjector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ExtraCodecs.optionalEmptyMap(EnumColor.CODEC).listOf(EnumUtils.SIDES.length, EnumUtils.SIDES.length).fieldOf(NBTConstants.INPUT_COLOR).forGetter(AttachedEjector::inputColors),
-          Codec.BOOL.fieldOf(NBTConstants.STRICT_INPUT).forGetter(AttachedEjector::strictInput),
-          EnumColor.CODEC.optionalFieldOf(NBTConstants.QIO_META_TYPES).forGetter(AttachedEjector::outputColor)
+          ExtraCodecs.optionalEmptyMap(EnumColor.CODEC).listOf(EnumUtils.SIDES.length, EnumUtils.SIDES.length).fieldOf(SerializationConstants.INPUT_COLOR).forGetter(AttachedEjector::inputColors),
+          Codec.BOOL.fieldOf(SerializationConstants.STRICT_INPUT).forGetter(AttachedEjector::strictInput),
+          EnumColor.CODEC.optionalFieldOf(SerializationConstants.QIO_META_TYPES).forGetter(AttachedEjector::outputColor)
     ).apply(instance, AttachedEjector::new));
     public static final StreamCodec<ByteBuf, AttachedEjector> STREAM_CODEC = StreamCodec.composite(
           EnumColor.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(EnumUtils.SIDES.length)), AttachedEjector::inputColors,

@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -89,9 +89,9 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         FissionReactorMultiblockData multiblock = getMultiblock();
-        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
+        updateTag.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
         if (multiblock.isFormed()) {
-            updateTag.putDouble(NBTConstants.BURNING, multiblock.lastBurnRate);
+            updateTag.putDouble(SerializationConstants.BURNING, multiblock.lastBurnRate);
         }
         return updateTag;
     }
@@ -102,13 +102,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
         //UUID previousID = multiblock.inventoryID;
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HANDLE_SOUND, value -> handleSound = value);
         //boolean formedMaster = false;
         //boolean wasBurning = false;
         if (multiblock.isFormed()) {
             //formedMaster = isMaster();
             //wasBurning = multiblock.isBurning();
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> multiblock.lastBurnRate = value);
+            NBTUtils.setDoubleIfPresent(tag, SerializationConstants.BURNING, value -> multiblock.lastBurnRate = value);
         }
         //TODO: At some point make use of this if we are able to use the FuelAssemblyBakedModel?
         /*boolean sameID = Objects.equals(previousID, multiblock.inventoryID);

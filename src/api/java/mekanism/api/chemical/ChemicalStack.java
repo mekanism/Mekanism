@@ -12,8 +12,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
@@ -74,8 +73,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> MapCodec<STACK> codec(Codec<CHEMICAL> nonEmptyCodec,
           BiFunction<CHEMICAL, Long, STACK> constructor) {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
-              nonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical),
-              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
+              nonEmptyCodec.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical),
+              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
         ).apply(instance, constructor));
     }
 
@@ -89,7 +88,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Codec<STACK> fixedAmountCodec(
           Codec<CHEMICAL> chemicalNonEmptyCodec, BiFunction<CHEMICAL, Long, STACK> constructor, long amount) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              chemicalNonEmptyCodec.fieldOf(NBTConstants.ID).forGetter(ChemicalStack::getChemical)
+              chemicalNonEmptyCodec.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemical)
         ).apply(instance, holder -> constructor.apply(holder, amount)));
     }
 
@@ -165,7 +164,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @see mekanism.api.chemical.merged.BoxedChemicalStack
      * @since 10.6.0
      */
-    public static final Codec<ChemicalStack<?>> BOXED_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
+    public static final Codec<ChemicalStack<?>> BOXED_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
         case GAS -> GasStack.MAP_CODEC;
         case INFUSION -> InfusionStack.MAP_CODEC;
         case PIGMENT -> PigmentStack.MAP_CODEC;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -29,7 +29,7 @@ public abstract non-sealed class IntersectionChemicalIngredient<CHEMICAL extends
     protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, INTERSECTION extends IntersectionChemicalIngredient<?, INGREDIENT>> MapCodec<INTERSECTION> codec(
           IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, INTERSECTION> constructor) {
         return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              creator.listCodecMultipleElements().fieldOf(JsonConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
+              creator.listCodecMultipleElements().fieldOf(SerializationConstants.CHILDREN).forGetter(IntersectionChemicalIngredient::children)
         ).apply(builder, constructor));
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -180,15 +180,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, this::setLastPlasmaTemp);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, this::setBurning);
+        NBTUtils.setDoubleIfPresent(tag, SerializationConstants.PLASMA_TEMP, this::setLastPlasmaTemp);
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.BURNING, this::setBurning);
     }
 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.putDouble(NBTConstants.PLASMA_TEMP, getLastPlasmaTemp());
-        tag.putBoolean(NBTConstants.BURNING, isBurning());
+        tag.putDouble(SerializationConstants.PLASMA_TEMP, getLastPlasmaTemp());
+        tag.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
     public void addTemperatureFromEnergyInput(FloatingLong energyAdded) {

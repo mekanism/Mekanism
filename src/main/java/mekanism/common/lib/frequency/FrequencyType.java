@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
@@ -169,7 +169,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
-        return (FrequencyType<FREQ>) registryMap.get(tag.getString(NBTConstants.TYPE));
+        return (FrequencyType<FREQ>) registryMap.get(tag.getString(SerializationConstants.TYPE));
     }
 
     public static void clear() {

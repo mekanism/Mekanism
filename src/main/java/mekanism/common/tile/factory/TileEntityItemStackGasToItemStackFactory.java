@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -247,8 +247,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        if (nbt.contains(NBTConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
-            long[] savedUsed = nbt.getLongArray(NBTConstants.USED_SO_FAR);
+        if (nbt.contains(SerializationConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
+            long[] savedUsed = nbt.getLongArray(SerializationConstants.USED_SO_FAR);
             if (tier.processes != savedUsed.length) {
                 Arrays.fill(usedSoFar, 0);
             }
@@ -263,7 +263,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putLongArray(NBTConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
+        nbtTags.putLongArray(SerializationConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
     }
 
     @Override

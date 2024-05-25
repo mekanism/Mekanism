@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -747,7 +747,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.REDSTONE, value -> redstone = value);
+        NBTUtils.setBooleanIfPresent(nbt, SerializationConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
             component.read(nbt, provider);
         }
@@ -758,21 +758,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (isActivatable()) {
-            NBTUtils.setBooleanIfPresent(nbt, NBTConstants.ACTIVE_STATE, value -> currentActive = value);
-            NBTUtils.setIntIfPresent(nbt, NBTConstants.UPDATE_DELAY, value -> updateDelay = value);
+            NBTUtils.setBooleanIfPresent(nbt, SerializationConstants.ACTIVE_STATE, value -> currentActive = value);
+            NBTUtils.setIntIfPresent(nbt, SerializationConstants.UPDATE_DELAY, value -> updateDelay = value);
         }
         if (supportsComparator()) {
-            NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
+            NBTUtils.setIntIfPresent(nbt, SerializationConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
         if (isNameable()) {
-            NBTUtils.setStringIfPresent(nbt, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value, provider));
+            NBTUtils.setStringIfPresent(nbt, SerializationConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value, provider));
         }
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putBoolean(NBTConstants.REDSTONE, redstone);
+        nbtTags.putBoolean(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags, provider);
         }
@@ -785,28 +785,28 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
 
         if (isActivatable()) {
-            nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
-            nbtTags.putInt(NBTConstants.UPDATE_DELAY, updateDelay);
+            nbtTags.putBoolean(SerializationConstants.ACTIVE_STATE, currentActive);
+            nbtTags.putInt(SerializationConstants.UPDATE_DELAY, updateDelay);
         }
         if (supportsComparator()) {
-            nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
+            nbtTags.putInt(SerializationConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
 
         // Save the custom name, only if it exists and the tile can be named
         if (this.customName != null && isNameable()) {
-            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName, provider));
+            nbtTags.putString(SerializationConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName, provider));
         }
     }
 
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         if (supportsRedstone()) {
-            NBTUtils.writeEnum(data, NBTConstants.CONTROL_TYPE, controlType);
+            NBTUtils.writeEnum(data, SerializationConstants.CONTROL_TYPE, controlType);
         }
     }
 
     public void readSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
+            NBTUtils.setEnumIfPresent(data, SerializationConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
         }
     }
 
@@ -963,7 +963,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.addToUpdateTag(updateTag);
         }
-        updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
+        updateTag.putFloat(SerializationConstants.RADIATION, radiationScale);
         return updateTag;
     }
 
@@ -973,7 +973,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
-        radiationScale = tag.getFloat(NBTConstants.RADIATION);
+        radiationScale = tag.getFloat(SerializationConstants.RADIATION);
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {

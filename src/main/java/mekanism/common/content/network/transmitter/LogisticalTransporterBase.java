@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.InventoryNetwork;
@@ -297,12 +297,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         ListTag stacks = new ListTag();
         for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
             CompoundTag tagCompound = new CompoundTag();
-            tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
+            tagCompound.putInt(SerializationConstants.INDEX, entry.getIntKey());
             entry.getValue().writeToUpdateTag(provider, this, tagCompound);
             stacks.add(tagCompound);
         }
         if (!stacks.isEmpty()) {
-            updateTag.put(NBTConstants.ITEMS, stacks);
+            updateTag.put(SerializationConstants.ITEMS, stacks);
         }
         return updateTag;
     }
@@ -311,12 +311,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
         transit.clear();
-        if (tag.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
-            ListTag tagList = tag.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
+        if (tag.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
+            ListTag tagList = tag.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 CompoundTag compound = tagList.getCompound(i);
                 TransporterStack stack = TransporterStack.readFromUpdate(provider, compound);
-                addStack(compound.getInt(NBTConstants.INDEX), stack);
+                addStack(compound.getInt(SerializationConstants.INDEX), stack);
             }
         }
     }
@@ -328,8 +328,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        if (nbtTags.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
-            ListTag tagList = nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND);
+        if (nbtTags.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
+            ListTag tagList = nbtTags.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 addStack(nextId++, TransporterStack.readFromNBT(provider, tagList.getCompound(i)));
             }
@@ -353,7 +353,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 stack.write(provider, tagCompound);
                 stacks.add(tagCompound);
             }
-            nbtTags.put(NBTConstants.ITEMS, stacks);
+            nbtTags.put(SerializationConstants.ITEMS, stacks);
         }
     }
 

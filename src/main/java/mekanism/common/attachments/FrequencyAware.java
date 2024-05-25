@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.SecurityMode;
@@ -40,7 +40,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
     public static <FREQ extends Frequency> Codec<FrequencyAware<FREQ>> codec(FrequencyType<FREQ> frequencyType) {
         return RecordCodecBuilder.create(instance -> instance.group(
               //TODO - 1.20.5: Validate this is equivalent to Frequency#serializeIdentityWithOwner??
-              frequencyType.getIdentitySerializer().codec().optionalFieldOf(NBTConstants.IDENTITY).forGetter(FrequencyAware::identity)
+              frequencyType.getIdentitySerializer().codec().optionalFieldOf(SerializationConstants.IDENTITY).forGetter(FrequencyAware::identity)
         ).apply(instance, identity -> {
             FREQ frequency = null;
             if (identity.isPresent() && EffectiveSide.get().isServer()) {

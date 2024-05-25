@@ -3,7 +3,7 @@ package mekanism.api.fluid;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -242,7 +242,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getFluid().save(provider));
+            nbt.put(SerializationConstants.STORED, getFluid().save(provider));
         }
         return nbt;
     }

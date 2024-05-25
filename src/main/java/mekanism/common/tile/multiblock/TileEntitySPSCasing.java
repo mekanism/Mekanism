@@ -2,7 +2,7 @@ package mekanism.common.tile.multiblock;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.content.sps.SPSMultiblockData;
@@ -87,13 +87,13 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         SPSMultiblockData multiblock = getMultiblock();
-        updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0);
+        updateTag.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HANDLE_SOUND, value -> handleSound = value);
     }
 }

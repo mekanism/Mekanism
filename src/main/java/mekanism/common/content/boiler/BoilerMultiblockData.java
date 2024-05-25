@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
@@ -231,26 +231,26 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setWaterVolume);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, this::setSteamVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> waterTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> steamTank.setStack(value));
-        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_Y, value -> upperRenderLocation = value);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevWaterScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT, scale -> prevSteamScale = scale);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setWaterVolume);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, this::setSteamVolume);
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, value -> waterTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> steamTank.setStack(value));
+        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.RENDER_Y, value -> upperRenderLocation = value);
         readValves(tag);
     }
 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.putFloat(NBTConstants.SCALE, prevWaterScale);
-        tag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
-        tag.putInt(NBTConstants.VOLUME, getWaterVolume());
-        tag.putInt(NBTConstants.LOWER_VOLUME, getSteamVolume());
-        tag.put(NBTConstants.FLUID_STORED, waterTank.getFluid().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED, steamTank.getStack().saveOptional(provider));
-        tag.put(NBTConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
+        tag.putFloat(SerializationConstants.SCALE, prevWaterScale);
+        tag.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
+        tag.putInt(SerializationConstants.VOLUME, getWaterVolume());
+        tag.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
+        tag.put(SerializationConstants.FLUID_STORED, waterTank.getFluid().saveOptional(provider));
+        tag.put(SerializationConstants.GAS_STORED, steamTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
         writeValves(tag);
     }
 

@@ -6,7 +6,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
@@ -406,22 +406,22 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     @NotNull
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        updateTag.putIntArray(NBTConstants.CONNECTION, getRawConnections());
+        updateTag.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        updateTag.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        updateTag.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
         //Transmitter
         if (hasTransmitterNetwork()) {
-            updateTag.putUUID(NBTConstants.NETWORK, getTransmitterNetwork().getUUID());
+            updateTag.putUUID(SerializationConstants.NETWORK, getTransmitterNetwork().getUUID());
         }
         return updateTag;
     }
 
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
-        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
+        NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
+        NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(tag);
         //Transmitter
-        NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.NETWORK, networkID -> {
+        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.NETWORK, networkID -> {
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
                 //Nothing needs to be done
                 return;
@@ -448,18 +448,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
-        NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
-        NBTUtils.setByteIfPresent(nbtTags, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
+        redstoneReactive = nbtTags.getBoolean(SerializationConstants.REDSTONE);
+        NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
+        NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         readRawConnections(nbtTags);
     }
 
     @NotNull
     public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
-        nbtTags.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        nbtTags.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        nbtTags.putIntArray(NBTConstants.CONNECTION, getRawConnections());
+        nbtTags.putBoolean(SerializationConstants.REDSTONE, redstoneReactive);
+        nbtTags.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        nbtTags.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        nbtTags.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
         return nbtTags;
     }
 
@@ -472,8 +472,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     private void readRawConnections(CompoundTag tag) {
-        if (tag.contains(NBTConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
-            int[] raw = tag.getIntArray(NBTConstants.CONNECTION);
+        if (tag.contains(SerializationConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
+            int[] raw = tag.getIntArray(SerializationConstants.CONNECTION);
             for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
                 setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
             }

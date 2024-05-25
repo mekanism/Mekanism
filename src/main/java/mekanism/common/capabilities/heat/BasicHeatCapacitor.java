@@ -2,7 +2,7 @@ package mekanism.common.capabilities.heat;
 
 import java.util.function.DoubleSupplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -108,14 +108,14 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
-        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
+        NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.STORED, heat -> storedHeat = heat);
+        NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
     }
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = IHeatCapacitor.super.serializeNBT(provider);
-        nbt.putDouble(NBTConstants.HEAT_CAPACITY, getHeatCapacity());
+        nbt.putDouble(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
         return nbt;
     }
 

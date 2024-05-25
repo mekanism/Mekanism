@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.lib.MekanismSavedData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -162,12 +162,12 @@ public class MultiblockManager<T extends MultiblockData> {
 
         @Override
         public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            if (nbt.contains(NBTConstants.CACHE, Tag.TAG_LIST)) {
-                ListTag cachesNbt = nbt.getList(NBTConstants.CACHE, Tag.TAG_COMPOUND);
+            if (nbt.contains(SerializationConstants.CACHE, Tag.TAG_LIST)) {
+                ListTag cachesNbt = nbt.getList(SerializationConstants.CACHE, Tag.TAG_COMPOUND);
                 for (int i = 0; i < cachesNbt.size(); i++) {
                     CompoundTag cacheTags = cachesNbt.getCompound(i);
-                    if (cacheTags.hasUUID(NBTConstants.INVENTORY_ID)) {
-                        UUID id = cacheTags.getUUID(NBTConstants.INVENTORY_ID);
+                    if (cacheTags.hasUUID(SerializationConstants.INVENTORY_ID)) {
+                        UUID id = cacheTags.getUUID(SerializationConstants.INVENTORY_ID);
                         MultiblockCache<T> cachedData = cacheSupplier.get();
                         cachedData.load(provider, cacheTags);
                         caches.put(id, cachedData);
@@ -184,11 +184,11 @@ public class MultiblockManager<T extends MultiblockData> {
                 CompoundTag cacheTags = new CompoundTag();
                 //Note: We can just store the inventory id in the same compound tag as the rest of the cache data
                 // as none of the caches save anything to this tag
-                cacheTags.putUUID(NBTConstants.INVENTORY_ID, entry.getKey());
+                cacheTags.putUUID(SerializationConstants.INVENTORY_ID, entry.getKey());
                 entry.getValue().save(provider, cacheTags);
                 cachesNbt.add(cacheTags);
             }
-            nbt.put(NBTConstants.CACHE, cachesNbt);
+            nbt.put(SerializationConstants.CACHE, cachesNbt);
             return nbt;
         }
     }

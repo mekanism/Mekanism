@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -143,13 +143,13 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
+        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
     }
 
     @Override

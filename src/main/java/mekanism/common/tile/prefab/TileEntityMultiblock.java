@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
@@ -254,9 +254,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(NBTConstants.RENDERING, isMaster());
+        updateTag.putBoolean(SerializationConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
-        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
+        updateTag.putBoolean(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed());
         if (multiblock.isFormed() && isMaster()) {
             multiblock.writeUpdateTag(updateTag, provider);
         }
@@ -266,9 +266,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> isMaster = value);
         T multiblock = getMultiblock();
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, multiblock::setFormedForce);
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HAS_STRUCTURE, multiblock::setFormedForce);
         if (isMaster()) {
             if (multiblock.isFormed()) {
                 multiblock.readUpdateTag(tag, provider);
@@ -304,7 +304,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
         if (!getMultiblock().isFormed()) {
-            NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> cachedID = id);
+            NBTUtils.setUUIDIfPresent(nbt, SerializationConstants.INVENTORY_ID, id -> cachedID = id);
         }
     }
 
@@ -314,7 +314,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (cachedID != null) {
             //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
             // at which point it will gracefully handle multiblock tiles with stale ids and clear them
-            nbtTags.putUUID(NBTConstants.INVENTORY_ID, cachedID);
+            nbtTags.putUUID(SerializationConstants.INVENTORY_ID, cachedID);
         }
     }
 

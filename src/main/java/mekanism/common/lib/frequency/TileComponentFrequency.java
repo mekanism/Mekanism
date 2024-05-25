@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -259,7 +259,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public String getComponentKey() {
-        return NBTConstants.COMPONENT_FREQUENCY;
+        return SerializationConstants.COMPONENT_FREQUENCY;
     }
 
     @Override

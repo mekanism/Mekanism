@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -25,8 +25,8 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     protected static <FILTER extends MinerFilter<FILTER>> P3<Mu<FILTER>, Boolean, Item, Boolean> baseMinerCodec(Instance<FILTER> instance) {
         return baseCodec(instance)
-              .and(BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf(NBTConstants.REPLACE_STACK, Items.AIR).forGetter(filter -> filter.replaceTarget))
-              .and(Codec.BOOL.optionalFieldOf(NBTConstants.REQUIRE_STACK, false).forGetter(filter -> filter.requiresReplacement))
+              .and(BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf(SerializationConstants.REPLACE_STACK, Items.AIR).forGetter(filter -> filter.replaceTarget))
+              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.REQUIRE_STACK, false).forGetter(filter -> filter.requiresReplacement))
               ;
     }
 

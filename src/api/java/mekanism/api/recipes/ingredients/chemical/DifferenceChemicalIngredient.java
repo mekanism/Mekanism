@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -31,8 +31,8 @@ public abstract non-sealed class DifferenceChemicalIngredient<CHEMICAL extends C
     protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, DIFFERENCE extends DifferenceChemicalIngredient<?, INGREDIENT>> MapCodec<DIFFERENCE> codec(
           IChemicalIngredientCreator<?, INGREDIENT> creator, BiFunction<INGREDIENT, INGREDIENT, DIFFERENCE> constructor) {
         return RecordCodecBuilder.mapCodec(builder -> builder.group(
-              creator.codecNonEmpty().fieldOf(JsonConstants.BASE).forGetter(DifferenceChemicalIngredient::base),
-              creator.codecNonEmpty().fieldOf(JsonConstants.SUBTRACTED).forGetter(DifferenceChemicalIngredient::subtracted)
+              creator.codecNonEmpty().fieldOf(SerializationConstants.BASE).forGetter(DifferenceChemicalIngredient::base),
+              creator.codecNonEmpty().fieldOf(SerializationConstants.SUBTRACTED).forGetter(DifferenceChemicalIngredient::subtracted)
         ).apply(builder, constructor));
     }
 

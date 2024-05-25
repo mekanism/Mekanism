@@ -7,7 +7,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.integration.lookingat.ChemicalElement;
 import mekanism.common.integration.lookingat.EnergyElement;
 import mekanism.common.integration.lookingat.FluidElement;
@@ -70,11 +70,11 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
     @Override
     public void appendTooltip(ITooltip tooltip, ACCESSOR accessor, IPluginConfig config) {
         CompoundTag data = accessor.getServerData();
-        if (data.contains(NBTConstants.MEK_DATA, Tag.TAG_LIST)) {
+        if (data.contains(SerializationConstants.MEK_DATA, Tag.TAG_LIST)) {
             Component lastText = null;
             RegistryOps<Tag> registryOps = accessor.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
-            ListTag list = data.getList(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND);
+            ListTag list = data.getList(SerializationConstants.MEK_DATA, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 CompoundTag elementData = list.getCompound(i);
                 Optional<ILookingAtElement> lookingAtElement = ELEMENT_CODEC.parse(registryOps, elementData).result();

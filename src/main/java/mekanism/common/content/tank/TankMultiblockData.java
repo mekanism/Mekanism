@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
@@ -105,7 +105,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
         mergedTank.readFromUpdateTag(provider, tag);
         readValves(tag);
     }
@@ -113,7 +113,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.putFloat(NBTConstants.SCALE, prevScale);
+        tag.putFloat(SerializationConstants.SCALE, prevScale);
         mergedTank.addToUpdateTag(provider, tag);
         writeValves(tag);
     }

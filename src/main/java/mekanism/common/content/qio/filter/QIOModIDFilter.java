@@ -6,19 +6,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDFilter<QIOModIDFilter> {
 
     public static final MapCodec<QIOModIDFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
-          .and(Codec.STRING.fieldOf(NBTConstants.MODID).forGetter(QIOModIDFilter::getModID))
+          .and(Codec.STRING.fieldOf(SerializationConstants.MODID).forGetter(QIOModIDFilter::getModID))
           .apply(instance, QIOModIDFilter::new));
     public static final StreamCodec<ByteBuf, QIOModIDFilter> STREAM_CODEC = StreamCodec.composite(
           baseQIOStreamCodec(QIOModIDFilter::new), Function.identity(),

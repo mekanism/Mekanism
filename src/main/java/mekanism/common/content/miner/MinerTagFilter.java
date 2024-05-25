@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
     public static final MapCodec<MinerTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
-          .and(Codec.STRING.fieldOf(NBTConstants.TAG_NAME).forGetter(MinerTagFilter::getTagName))
+          .and(Codec.STRING.fieldOf(SerializationConstants.TAG_NAME).forGetter(MinerTagFilter::getTagName))
           .apply(instance, MinerTagFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, MinerTagFilter> STREAM_CODEC = StreamCodec.composite(
           baseMinerStreamCodec(MinerTagFilter::new), Function.identity(),

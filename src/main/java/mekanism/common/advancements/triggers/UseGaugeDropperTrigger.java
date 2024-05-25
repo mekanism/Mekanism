@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Locale;
 import java.util.Optional;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -44,8 +44,8 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
     public record TriggerInstance(Optional<ContextAwarePredicate> player, UseDropperAction action) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
-                    UseDropperAction.CODEC.fieldOf(JsonConstants.ACTION).forGetter(TriggerInstance::action)
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+                    UseDropperAction.CODEC.fieldOf(SerializationConstants.ACTION).forGetter(TriggerInstance::action)
               ).apply(instance, TriggerInstance::new)
         );
 

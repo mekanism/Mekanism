@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -83,8 +83,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private void readModes(@NotNull CompoundTag tag) {
-        if (tag.contains(NBTConstants.MODE, Tag.TAG_INT_ARRAY)) {
-            int[] modeIndices = tag.getIntArray(NBTConstants.MODE);
+        if (tag.contains(SerializationConstants.MODE, Tag.TAG_INT_ARRAY)) {
+            int[] modeIndices = tag.getIntArray(SerializationConstants.MODE);
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
                 modes[i] = DiversionControl.BY_ID.apply(modeIndices[i]);
             }
@@ -97,7 +97,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         for (int i = 0; i < modes.length; i++) {
             modeIndices[i] = modes[i].ordinal();
         }
-        nbtTags.putIntArray(NBTConstants.MODE, modeIndices);
+        nbtTags.putIntArray(SerializationConstants.MODE, modeIndices);
         return nbtTags;
     }
 

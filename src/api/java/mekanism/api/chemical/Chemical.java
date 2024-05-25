@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
@@ -40,12 +40,13 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @see mekanism.api.chemical.merged.BoxedChemical
      * @since 10.6.0
      */
-    public static final Codec<Chemical<?>> BOXED_OPTIONAL_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
-        case GAS -> MekanismAPI.GAS_REGISTRY.byNameCodec().fieldOf(JsonConstants.GAS);
-        case INFUSION -> MekanismAPI.INFUSE_TYPE_REGISTRY.byNameCodec().fieldOf(JsonConstants.INFUSE_TYPE);
-        case PIGMENT -> MekanismAPI.PIGMENT_REGISTRY.byNameCodec().fieldOf(JsonConstants.PIGMENT);
-        case SLURRY -> MekanismAPI.SLURRY_REGISTRY.byNameCodec().fieldOf(JsonConstants.SLURRY);
-    });
+    public static final Codec<Chemical<?>> BOXED_OPTIONAL_CODEC = ChemicalType.CODEC.dispatch(SerializationConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor,
+          type -> switch (type) {
+              case GAS -> MekanismAPI.GAS_REGISTRY.byNameCodec().fieldOf(SerializationConstants.GAS);
+              case INFUSION -> MekanismAPI.INFUSE_TYPE_REGISTRY.byNameCodec().fieldOf(SerializationConstants.INFUSE_TYPE);
+              case PIGMENT -> MekanismAPI.PIGMENT_REGISTRY.byNameCodec().fieldOf(SerializationConstants.PIGMENT);
+              case SLURRY -> MekanismAPI.SLURRY_REGISTRY.byNameCodec().fieldOf(SerializationConstants.SLURRY);
+          });
     /**
      * Codec to get any kind of chemical (that does not accept empty types), based on a "chemicalType" field.
      *

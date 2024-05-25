@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.fission;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -65,22 +65,22 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     @Override
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.load(provider, nbtTags);
-        reactorDamage = nbtTags.getDouble(NBTConstants.REACTOR_DAMAGE);
-        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.INJECTION_RATE, value -> rateLimit = value);
-        burnRemaining = nbtTags.getDouble(NBTConstants.BURN_TIME);
-        partialWaste = nbtTags.getDouble(NBTConstants.PARTIAL_WASTE);
-        forceDisable = nbtTags.getBoolean(NBTConstants.DISABLED);
-        active = nbtTags.getBoolean(NBTConstants.ACTIVE);
+        reactorDamage = nbtTags.getDouble(SerializationConstants.REACTOR_DAMAGE);
+        NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.INJECTION_RATE, value -> rateLimit = value);
+        burnRemaining = nbtTags.getDouble(SerializationConstants.BURN_TIME);
+        partialWaste = nbtTags.getDouble(SerializationConstants.PARTIAL_WASTE);
+        forceDisable = nbtTags.getBoolean(SerializationConstants.DISABLED);
+        active = nbtTags.getBoolean(SerializationConstants.ACTIVE);
     }
 
     @Override
     public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.save(provider, nbtTags);
-        nbtTags.putDouble(NBTConstants.REACTOR_DAMAGE, reactorDamage);
-        nbtTags.putDouble(NBTConstants.INJECTION_RATE, getRateLimit());
-        nbtTags.putDouble(NBTConstants.BURN_TIME, burnRemaining);
-        nbtTags.putDouble(NBTConstants.PARTIAL_WASTE, partialWaste);
-        nbtTags.putBoolean(NBTConstants.DISABLED, forceDisable);
-        nbtTags.putBoolean(NBTConstants.ACTIVE, active);
+        nbtTags.putDouble(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
+        nbtTags.putDouble(SerializationConstants.INJECTION_RATE, getRateLimit());
+        nbtTags.putDouble(SerializationConstants.BURN_TIME, burnRemaining);
+        nbtTags.putDouble(SerializationConstants.PARTIAL_WASTE, partialWaste);
+        nbtTags.putBoolean(SerializationConstants.DISABLED, forceDisable);
+        nbtTags.putBoolean(SerializationConstants.ACTIVE, active);
     }
 }

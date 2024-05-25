@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
@@ -55,30 +55,30 @@ public class Meltdown {
 
     @Nullable
     public static Meltdown load(CompoundTag tag) {
-        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, NBTConstants.MIN);
-        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, NBTConstants.MAX);
+        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, SerializationConstants.MIN);
+        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, SerializationConstants.MAX);
         if (minPos.isEmpty() || maxPos.isEmpty()) {
             return null;
         }
         return new Meltdown(
               minPos.get(),
               maxPos.get(),
-              tag.getDouble(NBTConstants.MAGNITUDE),
-              tag.getDouble(NBTConstants.CHANCE),
-              tag.getFloat(NBTConstants.RADIUS),
-              tag.getUUID(NBTConstants.INVENTORY_ID),
-              tag.getInt(NBTConstants.AGE)
+              tag.getDouble(SerializationConstants.MAGNITUDE),
+              tag.getDouble(SerializationConstants.CHANCE),
+              tag.getFloat(SerializationConstants.RADIUS),
+              tag.getUUID(SerializationConstants.INVENTORY_ID),
+              tag.getInt(SerializationConstants.AGE)
         );
     }
 
     public void write(CompoundTag tag) {
-        tag.put(NBTConstants.MIN, NbtUtils.writeBlockPos(minPos));
-        tag.put(NBTConstants.MAX, NbtUtils.writeBlockPos(maxPos));
-        tag.putDouble(NBTConstants.MAGNITUDE, magnitude);
-        tag.putDouble(NBTConstants.CHANCE, chance);
-        tag.putFloat(NBTConstants.RADIUS, radius);
-        tag.putUUID(NBTConstants.INVENTORY_ID, multiblockID);
-        tag.putInt(NBTConstants.AGE, ticksExisted);
+        tag.put(SerializationConstants.MIN, NbtUtils.writeBlockPos(minPos));
+        tag.put(SerializationConstants.MAX, NbtUtils.writeBlockPos(maxPos));
+        tag.putDouble(SerializationConstants.MAGNITUDE, magnitude);
+        tag.putDouble(SerializationConstants.CHANCE, chance);
+        tag.putFloat(SerializationConstants.RADIUS, radius);
+        tag.putUUID(SerializationConstants.INVENTORY_ID, multiblockID);
+        tag.putInt(SerializationConstants.AGE, ticksExisted);
     }
 
     public boolean update(ServerLevel world) {

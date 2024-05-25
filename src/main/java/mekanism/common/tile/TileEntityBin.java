@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -178,14 +178,14 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT(provider));
+        updateTag.put(SerializationConstants.ITEM, binSlot.serializeNBT(provider));
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(provider, nbt));
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> binSlot.deserializeNBT(provider, nbt));
     }
 
     //Methods relating to IComputerTile

@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import mekanism.api.Chunk3D;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -675,8 +675,8 @@ public class RadiationManager implements IRadiationManager {
 
         @Override
         public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-            if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
-                ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
+            if (nbtTags.contains(SerializationConstants.RADIATION_LIST, Tag.TAG_LIST)) {
+                ListTag list = nbtTags.getList(SerializationConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>();
                 RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
                 for (Tag nbt : list) {
@@ -685,8 +685,8 @@ public class RadiationManager implements IRadiationManager {
             } else {
                 loadedSources = Collections.emptySet();
             }
-            if (nbtTags.contains(NBTConstants.MELTDOWNS, Tag.TAG_COMPOUND)) {
-                CompoundTag meltdownNBT = nbtTags.getCompound(NBTConstants.MELTDOWNS);
+            if (nbtTags.contains(SerializationConstants.MELTDOWNS, Tag.TAG_COMPOUND)) {
+                CompoundTag meltdownNBT = nbtTags.getCompound(SerializationConstants.MELTDOWNS);
                 savedMeltdowns = new HashMap<>(meltdownNBT.size());
                 for (String dim : meltdownNBT.getAllKeys()) {
                     ResourceLocation dimension = ResourceLocation.tryParse(dim);
@@ -711,7 +711,7 @@ public class RadiationManager implements IRadiationManager {
                 for (RadiationSource source : manager.radiationTable.values()) {
                     list.add(source.write(registryOps));
                 }
-                nbtTags.put(NBTConstants.RADIATION_LIST, list);
+                nbtTags.put(SerializationConstants.RADIATION_LIST, list);
             }
             if (manager != null && !manager.meltdowns.isEmpty()) {
                 CompoundTag meltdownNBT = new CompoundTag();
@@ -728,7 +728,7 @@ public class RadiationManager implements IRadiationManager {
                     }
                 }
                 if (!meltdownNBT.isEmpty()) {
-                    nbtTags.put(NBTConstants.MELTDOWNS, meltdownNBT);
+                    nbtTags.put(SerializationConstants.MELTDOWNS, meltdownNBT);
                 }
             }
             return nbtTags;

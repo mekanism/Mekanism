@@ -1,6 +1,6 @@
 package mekanism.common.content.sps;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
@@ -48,20 +48,20 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     @Override
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.load(provider, nbtTags);
-        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.PROGRESS, val -> progress = val);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.PROCESSED, val -> inputProcessed = val);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.COULD_OPERATE, val -> couldOperate = val);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.ENERGY_USAGE, val -> receivedEnergy = val);
-        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.LAST_PROCESSED, val -> lastProcessed = val);
+        NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.PROGRESS, val -> progress = val);
+        NBTUtils.setIntIfPresent(nbtTags, SerializationConstants.PROCESSED, val -> inputProcessed = val);
+        NBTUtils.setBooleanIfPresent(nbtTags, SerializationConstants.COULD_OPERATE, val -> couldOperate = val);
+        NBTUtils.setFloatingLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
+        NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.LAST_PROCESSED, val -> lastProcessed = val);
     }
 
     @Override
     public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.save(provider, nbtTags);
-        nbtTags.putDouble(NBTConstants.PROGRESS, progress);
-        nbtTags.putInt(NBTConstants.PROCESSED, inputProcessed);
-        nbtTags.putBoolean(NBTConstants.COULD_OPERATE, couldOperate);
-        nbtTags.putString(NBTConstants.ENERGY_USAGE, receivedEnergy.toString());
-        nbtTags.putDouble(NBTConstants.LAST_PROCESSED, lastProcessed);
+        nbtTags.putDouble(SerializationConstants.PROGRESS, progress);
+        nbtTags.putInt(SerializationConstants.PROCESSED, inputProcessed);
+        nbtTags.putBoolean(SerializationConstants.COULD_OPERATE, couldOperate);
+        nbtTags.putString(SerializationConstants.ENERGY_USAGE, receivedEnergy.toString());
+        nbtTags.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 }

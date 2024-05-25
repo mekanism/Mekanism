@@ -13,7 +13,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.ToIntBiFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
@@ -383,8 +383,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        if (nbt.contains(NBTConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
-            int[] savedProgress = nbt.getIntArray(NBTConstants.PROGRESS);
+        if (nbt.contains(SerializationConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
+            int[] savedProgress = nbt.getIntArray(SerializationConstants.PROGRESS);
             if (tier.processes != savedProgress.length) {
                 Arrays.fill(progress, 0);
             }
@@ -397,19 +397,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putIntArray(NBTConstants.PROGRESS, Arrays.copyOf(progress, progress.length));
+        nbtTags.putIntArray(SerializationConstants.PROGRESS, Arrays.copyOf(progress, progress.length));
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         super.writeSustainedData(provider, data);
-        data.putBoolean(NBTConstants.SORTING, isSorting());
+        data.putBoolean(SerializationConstants.SORTING, isSorting());
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
+        NBTUtils.setBooleanIfPresent(data, SerializationConstants.SORTING, value -> sorting = value);
     }
 
     @Override

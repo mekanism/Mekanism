@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -78,7 +78,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
-          NBTConstants.ENERGY_CONTAINERS, NBTConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY,
+          SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY,
           TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy) {
         @Override
         @SuppressWarnings("unchecked")
@@ -87,25 +87,25 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
-          NBTConstants.ITEMS, NBTConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, TileEntityMekanism::getInventorySlots,
+          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, TileEntityMekanism::getInventorySlots,
           TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory);
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
-          NBTConstants.FLUID_TANKS, NBTConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, TileEntityMekanism::getFluidTanks,
+          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, TileEntityMekanism::getFluidTanks,
           TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
     public static final ContainerType<IGasTank, AttachedGases, ComponentBackedGasHandler> GAS = new ContainerType<>(MekanismDataComponents.ATTACHED_GASES,
-          NBTConstants.GAS_TANKS, NBTConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, TileEntityMekanism::getGasTanks,
+          SerializationConstants.GAS_TANKS, SerializationConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, TileEntityMekanism::getGasTanks,
           TileEntityMekanism::collectGasTanks, TileEntityMekanism::applyGasTanks, TileEntityMekanism::canHandleGas);
     public static final ContainerType<IInfusionTank, AttachedInfuseTypes, ComponentBackedInfusionHandler> INFUSION = new ContainerType<>(
-          MekanismDataComponents.ATTACHED_INFUSE_TYPES, NBTConstants.INFUSION_TANKS, NBTConstants.TANK, ComponentBackedInfusionHandler::new, Capabilities.INFUSION,
+          MekanismDataComponents.ATTACHED_INFUSE_TYPES, SerializationConstants.INFUSION_TANKS, SerializationConstants.TANK, ComponentBackedInfusionHandler::new, Capabilities.INFUSION,
           TileEntityMekanism::getInfusionTanks, TileEntityMekanism::collectInfusionTanks, TileEntityMekanism::applyInfusionTanks, TileEntityMekanism::canHandleInfusion);
     public static final ContainerType<IPigmentTank, AttachedPigments, ComponentBackedPigmentHandler> PIGMENT = new ContainerType<>(MekanismDataComponents.ATTACHED_PIGMENTS,
-          NBTConstants.PIGMENT_TANKS, NBTConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT,
+          SerializationConstants.PIGMENT_TANKS, SerializationConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT,
           TileEntityMekanism::getPigmentTanks, TileEntityMekanism::collectPigmentTanks, TileEntityMekanism::applyPigmentTanks, TileEntityMekanism::canHandlePigment);
     public static final ContainerType<ISlurryTank, AttachedSlurries, ComponentBackedSlurryHandler> SLURRY = new ContainerType<>(MekanismDataComponents.ATTACHED_SLURRIES,
-          NBTConstants.SLURRY_TANKS, NBTConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, TileEntityMekanism::getSlurryTanks,
+          SerializationConstants.SLURRY_TANKS, SerializationConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, TileEntityMekanism::getSlurryTanks,
           TileEntityMekanism::collectSlurryTanks, TileEntityMekanism::applySlurryTanks, TileEntityMekanism::canHandleSlurry);
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
-          NBTConstants.HEAT_CAPACITORS, NBTConstants.CONTAINER, ComponentBackedHeatHandler::new, null, TileEntityMekanism::getHeatCapacitors,
+          SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, TileEntityMekanism::getHeatCapacitors,
           TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat);
 
     //TODO - 1.20.5: Re-evaluate this codec implementation

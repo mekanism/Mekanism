@@ -3,7 +3,7 @@ package mekanism.common.attachments.qio;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.common.content.qio.QIODriveData;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,8 +15,8 @@ public record DriveMetadata(long count, int types) {
     public static final DriveMetadata EMPTY = new DriveMetadata(0, 0);
 
     public static final Codec<DriveMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.QIO_META_COUNT).forGetter(DriveMetadata::count),
-          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(NBTConstants.QIO_META_TYPES).forGetter(DriveMetadata::types)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.QIO_META_COUNT).forGetter(DriveMetadata::count),
+          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.QIO_META_TYPES).forGetter(DriveMetadata::types)
     ).apply(instance, DriveMetadata::new));
     public static final StreamCodec<ByteBuf, DriveMetadata> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.VAR_LONG, DriveMetadata::count,

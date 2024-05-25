@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements IModIDFilter<MinerModIDFilter> {
 
     public static final MapCodec<MinerModIDFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
-          .and(Codec.STRING.fieldOf(NBTConstants.MODID).forGetter(MinerModIDFilter::getModID))
+          .and(Codec.STRING.fieldOf(SerializationConstants.MODID).forGetter(MinerModIDFilter::getModID))
           .apply(instance, MinerModIDFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, MinerModIDFilter> STREAM_CODEC = StreamCodec.composite(
           baseMinerStreamCodec(MinerModIDFilter::new), Function.identity(),

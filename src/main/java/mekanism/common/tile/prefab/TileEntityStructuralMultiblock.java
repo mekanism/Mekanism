@@ -3,7 +3,7 @@ package mekanism.common.tile.prefab;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import java.util.Map;
 import mekanism.api.IConfigurable;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
@@ -213,16 +213,16 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(NBTConstants.FORMED, hasFormedMultiblock);
-        updateTag.putBoolean(NBTConstants.GUI, canAccessGui);
+        updateTag.putBoolean(SerializationConstants.FORMED, hasFormedMultiblock);
+        updateTag.putBoolean(SerializationConstants.GUI, canAccessGui);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        hasFormedMultiblock = tag.getBoolean(NBTConstants.FORMED);
-        canAccessGui = tag.getBoolean(NBTConstants.GUI);
+        hasFormedMultiblock = tag.getBoolean(SerializationConstants.FORMED);
+        canAccessGui = tag.getBoolean(SerializationConstants.GUI);
     }
 
     @Override

@@ -9,7 +9,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -236,23 +236,23 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
-        nbtTags.putBoolean(NBTConstants.FINISHED, finishedCalc);
+        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        nbtTags.putBoolean(SerializationConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
-            nbtTags.put(NBTConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
+            nbtTags.put(SerializationConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
         }
         if (!usedNodes.isEmpty()) {
-            nbtTags.put(NBTConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
+            nbtTags.put(SerializationConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
         }
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
-        finishedCalc = nbt.getBoolean(NBTConstants.FINISHED);
-        NBTUtils.readBlockPositions(nbt, NBTConstants.ACTIVE_NODES, activeNodes);
-        NBTUtils.readBlockPositions(nbt, NBTConstants.USED_NODES, usedNodes);
+        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
+        finishedCalc = nbt.getBoolean(SerializationConstants.FINISHED);
+        NBTUtils.readBlockPositions(nbt, SerializationConstants.ACTIVE_NODES, activeNodes);
+        NBTUtils.readBlockPositions(nbt, SerializationConstants.USED_NODES, usedNodes);
     }
 
     public void reset() {

@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,7 +33,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
      */
     public static <TYPE extends Enum<TYPE> & IHasTextComponent> Codec<ModuleEnumConfig<TYPE>> codec(Codec<TYPE> enumCodec) {
         return RecordCodecBuilder.create(instance -> baseCodec(instance)
-              .and(enumCodec.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
+              .and(enumCodec.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
               .apply(instance, ModuleEnumConfig::new));
     }
 
@@ -61,7 +61,7 @@ public class ModuleEnumConfig<TYPE extends Enum<TYPE> & IHasTextComponent> exten
         return RecordCodecBuilder.create(instance -> baseCodec(instance)
               .and(enumCodec.validate(value -> value.ordinal() < selectableCount ? DataResult.success(value) :
                                                DataResult.error(() -> "Invalid value" + value.name() + ", it is out of range of the selectable values."))
-                    .fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
+                    .fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
               .apply(instance, (name, value) -> new ModuleEnumConfig<>(name, value, enumConstants)));
     }
 

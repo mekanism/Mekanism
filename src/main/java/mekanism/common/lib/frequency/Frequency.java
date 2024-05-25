@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.IFrequency;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.util.MekanismUtils;
@@ -24,9 +24,9 @@ public abstract class Frequency implements IFrequency {
 
     protected static <FREQ extends Frequency> P3<Mu<FREQ>, String, Optional<UUID>, SecurityMode> baseCodec(Instance<FREQ> instance) {
         return instance.group(
-              ExtraCodecs.NON_EMPTY_STRING.fieldOf(NBTConstants.NAME).forGetter(Frequency::getName),
-              UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
-              SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(Frequency::getSecurity)
+              ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
+              UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+              SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity)
         );
     }
 

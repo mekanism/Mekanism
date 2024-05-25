@@ -4,7 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.inventory.HashedItem;
@@ -154,7 +154,7 @@ public class QIOGlobalItemLookup {
                 nbtRepresentation = internalToNBT(provider);
                 //Override to ensure that it gets stored with a count of one in case it was raw
                 // and that then when we read it we don't create it with extra size
-                ((CompoundTag) nbtRepresentation).putByte(NBTConstants.COUNT, (byte) 1);
+                ((CompoundTag) nbtRepresentation).putByte(SerializationConstants.COUNT, (byte) 1);
             }
             return nbtRepresentation;
         }

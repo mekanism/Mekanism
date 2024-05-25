@@ -1,6 +1,6 @@
 package mekanism.common.content.tank;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.NBTUtils;
@@ -32,12 +32,12 @@ public class TankCache extends MultiblockCache<TankMultiblockData> {
     @Override
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.load(provider, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override
     public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.save(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.EDIT_MODE, editMode);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.EDIT_MODE, editMode);
     }
 }

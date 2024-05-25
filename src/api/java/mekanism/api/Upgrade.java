@@ -76,13 +76,13 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
      */
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundTag nbtTags) {
         Map<Upgrade, Integer> upgrades = null;
-        if (nbtTags != null && nbtTags.contains(NBTConstants.UPGRADES, Tag.TAG_LIST)) {
-            ListTag list = nbtTags.getList(NBTConstants.UPGRADES, Tag.TAG_COMPOUND);
+        if (nbtTags != null && nbtTags.contains(SerializationConstants.UPGRADES, Tag.TAG_LIST)) {
+            ListTag list = nbtTags.getList(SerializationConstants.UPGRADES, Tag.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundTag compound = list.getCompound(tagCount);
-                Upgrade upgrade = BY_ID.apply(compound.getInt(NBTConstants.TYPE));
+                Upgrade upgrade = BY_ID.apply(compound.getInt(SerializationConstants.TYPE));
                 //Validate the nbt isn't malformed with a negative or zero amount
-                int installed = Math.max(compound.getInt(NBTConstants.AMOUNT), 0);
+                int installed = Math.max(compound.getInt(SerializationConstants.AMOUNT), 0);
                 if (installed > 0) {
                     if (upgrades == null) {
                         upgrades = new EnumMap<>(Upgrade.class);
@@ -105,7 +105,7 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.add(entry.getKey().getTag(entry.getValue()));
         }
-        nbtTags.put(NBTConstants.UPGRADES, list);
+        nbtTags.put(SerializationConstants.UPGRADES, list);
     }
 
     /**
@@ -117,8 +117,8 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
      */
     public CompoundTag getTag(int amount) {
         CompoundTag compound = new CompoundTag();
-        compound.putInt(NBTConstants.TYPE, ordinal());
-        compound.putInt(NBTConstants.AMOUNT, amount);
+        compound.putInt(SerializationConstants.TYPE, ordinal());
+        compound.putInt(SerializationConstants.AMOUNT, amount);
         return compound;
     }
 

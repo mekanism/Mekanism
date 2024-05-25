@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -182,8 +182,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     @Override
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
-        if (nbtTags.contains(NBTConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
-            saveShare = BoxedChemicalStack.parseOptional(provider, nbtTags.getCompound(NBTConstants.BOXED_CHEMICAL));
+        if (nbtTags.contains(SerializationConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
+            saveShare = BoxedChemicalStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.BOXED_CHEMICAL));
         } else {
             saveShare = BoxedChemicalStack.EMPTY;
         }
@@ -208,9 +208,9 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
-            nbtTags.remove(NBTConstants.BOXED_CHEMICAL);
+            nbtTags.remove(SerializationConstants.BOXED_CHEMICAL);
         } else {
-            nbtTags.put(NBTConstants.BOXED_CHEMICAL, saveShare.save(provider));
+            nbtTags.put(SerializationConstants.BOXED_CHEMICAL, saveShare.save(provider));
         }
         return nbtTags;
     }
@@ -374,8 +374,8 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     @Override
     protected void handleContentsUpdateTag(@NotNull BoxedChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
-        NBTUtils.setBoxedChemicalIfPresent(provider, tag, NBTConstants.BOXED_CHEMICAL, network::setLastChemical);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
+        NBTUtils.setBoxedChemicalIfPresent(provider, tag, SerializationConstants.BOXED_CHEMICAL, network::setLastChemical);
     }
 
     public IGasTank getGasTank() {

@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -19,7 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record AttachedPigments(List<PigmentStack> containers) implements IAttachedContainers<PigmentStack, AttachedPigments> {
 
     public static final Codec<AttachedPigments> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          PigmentStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.PIGMENT_TANKS).forGetter(AttachedPigments::containers)
+          PigmentStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.PIGMENT_TANKS).forGetter(AttachedPigments::containers)
     ).apply(instance, AttachedPigments::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedPigments> STREAM_CODEC =
           PigmentStack.OPTIONAL_STREAM_CODEC.<List<PigmentStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
@@ -19,7 +19,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 public record AttachedFluids(List<FluidStack> containers) implements IAttachedContainers<FluidStack, AttachedFluids> {
 
     public static final Codec<AttachedFluids> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          FluidStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.FLUID_TANKS).forGetter(AttachedFluids::containers)
+          FluidStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.FLUID_TANKS).forGetter(AttachedFluids::containers)
     ).apply(instance, AttachedFluids::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedFluids> STREAM_CODEC =
           FluidStack.OPTIONAL_STREAM_CODEC.<List<FluidStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

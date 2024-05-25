@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.SequencedCollection;
 import java.util.SequencedMap;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.ICustomModule;
@@ -41,8 +41,8 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
     public static final ModuleContainer EMPTY = new ModuleContainer(EmptySequencedMap.emptyMap(), ItemEnchantments.EMPTY);
 
     public static final Codec<ModuleContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          new SequencedCollectionCodec<>(Module.CODEC).fieldOf(NBTConstants.MODULES).forGetter(container -> container.typedModules().sequencedValues()),
-          ItemEnchantments.CODEC.fieldOf(NBTConstants.ENCHANTMENTS).forGetter(ModuleContainer::enchantments)
+          new SequencedCollectionCodec<>(Module.CODEC).fieldOf(SerializationConstants.MODULES).forGetter(container -> container.typedModules().sequencedValues()),
+          ItemEnchantments.CODEC.fieldOf(SerializationConstants.ENCHANTMENTS).forGetter(ModuleContainer::enchantments)
     ).apply(instance, ModuleContainer::create));
     public static final StreamCodec<RegistryFriendlyByteBuf, ModuleContainer> STREAM_CODEC = StreamCodec.composite(
           Module.STREAM_CODEC.apply(streamCodec -> ByteBufCodecs.collection(ArrayList::new, streamCodec)), container -> container.typedModules().sequencedValues(),

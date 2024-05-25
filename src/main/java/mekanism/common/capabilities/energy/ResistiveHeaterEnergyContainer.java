@@ -3,7 +3,7 @@ package mekanism.common.capabilities.energy;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -42,13 +42,13 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putString(NBTConstants.ENERGY_USAGE, getEnergyPerTick().toString());
+        nbt.putString(SerializationConstants.ENERGY_USAGE, getEnergyPerTick().toString());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

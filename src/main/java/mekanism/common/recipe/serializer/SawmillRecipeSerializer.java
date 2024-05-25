@@ -6,7 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SawmillRecipe;
@@ -26,12 +26,12 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
 
     public SawmillRecipeSerializer(Function4<ItemStackIngredient, ItemStack, ItemStack, Double, BasicSawmillRecipe> factory) {
         Codec<Double> chanceCodec = Codec.DOUBLE.validate(d -> d > 0 && d <= 1 ? DataResult.success(d) : DataResult.error(() -> "Expected secondaryChance to be greater than zero, and less than or equal to one. Found " + d));
-        MapCodec<Optional<Double>> secondaryChanceFieldBase = chanceCodec.optionalFieldOf(JsonConstants.SECONDARY_CHANCE);
-        MapCodec<Optional<ItemStack>> mainOutputFieldBase = ItemStack.CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
-        RecordCodecBuilder<BasicSawmillRecipe, Optional<ItemStack>> secondaryOutputField = ItemStack.CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(BasicSawmillRecipe::getSecondaryOutputRaw);
+        MapCodec<Optional<Double>> secondaryChanceFieldBase = chanceCodec.optionalFieldOf(SerializationConstants.SECONDARY_CHANCE);
+        MapCodec<Optional<ItemStack>> mainOutputFieldBase = ItemStack.CODEC.optionalFieldOf(SerializationConstants.MAIN_OUTPUT);
+        RecordCodecBuilder<BasicSawmillRecipe, Optional<ItemStack>> secondaryOutputField = ItemStack.CODEC.optionalFieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(BasicSawmillRecipe::getSecondaryOutputRaw);
 
         this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
-              ItemStackIngredient.CODEC.fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),
+              ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(SawmillRecipe::getInput),
               SerializerHelper.oneRequired(secondaryOutputField, mainOutputFieldBase, BasicSawmillRecipe::getMainOutputRaw),
               secondaryOutputField,
               SerializerHelper.dependentOptionality(secondaryOutputField, secondaryChanceFieldBase, sawmillRecipe -> {

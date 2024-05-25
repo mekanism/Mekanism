@@ -2,7 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
@@ -83,8 +83,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.putString(NBTConstants.ENERGY_STORED, network.energyContainer.getEnergy().toString());
-            updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
+            updateTag.putString(SerializationConstants.ENERGY_STORED, network.energyContainer.getEnergy().toString());
+            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;
     }

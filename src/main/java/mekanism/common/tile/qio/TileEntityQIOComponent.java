@@ -1,7 +1,7 @@
 package mekanism.common.tile.qio;
 
 import java.util.Collection;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -59,14 +59,14 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
         if (lastColor != null) {
-            NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, lastColor);
+            NBTUtils.writeEnum(dataMap, SerializationConstants.COLOR, lastColor);
         }
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        lastColor = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(dataMap.getInt(NBTConstants.COLOR)) : null;
+        lastColor = dataMap.contains(SerializationConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(dataMap.getInt(SerializationConstants.COLOR)) : null;
     }
 
     @NotNull
@@ -74,7 +74,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         if (lastColor != null) {
-            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, lastColor);
+            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, lastColor);
         }
         return updateTag;
     }
@@ -82,7 +82,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        EnumColor color = tag.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(tag.getInt(NBTConstants.COLOR)) : null;
+        EnumColor color = tag.contains(SerializationConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(tag.getInt(SerializationConstants.COLOR)) : null;
         if (lastColor != color) {
             lastColor = color;
             WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());

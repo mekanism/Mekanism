@@ -3,7 +3,7 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.slurry.IEmptySlurryProvider;
 import mekanism.api.chemical.slurry.Slurry;
@@ -58,7 +58,7 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      */
     public static final Codec<SlurryStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.slurry().mapCodecNonEmpty().forGetter(SlurryStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
     ).apply(instance, SlurryStackIngredient::new));
 
     /**
@@ -79,7 +79,7 @@ public final class SlurryStackIngredient extends ChemicalStackIngredient<Slurry,
      */
     public static final Codec<SlurryStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.slurry().codecNonEmpty().fieldOf("ingredient").forGetter(SlurryStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(SlurryStackIngredient::amount)
     ).apply(instance, SlurryStackIngredient::new));
 
     /**

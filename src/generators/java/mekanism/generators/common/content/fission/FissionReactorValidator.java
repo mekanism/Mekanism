@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.BlockType;
@@ -158,16 +158,16 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
         public CompoundTag write() {
             CompoundTag ret = new CompoundTag();
-            ret.putInt(NBTConstants.X, pos.getX());
-            ret.putInt(NBTConstants.Y, pos.getY());
-            ret.putInt(NBTConstants.Z, pos.getZ());
-            ret.putInt(NBTConstants.HEIGHT, height);
+            ret.putInt(SerializationConstants.X, pos.getX());
+            ret.putInt(SerializationConstants.Y, pos.getY());
+            ret.putInt(SerializationConstants.Z, pos.getZ());
+            ret.putInt(SerializationConstants.HEIGHT, height);
             return ret;
         }
 
         public static FormedAssembly read(CompoundTag nbt) {
-            return new FormedAssembly(new BlockPos(nbt.getInt(NBTConstants.X), nbt.getInt(NBTConstants.Y), nbt.getInt(NBTConstants.Z)),
-                  nbt.getInt(NBTConstants.HEIGHT));
+            return new FormedAssembly(new BlockPos(nbt.getInt(SerializationConstants.X), nbt.getInt(SerializationConstants.Y), nbt.getInt(SerializationConstants.Z)),
+                  nbt.getInt(SerializationConstants.HEIGHT));
         }
     }
 

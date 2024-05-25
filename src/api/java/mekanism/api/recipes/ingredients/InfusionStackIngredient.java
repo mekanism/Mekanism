@@ -3,7 +3,7 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.infuse.IEmptyInfusionProvider;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -58,7 +58,7 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      */
     public static final Codec<InfusionStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.infusion().mapCodecNonEmpty().forGetter(InfusionStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
     ).apply(instance, InfusionStackIngredient::new));
 
     /**
@@ -79,7 +79,7 @@ public final class InfusionStackIngredient extends ChemicalStackIngredient<Infus
      */
     public static final Codec<InfusionStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.infusion().codecNonEmpty().fieldOf("ingredient").forGetter(InfusionStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(InfusionStackIngredient::amount)
     ).apply(instance, InfusionStackIngredient::new));
 
     /**

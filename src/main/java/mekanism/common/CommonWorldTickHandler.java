@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Predicate;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -121,14 +121,14 @@ public class CommonWorldTickHandler {
                 chunkVersion = chunkVersions.getOrDefault(level.dimension().location(), Object2IntMaps.emptyMap())
                       .getOrDefault(event.getChunk().getPos(), chunkVersion);
             }
-            event.getData().putInt(NBTConstants.WORLD_GEN_VERSION, chunkVersion);
+            event.getData().putInt(SerializationConstants.WORLD_GEN_VERSION, chunkVersion);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide()) {
-            int version = event.getData().getInt(NBTConstants.WORLD_GEN_VERSION);
+            int version = event.getData().getInt(SerializationConstants.WORLD_GEN_VERSION);
             //When a chunk is loaded, if it has an older version than the latest one
             if (version < MekanismConfig.world.userGenVersion.get()) {
                 //Track what version it has so that when we save it, if we haven't gotten a chance to update

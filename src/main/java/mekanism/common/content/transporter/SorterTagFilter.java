@@ -7,20 +7,18 @@ import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
 
     public static final MapCodec<SorterTagFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
-          .and(Codec.STRING.fieldOf(NBTConstants.TAG_NAME).forGetter(SorterTagFilter::getTagName))
+          .and(Codec.STRING.fieldOf(SerializationConstants.TAG_NAME).forGetter(SorterTagFilter::getTagName))
           .apply(instance, SorterTagFilter::new));
     public static final StreamCodec<ByteBuf, SorterTagFilter> STREAM_CODEC = StreamCodec.composite(
           baseSorterStreamCodec(SorterTagFilter::new), Function.identity(),

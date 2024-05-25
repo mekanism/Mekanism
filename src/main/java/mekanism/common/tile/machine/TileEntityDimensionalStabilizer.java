@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.StabilizedChunks;
@@ -221,7 +221,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
                 chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkLoadingAt(x, z) ? 1 : 0);
             }
         }
-        dataMap.putByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
+        dataMap.putByteArray(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         super.readSustainedData(provider, dataMap);
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        byte[] chunksToLoad = dataMap.getByteArray(NBTConstants.STABILIZER_CHUNKS_TO_LOAD);
+        byte[] chunksToLoad = dataMap.getByteArray(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD);
         if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
             //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
             // where to position our values

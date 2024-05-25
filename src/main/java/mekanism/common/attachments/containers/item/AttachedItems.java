@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.IAttachedContainers;
 import net.minecraft.core.NonNullList;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 public record AttachedItems(List<ItemStack> containers) implements IAttachedContainers<ItemStack, AttachedItems> {
 
     public static final Codec<AttachedItems> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.ITEMS).forGetter(AttachedItems::containers)
+          ItemStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.ITEMS).forGetter(AttachedItems::containers)
     ).apply(instance, AttachedItems::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedItems> STREAM_CODEC = ItemStack.OPTIONAL_LIST_STREAM_CODEC
           .map(AttachedItems::new, AttachedItems::containers);

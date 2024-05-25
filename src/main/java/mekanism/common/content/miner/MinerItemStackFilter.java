@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tags.MekanismTags;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> implements IItemStackFilter<MinerItemStackFilter> {
 
     public static final MapCodec<MinerItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseMinerCodec(instance)
-          .and(ItemStack.OPTIONAL_CODEC.fieldOf(NBTConstants.TARGET_STACK).forGetter(MinerItemStackFilter::getItemStack))
+          .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(MinerItemStackFilter::getItemStack))
           .apply(instance, MinerItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, MinerItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseMinerStreamCodec(MinerItemStackFilter::new), Function.identity(),

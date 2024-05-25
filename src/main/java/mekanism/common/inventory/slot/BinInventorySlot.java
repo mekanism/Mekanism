@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -156,14 +156,14 @@ public class BinInventorySlot extends BasicInventorySlot {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
         if (isLocked()) {
-            nbt.put(NBTConstants.LOCK_STACK, lockStack.save(provider));
+            nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setItemStackOrEmpty(provider, nbt, NBTConstants.LOCK_STACK, s -> this.lockStack = s);
+        NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserializeNBT(provider, nbt);
     }
 }

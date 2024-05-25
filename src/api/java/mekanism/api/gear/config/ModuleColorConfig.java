@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,7 +21,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      * Codec for (de)serializing ARGB based color module configs.
      */
     public static final Codec<ModuleColorConfig> ARGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(Codec.INT.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
+          .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleColorConfig::argb));
     /**
      * Stream codec for encoding and decoding ARGB based color module configs over the network.
@@ -36,7 +36,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      * Codec for (de)serializing RGB based color module configs.
      */
     public static final Codec<ModuleColorConfig> RGB_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(Codec.INT.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
+          .and(Codec.INT.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           //If we don't handle alpha make sure we do have the alpha component present
           .apply(instance, ModuleColorConfig::rgb));
     /**

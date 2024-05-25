@@ -11,7 +11,7 @@ import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -50,8 +50,8 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     private record InstalledData<MODULE extends ICustomModule<MODULE>>(ModuleData<MODULE> data, int installed) {
 
         private static final Codec<InstalledData<?>> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              MekanismAPI.MODULE_REGISTRY.byNameCodec().fieldOf(NBTConstants.TYPE).forGetter(InstalledData::data),
-              ExtraCodecs.POSITIVE_INT.fieldOf(NBTConstants.AMOUNT).forGetter(InstalledData::installed)
+              MekanismAPI.MODULE_REGISTRY.byNameCodec().fieldOf(SerializationConstants.TYPE).forGetter(InstalledData::data),
+              ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.AMOUNT).forGetter(InstalledData::installed)
         ).apply(instance, InstalledData::new));
         private static final StreamCodec<RegistryFriendlyByteBuf, InstalledData<?>> STREAM_CODEC = StreamCodec.composite(
               ByteBufCodecs.registry(MekanismAPI.MODULE_REGISTRY_NAME), InstalledData::data,
@@ -64,7 +64,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         }
 
         public MapCodec<List<ModuleConfig<?>>> configCodecs() {
-            return data.configCodecs(installed).optionalFieldOf(NBTConstants.CONFIG, data.defaultConfigs(installed));
+            return data.configCodecs(installed).optionalFieldOf(SerializationConstants.CONFIG, data.defaultConfigs(installed));
         }
 
         public StreamCodec<RegistryFriendlyByteBuf, List<ModuleConfig<?>>> configStreamCodecs() {
@@ -220,7 +220,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
         //TODO - 1.20.5: Re-evaluate this
         CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(registryOps, this).getOrThrow();
-        tag.putInt(NBTConstants.AMOUNT, installed);
+        tag.putInt(SerializationConstants.AMOUNT, installed);
         return (Module<MODULE>) Module.CODEC.decode(registryOps, tag).getOrThrow().getFirst();
     }
 

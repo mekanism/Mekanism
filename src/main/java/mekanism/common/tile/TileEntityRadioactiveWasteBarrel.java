@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -120,16 +120,16 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT(provider));
-        updateTag.putInt(NBTConstants.PROGRESS, processTicks);
+        updateTag.put(SerializationConstants.GAS_STORED, gasTank.serializeNBT(provider));
+        updateTag.putInt(SerializationConstants.PROGRESS, processTicks);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(provider, nbt));
-        NBTUtils.setIntIfPresent(tag, NBTConstants.PROGRESS, val -> processTicks = val);
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(provider, nbt));
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.PROGRESS, val -> processTicks = val);
     }
 
     @Override

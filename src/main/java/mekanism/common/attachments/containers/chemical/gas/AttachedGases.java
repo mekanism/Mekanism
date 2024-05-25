@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -19,7 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record AttachedGases(List<GasStack> containers) implements IAttachedContainers<GasStack, AttachedGases> {
 
     public static final Codec<AttachedGases> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          GasStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.GAS_TANKS).forGetter(AttachedGases::containers)
+          GasStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.GAS_TANKS).forGetter(AttachedGases::containers)
     ).apply(instance, AttachedGases::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedGases> STREAM_CODEC =
           GasStack.OPTIONAL_STREAM_CODEC.<List<GasStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

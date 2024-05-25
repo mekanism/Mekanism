@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configInfo) {
 
     public static final Codec<AttachedSideConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          Codec.unboundedMap(TransmissionType.CODEC, LightConfigInfo.CODEC).fieldOf(NBTConstants.CONFIG).forGetter(AttachedSideConfig::configInfo)
+          Codec.unboundedMap(TransmissionType.CODEC, LightConfigInfo.CODEC).fieldOf(SerializationConstants.CONFIG).forGetter(AttachedSideConfig::configInfo)
     ).apply(instance, AttachedSideConfig::new));
     public static final StreamCodec<ByteBuf, AttachedSideConfig> STREAM_CODEC = ByteBufCodecs.<ByteBuf, TransmissionType, LightConfigInfo, Map<TransmissionType, LightConfigInfo>>map(
                 i -> new EnumMap<>(TransmissionType.class), TransmissionType.STREAM_CODEC, LightConfigInfo.STREAM_CODEC)
@@ -68,8 +68,8 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
     public record LightConfigInfo(Map<RelativeSide, DataType> sideConfig, @Nullable Boolean ejecting) implements IPersistentConfigInfo {
 
         public static final Codec<LightConfigInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              Codec.unboundedMap(RelativeSide.CODEC, DataType.CODEC).fieldOf(NBTConstants.SIDE).forGetter(LightConfigInfo::sideConfig),
-              Codec.BOOL.optionalFieldOf(NBTConstants.EJECT).forGetter(c -> Optional.ofNullable(c.ejecting()))
+              Codec.unboundedMap(RelativeSide.CODEC, DataType.CODEC).fieldOf(SerializationConstants.SIDE).forGetter(LightConfigInfo::sideConfig),
+              Codec.BOOL.optionalFieldOf(SerializationConstants.EJECT).forGetter(c -> Optional.ofNullable(c.ejecting()))
         ).apply(instance, (sideConfig, ejecting) -> new LightConfigInfo(sideConfig, ejecting.orElse(null))));
         public static final StreamCodec<ByteBuf, LightConfigInfo> STREAM_CODEC = StreamCodec.composite(
               ByteBufCodecs.map(i -> new EnumMap<>(RelativeSide.class), RelativeSide.STREAM_CODEC, DataType.STREAM_CODEC), LightConfigInfo::sideConfig,

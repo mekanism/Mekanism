@@ -3,7 +3,7 @@ package mekanism.common.attachments.containers.item;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.ContainerType;
@@ -146,14 +146,14 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         CompoundTag nbt = super.serializeNBT(provider);
         ItemStack lockStack = getLockStack();
         if (!lockStack.isEmpty()) {
-            nbt.put(NBTConstants.LOCK_STACK, lockStack.save(provider));
+            nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setItemStackOrEmpty(provider, nbt, NBTConstants.LOCK_STACK, this::setLockStack);
+        NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, this::setLockStack);
         super.deserializeNBT(provider, nbt);
     }
 }

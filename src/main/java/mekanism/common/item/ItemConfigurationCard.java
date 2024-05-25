@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -66,8 +66,8 @@ public class ItemConfigurationCard extends Item {
                 if (!world.isClientSide) {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(world.registryAccess(), player);
-                    data.putString(NBTConstants.DATA_NAME, translationKey);
-                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
+                    data.putString(SerializationConstants.DATA_NAME, translationKey);
+                    NBTUtils.writeRegistryEntry(data, SerializationConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
                     stack.set(MekanismDataComponents.CONFIGURATION_DATA, data);
                     player.displayClientMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)), true);
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
@@ -121,22 +121,22 @@ public class ItemConfigurationCard extends Item {
     @Nullable
     @Contract("null -> null")
     private Block getStoredType(@Nullable CompoundTag data) {
-        if (data == null || !data.contains(NBTConstants.DATA_TYPE, Tag.TAG_STRING)) {
+        if (data == null || !data.contains(SerializationConstants.DATA_TYPE, Tag.TAG_STRING)) {
             return null;
         }
-        ResourceLocation blockRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
+        ResourceLocation blockRegistryName = ResourceLocation.tryParse(data.getString(SerializationConstants.DATA_TYPE));
         return blockRegistryName == null ? null : BuiltInRegistries.BLOCK.get(blockRegistryName);
     }
 
     private Component getConfigCardName(@Nullable CompoundTag data) {
-        if (data == null || !data.contains(NBTConstants.DATA_NAME, Tag.TAG_STRING)) {
+        if (data == null || !data.contains(SerializationConstants.DATA_NAME, Tag.TAG_STRING)) {
             return MekanismLang.NONE.translate();
         }
-        return TextComponentUtil.translate(data.getString(NBTConstants.DATA_NAME));
+        return TextComponentUtil.translate(data.getString(SerializationConstants.DATA_NAME));
     }
 
     public boolean hasData(ItemStack stack) {
         CompoundTag data = getData(stack);
-        return data != null && data.contains(NBTConstants.DATA_NAME, Tag.TAG_STRING);
+        return data != null && data.contains(SerializationConstants.DATA_NAME, Tag.TAG_STRING);
     }
 }

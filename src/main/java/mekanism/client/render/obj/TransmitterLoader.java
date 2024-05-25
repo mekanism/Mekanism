@@ -3,7 +3,7 @@ package mekanism.client.render.obj;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.obj.ObjLoader;
 import net.neoforged.neoforge.client.model.obj.ObjModel;
@@ -22,8 +22,8 @@ public class TransmitterLoader implements IGeometryLoader<TransmitterModel> {
         //Wrap the Obj loader to read our file
         ObjModel model = ObjLoader.INSTANCE.read(modelContents, deserializationContext);
         ObjModel glass = null;
-        if (modelContents.has(JsonConstants.GLASS)) {
-            glass = ObjLoader.INSTANCE.read(modelContents.getAsJsonObject(JsonConstants.GLASS), deserializationContext);
+        if (modelContents.has(SerializationConstants.GLASS)) {
+            glass = ObjLoader.INSTANCE.read(modelContents.getAsJsonObject(SerializationConstants.GLASS), deserializationContext);
         }
         return new TransmitterModel(model, glass);
     }

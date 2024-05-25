@@ -3,7 +3,7 @@ package mekanism.common.item.predicate;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import java.util.Set;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
@@ -22,7 +22,7 @@ public class MaxedModuleContainerItemPredicate implements ItemSubPredicate {
             return DataResult.success(new MaxedModuleContainerItemPredicate(item));
         }
         return DataResult.error(() -> "Specified item is not a module container item.");
-    }, pred -> pred.item).fieldOf(JsonConstants.ITEM).codec();
+    }, pred -> pred.item).fieldOf(SerializationConstants.ITEM).codec();
     public static final ItemSubPredicate.Type<MaxedModuleContainerItemPredicate> TYPE = new ItemSubPredicate.Type<>(CODEC);
 
     private final Set<ModuleData<?>> supportedModules;
@@ -55,6 +55,6 @@ public class MaxedModuleContainerItemPredicate implements ItemSubPredicate {
                 return DataResult.success(new MaxedModuleContainerItemPredicate(item));
             }
             return DataResult.error(() -> "Specified item is not a module container item.");
-        }, pred -> pred.item).fieldOf(JsonConstants.ITEM).codec();
+        }, pred -> pred.item).fieldOf(SerializationConstants.ITEM).codec();
     }
 }

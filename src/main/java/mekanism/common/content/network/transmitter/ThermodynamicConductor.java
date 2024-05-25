@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
@@ -120,14 +120,14 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(provider, updateTag);
-        updateTag.putDouble(NBTConstants.TEMPERATURE, buffer.getHeat());
+        updateTag.putDouble(SerializationConstants.TEMPERATURE, buffer.getHeat());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, buffer::setHeat);
+        NBTUtils.setDoubleIfPresent(tag, SerializationConstants.TEMPERATURE, buffer::setHeat);
     }
 
     public Color getBaseColor() {

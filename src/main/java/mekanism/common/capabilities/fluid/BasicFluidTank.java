@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
@@ -325,13 +325,13 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.save(provider));
+            nbt.put(SerializationConstants.STORED, stored.save(provider));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.STORED, this::setStackUnchecked);
+        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.STORED, this::setStackUnchecked);
     }
 }

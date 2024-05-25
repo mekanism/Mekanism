@@ -5,7 +5,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -220,7 +220,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
         CompoundTag nbt = new CompoundTag();
         STACK stored = getStack();
         if (!stored.isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.save(provider));
+            nbt.put(SerializationConstants.STORED, stored.save(provider));
         }
         return nbt;
     }

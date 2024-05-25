@@ -1,6 +1,6 @@
 package mekanism.common.content.network.transmitter;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -87,14 +87,14 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.readFromNBT(provider, nbtTags);
-        setColor(NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor));
+        setColor(NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, TransporterUtils::readColor));
     }
 
     @Override
     public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.writeToNBT(provider, nbtTags);
         if (getColor() != null) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, getColor());
+            NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, getColor());
         }
     }
 
@@ -103,7 +103,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(provider, updateTag);
         if (getColor() != null) {
-            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, getColor());
+            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, getColor());
         }
         return updateTag;
     }
@@ -111,6 +111,6 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        setColor(NBTUtils.getEnum(tag, NBTConstants.COLOR, TransporterUtils::readColor));
+        setColor(NBTUtils.getEnum(tag, SerializationConstants.COLOR, TransporterUtils::readColor));
     }
 }

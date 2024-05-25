@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -114,8 +114,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             BoxedChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(NBTConstants.BOXED_CHEMICAL, network.lastChemical.saveOptional(provider));
-            updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
+            updateTag.put(SerializationConstants.BOXED_CHEMICAL, network.lastChemical.saveOptional(provider));
+            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;
     }

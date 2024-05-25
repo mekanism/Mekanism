@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,7 +21,7 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
      * Codec for (de)serializing boolean module configs.
      */
     public static final Codec<ModuleBooleanConfig> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(Codec.BOOL.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get))
+          .and(Codec.BOOL.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get))
           .apply(instance, ModuleBooleanConfig::new));
     /**
      * Stream codec for encoding and decoding boolean module configs over the network.

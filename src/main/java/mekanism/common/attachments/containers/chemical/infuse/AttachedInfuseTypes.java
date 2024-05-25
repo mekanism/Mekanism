@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -19,7 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record AttachedInfuseTypes(List<InfusionStack> containers) implements IAttachedContainers<InfusionStack, AttachedInfuseTypes> {
 
     public static final Codec<AttachedInfuseTypes> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          InfusionStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.INFUSION_TANKS).forGetter(AttachedInfuseTypes::containers)
+          InfusionStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.INFUSION_TANKS).forGetter(AttachedInfuseTypes::containers)
     ).apply(instance, AttachedInfuseTypes::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedInfuseTypes> STREAM_CODEC =
           InfusionStack.OPTIONAL_STREAM_CODEC.<List<InfusionStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

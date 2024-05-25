@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -149,16 +149,16 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
         coilData.read(tag);
-        lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
-        lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
+        lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(SerializationConstants.ENERGY_USAGE));
+        lastProcessed = tag.getDouble(SerializationConstants.LAST_PROCESSED);
     }
 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
         coilData.write(tag);
-        tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
-        tag.putDouble(NBTConstants.LAST_PROCESSED, lastProcessed);
+        tag.putString(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
+        tag.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
     @Override
@@ -263,24 +263,24 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             ListTag list = new ListTag();
             for (CoilData data : coilMap.values()) {
                 CompoundTag tag = new CompoundTag();
-                tag.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(data.coilPos));
-                NBTUtils.writeEnum(tag, NBTConstants.SIDE, data.side);
-                tag.putInt(NBTConstants.LEVEL, data.prevLevel);
+                tag.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(data.coilPos));
+                NBTUtils.writeEnum(tag, SerializationConstants.SIDE, data.side);
+                tag.putInt(SerializationConstants.LEVEL, data.prevLevel);
                 list.add(tag);
             }
-            tags.put(NBTConstants.COILS, list);
+            tags.put(SerializationConstants.COILS, list);
         }
 
         public void read(CompoundTag tags) {
             coilMap.clear();
-            ListTag list = tags.getList(NBTConstants.COILS, Tag.TAG_COMPOUND);
+            ListTag list = tags.getList(SerializationConstants.COILS, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 CompoundTag tag = list.getCompound(i);
-                Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, NBTConstants.POSITION);
+                Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, SerializationConstants.POSITION);
                 if (pos.isPresent()) {
-                    Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
+                    Direction side = Direction.from3DDataValue(tag.getInt(SerializationConstants.SIDE));
                     CoilData data = new CoilData(pos.get(), side);
-                    data.prevLevel = tag.getInt(NBTConstants.LEVEL);
+                    data.prevLevel = tag.getInt(SerializationConstants.LEVEL);
                     coilMap.put(data.coilPos, data);
                 }
             }

@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import mekanism.api.JsonConstants;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
@@ -29,9 +28,9 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, ItemStack inputSlot, 
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           //TODO - 1.20.5: Do we want this to be positive int
-          Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.NON_NEGATIVE_INT).fieldOf(NBTConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
-          ItemStack.OPTIONAL_CODEC.fieldOf(JsonConstants.INPUT).forGetter(UpgradeAware::inputSlot),
-          ItemStack.OPTIONAL_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
+          Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.NON_NEGATIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
+          ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::inputSlot),
+          ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
     ).apply(instance, UpgradeAware::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeAware> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.map(size -> new EnumMap<>(Upgrade.class), Upgrade.STREAM_CODEC, ByteBufCodecs.VAR_INT), UpgradeAware::upgrades,

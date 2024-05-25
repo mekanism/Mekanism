@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
@@ -106,7 +106,7 @@ public enum ChemicalType implements StringRepresentable {
      * @param nbt Tag to write to.
      */
     public void write(@NotNull CompoundTag nbt) {
-        nbt.putString(NBTConstants.CHEMICAL_TYPE, getSerializedName());
+        nbt.putString(SerializationConstants.CHEMICAL_TYPE, getSerializedName());
     }
 
     /**
@@ -130,8 +130,8 @@ public enum ChemicalType implements StringRepresentable {
      */
     @Nullable
     public static ChemicalType fromNBT(@Nullable CompoundTag nbt) {
-        if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, Tag.TAG_STRING)) {
-            return fromString(nbt.getString(NBTConstants.CHEMICAL_TYPE));
+        if (nbt != null && nbt.contains(SerializationConstants.CHEMICAL_TYPE, Tag.TAG_STRING)) {
+            return fromString(nbt.getString(SerializationConstants.CHEMICAL_TYPE));
         }
         return null;
     }

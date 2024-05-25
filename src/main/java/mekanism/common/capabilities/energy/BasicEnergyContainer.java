@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
@@ -161,13 +161,13 @@ public class BasicEnergyContainer implements IEnergyContainer {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.putString(NBTConstants.STORED, stored.toString());
+            nbt.putString(SerializationConstants.STORED, stored.toString());
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, this::setEnergy);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
     }
 }

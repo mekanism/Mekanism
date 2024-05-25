@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.security.SecurityMode;
@@ -692,9 +692,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
+        updateTag.putBoolean(SerializationConstants.RENDERING, shouldRender);
         if (color != null) {
-            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
+            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
         }
         return updateTag;
     }
@@ -702,9 +702,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
-        if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
-            color = EnumColor.BY_ID.apply(tag.getInt(NBTConstants.COLOR));
+        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> shouldRender = value);
+        if (tag.contains(SerializationConstants.COLOR, Tag.TAG_INT)) {
+            color = EnumColor.BY_ID.apply(tag.getInt(SerializationConstants.COLOR));
         } else {
             color = null;
         }

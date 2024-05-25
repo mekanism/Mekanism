@@ -3,7 +3,7 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -58,7 +58,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      */
     public static final Codec<GasStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.gas().mapCodecNonEmpty().forGetter(GasStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(GasStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(GasStackIngredient::amount)
     ).apply(instance, GasStackIngredient::new));
 
     /**
@@ -79,7 +79,7 @@ public final class GasStackIngredient extends ChemicalStackIngredient<Gas, GasSt
      */
     public static final Codec<GasStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.gas().codecNonEmpty().fieldOf("ingredient").forGetter(GasStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(GasStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(GasStackIngredient::amount)
     ).apply(instance, GasStackIngredient::new));
 
     /**

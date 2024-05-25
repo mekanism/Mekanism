@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
@@ -680,19 +680,19 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        autoMode = nbt.getBoolean(NBTConstants.AUTO);
-        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
-        pulseOperations = nbt.getInt(NBTConstants.PULSE);
-        stockControl = nbt.getBoolean(NBTConstants.STOCK_CONTROL);
+        autoMode = nbt.getBoolean(SerializationConstants.AUTO);
+        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
+        pulseOperations = nbt.getInt(SerializationConstants.PULSE);
+        stockControl = nbt.getBoolean(SerializationConstants.STOCK_CONTROL);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
-        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
-        nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
-        nbtTags.putBoolean(NBTConstants.STOCK_CONTROL, stockControl);
+        nbtTags.putBoolean(SerializationConstants.AUTO, autoMode);
+        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        nbtTags.putInt(SerializationConstants.PULSE, pulseOperations);
+        nbtTags.putBoolean(SerializationConstants.STOCK_CONTROL, stockControl);
     }
 
     @Override

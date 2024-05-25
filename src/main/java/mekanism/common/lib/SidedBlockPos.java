@@ -1,7 +1,7 @@
 package mekanism.common.lib;
 
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -22,10 +22,10 @@ public record SidedBlockPos(BlockPos pos, Direction side) {
 
     @Nullable
     public static SidedBlockPos deserialize(CompoundTag tag) {
-        if (tag.contains(NBTConstants.X, Tag.TAG_INT) && tag.contains(NBTConstants.Y, Tag.TAG_INT) && tag.contains(NBTConstants.Z, Tag.TAG_INT) &&
-            tag.contains(NBTConstants.SIDE, Tag.TAG_INT)) {
-            BlockPos pos = new BlockPos(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z));
-            Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
+        if (tag.contains(SerializationConstants.X, Tag.TAG_INT) && tag.contains(SerializationConstants.Y, Tag.TAG_INT) && tag.contains(SerializationConstants.Z, Tag.TAG_INT) &&
+            tag.contains(SerializationConstants.SIDE, Tag.TAG_INT)) {
+            BlockPos pos = new BlockPos(tag.getInt(SerializationConstants.X), tag.getInt(SerializationConstants.Y), tag.getInt(SerializationConstants.Z));
+            Direction side = Direction.from3DDataValue(tag.getInt(SerializationConstants.SIDE));
             return new SidedBlockPos(pos, side);
         }
         return null;
@@ -37,10 +37,10 @@ public record SidedBlockPos(BlockPos pos, Direction side) {
 
     public CompoundTag serialize() {
         CompoundTag target = new CompoundTag();
-        target.putInt(NBTConstants.X, pos.getX());
-        target.putInt(NBTConstants.Y, pos.getY());
-        target.putInt(NBTConstants.Z, pos.getZ());
-        NBTUtils.writeEnum(target, NBTConstants.SIDE, side);
+        target.putInt(SerializationConstants.X, pos.getX());
+        target.putInt(SerializationConstants.Y, pos.getY());
+        target.putInt(SerializationConstants.Z, pos.getZ());
+        NBTUtils.writeEnum(target, SerializationConstants.SIDE, side);
         return target;
     }
 }

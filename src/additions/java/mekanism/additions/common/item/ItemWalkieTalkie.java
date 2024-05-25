@@ -7,7 +7,7 @@ import java.util.List;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsDataComponents;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -81,8 +81,8 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         public static final WalkieData DEFAULT = new WalkieData(1, false);
 
         public static final Codec<WalkieData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              ExtraCodecs.intRange(1, 8).fieldOf(NBTConstants.CHANNEL).forGetter(WalkieData::channel),
-              Codec.BOOL.fieldOf(NBTConstants.RUNNING).forGetter(WalkieData::running)
+              ExtraCodecs.intRange(1, 8).fieldOf(SerializationConstants.CHANNEL).forGetter(WalkieData::channel),
+              Codec.BOOL.fieldOf(SerializationConstants.RUNNING).forGetter(WalkieData::running)
         ).apply(instance, WalkieData::new));
         public static final StreamCodec<ByteBuf, WalkieData> STREAM_CODEC = StreamCodec.composite(
               ByteBufCodecs.VAR_INT, WalkieData::channel,

@@ -2,12 +2,11 @@ package mekanism.common.tile.laser;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTranslationKey;
@@ -30,10 +29,8 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -176,19 +173,19 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, this::updateMinThreshold);
-        NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, this::updateMaxThreshold);
-        NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
+        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
+        NBTUtils.setFloatingLongIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
+        NBTUtils.setIntIfPresent(data, SerializationConstants.TIME, value -> delay = value);
+        NBTUtils.setEnumIfPresent(data, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         super.writeSustainedData(provider, data);
-        data.putString(NBTConstants.MIN, minThreshold.toString());
-        data.putString(NBTConstants.MAX, maxThreshold.toString());
-        data.putInt(NBTConstants.TIME, delay);
-        NBTUtils.writeEnum(data, NBTConstants.OUTPUT_MODE, outputMode);
+        data.putString(SerializationConstants.MIN, minThreshold.toString());
+        data.putString(SerializationConstants.MAX, maxThreshold.toString());
+        data.putInt(SerializationConstants.TIME, delay);
+        NBTUtils.writeEnum(data, SerializationConstants.OUTPUT_MODE, outputMode);
     }
 
     @Override

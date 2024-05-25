@@ -16,7 +16,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -505,36 +505,36 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         HolderLookup.Provider provider = registryAccess();
-        nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
-        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, getSecurityMode());
-        nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
-        nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
+        nbtTags.putUUID(SerializationConstants.OWNER_UUID, getOwnerUUID());
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.SECURITY_MODE, getSecurityMode());
+        nbtTags.putBoolean(SerializationConstants.FOLLOW, getFollowing());
+        nbtTags.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
             Optional<Tag> result = GlobalPos.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), homeLocation).result();
             //noinspection OptionalIsPresent - Capturing lambda
             if (result.isPresent()) {
-                nbtTags.put(NBTConstants.HOME_LOCATION, result.get());
+                nbtTags.put(SerializationConstants.HOME_LOCATION, result.get());
             }
         }
         ContainerType.ITEM.saveTo(provider, nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.saveTo(provider, nbtTags, getEnergyContainers(null));
-        nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        NBTUtils.writeResourceKey(nbtTags, NBTConstants.SKIN, getSkin());
+        nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
+        NBTUtils.writeResourceKey(nbtTags, SerializationConstants.SKIN, getSkin());
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
         HolderLookup.Provider provider = registryAccess();
-        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
-        setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
-        setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
-        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), home).result().orElse(null));
+        NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, this::setOwnerUUID);
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
+        setFollowing(nbtTags.getBoolean(SerializationConstants.FOLLOW));
+        setDropPickup(nbtTags.getBoolean(SerializationConstants.PICKUP_DROPS));
+        NBTUtils.setCompoundIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), home).result().orElse(null));
         ContainerType.ITEM.readFrom(provider, nbtTags, getInventorySlots(null));
         ContainerType.ENERGY.readFrom(provider, nbtTags, getEnergyContainers(null));
-        progress = nbtTags.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
+        progress = nbtTags.getInt(SerializationConstants.PROGRESS);
+        NBTUtils.setResourceKeyIfPresentElse(nbtTags, SerializationConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));
     }
 

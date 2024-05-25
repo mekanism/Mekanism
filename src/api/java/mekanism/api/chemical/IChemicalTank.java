@@ -3,7 +3,7 @@ package mekanism.api.chemical;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.core.HolderLookup;
@@ -332,7 +332,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getStack().save(provider));
+            nbt.put(SerializationConstants.STORED, getStack().save(provider));
         }
         return nbt;
     }

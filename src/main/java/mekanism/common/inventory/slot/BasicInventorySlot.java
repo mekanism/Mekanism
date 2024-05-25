@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -330,9 +330,9 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.save(provider));
+            nbt.put(SerializationConstants.ITEM, current.save(provider));
             if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
+                nbt.putInt(SerializationConstants.SIZE_OVERRIDE, getCount());
             }
         }
         return nbt;
@@ -341,9 +341,9 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains(NBTConstants.ITEM, Tag.TAG_COMPOUND)) {
-            stack = ItemStack.parseOptional(provider, nbt.getCompound(NBTConstants.ITEM));
-            NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
+        if (nbt.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
+            stack = ItemStack.parseOptional(provider, nbt.getCompound(SerializationConstants.ITEM));
+            NBTUtils.setIntIfPresent(nbt, SerializationConstants.SIZE_OVERRIDE, stack::setCount);
         }
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
         // crashing due to the stack not being valid

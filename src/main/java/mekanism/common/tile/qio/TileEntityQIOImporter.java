@@ -1,11 +1,9 @@
 package mekanism.common.tile.qio;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -23,10 +21,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -144,13 +140,13 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        dataMap.putBoolean(NBTConstants.AUTO, importWithoutFilter);
+        dataMap.putBoolean(SerializationConstants.AUTO, importWithoutFilter);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.AUTO, value -> importWithoutFilter = value);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.AUTO, value -> importWithoutFilter = value);
     }
 
     @Override

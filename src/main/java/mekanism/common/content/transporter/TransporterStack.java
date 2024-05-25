@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntFunction;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
@@ -93,47 +93,47 @@ public class TransporterStack {
 
     public void writeToUpdateTag(HolderLookup.Provider provider, LogisticalTransporterBase transporter, CompoundTag updateTag) {
         if (color != null) {
-            NBTUtils.writeEnum(updateTag, NBTConstants.COLOR, color);
+            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
         }
-        updateTag.putInt(NBTConstants.PROGRESS, progress);
-        updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
-        NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, getPathType());
+        updateTag.putInt(SerializationConstants.PROGRESS, progress);
+        updateTag.put(SerializationConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
+        NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
         BlockPos next = getNext(transporter);
         if (next != null) {
-            updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
+            updateTag.put(SerializationConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(next));
         }
-        updateTag.put(NBTConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
+        updateTag.put(SerializationConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
         if (!itemStack.isEmpty()) {
             itemStack.save(provider, updateTag);
         }
     }
 
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
-        this.color = NBTUtils.getEnum(updateTag, NBTConstants.COLOR, TransporterUtils::readColor);
-        progress = updateTag.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
-        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
-        NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
+        this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, TransporterUtils::readColor);
+        progress = updateTag.getInt(SerializationConstants.PROGRESS);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.CLIENT_NEXT, coord -> clientNext = coord);
+        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
         itemStack = ItemStack.parseOptional(provider, updateTag);
     }
 
     public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
         if (color != null) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
+            NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
         }
 
-        nbtTags.putInt(NBTConstants.PROGRESS, progress);
-        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
+        nbtTags.putInt(SerializationConstants.PROGRESS, progress);
+        nbtTags.put(SerializationConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
 
         if (idleDir != null) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.IDLE_DIR, idleDir);
+            NBTUtils.writeEnum(nbtTags, SerializationConstants.IDLE_DIR, idleDir);
         }
         if (homeLocation != null) {
-            nbtTags.put(NBTConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
+            nbtTags.put(SerializationConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
         }
         if (pathType != null) {
-            NBTUtils.writeEnum(nbtTags, NBTConstants.PATH_TYPE, pathType);
+            NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
         }
         if (!itemStack.isEmpty()) {
             itemStack.save(provider, nbtTags);
@@ -141,12 +141,12 @@ public class TransporterStack {
     }
 
     public void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        this.color = NBTUtils.getEnum(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor);
-        progress = nbtTags.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
-        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
+        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, TransporterUtils::readColor);
+        progress = nbtTags.getInt(SerializationConstants.PROGRESS);
+        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
+        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
         itemStack = ItemStack.parseOptional(provider, nbtTags);
     }
 

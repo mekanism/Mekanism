@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.turbine;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -176,24 +176,24 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        blades = nbt.getInt(NBTConstants.BLADES);
-        position = nbt.getInt(NBTConstants.POSITION);
+        blades = nbt.getInt(SerializationConstants.BLADES);
+        position = nbt.getInt(SerializationConstants.POSITION);
         updateRadius();
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
-        nbtTags.putInt(NBTConstants.POSITION, getPosition());
+        nbtTags.putInt(SerializationConstants.BLADES, getHousedBlades());
+        nbtTags.putInt(SerializationConstants.POSITION, getPosition());
     }
 
     @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putInt(NBTConstants.BLADES, blades);
-        updateTag.putInt(NBTConstants.POSITION, position);
+        updateTag.putInt(SerializationConstants.BLADES, blades);
+        updateTag.putInt(SerializationConstants.POSITION, position);
         return updateTag;
     }
 
@@ -202,8 +202,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         super.handleUpdateTag(tag, provider);
         int prevBlades = blades;
         int prevPosition = position;
-        NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.POSITION, value -> {
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.BLADES, value -> blades = value);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.POSITION, value -> {
             position = value;
             updateRadius();
         });

@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -397,7 +397,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public String getComponentKey() {
-        return NBTConstants.COMPONENT_EJECTOR;
+        return SerializationConstants.COMPONENT_EJECTOR;
     }
 
     @Override
@@ -423,11 +423,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     public static void deserialize(CompoundTag ejectorNBT, BooleanConsumer strictInputSetter, Consumer<EnumColor> outputColorSetter, EnumColor[] inputColors) {
-        strictInputSetter.accept(ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT));
-        outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor));
+        strictInputSetter.accept(ejectorNBT.getBoolean(SerializationConstants.STRICT_INPUT));
+        outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, SerializationConstants.COLOR, TransporterUtils::readColor));
         //Input colors
-        if (ejectorNBT.contains(NBTConstants.INPUT_COLOR, Tag.TAG_INT_ARRAY)) {
-            int[] colors = ejectorNBT.getIntArray(NBTConstants.INPUT_COLOR);
+        if (ejectorNBT.contains(SerializationConstants.INPUT_COLOR, Tag.TAG_INT_ARRAY)) {
+            int[] colors = ejectorNBT.getIntArray(SerializationConstants.INPUT_COLOR);
             for (int i = 0; i < colors.length && i < inputColors.length; i++) {
                 inputColors[i] = TransporterUtils.readColor(colors[i]);
             }
@@ -444,10 +444,10 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     public static CompoundTag serialize(boolean strictInput, EnumColor[] inputColors, @Nullable EnumColor outputColor) {
         CompoundTag ejectorNBT = new CompoundTag();
         if (strictInput) {
-            ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, true);
+            ejectorNBT.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
         if (outputColor != null) {
-            NBTUtils.writeEnum(ejectorNBT, NBTConstants.COLOR, outputColor);
+            NBTUtils.writeEnum(ejectorNBT, SerializationConstants.COLOR, outputColor);
         }
         //Input colors
         int[] colors = new int[inputColors.length];
@@ -460,7 +460,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
         if (hasColor) {
-            ejectorNBT.putIntArray(NBTConstants.INPUT_COLOR, colors);
+            ejectorNBT.putIntArray(SerializationConstants.INPUT_COLOR, colors);
         }
         return ejectorNBT;
     }

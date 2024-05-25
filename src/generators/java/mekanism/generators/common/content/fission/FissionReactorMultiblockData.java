@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
@@ -250,19 +250,19 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED, value -> fuelTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
-        NBTUtils.setGasStackIfPresent(provider, tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevCoolantScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT, scale -> prevFuelScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, value -> fluidCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED, value -> fuelTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT, value -> heatedCoolantTank.setStack(value));
+        NBTUtils.setGasStackIfPresent(provider, tag, SerializationConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
-        if (tag.contains(NBTConstants.ASSEMBLIES, Tag.TAG_LIST)) {
-            ListTag list = tag.getList(NBTConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
+        if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
+            ListTag list = tag.getList(SerializationConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 assemblies.add(FormedAssembly.read(list.getCompound(i)));
             }
@@ -272,21 +272,21 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.putFloat(NBTConstants.SCALE, prevCoolantScale);
-        tag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
-        tag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
-        tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
-        tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
-        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
+        tag.putFloat(SerializationConstants.SCALE, prevCoolantScale);
+        tag.putFloat(SerializationConstants.SCALE_ALT, prevFuelScale);
+        tag.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
+        tag.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
+        tag.putInt(SerializationConstants.VOLUME, getVolume());
+        tag.put(SerializationConstants.FLUID_STORED, fluidCoolantTank.getFluid().saveOptional(provider));
+        tag.put(SerializationConstants.GAS_STORED, fuelTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
+        tag.put(SerializationConstants.GAS_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
         writeValves(tag);
         ListTag list = new ListTag();
         for (FormedAssembly assembly : assemblies) {
             list.add(assembly.write());
         }
-        tag.put(NBTConstants.ASSEMBLIES, list);
+        tag.put(SerializationConstants.ASSEMBLIES, list);
     }
 
     private void handleDamage(Level world) {

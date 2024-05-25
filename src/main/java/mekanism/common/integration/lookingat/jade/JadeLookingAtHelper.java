@@ -1,6 +1,6 @@
 package mekanism.common.integration.lookingat.jade;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.SimpleLookingAtHelper;
 import net.minecraft.core.HolderLookup;
@@ -25,7 +25,7 @@ public class JadeLookingAtHelper extends SimpleLookingAtHelper {
             for (ILookingAtElement element : elements) {
                 list.add(JadeTooltipRenderer.ELEMENT_CODEC.encodeStart(registryOps, element).getOrThrow());
             }
-            data.put(NBTConstants.MEK_DATA, list);
+            data.put(SerializationConstants.MEK_DATA, list);
         }
     }
 }

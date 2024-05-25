@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2IntSortedMaps;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.core.HolderLookup;
@@ -41,8 +41,8 @@ public record OverflowAware(Object2IntSortedMap<HashedItem> overflow) {
         ListTag overflowTag = new ListTag();
         for (Object2IntMap.Entry<HashedItem> entry : overflow.object2IntEntrySet()) {
             CompoundTag overflowComponent = new CompoundTag();
-            overflowComponent.put(NBTConstants.TYPE, entry.getKey().internalToNBT(provider));
-            overflowComponent.putInt(NBTConstants.COUNT, entry.getIntValue());
+            overflowComponent.put(SerializationConstants.TYPE, entry.getKey().internalToNBT(provider));
+            overflowComponent.putInt(SerializationConstants.COUNT, entry.getIntValue());
             overflowTag.add(overflowComponent);
         }
         return overflowTag;
@@ -51,10 +51,10 @@ public record OverflowAware(Object2IntSortedMap<HashedItem> overflow) {
     public static void readOverflow(HolderLookup.Provider provider, Object2IntMap<HashedItem> overflow, ListTag overflowTag) {
         for (int i = 0, size = overflowTag.size(); i < size; i++) {
             CompoundTag overflowComponent = overflowTag.getCompound(i);
-            int count = overflowComponent.getInt(NBTConstants.COUNT);
+            int count = overflowComponent.getInt(SerializationConstants.COUNT);
             if (count > 0) {
                 //The count should always be greater than zero, but validate it just in case before trying to read the item
-                ItemStack s = ItemStack.parseOptional(provider, overflowComponent.getCompound(NBTConstants.TYPE));
+                ItemStack s = ItemStack.parseOptional(provider, overflowComponent.getCompound(SerializationConstants.TYPE));
                 //Only add the item if the item could be read. If it can't that means the mod adding the item was probably removed
                 if (!s.isEmpty()) {
                     //Note: We can use a raw stack as we just created a new stack from NBT

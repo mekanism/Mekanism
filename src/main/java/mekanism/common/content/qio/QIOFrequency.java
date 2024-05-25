@@ -26,7 +26,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
 import mekanism.api.Action;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.math.MathUtils;
@@ -64,7 +64,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     private static final RandomSource rand = RandomSource.create();
     public static final Codec<QIOFrequency> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(EnumColor.CODEC.fieldOf(NBTConstants.COLOR).forGetter(QIOFrequency::getColor))
+          .and(EnumColor.CODEC.fieldOf(SerializationConstants.COLOR).forGetter(QIOFrequency::getColor))
           .apply(instance, (name, owner, securityMode, color) -> {
               QIOFrequency frequency = new QIOFrequency(name, owner.orElse(null), securityMode);
               frequency.color = color;

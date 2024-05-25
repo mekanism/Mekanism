@@ -1,7 +1,7 @@
 package mekanism.common.tile.qio;
 
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -115,20 +115,20 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
         if (itemType != null) {
-            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.internalToNBT(provider));
+            dataMap.put(SerializationConstants.SINGLE_ITEM, itemType.internalToNBT(provider));
         }
-        dataMap.putLong(NBTConstants.AMOUNT, count);
-        dataMap.putBoolean(NBTConstants.FUZZY_MODE, fuzzy);
-        dataMap.putBoolean(NBTConstants.INVERSE, inverted);
+        dataMap.putLong(SerializationConstants.AMOUNT, count);
+        dataMap.putBoolean(SerializationConstants.FUZZY_MODE, fuzzy);
+        dataMap.putBoolean(SerializationConstants.INVERSE, inverted);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        NBTUtils.setItemStackIfPresent(provider, dataMap, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(dataMap, NBTConstants.AMOUNT, value -> count = value);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.FUZZY_MODE, value -> fuzzy = value);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, value -> inverted = value);
+        NBTUtils.setItemStackIfPresent(provider, dataMap, SerializationConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+        NBTUtils.setLongIfPresent(dataMap, SerializationConstants.AMOUNT, value -> count = value);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.FUZZY_MODE, value -> fuzzy = value);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, value -> inverted = value);
     }
 
     @NotNull
@@ -144,14 +144,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(NBTConstants.EMITTING, isEmitting);
+        updateTag.putBoolean(SerializationConstants.EMITTING, isEmitting);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        boolean emitting = tag.getBoolean(NBTConstants.EMITTING);
+        boolean emitting = tag.getBoolean(SerializationConstants.EMITTING);
         if (isEmitting != emitting) {
             isEmitting = emitting;
             updateModelData();

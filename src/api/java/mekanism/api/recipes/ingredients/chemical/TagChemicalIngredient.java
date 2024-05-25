@@ -3,7 +3,7 @@ package mekanism.api.recipes.ingredients.chemical;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
@@ -32,7 +32,7 @@ public abstract non-sealed class TagChemicalIngredient<CHEMICAL extends Chemical
     @Internal
     protected static <CHEMICAL extends Chemical<CHEMICAL>, TAG extends TagChemicalIngredient<CHEMICAL, ?>> MapCodec<TAG> codec(
           ResourceKey<? extends Registry<CHEMICAL>> registryName, Function<TagKey<CHEMICAL>, TAG> constructor) {
-        return TagKey.codec(registryName).xmap(constructor, TagChemicalIngredient::tag).fieldOf(JsonConstants.TAG);
+        return TagKey.codec(registryName).xmap(constructor, TagChemicalIngredient::tag).fieldOf(SerializationConstants.TAG);
     }
 
     private final TagKey<CHEMICAL> tag;

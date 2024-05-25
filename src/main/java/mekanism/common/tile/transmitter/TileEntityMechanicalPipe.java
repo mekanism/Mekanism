@@ -2,7 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
@@ -83,8 +83,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
         CompoundTag updateTag = super.getUpdateTag(provider);
         if (getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(NBTConstants.FLUID_STORED, network.lastFluid.saveOptional(provider));
-            updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
+            updateTag.put(SerializationConstants.FLUID_STORED, network.lastFluid.saveOptional(provider));
+            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
         return updateTag;
     }

@@ -3,7 +3,7 @@ package mekanism.common.tile.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
@@ -227,20 +227,20 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT(provider));
+        updateTag.put(SerializationConstants.FLUID_STORED, fluidTank.serializeNBT(provider));
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
             lastPasteItem.getInternalStack().save(provider, item);
         }
-        updateTag.put(NBTConstants.ITEM, item);
+        updateTag.put(SerializationConstants.ITEM, item);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(provider, nbt));
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID_STORED, nbt -> fluidTank.deserializeNBT(provider, nbt));
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> {
             if (nbt.isEmpty()) {
                 lastPasteItem = null;
             } else {

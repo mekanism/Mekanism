@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.item.ItemCraftingFormula;
@@ -20,8 +20,8 @@ import net.minecraft.world.item.ItemStack;
 public record FormulaAttachment(List<ItemStack> inventory, boolean invalid) {
 
     public static final Codec<FormulaAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.OPTIONAL_CODEC.listOf(9, 9).fieldOf(NBTConstants.ITEMS).forGetter(FormulaAttachment::inventory),
-          Codec.BOOL.fieldOf(NBTConstants.INVALID).forGetter(FormulaAttachment::invalid)
+          ItemStack.OPTIONAL_CODEC.listOf(9, 9).fieldOf(SerializationConstants.ITEMS).forGetter(FormulaAttachment::inventory),
+          Codec.BOOL.fieldOf(SerializationConstants.INVALID).forGetter(FormulaAttachment::invalid)
     ).apply(instance, FormulaAttachment::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, FormulaAttachment> STREAM_CODEC = StreamCodec.composite(
           ItemStack.OPTIONAL_LIST_STREAM_CODEC, FormulaAttachment::inventory,

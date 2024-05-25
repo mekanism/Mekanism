@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -30,11 +30,11 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     protected static <FILTER extends SorterFilter<FILTER>> P6<Mu<FILTER>, Boolean, Boolean, Boolean, Integer, Integer, Optional<EnumColor>> baseSorterCodec(Instance<FILTER> instance) {
         return baseCodec(instance)
-              .and(Codec.BOOL.optionalFieldOf(NBTConstants.ALLOW_DEFAULT, false).forGetter(filter -> filter.allowDefault))
-              .and(Codec.BOOL.optionalFieldOf(NBTConstants.SIZE_MODE, false).forGetter(filter -> filter.sizeMode))
-              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(NBTConstants.MIN, 0).forGetter(filter -> filter.min))
-              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(NBTConstants.MAX, 0).forGetter(filter -> filter.max))
-              .and(EnumColor.CODEC.optionalFieldOf(NBTConstants.COLOR).forGetter(filter -> Optional.ofNullable(filter.color)))
+              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.ALLOW_DEFAULT, false).forGetter(filter -> filter.allowDefault))
+              .and(Codec.BOOL.optionalFieldOf(SerializationConstants.SIZE_MODE, false).forGetter(filter -> filter.sizeMode))
+              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.MIN, 0).forGetter(filter -> filter.min))
+              .and(ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf(SerializationConstants.MAX, 0).forGetter(filter -> filter.max))
+              .and(EnumColor.CODEC.optionalFieldOf(SerializationConstants.COLOR).forGetter(filter -> Optional.ofNullable(filter.color)))
               ;
     }
 

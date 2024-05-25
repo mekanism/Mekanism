@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -210,7 +210,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 chunkSet.clear();
             }
         }
-        for (long chunk : nbtTags.getLongArray(NBTConstants.CHUNK_SET)) {
+        for (long chunk : nbtTags.getLongArray(SerializationConstants.CHUNK_SET)) {
             chunkSet.add(chunk);
         }
     }
@@ -218,7 +218,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     @Override
     public void write(CompoundTag nbtTags, HolderLookup.Provider provider) {
         if (!chunkSet.isEmpty()) {
-            nbtTags.putLongArray(NBTConstants.CHUNK_SET, chunkSet.toLongArray());
+            nbtTags.putLongArray(SerializationConstants.CHUNK_SET, chunkSet.toLongArray());
         }
     }
 

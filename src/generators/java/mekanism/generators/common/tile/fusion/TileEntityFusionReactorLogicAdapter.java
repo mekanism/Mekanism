@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -101,15 +101,15 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
         super.readSustainedData(provider, nbt);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FusionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
-        activeCooled = nbt.getBoolean(NBTConstants.ACTIVE_COOLED);
+        NBTUtils.setEnumIfPresent(nbt, SerializationConstants.LOGIC_TYPE, FusionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
+        activeCooled = nbt.getBoolean(SerializationConstants.ACTIVE_COOLED);
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.writeSustainedData(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
-        nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.LOGIC_TYPE, logicType);
+        nbtTags.putBoolean(SerializationConstants.ACTIVE_COOLED, activeCooled);
     }
 
     @Override

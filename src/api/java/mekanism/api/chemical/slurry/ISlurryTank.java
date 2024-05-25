@@ -1,6 +1,6 @@
 package mekanism.api.chemical.slurry;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.core.HolderLookup;
@@ -15,8 +15,8 @@ public interface ISlurryTank extends IChemicalTank<Slurry, SlurryStack>, IEmptyS
 
     @Override
     default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        if (nbt.contains(NBTConstants.STORED, Tag.TAG_COMPOUND)) {
-            setStackUnchecked(SlurryStack.parseOptional(provider, nbt.getCompound(NBTConstants.STORED)));
+        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_COMPOUND)) {
+            setStackUnchecked(SlurryStack.parseOptional(provider, nbt.getCompound(SerializationConstants.STORED)));
         }
     }
 }

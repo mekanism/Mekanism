@@ -1,6 +1,6 @@
 package mekanism.common.tests.util;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
@@ -35,10 +35,10 @@ public class TransporterTestUtils {
         ListTag items = new ListTag();
         for (int i = 0; i < stacks.length; i++) {
             CompoundTag item = saveItem(stacks[i]);
-            item.putByte(NBTConstants.SLOT, (byte) i);
+            item.putByte(SerializationConstants.SLOT, (byte) i);
             items.add(item);
         }
-        tag.put(NBTConstants.ITEMS, items);
+        tag.put(SerializationConstants.ITEMS, items);
         return tag;
     }
 
@@ -47,10 +47,10 @@ public class TransporterTestUtils {
         ListTag items = new ListTag();
         for (int i = 0; i < slots; i++) {
             CompoundTag item = saveItem(stack);
-            item.putByte(NBTConstants.SLOT, (byte) i);
+            item.putByte(SerializationConstants.SLOT, (byte) i);
             items.add(item);
         }
-        tag.put(NBTConstants.ITEMS, items);
+        tag.put(SerializationConstants.ITEMS, items);
         return tag;
     }
 
@@ -85,12 +85,12 @@ public class TransporterTestUtils {
         }
         CompoundTag tag = new CompoundTag();
         if (color != null) {
-            NBTUtils.writeEnum(tag, NBTConstants.COLOR, color);
+            NBTUtils.writeEnum(tag, SerializationConstants.COLOR, color);
         }
         if (side != null) {
             int[] raw = new int[EnumUtils.DIRECTIONS.length];
             raw[side.ordinal()] = connectionType.ordinal();
-            tag.putIntArray(NBTConstants.CONNECTION, raw);
+            tag.putIntArray(SerializationConstants.CONNECTION, raw);
         }
         return tag;
     }
@@ -99,7 +99,7 @@ public class TransporterTestUtils {
         CompoundTag tag = new CompoundTag();
         int[] modes = new int[EnumUtils.DIRECTIONS.length];
         modes[side.ordinal()] = mode.ordinal();
-        tag.putIntArray(NBTConstants.MODE, modes);
+        tag.putIntArray(SerializationConstants.MODE, modes);
         return tag;
     }
 
@@ -112,7 +112,7 @@ public class TransporterTestUtils {
         if (tag == null) {
             tag = new CompoundTag();
         }
-        tag.putIntArray(NBTConstants.MODE, new int[] {
+        tag.putIntArray(SerializationConstants.MODE, new int[] {
               down.ordinal(),
               up.ordinal(),
               north.ordinal(),

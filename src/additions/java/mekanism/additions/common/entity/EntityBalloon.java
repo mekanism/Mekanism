@@ -6,7 +6,7 @@ import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -277,9 +277,9 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
-        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.LATCHED, pos -> latched = pos);
-        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> {
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
+        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.LATCHED, pos -> latched = pos);
+        NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> {
             hasCachedEntity = true;
             cachedEntityUUID = uuid;
         });
@@ -287,12 +287,12 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        NBTUtils.writeEnum(nbtTags, NBTConstants.COLOR, color);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
         if (latched != null) {
-            nbtTags.put(NBTConstants.LATCHED, NbtUtils.writeBlockPos(latched));
+            nbtTags.put(SerializationConstants.LATCHED, NbtUtils.writeBlockPos(latched));
         }
         if (latchedEntity != null) {
-            nbtTags.putUUID(NBTConstants.OWNER_UUID, latchedEntity.getUUID());
+            nbtTags.putUUID(SerializationConstants.OWNER_UUID, latchedEntity.getUUID());
         }
     }
 

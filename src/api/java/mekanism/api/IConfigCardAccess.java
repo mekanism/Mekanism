@@ -45,7 +45,7 @@ public interface IConfigCardAccess {
      * Collects configuration data for this capability into a new {@link CompoundTag}.
      * <br><br>
      * Mekanism additionally adds two extra pieces of data to this {@link CompoundTag} afterwards corresponding to the following two constants:
-     * {@link NBTConstants#DATA_NAME} and {@link NBTConstants#DATA_TYPE} so it is recommended to ensure you don't put any data in a matching entry, or it will be
+     * {@link SerializationConstants#DATA_NAME} and {@link SerializationConstants#DATA_TYPE} so it is recommended to ensure you don't put any data in a matching entry, or it will be
      * overwritten.
      *
      * @param provider - Provider to lookup holders from.

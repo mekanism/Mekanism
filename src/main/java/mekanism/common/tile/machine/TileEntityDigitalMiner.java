@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
@@ -846,10 +846,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        running = nbt.getBoolean(NBTConstants.RUNNING);
-        delay = nbt.getInt(NBTConstants.DELAY);
-        numPowering = nbt.getInt(NBTConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State.BY_ID, s -> {
+        running = nbt.getBoolean(SerializationConstants.RUNNING);
+        delay = nbt.getInt(SerializationConstants.DELAY);
+        numPowering = nbt.getInt(SerializationConstants.NUM_POWERING);
+        NBTUtils.setEnumIfPresent(nbt, SerializationConstants.STATE, State.BY_ID, s -> {
             if (!initCalc && s == State.SEARCHING) {
                 //If we loaded and haven't started yet, but we were searching when we saved
                 // pretend we had finished searching so that we will start again on the first tick
@@ -874,13 +874,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putBoolean(NBTConstants.RUNNING, running);
-        nbtTags.putInt(NBTConstants.DELAY, delay);
-        nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.STATE, searcher.state);
+        nbtTags.putBoolean(SerializationConstants.RUNNING, running);
+        nbtTags.putInt(SerializationConstants.DELAY, delay);
+        nbtTags.putInt(SerializationConstants.NUM_POWERING, numPowering);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.STATE, searcher.state);
         if (!overflow.isEmpty()) {
             //Persist any items that are stored as overflow
-            nbtTags.put(NBTConstants.OVERFLOW, OverflowAware.writeOverflow(provider, overflow));
+            nbtTags.put(SerializationConstants.OVERFLOW, OverflowAware.writeOverflow(provider, overflow));
         }
     }
 
@@ -978,49 +978,49 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        dataMap.putInt(NBTConstants.RADIUS, getRadius());
-        dataMap.putInt(NBTConstants.MIN, getMinY());
-        dataMap.putInt(NBTConstants.MAX, getMaxY());
-        dataMap.putBoolean(NBTConstants.EJECT, doEject);
-        dataMap.putBoolean(NBTConstants.PULL, doPull);
-        dataMap.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
-        dataMap.putBoolean(NBTConstants.INVERSE, inverse);
+        dataMap.putInt(SerializationConstants.RADIUS, getRadius());
+        dataMap.putInt(SerializationConstants.MIN, getMinY());
+        dataMap.putInt(SerializationConstants.MAX, getMaxY());
+        dataMap.putBoolean(SerializationConstants.EJECT, doEject);
+        dataMap.putBoolean(SerializationConstants.PULL, doPull);
+        dataMap.putBoolean(SerializationConstants.SILK_TOUCH, getSilkTouch());
+        dataMap.putBoolean(SerializationConstants.INVERSE, inverse);
         if (inverseReplaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, inverseReplaceTarget);
+            NBTUtils.writeRegistryEntry(dataMap, SerializationConstants.REPLACE_STACK, BuiltInRegistries.ITEM, inverseReplaceTarget);
         }
-        dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        dataMap.putBoolean(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         filterManager.writeToNBT(provider, dataMap);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, newMinY -> {
+        setRadius(Math.min(dataMap.getInt(SerializationConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MIN, newMinY -> {
             if (hasLevel() && !isRemote()) {
                 setMinY(Math.max(newMinY, level.getMinBuildHeight()));
             } else {
                 setMinY(newMinY);
             }
         });
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, newMaxY -> {
+        NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MAX, newMaxY -> {
             if (hasLevel() && !isRemote()) {
                 setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
             } else {
                 setMaxY(newMaxY);
             }
         });
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.EJECT, eject -> doEject = eject);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.PULL, pull -> doPull = pull);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.SILK_TOUCH, this::setSilkTouch);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, inverse -> this.inverse = inverse);
-        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, Items.AIR);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.EJECT, eject -> doEject = eject);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.PULL, pull -> doPull = pull);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.SILK_TOUCH, this::setSilkTouch);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, inverse -> this.inverse = inverse);
+        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, SerializationConstants.REPLACE_STACK, BuiltInRegistries.ITEM, Items.AIR);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
         filterManager.readFromNBT(provider, dataMap);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
         // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
         // as opposed to the writeSustainedData method to ensure that configuration cards do not copy overflow data from one miner to another
-        NBTUtils.setListIfPresent(dataMap, NBTConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
+        NBTUtils.setListIfPresent(dataMap, SerializationConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
             OverflowAware.readOverflow(provider, overflow, overflowTag);
@@ -1248,18 +1248,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putInt(NBTConstants.RADIUS, getRadius());
-        updateTag.putInt(NBTConstants.MIN, getMinY());
-        updateTag.putInt(NBTConstants.MAX, getMaxY());
+        updateTag.putInt(SerializationConstants.RADIUS, getRadius());
+        updateTag.putInt(SerializationConstants.MIN, getMinY());
+        updateTag.putInt(SerializationConstants.MAX, getMaxY());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
-        NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.MIN, this::setMinY);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.MAX, this::setMaxY);
     }
 
     private List<ItemStack> getDrops(BlockState state, BlockPos pos) {

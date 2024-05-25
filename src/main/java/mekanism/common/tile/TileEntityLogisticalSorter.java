@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Collection;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
@@ -163,15 +163,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         super.saveAdditional(nbtTags, provider);
         SidedBlockPos rrTarget = getRoundRobinTarget();
         if (rrTarget != null) {
-            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+            nbtTags.put(SerializationConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
         }
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
-            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET)));
+        if (nbt.contains(SerializationConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
+            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(SerializationConstants.ROUND_ROBIN_TARGET)));
         }
     }
 
@@ -289,21 +289,21 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
         if (color != null) {
-            NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, color);
+            NBTUtils.writeEnum(dataMap, SerializationConstants.COLOR, color);
         }
-        dataMap.putBoolean(NBTConstants.EJECT, autoEject);
-        dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
-        dataMap.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
+        dataMap.putBoolean(SerializationConstants.EJECT, autoEject);
+        dataMap.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
+        dataMap.putBoolean(SerializationConstants.SINGLE_ITEM, singleItem);
         filterManager.writeToNBT(provider, dataMap);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        this.color = NBTUtils.getEnum(dataMap, NBTConstants.COLOR, TransporterUtils::readColor);
-        autoEject = dataMap.getBoolean(NBTConstants.EJECT);
-        roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
-        singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
+        this.color = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, TransporterUtils::readColor);
+        autoEject = dataMap.getBoolean(SerializationConstants.EJECT);
+        roundRobin = dataMap.getBoolean(SerializationConstants.ROUND_ROBIN);
+        singleItem = dataMap.getBoolean(SerializationConstants.SINGLE_ITEM);
         filterManager.readFromNBT(provider, dataMap);
     }
 

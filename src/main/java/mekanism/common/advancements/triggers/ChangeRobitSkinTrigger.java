@@ -3,8 +3,8 @@ package mekanism.common.advancements.triggers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.Criterion;
@@ -13,7 +13,6 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
 public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSkinTrigger.TriggerInstance> {
@@ -31,8 +30,8 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
     public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<RobitSkin>> skin) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(JsonConstants.PLAYER).forGetter(TriggerInstance::player),
-                    ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME).optionalFieldOf(JsonConstants.SKIN).forGetter(TriggerInstance::skin)
+                    EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf(SerializationConstants.PLAYER).forGetter(TriggerInstance::player),
+                    ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME).optionalFieldOf(SerializationConstants.SKIN).forGetter(TriggerInstance::skin)
               ).apply(instance, TriggerInstance::new)
         );
 

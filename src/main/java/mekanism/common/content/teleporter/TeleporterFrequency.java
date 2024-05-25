@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class TeleporterFrequency extends Frequency implements IColorableFrequency {
 
     public static final Codec<TeleporterFrequency> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
-          .and(EnumColor.CODEC.fieldOf(NBTConstants.COLOR).forGetter(TeleporterFrequency::getColor))
+          .and(EnumColor.CODEC.fieldOf(SerializationConstants.COLOR).forGetter(TeleporterFrequency::getColor))
           .apply(instance, (name, owner, securityMode, color) -> {
               TeleporterFrequency frequency = new TeleporterFrequency(name, owner.orElse(null), securityMode);
               frequency.color = color;

@@ -1,6 +1,6 @@
 package mekanism.common.lib.math;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -66,7 +66,7 @@ public class Pos3D extends Vec3 {
      * @return the Pos3D from the tag compound
      */
     public static Pos3D read(CompoundTag tag) {
-        return new Pos3D(tag.getDouble(NBTConstants.X), tag.getDouble(NBTConstants.Y), tag.getDouble(NBTConstants.Z));
+        return new Pos3D(tag.getDouble(SerializationConstants.X), tag.getDouble(SerializationConstants.Y), tag.getDouble(SerializationConstants.Z));
     }
 
     public static Pos3D translateMatrix(double[] matrix, Pos3D translation) {
@@ -96,9 +96,9 @@ public class Pos3D extends Vec3 {
      * @return the tag compound with this Pos3D's data
      */
     public CompoundTag write(CompoundTag nbtTags) {
-        nbtTags.putDouble(NBTConstants.X, x);
-        nbtTags.putDouble(NBTConstants.Y, y);
-        nbtTags.putDouble(NBTConstants.Z, z);
+        nbtTags.putDouble(SerializationConstants.X, x);
+        nbtTags.putDouble(SerializationConstants.Y, y);
+        nbtTags.putDouble(SerializationConstants.Z, z);
         return nbtTags;
     }
 

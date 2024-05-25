@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IEvaporationSolar;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -169,16 +169,16 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.readUpdateTag(tag, provider);
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
         readValves(tag);
     }
 
     @Override
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeUpdateTag(tag, provider);
-        tag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().saveOptional(provider));
-        tag.putFloat(NBTConstants.SCALE, prevScale);
+        tag.put(SerializationConstants.FLUID_STORED, inputTank.getFluid().saveOptional(provider));
+        tag.putFloat(SerializationConstants.SCALE, prevScale);
         writeValves(tag);
     }
 

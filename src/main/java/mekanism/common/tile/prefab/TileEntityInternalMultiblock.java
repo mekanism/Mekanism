@@ -2,7 +2,7 @@ package mekanism.common.tile.prefab;
 
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -90,7 +90,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         if (multiblockUUID != null) {
-            updateTag.putUUID(NBTConstants.INVENTORY_ID, multiblockUUID);
+            updateTag.putUUID(SerializationConstants.INVENTORY_ID, multiblockUUID);
         }
         return updateTag;
     }
@@ -98,6 +98,6 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.INVENTORY_ID, this::setMultiblock, () -> multiblockUUID = null);
+        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.INVENTORY_ID, this::setMultiblock, () -> multiblockUUID = null);
     }
 }

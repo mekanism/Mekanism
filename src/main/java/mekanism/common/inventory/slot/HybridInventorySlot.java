@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
@@ -126,10 +126,10 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
         if (isDraining) {
-            nbt.putBoolean(NBTConstants.DRAINING, true);
+            nbt.putBoolean(SerializationConstants.DRAINING, true);
         }
         if (isFilling) {
-            nbt.putBoolean(NBTConstants.FILLING, true);
+            nbt.putBoolean(SerializationConstants.FILLING, true);
         }
         return nbt;
     }
@@ -137,8 +137,8 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
         //Grab the booleans regardless if they are present as if they aren't that means they are false
-        isDraining = nbt.getBoolean(NBTConstants.DRAINING);
-        isFilling = nbt.getBoolean(NBTConstants.FILLING);
+        isDraining = nbt.getBoolean(SerializationConstants.DRAINING);
+        isFilling = nbt.getBoolean(SerializationConstants.FILLING);
         super.deserializeNBT(provider, nbt);
     }
 }

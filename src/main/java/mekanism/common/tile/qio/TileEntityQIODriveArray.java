@@ -6,8 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
-import mekanism.api.math.MathUtils;
+import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -19,7 +18,6 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -119,14 +117,14 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putByteArray(NBTConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
+        updateTag.putByteArray(SerializationConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        byte[] status = tag.getByteArray(NBTConstants.DRIVES);
+        byte[] status = tag.getByteArray(SerializationConstants.DRIVES);
         if (!Arrays.equals(status, driveStatus)) {
             driveStatus = status;
             updateModelData();

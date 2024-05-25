@@ -3,7 +3,7 @@ package mekanism.common.integration.lookingat;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.text.EnergyDisplay;
@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 public class EnergyElement extends LookingAtElement {
 
     public static final MapCodec<EnergyElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          FloatingLong.CODEC.fieldOf(NBTConstants.ENERGY_STORED).forGetter(EnergyElement::getEnergy),
-          FloatingLong.CODEC.fieldOf(NBTConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
+          FloatingLong.CODEC.fieldOf(SerializationConstants.ENERGY_STORED).forGetter(EnergyElement::getEnergy),
+          FloatingLong.CODEC.fieldOf(SerializationConstants.MAX).forGetter(EnergyElement::getMaxEnergy)
     ).apply(instance, EnergyElement::new));
     public static final StreamCodec<ByteBuf, EnergyElement> STREAM_CODEC = StreamCodec.composite(
           FloatingLong.STREAM_CODEC, EnergyElement::getEnergy,

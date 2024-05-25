@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -275,7 +275,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @Override
     public String getComponentKey() {
-        return NBTConstants.COMPONENT_CONFIG;
+        return SerializationConstants.COMPONENT_CONFIG;
     }
 
     @Override
@@ -329,8 +329,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
-            String configKey = NBTConstants.CONFIG + type.ordinal();
+            NBTUtils.setBooleanIfPresent(configNBT, SerializationConstants.EJECT + type.ordinal(), info::setEjecting);
+            String configKey = SerializationConstants.CONFIG + type.ordinal();
             if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
                 int[] sideData = configNBT.getIntArray(configKey);
                 for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
@@ -354,13 +354,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             TransmissionType type = entry.getKey();
             IPersistentConfigInfo info = entry.getValue();
             if (full) {
-                configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
+                configNBT.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
             }
             int[] sideData = new int[EnumUtils.SIDES.length];
             for (int i = 0; i < EnumUtils.SIDES.length; i++) {
                 sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
             }
-            configNBT.putIntArray(NBTConstants.CONFIG + type.ordinal(), sideData);
+            configNBT.putIntArray(SerializationConstants.CONFIG + type.ordinal(), sideData);
         }
         return configNBT;
     }

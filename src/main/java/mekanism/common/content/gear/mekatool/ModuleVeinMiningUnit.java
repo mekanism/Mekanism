@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
@@ -251,8 +251,8 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     public static class ModuleExtendedModeConfig extends ModuleBooleanConfig {
 
         public static final Codec<ModuleExtendedModeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              ExtraCodecs.NON_EMPTY_STRING.fieldOf(NBTConstants.NAME).forGetter(ModuleConfig::name),
-              Codec.BOOL.fieldOf(NBTConstants.VALUE).forGetter(ModuleConfig::get)
+              ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name),
+              Codec.BOOL.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get)
         ).apply(instance, ModuleExtendedModeConfig::new));
         public static final StreamCodec<ByteBuf, ModuleExtendedModeConfig> STREAM_CODEC = StreamCodec.composite(
               ByteBufCodecs.STRING_UTF8, ModuleConfig::name,

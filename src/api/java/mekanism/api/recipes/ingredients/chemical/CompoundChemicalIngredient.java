@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
@@ -30,7 +30,7 @@ public abstract non-sealed class CompoundChemicalIngredient<CHEMICAL extends Che
     @Internal
     protected static <INGREDIENT extends IChemicalIngredient<?, INGREDIENT>, COMPOUND extends CompoundChemicalIngredient<?, INGREDIENT>> MapCodec<COMPOUND> codec(
           IChemicalIngredientCreator<?, INGREDIENT> creator, Function<List<INGREDIENT>, COMPOUND> constructor) {
-        return NeoForgeExtraCodecs.aliasedFieldOf(creator.listCodecMultipleElements(), JsonConstants.CHILDREN, JsonConstants.INGREDIENTS).xmap(
+        return NeoForgeExtraCodecs.aliasedFieldOf(creator.listCodecMultipleElements(), SerializationConstants.CHILDREN, SerializationConstants.INGREDIENTS).xmap(
               constructor, CompoundChemicalIngredient::children
         );
     }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.component.UpgradeAware;
@@ -189,7 +189,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     @Override
     public String getComponentKey() {
-        return NBTConstants.COMPONENT_UPGRADE;
+        return SerializationConstants.COMPONENT_UPGRADE;
     }
 
     @Override
@@ -235,14 +235,14 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     public void addToUpdateTag(CompoundTag updateTag) {
         //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
         if (supports(Upgrade.MUFFLING)) {
-            updateTag.putInt(NBTConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
+            updateTag.putInt(SerializationConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
         }
     }
 
     @Override
     public void readFromUpdateTag(CompoundTag updateTag) {
         if (supports(Upgrade.MUFFLING)) {
-            NBTUtils.setIntIfPresent(updateTag, NBTConstants.MUFFLING_COUNT, amount -> {
+            NBTUtils.setIntIfPresent(updateTag, SerializationConstants.MUFFLING_COUNT, amount -> {
                 if (amount == 0) {
                     upgrades.remove(Upgrade.MUFFLING);
                 } else {

@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency;
@@ -24,10 +24,10 @@ public class SecurityFrequency extends Frequency {
     public static final String SECURITY = "Security";
 
     public static final Codec<SecurityFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          UUIDUtil.CODEC.optionalFieldOf(NBTConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
-          SecurityMode.CODEC.fieldOf(NBTConstants.SECURITY_MODE).forGetter(SecurityFrequency::getSecurity),
-          Codec.BOOL.fieldOf(NBTConstants.OVERRIDE).forGetter(SecurityFrequency::isOverridden),
-          UUIDUtil.CODEC.listOf().optionalFieldOf(NBTConstants.TRUSTED, Collections.emptyList()).forGetter(freq -> freq.trusted.elements())
+          UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
+          SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(SecurityFrequency::getSecurity),
+          Codec.BOOL.fieldOf(SerializationConstants.OVERRIDE).forGetter(SecurityFrequency::isOverridden),
+          UUIDUtil.CODEC.listOf().optionalFieldOf(SerializationConstants.TRUSTED, Collections.emptyList()).forGetter(freq -> freq.trusted.elements())
     ).apply(instance, (owner, securityMode, override, trustedCache) -> {
         SecurityFrequency frequency = new SecurityFrequency(owner.orElse(null), securityMode);
         frequency.override = override;

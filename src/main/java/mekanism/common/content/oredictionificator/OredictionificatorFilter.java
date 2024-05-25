@@ -10,18 +10,15 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -36,8 +33,8 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> P3<Mu<FILTER>, Boolean, Optional<TagKey<TYPE>>, Holder<TYPE>> baseOredictionificatorCodec(
           Instance<FILTER> instance, ResourceKey<? extends Registry<TYPE>> registryName, Registry<TYPE> registry) {
         return baseCodec(instance)
-              .and(TagKey.codec(registryName).optionalFieldOf(NBTConstants.FILTER).forGetter(filter -> Optional.ofNullable(filter.filterLocation)))
-              .and(registry.holderByNameCodec().fieldOf(NBTConstants.SELECTED).forGetter(filter -> filter.selectedOutput))
+              .and(TagKey.codec(registryName).optionalFieldOf(SerializationConstants.FILTER).forGetter(filter -> Optional.ofNullable(filter.filterLocation)))
+              .and(registry.holderByNameCodec().fieldOf(SerializationConstants.SELECTED).forGetter(filter -> filter.selectedOutput))
               ;
     }
 

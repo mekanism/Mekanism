@@ -2,11 +2,10 @@ package mekanism.common.tile;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -40,10 +39,8 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -161,13 +158,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         super.writeSustainedData(provider, data);
-        NBTUtils.writeEnum(data, NBTConstants.EDIT_MODE, editMode);
+        NBTUtils.writeEnum(data, SerializationConstants.EDIT_MODE, editMode);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
+        NBTUtils.setEnumIfPresent(data, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override
@@ -282,18 +279,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().saveOptional(provider));
-        updateTag.put(NBTConstants.VALVE, valveFluid.saveOptional(provider));
-        updateTag.putFloat(NBTConstants.SCALE, prevScale);
+        updateTag.put(SerializationConstants.FLUID_STORED, fluidTank.getFluid().saveOptional(provider));
+        updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
+        updateTag.putFloat(SerializationConstants.SCALE, prevScale);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
-        NBTUtils.setFluidStackIfPresent(provider, tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> {
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
+        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {
             if (prevScale != scale) {
                 if (prevScale == 0 || scale == 0) {
                     //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting

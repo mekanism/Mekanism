@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
@@ -215,9 +215,9 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         CompoundTag nbt = new CompoundTag();
         ItemStack current = getStack();
         if (!current.isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.save(provider));
+            nbt.put(SerializationConstants.ITEM, current.save(provider));
             if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
+                nbt.putInt(SerializationConstants.SIZE_OVERRIDE, getCount());
             }
         }
         return nbt;
@@ -226,9 +226,9 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
         ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains(NBTConstants.ITEM, Tag.TAG_COMPOUND)) {
-            stack = ItemStack.parseOptional(provider, nbt.getCompound(NBTConstants.ITEM));
-            NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
+        if (nbt.contains(SerializationConstants.ITEM, Tag.TAG_COMPOUND)) {
+            stack = ItemStack.parseOptional(provider, nbt.getCompound(SerializationConstants.ITEM));
+            NBTUtils.setIntIfPresent(nbt, SerializationConstants.SIZE_OVERRIDE, stack::setCount);
         }
         setStack(stack);
     }

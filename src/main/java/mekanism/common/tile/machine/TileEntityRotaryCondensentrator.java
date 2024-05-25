@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -60,10 +60,8 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -238,13 +236,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.MODE, value -> mode = value);
+        NBTUtils.setBooleanIfPresent(data, SerializationConstants.MODE, value -> mode = value);
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
         super.writeSustainedData(provider, data);
-        data.putBoolean(NBTConstants.MODE, mode);
+        data.putBoolean(SerializationConstants.MODE, mode);
     }
 
     @Override

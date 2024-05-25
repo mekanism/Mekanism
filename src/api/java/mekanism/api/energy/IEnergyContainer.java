@@ -3,7 +3,7 @@ package mekanism.api.energy;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.core.HolderLookup;
@@ -161,7 +161,7 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
     default CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.putString(NBTConstants.STORED, getEnergy().toString());
+            nbt.putString(SerializationConstants.STORED, getEnergy().toString());
         }
         return nbt;
     }

@@ -3,7 +3,7 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.pigment.IEmptyPigmentProvider;
 import mekanism.api.chemical.pigment.Pigment;
@@ -58,7 +58,7 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      */
     public static final Codec<PigmentStackIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.pigment().mapCodecNonEmpty().forGetter(PigmentStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
     ).apply(instance, PigmentStackIngredient::new));
 
     /**
@@ -79,7 +79,7 @@ public final class PigmentStackIngredient extends ChemicalStackIngredient<Pigmen
      */
     public static final Codec<PigmentStackIngredient> NESTED_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           IngredientCreatorAccess.pigment().codecNonEmpty().fieldOf("ingredient").forGetter(PigmentStackIngredient::ingredient),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(NBTConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(PigmentStackIngredient::amount)
     ).apply(instance, PigmentStackIngredient::new));
 
     /**

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
@@ -64,12 +64,12 @@ class PersonalStorageData extends MekanismSavedData {
      */
     @Override
     public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        ListTag entries = nbt.getList(NBTConstants.DATA, Tag.TAG_COMPOUND);
+        ListTag entries = nbt.getList(SerializationConstants.DATA, Tag.TAG_COMPOUND);
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag entry = entries.getCompound(i);
             PersonalStorageItemInventory inv = createInventory();
             ContainerType.ITEM.readFrom(provider, entry, inv.getInventorySlots(null));
-            inventoriesById.put(entry.getUUID(NBTConstants.PERSONAL_STORAGE_ID), inv);
+            inventoriesById.put(entry.getUUID(SerializationConstants.PERSONAL_STORAGE_ID), inv);
         }
     }
 
@@ -78,11 +78,11 @@ class PersonalStorageData extends MekanismSavedData {
         ListTag entries = new ListTag();
         for (Entry<UUID, PersonalStorageItemInventory> entry : inventoriesById.entrySet()) {
             CompoundTag nbtEntry = new CompoundTag();
-            nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, entry.getKey());
+            nbtEntry.putUUID(SerializationConstants.PERSONAL_STORAGE_ID, entry.getKey());
             ContainerType.ITEM.saveTo(provider, nbtEntry, entry.getValue().getInventorySlots(null));
             entries.add(nbtEntry);
         }
-        compoundTag.put(NBTConstants.DATA, entries);
+        compoundTag.put(SerializationConstants.DATA, entries);
         return compoundTag;
     }
 

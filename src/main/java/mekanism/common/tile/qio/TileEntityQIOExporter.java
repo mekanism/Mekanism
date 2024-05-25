@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
@@ -13,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
@@ -50,10 +49,8 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
@@ -185,30 +182,30 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         super.saveAdditional(nbtTags, provider);
         SidedBlockPos rrTarget = getRoundRobinTarget();
         if (rrTarget != null) {
-            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+            nbtTags.put(SerializationConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
         }
     }
 
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
-            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET)));
+        if (nbt.contains(SerializationConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
+            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(SerializationConstants.ROUND_ROBIN_TARGET)));
         }
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        dataMap.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
-        dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
+        dataMap.putBoolean(SerializationConstants.AUTO, exportWithoutFilter);
+        dataMap.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.AUTO, value -> exportWithoutFilter = value);
-        roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
+        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.AUTO, value -> exportWithoutFilter = value);
+        roundRobin = dataMap.getBoolean(SerializationConstants.ROUND_ROBIN);
     }
 
     @Override

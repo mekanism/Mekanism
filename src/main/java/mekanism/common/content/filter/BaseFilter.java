@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
@@ -30,7 +30,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     protected static <FILTER extends BaseFilter<FILTER>> P1<Mu<FILTER>, Boolean> baseCodec(Instance<FILTER> instance) {
         return instance.group(
-              Codec.BOOL.optionalFieldOf(NBTConstants.ENABLED, true).forGetter(BaseFilter::isEnabled)
+              Codec.BOOL.optionalFieldOf(SerializationConstants.ENABLED, true).forGetter(BaseFilter::isEnabled)
         );
     }
 

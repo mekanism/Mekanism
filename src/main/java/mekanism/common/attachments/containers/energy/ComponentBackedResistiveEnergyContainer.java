@@ -1,7 +1,7 @@
 package mekanism.common.attachments.containers.energy;
 
 import java.util.Objects;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
@@ -49,13 +49,13 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putString(NBTConstants.ENERGY_USAGE, energyPerTick.toString());
+        nbt.putString(SerializationConstants.ENERGY_USAGE, energyPerTick.toString());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

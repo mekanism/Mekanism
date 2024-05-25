@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -153,13 +153,13 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
         super.readSustainedData(provider, nbt);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
+        NBTUtils.setEnumIfPresent(nbt, SerializationConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
     }
 
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.writeSustainedData(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.LOGIC_TYPE, logicType);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.LOGIC_TYPE, logicType);
     }
 
     @Override

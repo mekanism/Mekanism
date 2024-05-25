@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
@@ -167,7 +167,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
             for (FILTER filter : filters) {
                 filterTags.add(BaseFilter.GENERIC_CODEC.encodeStart(serializationContext, filter).getOrThrow());
             }
-            nbt.put(NBTConstants.FILTERS, filterTags);
+            nbt.put(SerializationConstants.FILTERS, filterTags);
         }
     }
 
@@ -176,7 +176,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         //Instantiate an empty cache for enabled filters so that when we add enabled filters
         // we can also add them to the enabled ones, and also overwrite our old cache
         enabledFilters = new ArrayList<>();
-        NBTUtils.setListIfPresent(nbt, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
+        NBTUtils.setListIfPresent(nbt, SerializationConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
             RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0, size = tagList.size(); i < size; i++) {
                 Optional<Pair<IFilter<?>, Tag>> result = BaseFilter.GENERIC_CODEC.decode(serializationContext, tagList.getCompound(i)).result();

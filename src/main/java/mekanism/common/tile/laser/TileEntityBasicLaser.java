@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
@@ -59,7 +59,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.living.ShieldBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
@@ -415,27 +414,27 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.LAST_FIRED, value -> lastFired = value);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
+        nbtTags.putString(SerializationConstants.LAST_FIRED, lastFired.toString());
     }
 
     @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putString(NBTConstants.LAST_FIRED, lastFired.toString());
+        updateTag.putString(SerializationConstants.LAST_FIRED, lastFired.toString());
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
+        NBTUtils.setFloatingLongIfPresent(tag, SerializationConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 
     public LaserEnergyContainer getEnergyContainer() {

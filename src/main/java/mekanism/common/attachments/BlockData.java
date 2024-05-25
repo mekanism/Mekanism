@@ -6,7 +6,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -40,8 +40,8 @@ import org.jetbrains.annotations.Nullable;
 public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntityTag) {
 
     public static final Codec<BlockData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          BlockState.CODEC.fieldOf(NBTConstants.STATE).forGetter(BlockData::blockState),
-          CompoundTag.CODEC.optionalFieldOf(NBTConstants.BE_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
+          BlockState.CODEC.fieldOf(SerializationConstants.STATE).forGetter(BlockData::blockState),
+          CompoundTag.CODEC.optionalFieldOf(SerializationConstants.BE_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
     ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
     //TODO - 1.20.5: Test this and see if there is a proper stream codec for block states
     public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(
@@ -84,9 +84,9 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
         //adjustedState.getBlock().setPlacedBy(world, pos, blockState, player, new ItemStack(adjustedState.getBlock()));
         if (blockEntityTag != null) {
             //Update the location
-            blockEntityTag.putInt(NBTConstants.X, pos.getX());
-            blockEntityTag.putInt(NBTConstants.Y, pos.getY());
-            blockEntityTag.putInt(NBTConstants.Z, pos.getZ());
+            blockEntityTag.putInt(SerializationConstants.X, pos.getX());
+            blockEntityTag.putInt(SerializationConstants.Y, pos.getY());
+            blockEntityTag.putInt(SerializationConstants.Z, pos.getZ());
             //And get the block entity and load it from the data
             BlockEntity tile = WorldUtils.getTileEntity(level, pos);
             if (tile != null) {
@@ -110,8 +110,8 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
             consumer.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, beName));
             if (blockEntityTag != null) {
                 if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
-                    String key = block instanceof SpawnerBlock ? NBTConstants.SPAWN_DATA_LEGACY : NBTConstants.SPAWN_DATA;
-                    RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(NBTConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
+                    String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
+                    RegistryUtils.getById(blockEntityTag.getCompound(key).getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
                           .map(entity -> MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, entity))
                           .ifPresent(consumer);
                 } else if (block instanceof DecoratedPotBlock) {

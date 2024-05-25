@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -138,13 +138,13 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
         CompoundTag nbt = new CompoundTag();
         FloatingLong stored = getEnergy();
         if (!stored.isZero()) {
-            nbt.putString(NBTConstants.STORED, stored.toString());
+            nbt.putString(SerializationConstants.STORED, stored.toString());
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, this::setEnergy);
+        NBTUtils.setFloatingLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
     }
 }

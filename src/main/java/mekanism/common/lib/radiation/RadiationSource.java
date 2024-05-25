@@ -2,12 +2,11 @@ package mekanism.common.lib.radiation;
 
 import java.util.Objects;
 import java.util.Optional;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +48,7 @@ public class RadiationSource implements IRadiationSource {
         Optional<GlobalPos> result = GlobalPos.CODEC.parse(registryOps, tag).result();
         //noinspection OptionalIsPresent - Capturing lambda
         if (result.isPresent()) {
-            return Optional.of(new RadiationSource(result.get(), tag.getDouble(NBTConstants.RADIATION)));
+            return Optional.of(new RadiationSource(result.get(), tag.getDouble(SerializationConstants.RADIATION)));
         }
         return Optional.empty();
     }
@@ -57,7 +56,7 @@ public class RadiationSource implements IRadiationSource {
     public CompoundTag write(RegistryOps<Tag> registryOps) {
         CompoundTag tag = (CompoundTag) GlobalPos.CODEC.encodeStart(registryOps, pos).result()
               .orElseGet(CompoundTag::new);
-        tag.putDouble(NBTConstants.RADIATION, magnitude);
+        tag.putDouble(SerializationConstants.RADIATION, magnitude);
         return tag;
     }
 

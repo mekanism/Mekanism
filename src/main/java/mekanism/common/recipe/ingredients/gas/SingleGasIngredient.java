@@ -1,7 +1,7 @@
 package mekanism.common.recipe.ingredients.gas;
 
 import com.mojang.serialization.MapCodec;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -14,7 +14,7 @@ import net.minecraft.core.Holder;
 public final class SingleGasIngredient extends SingleChemicalIngredient<Gas, IGasIngredient> implements IGasIngredient {
 
     public static final MapCodec<SingleGasIngredient> CODEC = GasStack.GAS_NON_EMPTY_HOLDER_CODEC.xmap(SingleGasIngredient::new, SingleGasIngredient::chemical)
-          .fieldOf(JsonConstants.GAS);
+          .fieldOf(SerializationConstants.GAS);
 
     SingleGasIngredient(Holder<Gas> gas) {
         super(gas);

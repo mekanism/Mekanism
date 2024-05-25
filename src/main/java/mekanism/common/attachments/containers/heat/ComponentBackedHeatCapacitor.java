@@ -1,7 +1,7 @@
 package mekanism.common.attachments.containers.heat;
 
 import java.util.function.Supplier;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -117,19 +117,19 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         CompoundTag nbt = new CompoundTag();
         HeatCapacitorData data = getData();
-        nbt.putDouble(NBTConstants.STORED, data.heat());
-        nbt.putDouble(NBTConstants.HEAT_CAPACITY, data.capacity());
+        nbt.putDouble(SerializationConstants.STORED, data.heat());
+        nbt.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
         return nbt;
     }
 
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
         double capacity;
-        if (nbt.contains(NBTConstants.HEAT_CAPACITY, Tag.TAG_DOUBLE)) {
-            capacity = nbt.getDouble(NBTConstants.HEAT_CAPACITY);
+        if (nbt.contains(SerializationConstants.HEAT_CAPACITY, Tag.TAG_DOUBLE)) {
+            capacity = nbt.getDouble(SerializationConstants.HEAT_CAPACITY);
         } else {
             capacity = defaultData.capacity();
         }
-        setContents(new HeatCapacitorData(nbt.getDouble(NBTConstants.STORED), capacity));
+        setContents(new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity));
     }
 }

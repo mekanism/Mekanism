@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -119,9 +119,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
         super.read(provider, nbtTags);
-        if (nbtTags.contains(NBTConstants.ENERGY_STORED, Tag.TAG_STRING)) {
+        if (nbtTags.contains(SerializationConstants.ENERGY_STORED, Tag.TAG_STRING)) {
             try {
-                lastWrite = FloatingLong.parseFloatingLong(nbtTags.getString(NBTConstants.ENERGY_STORED));
+                lastWrite = FloatingLong.parseFloatingLong(nbtTags.getString(SerializationConstants.ENERGY_STORED));
             } catch (NumberFormatException e) {
                 lastWrite = FloatingLong.ZERO;
             }
@@ -139,9 +139,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (lastWrite.isZero()) {
-            nbtTags.remove(NBTConstants.ENERGY_STORED);
+            nbtTags.remove(SerializationConstants.ENERGY_STORED);
         } else {
-            nbtTags.putString(NBTConstants.ENERGY_STORED, lastWrite.toString());
+            nbtTags.putString(SerializationConstants.ENERGY_STORED, lastWrite.toString());
         }
         return nbtTags;
     }
@@ -220,7 +220,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);
+        NBTUtils.setFloatingLongIfPresent(tag, SerializationConstants.ENERGY_STORED, network.energyContainer::setEnergy);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

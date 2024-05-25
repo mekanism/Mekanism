@@ -1,11 +1,10 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -70,10 +69,8 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -347,15 +344,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_LEFT, dumpLeft);
-        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_RIGHT, dumpRight);
+        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_LEFT, dumpLeft);
+        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(dataMap, NBTConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
+        NBTUtils.setEnumIfPresent(dataMap, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(dataMap, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
     }
 
     @Override

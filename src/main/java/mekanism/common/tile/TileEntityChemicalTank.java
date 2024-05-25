@@ -2,13 +2,12 @@ package mekanism.common.tile;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
@@ -62,10 +61,8 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -262,13 +259,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
-        NBTUtils.writeEnum(dataMap, NBTConstants.DUMP_MODE, dumping);
+        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_MODE, dumping);
     }
 
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumping = mode);
+        NBTUtils.setEnumIfPresent(data, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumping = mode);
     }
 
     @Override

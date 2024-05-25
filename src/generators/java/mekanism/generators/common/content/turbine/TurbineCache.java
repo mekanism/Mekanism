@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
@@ -32,12 +32,12 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     @Override
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.load(provider, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumpMode = mode);
+        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumpMode = mode);
     }
 
     @Override
     public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.save(provider, nbtTags);
-        NBTUtils.writeEnum(nbtTags, NBTConstants.DUMP_MODE, dumpMode);
+        NBTUtils.writeEnum(nbtTags, SerializationConstants.DUMP_MODE, dumpMode);
     }
 }

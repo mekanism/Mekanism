@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
@@ -132,19 +132,19 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        NBTUtils.setBlockPosIfPresent(nbt, NBTConstants.MAIN, pos -> mainPos = pos);
-        currentRedstoneLevel = nbt.getInt(NBTConstants.REDSTONE);
-        receivedCoords = nbt.getBoolean(NBTConstants.RECEIVED_COORDS);
+        NBTUtils.setBlockPosIfPresent(nbt, SerializationConstants.MAIN, pos -> mainPos = pos);
+        currentRedstoneLevel = nbt.getInt(SerializationConstants.REDSTONE);
+        receivedCoords = nbt.getBoolean(SerializationConstants.RECEIVED_COORDS);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
         if (receivedCoords) {
-            nbtTags.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+            nbtTags.put(SerializationConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
         }
-        nbtTags.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
-        nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
+        nbtTags.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
+        nbtTags.putBoolean(SerializationConstants.RECEIVED_COORDS, receivedCoords);
     }
 
     @NotNull
@@ -152,19 +152,19 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
         if (receivedCoords) {
-            updateTag.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+            updateTag.put(SerializationConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
         }
-        updateTag.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
-        updateTag.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
+        updateTag.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
+        updateTag.putBoolean(SerializationConstants.RECEIVED_COORDS, receivedCoords);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
-        currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
-        receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);
+        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.MAIN, pos -> mainPos = pos);
+        currentRedstoneLevel = tag.getInt(SerializationConstants.REDSTONE);
+        receivedCoords = tag.getBoolean(SerializationConstants.RECEIVED_COORDS);
     }
 
     @Override

@@ -3,7 +3,7 @@ package mekanism.generators.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.ContainerType;
@@ -92,14 +92,14 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(NBTConstants.FLUID_STORED, bioFuelTank.serializeNBT(provider));
+        updateTag.put(SerializationConstants.FLUID_STORED, bioFuelTank.serializeNBT(provider));
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(provider, nbt));
+        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(provider, nbt));
     }
 
     @Override

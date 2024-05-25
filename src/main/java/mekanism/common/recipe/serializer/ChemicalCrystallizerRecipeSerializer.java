@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.BiFunction;
-import mekanism.api.JsonConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.codec.DependentMapCodec;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
@@ -18,9 +18,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<BasicChemicalCrystallizerRecipe> {
 
-    private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(JsonConstants.CHEMICAL_TYPE);
+    private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(SerializationConstants.CHEMICAL_TYPE);
     @SuppressWarnings("unchecked")
-    private static final MapCodec<ChemicalStackIngredient<?, ?, ?>> chemicalStackIngredientMapEncoder = new DependentMapCodec<>(JsonConstants.INPUT, type -> (Codec<ChemicalStackIngredient<?, ?, ?>>) IngredientCreatorAccess.getCreatorForType(type).codec(), chemicalTypeMapCodec, ChemicalType::getTypeFor);
+    private static final MapCodec<ChemicalStackIngredient<?, ?, ?>> chemicalStackIngredientMapEncoder = new DependentMapCodec<>(SerializationConstants.INPUT,
+          type -> (Codec<ChemicalStackIngredient<?, ?, ?>>) IngredientCreatorAccess.getCreatorForType(type).codec(), chemicalTypeMapCodec, ChemicalType::getTypeFor);
 
     private final StreamCodec<RegistryFriendlyByteBuf, BasicChemicalCrystallizerRecipe> streamCodec;
     private final MapCodec<BasicChemicalCrystallizerRecipe> codec;
@@ -28,7 +29,7 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ba
     public ChemicalCrystallizerRecipeSerializer(BiFunction<ChemicalStackIngredient<?, ?, ?>, ItemStack, BasicChemicalCrystallizerRecipe> factory) {
         this.codec = RecordCodecBuilder.mapCodec(instance -> instance.group(
               chemicalStackIngredientMapEncoder.forGetter(BasicChemicalCrystallizerRecipe::getInput),
-              ItemStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
+              ItemStack.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
         ).apply(instance, factory));
         this.streamCodec = StreamCodec.composite(
               ChemicalType.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().dispatch(ChemicalType::getTypeFor,

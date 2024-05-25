@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
@@ -150,7 +150,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putFloat(NBTConstants.SCALE, prevScale);
+        updateTag.putFloat(SerializationConstants.SCALE, prevScale);
         return updateTag;
     }
 
@@ -164,7 +164,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             }
         }
         super.handleUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
+        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
         if (config != null) {
             for (RelativeSide side : EnumUtils.SIDES) {
                 if (currentConfig[side.ordinal()] != config.getDataType(side)) {

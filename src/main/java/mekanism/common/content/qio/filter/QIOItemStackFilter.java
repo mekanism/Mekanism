@@ -5,13 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.Function;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.lib.inventory.Finder;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -21,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
 
     public static final MapCodec<QIOItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
-          .and(ItemStack.OPTIONAL_CODEC.fieldOf(NBTConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
-          .and(Codec.BOOL.optionalFieldOf(NBTConstants.FUZZY_MODE, false).forGetter(filter -> filter.fuzzyMode))
+          .and(ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
+          .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY_MODE, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, QIOItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, QIOItemStackFilter> STREAM_CODEC = StreamCodec.composite(
           baseQIOStreamCodec(QIOItemStackFilter::new), Function.identity(),

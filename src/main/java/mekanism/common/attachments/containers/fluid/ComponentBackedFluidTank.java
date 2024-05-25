@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
@@ -213,14 +213,14 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         CompoundTag nbt = new CompoundTag();
         FluidStack stored = getFluid();
         if (!stored.isEmpty()) {
-            nbt.put(NBTConstants.STORED, stored.save(provider));
+            nbt.put(SerializationConstants.STORED, stored.save(provider));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        NBTUtils.setFluidStackIfPresent(provider, nbt, NBTConstants.STORED, this::setStackUnchecked);
+        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.STORED, this::setStackUnchecked);
     }
 
     @Override

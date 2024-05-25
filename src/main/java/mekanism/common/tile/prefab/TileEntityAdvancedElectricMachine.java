@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -236,13 +236,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        usedSoFar = nbt.getLong(NBTConstants.USED_SO_FAR);
+        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(nbtTags, provider);
-        nbtTags.putLong(NBTConstants.USED_SO_FAR, usedSoFar);
+        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     //Methods relating to IComputerTile

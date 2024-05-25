@@ -1,7 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Optional;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
@@ -35,8 +35,8 @@ public class RegistryUtils {
 
     public static <R> Optional<R> getById(CompoundTag nbt, Registry<R> registry) {
         return Optional.ofNullable(nbt)
-              .filter(tag -> tag.contains(NBTConstants.ID, Tag.TAG_STRING))
-              .map(tag -> tag.getString(NBTConstants.ID))
+              .filter(tag -> tag.contains(SerializationConstants.ID, Tag.TAG_STRING))
+              .map(tag -> tag.getString(SerializationConstants.ID))
               .map(ResourceLocation::tryParse)
               .flatMap(registry::getOptional);
     }

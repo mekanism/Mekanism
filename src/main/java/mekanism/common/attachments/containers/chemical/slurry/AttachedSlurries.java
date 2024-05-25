@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.attachments.containers.IAttachedContainers;
@@ -19,7 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 public record AttachedSlurries(List<SlurryStack> containers) implements IAttachedContainers<SlurryStack, AttachedSlurries> {
 
     public static final Codec<AttachedSlurries> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SlurryStack.OPTIONAL_CODEC.listOf().fieldOf(NBTConstants.SLURRY_TANKS).forGetter(AttachedSlurries::containers)
+          SlurryStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.SLURRY_TANKS).forGetter(AttachedSlurries::containers)
     ).apply(instance, AttachedSlurries::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedSlurries> STREAM_CODEC =
           SlurryStack.OPTIONAL_STREAM_CODEC.<List<SlurryStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

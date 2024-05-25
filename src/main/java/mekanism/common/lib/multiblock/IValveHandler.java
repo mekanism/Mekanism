@@ -1,7 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.Collection;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,22 +17,22 @@ public interface IValveHandler {
         for (ValveData valveData : getValveData()) {
             if (valveData.activeTicks > 0) {
                 CompoundTag valveNBT = new CompoundTag();
-                valveNBT.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(valveData.location));
-                NBTUtils.writeEnum(valveNBT, NBTConstants.SIDE, valveData.side);
+                valveNBT.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(valveData.location));
+                NBTUtils.writeEnum(valveNBT, SerializationConstants.SIDE, valveData.side);
                 valves.add(valveNBT);
             }
         }
-        updateTag.put(NBTConstants.VALVE, valves);
+        updateTag.put(SerializationConstants.VALVE, valves);
     }
 
     default void readValves(CompoundTag updateTag) {
         getValveData().clear();
-        if (updateTag.contains(NBTConstants.VALVE, Tag.TAG_LIST)) {
-            ListTag valves = updateTag.getList(NBTConstants.VALVE, Tag.TAG_COMPOUND);
+        if (updateTag.contains(SerializationConstants.VALVE, Tag.TAG_LIST)) {
+            ListTag valves = updateTag.getList(SerializationConstants.VALVE, Tag.TAG_COMPOUND);
             for (int i = 0; i < valves.size(); i++) {
                 CompoundTag valveNBT = valves.getCompound(i);
-                NBTUtils.setBlockPosIfPresent(valveNBT, NBTConstants.POSITION, pos -> {
-                    Direction side = Direction.from3DDataValue(valveNBT.getInt(NBTConstants.SIDE));
+                NBTUtils.setBlockPosIfPresent(valveNBT, SerializationConstants.POSITION, pos -> {
+                    Direction side = Direction.from3DDataValue(valveNBT.getInt(SerializationConstants.SIDE));
                     getValveData().add(new ValveData(pos, side));
                 });
             }

@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.NBTConstants;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -295,25 +295,25 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
-        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> renderLocation = value);
-        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, NBTConstants.MIN);
-        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, NBTConstants.MAX);
+        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
+        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.RENDER_LOCATION, value -> renderLocation = value);
+        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, SerializationConstants.MIN);
+        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, SerializationConstants.MAX);
         if (minPos.isPresent() && maxPos.isPresent()) {
             bounds = new VoxelCuboid(minPos.get(), maxPos.get());
         }
-        NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.INVENTORY_ID, value -> inventoryID = value, () -> inventoryID = null);
+        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.INVENTORY_ID, value -> inventoryID = value, () -> inventoryID = null);
     }
 
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        tag.putInt(NBTConstants.VOLUME, getVolume());
+        tag.putInt(SerializationConstants.VOLUME, getVolume());
         if (renderLocation != null) {//In theory this shouldn't be null here but check it anyway
-            tag.put(NBTConstants.RENDER_LOCATION, NbtUtils.writeBlockPos(renderLocation));
+            tag.put(SerializationConstants.RENDER_LOCATION, NbtUtils.writeBlockPos(renderLocation));
         }
-        tag.put(NBTConstants.MIN, NbtUtils.writeBlockPos(bounds.getMinPos()));
-        tag.put(NBTConstants.MAX, NbtUtils.writeBlockPos(bounds.getMaxPos()));
+        tag.put(SerializationConstants.MIN, NbtUtils.writeBlockPos(bounds.getMinPos()));
+        tag.put(SerializationConstants.MAX, NbtUtils.writeBlockPos(bounds.getMaxPos()));
         if (inventoryID != null) {
-            tag.putUUID(NBTConstants.INVENTORY_ID, inventoryID);
+            tag.putUUID(SerializationConstants.INVENTORY_ID, inventoryID);
         }
     }
 
