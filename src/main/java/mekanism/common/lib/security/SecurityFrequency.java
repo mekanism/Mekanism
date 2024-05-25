@@ -27,11 +27,11 @@ public class SecurityFrequency extends Frequency {
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(SecurityFrequency::getSecurity),
           Codec.BOOL.fieldOf(SerializationConstants.OVERRIDE).forGetter(SecurityFrequency::isOverridden),
-          UUIDUtil.CODEC.listOf().optionalFieldOf(SerializationConstants.TRUSTED, Collections.emptyList()).forGetter(freq -> freq.trusted.elements())
+          UUIDUtil.CODEC.listOf().optionalFieldOf(SerializationConstants.TRUSTED).forGetter(freq -> freq.trusted.isEmpty() ? Optional.empty() : Optional.of(freq.trusted.elements()))
     ).apply(instance, (owner, securityMode, override, trustedCache) -> {
         SecurityFrequency frequency = new SecurityFrequency(owner.orElse(null), securityMode);
         frequency.override = override;
-        for (UUID trusted : trustedCache) {
+        for (UUID trusted : trustedCache.orElse(Collections.emptyList())) {
             frequency.addTrustedRaw(trusted, MekanismUtils.getLastKnownUsername(trusted));
         }
         return frequency;

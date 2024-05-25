@@ -216,8 +216,10 @@ public class FrequencyManager<FREQ extends Frequency> {
             NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
             ListTag list = nbtTags.getList(SerializationConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
+            Codec<FREQ> codec = frequencyType.codec();
+            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0; i < list.size(); i++) {
-                loadedFrequencies.add(frequencyType.create(provider, list.getCompound(i)));
+                loadedFrequencies.add(codec.decode(registryOps, list.getCompound(i)).getOrThrow().getFirst());
             }
         }
 

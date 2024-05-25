@@ -335,9 +335,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private static void deserializeFrequency(HolderLookup.Provider provider, CompoundTag frequencyNBT, FrequencyType<?> type, FrequencyData frequencyData) {
         if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-            Frequency frequency = type.create(provider, frequencyNBT.getCompound(type.getName()));
-            frequency.setValid(false);
-            frequencyData.setFrequency(frequency);
+            frequencyData.setFrequency(type.create(provider, frequencyNBT.getCompound(type.getName())));
         }
     }
 
@@ -360,7 +358,7 @@ public class TileComponentFrequency implements ITileComponent {
     private static void serializeFrequency(DynamicOps<Tag> ops, FrequencyType<?> type, FrequencyData frequencyData, CompoundTag frequencyNBT) {
         Frequency frequency = frequencyData.selectedFrequency;
         if (frequency != null) {
-            CompoundTag frequencyTag = (CompoundTag) type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity()).getOrThrow();
+            Tag frequencyTag = type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity()).getOrThrow();
             //Note: While we save the full frequency data, and do make some use of it in reading
             // in general this isn't needed and won't be used as the frequency will be grabbed
             // from the frequency manager

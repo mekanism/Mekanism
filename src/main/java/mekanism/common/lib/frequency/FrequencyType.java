@@ -107,9 +107,11 @@ public class FrequencyType<FREQ extends Frequency> {
         return codec;
     }
 
-    public FREQ create(HolderLookup.Provider provider, CompoundTag tag) {
-        //TODO - 1.20.5: Re-evaluate that this is reasonable/correct
-        return codec.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow().getFirst();
+    public FREQ create(HolderLookup.Provider provider, CompoundTag identityTag) {
+        FrequencyIdentity identity = getIdentitySerializer().codec().decode(provider.createSerializationContext(NbtOps.INSTANCE), identityTag).getOrThrow().getFirst();
+        FREQ frequency = create(identity.key(), identity.ownerUUID(), identity.securityMode());
+        frequency.setValid(false);
+        return frequency;
     }
 
     public FREQ create(Object key, UUID ownerUUID, SecurityMode securityMode) {
