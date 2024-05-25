@@ -12,6 +12,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.ILangEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -52,12 +53,12 @@ public enum Upgrade implements IHasTranslationKey, StringRepresentable {
     public static final StreamCodec<ByteBuf, Upgrade> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, Upgrade::ordinal);
 
     private final String name;
-    private final APILang langKey;
-    private final APILang descLangKey;
+    private final ILangEntry langKey;
+    private final ILangEntry descLangKey;
     private final int maxStack;
     private final EnumColor color;
 
-    Upgrade(String name, APILang langKey, APILang descLangKey, int maxStack, EnumColor color) {
+    Upgrade(String name, ILangEntry langKey, ILangEntry descLangKey, int maxStack, EnumColor color) {
         this.name = name;
         this.langKey = langKey;
         this.descLangKey = descLangKey;

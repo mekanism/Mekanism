@@ -878,7 +878,7 @@ public enum MekanismLang implements ILangEntry {
         return key;
     }
 
-    public static MekanismLang get(EquipmentSlot type) {
+    public static ILangEntry get(EquipmentSlot type) {
         return switch (type) {
             case HEAD -> HEAD;
             case CHEST, BODY -> BODY;

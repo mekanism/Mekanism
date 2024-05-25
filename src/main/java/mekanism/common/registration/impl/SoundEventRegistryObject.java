@@ -1,14 +1,14 @@
 package mekanism.common.registration.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.ILangEntry;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 
 @NothingNullByDefault
-public class SoundEventRegistryObject<SOUND extends SoundEvent> extends MekanismDeferredHolder<SoundEvent, SOUND> implements ILangEntry {
+public class SoundEventRegistryObject<SOUND extends SoundEvent> extends MekanismDeferredHolder<SoundEvent, SOUND> implements IHasTranslationKey {
 
     private final String translationKey;
 

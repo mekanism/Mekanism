@@ -1,8 +1,7 @@
 package mekanism.common.content.blocktype;
 
 import java.util.function.Supplier;
-import mekanism.api.Upgrade;
-import mekanism.common.MekanismLang;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateFacing;
@@ -19,7 +18,7 @@ import net.minecraft.core.particles.ParticleTypes;
 
 public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE> {
 
-    public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+    public Machine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         super(tileEntityRegistrar, description);
         // add default particle effects
         add(new AttributeParticleFX()
@@ -31,7 +30,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
 
-        public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, MekanismLang description, FactoryType factoryType) {
+        public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, ILangEntry description, FactoryType factoryType) {
             super(tileEntitySupplier, description);
             add(new AttributeFactoryType(factoryType), new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.BASIC, getFactoryType())));
         }
@@ -47,12 +46,13 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
             super(holder);
         }
 
-        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, MekanismLang description) {
+        public static <TILE extends TileEntityMekanism> MachineBuilder<Machine<TILE>, TILE, ?> createMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
+              ILangEntry description) {
             return new MachineBuilder<>(new Machine<>(tileEntityRegistrar, description));
         }
 
         public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar,
-              MekanismLang description, FactoryType factoryType) {
+              ILangEntry description, FactoryType factoryType) {
             return new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, description, factoryType));
         }
     }

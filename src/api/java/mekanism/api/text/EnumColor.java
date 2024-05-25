@@ -75,18 +75,18 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
 
     private int[] rgbCode;
     private TextColor color;
-    private final APILang langEntry;
+    private final ILangEntry langEntry;
     private final String englishName;
     private final String registryPrefix;
     @Nullable
     private final DyeColor dyeColor;
     private final MapColor mapColor;
 
-    EnumColor(String s, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
+    EnumColor(String s, ILangEntry langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
         this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMapColor(), dyeColor);
     }
 
-    EnumColor(String code, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, MapColor mapColor, @Nullable DyeColor dyeColor) {
+    EnumColor(String code, ILangEntry langEntry, String englishName, String registryPrefix, int[] rgbCode, MapColor mapColor, @Nullable DyeColor dyeColor) {
         this.code = code;
         this.langEntry = langEntry;
         this.englishName = englishName;
@@ -146,7 +146,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     /**
      * @apiNote For use by the data generators.
      */
-    public APILang getLangEntry() {
+    public ILangEntry getLangEntry() {
         return langEntry;
     }
 

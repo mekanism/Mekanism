@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -23,11 +24,11 @@ public enum FactoryType implements IHasTranslationKey {
     SAWING("sawing", MekanismLang.SAWING, () -> MekanismBlockTypes.PRECISION_SAWMILL, () -> MekanismBlocks.PRECISION_SAWMILL);
 
     private final String registryNameComponent;
-    private final MekanismLang langEntry;
+    private final ILangEntry langEntry;
     private final Supplier<FactoryMachine<?>> baseMachine;
     private final Supplier<BlockRegistryObject<?, ?>> baseBlock;
 
-    FactoryType(String registryNameComponent, MekanismLang langEntry, Supplier<FactoryMachine<?>> baseMachine, Supplier<BlockRegistryObject<?, ?>> baseBlock) {
+    FactoryType(String registryNameComponent, ILangEntry langEntry, Supplier<FactoryMachine<?>> baseMachine, Supplier<BlockRegistryObject<?, ?>> baseBlock) {
         this.registryNameComponent = registryNameComponent;
         this.langEntry = langEntry;
         this.baseMachine = baseMachine;
