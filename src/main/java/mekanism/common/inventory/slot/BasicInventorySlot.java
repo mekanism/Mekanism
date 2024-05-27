@@ -293,7 +293,10 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public int growStack(int amount, Action action) {
         int current = this.current.getCount();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(amount, getLimit(this.current));
         }

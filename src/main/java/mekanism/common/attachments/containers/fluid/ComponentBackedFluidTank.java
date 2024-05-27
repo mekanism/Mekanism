@@ -3,17 +3,15 @@ package mekanism.common.attachments.containers.fluid;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -41,11 +39,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedFluids>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_FLUIDS;
-    }
-
-    @Override
     protected FluidStack copy(FluidStack toCopy) {
         return toCopy.copy();
     }
@@ -56,10 +49,14 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     @Override
+    protected ContainerType<?, AttachedFluids, ?> containerType() {
+        return ContainerType.FLUID;
+    }
+
+    @Override
     public FluidStack getFluid() {
         //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
-        AttachedFluids attachedFluids = getAttached();
-        return attachedFluids == null ? FluidStack.EMPTY : getContents(attachedFluids);
+        return getContents(getAttached());
     }
 
     @Override
@@ -71,7 +68,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     @Override
     public void setStackUnchecked(FluidStack stack) {
-        setContents(stack);
+        setContents(getAttached(), stack);
     }
 
     @Override
@@ -93,10 +90,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
             return stack;
         }
         AttachedFluids attachedFluids = getAttached();
-        if (attachedFluids == null) {
-            //"Fail quick" if we can't have a stack
-            return stack;
-        }
         FluidStack stored = getContents(attachedFluids);
         int needed = Math.min(getRate(automationType), getNeeded(stored));
         if (needed <= 0) {
@@ -123,10 +116,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
             return FluidStack.EMPTY;
         }
         AttachedFluids attachedFluids = getAttached();
-        if (attachedFluids == null) {
-            //"Fail quick" if we can't have a stack
-            return FluidStack.EMPTY;
-        }
         return extract(attachedFluids, getContents(attachedFluids), amount, action, automationType);
     }
 
@@ -149,10 +138,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     @Override
     public final int setStackSize(int amount, Action action) {
         AttachedFluids attachedFluids = getAttached();
-        if (attachedFluids == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         return setStackSize(attachedFluids, getContents(attachedFluids), amount, action);
     }
 
@@ -180,13 +165,12 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     @Override
     public int growStack(int amount, Action action) {
         AttachedFluids attachedFluids = getAttached();
-        if (attachedFluids == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         FluidStack stored = getContents(attachedFluids);
         int current = stored.getAmount();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(Math.min(amount, getNeeded(stored)), getRate(null));
         } else if (amount < 0) {
@@ -228,10 +212,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     public FluidStack drain(FluidStack stack, FluidAction action) {
         //Override to only look up the stack once
         AttachedFluids attachedFluids = getAttached();
-        if (attachedFluids == null) {
-            //"Fail quick" if we can't have a stack
-            return FluidStack.EMPTY;
-        }
         FluidStack stored = getContents(attachedFluids);
         if (!stored.isEmpty() && FluidStack.isSameFluidSameComponents(stored, stack)) {
             return extract(attachedFluids, stored, stack.getAmount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);

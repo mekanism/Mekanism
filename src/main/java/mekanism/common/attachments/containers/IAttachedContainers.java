@@ -24,6 +24,16 @@ public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<
         return containers().get(index);
     }
 
+    TYPE getEmptyStack();
+
+    default TYPE getOrDefault(int index) {
+        List<TYPE> containers = containers();
+        if (index < 0 || index >= containers.size()) {
+            return getEmptyStack();
+        }
+        return containers.get(index);
+    }
+
     ATTACHED create(List<TYPE> containers);
 
     //TODO - 1.20.5: add javadocs that specify it is assumed data will be copied BEFORE calling this

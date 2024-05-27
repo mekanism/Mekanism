@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 @NothingNullByDefault
 public class ComponentBackedSlurryHandler extends ComponentBackedChemicalHandler<Slurry, SlurryStack, ISlurryTank, AttachedSlurries> implements IMekanismSlurryHandler {
 
-    public ComponentBackedSlurryHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedSlurryHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override

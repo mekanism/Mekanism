@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
@@ -78,7 +77,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
-          SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY,
+          SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
           TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy) {
         @Override
         @SuppressWarnings("unchecked")
@@ -87,26 +86,27 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
-          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, TileEntityMekanism::getInventorySlots,
-          TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory);
+          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory);
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
-          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, TileEntityMekanism::getFluidTanks,
-          TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
+          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedFluids.EMPTY,
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid);
     public static final ContainerType<IGasTank, AttachedGases, ComponentBackedGasHandler> GAS = new ContainerType<>(MekanismDataComponents.ATTACHED_GASES,
-          SerializationConstants.GAS_TANKS, SerializationConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, TileEntityMekanism::getGasTanks,
-          TileEntityMekanism::collectGasTanks, TileEntityMekanism::applyGasTanks, TileEntityMekanism::canHandleGas);
+          SerializationConstants.GAS_TANKS, SerializationConstants.TANK, ComponentBackedGasHandler::new, Capabilities.GAS, AttachedGases.EMPTY,
+          TileEntityMekanism::getGasTanks, TileEntityMekanism::collectGasTanks, TileEntityMekanism::applyGasTanks, TileEntityMekanism::canHandleGas);
     public static final ContainerType<IInfusionTank, AttachedInfuseTypes, ComponentBackedInfusionHandler> INFUSION = new ContainerType<>(
-          MekanismDataComponents.ATTACHED_INFUSE_TYPES, SerializationConstants.INFUSION_TANKS, SerializationConstants.TANK, ComponentBackedInfusionHandler::new, Capabilities.INFUSION,
-          TileEntityMekanism::getInfusionTanks, TileEntityMekanism::collectInfusionTanks, TileEntityMekanism::applyInfusionTanks, TileEntityMekanism::canHandleInfusion);
+          MekanismDataComponents.ATTACHED_INFUSE_TYPES, SerializationConstants.INFUSION_TANKS, SerializationConstants.TANK, ComponentBackedInfusionHandler::new,
+          Capabilities.INFUSION, AttachedInfuseTypes.EMPTY, TileEntityMekanism::getInfusionTanks, TileEntityMekanism::collectInfusionTanks,
+          TileEntityMekanism::applyInfusionTanks, TileEntityMekanism::canHandleInfusion);
     public static final ContainerType<IPigmentTank, AttachedPigments, ComponentBackedPigmentHandler> PIGMENT = new ContainerType<>(MekanismDataComponents.ATTACHED_PIGMENTS,
-          SerializationConstants.PIGMENT_TANKS, SerializationConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT,
+          SerializationConstants.PIGMENT_TANKS, SerializationConstants.TANK, ComponentBackedPigmentHandler::new, Capabilities.PIGMENT, AttachedPigments.EMPTY,
           TileEntityMekanism::getPigmentTanks, TileEntityMekanism::collectPigmentTanks, TileEntityMekanism::applyPigmentTanks, TileEntityMekanism::canHandlePigment);
     public static final ContainerType<ISlurryTank, AttachedSlurries, ComponentBackedSlurryHandler> SLURRY = new ContainerType<>(MekanismDataComponents.ATTACHED_SLURRIES,
-          SerializationConstants.SLURRY_TANKS, SerializationConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, TileEntityMekanism::getSlurryTanks,
-          TileEntityMekanism::collectSlurryTanks, TileEntityMekanism::applySlurryTanks, TileEntityMekanism::canHandleSlurry);
+          SerializationConstants.SLURRY_TANKS, SerializationConstants.TANK, ComponentBackedSlurryHandler::new, Capabilities.SLURRY, AttachedSlurries.EMPTY,
+          TileEntityMekanism::getSlurryTanks, TileEntityMekanism::collectSlurryTanks, TileEntityMekanism::applySlurryTanks, TileEntityMekanism::canHandleSlurry);
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
-          SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, TileEntityMekanism::getHeatCapacitors,
-          TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat);
+          SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
+          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat);
 
     //TODO - 1.20.5: Re-evaluate this codec implementation
     public static final Codec<ContainerType<?, ?, ?>> CODEC = BuiltInRegistries.DATA_COMPONENT_TYPE.byNameCodec().comapFlatMap(componentType -> {
@@ -119,7 +119,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }, containerType -> containerType.component.get());
 
     private final Map<Item, Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
-    private final Function<ItemStack, HANDLER> handlerConstructor;
+    private final HandlerConstructor<HANDLER> handlerConstructor;
     private final BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile;
     private final CopyFromTile<CONTAINER, ATTACHED> copyFromTile;
     private final CopyToTile<CONTAINER, ATTACHED> copyToTile;
@@ -127,17 +127,19 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     @Nullable
     private final IMultiTypeCapability<? super HANDLER, ?> capability;
     private final Predicate<TileEntityMekanism> canHandle;
+    private final ATTACHED emptyAttachment;
     private final String containerTag;
     private final String containerKey;
 
     private ContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
-          Function<ItemStack, HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability,
+          HandlerConstructor<HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability, ATTACHED emptyAttachment,
           BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, CopyFromTile<CONTAINER, ATTACHED> copyFromTile,
           CopyToTile<CONTAINER, ATTACHED> copyToTile, Predicate<TileEntityMekanism> canHandle) {
         TYPES_INTERNAL.add(this);
         this.component = component;
         this.containerTag = containerTag;
         this.containerKey = containerKey;
+        this.emptyAttachment = emptyAttachment;
         this.handlerConstructor = handlerConstructor;
         this.containersFromTile = containersFromTile;
         this.copyFromTile = copyFromTile;
@@ -184,39 +186,50 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     public int getContainerCount(ItemStack stack) {
-        ATTACHED attached = stack.get(component);
-        if (attached == null) {
+        ATTACHED attached = getOrEmpty(stack);
+        if (attached.isEmpty()) {
             Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> containerCreator = knownDefaultCreators.get(stack.getItem());
             return containerCreator == null ? 0 : containerCreator.get().totalContainers();
         }
+        //TODO - 1.20.5: Do we need to look it up in case the max size changed since we were last saved?
         return attached.size();
     }
 
     @Nullable//TODO - 1.20.5: Re-evaluate
     public HANDLER createHandlerIfData(ItemStack stack) {
-        ATTACHED attached = stack.get(component);
-        return attached == null ? null : handlerConstructor.apply(stack);
+        ATTACHED attached = getOrEmpty(stack);
+        //TODO - 1.20.5: Do we need to look it up in case the max size changed since we were last saved?
+        return attached.isEmpty() ? null : handlerConstructor.create(stack, attached.size());
     }
 
     @Nullable
     public HANDLER createHandler(ItemStack stack) {
         //TODO - 1.20.5: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
-        ATTACHED attached = stack.get(component);
-        if (attached == null) {
-            Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(stack.getItem());
-            if (lazy == null) {
-                return null;
-            }
-            IContainerCreator<? extends CONTAINER, ATTACHED> containerCreator = lazy.get();
-            int count = containerCreator.totalContainers();
-            if (count == 0) {
-                return null;
-            }
-            attached = containerCreator.initStorage(count);
-            stack.set(component, attached);
+        int count = getContainerCount(stack);
+        if (count == 0) {
+            return null;
         }
-        return handlerConstructor.apply(stack);
+        return handlerConstructor.create(stack, count);
+    }
+
+    public ATTACHED createNewAttachment(ItemStack stack) {
+        //TODO - 1.20.5: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
+        // if we didn't have any creators?
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(stack.getItem());
+        if (lazy == null) {
+            return emptyAttachment;
+        }
+        IContainerCreator<? extends CONTAINER, ATTACHED> containerCreator = lazy.get();
+        int count = containerCreator.totalContainers();
+        if (count == 0) {
+            return emptyAttachment;
+        }
+        return containerCreator.initStorage(count);
+    }
+
+    public ATTACHED getOrEmpty(ItemStack stack) {
+        return stack.getOrDefault(component, emptyAttachment);
     }
 
     public CONTAINER createContainer(ItemStack attachedTo, int containerIndex) {
@@ -312,6 +325,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         HANDLER handler = createHandler(stack);
         if (handler != null) {
             read(provider, handler.getContainers(), save(provider, containers));
+            //TODO - 1.20.5: FIX the getattached here?
             stack.set(component, handler.getAttached());
             if (stack.getCount() > 1) {
                 Mekanism.logger.error("Copied {} to a stack ({}). This might lead to duplication of data.", getComponentName(), stack);
@@ -349,6 +363,12 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public List<CONTAINER> getContainers(TileEntityMekanism tile) {
         return containersFromTile.apply(tile, null);
+    }
+
+    @FunctionalInterface
+    private interface HandlerConstructor<HANDLER extends ComponentBackedHandler<?, ?, ?>> {
+
+        HANDLER create(ItemStack attachedTo, int totalContainers);
     }
 
     @FunctionalInterface

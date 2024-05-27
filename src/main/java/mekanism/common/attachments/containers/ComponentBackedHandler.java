@@ -1,7 +1,6 @@
 package mekanism.common.attachments.containers;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,33 +13,41 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>>
       implements IContentsListener {
 
-    private final List<CONTAINER> containers;
     protected final ItemStack attachedTo;
+    private final int totalContainers;
+
+    @Nullable
+    private List<CONTAINER> containers;
     private int numNotInitialized;
 
     //TODO - 1.20.5: Do we want to validate slot indices are within range?
-    protected ComponentBackedHandler(ItemStack attachedTo) {
+    protected ComponentBackedHandler(ItemStack attachedTo, int totalContainers) {
         this.attachedTo = attachedTo;
-        ATTACHED attached = getAttached();
-        if (attached == null || attached.isEmpty()) {
-            //TODO - 1.20.5: Is this meant to be zero if there is no attachment, or is it meant to be what the default is?
-            numNotInitialized = 0;
-            containers = Collections.emptyList();
-        } else {
-            numNotInitialized = attached.size();
-            //Note: Use an Arrays#asList to allow for null elements and force it to be the size we want it to be
-            containers = Arrays.asList((CONTAINER[]) new INBTSerializable[numNotInitialized]);
-        }
+        this.totalContainers = totalContainers;
     }
 
     protected abstract ContainerType<CONTAINER, ATTACHED, ?> containerType();
 
-    @Nullable
     protected ATTACHED getAttached() {
-        return attachedTo.get(containerType().getComponentType());
+        return containerType().getOrEmpty(attachedTo);
+    }
+
+    protected TYPE getContents(int index) {
+        return getAttached().getOrDefault(index);
+    }
+
+    private List<CONTAINER> containers() {
+        //Lazily initialize the list of containers
+        if (containers == null) {
+            //Note: Use an Arrays#asList to allow for null elements and force it to be the size we want it to be
+            containers = Arrays.asList((CONTAINER[]) new INBTSerializable[totalContainers]);
+            numNotInitialized = totalContainers;
+        }
+        return containers;
     }
 
     public List<CONTAINER> getContainers() {
+        List<CONTAINER> containers = containers();
         //Ensure all our containers are initialized. This short circuits if they are, and if they aren't it initializes any ones that haven't been initialized yet
         for (int i = 0, size = containers.size(); numNotInitialized > 0 && i < size; i++) {
             if (containers.get(i) == null) {
@@ -51,22 +58,21 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSeriali
     }
 
     private CONTAINER initializeContainer(int index) {
-        //TODO - 1.20.5: ??
+        //Create a new container for the given index, and set it as initialized
         CONTAINER container = containerType().createContainer(attachedTo, index);
-        containers.set(index, container);
+        containers().set(index, container);
         numNotInitialized--;
         return container;
     }
 
     protected CONTAINER getContainer(int index) {
-        CONTAINER container = containers.get(index);
+        CONTAINER container = containers().get(index);
         //Lazily initialize the containers
         return container == null ? initializeContainer(index) : container;
     }
 
     protected int containerCount() {
-        ATTACHED attached = getAttached();
-        return attached == null ? 0 : attached.size();
+        return totalContainers;
     }
 
     @Override

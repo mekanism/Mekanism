@@ -1,14 +1,12 @@
 package mekanism.common.attachments.containers.heat;
 
-import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -33,11 +31,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedHeat>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_HEAT;
-    }
-
-    @Override
     protected HeatCapacitorData copy(HeatCapacitorData toCopy) {
         //HeatCapacitorData is already immutable, so we don't need to copy it
         return toCopy;
@@ -49,10 +42,22 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         return value.equals(defaultData);
     }
 
+    @Override
+    protected ContainerType<?, AttachedHeat, ?> containerType() {
+        return ContainerType.HEAT;
+    }
+
+    @Override
+    protected HeatCapacitorData getContents(AttachedHeat attached) {
+        if (containerIndex < 0 || containerIndex >= attached.size()) {
+            return defaultData;
+        }
+        return attached.get(containerIndex);
+    }
+
     protected HeatCapacitorData getData() {
         //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
-        AttachedHeat attachedHeat = getAttached();
-        return attachedHeat == null ? defaultData : getContents(attachedHeat);
+        return getContents(getAttached());
     }
 
     @Override
@@ -84,7 +89,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     @Override
     public void setHeat(double heat) {
         AttachedHeat attachedHeat = getAttached();
-        if (attachedHeat != null) {
+        if (!attachedHeat.isEmpty()) {
             HeatCapacitorData stored = getContents(attachedHeat);
             setContents(attachedHeat, new HeatCapacitorData(heat, stored.capacity()));
         }
@@ -92,19 +97,15 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override//TODO - 1.20.5: Re-evaluate this override
-    protected void setContents(AttachedHeat attached, HeatCapacitorData value) {
-        HeatCapacitorData stored = getContents(attached);
-        if (!stored.equals(value)) {
-            attachedTo.set(dataComponentType(), attached.with(containerIndex, value));
-            onContentsChanged();
-        }
+    protected boolean shouldUpdate(AttachedHeat attached, HeatCapacitorData value) {
+        return !getContents(attached).equals(value);
     }
 
     @Override
     public void handleHeat(double transfer) {
         if (transfer != 0 && Math.abs(transfer) > HeatAPI.EPSILON) {
             AttachedHeat attachedHeat = getAttached();
-            if (attachedHeat != null) {
+            if (!attachedHeat.isEmpty()) {
                 HeatCapacitorData stored = getContents(attachedHeat);
                 setContents(attachedHeat, new HeatCapacitorData(stored.heat() + transfer, stored.capacity()));
             }
@@ -130,6 +131,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         } else {
             capacity = defaultData.capacity();
         }
-        setContents(new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity));
+        setContents(getAttached(), new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity));
     }
 }

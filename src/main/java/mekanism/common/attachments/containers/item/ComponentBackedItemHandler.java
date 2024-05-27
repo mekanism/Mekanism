@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack, IInventorySlot, AttachedItems> implements IMekanismInventory {
 
-    public ComponentBackedItemHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedItemHandler(ItemStack attachedTo, int totalSlots) {
+        super(attachedTo, totalSlots);
     }
 
     @Override
@@ -42,17 +42,12 @@ public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack
 
     @Override
     public ItemStack getStackInSlot(int slot, @Nullable Direction side) {
-        AttachedItems attachedItems = getAttached();
-        return attachedItems == null ? ItemStack.EMPTY : attachedItems.get(slot);
+        return getContents(slot);
     }
 
     @Override
     public boolean isInventoryEmpty(@Nullable Direction side) {
-        AttachedItems attachedItems = getAttached();
-        if (attachedItems == null) {
-            return true;
-        }
-        for (ItemStack item : attachedItems) {
+        for (ItemStack item : getAttached()) {
             if (!item.isEmpty()) {
                 return false;
             }

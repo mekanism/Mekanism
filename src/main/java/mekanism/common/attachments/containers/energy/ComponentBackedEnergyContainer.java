@@ -1,7 +1,6 @@
 package mekanism.common.attachments.containers.energy;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
@@ -10,10 +9,9 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +35,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedEnergy>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_ENERGY;
-    }
-
-    @Override
     protected FloatingLong copy(FloatingLong toCopy) {
         return toCopy.copyAsConst();
     }
@@ -52,15 +45,19 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
     }
 
     @Override
+    protected ContainerType<?, AttachedEnergy, ?> containerType() {
+        return ContainerType.ENERGY;
+    }
+
+    @Override
     public FloatingLong getEnergy() {
         //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
-        AttachedEnergy attachedEnergy = getAttached();
-        return attachedEnergy == null ? FloatingLong.ZERO : getContents(attachedEnergy);
+        return getContents(getAttached());
     }
 
     @Override
     public void setEnergy(FloatingLong energy) {
-        setContents(energy);
+        setContents(getAttached(), energy);
     }
 
     protected FloatingLong clampEnergy(FloatingLong energy) {
@@ -83,9 +80,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
             return amount;
         }
         AttachedEnergy attachedEnergy = getAttached();
-        if (attachedEnergy == null) {
-            return amount;
-        }
         FloatingLong stored = getContents(attachedEnergy);
         FloatingLong needed = getRate(automationType).min(getNeeded(stored));
         if (needed.isZero()) {
@@ -107,9 +101,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
             return FloatingLong.ZERO;
         }
         AttachedEnergy attachedEnergy = getAttached();
-        if (attachedEnergy == null) {
-            return FloatingLong.ZERO;
-        }
         FloatingLong stored = getContents(attachedEnergy);
         if (stored.isZero() || !canExtract.test(automationType)) {
             return FloatingLong.ZERO;

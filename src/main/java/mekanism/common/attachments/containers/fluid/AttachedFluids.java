@@ -2,8 +2,6 @@ package mekanism.common.attachments.containers.fluid;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
@@ -18,16 +16,17 @@ import net.neoforged.neoforge.fluids.FluidStack;
 @NothingNullByDefault
 public record AttachedFluids(List<FluidStack> containers) implements IAttachedContainers<FluidStack, AttachedFluids> {
 
+    public static final AttachedFluids EMPTY = new AttachedFluids(Collections.emptyList());
+
     public static final Codec<AttachedFluids> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           FluidStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.FLUID_TANKS).forGetter(AttachedFluids::containers)
     ).apply(instance, AttachedFluids::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedFluids> STREAM_CODEC =
           FluidStack.OPTIONAL_STREAM_CODEC.<List<FluidStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedFluids::new, AttachedFluids::containers);
-    private static final Int2ObjectMap<AttachedFluids> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
 
     public static AttachedFluids create(int containers) {
-        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedFluids::new);
+        return new AttachedFluids(NonNullList.withSize(containers, FluidStack.EMPTY));
     }
 
     public AttachedFluids {
@@ -35,8 +34,9 @@ public record AttachedFluids(List<FluidStack> containers) implements IAttachedCo
         containers = Collections.unmodifiableList(containers);
     }
 
-    private AttachedFluids(int containers) {
-        this(NonNullList.withSize(containers, FluidStack.EMPTY));
+    @Override
+    public FluidStack getEmptyStack() {
+        return FluidStack.EMPTY;
     }
 
     @Override

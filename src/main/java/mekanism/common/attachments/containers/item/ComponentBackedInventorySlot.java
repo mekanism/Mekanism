@@ -2,18 +2,16 @@ package mekanism.common.attachments.containers.item;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
-import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
@@ -45,11 +43,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedItems>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_ITEMS;
-    }
-
-    @Override
     protected ItemStack copy(ItemStack toCopy) {
         return toCopy.copy();
     }
@@ -60,15 +53,19 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
+    protected ContainerType<?, AttachedItems, ?> containerType() {
+        return ContainerType.ITEM;
+    }
+
+    @Override
     public ItemStack getStack() {
         //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
-        AttachedItems attachedItems = getAttached();
-        return attachedItems == null ? ItemStack.EMPTY : getContents(attachedItems);
+        return getContents(getAttached());
     }
 
     @Override
     public final void setStack(ItemStack stack) {
-        setContents(stack);
+        setContents(getAttached(), stack);
     }
 
     /**
@@ -85,10 +82,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             return ItemStack.EMPTY;
         }
         AttachedItems attachedItems = getAttached();
-        if (attachedItems == null) {
-            //"Fail quick" if we can't have a stack
-            return stack;
-        }
         return insertItem(attachedItems, getContents(attachedItems), stack, action, automationType);
     }
 
@@ -123,10 +116,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             return ItemStack.EMPTY;
         }
         AttachedItems attachedItems = getAttached();
-        if (attachedItems == null) {
-            //"Fail quick" if we can't have a stack
-            return ItemStack.EMPTY;
-        }
         ItemStack current = getContents(attachedItems);
         if (current.isEmpty() || !canExtract.test(current, automationType)) {
             return ItemStack.EMPTY;
@@ -161,10 +150,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     @Override
     public final int setStackSize(int amount, Action action) {
         AttachedItems attachedItems = getAttached();
-        if (attachedItems == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         return setStackSize(attachedItems, getContents(attachedItems), amount, action);
     }
 
@@ -192,14 +177,13 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     @Override
     public int growStack(int amount, Action action) {
         AttachedItems attachedItems = getAttached();
-        if (attachedItems == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         //Avoid extra getStack lookup calls
         ItemStack stack = getContents(attachedItems);
         int current = stack.getCount();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(amount, getLimit(stack));
         }

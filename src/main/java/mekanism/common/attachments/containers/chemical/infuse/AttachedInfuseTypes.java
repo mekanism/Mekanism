@@ -2,8 +2,6 @@ package mekanism.common.attachments.containers.chemical.infuse;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
@@ -18,16 +16,17 @@ import net.minecraft.network.codec.StreamCodec;
 @NothingNullByDefault
 public record AttachedInfuseTypes(List<InfusionStack> containers) implements IAttachedContainers<InfusionStack, AttachedInfuseTypes> {
 
+    public static final AttachedInfuseTypes EMPTY = new AttachedInfuseTypes(Collections.emptyList());
+
     public static final Codec<AttachedInfuseTypes> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           InfusionStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.INFUSION_TANKS).forGetter(AttachedInfuseTypes::containers)
     ).apply(instance, AttachedInfuseTypes::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedInfuseTypes> STREAM_CODEC =
           InfusionStack.OPTIONAL_STREAM_CODEC.<List<InfusionStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedInfuseTypes::new, AttachedInfuseTypes::containers);
-    private static final Int2ObjectMap<AttachedInfuseTypes> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
 
     public static AttachedInfuseTypes create(int containers) {
-        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedInfuseTypes::new);
+        return new AttachedInfuseTypes(NonNullList.withSize(containers, InfusionStack.EMPTY));
     }
 
     public AttachedInfuseTypes {
@@ -35,8 +34,9 @@ public record AttachedInfuseTypes(List<InfusionStack> containers) implements IAt
         containers = Collections.unmodifiableList(containers);
     }
 
-    private AttachedInfuseTypes(int containers) {
-        this(NonNullList.withSize(containers, InfusionStack.EMPTY));
+    @Override
+    public InfusionStack getEmptyStack() {
+        return InfusionStack.EMPTY;
     }
 
     @Override

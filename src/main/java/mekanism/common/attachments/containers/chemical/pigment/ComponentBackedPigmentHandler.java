@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 @NothingNullByDefault
 public class ComponentBackedPigmentHandler extends ComponentBackedChemicalHandler<Pigment, PigmentStack, IPigmentTank, AttachedPigments> implements IMekanismPigmentHandler {
 
-    public ComponentBackedPigmentHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedPigmentHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override

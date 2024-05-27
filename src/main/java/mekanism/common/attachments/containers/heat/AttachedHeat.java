@@ -15,6 +15,8 @@ import net.minecraft.network.codec.StreamCodec;
 @NothingNullByDefault
 public record AttachedHeat(List<HeatCapacitorData> containers) implements IAttachedContainers<HeatCapacitorData, AttachedHeat> {
 
+    public static final AttachedHeat EMPTY = new AttachedHeat(Collections.emptyList());
+
     public static final Codec<AttachedHeat> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           HeatCapacitorData.CODEC.listOf().fieldOf(SerializationConstants.HEAT_CAPACITORS).forGetter(AttachedHeat::containers)
     ).apply(instance, AttachedHeat::new));
@@ -24,6 +26,11 @@ public record AttachedHeat(List<HeatCapacitorData> containers) implements IAttac
     public AttachedHeat {
         //Make the list unmodifiable to ensure we don't accidentally mutate it
         containers = Collections.unmodifiableList(containers);
+    }
+
+    @Override
+    public HeatCapacitorData getEmptyStack() {
+        throw new UnsupportedOperationException("Attached heat has no concept of a default stack and callers should override methods instead to use the proper default data");
     }
 
     @Override

@@ -2,8 +2,6 @@ package mekanism.common.attachments.containers.chemical.slurry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
@@ -18,16 +16,17 @@ import net.minecraft.network.codec.StreamCodec;
 @NothingNullByDefault
 public record AttachedSlurries(List<SlurryStack> containers) implements IAttachedContainers<SlurryStack, AttachedSlurries> {
 
+    public static final AttachedSlurries EMPTY = new AttachedSlurries(Collections.emptyList());
+
     public static final Codec<AttachedSlurries> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           SlurryStack.OPTIONAL_CODEC.listOf().fieldOf(SerializationConstants.SLURRY_TANKS).forGetter(AttachedSlurries::containers)
     ).apply(instance, AttachedSlurries::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, AttachedSlurries> STREAM_CODEC =
           SlurryStack.OPTIONAL_STREAM_CODEC.<List<SlurryStack>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))
                 .map(AttachedSlurries::new, AttachedSlurries::containers);
-    private static final Int2ObjectMap<AttachedSlurries> EMPTY_DEFAULTS = new Int2ObjectOpenHashMap<>();
 
     public static AttachedSlurries create(int containers) {
-        return EMPTY_DEFAULTS.computeIfAbsent(containers, AttachedSlurries::new);
+        return new AttachedSlurries(NonNullList.withSize(containers, SlurryStack.EMPTY));
     }
 
     public AttachedSlurries {
@@ -35,8 +34,9 @@ public record AttachedSlurries(List<SlurryStack> containers) implements IAttache
         containers = Collections.unmodifiableList(containers);
     }
 
-    private AttachedSlurries(int containers) {
-        this(NonNullList.withSize(containers, SlurryStack.EMPTY));
+    @Override
+    public SlurryStack getEmptyStack() {
+        return SlurryStack.EMPTY;
     }
 
     @Override

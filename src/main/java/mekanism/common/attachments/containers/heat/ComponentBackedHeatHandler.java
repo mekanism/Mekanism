@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapacitorData, IHeatCapacitor, AttachedHeat> implements IMekanismHeatHandler {
 
-    public ComponentBackedHeatHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedHeatHandler(ItemStack attachedTo, int totalCapacitors) {
+        super(attachedTo, totalCapacitors);
     }
 
     @Override
@@ -36,5 +36,19 @@ public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapac
     @Override
     public IHeatCapacitor getHeatCapacitor(int capacitor, @Nullable Direction side) {
         return getContainer(capacitor);
+    }
+
+    @Override
+    protected HeatCapacitorData getContents(int index) {
+        AttachedHeat attached = getAttached();
+        if (index < 0 || index >= attached.size()) {
+            if (index > 0 && index < containerCount()) {
+                //Get the default. This isn't the cleanest way to look it up, but as we never use this method for component backed heat handlers
+                // it should be fine for now
+                return containerType().createNewAttachment(attachedTo).get(index);
+            }
+            //Allow it to fall through and cause an index out of bounds exception
+        }
+        return attached.get(index);
     }
 }

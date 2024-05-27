@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedEnergyHandler extends ComponentBackedHandler<FloatingLong, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
 
-    public ComponentBackedEnergyHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedEnergyHandler(ItemStack attachedTo, int totalContainers) {
+        super(attachedTo, totalContainers);
     }
 
     @Override
@@ -44,8 +44,7 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Floatin
 
     @Override
     public FloatingLong getEnergy(int container, @Nullable Direction side) {
-        AttachedEnergy attachedEnergy = getAttached();
-        return attachedEnergy == null ? FloatingLong.ZERO : attachedEnergy.get(container);
+        return getContents(container);
     }
 
     @Override

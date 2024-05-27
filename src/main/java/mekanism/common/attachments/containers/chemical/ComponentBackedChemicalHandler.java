@@ -20,8 +20,8 @@ public abstract class ComponentBackedChemicalHandler<CHEMICAL extends Chemical<C
       TANK extends IChemicalTank<CHEMICAL, STACK>, ATTACHED extends IAttachedContainers<STACK, ATTACHED>>
       extends ComponentBackedHandler<STACK, TANK, ATTACHED> implements IMekanismChemicalHandler<CHEMICAL, STACK, TANK> {
 
-    public ComponentBackedChemicalHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedChemicalHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override
@@ -42,8 +42,7 @@ public abstract class ComponentBackedChemicalHandler<CHEMICAL extends Chemical<C
 
     @Override
     public STACK getChemicalInTank(int tank, @Nullable Direction side) {
-        ATTACHED attachedChemicals = getAttached();
-        return attachedChemicals == null ? getEmptyStack() : attachedChemicals.get(tank);
+        return getContents(tank);
     }
 
     @Override

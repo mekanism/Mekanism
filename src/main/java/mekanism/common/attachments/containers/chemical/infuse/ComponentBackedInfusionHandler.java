@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 @NothingNullByDefault
 public class ComponentBackedInfusionHandler extends ComponentBackedChemicalHandler<InfuseType, InfusionStack, IInfusionTank, AttachedInfuseTypes> implements IMekanismInfusionHandler {
 
-    public ComponentBackedInfusionHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedInfusionHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override

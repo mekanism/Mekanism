@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidStack, IExtendedFluidTank, AttachedFluids> implements IMekanismFluidHandler, IFluidHandlerItem {
 
-    public ComponentBackedFluidHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedFluidHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override
@@ -45,8 +45,7 @@ public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidSta
 
     @Override
     public FluidStack getFluidInTank(int tank, @Nullable Direction side) {
-        AttachedFluids attachedFluids = getAttached();
-        return attachedFluids == null ? FluidStack.EMPTY : attachedFluids.get(tank);
+        return getContents(tank);
     }
 
     @Override

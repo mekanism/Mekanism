@@ -220,7 +220,10 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      */
     default long growStack(long amount, Action action) {
         long current = getStored();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk long overflow
             amount = Math.min(amount, getNeeded());
         }

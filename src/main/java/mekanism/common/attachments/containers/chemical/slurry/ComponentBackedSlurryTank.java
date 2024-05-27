@@ -3,19 +3,19 @@ package mekanism.common.attachments.containers.chemical.slurry;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class ComponentBackedSlurryTank extends ComponentBackedChemicalTank<Slurry, SlurryStack, AttachedSlurries> implements ISlurryTank {
 
     public ComponentBackedSlurryTank(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,
@@ -25,7 +25,7 @@ public class ComponentBackedSlurryTank extends ComponentBackedChemicalTank<Slurr
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedSlurries>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_SLURRIES;
+    protected ContainerType<?, AttachedSlurries, ?> containerType() {
+        return ContainerType.SLURRY;
     }
 }

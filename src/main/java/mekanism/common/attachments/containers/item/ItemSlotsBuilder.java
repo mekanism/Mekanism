@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.Chemical;
@@ -46,7 +45,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -282,8 +280,8 @@ public class ItemSlotsBuilder {
             IFluidHandlerItem itemFluidHandler = FluidInventorySlot.tryGetFluidHandlerUnstacked(stack);
             if (itemFluidHandler != null) {
                 //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-                AttachedFluids attachedFluids = attachedTo.get(MekanismDataComponents.ATTACHED_FLUIDS);
-                FluidStack fluidInTank = attachedFluids == null ? FluidStack.EMPTY : attachedFluids.get(tankIndex);
+                AttachedFluids attachedFluids = attachedTo.getOrDefault(MekanismDataComponents.ATTACHED_FLUIDS, AttachedFluids.EMPTY);
+                FluidStack fluidInTank = attachedFluids.getOrDefault(tankIndex);
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
                 if (fluidInTank.isEmpty()) {
                     return FluidInventorySlot.isNonFullFluidContainer(itemFluidHandler);
@@ -382,16 +380,16 @@ public class ItemSlotsBuilder {
         }, (stack, automationType) -> hasFuelValue.test(stack) || canFluidFill(attachedTo, tankIndex, stack), BasicInventorySlot.alwaysTrue)));
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean canChemicalDrainInsert(ItemStack attachedTo, int tankIndex,
-          ItemStack stack, Supplier<? extends DataComponentType<? extends IAttachedContainers<STACK, ?>>> componentType,
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, ATTACHED extends IAttachedContainers<STACK, ATTACHED>> boolean
+    canChemicalDrainInsert(ItemStack attachedTo, int tankIndex, ItemStack stack, ContainerType<?, ATTACHED, ?> containerType,
           MultiTypeCapability<? extends IChemicalHandler<CHEMICAL, STACK>> chemicalCapability) {
         //Copy of logic from ChemicalInventorySlot#getDrainInsertPredicate
         IChemicalHandler<CHEMICAL, STACK> handler = chemicalCapability.getCapability(stack);
         if (handler != null) {
             //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-            IAttachedContainers<STACK, ?> containers = attachedTo.get(componentType);
-            STACK chemicalInTank = containers == null ? null : containers.get(tankIndex);
-            if (chemicalInTank == null || chemicalInTank.isEmpty()) {
+            ATTACHED containers = containerType.getOrEmpty(attachedTo);
+            STACK chemicalInTank = containers.getOrDefault(tankIndex);
+            if (chemicalInTank.isEmpty()) {
                 //If the chemical tank is empty, accept the chemical item as long as it is not full
                 for (int tank = 0; tank < handler.getTanks(); tank++) {
                     if (handler.getChemicalInTank(tank).getAmount() < handler.getTankCapacity(tank)) {
@@ -547,8 +545,8 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addGasDrainSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_GASES, Capabilities.GAS),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_GASES, Capabilities.GAS), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
+              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS), BasicInventorySlot.alwaysTrue)));
     }
 
     public ItemSlotsBuilder addGasRotaryDrainSlot(int tankIndex) {
@@ -560,10 +558,10 @@ public class ItemSlotsBuilder {
                   }
                   //Copy of the insert check but inverted
                   return !attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) ||
-                         !canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_GASES, Capabilities.GAS);
+                         !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS);
               },
               (stack, automationType) -> attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false) &&
-                                         canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_GASES, Capabilities.GAS),
+                                         canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.GAS, Capabilities.GAS),
               BasicInventorySlot.alwaysTrue)));
     }
 
@@ -590,14 +588,14 @@ public class ItemSlotsBuilder {
 
     public ItemSlotsBuilder addPigmentDrainSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_PIGMENTS, Capabilities.PIGMENT),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_PIGMENTS, Capabilities.PIGMENT), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT),
+              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.PIGMENT, Capabilities.PIGMENT), BasicInventorySlot.alwaysTrue)));
     }
 
     public ItemSlotsBuilder addSlurryDrainSlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
-              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_SLURRIES, Capabilities.SLURRY),
-              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, MekanismDataComponents.ATTACHED_SLURRIES, Capabilities.SLURRY), BasicInventorySlot.alwaysTrue)));
+              (stack, automationType) -> automationType == AutomationType.MANUAL || !canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.SLURRY, Capabilities.SLURRY),
+              (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.SLURRY, Capabilities.SLURRY), BasicInventorySlot.alwaysTrue)));
     }
 
     //TODO - 1.20.5: Test this

@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 @NothingNullByDefault
 public class ComponentBackedGasHandler extends ComponentBackedChemicalHandler<Gas, GasStack, IGasTank, AttachedGases> implements IMekanismGasHandler {
 
-    public ComponentBackedGasHandler(ItemStack attachedTo) {
-        super(attachedTo);
+    public ComponentBackedGasHandler(ItemStack attachedTo, int totalTanks) {
+        super(attachedTo, totalTanks);
     }
 
     @Override

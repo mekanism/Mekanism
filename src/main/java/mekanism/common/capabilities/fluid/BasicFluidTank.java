@@ -271,7 +271,10 @@ public class BasicFluidTank implements IExtendedFluidTank {
     @Override
     public int growStack(int amount, Action action) {
         int current = getFluidAmount();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
         } else if (amount < 0) {

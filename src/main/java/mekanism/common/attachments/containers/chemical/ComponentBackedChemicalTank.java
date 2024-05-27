@@ -57,8 +57,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     @Override
     public STACK getStack() {
         //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
-        ATTACHED attachedChemicals = getAttached();
-        return attachedChemicals == null ? getEmptyStack() : getContents(attachedChemicals);
+        return getContents(getAttached());
     }
 
     @Override
@@ -70,7 +69,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
 
     @Override
     public void setStackUnchecked(STACK stack) {
-        setContents(stack);
+        setContents(getAttached(), stack);
     }
 
     @Override
@@ -102,10 +101,6 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
             return stack;
         }
         ATTACHED attachedChemicals = getAttached();
-        if (attachedChemicals == null) {
-            //"Fail quick" if we can't have a stack
-            return stack;
-        }
         STACK stored = getContents(attachedChemicals);
         long needed = Math.min(getRate(automationType), getNeeded(stored));
         if (needed <= 0) {
@@ -132,10 +127,6 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
             return getEmptyStack();
         }
         ATTACHED attachedChemicals = getAttached();
-        if (attachedChemicals == null) {
-            //"Fail quick" if we can't have a stack
-            return getEmptyStack();
-        }
         return extract(attachedChemicals, getContents(attachedChemicals), amount, action, automationType);
     }
 
@@ -161,10 +152,6 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     @Override
     public final long setStackSize(long amount, Action action) {
         ATTACHED attachedChemicals = getAttached();
-        if (attachedChemicals == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         return setStackSize(attachedChemicals, getContents(attachedChemicals), amount, action);
     }
 
@@ -192,13 +179,12 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
     @Override
     public long growStack(long amount, Action action) {
         ATTACHED attachedChemicals = getAttached();
-        if (attachedChemicals == null) {
-            //"Fail quick" if we can't have a stack
-            return 0;
-        }
         STACK stored = getContents(attachedChemicals);
         long current = stored.getAmount();
-        if (amount > 0) {
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             amount = Math.min(Math.min(amount, getNeeded(stored)), getRate(null));
         } else if (amount < 0) {

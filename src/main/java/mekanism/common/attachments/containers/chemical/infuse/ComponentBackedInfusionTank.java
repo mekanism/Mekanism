@@ -3,19 +3,19 @@ package mekanism.common.attachments.containers.chemical.infuse;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
-import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class ComponentBackedInfusionTank extends ComponentBackedChemicalTank<InfuseType, InfusionStack, AttachedInfuseTypes> implements IInfusionTank {
 
     public ComponentBackedInfusionTank(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,
@@ -25,7 +25,7 @@ public class ComponentBackedInfusionTank extends ComponentBackedChemicalTank<Inf
     }
 
     @Override
-    protected Supplier<? extends DataComponentType<AttachedInfuseTypes>> dataComponentType() {
-        return MekanismDataComponents.ATTACHED_INFUSE_TYPES;
+    protected ContainerType<?, AttachedInfuseTypes, ?> containerType() {
+        return ContainerType.INFUSION;
     }
 }
