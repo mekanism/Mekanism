@@ -1000,6 +1000,7 @@
   "filter.mekanism.oredictionificator.unsupported_tag": "不支援的標籤",
   "filter.mekanism.select.title": "創建新的過濾",
   "filter.mekanism.sorter.max_less_than_min": "最大值 < 最小值",
+  "filter.mekanism.sorter.over_sized": "最大值 > %1$s",
   "filter.mekanism.sorter.size_missing": "最大值/最小值",
   "filter.mekanism.sorter.size_mode": "尺寸模式",
   "filter.mekanism.sorter.size_mode.conflict": "尺寸模式 - 目前沒有任何效果, 因為已啟用單個模式.",
