@@ -44,9 +44,9 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     protected void render(TileEntityFluidTank tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         FluidStack fluid = tile.fluidTank.getFluid();
-        float fluidScale = tile.prevScale;
+        float fluidScale = fluid.isEmpty() ? 0 : tile.prevScale;
         VertexConsumer buffer = null;
-        if (!fluid.isEmpty() && fluidScale > 0) {
+        if (fluidScale > 0) {
             buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             MekanismRenderer.renderObject(getFluidModel(fluid, fluidScale), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
