@@ -140,10 +140,15 @@ public class FrequencyType<FREQ extends Frequency> {
         if (freq == null) {
             return null;
         }
+        FrequencyManagerWrapper<FREQ> manager = getManagerWrapper();
+        if (freq.getType() == FrequencyType.SECURITY) {
+            //Frequency#getSecurity means something slightly different for security frequencies. They are always public
+            return manager.getPublicManager();
+        }
         return switch (freq.getSecurity()) {
-            case PUBLIC -> getManagerWrapper().getPublicManager();
-            case PRIVATE -> getManagerWrapper().getPrivateManager(freq.getOwner());
-            case TRUSTED -> getManagerWrapper().getTrustedManager(freq.getOwner());
+            case PUBLIC -> manager.getPublicManager();
+            case PRIVATE -> manager.getPrivateManager(freq.getOwner());
+            case TRUSTED -> manager.getTrustedManager(freq.getOwner());
         };
     }
 

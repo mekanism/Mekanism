@@ -211,7 +211,8 @@ public class TileComponentFrequency implements ITileComponent {
         if (frequencyData.selectedFrequency != null) {
             if (frequencyData.selectedFrequency.isValid()) {
                 boolean unsetFrequency = frequencyData.selectedFrequency.isRemoved();
-                if (!unsetFrequency && frequencyData.selectedFrequency.getSecurity() == SecurityMode.TRUSTED) {
+                //Note: Security frequencies can only be public, and security means something different on them. So even if it is set as trusted, we don't need to check this
+                if (!unsetFrequency && type != FrequencyType.SECURITY && frequencyData.selectedFrequency.getSecurity() == SecurityMode.TRUSTED) {
                     //If we aren't unsetting the frequency, check if it is a trusted frequency that we no longer have access to
                     UUID ownerUUID = tile.getOwnerUUID();
                     if (ownerUUID != null && !frequencyData.selectedFrequency.ownerMatches(ownerUUID)) {

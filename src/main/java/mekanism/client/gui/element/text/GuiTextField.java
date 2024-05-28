@@ -11,7 +11,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.lib.Color;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -202,6 +201,8 @@ public class GuiTextField extends GuiElement {
         return super.isValidClickButton(button) && super.mouseClicked(mouseX, mouseY, button);
     }
 
+    //TODO - 1.20.5: Figure out why Guis with text fields seem to still have issues with https://github.com/emilyploszaj/emi/issues/480 when other ones don't
+    // and it doesn't seem related to any of the code inside this draw background block
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
