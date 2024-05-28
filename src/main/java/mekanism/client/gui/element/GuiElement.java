@@ -2,7 +2,6 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +49,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
     public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
     public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
-    //Set the delay to -1 so that it appears immediately instead of after a single millisecond
-    private static final Duration NO_DELAY = Duration.ofMillis(-1);
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
@@ -84,7 +81,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         this.relativeX = x;
         this.relativeY = y;
         this.guiObj = gui;
-        setTooltipDelay(NO_DELAY);
     }
 
     @Override
@@ -303,11 +299,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         updateTooltip(mouseX, mouseY);
         //If there is a tooltip, update it for the next render pass
-        //TODO - 1.20.5: Re-evaluate this, maybe we don't want to have the null check so that we mark it as not having been displayed
-        if (getTooltip() != null) {
-            //Note: We only call this method if we are hovering the proper spot
-            tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getTooltipRectangle(mouseX, mouseY));
-        }
+        // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
+        //Note: We only call this method if we are hovering the proper spot
+        tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
             if (child.isMouseOver(mouseX, mouseY)) {
