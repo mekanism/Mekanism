@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server.frequency;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FrequencyAware;
@@ -12,7 +13,6 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public record PacketSetItemFrequency(boolean set, TypedIdentity data, InteractionHand currentHand) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketSetItemFrequency> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("set_item_frequency"));
-    public static final StreamCodec<FriendlyByteBuf, PacketSetItemFrequency> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, PacketSetItemFrequency> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.BOOL, PacketSetItemFrequency::set,
           TypedIdentity.STREAM_CODEC, PacketSetItemFrequency::data,
           PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketSetItemFrequency::currentHand,

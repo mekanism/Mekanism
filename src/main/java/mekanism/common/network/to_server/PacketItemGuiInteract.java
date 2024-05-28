@@ -9,7 +9,6 @@ import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public record PacketItemGuiInteract(ItemGuiInteraction interaction, InteractionHand hand, int extra) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketItemGuiInteract> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("item_gui_interact"));
-    public static final StreamCodec<FriendlyByteBuf, PacketItemGuiInteract> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, PacketItemGuiInteract> STREAM_CODEC = StreamCodec.composite(
           ItemGuiInteraction.STREAM_CODEC, PacketItemGuiInteract::interaction,
           PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketItemGuiInteract::hand,
           ByteBufCodecs.VAR_INT, PacketItemGuiInteract::extra,

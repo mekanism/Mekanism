@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -18,7 +19,6 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketPortableTeleporterTeleport> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("portable_teleport"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketPortableTeleporterTeleport> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, PacketPortableTeleporterTeleport> STREAM_CODEC = StreamCodec.composite(
           PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketPortableTeleporterTeleport::currentHand,
           FrequencyType.TELEPORTER.getIdentitySerializer().streamCodec(), PacketPortableTeleporterTeleport::identity,
           PacketPortableTeleporterTeleport::new

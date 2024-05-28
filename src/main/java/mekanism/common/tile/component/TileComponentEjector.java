@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,13 +9,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -419,12 +417,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public void deserialize(CompoundTag ejectorNBT, HolderLookup.Provider provider) {
-        deserialize(ejectorNBT, strict -> strictInput = strict, output -> outputColor = output, inputColors);
-    }
-
-    public static void deserialize(CompoundTag ejectorNBT, BooleanConsumer strictInputSetter, Consumer<EnumColor> outputColorSetter, EnumColor[] inputColors) {
-        strictInputSetter.accept(ejectorNBT.getBoolean(SerializationConstants.STRICT_INPUT));
-        outputColorSetter.accept(NBTUtils.getEnum(ejectorNBT, SerializationConstants.COLOR, TransporterUtils::readColor));
+        strictInput = ejectorNBT.getBoolean(SerializationConstants.STRICT_INPUT);
+        outputColor = NBTUtils.getEnum(ejectorNBT, SerializationConstants.COLOR, EnumColor.BY_ID);
         //Input colors
         if (ejectorNBT.contains(SerializationConstants.INPUT_COLOR, Tag.TAG_INT_ARRAY)) {
             int[] colors = ejectorNBT.getIntArray(SerializationConstants.INPUT_COLOR);
@@ -438,10 +432,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     @Override
     public CompoundTag serialize(HolderLookup.Provider provider) {
-        return serialize(strictInput, inputColors, outputColor);
-    }
-
-    public static CompoundTag serialize(boolean strictInput, EnumColor[] inputColors, @Nullable EnumColor outputColor) {
         CompoundTag ejectorNBT = new CompoundTag();
         if (strictInput) {
             ejectorNBT.putBoolean(SerializationConstants.STRICT_INPUT, true);

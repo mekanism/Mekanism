@@ -47,7 +47,6 @@ public class RobitSkinSerializationHelper {
      */
     public static final MapCodec<RobitSkin> NETWORK_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf()).fieldOf(SerializationConstants.TEXTURES).forGetter(RobitSkin::textures),
-          //TODO - 1.20.5: Update wiki to state that in 1.20.6+ it is custom_model instead of customModel
           ResourceLocation.CODEC.optionalFieldOf(SerializationConstants.CUSTOM_MODEL).forGetter(skin -> Optional.ofNullable(skin.customModel()))
     ).apply(builder, (textures, model) -> new BasicRobitSkin(textures, model.orElse(null))));
     /**

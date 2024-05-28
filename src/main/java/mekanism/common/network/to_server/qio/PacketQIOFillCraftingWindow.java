@@ -33,7 +33,6 @@ public record PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean tra
                                           Byte2ObjectMap<List<SingularHashedItemSource>> sources) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketQIOFillCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fill_qio"));
-    //TODO - 1.20.5: Can we make this not have to use the more legacy way of defining the encoding and decoding?
     public static final StreamCodec<ByteBuf, PacketQIOFillCraftingWindow> STREAM_CODEC = StreamCodec.ofMember(PacketQIOFillCraftingWindow::write, PacketQIOFillCraftingWindow::decode);
 
     @NotNull

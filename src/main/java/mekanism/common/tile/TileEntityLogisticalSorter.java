@@ -300,7 +300,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void readSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        this.color = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, TransporterUtils::readColor);
+        this.color = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, EnumColor.BY_ID);
         autoEject = dataMap.getBoolean(SerializationConstants.EJECT);
         roundRobin = dataMap.getBoolean(SerializationConstants.ROUND_ROBIN);
         singleItem = dataMap.getBoolean(SerializationConstants.SINGLE_ITEM);

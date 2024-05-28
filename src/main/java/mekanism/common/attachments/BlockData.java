@@ -43,7 +43,6 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
           BlockState.CODEC.fieldOf(SerializationConstants.STATE).forGetter(BlockData::blockState),
           CompoundTag.CODEC.optionalFieldOf(SerializationConstants.BLOCK_ENTITY_TAG).forGetter(data -> Optional.ofNullable(data.blockEntityTag))
     ).apply(instance, (state, tag) -> new BlockData(state, tag.orElse(null))));
-    //TODO - 1.20.5: Test this and see if there is a proper stream codec for block states
     public static final StreamCodec<ByteBuf, BlockData> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.fromCodecTrusted(BlockState.CODEC), BlockData::blockState,
           ByteBufCodecs.optional(ByteBufCodecs.TRUSTED_COMPOUND_TAG), data -> Optional.ofNullable(data.blockEntityTag()),

@@ -104,6 +104,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -423,15 +424,15 @@ public class Mekanism {
     }
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
-        //TODO - 1.20.5: ??
-        //PacketUtils.log("Sending type '{}' update message for chemical network with id {}", chemical.getChemical().getRegistryName(), networkID);
-        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(event.network.getUUID(), event.transferType));
+        UUID networkID = event.network.getUUID();
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getChemical().getRegistryName(), networkID);
+        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(networkID, event.transferType));
     }
 
     private void onLiquidTransferred(FluidTransferEvent event) {
-        //TODO - 1.20.5:??
-        //PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(fluid.getFluid()), networkID);
-        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(event.network.getUUID(), event.fluidType));
+        UUID networkID = event.network.getUUID();
+        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", RegistryUtils.getName(event.fluidType.getFluid()), networkID);
+        PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {

@@ -35,6 +35,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.ChunkPos;
@@ -43,7 +44,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -58,15 +58,19 @@ public class PacketUtils {
     public static final int LAST_USERNAME_LENGTH = Math.max(SharedConstants.MAX_PLAYER_NAME_LENGTH, 38);
 
     public static final StreamCodec<FriendlyByteBuf, BlockHitResult> BLOCK_HIT_RESULT_STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeBlockHitResult, FriendlyByteBuf::readBlockHitResult);
-    //TODO - 1.20.5: Do we want this ot be FriendlyByteBuf or do like vanilla does and make an id mapping and let it just be a ByteBuf?
-    public static final StreamCodec<FriendlyByteBuf, InteractionHand> INTERACTION_HAND_STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(InteractionHand.class);
-    public static final StreamCodec<FriendlyByteBuf, EquipmentSlot> EQUIPMENT_SLOT_STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(EquipmentSlot.class);
+    public static final StreamCodec<ByteBuf, InteractionHand> INTERACTION_HAND_STREAM_CODEC = enumCodec(InteractionHand.class);
+    public static final StreamCodec<ByteBuf, EquipmentSlot> EQUIPMENT_SLOT_STREAM_CODEC = enumCodec(EquipmentSlot.class);
     public static final StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.DOUBLE, Vec3::x,
           ByteBufCodecs.DOUBLE, Vec3::y,
           ByteBufCodecs.DOUBLE, Vec3::z,
           Vec3::new
     );
+
+    //Similar to NeoForgeStreamCodecs#enumCodec but allows for keeping it as a ByteBuf and wrapping the value
+    public static <V extends Enum<V>> StreamCodec<ByteBuf, V> enumCodec(Class<V> enumClass) {
+        return ByteBufCodecs.idMapper(ByIdMap.continuous(Enum::ordinal, enumClass.getEnumConstants(), ByIdMap.OutOfBoundsStrategy.WRAP), Enum::ordinal);
+    }
 
     public static void log(String logFormat, Object... params) {
         //TODO: Add more logging for packets using this

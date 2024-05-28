@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import io.netty.buffer.ByteBuf;
 import java.util.List;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
@@ -8,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketRadialModeChange> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("radial_mode"));
-    public static final StreamCodec<FriendlyByteBuf, PacketRadialModeChange> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, PacketRadialModeChange> STREAM_CODEC = StreamCodec.composite(
           PacketUtils.EQUIPMENT_SLOT_STREAM_CODEC, PacketRadialModeChange::slot,
           ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketRadialModeChange::path,
           ByteBufCodecs.VAR_INT, PacketRadialModeChange::networkRepresentation,

@@ -9,7 +9,6 @@ import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -18,7 +17,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public record PacketItemButtonPress(ClickedItemButton buttonClicked, InteractionHand hand) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketItemButtonPress> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("item_button"));
-    public static final StreamCodec<FriendlyByteBuf, PacketItemButtonPress> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, PacketItemButtonPress> STREAM_CODEC = StreamCodec.composite(
           ClickedItemButton.STREAM_CODEC, PacketItemButtonPress::buttonClicked,
           PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketItemButtonPress::hand,
           PacketItemButtonPress::new

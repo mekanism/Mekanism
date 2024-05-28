@@ -87,7 +87,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         super.readFromNBT(provider, nbtTags);
-        setColor(NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, TransporterUtils::readColor));
+        setColor(NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID));
     }
 
     @Override
@@ -111,6 +111,6 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        setColor(NBTUtils.getEnum(tag, SerializationConstants.COLOR, TransporterUtils::readColor));
+        setColor(NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID));
     }
 }

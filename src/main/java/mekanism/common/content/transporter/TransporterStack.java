@@ -17,7 +17,6 @@ import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -109,7 +108,7 @@ public class TransporterStack {
     }
 
     public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
-        this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, TransporterUtils::readColor);
+        this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, EnumColor.BY_ID);
         progress = updateTag.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
@@ -141,7 +140,7 @@ public class TransporterStack {
     }
 
     public void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, TransporterUtils::readColor);
+        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
         progress = nbtTags.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
