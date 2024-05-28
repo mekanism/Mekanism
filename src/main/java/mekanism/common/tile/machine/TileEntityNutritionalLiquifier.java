@@ -3,8 +3,8 @@ package mekanism.common.tile.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
@@ -149,7 +149,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         containerFillSlot.drainTank(outputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
         float pasteScale = MekanismUtils.getScale(lastPasteScale, fluidTank);
-        if (pasteScale != lastPasteScale) {
+        if (MekanismUtils.scaleChanged(pasteScale, lastPasteScale)) {
             lastPasteScale = pasteScale;
             sendUpdatePacket = true;
         }

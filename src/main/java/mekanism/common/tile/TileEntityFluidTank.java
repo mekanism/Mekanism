@@ -132,7 +132,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
 
         float scale = MekanismUtils.getScale(prevScale, fluidTank);
-        if (scale != prevScale) {
+        if (MekanismUtils.scaleChanged(scale, prevScale)) {
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
@@ -291,14 +291,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {
-            if (prevScale != scale) {
+            if (MekanismUtils.scaleChanged(prevScale, scale)) {
                 if (prevScale == 0 || scale == 0) {
                     //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                     // as the fluid may have changed and have a light value, mark that the client should update the light value
                     updateClientLight = true;
                 }
-                prevScale = scale;
             }
+            prevScale = scale;
         });
     }
 

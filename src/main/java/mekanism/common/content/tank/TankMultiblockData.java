@@ -95,7 +95,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
             outputSlot.fillChemicalTank(type);
         }
         float scale = getScale();
-        if (scale != prevScale) {
+        if (MekanismUtils.scaleChanged(scale, prevScale)) {
             prevScale = scale;
             needsPacket = true;
         }

@@ -154,7 +154,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         inputInputSlot.fillTank(outputInputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
-        if (scale != prevScale) {
+        if (!Mth.equal(scale, prevScale)) {
             prevScale = scale;
             needsPacket = true;
         }

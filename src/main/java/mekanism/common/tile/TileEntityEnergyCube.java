@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -98,7 +98,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         chargeSlot.drainContainer();
         dischargeSlot.fillContainerOrConvert();
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
-        if (newScale != prevScale) {
+        if (MekanismUtils.scaleChanged(newScale, prevScale)) {
             prevScale = newScale;
             sendUpdatePacket = true;
         }

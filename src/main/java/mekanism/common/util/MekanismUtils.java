@@ -219,7 +219,6 @@ public final class MekanismUtils {
         return getScale(prevScale, capacity == 0 ? 0 : (float) (stored / (double) capacity), empty, stored == capacity);
     }
 
-
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
         FloatingLong stored = container.getEnergy();
@@ -250,6 +249,14 @@ public final class MekanismUtils {
             return 0;
         }
         return prevScale;
+    }
+
+    public static boolean scaleChanged(float scale, float prevScale) {
+        if (Mth.equal(scale, prevScale)) {
+            //If we max out our scale bounds, force an update regardless
+            return scale != prevScale && scale == 0 || scale == 1 || prevScale == 1 || prevScale == 0;
+        }
+        return true;
     }
 
     public static long getBaseUsage(IUpgradeTile tile, int def) {

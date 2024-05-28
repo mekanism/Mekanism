@@ -3,8 +3,8 @@ package mekanism.generators.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -78,7 +78,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
             MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);
             getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.EXECUTE, AutomationType.INTERNAL);
             float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
-            if (fluidScale != lastFluidScale) {
+            if (MekanismUtils.scaleChanged(fluidScale, lastFluidScale)) {
                 lastFluidScale = fluidScale;
                 sendUpdatePacket = true;
             }

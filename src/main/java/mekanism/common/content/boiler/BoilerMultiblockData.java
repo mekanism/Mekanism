@@ -197,12 +197,12 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             }
         }
         float waterScale = MekanismUtils.getScale(prevWaterScale, waterTank);
-        if (waterScale != prevWaterScale) {
+        if (MekanismUtils.scaleChanged(waterScale, prevWaterScale)) {
             needsPacket = true;
             prevWaterScale = waterScale;
         }
         float steamScale = MekanismUtils.getScale(prevSteamScale, steamTank);
-        if (steamScale != prevSteamScale) {
+        if (MekanismUtils.scaleChanged(steamScale, prevSteamScale)) {
             needsPacket = true;
             prevSteamScale = steamScale;
         }

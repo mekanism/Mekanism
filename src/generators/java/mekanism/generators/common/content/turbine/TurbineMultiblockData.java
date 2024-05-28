@@ -188,7 +188,7 @@ public class TurbineMultiblockData extends MultiblockData {
             needsPacket = true;
         }
         float scale = MekanismUtils.getScale(prevSteamScale, gasTank);
-        if (scale != prevSteamScale) {
+        if (MekanismUtils.scaleChanged(scale, prevSteamScale)) {
             needsPacket = true;
             prevSteamScale = scale;
         }
