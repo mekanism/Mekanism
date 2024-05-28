@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.Level;
 public class ClearConfigurationRecipe extends CustomRecipe {
 
     //TODO: Evaluate supporting some of these in some sort of generic way in RecipeUpgradeType?
-    //TODO - 1.20.5: Validate how this is handled, and whether removing removes from the patch and sets it back to default or if it entirely gets rid of it
     private static final Set<Holder<DataComponentType<?>>> CLEARABLE_ATTACHMENTS = Util.make(new HashSet<>(), set -> {
         set.add(MekanismDataComponents.EDIT_MODE);
         set.add(MekanismDataComponents.DUMP_MODE);
@@ -98,11 +98,20 @@ public class ClearConfigurationRecipe extends CustomRecipe {
             return ItemStack.EMPTY;
         }
         ItemStack output = target.copyWithCount(1);
+        DataComponentMap prototype = output.getPrototype();
         //Only match the recipe if it has at least one attachment that we can clear
         for (Holder<DataComponentType<?>> clearableAttachment : CLEARABLE_ATTACHMENTS) {
-            output.remove(clearableAttachment.value());
+            resetComponent(output, prototype, clearableAttachment.value());
         }
         return output;
+    }
+
+    private <TYPE> void resetComponent(ItemStack output, DataComponentMap prototype, DataComponentType<TYPE> componentType) {
+        if (prototype.has(componentType)) {
+            output.set(componentType, prototype.get(componentType));
+        } else {
+            output.remove(componentType);
+        }
     }
 
     private ItemStack getTargetStack(CraftingContainer container) {
