@@ -97,12 +97,6 @@ public class ConfigInfo implements IPersistentConfigInfo {
         return isSideEnabled(side) && sideConfig.put(side, dataType) != dataType;
     }
 
-    public void setDataType(@NotNull DataType dataType, @NotNull RelativeSide... sides) {
-        for (RelativeSide side : sides) {
-            setDataType(dataType, side);
-        }
-    }
-
     @NotNull
     public Set<DataType> getSupportedDataTypes() {
         if (supportedDataTypes == null) {
@@ -114,12 +108,6 @@ public class ConfigInfo implements IPersistentConfigInfo {
 
     public boolean supports(DataType type) {
         return type == DataType.NONE || slotInfo.containsKey(type);
-    }
-
-    public void fill(@NotNull DataType dataType) {
-        for (RelativeSide side : EnumUtils.SIDES) {
-            setDataType(dataType, side);
-        }
     }
 
     @Nullable
@@ -161,21 +149,6 @@ public class ConfigInfo implements IPersistentConfigInfo {
 
     public List<DataType> getDataTypeForContainer(Object container) {
         return containerTypeMapping.getOrDefault(container, new ArrayList<>());
-    }
-
-    public void setDefaults() {
-        if (slotInfo.containsKey(DataType.INPUT)) {
-            fill(DataType.INPUT);
-        }
-        if (slotInfo.containsKey(DataType.OUTPUT)) {
-            setDataType(DataType.OUTPUT, RelativeSide.RIGHT);
-        }
-        if (slotInfo.containsKey(DataType.EXTRA)) {
-            setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
-        }
-        if (slotInfo.containsKey(DataType.ENERGY)) {
-            setDataType(DataType.ENERGY, RelativeSide.BACK);
-        }
     }
 
     /**

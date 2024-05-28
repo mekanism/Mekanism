@@ -149,20 +149,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             itemConfig.addSlotInfo(DataType.OUTPUT_2, new InventorySlotInfo(true, true, rightOutputSlot));
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, fluidSlot, leftOutputSlot, rightOutputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(DataType.INPUT, RelativeSide.FRONT);
-            itemConfig.setDataType(DataType.OUTPUT_1, RelativeSide.LEFT);
-            itemConfig.setDataType(DataType.OUTPUT_2, RelativeSide.RIGHT);
-            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
         }
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
             gasConfig.addSlotInfo(DataType.OUTPUT_1, new GasSlotInfo(false, true, leftTank));
             gasConfig.addSlotInfo(DataType.OUTPUT_2, new GasSlotInfo(false, true, rightTank));
-            gasConfig.setDataType(DataType.OUTPUT_1, RelativeSide.LEFT);
-            gasConfig.setDataType(DataType.OUTPUT_2, RelativeSide.RIGHT);
-            gasConfig.setEjecting(true);
         }
 
         configComponent.setupInputConfig(TransmissionType.FLUID, fluidTank);

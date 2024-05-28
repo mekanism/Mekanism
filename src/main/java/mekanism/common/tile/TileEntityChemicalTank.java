@@ -89,10 +89,10 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), RelativeSide.FRONT);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT);
+        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), RelativeSide.FRONT);
+        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT);
         ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
         ejectorComponent.setOutputData(configComponent, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY)
               .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));

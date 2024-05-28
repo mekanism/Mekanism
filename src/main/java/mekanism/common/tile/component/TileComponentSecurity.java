@@ -91,9 +91,6 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
-        if (securityMode == SecurityMode.PUBLIC) {
-            remapEntries.add(MekanismDataComponents.SECURITY.get());
-        }
         if (ownerUUID == null) {
             remapEntries.add(MekanismDataComponents.OWNER.get());
         }
@@ -101,9 +98,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
-        if (securityMode != SecurityMode.PUBLIC) {//TODO - 1.20.5: Do we want checks like this to avoid collecting things that are at the default?
-            builder.set(MekanismDataComponents.SECURITY, securityMode);
-        }
+        builder.set(MekanismDataComponents.SECURITY, securityMode);
         if (ownerUUID != null) {
             builder.set(MekanismDataComponents.OWNER, ownerUUID);
         }

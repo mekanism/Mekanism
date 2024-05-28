@@ -14,7 +14,6 @@ import java.util.function.ToIntBiFunction;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
@@ -133,7 +132,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
             if (itemConfig != null) {
                 itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-                itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
             }
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

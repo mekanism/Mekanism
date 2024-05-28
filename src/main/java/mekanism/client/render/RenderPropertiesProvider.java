@@ -86,10 +86,10 @@ public class RenderPropertiesProvider {
 
     private static final ISpecialGear MEKA_SUIT = type -> switch (type) {
         case HELMET -> MekaSuitArmor.HELMET;
-        //TODO - 1.20.5: Do we want a separate part for body?
-        case CHESTPLATE, BODY -> MekaSuitArmor.BODYARMOR;
+        case CHESTPLATE -> MekaSuitArmor.BODYARMOR;
         case LEGGINGS -> MekaSuitArmor.PANTS;
         case BOOTS -> MekaSuitArmor.BOOTS;
+        default -> throw new IllegalStateException("No model present for registered meka suit piece of type " + type);
     };
 
     public static IClientBlockExtensions particles() {

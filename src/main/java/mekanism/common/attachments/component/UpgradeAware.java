@@ -27,8 +27,7 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, ItemStack inputSlot, 
     private static final Set<Upgrade> SUPPORTS_ALL = EnumSet.allOf(Upgrade.class);
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          //TODO - 1.20.5: Do we want this to be positive int
-          Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.NON_NEGATIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
+          Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
           ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::inputSlot),
           ItemStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
     ).apply(instance, UpgradeAware::new));

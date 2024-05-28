@@ -2,7 +2,6 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
@@ -103,11 +102,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, outputSlot));
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, leftInputSlot, rightInputSlot, outputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
-            itemConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
-            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
-            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
         }
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
@@ -116,10 +110,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
             gasConfig.addSlotInfo(DataType.INPUT_2, new GasSlotInfo(true, false, rightTank));
             gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, centerTank));
             gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, new GasSlotInfo(true, true, leftTank, rightTank, centerTank));
-            gasConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
-            gasConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
-            gasConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
-            gasConfig.setEjecting(true);
         }
 
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

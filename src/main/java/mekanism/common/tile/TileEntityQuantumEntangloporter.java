@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -107,8 +106,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (heatConfig != null) {
             Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? getFreq().getHeatCapacitors(null) : Collections.emptyList();
             heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new HeatProxy(true, false, capacitorSupplier));
-            //Set default config directions
-            heatConfig.fill(DataType.INPUT_OUTPUT);
             heatConfig.setCanEject(false);
         }
 
@@ -129,9 +126,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             config.addSlotInfo(DataType.INPUT, proxyCreator.create(true, false, supplier));
             config.addSlotInfo(DataType.OUTPUT, proxyCreator.create(false, true, supplier));
             config.addSlotInfo(DataType.INPUT_OUTPUT, proxyCreator.create(true, true, supplier));
-            //Set default config directions
-            config.fill(DataType.INPUT);
-            config.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
         }
     }
 

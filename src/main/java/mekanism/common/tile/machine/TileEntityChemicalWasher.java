@@ -104,7 +104,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public TileEntityChemicalWasher(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_WASHER, pos, state, TRACKED_ERROR_TYPES);
         configComponent.setupItemIOConfig(Collections.singletonList(fluidSlot), List.of(slurryOutputSlot, fluidOutputSlot), energySlot, true);
-        configComponent.setupIOConfig(TransmissionType.SLURRY, inputTank, outputTank, RelativeSide.RIGHT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.SLURRY, inputTank, outputTank, RelativeSide.RIGHT);
         configComponent.setupInputConfig(TransmissionType.FLUID, fluidTank);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 

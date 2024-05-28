@@ -86,7 +86,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     public TileEntitySolarNeutronActivator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state, TRACKED_ERROR_TYPES);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true);
         configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent = new TileComponentEjector(this);

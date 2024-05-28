@@ -3,6 +3,8 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.component.AttachedEjector;
+import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
@@ -18,8 +20,22 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
 
-    public ItemBlockFactory(BlockFactory<?> block, Item.Properties properties) {
-        super(block, true, properties.component(MekanismDataComponents.SORTING, false));
+    private static AttachedSideConfig getSideConfig(BlockFactory<?> block) {
+        return switch (Attribute.getOrThrow(block, AttributeFactoryType.class).getFactoryType()) {
+            case SMELTING, ENRICHING, CRUSHING, SAWING -> AttachedSideConfig.ELECTRIC_MACHINE;
+            case COMPRESSING -> AttachedSideConfig.ADVANCED_MACHINE;
+            case COMBINING -> AttachedSideConfig.EXTRA_MACHINE;
+            case PURIFYING, INJECTING -> AttachedSideConfig.ADVANCED_MACHINE_INPUT_ONLY;
+            case INFUSING -> AttachedSideConfig.METALLURGIC;
+        };
+    }
+
+    public ItemBlockFactory(BlockFactory<?> block, Properties properties) {
+        super(block, true, properties
+              .component(MekanismDataComponents.SORTING, false)
+              .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+              .component(MekanismDataComponents.SIDE_CONFIG, getSideConfig(block))
+        );
     }
 
     @Override

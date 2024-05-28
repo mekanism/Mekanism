@@ -103,7 +103,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public TileEntityChemicalDissolutionChamber(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
-        configComponent.setupIOConfig(TransmissionType.GAS, injectTank, outputTank.getGasTank(), RelativeSide.RIGHT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, injectTank, outputTank.getGasTank(), RelativeSide.RIGHT);
         configComponent.setupOutputConfig(TransmissionType.INFUSION, outputTank.getInfusionTank(), RelativeSide.RIGHT);
         configComponent.setupOutputConfig(TransmissionType.PIGMENT, outputTank.getPigmentTank(), RelativeSide.RIGHT);
         configComponent.setupOutputConfig(TransmissionType.SLURRY, outputTank.getSlurryTank(), RelativeSide.RIGHT);

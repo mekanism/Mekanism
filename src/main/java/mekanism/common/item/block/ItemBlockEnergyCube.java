@@ -8,6 +8,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyCubeContainer;
@@ -34,23 +35,34 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
 
+    public static final AttachedSideConfig SIDE_CONFIG = sideConfig(LightConfigInfo.FRONT_OUT_EJECT);
     public static final AttachedSideConfig ALL_INPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
         for (RelativeSide side : EnumUtils.SIDES) {
             sideData.put(side, DataType.INPUT);
         }
-        return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
+        return sideConfig(new LightConfigInfo(sideData, false));
     });
     public static final AttachedSideConfig ALL_OUTPUT = Util.make(() -> {
         Map<RelativeSide, DataType> sideData = new EnumMap<>(RelativeSide.class);
         for (RelativeSide side : EnumUtils.SIDES) {
             sideData.put(side, DataType.OUTPUT);
         }
-        return new AttachedSideConfig(Map.of(TransmissionType.ENERGY, new LightConfigInfo(sideData, null)));
+        return sideConfig(new LightConfigInfo(sideData, true));
     });
 
+    private static AttachedSideConfig sideConfig(LightConfigInfo energyConfig) {
+        Map<TransmissionType, LightConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+        configInfo.put(TransmissionType.ITEM, LightConfigInfo.FRONT_OUT_NO_EJECT);
+        configInfo.put(TransmissionType.ENERGY, energyConfig);
+        return new AttachedSideConfig(configInfo);
+    }
+
     public ItemBlockEnergyCube(BlockEnergyCube block, Item.Properties properties) {
-        super(block, true, properties);
+        super(block, true, properties
+              .component(MekanismDataComponents.EJECTOR, AttachedEjector.DEFAULT)
+              .component(MekanismDataComponents.SIDE_CONFIG, SIDE_CONFIG)
+        );
     }
 
     @Override

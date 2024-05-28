@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +17,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Try to make the version be what is attached to things that support ejectors so that if nothing is set it doesn't end up in the component patch
 @NothingNullByDefault
 public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean strictInput, Optional<EnumColor> outputColor) {
+
+    //TODO - 1.20.5: Re-evaluate this, and maybe rework it so that we can actually just use Collections.emptyList
+    // without our constructor check failing, and without the codec running into issues because of the min size
+    public static final AttachedEjector DEFAULT = new AttachedEjector(Arrays.stream(EnumUtils.SIDES).map(side -> Optional.<EnumColor>empty()).toList(), false, Optional.empty());
 
     public static final Codec<AttachedEjector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.optionalEmptyMap(EnumColor.CODEC).listOf(EnumUtils.SIDES.length, EnumUtils.SIDES.length).fieldOf(SerializationConstants.INPUT_COLOR).forGetter(AttachedEjector::inputColors),
@@ -33,9 +37,16 @@ public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean str
     );
 
     public static AttachedEjector create(EnumColor[] inputColors, boolean strictInput, @Nullable EnumColor outputColor) {
+        boolean isDefault = strictInput == DEFAULT.strictInput() && outputColor == DEFAULT.outputColor().orElse(null);
         List<Optional<EnumColor>> inputs = new ArrayList<>(inputColors.length);
         for (EnumColor inputColor : inputColors) {
             inputs.add(Optional.ofNullable(inputColor));
+            if (inputColor != null) {
+                isDefault = false;
+            }
+        }
+        if (isDefault) {
+            return DEFAULT;
         }
         return new AttachedEjector(inputs, strictInput, Optional.ofNullable(outputColor));
     }

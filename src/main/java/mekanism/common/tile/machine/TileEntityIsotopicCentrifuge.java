@@ -89,7 +89,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     public TileEntityIsotopicCentrifuge(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ISOTOPIC_CENTRIFUGE, pos, state, TRACKED_ERROR_TYPES);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         configComponent.addDisabledSides(RelativeSide.TOP);
 

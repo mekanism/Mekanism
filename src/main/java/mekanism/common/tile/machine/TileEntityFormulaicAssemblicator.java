@@ -119,7 +119,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (itemConfig != null) {
             //Expose formula slot via extra
             itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, formulaSlot));
-            itemConfig.setDefaults();
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
         ejectorComponent = new TileComponentEjector(this);

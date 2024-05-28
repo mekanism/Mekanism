@@ -161,7 +161,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, false, container));
-            config.fill(DataType.INPUT);
             config.setCanEject(false);
         }
         return config;
@@ -171,8 +170,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         ConfigInfo config = getConfig(type);
         if (config != null) {
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, false, true, container));
-            config.setDataType(DataType.OUTPUT, sides);
-            config.setEjecting(true);
         }
         return config;
     }
@@ -192,8 +189,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
             config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, List.of(inputContainer, outputContainer)));
-            config.fill(DataType.INPUT);
-            config.setDataType(DataType.OUTPUT, outputSide);
         }
         return config;
     }
@@ -208,8 +203,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
             config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
             config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
-            config.fill(DataType.INPUT);
-            config.setDataType(DataType.OUTPUT, outputSide);
         }
         return config;
     }
@@ -227,8 +220,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             ioSlots.addAll(outputSlots);
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, ioSlots));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDefaults();
         }
         return itemConfig;
     }
@@ -241,8 +232,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, inputSlot, outputSlot));
             itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDefaults();
         }
         return itemConfig;
     }
@@ -282,15 +271,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         AttachedSideConfig sideConfig = input.get(MekanismDataComponents.SIDE_CONFIG);
         if (sideConfig != null) {
-            //TODO - 1.20.5: Test this
             for (Entry<TransmissionType, LightConfigInfo> entry : sideConfig.configInfo().entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = configInfo.get(type);
-                if (configInfo.containsKey(type)) {
+                if (info != null) {
                     LightConfigInfo lightInfo = entry.getValue();
-                    if (lightInfo.ejecting() != null) {
-                        info.setEjecting(lightInfo.ejecting());
-                    }
+                    info.setEjecting(lightInfo.isEjecting());
                     for (Map.Entry<RelativeSide, DataType> sideEntry : lightInfo.sideConfig().entrySet()) {
                         RelativeSide side = sideEntry.getKey();
                         if (info.setDataType(sideEntry.getValue(), side)) {

@@ -2,7 +2,6 @@ package mekanism.common.tile.machine;
 
 import java.util.List;
 import mekanism.api.IContentsListener;
-import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -107,11 +106,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
             itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, outputSlot));
             itemConfig.addSlotInfo(DataType.INPUT_OUTPUT, new InventorySlotInfo(true, true, leftInputSlot, rightInputSlot, outputSlot));
             itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
-            //Set default config directions
-            itemConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
-            itemConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
-            itemConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
-            itemConfig.setDataType(DataType.ENERGY, RelativeSide.BACK);
         }
 
         ConfigInfo pigmentConfig = configComponent.getConfig(TransmissionType.PIGMENT);
@@ -120,10 +114,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
             pigmentConfig.addSlotInfo(DataType.INPUT_2, new PigmentSlotInfo(true, false, rightInputTank));
             pigmentConfig.addSlotInfo(DataType.OUTPUT, new PigmentSlotInfo(false, true, outputTank));
             pigmentConfig.addSlotInfo(DataType.INPUT_OUTPUT, new PigmentSlotInfo(true, true, leftInputTank, rightInputTank, outputTank));
-            pigmentConfig.setDataType(DataType.INPUT_1, RelativeSide.LEFT);
-            pigmentConfig.setDataType(DataType.INPUT_2, RelativeSide.RIGHT);
-            pigmentConfig.setDataType(DataType.OUTPUT, RelativeSide.FRONT);
-            pigmentConfig.setEjecting(true);
         }
 
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);

@@ -105,7 +105,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_DURATION);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputGasTank, outputGasTank, RelativeSide.RIGHT, false, true).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputGasTank, outputGasTank, RelativeSide.RIGHT, false, true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);

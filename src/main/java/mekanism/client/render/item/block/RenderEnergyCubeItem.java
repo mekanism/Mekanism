@@ -2,7 +2,6 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import java.util.Arrays;
 import mekanism.api.RelativeSide;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
@@ -42,22 +41,15 @@ public class RenderEnergyCubeItem extends MekanismISTER {
           int light, int overlayLight) {
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
         CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
-        IPersistentConfigInfo sideConfig = AttachedSideConfig.getStoredConfigInfo(stack, TransmissionType.ENERGY);
-        if (sideConfig != null) {
-            for (RelativeSide side : EnumUtils.SIDES) {
-                DataType dataType = sideConfig.getDataType(side);
-                CubeSideState state = CubeSideState.INACTIVE;
-                if (dataType != DataType.NONE) {
-                    state = dataType.canOutput() ? CubeSideState.ACTIVE_LIT : CubeSideState.ACTIVE_UNLIT;
-                }
-                sideStates[side.ordinal()] = state;
+        AttachedSideConfig fallback = tier == EnergyCubeTier.CREATIVE ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
+        IPersistentConfigInfo sideConfig = AttachedSideConfig.getStoredConfigInfo(stack, fallback, TransmissionType.ENERGY);
+        for (RelativeSide side : EnumUtils.SIDES) {
+            DataType dataType = sideConfig.getDataType(side);
+            CubeSideState state = CubeSideState.INACTIVE;
+            if (dataType != DataType.NONE) {
+                state = dataType.canOutput() ? CubeSideState.ACTIVE_LIT : CubeSideState.ACTIVE_UNLIT;
             }
-        } else if (tier == EnergyCubeTier.CREATIVE) {
-            Arrays.fill(sideStates, CubeSideState.ACTIVE_LIT);
-        } else {
-            for (RelativeSide side : EnumUtils.SIDES) {
-                sideStates[side.ordinal()] = side == RelativeSide.FRONT ? CubeSideState.ACTIVE_LIT : CubeSideState.ACTIVE_UNLIT;
-            }
+            sideStates[side.ordinal()] = state;
         }
         ModelData modelData = ModelData.builder().with(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates).build();
         renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);

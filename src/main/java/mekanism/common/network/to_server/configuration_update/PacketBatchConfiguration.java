@@ -55,8 +55,7 @@ public record PacketBatchConfiguration(BlockPos pos, @Nullable TransmissionType 
     private void updateAllSides(TileComponentConfig configComponent, TransmissionType transmission, @Nullable ConfigInfo info) {
         if (info != null && info.supports(targetType)) {
             for (RelativeSide side : EnumUtils.SIDES) {
-                if (info.isSideEnabled(side) && info.getDataType(side) != targetType) {
-                    info.setDataType(targetType, side);
+                if (info.setDataType(targetType, side)) {
                     configComponent.sideChanged(transmission, side);
                 }
             }

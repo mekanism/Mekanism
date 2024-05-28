@@ -39,7 +39,6 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
 
     public static <FREQ extends Frequency> Codec<FrequencyAware<FREQ>> codec(FrequencyType<FREQ> frequencyType) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              //TODO - 1.20.5: Validate this is equivalent to Frequency#serializeIdentityWithOwner??
               frequencyType.getIdentitySerializer().codec().optionalFieldOf(SerializationConstants.IDENTITY).forGetter(FrequencyAware::identity)
         ).apply(instance, identity -> {
             FREQ frequency = null;
