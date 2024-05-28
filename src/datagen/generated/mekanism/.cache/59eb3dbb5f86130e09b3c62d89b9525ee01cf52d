@@ -1,4 +1,4 @@
-// 1.20.6	2024-05-04T19:35:24.5082029	Loot Tables
+// 1.20.6	2024-05-28T18:01:18.1069933	Loot Tables
 8f830a802e3b69ae834fad1e0de500298465d002 data/mekanism/loot_tables/blocks/advanced_bin.json
 c65ae4c77fd71ed122678e678db6c361eea2bf9e data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 c7c2e7e4ac1e8392c57f95273411c883351cee88 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -58,7 +58,7 @@ c8915294769480140de3cfffae2da31df8ac5003 data/mekanism/loot_tables/blocks/block_
 ddd796aafb23e6ca96a0dea000d6f353015d2a4a data/mekanism/loot_tables/blocks/block_uranium.json
 8a1b069a035be0386bf8f317a36c7aa9817f50e1 data/mekanism/loot_tables/blocks/boiler_casing.json
 264dfd7b6a31c46aafe5fe4ef5426cface7ca567 data/mekanism/loot_tables/blocks/boiler_valve.json
-a5b577008c65c3e6970fac7b17984d6e93dc1035 data/mekanism/loot_tables/blocks/cardboard_box.json
+683345a514942dd798b881ff8ee0b172d1f5c0d4 data/mekanism/loot_tables/blocks/cardboard_box.json
 10ef1bb20fa314a72c70e3633c6cacc38d981ec7 data/mekanism/loot_tables/blocks/chargepad.json
 3903721b7d3ff8932ea447197a36719534972248 data/mekanism/loot_tables/blocks/chemical_crystallizer.json
 a1c61e2402b64bc1d35adf00cfb8cc806ce87b6e data/mekanism/loot_tables/blocks/chemical_dissolution_chamber.json

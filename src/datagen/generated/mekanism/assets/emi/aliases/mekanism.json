@@ -554,7 +554,7 @@
         "item:mekanism:advanced_energy_cube",
         "item:mekanism:elite_energy_cube",
         "item:mekanism:ultimate_energy_cube",
-        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{energy_containers:[1.8446744073709552E19d]},\"mekanism:side_config\":{config:{energy:{side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}}}}}"
+        "item:mekanism:creative_energy_cube{\"mekanism:energy\":{energy_containers:[1.8446744073709552E19d]},\"mekanism:side_config\":{config:{energy:{eject:1b,side:{back:\"output\",bottom:\"output\",front:\"output\",left:\"output\",right:\"output\",top:\"output\"}},items:{side:{back:\"input\",bottom:\"input\",front:\"output\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
       ],
       "text": [
         "alias.mekanism.item_charger",
@@ -574,7 +574,7 @@
         "item:mekanism:creative_bin",
         "item:mekanism:creative_fluid_tank",
         "item:mekanism:creative_chemical_tank",
-        "item:mekanism:creative_energy_cube{\"mekanism:side_config\":{config:{energy:{side:{back:\"input\",bottom:\"input\",front:\"input\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
+        "item:mekanism:creative_energy_cube{\"mekanism:side_config\":{config:{energy:{side:{back:\"input\",bottom:\"input\",front:\"input\",left:\"input\",right:\"input\",top:\"input\"}},items:{side:{back:\"input\",bottom:\"input\",front:\"output\",left:\"input\",right:\"input\",top:\"input\"}}}}}"
       ],
       "text": [
         "alias.mekanism.storage.trash",

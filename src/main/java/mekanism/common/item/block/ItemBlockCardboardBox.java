@@ -97,14 +97,10 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
-                        DataComponentMap blockData = DataComponentMap.builder()
+                        box.setComponents(DataComponentMap.builder()
+                              .addAll(box.components())
                               .set(MekanismDataComponents.BLOCK_DATA, data)
-                              .build();
-                        if (box.components().isEmpty()) {
-                            box.setComponents(blockData);
-                        } else {
-                            box.setComponents(DataComponentMap.composite(blockData, box.components()));
-                        }
+                              .build());
                     }
                 }
                 return InteractionResult.SUCCESS;
