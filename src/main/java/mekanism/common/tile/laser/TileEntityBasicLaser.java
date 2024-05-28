@@ -423,6 +423,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         nbtTags.putString(SerializationConstants.LAST_FIRED, lastFired.toString());
     }
 
+    @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.LAST_FIRED);
+    }
+
     @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {

@@ -195,6 +195,13 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.ROUND_ROBIN_TARGET);
+    }
+
+    @Override
     public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
         super.writeSustainedData(provider, dataMap);
         dataMap.putBoolean(SerializationConstants.AUTO, exportWithoutFilter);

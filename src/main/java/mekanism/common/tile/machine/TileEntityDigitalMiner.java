@@ -865,6 +865,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.NUM_POWERING);
+        tag.remove(SerializationConstants.STATE);
+    }
+
+    @Override
     public void setLevel(@NotNull Level world) {
         super.setLevel(world);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values

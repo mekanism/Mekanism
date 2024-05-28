@@ -176,6 +176,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.ROUND_ROBIN_TARGET);
+    }
+
+    @Override
     protected boolean canPlaySound() {
         return false;//handle own sounds
     }

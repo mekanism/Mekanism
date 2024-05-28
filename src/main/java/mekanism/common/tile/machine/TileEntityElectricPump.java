@@ -339,6 +339,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.RECURRING_NODES);
+    }
+
+    @Override
     public InteractionResult onSneakRightClick(Player player) {
         reset();
         player.displayClientMessage(MekanismLang.PUMP_RESET.translate(), true);

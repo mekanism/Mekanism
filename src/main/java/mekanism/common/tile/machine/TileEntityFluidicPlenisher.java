@@ -255,6 +255,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         NBTUtils.readBlockPositions(nbt, SerializationConstants.USED_NODES, usedNodes);
     }
 
+    @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove(SerializationConstants.ACTIVE_NODES);
+        tag.remove(SerializationConstants.USED_NODES);
+        tag.remove(SerializationConstants.FINISHED);
+    }
+
     public void reset() {
         activeNodes.clear();
         usedNodes.clear();

@@ -861,6 +861,26 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return remapEntries;
     }
 
+    @Override
+    @Deprecated
+    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        for (ITileComponent component : components) {
+            tag.remove(component.getComponentKey());
+        }
+        tag.remove(SerializationConstants.REDSTONE);
+        if (supportsComparator()) {
+            tag.remove(SerializationConstants.CURRENT_REDSTONE);
+        }
+        if (isActivatable()) {
+            tag.remove(SerializationConstants.ACTIVE_STATE);
+            tag.remove(SerializationConstants.UPDATE_DELAY);
+        }
+        if (supportsRedstone()) {
+            tag.remove(SerializationConstants.CONTROL_TYPE);
+        }
+    }
+
     @Override//TODO - 1.20.5: Do we need to override removeComponentsFromTag??
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
