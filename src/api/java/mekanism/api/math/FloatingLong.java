@@ -25,7 +25,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public static final Codec<FloatingLong> CODEC = new PrimitiveCodec<>() {
         @Override
         public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
-            return ops.getNumberValue(input).map(number -> fromNumber(number, true));
+            return ops.getNumberValue(input).flatMap(number -> fromNumber(number, true));
         }
 
         @Override
@@ -1140,21 +1140,25 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return isConstant ? createConst(value, decimal) : create(value, decimal);
     }
 
-    private static FloatingLong fromNumber(Number number, boolean isConstant) {
+    private static DataResult<FloatingLong> fromNumber(Number number, boolean isConstant) {
         if (number instanceof Integer || number instanceof Long || number instanceof Short || number instanceof Byte || number instanceof BigInteger) {
             long longValue = number.longValue();
             if (longValue < 0) {
-                throw new NumberFormatException("Number must be positive");
+                return DataResult.error(() -> "Number must be positive");
             }
-            return isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0);
+            return DataResult.success(isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0));
         } else if (number instanceof BigDecimal decimal) {
             try {
                 long longValue = decimal.longValueExact();
-                return isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0);
+                return DataResult.success(isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0));
             } catch (ArithmeticException ignored) {
             }
         }
-        return parseFloatingLong(number.toString(), isConstant);
+        try {
+            return DataResult.success(parseFloatingLong(number.toString(), isConstant));
+        } catch (NumberFormatException e) {
+            return DataResult.error(e::getMessage);
+        }
     }
 
     /**
