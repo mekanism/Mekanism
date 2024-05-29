@@ -54,7 +54,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -71,8 +70,6 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidBlock;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -199,16 +196,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                         // only allow collecting from non-empty sources
                         Fluid fluid = fluidState.getType();
                         FluidStack fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
-                        Block block = blockState.getBlock();
-                        if (block instanceof IFluidBlock fluidBlock) {
-                            fluidStack = fluidBlock.drain(world, pos, FluidAction.SIMULATE);
-                            if (!validFluid(fluidTank, fluidStack)) {
-                                //If the fluid is not valid, pass on doing anything
-                                return InteractionResultHolder.pass(stack);
-                            }
-                            //Actually drain it
-                            fluidStack = fluidBlock.drain(world, pos, FluidAction.EXECUTE);
-                        } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
+                        if (blockState.getBlock() instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                             //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                             // otherwise we assume the type from the fluid state is correct
                             ItemStack pickedUpStack = bucketPickup.pickupBlock(player, world, pos, blockState);
@@ -341,16 +329,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     // only allow collecting from non-empty sources
                     Fluid fluid = fluidState.getType();
                     FluidStack fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
-                    Block block = blockState.getBlock();
-                    if (block instanceof IFluidBlock fluidBlock) {
-                        fluidStack = fluidBlock.drain(world, pos, FluidAction.SIMULATE);
-                        if (!validFluid(fluidTank, fluidStack)) {
-                            //If the fluid is not valid, then eject the stack similar to how vanilla does for buckets
-                            return super.execute(source, stack);
-                        }
-                        //Actually drain it
-                        fluidStack = fluidBlock.drain(world, pos, FluidAction.EXECUTE);
-                    } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
+                    if (blockState.getBlock() instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                         //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         // otherwise we assume the type from the fluid state is correct
                         ItemStack pickedUpStack = bucketPickup.pickupBlock(null, world, pos, blockState);

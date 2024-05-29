@@ -151,7 +151,6 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         }
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
         copiedModules.put(type, replacedModule);
-        //TODO - 1.20.5: Evaluate what we want it to return as
         return updateContainer(stack, copiedModules, null);
     }
 

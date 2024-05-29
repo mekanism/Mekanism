@@ -10,8 +10,8 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
@@ -69,7 +69,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -228,13 +227,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 //Just in case someone does weird things and has a fluid state that is empty and a source
                 // only allow collecting from non-empty sources
                 Block block = blockState.getBlock();
-                if (block instanceof IFluidBlock fluidBlock) {
-                    if (validFluid(fluidBlock.drain(level, pos, FluidAction.SIMULATE))) {
-                        //Actually drain it
-                        suck(fluidBlock.drain(level, pos, FluidAction.EXECUTE), pos, addRecurring);
-                        return true;
-                    }
-                } else if (block instanceof BucketPickup bucketPickup) {
+                if (block instanceof BucketPickup bucketPickup) {
                     Fluid sourceFluid = fluidState.getType();
                     FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
                     if (validFluid(fluidStack)) {

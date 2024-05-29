@@ -88,7 +88,6 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -369,7 +368,7 @@ public final class MekanismUtils {
 
     public static boolean isLiquidBlock(Block block) {
         //Treat bubble columns as liquids
-        return block instanceof LiquidBlock || block instanceof BubbleColumnBlock || block instanceof IFluidBlock;
+        return block instanceof LiquidBlock || block instanceof BubbleColumnBlock;
     }
 
     /**

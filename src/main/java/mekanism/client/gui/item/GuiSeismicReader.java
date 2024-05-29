@@ -34,7 +34,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
@@ -63,8 +62,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 Fluid fluid = Fluids.EMPTY;
                 if (state.getBlock() instanceof LiquidBlock liquidBlock) {
                     fluid = liquidBlock.fluid;
-                } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
-                    fluid = fluidBlock.getFluid();
                 } else if (state.getBlock() instanceof BubbleColumnBlock) {
                     fluid = level.getFluidState(p).getType();
                 }
