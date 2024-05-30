@@ -183,5 +183,6 @@
   "item.mekanismtools.steel_sword": "강철 검",
   "item.mekanismtools.stone_paxel": "돌 팩셀",
   "item.mekanismtools.wood_paxel": "나무 팩셀",
+  "tag.item.c.tools.paxels": "팩셀",
   "tooltip.mekanismtools.hp": "내구도: %1$s"
 }
