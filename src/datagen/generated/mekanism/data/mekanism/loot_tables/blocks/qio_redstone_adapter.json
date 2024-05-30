@@ -19,7 +19,6 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:frequencies",
                 "mekanism:fuzzy",
                 "mekanism:inverse",
                 "mekanism:item_target",

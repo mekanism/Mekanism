@@ -18,7 +18,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +65,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
         super.readSustainedData(provider, dataMap);
-        lastColor = dataMap.contains(SerializationConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(dataMap.getInt(SerializationConstants.COLOR)) : null;
+        lastColor = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     @NotNull
@@ -82,7 +81,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
-        EnumColor color = tag.contains(SerializationConstants.COLOR, Tag.TAG_INT) ? EnumColor.BY_ID.apply(tag.getInt(SerializationConstants.COLOR)) : null;
+        EnumColor color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (lastColor != color) {
             lastColor = color;
             WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());

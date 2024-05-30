@@ -133,11 +133,14 @@ public class RecipeViewerUtils {
 
     public static Map<ResourceLocation, ItemStackToFluidRecipe> getLiquificationRecipes() {
         Map<ResourceLocation, ItemStackToFluidRecipe> liquification = new HashMap<>();
-        //TODO - 1.20.5: Do we want to loop creative tabs or something instead?
+        //TODO: Do we want to loop creative tabs or something instead?
+        // In theory recipe loaders should init the creative tabs before we are called so we wouldn't need to call
+        // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
+        // CreativeModeTabs.searchTab().getDisplayItems(). The bigger issue is how to come up with unique synthetic
+        // names for the recipes as EMI requires they be unique. (Maybe index them?)
         for (Item item : BuiltInRegistries.ITEM) {
             ItemStack stack = new ItemStack(item);
             if (stack.has(DataComponents.FOOD)) {
-                //TODO: If any mods adds presets to the creative menu we may want to consider gathering all
                 FoodProperties food = stack.getFoodProperties(null);
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.nutrition() > 0) {

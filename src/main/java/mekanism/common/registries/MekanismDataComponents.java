@@ -266,15 +266,11 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> FREQUENCY_COMPONENT = DATA_COMPONENTS.simple("frequencies",
-          builder -> builder.persistent(CompoundTag.CODEC)
-                .networkSynchronized(ByteBufCodecs.TRUSTED_COMPOUND_TAG)
-    );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<TeleporterFrequency>>> TELEPORTER_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("teleporter_frequency", () -> FrequencyType.TELEPORTER);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<InventoryFrequency>>> INVENTORY_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("inventory_frequency", () -> FrequencyType.INVENTORY);
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<QIOFrequency>>> QIO_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("qio_frequency", () -> FrequencyType.QIO);
 
-    @Nullable//TODO - 1.20.5: Can we make this work without raw types?
+    @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <FREQ extends Frequency> DataComponentType<FrequencyAware<FREQ>> getFrequencyComponent(FrequencyType<FREQ> freq) {
         if (freq == FrequencyType.TELEPORTER) {

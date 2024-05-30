@@ -19,7 +19,6 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:frequencies",
                 "mekanism:insert_into_frequency",
                 "mekanism:owner",
                 "mekanism:qio_frequency",

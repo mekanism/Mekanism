@@ -18,7 +18,6 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,12 +28,9 @@ import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -79,8 +75,6 @@ public class PacketUtils {
         }
     }
 
-    //TODO - 1.20.5: I believe we can once again move away from having to convert things to raw as full serialization happens in vanilla even in single player?
-    //TODO - 1.20.4: SP: Re-evaluate use cases of this and if there is a better way to handle them
     public static <OBJ> OBJ read(RegistryAccess registryAccess, byte[] rawData, Function<RegistryFriendlyByteBuf, OBJ> deserializer) {
         RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(rawData), registryAccess);
         try {
@@ -88,10 +82,6 @@ public class PacketUtils {
         } finally {
             buffer.release();
         }
-    }
-
-    public static <T> StreamCodec<ByteBuf, TagKey<T>> tagKeyCodec(ResourceKey<? extends Registry<T>> registry) {
-        return ResourceLocation.STREAM_CODEC.map(rl -> TagKey.create(registry, rl), TagKey::location);
     }
 
     @Nullable

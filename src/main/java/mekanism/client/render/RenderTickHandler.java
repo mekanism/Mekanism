@@ -322,9 +322,10 @@ public class RenderTickHandler {
                 flameYCoord -= 0.65;
                 flameZCoord -= 0.15;
             } else if (vehicle != null) {
-                //TODO - 1.20.5: Should we also be updating the x and z based on the attachment point?
                 Vec3 attachmentPoint = player.getVehicleAttachmentPoint(vehicle);
+                flameXCoord -= attachmentPoint.x;
                 flameYCoord -= attachmentPoint.y + 0.1;
+                flameZCoord -= attachmentPoint.z;
             }
             flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(player.yBodyRot);
         }

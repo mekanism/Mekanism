@@ -42,7 +42,9 @@ public abstract class ModuleConfig<DATA> {
         return instance.group(ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
     }
 
-    //TODO - 1.20.5: Do we want to make module configs be a registry or something rather than being named?
+    //TODO: Do we want to make module configs be a registry or something rather than being named?
+    // It probably won't make that much difference as it still would need to keep track of the
+    // "config type" which would basically just be a named registry object
     private final String name;
 
     protected ModuleConfig(String name) {

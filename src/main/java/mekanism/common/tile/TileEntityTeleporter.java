@@ -56,7 +56,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -703,11 +702,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleUpdateTag(tag, provider);
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> shouldRender = value);
-        if (tag.contains(SerializationConstants.COLOR, Tag.TAG_INT)) {
-            color = EnumColor.BY_ID.apply(tag.getInt(SerializationConstants.COLOR));
-        } else {
-            color = null;
-        }
+        color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     //Methods relating to IComputerTile

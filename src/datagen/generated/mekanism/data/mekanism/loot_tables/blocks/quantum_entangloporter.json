@@ -20,7 +20,6 @@
               "function": "minecraft:copy_components",
               "include": [
                 "mekanism:ejector",
-                "mekanism:frequencies",
                 "mekanism:inventory_frequency",
                 "mekanism:owner",
                 "mekanism:redstone_control",

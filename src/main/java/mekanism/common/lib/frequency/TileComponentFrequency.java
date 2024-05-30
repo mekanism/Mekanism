@@ -265,47 +265,39 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
-        //TODO - 1.20.5: Implement this
-        /*if (hasCustomFrequencies()) {
-            CompoundTag frequencyComponent = input.get(MekanismDataComponents.FREQUENCY_COMPONENT);
-            if (frequencyComponent != null) {
-                deserialize(frequencyComponent, );
-            }
-            //TODO - 1.20.5: Figure out if we need to check the non security frequencies and the specific frequency components?
+        if (!tile.isRemote()) {
             for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+                setFrequencyFromComponent(input, entry.getKey());
             }
-        }*/
+        }
+    }
+
+    private <FREQ extends Frequency> void setFrequencyFromComponent(BlockEntity.DataComponentInput input, FrequencyType<FREQ> type) {
+        DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
+        if (frequencyComponent != null) {
+            FrequencyAware<?> frequencyAware = input.get(frequencyComponent);
+            if (frequencyAware != null && frequencyAware.identity().isPresent()) {
+                //TODO - 1.20.5: Do we need to be using the player placing it instead of the existing owner?
+                // Maybe, or at least use the owner of the block?
+                setFrequencyFromData(type, frequencyAware.identity().get(), frequencyAware.getOwner());
+            }
+        }
     }
 
     @Override
     public void addRemapEntries(List<DataComponentType<?>> remapEntries) {
-        if (hasCustomFrequencies()) {
-            if (!remapEntries.contains(MekanismDataComponents.FREQUENCY_COMPONENT.get())) {
-                remapEntries.add(MekanismDataComponents.FREQUENCY_COMPONENT.get());
-            }
-            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-                DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(entry.getKey());
-                if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
-                    remapEntries.add(frequencyComponent);
-                }
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(entry.getKey());
+            if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
+                remapEntries.add(frequencyComponent);
             }
         }
     }
 
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
-        if (hasCustomFrequencies()) {
-            CompoundTag serializedComponent = serialize(NbtOps.INSTANCE);
-            if (serializedComponent.contains(FrequencyType.SECURITY.getName(), Tag.TAG_COMPOUND)) {
-                //Don't persist security frequency to items as that is instead stored from the security component to the SecurityObject
-                serializedComponent.remove(FrequencyType.SECURITY.getName());
-            }
-            if (!serializedComponent.isEmpty()) {
-                builder.set(MekanismDataComponents.FREQUENCY_COMPONENT, serializedComponent);
-            }
-            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-                collectFrequencyComponents(builder, entry.getKey(), entry.getValue());
-            }
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+            collectFrequencyComponents(builder, entry.getKey(), entry.getValue());
         }
     }
 
@@ -342,10 +334,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public CompoundTag serialize(HolderLookup.Provider provider) {
-        return serialize(provider.createSerializationContext(NbtOps.INSTANCE));
-    }
-
-    private CompoundTag serialize(DynamicOps<Tag> ops) {
+        DynamicOps<Tag> ops = provider.createSerializationContext(NbtOps.INSTANCE);
         CompoundTag frequencyNBT = new CompoundTag();
         if (securityFrequency != null) {
             serializeFrequency(ops, FrequencyType.SECURITY, securityFrequency, frequencyNBT);

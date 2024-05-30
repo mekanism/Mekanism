@@ -810,7 +810,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    //TODO - 1.20.5: We used to only do frequencies if on the server, does this get called on server and client or just server?
+    //TODO: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+    // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
+    // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
@@ -823,9 +825,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.applyImplicitComponents(input);
         }
 
-        //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
-        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
-        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
             if (persists(type)) {
                 type.copyToTile(this, input);
@@ -881,7 +880,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    @Override//TODO - 1.20.5: Do we need to override removeComponentsFromTag??
+    @Override
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where

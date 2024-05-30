@@ -413,13 +413,13 @@ dependencies {
     compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
-        //TODO - 1.20.5: Re-enable when JEI updates
+        //TODO: Re-enable when JEI updates
         //localRuntime("mezz.jei:jei-${previous_minor_minecraft_version}-neoforge:${jei_version}")
     }
 
     compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
     def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
-    //TODO - 1.20.5: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
+    //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
     if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
@@ -429,14 +429,14 @@ dependencies {
         datagenMainRuntimeOnly(emi)
     }
 
-    //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
+    //TODO: Re-enable once an update is released for the current MC version
     //localRuntime("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    //TODO - 1.20.4: Re-enable once it doesn't cause connection issues on servers
+    //TODO: Re-enable once it doesn't cause connection issues on servers
     /*localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
     }*/
@@ -446,11 +446,11 @@ dependencies {
 
     def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    //TODO - 1.20.5: Re-enable when it updates
+    //TODO: Re-enable when it updates
     //localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}"
     compileOnly(jeiTweaker)
-    //TODO - 1.20.5: Re-enable when it updates
+    //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")

@@ -16,6 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -122,13 +123,16 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    /*@Override
+    @Override
     public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
+        //We don't want to do a full read from NBT so simply call the super's read method to let Neo do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
-        super.load(tag);
-        //TODO - 1.20.5: ?? load is equivalent to loadAdditional, but the default impl now does loadWithComponents?
-    }*/
+        super.loadAdditional(tag, provider);
+        //Copy of logic from BlockEntity#loadWithComponents which we can't just call directly as we don't want to call sub-implementations of loadAdditional
+        BlockEntity.ComponentHelper.COMPONENTS_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag)
+              .resultOrPartial(p_337987_ -> Mekanism.logger.warn("Failed to load components: {}", p_337987_))
+              .ifPresent(this::setComponents);
+    }
 
     @NotNull
     @Override

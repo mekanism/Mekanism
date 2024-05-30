@@ -73,8 +73,10 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Component>> registerComponent(String name) {
-        return simple(name, builder -> builder.persistent(ComponentSerialization.CODEC)
-              .networkSynchronized(ComponentSerialization.TRUSTED_STREAM_CODEC));
+        //Copied from DataComponents.CUSTOM_NAME and ITEM_NAME
+        return simple(name, builder -> builder.persistent(ComponentSerialization.FLAT_CODEC)
+              .networkSynchronized(ComponentSerialization.STREAM_CODEC)
+              .cacheEncoding());
     }
 
     public <TYPE> MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<TYPE>>> registerResourceKey(String name,

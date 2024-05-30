@@ -150,7 +150,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * stack/stack size
      */
     protected int getRate(@Nullable AutomationType automationType) {
-        //TODO - 1.20.5: As we don't actually use this anymore in subclasses decide if we want to remove this
+        //TODO: As we don't actually use this anymore in subclasses decide if we want to remove this
         // That or we might want to actually start making use of it
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
         return Integer.MAX_VALUE;

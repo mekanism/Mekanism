@@ -27,8 +27,6 @@ public final class TransporterUtils {
 
     @Nullable
     public static EnumColor readColor(int inputColor) {
-        //TODO - 1.20.5: Replace this and getColorIndex by just not having the color present in nbt when it is null
-        // rather than having a negative index
         if (inputColor < 0) {
             return null;
         }

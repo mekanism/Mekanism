@@ -14,7 +14,6 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "mekanism:frequencies",
                 "mekanism:owner",
                 "mekanism:redstone_control",
                 "mekanism:security",

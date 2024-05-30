@@ -1,22 +1,15 @@
 package mekanism.common.tile;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DataResult.Error;
 import java.util.List;
-import java.util.Optional;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.BlockData;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +24,8 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     public List<DataComponentType<?>> getRemapEntries() {
         List<DataComponentType<?>> remapEntries = super.getRemapEntries();
         if (!remapEntries.contains(MekanismDataComponents.BLOCK_DATA.get())) {
+            //In general this won't contain it, but just in case we want to add to check it anyway,
+            // as our list will be basically empty for the cardboard box
             remapEntries.add(MekanismDataComponents.BLOCK_DATA.get());
         }
         return remapEntries;
@@ -40,40 +35,13 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
         CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        DataComponentType<BlockData> componentType = MekanismDataComponents.BLOCK_DATA.get();
-        if (components().has(componentType)) {
-            DataResult<Tag> encoded = componentType.codecOrThrow().encodeStart(
-                  provider.createSerializationContext(NbtOps.INSTANCE), components().get(componentType)
-            );
-            Optional<Error<Tag>> error = encoded.error();
-            if (error.isPresent()) {
-                Mekanism.logger.error("Failed to encode cardboard box block data: {}", error.get().message());
-            } else {
-                updateTag.put(MekanismDataComponents.BLOCK_DATA.getId().toString(), encoded.getOrThrow());
-            }
+        if (components().has(MekanismDataComponents.BLOCK_DATA.get())) {
+            //If we have the block data component, just sync all the components to the client, as when handling the update tag
+            // it deserializes any components and replaces the components with the new value
+            ComponentHelper.COMPONENTS_CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), components())
+                  .resultOrPartial(error -> Mekanism.logger.warn("Failed to save components: {}", error))
+                  .ifPresent(tag -> updateTag.merge((CompoundTag) tag));
         }
         return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        String key = MekanismDataComponents.BLOCK_DATA.getId().toString();
-        if (tag.contains(key)) {
-            DataComponentType<BlockData> componentType = MekanismDataComponents.BLOCK_DATA.get();
-            DataResult<Pair<BlockData, Tag>> decoded = componentType.codecOrThrow().decode(
-                  provider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)
-            );
-            Optional<Error<Pair<BlockData, Tag>>> error = decoded.error();
-            if (error.isPresent()) {
-                Mekanism.logger.error("Failed to decode cardboard box block data: {}", error.get().message());
-            } else {
-                BlockData data = decoded.getOrThrow().getFirst();
-                setComponents(DataComponentMap.builder()
-                      .addAll(components())
-                      .set(MekanismDataComponents.BLOCK_DATA, data)
-                      .build());
-            }
-        }
     }
 }

@@ -21,7 +21,6 @@
               "include": [
                 "mekanism:auto",
                 "mekanism:filters",
-                "mekanism:frequencies",
                 "mekanism:owner",
                 "mekanism:qio_frequency",
                 "mekanism:redstone_control",
