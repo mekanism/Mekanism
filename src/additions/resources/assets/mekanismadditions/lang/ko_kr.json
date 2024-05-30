@@ -9,6 +9,9 @@
   "advancements.mekanismadditions.not_the_babies.title": "아기는 안돼!",
   "advancements.mekanismadditions.pop_pop.description": "풍선을 터뜨리세요",
   "advancements.mekanismadditions.pop_pop.title": "팡! 팡!",
+  "alias.mekanismadditions.glow_panel.light_source": "광원",
+  "alias.mekanismadditions.plastic_road.path": "플라스틱 도로",
+  "alias.mekanismadditions.walkie_talkie.radio": "라디오",
   "block.mekanismadditions.aqua_glow_panel": "물색 발광 패널",
   "block.mekanismadditions.aqua_plastic": "물색 플라스틱 블록",
   "block.mekanismadditions.aqua_plastic_fence": "물색 플라스틱 울타리",
@@ -319,6 +322,8 @@
   "item.mekanismadditions.yellow_balloon": "노란색 풍선",
   "key.mekanismadditions.voice": "음성",
   "sound_event.mekanismadditions.entity.balloon.pop": "풍선이 터짐",
+  "tag.item.mekanismadditions.balloons": "풍선",
+  "tag.item.mekanismadditions.glow_panels": "발광 패널",
   "walkie.mekanismadditions.channel": "채널: %1$s",
   "walkie.mekanismadditions.channel.change": "채널이 다음으로 변경됨: %1$s",
   "walkie.mekanismadditions.disabled": "음성 서버가 비활성 상태입니다."
