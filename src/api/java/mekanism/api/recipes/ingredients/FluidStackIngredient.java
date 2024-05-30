@@ -8,7 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,21 +25,16 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     /**
      * A codec which can (de)encode fluid stack ingredients.
      *
-     * @implNote This must be a lazily initialized so that this class can be loaded in tests
      * @since 10.6.0
      */
-    public static final Codec<FluidStackIngredient> CODEC = Codec.lazyInitialized(() -> SizedFluidIngredient.FLAT_CODEC.xmap(
-          FluidStackIngredient::new, FluidStackIngredient::ingredient
-    ));
+    public static final Codec<FluidStackIngredient> CODEC = SizedFluidIngredient.FLAT_CODEC.xmap(FluidStackIngredient::new, FluidStackIngredient::ingredient);
     /**
      * A stream codec which can be used to encode and decode fluid stack ingredients over the network.
      *
-     * @implNote This must be a lazily initialized so that this class can be loaded in tests
      * @since 10.6.0
      */
-    public static final StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-          SizedFluidIngredient.STREAM_CODEC.map(FluidStackIngredient::new, FluidStackIngredient::ingredient)
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidStackIngredient> STREAM_CODEC = SizedFluidIngredient.STREAM_CODEC
+          .map(FluidStackIngredient::new, FluidStackIngredient::ingredient);
 
     /**
      * Creates a Fluid Stack Ingredient that matches a given ingredient and amount. Prefer calling via

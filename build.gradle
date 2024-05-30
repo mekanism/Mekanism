@@ -18,7 +18,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.134')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.136')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -63,45 +63,34 @@ sourceSets {
             srcDirs += ['src/datagen/generated/mekanism']
         }
         compileClasspath += api.output
-        runtimeClasspath += api.output
     }
     test {
         //The test module has no resources
         resources.srcDirs = []
         //Add the api to the output, all other ones that need to will get added via setupExtraSourceSets
         compileClasspath += api.output
-        runtimeClasspath += api.output
     }
     gameTest {
         runs {
             modIdentifier = 'mekanismtests'
         }
         compileClasspath += api.output
-        runtimeClasspath += api.output
     }
 }
 
 configurations {
-    // Sets up a dependency configuration called 'localRuntime'.
-    // This configuration should be used instead of 'runtimeOnly' to declare
-    // a dependency that will be present for runtime testing but that is
-    // "optional", meaning it will not be pulled by dependents of this mod.
-    runtimeClasspath.extendsFrom(localRuntime)
-
+    //Make sure all our sub source set stuff extends the proper base methods so that
+    // they can see all the dependencies we have in dependencies including neo
+    extendConfigurations(implementation, apiImplementation, testImplementation)
+    extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
+    extendConfigurations(runtimeOnly, apiRuntimeOnly)
+    extendConfigurations(localRuntime, apiLocalRuntime)
     datagenNonMod
 }
 
 //Add all extra source sets that the main sourceSet should have
 setupExtraSourceSets(sourceSets.main)
 setupExtraSourceSets(sourceSets.gameTest, false)
-
-configurations {
-    //Make sure all our sub source set stuff extends the proper base methods so that
-    // they can see all the dependencies we have in dependencies including forge
-    extendConfigurations(implementation, apiImplementation, testImplementation)
-    extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly)
-    extendConfigurations(runtimeOnly, apiRuntimeOnly)
-}
 
 //Create sourceSets and configurations for each of the additional modules in src/$name and adds a reference to
 // the corresponding data gen's resource directory excluding the cache. It also adds the api and main mekanism
@@ -127,21 +116,21 @@ for (String name : secondaryModules) {
 def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     //Expose the base module to junit
     project.sourceSets.test.compileClasspath += base.output
-    project.sourceSets.test.runtimeClasspath += base.output
     if (base != project.sourceSets.gameTest) {
         project.sourceSets.gameTest.compileClasspath += base.output
-        project.sourceSets.gameTest.runtimeClasspath += base.output
     }
     //Setup and extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones
     def baseImplementation = project.configurations.maybeCreate(base.getTaskName(null, 'implementation'))
     def baseCompileOnly = project.configurations.maybeCreate(base.getTaskName(null, 'compileOnly'))
     def baseRuntimeOnly = project.configurations.maybeCreate(base.getTaskName(null, 'runtimeOnly'))
+    def baseLocalRuntime = project.configurations.maybeCreate(base.getTaskName(null, 'localRuntime'))
     if (base != project.sourceSets.main) {
         // If this is a secondary module then make the base tasks extend the builtin ones
         baseImplementation.extendsFrom(project.configurations.getByName('implementation'))
         baseCompileOnly.extendsFrom(project.configurations.getByName('compileOnly'))
         baseRuntimeOnly.extendsFrom(project.configurations.getByName('runtimeOnly'))
+        baseLocalRuntime.extendsFrom(project.configurations.getByName('localRuntime'))
     }
     if (includeExtra) {
         //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
@@ -157,6 +146,7 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'implementation')).extendsFrom(*implExtends)
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'compileOnly')).extendsFrom(baseCompileOnly)
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'runtimeOnly')).extendsFrom(baseRuntimeOnly)
+            project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'localRuntime')).extendsFrom(baseLocalRuntime)
         }
     }
 }
@@ -348,6 +338,9 @@ runs {
         setupClientAcc(run)
         modSources.add((SourceSet) sourceSets.gameTest)
     }
+    junit {
+        unitTestSources.add((SourceSet) sourceSets.test)
+    }
     data {
         programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').getAbsolutePath(),
                                             '--mod', 'mekanism', '--existing', file('src/main/resources/').getAbsolutePath()])
@@ -402,8 +395,9 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
 }
 
-tasks.named('test', Test) {
-    useJUnitPlatform()
+tasks.named('test').configure {
+    //Disable builtin test task as we use and build uses testJunit so there is no point in having it also attempt to run an empty test task
+    enabled(false)
 }
 
 dependencies {
@@ -413,7 +407,9 @@ dependencies {
     localRuntime(project(':annotation-processor'))
     annotationProcessor(project(':annotation-processor'))
 
-    gameTestImplementation("net.neoforged:testframework:${forge_version}")
+    def testFrameWork = "net.neoforged:testframework:${forge_version}"
+    gameTestImplementation(testFrameWork)
+    testImplementation(testFrameWork)
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing

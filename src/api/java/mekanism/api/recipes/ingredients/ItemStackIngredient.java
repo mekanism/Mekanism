@@ -8,7 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,21 +25,16 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     /**
      * A codec which can (de)encode item stack ingredients.
      *
-     * @implNote This must be a lazily initialized so that this class can be loaded in tests
      * @since 10.6.0
      */
-    public static final Codec<ItemStackIngredient> CODEC = Codec.lazyInitialized(() -> SizedIngredient.FLAT_CODEC.xmap(
-          ItemStackIngredient::new, ItemStackIngredient::ingredient
-    ));
+    public static final Codec<ItemStackIngredient> CODEC = SizedIngredient.FLAT_CODEC.xmap(ItemStackIngredient::new, ItemStackIngredient::ingredient);
     /**
      * A stream codec which can be used to encode and decode item stack ingredients over the network.
      *
-     * @implNote This must be a lazily initialized so that this class can be loaded in tests
      * @since 10.6.0
      */
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() ->
-          SizedIngredient.STREAM_CODEC.map(ItemStackIngredient::new, ItemStackIngredient::ingredient)
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> STREAM_CODEC = SizedIngredient.STREAM_CODEC
+          .map(ItemStackIngredient::new, ItemStackIngredient::ingredient);
 
     /**
      * Creates an Item Stack Ingredient that matches a given ingredient and amount. Prefer calling via
