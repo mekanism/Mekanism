@@ -1,0 +1,48 @@
+package mekanism
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileType
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.TaskAction
+import org.gradle.work.ChangeType
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
+
+import javax.inject.Inject
+
+class OptimizePng extends DefaultTask {
+
+    @InputFiles
+    @Incremental
+    final ConfigurableFileCollection inputFiles
+
+    @Inject
+    OptimizePng(ObjectFactory objects) {
+        this.inputFiles = objects.fileCollection()
+    }
+
+    @TaskAction
+    void execute(InputChanges inputChanges) {
+        for (def fileChange : inputChanges.getFileChanges(inputFiles)) {
+            if (fileChange.changeType == ChangeType.REMOVED || fileChange.fileType != FileType.FILE) {
+                //Don't care about files that were removed
+                continue
+            }
+            def file = fileChange.file
+            //Minimize/optimize all png files, requires optipng on the PATH
+            // Credits: BrainStone
+            long size = file.length()
+            project.exec {
+                executable('optipng')
+                args('-q', '-o7', '-zm1-9', '-strip', 'all', file)
+            }
+            long newSize = file.length()
+            if (newSize < size) {
+                System.out.format('Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n',
+                        file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+            }
+        }
+    }
+}

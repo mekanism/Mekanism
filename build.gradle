@@ -4,6 +4,7 @@ import com.modrinth.minotaur.dependencies.VersionDependency
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import mekanism.MergeJars
+import mekanism.OptimizePng
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
 import net.neoforged.gradle.dsl.common.runs.run.Run
@@ -32,7 +33,7 @@ defaultTasks('build')
 idea {
     module {
         //Exclude directories from being managed
-        for (String excludeDirName in ["runs", "out", "logs", "gradle"]) {
+        for (String excludeDirName : ["runs", "out", "logs", "gradle"]) {
             excludeDirs.add(new File(projectDir, excludeDirName))
         }
         //Tell IDEA to always download sources/javadoc artifacts from maven.
@@ -71,9 +72,7 @@ sourceSets {
         compileClasspath += api.output
     }
     gameTest {
-        runs {
-            modIdentifier = 'mekanismtests'
-        }
+        runs.modIdentifier = 'mekanismtests'
         compileClasspath += api.output
     }
 }
@@ -98,9 +97,7 @@ setupExtraSourceSets(sourceSets.gameTest, false)
 // based on the primary added source set
 for (String name : secondaryModules) {
     def sourceSet = sourceSets.create(name)
-    sourceSet.runs {
-        modIdentifier = name
-    }
+    sourceSet.runs.modIdentifier = name
     sourceSet.resources {
         //Add the generated module resources
         srcDirs += ["src/datagen/generated/mekanism${name}"]
@@ -127,10 +124,10 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
     def baseLocalRuntime = project.configurations.maybeCreate(base.getTaskName(null, 'localRuntime'))
     if (base != project.sourceSets.main) {
         // If this is a secondary module then make the base tasks extend the builtin ones
-        baseImplementation.extendsFrom(project.configurations.getByName('implementation'))
-        baseCompileOnly.extendsFrom(project.configurations.getByName('compileOnly'))
-        baseRuntimeOnly.extendsFrom(project.configurations.getByName('runtimeOnly'))
-        baseLocalRuntime.extendsFrom(project.configurations.getByName('localRuntime'))
+        baseImplementation.extendsFrom(project.configurations.named('implementation').get())
+        baseCompileOnly.extendsFrom(project.configurations.named('compileOnly').get())
+        baseRuntimeOnly.extendsFrom(project.configurations.named('runtimeOnly').get())
+        baseLocalRuntime.extendsFrom(project.configurations.named('localRuntime').get())
     }
     if (includeExtra) {
         //And then setup and have all the extra sourceSets have their configurations extend the ones for the base module so that they can
@@ -141,7 +138,7 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
             //And then setup the configurations for it
             def implExtends = [baseImplementation]
             if (extraType == 'datagen') {
-                implExtends.add(project.configurations.getByName('datagenNonMod'))
+                implExtends.add(project.configurations.named('datagenNonMod').get())
             }
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'implementation')).extendsFrom(*implExtends)
             project.configurations.maybeCreate(extraSourceSet.getTaskName(null, 'compileOnly')).extendsFrom(baseCompileOnly)
@@ -163,9 +160,7 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
         //If the base sourceSet is main it already is the extra source set and has a reference to the base one from before this if statement
         extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).output
         extraSourceSet.compileClasspath += baseSourceSet.output
-        extraSourceSet.runs {
-            modIdentifier = name
-        }
+        extraSourceSet.runs.modIdentifier = name
     }
     return extraSourceSet
 }
@@ -177,16 +172,16 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 }
 
 SourceSet getExtraSourceSet(String base, String name) {
-    return getExtraSourceSet(project.sourceSets.getByName(base), name)
+    return getExtraSourceSet(project.sourceSets.named(base).get(), name)
 }
 
 SourceSet getExtraSourceSet(SourceSet base, String name) {
-    return project.sourceSets.getByName(base.getTaskName(name, null))
+    return project.sourceSets.named(base.getTaskName(name, null)).get()
 }
 
 setupTasks(sourceSets.main)
 for (String name : secondaryModules) {
-    setupTasks(sourceSets.getByName(name))
+    setupTasks(sourceSets.named(name).get())
 }
 
 def setupTasks(SourceSet sourceSet) {
@@ -230,8 +225,8 @@ def setupTasks(SourceSet sourceSet) {
         dependsOn(compileTask)
         finalizedBy(replaceResourceTask)
         doLast {
-            fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-                File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+            for (def file : fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns)) {
+                file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
             }
         }
     }
@@ -547,7 +542,7 @@ def allJar = tasks.register('allJar', Jar, {
     from(sourceSets.main.output, MergeJars.createExcludeClosure(baseExcludeData, 'crafttweaker_parameter_names.json'))
     Closure<CopySpec> excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
     for (String name : secondaryModules) {
-        from(sourceSets.getByName(name).output, excludeFromAll)
+        from(sourceSets.named(name).map(s -> s.output), excludeFromAll)
     }
     //And finally copy over the generated files
     MergeJars.getGeneratedClosures(versionProperties).each { closure -> from(layout.buildDirectory.dir('generated'), closure) }
@@ -577,33 +572,22 @@ artifacts {
     archives sourcesJar
 }
 
-//Minimize/optimize all png files, requires optipng on the PATH
-// Credits: BrainStone
-void minimizePNGFile(File file) {
-    long size = file.length()
-    exec {
-        executable('optipng')
-        args('-q', '-o7', '-zm1-9', '-strip', 'all', file)
-    }
-    long newSize = file.length()
-    if (newSize < size) {
-        System.out.format('Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n',
-                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
-    }
-}
-
-tasks.register('optimizePng').configure {
-    doLast {
-        def pngPatterns = ['**/*.png']
-        //Ensure the logo is minimized (we add this file to each jar)
-        minimizePNGFile(file("${projectDir}/logo.png"))
-        //Minimize any PNGs in the source sets
-        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools]
-        for (def sourceSet : sourceSets) {
-            for (dir in sourceSet.resources.srcDirs) {
-                fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
-            }
+tasks.register('optimizePng', OptimizePng) {
+    def pngPatterns = ['**/*.png']
+    //Ensure the logo is minimized (we add this file to each jar)
+    inputFiles.from(file("${projectDir}/logo.png"))
+    //Minimize any PNGs in the source sets
+    def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools]
+    for (def sourceSet : sourceSets) {
+        for (def dir : sourceSet.resources.srcDirs) {
+            inputFiles.from(fileTree(dir: dir, includes: pngPatterns))
         }
+    }
+    outputs.upToDateWhen {
+        //Validate that none of the files has changed size, as the odds that a file has the exact same size and has changed is very low for an image file
+        //Note: This is from Chat-GPT, I don't understand why the any check isn't just always true (and thus this being different from returning always false)
+        // but it seems to function properly(?), whereas just always returning false does not
+        !inputFiles.files.any { file -> file.length() != file.size() }
     }
 }
 
@@ -714,7 +698,7 @@ tasks.register('outputChangelog') {
     }
 }
 
-def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload;
+def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
     println('Enabling Curseforge config')
