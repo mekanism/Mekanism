@@ -39,7 +39,7 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Floatin
 
     @Override
     public int getEnergyContainerCount(@Nullable Direction side) {
-        return containerCount();
+        return size();
     }
 
     @Override
@@ -49,13 +49,11 @@ public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Floatin
 
     @Override
     public FloatingLong insertEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the energy containers as necessary/we actually get to iterating against them?
-        return FloatingLongTransferUtils.insert(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
+        return FloatingLongTransferUtils.insert(amount, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
     public FloatingLong extractEnergy(FloatingLong amount, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the energy containers as necessary/we actually get to iterating against them?
-        return FloatingLongTransferUtils.extract(amount, side, this::getEnergyContainers, action, AutomationType.handler(side));
+        return FloatingLongTransferUtils.extract(amount, action, AutomationType.handler(side), size(), this);
     }
 }

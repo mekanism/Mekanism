@@ -78,16 +78,29 @@ public class ChemicalUtils {
             //Short circuit if nothing is actually being inserted
             return empty;
         }
-        List<TANK> chemicalContainers = tankSupplier.apply(side);
-        if (chemicalContainers.isEmpty()) {
+        List<TANK> chemicalTanks = tankSupplier.apply(side);
+        return insert(stack, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
+    }
+
+    /**
+     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK insert(STACK stack,
+          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return empty;
+        } else if (size == 0) {
             return stack;
-        } else if (chemicalContainers.size() == 1) {
-            return chemicalContainers.getFirst().insert(stack, action, automationType);
+        } else if (size == 1) {
+            return chemicalTanks.iterator().next().insert(stack, action, automationType);
         }
         STACK toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
         List<TANK> emptyTanks = new ArrayList<>();
-        for (TANK tank : chemicalContainers) {
+        for (TANK tank : chemicalTanks) {
             if (tank.isEmpty()) {
                 emptyTanks.add(tank);
             } else if (tank.isTypeEqual(stack)) {
@@ -165,10 +178,20 @@ public class ChemicalUtils {
             return empty;
         }
         List<TANK> chemicalTanks = tankSupplier.apply(side);
-        if (chemicalTanks.isEmpty()) {
+        return extract(amount, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(long amount,
+          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+        if (amount == 0 || size == 0) {
             return empty;
-        } else if (chemicalTanks.size() == 1) {
-            return chemicalTanks.getFirst().extract(amount, action, automationType);
+        } else if (size == 1) {
+            return chemicalTanks.iterator().next().extract(amount, action, automationType);
         }
         STACK extracted = empty;
         long toDrain = amount;
@@ -252,10 +275,20 @@ public class ChemicalUtils {
             return empty;
         }
         List<TANK> chemicalTanks = tankSupplier.apply(side);
-        if (chemicalTanks.isEmpty()) {
+        return extract(stack, action, automationType, empty, chemicalTanks.size(), chemicalTanks);
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> STACK extract(STACK stack,
+          Action action, AutomationType automationType, STACK empty, int size, Iterable<TANK> chemicalTanks) {
+        if (stack.isEmpty() || size == 0) {
             return empty;
-        } else if (chemicalTanks.size() == 1) {
-            TANK tank = chemicalTanks.getFirst();
+        } else if (size == 1) {
+            TANK tank = chemicalTanks.iterator().next();
             if (tank.isEmpty() || !tank.isTypeEqual(stack)) {
                 return empty;
             }

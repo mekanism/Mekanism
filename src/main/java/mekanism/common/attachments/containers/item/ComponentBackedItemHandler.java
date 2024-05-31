@@ -37,7 +37,7 @@ public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack
 
     @Override
     public int getSlots(@Nullable Direction side) {
-        return containerCount();
+        return size();
     }
 
     @Override

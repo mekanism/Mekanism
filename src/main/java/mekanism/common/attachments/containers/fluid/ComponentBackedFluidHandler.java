@@ -40,7 +40,7 @@ public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidSta
 
     @Override
     public int getTanks(@Nullable Direction side) {
-        return containerCount();
+        return size();
     }
 
     @Override
@@ -50,20 +50,17 @@ public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidSta
 
     @Override
     public FluidStack insertFluid(FluidStack stack, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the fluid tanks as necessary/we actually get to iterating against them?
-        return ExtendedFluidHandlerUtils.insert(stack, side, this::getFluidTanks, action, AutomationType.handler(side));
+        return ExtendedFluidHandlerUtils.insert(stack, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
     public FluidStack extractFluid(int amount, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the fluid tanks as necessary/we actually get to iterating against them?
-        return ExtendedFluidHandlerUtils.extract(amount, side, this::getFluidTanks, action, AutomationType.handler(side));
+        return ExtendedFluidHandlerUtils.extract(amount, action, AutomationType.handler(side), size(), this);
     }
 
     @Override
     public FluidStack extractFluid(FluidStack stack, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the fluid tanks as necessary/we actually get to iterating against them?
-        return ExtendedFluidHandlerUtils.extract(stack, side, this::getFluidTanks, action, AutomationType.handler(side));
+        return ExtendedFluidHandlerUtils.extract(stack, action, AutomationType.handler(side), size(), this);
     }
 
     @Override

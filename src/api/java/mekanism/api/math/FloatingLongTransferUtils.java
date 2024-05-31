@@ -79,10 +79,22 @@ public class FloatingLongTransferUtils {
             return FloatingLong.ZERO;
         }
         List<IEnergyContainer> energyContainers = energyContainerSupplier.apply(side);
-        if (energyContainers.isEmpty()) {
+        return insert(stack, action, automationType, energyContainers.size(), energyContainers);
+    }
+
+    /**
+     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static FloatingLong insert(FloatingLong stack, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
+        if (stack.isZero()) {
+            //Short circuit if no energy is trying to be inserted
+            return FloatingLong.ZERO;
+        } else if (size == 0) {
             return stack;
-        } else if (energyContainers.size() == 1) {
-            return energyContainers.getFirst().insert(stack, action, automationType);
+        } else if (size == 1) {
+            return energyContainers.iterator().next().insert(stack, action, automationType);
         }
         FloatingLong toInsert = stack;
         //Start by trying to insert into the containers that are not empty
@@ -164,10 +176,20 @@ public class FloatingLongTransferUtils {
             return FloatingLong.ZERO;
         }
         List<IEnergyContainer> energyContainers = energyContainerSupplier.apply(side);
-        if (energyContainers.isEmpty()) {
+        return extract(amount, action, automationType, energyContainers.size(), energyContainers);
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static FloatingLong extract(FloatingLong amount, Action action, AutomationType automationType, int size, Iterable<IEnergyContainer> energyContainers) {
+        if (amount.isZero() || size == 0) {
+            //Short circuit if no energy is trying to be extracted
             return FloatingLong.ZERO;
-        } else if (energyContainers.size() == 1) {
-            return energyContainers.getFirst().extract(amount, action, automationType);
+        } else if (size == 1) {
+            return energyContainers.iterator().next().extract(amount, action, automationType);
         }
         FloatingLong extracted = FloatingLong.ZERO;
         FloatingLong toExtract = amount.copy();

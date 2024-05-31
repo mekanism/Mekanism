@@ -1,6 +1,7 @@
 package mekanism.common.attachments.containers;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>>
-      implements IContentsListener {
+      implements IContentsListener, Iterable<CONTAINER> {
 
     protected final ItemStack attachedTo;
     private final int totalContainers;
@@ -71,11 +72,31 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSeriali
         return container == null ? initializeContainer(index) : container;
     }
 
-    protected int containerCount() {
+    protected int size() {
         return totalContainers;
     }
 
     @Override
     public void onContentsChanged() {
+    }
+
+    @Override
+    public Iterator<CONTAINER> iterator() {
+        return new ContainerIterator();
+    }
+
+    private class ContainerIterator implements Iterator<CONTAINER> {
+
+        private int cursor = 0;
+
+        @Override
+        public boolean hasNext() {
+            return cursor != size();
+        }
+
+        @Override
+        public CONTAINER next() {
+            return getContainer(cursor++);
+        }
     }
 }

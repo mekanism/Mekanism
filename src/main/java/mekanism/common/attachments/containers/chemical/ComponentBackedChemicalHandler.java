@@ -37,7 +37,7 @@ public abstract class ComponentBackedChemicalHandler<CHEMICAL extends Chemical<C
 
     @Override
     public int getTanks(@Nullable Direction side) {
-        return containerCount();
+        return size();
     }
 
     @Override
@@ -47,19 +47,16 @@ public abstract class ComponentBackedChemicalHandler<CHEMICAL extends Chemical<C
 
     @Override
     public STACK insertChemical(STACK stack, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the chemical tanks as necessary/we actually get to iterating against them?
-        return ChemicalUtils.insert(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
+        return ChemicalUtils.insert(stack, action, AutomationType.handler(side), getEmptyStack(), size(), this);
     }
 
     @Override
     public STACK extractChemical(long amount, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the chemical tanks as necessary/we actually get to iterating against them?
-        return ChemicalUtils.extract(amount, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
+        return ChemicalUtils.extract(amount, action, AutomationType.handler(side), getEmptyStack(), size(), this);
     }
 
     @Override
     public STACK extractChemical(STACK stack, @Nullable Direction side, Action action) {
-        //TODO - 1.20.5: Can we optimize this any further? Maybe by somehow only initializing the chemical tanks as necessary/we actually get to iterating against them?
-        return ChemicalUtils.extract(stack, side, this::getChemicalTanks, action, AutomationType.handler(side), getEmptyStack());
+        return ChemicalUtils.extract(stack, action, AutomationType.handler(side), getEmptyStack(), size(), this);
     }
 }

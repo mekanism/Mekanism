@@ -74,16 +74,28 @@ public class ExtendedFluidHandlerUtils {
             //Short circuit if nothing is actually being inserted
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidContainers = fluidTankSupplier.apply(side);
-        if (fluidContainers.isEmpty()) {
+        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        return insert(stack, action, automationType, fluidTanks.size(), fluidTanks);
+    }
+
+    /**
+     * Util method for a generic insert implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static FluidStack insert(FluidStack stack, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+        if (stack.isEmpty()) {
+            //Short circuit if nothing is actually being inserted
+            return FluidStack.EMPTY;
+        } else if (size == 0) {
             return stack;
-        } else if (fluidContainers.size() == 1) {
-            return fluidContainers.getFirst().insert(stack, action, automationType);
+        } else if (size == 1) {
+            return fluidTanks.iterator().next().insert(stack, action, automationType);
         }
         FluidStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
         List<IExtendedFluidTank> emptyTanks = new ArrayList<>();
-        for (IExtendedFluidTank tank : fluidContainers) {
+        for (IExtendedFluidTank tank : fluidTanks) {
             if (tank.isEmpty()) {
                 emptyTanks.add(tank);
             } else if (tank.isFluidEqual(stack)) {
@@ -160,15 +172,24 @@ public class ExtendedFluidHandlerUtils {
         if (amount == 0) {
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidContainers = fluidTankSupplier.apply(side);
-        if (fluidContainers.isEmpty()) {
+        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        return extract(amount, action, automationType, fluidTanks.size(), fluidTanks);
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static FluidStack extract(int amount, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+        if (amount == 0 || size == 0) {
             return FluidStack.EMPTY;
-        } else if (fluidContainers.size() == 1) {
-            return fluidContainers.getFirst().extract(amount, action, automationType);
+        } else if (size == 1) {
+            return fluidTanks.iterator().next().extract(amount, action, automationType);
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = amount;
-        for (IExtendedFluidTank fluidTank : fluidContainers) {
+        for (IExtendedFluidTank fluidTank : fluidTanks) {
             if (extracted.isEmpty() || fluidTank.isFluidEqual(extracted)) {
                 //If there is fluid in the tank that matches the type we have started draining, or we haven't found a type yet
                 FluidStack drained = fluidTank.extract(toDrain, action, automationType);
@@ -247,11 +268,20 @@ public class ExtendedFluidHandlerUtils {
         if (stack.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidContainers = fluidTankSupplier.apply(side);
-        if (fluidContainers.isEmpty()) {
+        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        return extract(stack, action, automationType, fluidTanks.size(), fluidTanks);
+    }
+
+    /**
+     * Util method for a generic extraction implementation for various handlers. Mainly for internal use only
+     *
+     * @since 10.6.0
+     */
+    public static FluidStack extract(FluidStack stack, Action action, AutomationType automationType, int size, Iterable<IExtendedFluidTank> fluidTanks) {
+        if (stack.isEmpty() || size == 0) {
             return FluidStack.EMPTY;
-        } else if (fluidContainers.size() == 1) {
-            IExtendedFluidTank tank = fluidContainers.getFirst();
+        } else if (size == 1) {
+            IExtendedFluidTank tank = fluidTanks.iterator().next();
             if (tank.isEmpty() || !tank.isFluidEqual(stack)) {
                 return FluidStack.EMPTY;
             }
@@ -259,7 +289,7 @@ public class ExtendedFluidHandlerUtils {
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = stack.getAmount();
-        for (IExtendedFluidTank fluidTank : fluidContainers) {
+        for (IExtendedFluidTank fluidTank : fluidTanks) {
             if (fluidTank.isFluidEqual(stack)) {
                 //If there is fluid in the tank that matches the type we are trying to drain, try to drain from it
                 FluidStack drained = fluidTank.extract(toDrain, action, automationType);
