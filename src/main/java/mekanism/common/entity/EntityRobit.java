@@ -121,6 +121,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -201,6 +202,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public EntityRobit(EntityType<EntityRobit> type, Level world) {
         super(type, world);
         getNavigation().setCanFloat(false);
+        setPathfindingMalus(PathType.UNPASSABLE_RAIL, 0.0F);
         setCustomNameVisible(true);
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
