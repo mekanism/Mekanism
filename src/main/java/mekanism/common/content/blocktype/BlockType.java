@@ -12,6 +12,7 @@ import mekanism.common.block.attribute.AttributeHasBounding.HandleBoundingBlock;
 import mekanism.common.block.attribute.AttributeMultiblock;
 import mekanism.common.block.attribute.AttributeSideConfig;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
+import mekanism.common.block.attribute.Attributes.AttributeCustomPathType;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -145,11 +146,11 @@ public class BlockType {
         }
 
         public final T externalMultiblock() {
-            return with(AttributeMultiblock.EXTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED);
+            return with(AttributeMultiblock.EXTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED, AttributeCustomPathType.WHEN_NOT_FORMED);
         }
 
         public final T internalMultiblock() {
-            return with(AttributeMultiblock.INTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED);
+            return with(AttributeMultiblock.INTERNAL, AttributeMobSpawn.WHEN_NOT_FORMED, AttributeCustomPathType.WHEN_NOT_FORMED);
         }
 
         public BLOCK build() {

@@ -4,6 +4,11 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Collection;
 import java.util.Optional;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.multiblock.IInternalMultiblock;
+import mekanism.common.lib.multiblock.IMultiblock;
+import mekanism.common.lib.multiblock.IStructuralMultiblock;
+import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.Structure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -443,6 +449,44 @@ public class WorldUtils {
             }
         }
         return null;
+    }
+
+    //TODO: Come up with a better method name, this is used for checking if a mob can spawn inside or if it is dangerous for mobs to say teleport inside of
+    public static boolean isInsideFormedMultiblock(BlockGetter reader, BlockPos pos, @Nullable Mob mob) {
+        BlockEntity tile = WorldUtils.getTileEntity(reader, pos);
+        if (tile instanceof IMultiblock<?> multiblockTile) {
+            if (reader instanceof LevelReader levelReader && levelReader.isClientSide() || mob != null && mob.level().isClientSide()) {
+                //If we are on the client just check if we are formed as we don't sync structure information
+                // to the client. This way the client is at least relatively accurate with what values
+                // it returns for if mobs can spawn
+                return multiblockTile.getMultiblock().isFormed();
+            }
+            //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
+            // don't allow spawning on it.
+            return multiblockTile.getMultiblock().isPositionInsideBounds(multiblockTile.getStructure(), pos.above());
+        } else if (tile instanceof IStructuralMultiblock structuralMultiblock && structuralMultiblock.hasFormedMultiblock()) {
+            //Note: This isn't actually used as all our structural multiblocks are transparent and vanilla tends to not let
+            // mobs spawn on glass or stuff
+            if (reader instanceof LevelReader levelReader && levelReader.isClientSide() || mob != null && mob.level().isClientSide()) {
+                //If we are on the client return we can't spawn if it is formed. This way the client is at least relatively
+                // accurate with what values it returns for if mobs can spawn
+                return true;
+            } else {
+                BlockPos above = pos.above();
+                for (Structure structure : structuralMultiblock.getStructureMap().values()) {
+                    //Manually handle the getMultiblockData logic to avoid extra lookups
+                    MultiblockData data = structure.getMultiblockData();
+                    if (data != null && data.isFormed() && data.isPositionInsideBounds(structure, above)) {
+                        //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
+                        // don't allow spawning on it.
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        //If it is an internal multiblock don't allow spawning mobs on it if it is formed
+        return tile instanceof IInternalMultiblock internalMultiblock && internalMultiblock.hasFormedMultiblock();
     }
 
     /**

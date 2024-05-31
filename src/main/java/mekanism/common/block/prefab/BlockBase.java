@@ -8,6 +8,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeStateFacing;
+import mekanism.common.block.attribute.Attributes.AttributeCustomPathType;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.interfaces.IHasDescription;
@@ -20,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -29,10 +31,12 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements IHasDescription, ITypeBlock {
 
@@ -93,6 +97,19 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
         //If we have a custom shape which means we are not a full block then mark that movement is not
         // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, pathType);
+    }
+
+    @Nullable
+    @Override
+    public PathType getBlockPathType(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @Nullable Mob mob) {
+        AttributeCustomPathType customPathType = type.get(AttributeCustomPathType.class);
+        if (customPathType != null) {
+            PathType pathType = customPathType.pathCheck().getBlockPathType(state, level, pos, mob);
+            if (pathType != null) {
+                return pathType;
+            }
+        }
+        return super.getBlockPathType(state, level, pos, mob);
     }
 
     @NotNull
