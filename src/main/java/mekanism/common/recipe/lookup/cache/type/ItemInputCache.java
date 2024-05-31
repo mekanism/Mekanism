@@ -2,9 +2,9 @@ package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.lib.collection.ItemHashStrategy;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 public class ItemInputCache<RECIPE extends MekanismRecipe> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     public ItemInputCache() {
-        super(ItemHashStrategy.INSTANCE);
+        super(ItemStackLinkedSet.TYPE_AND_TAG);
     }
 
     @Override

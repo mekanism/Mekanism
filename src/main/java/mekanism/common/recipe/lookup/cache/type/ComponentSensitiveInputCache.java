@@ -24,7 +24,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT, INGREDIENT extend
      */
     private final Map<INPUT, Set<RECIPE>> componentInputCache;
 
-    protected ComponentSensitiveInputCache(Hash.Strategy<INPUT> componentHashStrategy) {
+    protected ComponentSensitiveInputCache(Hash.Strategy<? super INPUT> componentHashStrategy) {
         this.componentInputCache = new Object2ObjectOpenCustomHashMap<>(componentHashStrategy);
     }
 

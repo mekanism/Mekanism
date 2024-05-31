@@ -3,6 +3,7 @@ package mekanism.common.lib.collection;
 import it.unimi.dsi.fastutil.Hash.Strategy;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+//Based on ItemStackLinkedSet#TYPE_AND_TAG
 public class FluidHashStrategy implements Strategy<FluidStack> {
 
     public static final FluidHashStrategy INSTANCE = new FluidHashStrategy();
@@ -12,16 +13,14 @@ public class FluidHashStrategy implements Strategy<FluidStack> {
 
     @Override
     public int hashCode(FluidStack stack) {
-        return stack == null ? 0 : FluidStack.hashFluidAndComponents(stack);
+        return FluidStack.hashFluidAndComponents(stack);
     }
 
     @Override
     public boolean equals(FluidStack a, FluidStack b) {
         if (a == b) {
             return true;
-        } else if (a == null || b == null) {
-            return false;
         }
-        return FluidStack.isSameFluidSameComponents(a, b);
+        return a != null && b != null && a.isEmpty() == b.isEmpty() && FluidStack.isSameFluidSameComponents(a, b);
     }
 }
