@@ -128,7 +128,7 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleInhalationPurificationUnit> INHALATION_PURIFICATION_UNIT = MODULES.register("inhalation_purification_unit",
           ModuleInhalationPurificationUnit::new, () -> MekanismItems.MODULE_INHALATION_PURIFICATION.asItem(), builder -> builder
                 .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.BENEFICIAL_EFFECTS, false))
-                .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.NEUTRAL_EFFECTS, true))
+                .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.NEUTRAL_EFFECTS, false))
                 .addConfig(ModuleBooleanConfig.create(ModuleInhalationPurificationUnit.HARMFUL_EFFECTS, true))
     );
     public static final ModuleRegistryObject<ModuleVisionEnhancementUnit> VISION_ENHANCEMENT_UNIT = MODULES.registerInstanced("vision_enhancement_unit",
