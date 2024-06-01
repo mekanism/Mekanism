@@ -109,6 +109,7 @@
   "fission.mekanismgenerators.stats": "Статистика Ядерного реактора",
   "fission.mekanismgenerators.surface_area": "Площадь топлива: %1$s m2",
   "fission.mekanismgenerators.waste_tank": "Бак отходов",
+  "fml.menu.mods.info.description.mekanismgenerators": "Модуль генераторов для Mekanism",
   "fml.menu.mods.info.displayname.mekanismgenerators": "Mekanism: Generators",
   "gas.mekanismgenerators.deuterium": "Дейтерий",
   "gas.mekanismgenerators.fusion_fuel": "Д-Т топливо",
