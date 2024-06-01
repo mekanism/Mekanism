@@ -1432,6 +1432,7 @@
   "qio.mekanism.compensate_tooltip": "O que você está tentando compensar?",
   "qio.mekanism.export_without_filter": "Exportar sem Filtro:",
   "qio.mekanism.exporter.round_robin": "Transferência circular:",
+  "qio.mekanism.exporter.round_robin.description": "Ao ser conectado a um transportador, alterna entre todos os inventários vinculados ao enviar itens.",
   "qio.mekanism.fuzzy_mode": "Ignorando NBT: %1$s",
   "qio.mekanism.import_without_filter": "Importar sem Filtro:",
   "qio.mekanism.item_type_undefined": "Tipo do item indefinido",
