@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Re-evaluate/rethink this as using rawtypes to get around things like this is very cursed
+//TODO: Re-evaluate/rethink this as using rawtypes to get around things like this is very cursed
 @NothingNullByDefault
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class MergedTankCreator implements IBasicContainerCreator {

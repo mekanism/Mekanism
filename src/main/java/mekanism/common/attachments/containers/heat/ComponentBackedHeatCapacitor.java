@@ -55,8 +55,12 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         return attached.get(containerIndex);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
+     */
     protected HeatCapacitorData getData() {
-        //TODO - 1.20.5: Similar to getBasicInventorySlot do we want to reduce calls to this? Probably (We mostly do so, but we probably want to add a note here)
         return getContents(getAttached());
     }
 
