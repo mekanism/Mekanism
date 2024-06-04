@@ -42,7 +42,7 @@ public class CrTItemStackIngredient {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created from an empty stack.");
         }
-        return from(stack, stack.getAmount());
+        return from(stack, stack.amount());
     }
 
     /**
@@ -130,7 +130,7 @@ public class CrTItemStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(IIngredientWithAmount ingredient) {
-        return from(ingredient.getIngredient(), ingredient.getAmount());
+        return from(ingredient.ingredient(), ingredient.amount());
     }
 
     /**

@@ -37,7 +37,7 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     ToolsMaterialConfig() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        builder.comment("Mekanism Tools Material Config. This config is loaded early, and requires a game restart to take effect.").push("tools-materials");
+        builder.comment("Mekanism Tools Material Config. This config is a startup early, and requires a game restart to take effect.").push("tools-materials");
 
         wood = new VanillaPaxelMaterialCreator(this, builder, new WoodPaxelMaterialDefaults());
         stone = new VanillaPaxelMaterialCreator(this, builder, new StonePaxelMaterialDefaults());
@@ -58,7 +58,7 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     @Override
     public String getFileName() {
-        return "tools-materials";
+        return "tools-materials-startup";
     }
 
     @Override
@@ -68,11 +68,6 @@ public class ToolsMaterialConfig extends BaseMekanismConfig {
 
     @Override
     public Type getConfigType() {
-        return Type.COMMON;
-    }
-
-    @Override
-    public boolean loadImmediately() {
-        return true;
+        return Type.STARTUP;
     }
 }

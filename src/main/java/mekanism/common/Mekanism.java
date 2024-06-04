@@ -121,7 +121,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -191,8 +190,9 @@ public class Mekanism {
 
     public Mekanism(ModContainer modContainer, IEventBus modEventBus) {
         instance = this;
-        //Ensure that configs don't get added or early initialized in an async way
-        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismConfig.registerConfigs(modContainer)));
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(modContainer);
+        MekanismConfig.registerConfigs(modContainer);
 
         NeoForgeMod.enableMilkFluid();
         NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
@@ -248,8 +248,6 @@ public class Mekanism {
         MekanismDataMapTypes.REGISTER.register(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         modEventBus.addListener(this::registerRegistries);
-        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(modContainer);
         packetHandler = new PacketHandler(modEventBus, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);

@@ -35,7 +35,7 @@ idea {
     module {
         //Exclude directories from being managed
         for (String excludeDirName : ['runs', 'out', 'logs', 'gradle']) {
-            excludeDirs.add(new File(projectDir, excludeDirName))
+            excludeDirs.add(file(excludeDirName))
         }
         //Tell IDEA to always download sources/javadoc artifacts from maven.
         downloadJavadoc = true
@@ -415,7 +415,7 @@ dependencies {
     localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
-    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minor_minecraft_version}:${crafttweaker_version}"
+    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
     //TODO: Re-enable when it updates
     //localRuntime(crt)
@@ -433,7 +433,7 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-1.20.5-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 

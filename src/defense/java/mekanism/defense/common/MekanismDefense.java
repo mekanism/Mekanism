@@ -17,7 +17,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
@@ -35,8 +34,9 @@ public class MekanismDefense implements IModModule {
 
     public MekanismDefense(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        //Ensure that configs don't get added or early initialized in an async way
-        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismDefenseConfig.registerConfigs(modContainer)));
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(modContainer);
+        MekanismDefenseConfig.registerConfigs(modContainer);
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
 
         modEventBus.addListener(this::commonSetup);
@@ -46,9 +46,6 @@ public class MekanismDefense implements IModModule {
         DefenseCreativeTabs.CREATIVE_TABS.register(modEventBus);
         DefenseContainerTypes.CONTAINER_TYPES.register(modEventBus);
         DefenseTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-
-        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(modContainer);
     }
 
     public static ResourceLocation rl(String path) {

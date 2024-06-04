@@ -24,13 +24,13 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.network.GeneratorsPacketHandler;
-import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsBuilders.FissionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.FusionReactorBuilder;
 import mekanism.generators.common.registries.GeneratorsBuilders.TurbineBuilder;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsCreativeTabs;
+import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -44,7 +44,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 @Mod(MekanismGenerators.MODID)
@@ -74,8 +73,9 @@ public class MekanismGenerators implements IModModule {
 
     public MekanismGenerators(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        //Ensure that configs don't get added or early initialized in an async way
-        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismGeneratorsConfig.registerConfigs(modContainer)));
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(modContainer);
+        MekanismGeneratorsConfig.registerConfigs(modContainer);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
@@ -90,8 +90,6 @@ public class MekanismGenerators implements IModModule {
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsGases.GASES.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
-        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(modContainer);
         packetHandler = new GeneratorsPacketHandler(modEventBus, versionNumber);
     }
 

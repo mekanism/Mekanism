@@ -29,7 +29,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -54,8 +53,10 @@ public class MekanismAdditions implements IModModule {
 
     public MekanismAdditions(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        //Ensure that configs don't get added or early initialized in an async way
-        modEventBus.addListener(FMLConstructModEvent.class, event -> event.enqueueWork(() -> MekanismAdditionsConfig.registerConfigs(modContainer)));
+        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(modContainer);
+        MekanismAdditionsConfig.registerConfigs(modContainer);
+
         NeoForge.EVENT_BUS.addListener(this::serverStarting);
         NeoForge.EVENT_BUS.addListener(this::serverStopping);
 
@@ -69,9 +70,6 @@ public class MekanismAdditions implements IModModule {
         AdditionsSounds.SOUND_EVENTS.register(modEventBus);
         AdditionsBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
         AdditionsStructureModifierSerializers.STRUCTURE_MODIFIER_SERIALIZERS.register(modEventBus);
-
-        //Set our version number to match the neoforge.mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(modContainer);
     }
 
     public static ResourceLocation rl(String path) {
