@@ -8,7 +8,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
 
 repositories {
     def repo = maven {
-        name = 'CraftTweaker'
+        name = 'ZenCode'
         url = 'https://maven.blamejared.com'
     }
     exclusiveContent {

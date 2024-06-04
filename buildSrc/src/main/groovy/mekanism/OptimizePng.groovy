@@ -1,7 +1,7 @@
 package mekanism
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileType
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.InputFiles
@@ -16,7 +16,7 @@ class OptimizePng extends DefaultTask {
 
     @InputFiles
     @Incremental
-    final ConfigurableFileCollection inputFiles
+    final FileCollection inputFiles
 
     @Inject
     OptimizePng(ObjectFactory objects) {

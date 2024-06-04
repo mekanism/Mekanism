@@ -3,7 +3,8 @@ import com.modrinth.minotaur.dependencies.ModDependency
 import com.modrinth.minotaur.dependencies.VersionDependency
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import mekanism.MergeJars
+import mekanism.AllJar
+import mekanism.MergeModuleResources
 import mekanism.OptimizePng
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
@@ -19,12 +20,12 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.136')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.138')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.7'
+    gradleVersion = '8.8'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -33,7 +34,7 @@ defaultTasks('build')
 idea {
     module {
         //Exclude directories from being managed
-        for (String excludeDirName : ["runs", "out", "logs", "gradle"]) {
+        for (String excludeDirName : ['runs', 'out', 'logs', 'gradle']) {
             excludeDirs.add(new File(projectDir, excludeDirName))
         }
         //Tell IDEA to always download sources/javadoc artifacts from maven.
@@ -43,8 +44,8 @@ idea {
 }
 
 ext {
-    versionProperties = ["version": mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range, "loader_version": loader_version_range]
-    jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+    versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
+    jsonPatterns = ['**/*.json', '**/*.mcmeta']
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen']
 }
@@ -102,7 +103,7 @@ for (String name : secondaryModules) {
         //Add the generated module resources
         srcDirs += ["src/datagen/generated/mekanism${name}"]
         //But exclude the cache of the generated data from what gets built
-        exclude '.cache'
+        exclude('.cache')
     }
     sourceSet.compileClasspath += sourceSets.api.output
     sourceSet.compileClasspath += sourceSets.main.output
@@ -149,7 +150,7 @@ def setupExtraSourceSets(SourceSet base, boolean includeExtra = true) {
 }
 
 SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
-    def name = baseSourceSet.getName()
+    def name = baseSourceSet.name
     def extraSourceSet = sourceSets.create(baseSourceSet.getTaskName(extra, null))
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
@@ -186,7 +187,8 @@ for (String name : secondaryModules) {
 
 def setupTasks(SourceSet sourceSet) {
     def output = sourceSet.name
-    def compileTask = tasks.named(sourceSet.getCompileJavaTaskName(), JavaCompile)
+    def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile)
+    //TODO: Replace with putting this in process resources and specifying the replacement properties as input to the task
     def replaceResourceTask = tasks.register(sourceSet.getTaskName('replace', 'resources'), Copy, {
         setGroup('replace resources')
         outputs.upToDateWhen { false }
@@ -216,7 +218,7 @@ def setupTasks(SourceSet sourceSet) {
         }
     })
     //Set the various variables/settings for the different process resources tasks
-    tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure { ProcessResources process ->
+    tasks.named(sourceSet.processResourcesTaskName, ProcessResources).configure { ProcessResources process ->
         setGroup('process resources')
         process.duplicatesStrategy(DuplicatesStrategy.FAIL)
         process.exclude('META-INF/neoforge.mods.toml')
@@ -224,23 +226,24 @@ def setupTasks(SourceSet sourceSet) {
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
         finalizedBy(replaceResourceTask)
+        def files = fileTree(dir: outputs.files.asPath, includes: jsonPatterns)
         doLast {
-            for (def file : fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns)) {
-                file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+            for (def file : files) {
+                file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
             }
         }
     }
-    tasks.named(sourceSet.getCompileJavaTaskName(), JavaCompile).configure { setGroup('compile') }
+    tasks.named(sourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
     for (String extraType : extraTypes) {
         def extraSourceSet = getExtraSourceSet(sourceSet, extraType)
-        tasks.named(extraSourceSet.getProcessResourcesTaskName(), ProcessResources).configure {
+        tasks.named(extraSourceSet.processResourcesTaskName, ProcessResources).configure {
             setGroup('process resources')
             dependsOn(compileTask)
         }
-        tasks.named(extraSourceSet.getCompileJavaTaskName(), JavaCompile).configure { setGroup('compile') }
+        tasks.named(extraSourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
     }
     //Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
-    tasks.named(sourceSet.getClassesTaskName()).configure { dependsOn(replaceResourceTask) }
+    tasks.named(sourceSet.classesTaskName).configure { dependsOn(replaceResourceTask) }
     //Configure specific compile tasks to have the proper annotation processor info
     compileTask.configure { JavaCompile task ->
         setGroup('compile')
@@ -337,15 +340,15 @@ runs {
         unitTestSources.add((SourceSet) sourceSets.test)
     }
     data {
-        programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').getAbsolutePath(),
-                                            '--mod', 'mekanism', '--existing', file('src/main/resources/').getAbsolutePath()])
+        programArguments.addAll((String[]) ['--all', '--output', file('src/datagen/generated/').absolutePath,
+                                            '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath])
 
         modSources.add((SourceSet) sourceSets.datagenMain)
 
         for (String name : secondaryModules) {
             def modName = "mekanism${name}"
             modSources.add(getExtraSourceSet(name, 'datagen'))
-            programArguments.addAll((String[]) ['--mod', modName, '--existing', file("src/${name}/resources/").getAbsolutePath()])
+            programArguments.addAll((String[]) ['--mod', modName, '--existing', file("src/${name}/resources/").absolutePath])
         }
 
         dependencies {
@@ -508,10 +511,10 @@ tasks.named('sourcesJar', Jar).configure { Jar jar ->
 }
 
 def secondaryJar(SourceSet sourceSet, String title) {
-    return tasks.register(sourceSet.getJarTaskName(), Jar, {
+    return tasks.register(sourceSet.jarTaskName, Jar, {
         duplicatesStrategy(DuplicatesStrategy.FAIL)
         archiveClassifier.set(sourceSet.name)
-        from sourceSet.output
+        from(sourceSet.output)
         if (!title.isEmpty()) {
             archiveFileName.set("${title}-${project.version}.jar")
         }
@@ -525,27 +528,34 @@ def defenseJar = secondaryJar(sourceSets.defense, 'MekanismDefense')
 def generatorsJar = secondaryJar(sourceSets.generators, 'MekanismGenerators')
 def toolsJar = secondaryJar(sourceSets.tools, 'MekanismTools')
 
-def allJar = tasks.register('allJar', Jar, {
-    dependsOn(classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses)
-    mustRunAfter(clean)
+def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleResources, {
+    dependsOn('classes', 'apiClasses', 'additionsClasses', 'defenseClasses', 'generatorsClasses', 'toolsClasses')
+    mustRunAfter('clean')
+    //Note: Get the resources from the output of process resources, so that any expands that need to happen we know have already happened
+    resources = tasks.named(sourceSets.main.processResourcesTaskName).get().outputs.files
+    //Note: We have to use classesDirs rather than generatedSourcesDirs to also include resources generated by the annotation process
+    // and not just the java source files. We filter further along to ensure we only take services into account
+    annotationGenerated = sourceSets.main.output.classesDirs
+    for (String name : secondaryModules) {
+        SourceSet secondarySourceSet = sourceSets.named(name).get()
+        resources = resources + tasks.named(secondarySourceSet.processResourcesTaskName).get().outputs.files
+        annotationGenerated = annotationGenerated + secondarySourceSet.output.classesDirs
+    }
+    //Only look at generated service files as a restriction for our input
+    annotationGenerated = annotationGenerated.asFileTree.matching(serviceFilter)
+})
+
+def allJar = tasks.register('allJar', AllJar, {
+    dependsOn(mergeModuleResources)
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set('all')
     manifest.attributes(getManifestAttributes('MekanismAll'))
-    def combineSets = [sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools]
-    doFirst {
-        //Start by generating the merged data
-        MergeJars.merge(project, combineSets)
-    }
-    //Then copy all the files except for ones we are going to include from the merged
-    from(sourceSets.api.output)
-    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project, combineSets)
-    from(sourceSets.main.output, MergeJars.createExcludeClosure(baseExcludeData, 'crafttweaker_parameter_names.json'))
-    Closure<CopySpec> excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
+    pathsToExclude.set(mergeModuleResources.flatMap(m -> m.pathsToExclude))
+    apiOutput = sourceSets.api.output
+    mainOutput = sourceSets.main.output
     for (String name : secondaryModules) {
-        from(sourceSets.named(name).map(s -> s.output), excludeFromAll)
+        secondaryModuleOutputs = secondaryModuleOutputs + sourceSets.named(name).get().output
     }
-    //And finally copy over the generated files
-    MergeJars.getGeneratedClosures(versionProperties).each { closure -> from(layout.buildDirectory.dir('generated'), closure) }
 })
 
 tasks.withType(JavaCompile).configureEach({
@@ -642,7 +652,7 @@ def resolvedChangelog = null
 //closure to generate the changelog once, and only when needed by CurseGradle or Modrinth
 def changeLogResolver = { ->
     if (resolvedChangelog != null) {
-        println('Using cached changelog')
+        logger.lifecycle('Using cached changelog')
         return resolvedChangelog
     }
     def generatedChangelog = 'Unable to generate changelog :('
@@ -671,13 +681,13 @@ def changeLogResolver = { ->
                 generatedChangelog += "[${commit.getAbbreviatedId()}](https://github.com/mekanism/Mekanism/commit/${commit.id}) - ${message}"
             }
         }
-        println('Changelog generated')
+        logger.lifecycle('Changelog generated')
     }
 
     def releaseNotesFile = project.file("docs/release_${mod_version}.md")
     if (releaseNotesFile.exists()) {
         //Add any version specific changelog stuff
-        def releaseNotes = releaseNotesFile.getText()
+        def releaseNotes = releaseNotesFile.text
         generatedChangelog = "$releaseNotes\n\n $generatedChangelog"
     }
 
@@ -701,7 +711,7 @@ tasks.register('outputChangelog') {
 def mainCfUpload, additionsCfUpload, generatorsCfUpload, toolsCfUpload
 
 if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKey')) {
-    println('Enabling Curseforge config')
+    logger.lifecycle('Enabling Curseforge config')
     tasks.register('curseforge', TaskPublishCurseForge, { task ->
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
@@ -740,10 +750,12 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
         toolsCfUpload = uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
 
         doLast {
-            println("https://www.curseforge.com/minecraft/mc-mods/mekanism/files/${mainCfUpload.curseFileId}")
-            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/${additionsCfUpload.curseFileId}")
-            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/${generatorsCfUpload.curseFileId}")
-            println("https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/${toolsCfUpload.curseFileId}")
+            //Note: Quiet is the level above warning but below error. We want these to show regardless of logging level
+            // see: https://docs.gradle.org/current/userguide/logging.html
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism/files/{}', mainCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-additions/files/{}', additionsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-generators/files/{}', generatorsCfUpload.curseFileId)
+            logger.quiet('https://www.curseforge.com/minecraft/mc-mods/mekanism-tools/files/{}', toolsCfUpload.curseFileId)
         }
     })
 }
@@ -762,7 +774,7 @@ UploadArtifact uploadSecondaryCurseProject(TaskPublishCurseForge task, long proj
 }
 
 if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToken')) {
-    println('Enabling Modrinth config')
+    logger.lifecycle('Enabling Modrinth config')
     def additionsModrinth = createSecondaryModrinthUpload('additions', 'a6F3uASn', additionsJar)
     //def defenseModrinth = createSecondaryModrinthUpload('defense', '', defenseJar)
     def generatorsModrinth = createSecondaryModrinthUpload('generators', 'OFVYKsAk', generatorsJar)
@@ -775,7 +787,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     modrinth {
         if (System.getenv('MODRINTH_TOKEN') == null) {
             //Defaults to MODRINTH_TOKEN so we only have to check for a token via gradle properties if there isn't a system property
-            getToken().value((String) project.findProperty('modrinthToken'))
+            token.set((String) project.findProperty('modrinthToken'))
         } else {
             token = System.getenv('MODRINTH_TOKEN')
         }
@@ -791,9 +803,9 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
         changelog = changeLogResolver.call()
         uploadFile = jar
 
-        getAdditionalFiles().value([apiJar.get()])
+        additionalFiles.value([apiJar.get()])
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
-        getDependencies().value([
+        dependencies.value([
                 new ModDependency('XxWD5pD3', 'optional'),//AE2
                 new ModDependency('gu7yAYhd', 'optional'),//CC: Tweaked
                 new ModDependency('Xg35A4rS', 'optional'),//CraftTweaker
@@ -823,16 +835,16 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, TaskPro
                 projectId = targetProjectId
                 uploadFile = sourceSetJar.get()
                 //Clear additional upload files as this is a modification of what things are set to from before
-                getAdditionalFiles().empty()
+                additionalFiles.empty()
                 //Mark that the addon requires the build of Mekanism that we just uploaded (and override it to clear all optional dependencies)
                 if (tasks.modrinth.newVersion == null || tasks.modrinth.newVersion.getId() == null) {
                     //If we failed to find the upload version just set it to Mekanism in general
-                    getDependencies().value([new ModDependency('Ce6I4WUE', 'required')])
+                    dependencies.value([new ModDependency('Ce6I4WUE', 'required')])
                 } else {
-                    getDependencies().value([new VersionDependency((String) tasks.modrinth.newVersion.getId(), 'required')])
+                    dependencies.value([new VersionDependency((String) tasks.modrinth.newVersion.getId(), 'required')])
                 }
             }
-            println("Updated Modrinth extension")
+            logger.lifecycle('Updated Modrinth extension')
         }
     })
 }
