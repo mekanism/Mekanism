@@ -44,8 +44,6 @@ idea {
 }
 
 ext {
-    versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
-    jsonPatterns = ['**/*.json', '**/*.mcmeta']
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen']
 }
@@ -186,48 +184,20 @@ for (String name : secondaryModules) {
 }
 
 def setupTasks(SourceSet sourceSet) {
-    def output = sourceSet.name
     def compileTask = tasks.named(sourceSet.compileJavaTaskName, JavaCompile)
-    //TODO: Replace with putting this in process resources and specifying the replacement properties as input to the task
-    def replaceResourceTask = tasks.register(sourceSet.getTaskName('replace', 'resources'), Copy, {
-        setGroup('replace resources')
-        outputs.upToDateWhen { false }
-        def modsToml = copySpec {
-            from(sourceSet.resources) {
-                include('META-INF/neoforge.mods.toml')
-                expand(versionProperties)
-            }
-        }
-        //Copy it into the build dir
-        with(modsToml)
-        into layout.buildDirectory.dir("resources/${output}/")
-        //If IntelliJ's output dir exists, copy it there as well
-        def intellijPath = sourceSet == project.sourceSets.main ? 'production' : output
-        if (new File("$rootDir/out/${intellijPath}/resources/").exists()) {
-            copy {
-                with(modsToml)
-                into("$rootDir/out/${intellijPath}/resources/")
-            }
-        }
-        //If Eclipse's output dir exists, copy it there as well
-        if (new File("$rootDir/bin/${output}/").exists()) {
-            copy {
-                with(modsToml)
-                into("$rootDir/bin/${output}/")
-            }
-        }
-    })
     //Set the various variables/settings for the different process resources tasks
     tasks.named(sourceSet.processResourcesTaskName, ProcessResources).configure { ProcessResources process ->
-        setGroup('process resources')
+        process.setGroup('process resources')
         process.duplicatesStrategy(DuplicatesStrategy.FAIL)
-        process.exclude('META-INF/neoforge.mods.toml')
+        var versionProperties = ['version': mod_version, 'mc_version': minecraft_version_range, 'forge_version': forge_version_range, 'loader_version': loader_version_range]
+        //Mark the properties as inputs so that when they change things update
+        process.inputs.properties(versionProperties)
+        process.filesMatching('META-INF/neoforge.mods.toml') { expand(versionProperties) }
         process.from("${projectDir}") { include('logo.png') }
         //Depend on the compile task so that we can map the computer methods as needed
-        dependsOn(compileTask)
-        finalizedBy(replaceResourceTask)
-        def files = fileTree(dir: outputs.files.asPath, includes: jsonPatterns)
-        doLast {
+        process.dependsOn(compileTask)
+        def files = fileTree(dir: outputs.files.asPath, includes: ['**/*.json', '**/*.mcmeta'])
+        process.doLast {
             for (def file : files) {
                 file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
             }
@@ -242,14 +212,12 @@ def setupTasks(SourceSet sourceSet) {
         }
         tasks.named(extraSourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
     }
-    //Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
-    tasks.named(sourceSet.classesTaskName).configure { dependsOn(replaceResourceTask) }
     //Configure specific compile tasks to have the proper annotation processor info
     compileTask.configure { JavaCompile task ->
         setGroup('compile')
         task.options.annotationProcessorPath = configurations.annotationProcessor
         task.options.compilerArgs.addAll([
-                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : output}",//annotation processor param
+                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? '' : sourceSet.name}",//annotation processor param
                 '-parameters'
         ])
     }
@@ -715,6 +683,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
     tasks.register('curseforge', TaskPublishCurseForge, { task ->
         setGroup('publishing')
         setDescription('Upload Mekanism to CurseForge')
+        notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
 
         apiToken = System.getenv('CURSEFORGE_KEY') ?: project.findProperty('curseforgeKey')
 
@@ -782,6 +751,7 @@ if (System.getenv('MODRINTH_TOKEN') != null || project.hasProperty('modrinthToke
     tasks.named('modrinth').configure {
         dependsOn(jar, apiJar)
         finalizedBy(additionsModrinth, /*defenseModrinth,*/ generatorsModrinth, toolsModrinth)
+        notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
     }
 
     modrinth {
@@ -829,6 +799,7 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, TaskPro
         setGroup('publishing')
         setDescription("Upload Mekanism ${output} to Modrinth")
         dependsOn(tasks.named('modrinth'), sourceSetJar)
+        notCompatibleWithConfigurationCache('Not yet compatible')//TODO: Remove when possible
         doFirst {
             //Run in do first to change the configured extension values before it starts applying
             modrinth {
