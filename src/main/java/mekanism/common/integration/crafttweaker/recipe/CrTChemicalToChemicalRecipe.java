@@ -32,7 +32,7 @@ public class CrTChemicalToChemicalRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<ICrTGasStack> getOutputs(GasToGasRecipe _this) {
-            return CrTUtils.convertGas(_this.getOutputDefinition());
+            return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
 }

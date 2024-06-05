@@ -1,12 +1,13 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -31,8 +32,8 @@ public abstract class ItemStackToPigmentRecipeManager extends ItemStackToChemica
         }
 
         @Override
-        protected ItemStackToPigmentRecipe makeRecipe(ItemStackIngredient input, PigmentStack output) {
-            return new BasicItemStackToPigmentRecipe(input, output);
+        protected ItemStackToPigmentRecipe makeRecipe(IIngredientWithAmount input, PigmentStack output) {
+            return new BasicItemStackToPigmentRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 }

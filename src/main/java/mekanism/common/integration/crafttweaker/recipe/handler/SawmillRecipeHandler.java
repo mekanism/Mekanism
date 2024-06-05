@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
@@ -8,7 +9,6 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
@@ -59,7 +59,7 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
             return Optional.empty();
         }
         DecomposedRecipeBuilder builder = IDecomposedRecipe.builder()
-              .with(CrTRecipeComponents.ITEM.input(), recipe.getInput());
+              .with(CrTRecipeComponents.ITEM.input(), CrTUtils.toCrT(recipe.getInput()));
         if (mainOutputDefinition.isEmpty()) {
             //Only has a secondary output
             builder.with(CrTRecipeComponents.ITEM.output(), CrTUtils.convertItems(secondaryOutputDefinition))
@@ -78,7 +78,7 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
     @Override
     public Optional<SawmillRecipe> recompose(IRecipeManager<? super SawmillRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof SawmillRecipeManager manager) {
-            ItemStackIngredient input = recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input());
+            IIngredientWithAmount input = recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input());
             List<IItemStack> outputs = recipe.get(CrTRecipeComponents.ITEM.output());
             if (outputs == null || outputs.isEmpty() || outputs.size() > 2) {
                 throw new IllegalArgumentException("Incorrect number of outputs specified. Must be either one or two outputs, and have a secondary chance if two.");

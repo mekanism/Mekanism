@@ -1,6 +1,9 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.ingredient.type.IIngredientEmpty;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
@@ -24,11 +27,9 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.SlurryStackIngredient;
 import mekanism.common.Mekanism;
@@ -37,10 +38,8 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
 
@@ -60,20 +59,33 @@ public class CrTRecipeComponents {
           FloatingLong::equals
     );
 
-    public static final PairedRecipeComponent<ItemStackIngredient, IItemStack> ITEM = new PairedRecipeComponent<>(IRecipeComponent.composite(
+    public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(IRecipeComponent.composite(
           Mekanism.rl("input/item"),
           new TypeToken<>() {},
-          CrTRecipeComponents::ingredientsMatch,
+          (a, b) -> Objects.equals(a, b) || a.amount() == b.amount() && RecipeComponentEqualityCheckers.areIngredientsEqual(a.ingredient(), b.ingredient()),
           Collections::singletonList,
-          ingredients -> ingredients.stream().reduce(CrTItemStackIngredient::or).orElseThrow()
+          ingredients -> {
+              if (ingredients.isEmpty()) {
+                  return IIngredientEmpty.getInstance().asIIngredientWithAmount();
+              }
+              IIngredientWithAmount acc = null;
+              for (IIngredientWithAmount ingredient : ingredients) {
+                  if (acc == null) {
+                      acc = ingredient;
+                  } else {
+                      if (acc.amount() != ingredient.amount()) {
+                          throw new IllegalArgumentException("Amount mismatch");
+                      }
+                      acc = acc.ingredient().or(ingredient.ingredient()).mul(acc.amount());
+                  }
+              }
+              return acc;
+          }
     ), BuiltinRecipeComponents.Output.ITEMS);
-    public static final PairedRecipeComponent<FluidStackIngredient, IFluidStack> FLUID = new PairedRecipeComponent<>(IRecipeComponent.composite(
-          Mekanism.rl("input/fluid"),
-          new TypeToken<>() {},
-          CrTRecipeComponents::ingredientsMatch,
-          Collections::singletonList,
-          ingredients -> ingredients.stream().reduce(CrTFluidStackIngredient::or).orElseThrow()
-    ), BuiltinRecipeComponents.Output.FLUIDS);
+    public static final PairedRecipeComponent<CTFluidIngredient, IFluidStack> FLUID = new PairedRecipeComponent<>(
+          BuiltinRecipeComponents.Input.FLUID_INGREDIENTS,
+          BuiltinRecipeComponents.Output.FLUIDS
+    );
 
     //Compiler can't actually infer these
     @SuppressWarnings("Convert2Diamond")

@@ -31,6 +31,7 @@ public class CrTConstants {
     public static final String CLASS_HAS_TEXT_COMPONENT = "mods." + Mekanism.MODID + ".api.text.HasTextComponent";
     public static final String CLASS_BASE_PROVIDER = "mods." + Mekanism.MODID + ".api.provider.BaseProvider";
 
+    public static final String CLASS_CHEMICAL_PROVIDER = "mods." + Mekanism.MODID + ".api.chemical.ChemicalProvider";
     public static final String CLASS_CHEMICAL = "mods." + Mekanism.MODID + ".api.chemical.Chemical";
     public static final String CLASS_GAS = "mods." + Mekanism.MODID + ".api.chemical.Gas";
     public static final String CLASS_INFUSE_TYPE = "mods." + Mekanism.MODID + ".api.chemical.InfuseType";
@@ -51,7 +52,8 @@ public class CrTConstants {
     public static final String CLASS_CUSTOM_MODULE = "mods." + Mekanism.MODID + ".api.gear.CustomModule";
     public static final String CLASS_MODULE_DATA_PROVIDER = "mods." + Mekanism.MODID + ".api.gear.ModuleDataProvider";
 
-    //TODO - CrT: Expose these to CrT as actual objects rather than just dummy classes? at least once it updates and we can test
+    //TODO: Eventually we might want to expose these as actually CrT objects. And then make the stack variant basically just be an OR of them,
+    // and also make the stacks be instances of an interface so that they can be used directly in place of the ingredients? (Or at least implicit cast to them)
     public static final String CLASS_CHEMICAL_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalIngredient";
     public static final String CLASS_GAS_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".GasIngredient";
     public static final String CLASS_INFUSION_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".InfusionIngredient";
@@ -59,8 +61,6 @@ public class CrTConstants {
     public static final String CLASS_SLURRY_INGREDIENT = CLASS_CHEMICAL_INGREDIENT + ".SlurryIngredient";
 
     public static final String CLASS_FLOATING_LONG = "mods." + Mekanism.MODID + ".api.FloatingLong";
-    public static final String CLASS_ITEM_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ItemStackIngredient";
-    public static final String CLASS_FLUID_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.FluidStackIngredient";
     public static final String CLASS_CHEMICAL_STACK_INGREDIENT = "mods." + Mekanism.MODID + ".api.ingredient.ChemicalStackIngredient";
     public static final String CLASS_GAS_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".GasStackIngredient";
     public static final String CLASS_INFUSION_STACK_INGREDIENT = CLASS_CHEMICAL_STACK_INGREDIENT + ".InfusionStackIngredient";
@@ -155,13 +155,10 @@ public class CrTConstants {
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
     private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_ITEM_TAG = EXPANSION_TARGET_TAG + "<crafttweaker.api.item.ItemDefinition>";
     public static final String EXPANSION_TARGET_GAS_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_GAS + ">";
     public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_INFUSE_TYPE + ">";
     public static final String EXPANSION_TARGET_PIGMENT_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_PIGMENT + ">";
     public static final String EXPANSION_TARGET_SLURRY_TAG = EXPANSION_TARGET_TAG + "<" + CLASS_SLURRY + ">";
-    public static final String EXPANSION_TARGET_ITEM_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_ITEM_TAG + ">";
-    public static final String EXPANSION_TARGET_FLUID_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_TAG + "<crafttweaker.api.fluid.Fluid>>";
     public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_GAS_TAG + ">";
     public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_INFUSE_TYPE_TAG + ">";
     public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = EXPANSION_TARGET_MANY + "<" + EXPANSION_TARGET_PIGMENT_TAG + ">";

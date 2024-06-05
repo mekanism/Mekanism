@@ -53,6 +53,47 @@ public class CrTGasStackIngredient {
     }
 
     /**
+     * Creates a {@link GasStackIngredient} that matches the given gases and amount.
+     *
+     * @param amount Amount needed
+     * @param gases  Gases to match
+     *
+     * @return A {@link GasStackIngredient} that matches the given gases and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static GasStackIngredient from(long amount, Gas... gases) {
+        CrTIngredientHelper.assertMultiple(amount, "GasStackIngredients", "gas", gases);
+        return IngredientCreatorAccess.gasStack().from(amount, gases);
+    }
+
+    /**
+     * Creates a {@link GasStackIngredient} that matches the given gases and amount.
+     *
+     * @param amount Amount needed
+     * @param gases  Gases to match
+     *
+     * @return A {@link GasStackIngredient} that matches the given gases and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static GasStackIngredient from(long amount, ICrTGasStack... gases) {
+        CrTIngredientHelper.assertMultiple(amount, "GasStackIngredients", "gas", gases);
+        return IngredientCreatorAccess.gasStack().from(amount, gases);
+    }
+
+    /**
+     * Creates a {@link GasStackIngredient} that matches the given gas stacks. The first stack's size will be used for this ingredient.
+     *
+     * @param gases Gas stacks to match
+     *
+     * @return A {@link GasStackIngredient} that matches a given gas stack.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static GasStackIngredient from(ICrTGasStack... gases) {
+        long amount = CrTIngredientHelper.assertMultiple("GasStackIngredients", "gas", gases);
+        return IngredientCreatorAccess.gasStack().from(amount, gases);
+    }
+
+    /**
      * Creates a {@link GasStackIngredient} that matches a given gas tag with a given amount.
      *
      * @param gasTag Tag to match
@@ -120,7 +161,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTGasStack> getRepresentations(GasStackIngredient _this) {
-        return CrTUtils.convertGas(_this.getRepresentations());
+        return CrTUtils.convertChemical(_this.getRepresentations());
     }
 
     /**
@@ -134,7 +175,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static GasStackIngredient or(GasStackIngredient _this, GasStackIngredient other) {
         if (_this.amount() != other.amount()) {
-            throw new IllegalStateException("GasStack ingredients can only be or'd if they have the same counts");
+            throw new IllegalArgumentException("GasStack ingredients can only be or'd if they have the same counts");
         }
         List<IGasIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());

@@ -33,7 +33,7 @@ public class CrTFluidChemicalToChemicalRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<ICrTSlurryStack> getOutputs(FluidSlurryToSlurryRecipe _this) {
-            return CrTUtils.convertSlurry(_this.getOutputDefinition());
+            return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
 }

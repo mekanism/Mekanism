@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.CrTUtils.UnaryTypePair;
@@ -42,7 +42,7 @@ public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe>
     @Override
     public Optional<CombinerRecipe> recompose(IRecipeManager<? super CombinerRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof CombinerRecipeManager manager) {
-            UnaryTypePair<ItemStackIngredient> inputs = CrTUtils.getPair(recipe, CrTRecipeComponents.ITEM.input());
+            UnaryTypePair<IIngredientWithAmount> inputs = CrTUtils.getPair(recipe, CrTRecipeComponents.ITEM.input());
             return Optional.of(manager.makeRecipe(
                   inputs.a(),
                   inputs.b(),

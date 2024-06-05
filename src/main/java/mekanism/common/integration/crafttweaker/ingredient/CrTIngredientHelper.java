@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import java.util.List;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.chemical.CompoundChemicalIngredient;
 import mekanism.api.recipes.ingredients.chemical.IChemicalIngredient;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -36,6 +37,40 @@ public class CrTIngredientHelper {
         if (instance.isEmptyType()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
         }
+    }
+
+    /**
+     * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
+     */
+    static void assertMultiple(long amount, String ingredientType, String chemicalType, IChemicalProvider<?>... instances) {
+        assertValidAmount(ingredientType, amount);
+        if (instances == null || instances.length == 0) {
+            throw new IllegalArgumentException(ingredientType + " cannot be created from zero " + chemicalType + ".");
+        }
+        for (IChemicalProvider<?> instance : instances) {
+            if (instance.getChemical().isEmptyType()) {
+                throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
+            }
+        }
+    }
+
+    /**
+     * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
+     */
+    static long assertMultiple(String ingredientType, String chemicalType, ICrTChemicalStack<?, ?, ?>... instances) {
+        if (instances == null || instances.length == 0) {
+            throw new IllegalArgumentException(ingredientType + " cannot be created from zero " + chemicalType + ".");
+        }
+        long amount = 0;
+        for (ICrTChemicalStack<?, ?, ?> instance : instances) {
+            if (instance.isEmpty()) {
+                throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
+            } else if (amount == 0) {
+                amount = instance.getAmount();
+            }
+        }
+        assertValidAmount(ingredientType, amount);
+        return amount;
     }
 
     /**

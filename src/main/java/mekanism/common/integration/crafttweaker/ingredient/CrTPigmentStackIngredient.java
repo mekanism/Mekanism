@@ -53,6 +53,47 @@ public class CrTPigmentStackIngredient {
     }
 
     /**
+     * Creates a {@link PigmentStackIngredient} that matches the given pigments and amount.
+     *
+     * @param amount   Amount needed
+     * @param pigments Pigments to match
+     *
+     * @return A {@link PigmentStackIngredient} that matches the given pigments and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(long amount, Pigment... pigments) {
+        CrTIngredientHelper.assertMultiple(amount, "PigmentStackIngredients", "pigment", pigments);
+        return IngredientCreatorAccess.pigmentStack().from(amount, pigments);
+    }
+
+    /**
+     * Creates a {@link PigmentStackIngredient} that matches the given pigments and amount.
+     *
+     * @param amount   Amount needed
+     * @param pigments Pigments to match
+     *
+     * @return A {@link PigmentStackIngredient} that matches the given pigments and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(long amount, ICrTPigmentStack... pigments) {
+        CrTIngredientHelper.assertMultiple(amount, "PigmentStackIngredients", "pigment", pigments);
+        return IngredientCreatorAccess.pigmentStack().from(amount, pigments);
+    }
+
+    /**
+     * Creates a {@link PigmentStackIngredient} that matches the given pigment stacks. The first stack's size will be used for this ingredient.
+     *
+     * @param pigments Pigment stacks to match
+     *
+     * @return A {@link PigmentStackIngredient} that matches a given pigment stack.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(ICrTPigmentStack... pigments) {
+        long amount = CrTIngredientHelper.assertMultiple("PigmentStackIngredients", "pigment", pigments);
+        return IngredientCreatorAccess.pigmentStack().from(amount, pigments);
+    }
+
+    /**
      * Creates a {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      *
      * @param pigmentTag Tag to match
@@ -120,7 +161,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTPigmentStack> getRepresentations(PigmentStackIngredient _this) {
-        return CrTUtils.convertPigment(_this.getRepresentations());
+        return CrTUtils.convertChemical(_this.getRepresentations());
     }
 
     /**
@@ -134,7 +175,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static PigmentStackIngredient or(PigmentStackIngredient _this, PigmentStackIngredient other) {
         if (_this.amount() != other.amount()) {
-            throw new IllegalStateException("InfusionStack ingredients can only be or'd if they have the same counts");
+            throw new IllegalArgumentException("InfusionStack ingredients can only be or'd if they have the same counts");
         }
         List<IPigmentIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());

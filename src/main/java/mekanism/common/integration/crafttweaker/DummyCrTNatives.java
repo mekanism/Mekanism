@@ -12,7 +12,6 @@ import mekanism.api.recipes.ingredients.chemical.IGasIngredient;
 import mekanism.api.recipes.ingredients.chemical.IInfusionIngredient;
 import mekanism.api.recipes.ingredients.chemical.IPigmentIngredient;
 import mekanism.api.recipes.ingredients.chemical.ISlurryIngredient;
-import mekanism.common.Mekanism;
 
 /**
  * Registers some "unused" and non instantiatable classes to ZenCode so that they can be resolved when ZenCode is resolving generics even if they don't need to be used on
@@ -97,9 +96,9 @@ public class DummyCrTNatives {
         }
     }
 
-    //TODO - 1.18: Remove the below dummies once https://github.com/ZenCodeLang/ZenCode/issues/97 is resolved
+    //TODO: Remove the below dummies once https://github.com/ZenCodeLang/ZenCode/issues/97 is resolved
     @ZenRegister
-    @NativeTypeRegistration(value = IChemicalProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.ChemicalProvider" + DUMMY)
+    @NativeTypeRegistration(value = IChemicalProvider.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_PROVIDER + DUMMY)
     public static class CrTNativeChemicalProvider {
 
         private CrTNativeChemicalProvider() {

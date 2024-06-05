@@ -1,4 +1,4 @@
-// Recipes	2024-05-25T15:43:27.932269	Recipes
+// Recipes	2024-06-04T15:26:00.5484952	Recipes
 0fc9e539372429b3e5df0dc0595978c4fc45d201 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6d20b08ca1cc993d4c39a761361dce522fe45a7a data/mekanism/recipes/atomic_disassembler.json
 00928ea6e8b57d257c773343c0dc0d337c9d4f5f data/mekanism/recipes/bin/advanced.json
@@ -209,6 +209,7 @@ cdb0770d450e256467044578a545949220a6ba13 data/mekanism/recipes/compat/biomesople
 441363a0a1b9b7f2ef7a5ada6d81e0924fed5af1 data/mekanism/recipes/compat/biomesoplenty/biofuel/sprout.json
 6c4a9c434e8a27d4357480e4dac2d7edbd5c624c data/mekanism/recipes/compat/biomesoplenty/biofuel/tall_lavender.json
 ee9e7357f36df140155d0cdf42e59a744caeb647 data/mekanism/recipes/compat/biomesoplenty/biofuel/tall_white_lavender.json
+c107af0e26878b04e68b88b5d7dc018eef88eb8d data/mekanism/recipes/compat/biomesoplenty/biofuel/tiny_cactus.json
 3b0a6bc81144a45d119488eeb737658785c99623 data/mekanism/recipes/compat/biomesoplenty/biofuel/toadstool.json
 5ab5c15136a33f1691d05661a09ad6a8e3a2f81c data/mekanism/recipes/compat/biomesoplenty/biofuel/toadstool_block.json
 8798b3bbe8de3bbc67acd0578af553cf78bba525 data/mekanism/recipes/compat/biomesoplenty/biofuel/tundra_shrub.json

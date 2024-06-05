@@ -53,6 +53,47 @@ public class CrTInfusionStackIngredient {
     }
 
     /**
+     * Creates a {@link InfusionStackIngredient} that matches the given infuse types and amount.
+     *
+     * @param amount      Amount needed
+     * @param infuseTypes Infuse types to match
+     *
+     * @return A {@link InfusionStackIngredient} that matches the given infuse types and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static InfusionStackIngredient from(long amount, InfuseType... infuseTypes) {
+        CrTIngredientHelper.assertMultiple(amount, "InfusionStackIngredients", "infuse type", infuseTypes);
+        return IngredientCreatorAccess.infusionStack().from(amount, infuseTypes);
+    }
+
+    /**
+     * Creates a {@link InfusionStackIngredient} that matches the given infuse types and amount.
+     *
+     * @param amount      Amount needed
+     * @param infuseTypes Infuse types to match
+     *
+     * @return A {@link InfusionStackIngredient} that matches the given infuse types and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static InfusionStackIngredient from(long amount, ICrTInfusionStack... infuseTypes) {
+        CrTIngredientHelper.assertMultiple(amount, "InfusionStackIngredients", "infuse type", infuseTypes);
+        return IngredientCreatorAccess.infusionStack().from(amount, infuseTypes);
+    }
+
+    /**
+     * Creates a {@link InfusionStackIngredient} that matches the given infusion stacks. The first stack's size will be used for this ingredient.
+     *
+     * @param infuseTypes Infusion stacks to match
+     *
+     * @return A {@link InfusionStackIngredient} that matches a given infusion stack.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static InfusionStackIngredient from(ICrTInfusionStack... infuseTypes) {
+        long amount = CrTIngredientHelper.assertMultiple("InfusionStackIngredients", "infuse type", infuseTypes);
+        return IngredientCreatorAccess.infusionStack().from(amount, infuseTypes);
+    }
+
+    /**
      * Creates a {@link InfusionStackIngredient} that matches a given infuse type tag with a given amount.
      *
      * @param infuseTypeTag Tag to match
@@ -120,7 +161,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTInfusionStack> getRepresentations(InfusionStackIngredient _this) {
-        return CrTUtils.convertInfusion(_this.getRepresentations());
+        return CrTUtils.convertChemical(_this.getRepresentations());
     }
 
     /**
@@ -134,7 +175,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static InfusionStackIngredient or(InfusionStackIngredient _this, InfusionStackIngredient other) {
         if (_this.amount() != other.amount()) {
-            throw new IllegalStateException("InfusionStack ingredients can only be or'd if they have the same counts");
+            throw new IllegalArgumentException("InfusionStack ingredients can only be or'd if they have the same counts");
         }
         List<IInfusionIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());

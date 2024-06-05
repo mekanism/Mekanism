@@ -1,12 +1,18 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
 import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
+import com.blamejared.crafttweaker.natives.ingredient.ExpandCTFluidIngredientNeoForge;
+import com.blamejared.crafttweaker.natives.ingredient.ExpandIIngredientWithAmountNeoForge;
+import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedFluidIngredient;
+import com.blamejared.crafttweaker.natives.ingredient.ExpandSizedIngredient;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +30,9 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.ingredients.chemical.TagChemicalIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
@@ -42,6 +50,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class CrTUtils {
@@ -106,6 +116,54 @@ public class CrTUtils {
             case PIGMENT -> new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
             case SLURRY -> new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
         };
+    }
+
+    /**
+     * Helper method to convert a {@link Chemical} to an {@link ICrTChemicalStack}.
+     */
+    @SuppressWarnings("unchecked")
+    public static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK fromChemical(CHEMICAL chemical, int size) {
+        return (CRT_STACK) switch (chemical) {
+            case Gas gas -> new CrTGasStack(gas.getStack(size));
+            case InfuseType infuseType -> new CrTInfusionStack(infuseType.getStack(size));
+            case Pigment pigment -> new CrTPigmentStack(pigment.getStack(size));
+            case Slurry slurry -> new CrTSlurryStack(slurry.getStack(size));
+            default -> throw new IllegalArgumentException("Unknown chemical type");
+        };
+    }
+
+    /**
+     * Converts a CrT item ingredient to one of ours.
+     */
+    public static ItemStackIngredient fromCrT(IIngredientWithAmount ingredient) {
+        return IngredientCreatorAccess.item().from(ExpandIIngredientWithAmountNeoForge.asSizedIngredient(ingredient));
+    }
+
+    /**
+     * Converts one of our item ingredients to a CrT item ingredient.
+     */
+    public static IIngredientWithAmount toCrT(ItemStackIngredient ingredient) {
+        return ExpandSizedIngredient.asIIngredientWithAmount(ingredient.ingredient());
+    }
+
+    /**
+     * Converts a CrT fluid ingredient to one of ours.
+     */
+    public static FluidStackIngredient fromCrT(CTFluidIngredient ingredient) {
+        return IngredientCreatorAccess.fluid().from(ExpandCTFluidIngredientNeoForge.asSizedFluidIngredient(ingredient));
+    }
+
+    /**
+     * Converts one of our fluid ingredients to a CrT fluid ingredient.
+     */
+    public static CTFluidIngredient toCrT(FluidStackIngredient ingredient) {
+        SizedFluidIngredient sizedIngredient = ingredient.ingredient();
+        if (sizedIngredient.ingredient() instanceof TagFluidIngredient tagIngredient) {
+            return new CTFluidIngredient.FluidTagWithAmountIngredient(fluidTags().tag(tagIngredient.tag()).withAmount(sizedIngredient.amount()));
+        }
+        //TODO - 1.20.5: Switch to using just this, instead of special casing ingredients once it gets fixed in CrT
+        // if it doesn't get fixed we need to add support for converting tag ingredients that are part of a compound fluid ingredient
+        return ExpandSizedFluidIngredient.asCTFluidIngredient(ingredient.ingredient());
     }
 
     /**
@@ -206,7 +264,8 @@ public class CrTUtils {
     /**
      * Helper to get a function that converts a chemical stack into the corresponding CraftTweaker chemical stack.
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
+    @SuppressWarnings("unchecked")
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
     Function<STACK, CRT_STACK> getConverter(STACK stack) {
         return (Function<STACK, CRT_STACK>) switch (ChemicalType.getTypeFor(stack)) {
             case GAS -> GAS_CONVERTER;
@@ -217,7 +276,7 @@ public class CrTUtils {
     }
 
     /**
-     * Helper to convert a list of gases to a list of crafttweaker gases.
+     * Helper to convert a list of chemicals to a list of crafttweaker chemicals.
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>>
     List<CRT_STACK> convertChemical(List<STACK> elements) {
@@ -225,34 +284,6 @@ public class CrTUtils {
             return Collections.emptyList();
         }
         return convert(elements, CrTUtils.<CHEMICAL, STACK, CRT_STACK>getConverter(elements.getFirst()));
-    }
-
-    /**
-     * Helper to convert a list of gases to a list of crafttweaker gases.
-     */
-    public static List<ICrTGasStack> convertGas(List<GasStack> elements) {
-        return convert(elements, GAS_CONVERTER);
-    }
-
-    /**
-     * Helper to convert a list of infusion stacks to a list of crafttweaker infusion stacks.
-     */
-    public static List<ICrTInfusionStack> convertInfusion(List<InfusionStack> elements) {
-        return convert(elements, INFUSION_CONVERTER);
-    }
-
-    /**
-     * Helper to convert a list of pigments to a list of crafttweaker pigments.
-     */
-    public static List<ICrTPigmentStack> convertPigment(List<PigmentStack> elements) {
-        return convert(elements, PIGMENT_CONVERTER);
-    }
-
-    /**
-     * Helper to convert a list of slurries to a list of crafttweaker slurries.
-     */
-    public static List<ICrTSlurryStack> convertSlurry(List<SlurryStack> elements) {
-        return convert(elements, SLURRY_CONVERTER);
     }
 
     /**
@@ -309,22 +340,6 @@ public class CrTUtils {
      */
     public static KnownTagManager<Slurry> slurryTags() {
         return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.SLURRY_REGISTRY_NAME);
-    }
-
-    /**
-     * Helper to get CraftTweaker's slurry tag manager.
-     */
-    public static KnownTagManager<? extends Chemical<?>> chemicalTags(ChemicalType chemicalType) {
-        return switch (chemicalType) {
-            case GAS -> gasTags();
-            case INFUSION -> infuseTypeTags();
-            case PIGMENT -> pigmentTags();
-            case SLURRY -> slurryTags();
-        };
-    }
-
-    public static <CHEMICAL extends Chemical<CHEMICAL>> KnownTag<CHEMICAL> tag(TagChemicalIngredient<?, ?> ingredient) {
-        return (KnownTag<CHEMICAL>) chemicalTags(ChemicalType.getTypeFor(ingredient)).tag(ingredient.tag());
     }
 
     public record UnaryTypePair<TYPE>(TYPE a, TYPE b) {

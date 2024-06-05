@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -26,28 +26,28 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      * to convert items to energy.
      *
      * @param name   Name of the new recipe.
-     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Energy output, must be greater than zero.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ItemStackIngredient input, FloatingLong output) {
+    public void addRecipe(String name, IIngredientWithAmount input, FloatingLong output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that an item into energy.
      *
-     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Energy output. Will be validated as being greater than zero.
      */
-    public final ItemStackToEnergyRecipe makeRecipe(ItemStackIngredient input, FloatingLong output) {
+    public final ItemStackToEnergyRecipe makeRecipe(IIngredientWithAmount input, FloatingLong output) {
         if (output.isZero()) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
         return makeRecipeInternal(input, output.copyAsConst());
     }
 
-    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(ItemStackIngredient input, FloatingLong output);
+    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, FloatingLong output);
 
     @Override
     protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
@@ -65,8 +65,8 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         }
 
         @Override
-        protected ItemStackToEnergyRecipe makeRecipeInternal(ItemStackIngredient input, FloatingLong output) {
-            return new BasicItemStackToEnergyRecipe(input, output);
+        protected ItemStackToEnergyRecipe makeRecipeInternal(IIngredientWithAmount input, FloatingLong output) {
+            return new BasicItemStackToEnergyRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 }

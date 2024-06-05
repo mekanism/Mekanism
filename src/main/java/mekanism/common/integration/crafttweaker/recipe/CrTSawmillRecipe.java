@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class CrTSawmillRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
-    public static ItemStackIngredient getInput(SawmillRecipe _this) {
-        return _this.getInput();
+    public static IIngredientWithAmount getInput(SawmillRecipe _this) {
+        return CrTUtils.toCrT(_this.getInput());
     }
 
     /**

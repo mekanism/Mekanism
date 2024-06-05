@@ -36,8 +36,6 @@ public class MekCraftTweakerPlugin implements ICraftTweakerPlugin {
         //Input/Output
         //Note: We only register the input for items as the output uses the one built into crafttweaker
         handler.registerRecipeComponent(CrTRecipeComponents.ITEM.input());
-        handler.registerRecipeComponent(CrTRecipeComponents.FLUID.input());
-        handler.registerRecipeComponent(CrTRecipeComponents.FLUID.output());
         for (ChemicalRecipeComponent<?, ?, ?, ?> chemicalComponent : CrTRecipeComponents.CHEMICAL_COMPONENTS) {
             handler.registerRecipeComponent(chemicalComponent.input());
             handler.registerRecipeComponent(chemicalComponent.output());

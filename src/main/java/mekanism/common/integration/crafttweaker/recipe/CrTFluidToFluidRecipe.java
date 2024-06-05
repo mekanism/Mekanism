@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.FluidToFluidRecipe;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class CrTFluidToFluidRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
-    public static FluidStackIngredient getInput(FluidToFluidRecipe _this) {
-        return _this.getInput();
+    public static CTFluidIngredient getInput(FluidToFluidRecipe _this) {
+        return CrTUtils.toCrT(_this.getInput());
     }
 
     /**

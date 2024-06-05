@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
@@ -7,7 +8,6 @@ import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.Optional;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
@@ -62,7 +62,7 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
             if (gasInput.isPresent() != fluidOutput.isPresent()) {
                 throw new IllegalArgumentException("Mismatched gas input and fluid output. Only one is present.");
             }
-            Optional<FluidStackIngredient> fluidInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.input());
+            Optional<CTFluidIngredient> fluidInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.input());
             Optional<ICrTGasStack> gasOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.GAS.output());
             if (fluidInput.isPresent() != gasOutput.isPresent()) {
                 throw new IllegalArgumentException("Mismatched fluid input and gas output. Only one is present.");

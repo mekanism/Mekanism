@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -25,24 +25,24 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
      * Adds a chemical dissolution recipe that converts an item and a gas into a chemical. Chemical Dissolution Chambers can process this recipe type.
      *
      * @param name      Name of the new recipe.
-     * @param itemInput {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param itemInput {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
+    public void addRecipe(String name, IIngredientWithAmount itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
         addRecipe(name, makeRecipe(itemInput, gasInput, output));
     }
 
     /**
      * Makes a chemical dissolution recipe that converts an item and a gas into a chemical.
      *
-     * @param itemInput {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param itemInput {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicChemicalDissolutionRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
-        return new BasicChemicalDissolutionRecipe(itemInput, gasInput, getAndValidateNotEmpty(output));
+    public final BasicChemicalDissolutionRecipe makeRecipe(IIngredientWithAmount itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
+        return new BasicChemicalDissolutionRecipe(CrTUtils.fromCrT(itemInput), gasInput, getAndValidateNotEmpty(output));
     }
 
     @Override

@@ -1,14 +1,14 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -27,8 +27,8 @@ public class CrTPressurizedReactionRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("inputSolid")
-    public static ItemStackIngredient getInputSolid(PressurizedReactionRecipe _this) {
-        return _this.getInputSolid();
+    public static IIngredientWithAmount getInputSolid(PressurizedReactionRecipe _this) {
+        return CrTUtils.toCrT(_this.getInputSolid());
     }
 
     /**
@@ -36,8 +36,8 @@ public class CrTPressurizedReactionRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("inputFluid")
-    public static FluidStackIngredient getInputFluid(PressurizedReactionRecipe _this) {
-        return _this.getInputFluid();
+    public static CTFluidIngredient getInputFluid(PressurizedReactionRecipe _this) {
+        return CrTUtils.toCrT(_this.getInputFluid());
     }
 
     /**

@@ -1,13 +1,14 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
 import mekanism.api.recipes.basic.BasicGasConversionRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -32,8 +33,8 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
         }
 
         @Override
-        protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
-            return new BasicGasConversionRecipe(input, output);
+        protected ItemStackToGasRecipe makeRecipe(IIngredientWithAmount input, GasStack output) {
+            return new BasicGasConversionRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 
@@ -48,8 +49,8 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
         }
 
         @Override
-        protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
-            return new BasicChemicalOxidizerRecipe(input, output);
+        protected ItemStackToGasRecipe makeRecipe(IIngredientWithAmount input, GasStack output) {
+            return new BasicChemicalOxidizerRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 }

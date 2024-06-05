@@ -35,7 +35,7 @@ public class CrTChemicalChemicalToChemicalRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<ICrTGasStack> getOutputs(ChemicalInfuserRecipe _this) {
-            return CrTUtils.convertGas(_this.getOutputDefinition());
+            return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
 
@@ -52,7 +52,7 @@ public class CrTChemicalChemicalToChemicalRecipe {
         @ZenCodeType.Method
         @ZenCodeType.Getter("outputs")
         public static List<ICrTPigmentStack> getOutputs(PigmentMixingRecipe _this) {
-            return CrTUtils.convertPigment(_this.getOutputDefinition());
+            return CrTUtils.convertChemical(_this.getOutputDefinition());
         }
     }
 }

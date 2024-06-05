@@ -1,6 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.chemical.Chemical;
@@ -24,7 +25,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
 import mekanism.api.recipes.ingredients.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.PigmentStackIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -62,29 +62,29 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
      * consumed at the end along with the item input. Painting Machines can process this recipe type.
      *
      * @param name          Name of the new recipe.
-     * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
+    public void addRecipe(String name, IIngredientWithAmount itemInput, INGREDIENT chemicalInput, IItemStack output) {
         addRecipe(name, makeRecipe(itemInput, chemicalInput, output));
     }
 
     /**
      * Creates a recipe that converts an item and a chemical into an item.
      *
-     * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param itemInput     {@link IIngredientWithAmount} representing the item input of the recipe.
      * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
+    public final RECIPE makeRecipe(IIngredientWithAmount itemInput, INGREDIENT chemicalInput, IItemStack output) {
         return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
+    protected abstract RECIPE makeRecipe(IIngredientWithAmount itemInput, INGREDIENT chemicalInput, ItemStack output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {
@@ -102,8 +102,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new BasicCompressingRecipe(itemInput, gasInput, output);
+        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new BasicCompressingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }
 
@@ -118,8 +118,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new BasicInjectingRecipe(itemInput, gasInput, output);
+        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new BasicInjectingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }
 
@@ -134,8 +134,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new BasicPurifyingRecipe(itemInput, gasInput, output);
+        protected ItemStackGasToItemStackRecipe makeRecipe(IIngredientWithAmount itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new BasicPurifyingRecipe(CrTUtils.fromCrT(itemInput), gasInput, output);
         }
     }
 
@@ -151,8 +151,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected MetallurgicInfuserRecipe makeRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-            return new BasicMetallurgicInfuserRecipe(itemInput, infusionInput, output);
+        protected MetallurgicInfuserRecipe makeRecipe(IIngredientWithAmount itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
+            return new BasicMetallurgicInfuserRecipe(CrTUtils.fromCrT(itemInput), infusionInput, output);
         }
     }
 
@@ -167,8 +167,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected PaintingRecipe makeRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-            return new BasicPaintingRecipe(itemInput, pigmentInput, output);
+        protected PaintingRecipe makeRecipe(IIngredientWithAmount itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
+            return new BasicPaintingRecipe(CrTUtils.fromCrT(itemInput), pigmentInput, output);
         }
     }
 }

@@ -53,6 +53,47 @@ public class CrTSlurryStackIngredient {
     }
 
     /**
+     * Creates a {@link SlurryStackIngredient} that matches the given slurries and amount.
+     *
+     * @param amount   Amount needed
+     * @param slurries Slurries to match
+     *
+     * @return A {@link SlurryStackIngredient} that matches the given slurries and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static SlurryStackIngredient from(long amount, Slurry... slurries) {
+        CrTIngredientHelper.assertMultiple(amount, "SlurryStackIngredients", "slurry", slurries);
+        return IngredientCreatorAccess.slurryStack().from(amount, slurries);
+    }
+
+    /**
+     * Creates a {@link SlurryStackIngredient} that matches the given slurries and amount.
+     *
+     * @param amount   Amount needed
+     * @param slurries Slurries to match
+     *
+     * @return A {@link SlurryStackIngredient} that matches the given slurries and amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static SlurryStackIngredient from(long amount, ICrTSlurryStack... slurries) {
+        CrTIngredientHelper.assertMultiple(amount, "SlurryStackIngredients", "slurry", slurries);
+        return IngredientCreatorAccess.slurryStack().from(amount, slurries);
+    }
+
+    /**
+     * Creates a {@link SlurryStackIngredient} that matches the given slurry stacks. The first stack's size will be used for this ingredient.
+     *
+     * @param slurries Slurry stacks to match
+     *
+     * @return A {@link SlurryStackIngredient} that matches a given slurry stack.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static SlurryStackIngredient from(ICrTSlurryStack... slurries) {
+        long amount = CrTIngredientHelper.assertMultiple("SlurryStackIngredients", "slurry", slurries);
+        return IngredientCreatorAccess.slurryStack().from(amount, slurries);
+    }
+
+    /**
      * Creates a {@link SlurryStackIngredient} that matches a given slurry tag with a given amount.
      *
      * @param slurryTag Tag to match
@@ -120,7 +161,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTSlurryStack> getRepresentations(SlurryStackIngredient _this) {
-        return CrTUtils.convertSlurry(_this.getRepresentations());
+        return CrTUtils.convertChemical(_this.getRepresentations());
     }
 
     /**
@@ -134,7 +175,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static SlurryStackIngredient or(SlurryStackIngredient _this, SlurryStackIngredient other) {
         if (_this.amount() != other.amount()) {
-            throw new IllegalStateException("SlurryStack ingredients can only be or'd if they have the same counts");
+            throw new IllegalArgumentException("SlurryStack ingredients can only be or'd if they have the same counts");
         }
         List<ISlurryIngredient> ingredients = new ArrayList<>();
         CrTIngredientHelper.addIngredient(ingredients, _this.ingredient());

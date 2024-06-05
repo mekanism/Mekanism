@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -24,8 +24,8 @@ public class CrTElectrolysisRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("input")
-    public static FluidStackIngredient getInput(ElectrolysisRecipe _this) {
-        return _this.getInput();
+    public static CTFluidIngredient getInput(ElectrolysisRecipe _this) {
+        return CrTUtils.toCrT(_this.getInput());
     }
 
     /**

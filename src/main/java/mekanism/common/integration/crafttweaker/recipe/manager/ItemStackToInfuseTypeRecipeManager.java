@@ -1,12 +1,13 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToInfuseTypeRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -31,8 +32,8 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends ItemStackToChem
         }
 
         @Override
-        protected ItemStackToInfuseTypeRecipe makeRecipe(ItemStackIngredient input, InfusionStack output) {
-            return new BasicItemStackToInfuseTypeRecipe(input, output);
+        protected ItemStackToInfuseTypeRecipe makeRecipe(IIngredientWithAmount input, InfusionStack output) {
+            return new BasicItemStackToInfuseTypeRecipe(CrTUtils.fromCrT(input), output);
         }
     }
 }

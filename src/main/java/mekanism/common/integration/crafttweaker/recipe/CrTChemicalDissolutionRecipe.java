@@ -1,12 +1,12 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.GasStackIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -24,8 +24,8 @@ public class CrTChemicalDissolutionRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("itemInput")
-    public static ItemStackIngredient getItemInput(ChemicalDissolutionRecipe _this) {
-        return _this.getItemInput();
+    public static IIngredientWithAmount getItemInput(ChemicalDissolutionRecipe _this) {
+        return CrTUtils.toCrT(_this.getItemInput());
     }
 
     /**

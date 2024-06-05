@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -34,25 +34,25 @@ public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical
      * If this is called from the pigment extracting recipe manager, this will be a pigment extracting recipe. Pigment Extractors can process this recipe type.
      *
      * @param name   Name of the new recipe.
-     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Chemical stack representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ItemStackIngredient input, CRT_STACK output) {
+    public void addRecipe(String name, IIngredientWithAmount input, CRT_STACK output) {
         addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that an item into a chemical.
      *
-     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param input  {@link IIngredientWithAmount} representing the input of the recipe.
      * @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ItemStackIngredient input, CRT_STACK output) {
+    public final RECIPE makeRecipe(IIngredientWithAmount input, CRT_STACK output) {
         return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ItemStackIngredient input, STACK output);
+    protected abstract RECIPE makeRecipe(IIngredientWithAmount input, STACK output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {

@@ -1,11 +1,11 @@
 package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class CrTCombinerRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("mainInput")
-    public static ItemStackIngredient getMainInput(CombinerRecipe _this) {
-        return _this.getMainInput();
+    public static IIngredientWithAmount getMainInput(CombinerRecipe _this) {
+        return CrTUtils.toCrT(_this.getMainInput());
     }
 
     /**
@@ -31,8 +31,8 @@ public class CrTCombinerRecipe {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("extraInput")
-    public static ItemStackIngredient getExtraInput(CombinerRecipe _this) {
-        return _this.getExtraInput();
+    public static IIngredientWithAmount getExtraInput(CombinerRecipe _this) {
+        return CrTUtils.toCrT(_this.getExtraInput());
     }
 
     /**
