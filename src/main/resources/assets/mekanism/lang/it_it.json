@@ -205,6 +205,7 @@
   "alias.mekanism.ethene.ethylene": "Etilene",
   "alias.mekanism.flight": "Volo",
   "alias.mekanism.flight.creative": "Volo Creativo",
+  "alias.mekanism.free_runner.fall_protection": "Protezione Caduta",
   "alias.mekanism.qe.tesseract": "Tesseract",
   "assemblicator.mekanism.auto_mode_toggle": "Modalità automatica: %1$s",
   "assemblicator.mekanism.craft_available": "Oggetti disponibili per la fabbricazione",
