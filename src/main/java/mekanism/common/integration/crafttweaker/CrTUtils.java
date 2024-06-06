@@ -50,8 +50,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class CrTUtils {
@@ -157,12 +155,6 @@ public class CrTUtils {
      * Converts one of our fluid ingredients to a CrT fluid ingredient.
      */
     public static CTFluidIngredient toCrT(FluidStackIngredient ingredient) {
-        SizedFluidIngredient sizedIngredient = ingredient.ingredient();
-        if (sizedIngredient.ingredient() instanceof TagFluidIngredient tagIngredient) {
-            return new CTFluidIngredient.FluidTagWithAmountIngredient(fluidTags().tag(tagIngredient.tag()).withAmount(sizedIngredient.amount()));
-        }
-        //TODO - 1.20.5: Switch to using just this, instead of special casing ingredients once it gets fixed in CrT
-        // if it doesn't get fixed we need to add support for converting tag ingredients that are part of a compound fluid ingredient
         return ExpandSizedFluidIngredient.asCTFluidIngredient(ingredient.ingredient());
     }
 

@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.fluid.CTFluidIngredient;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
-import com.blamejared.crafttweaker.api.ingredient.type.IIngredientEmpty;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
@@ -59,29 +58,10 @@ public class CrTRecipeComponents {
           FloatingLong::equals
     );
 
-    public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(IRecipeComponent.composite(
-          Mekanism.rl("input/item"),
-          new TypeToken<>() {},
-          (a, b) -> Objects.equals(a, b) || a.amount() == b.amount() && RecipeComponentEqualityCheckers.areIngredientsEqual(a.ingredient(), b.ingredient()),
-          Collections::singletonList,
-          ingredients -> {
-              if (ingredients.isEmpty()) {
-                  return IIngredientEmpty.getInstance().asIIngredientWithAmount();
-              }
-              IIngredientWithAmount acc = null;
-              for (IIngredientWithAmount ingredient : ingredients) {
-                  if (acc == null) {
-                      acc = ingredient;
-                  } else {
-                      if (acc.amount() != ingredient.amount()) {
-                          throw new IllegalArgumentException("Amount mismatch");
-                      }
-                      acc = acc.ingredient().or(ingredient.ingredient()).mul(acc.amount());
-                  }
-              }
-              return acc;
-          }
-    ), BuiltinRecipeComponents.Output.ITEMS);
+    public static final PairedRecipeComponent<IIngredientWithAmount, IItemStack> ITEM = new PairedRecipeComponent<>(
+          BuiltinRecipeComponents.Input.INGREDIENTS_WITH_AMOUNTS,
+          BuiltinRecipeComponents.Output.ITEMS
+    );
     public static final PairedRecipeComponent<CTFluidIngredient, IFluidStack> FLUID = new PairedRecipeComponent<>(
           BuiltinRecipeComponents.Input.FLUID_INGREDIENTS,
           BuiltinRecipeComponents.Output.FLUIDS
