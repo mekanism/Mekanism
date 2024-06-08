@@ -56,13 +56,8 @@ public class SpecialConverters {
             return ItemStack.EMPTY;
         }
         if (rawComponents != null) {
-            try {
-                DataComponentPatch dataComponents = DataComponentPatch.CODEC.decode(NbtOps.INSTANCE, NbtUtils.snbtToStructure(rawComponents))
-                      .getOrThrow(ComputerException::new).getFirst();
-                return new ItemStack(item.builtInRegistryHolder(), 1, dataComponents);
-            } catch (CommandSyntaxException ex) {
-                throw new ComputerException("Invalid SNBT: " + ex.getMessage());
-            }
+            DataComponentPatch dataComponents = unwrapComponents(rawComponents);
+            return new ItemStack(item.builtInRegistryHolder(), 1, dataComponents);
         }
         return new ItemStack(item);
     }
@@ -234,6 +229,17 @@ public class SpecialConverters {
     }
 
     static String wrapComponents(@NotNull DataComponentPatch components) {
+        //TODO - 1.20.5: Make this and unwrapComponents take a HolderLookup.Provider
         return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(NbtOps.INSTANCE, components).getOrThrow());
+    }
+
+    static DataComponentPatch unwrapComponents(@NotNull String rawComponents) throws ComputerException {
+        CompoundTag nbt;
+        try {
+            nbt = NbtUtils.snbtToStructure(rawComponents);
+        } catch (CommandSyntaxException ex) {
+            throw new ComputerException("Invalid SNBT: " + ex.getMessage());
+        }
+        return DataComponentPatch.CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow(ComputerException::new).getFirst();
     }
 }

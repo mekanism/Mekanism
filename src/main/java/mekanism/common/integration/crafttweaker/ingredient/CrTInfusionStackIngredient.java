@@ -127,7 +127,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(InfusionStackIngredient _this) {
-        return IngredientCreatorAccess.infusionStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.infusionStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
     /**

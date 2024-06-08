@@ -127,7 +127,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(SlurryStackIngredient _this) {
-        return IngredientCreatorAccess.slurryStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.slurryStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
     /**

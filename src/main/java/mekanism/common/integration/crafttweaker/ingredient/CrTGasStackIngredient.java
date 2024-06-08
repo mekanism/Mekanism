@@ -127,7 +127,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(GasStackIngredient _this) {
-        return IngredientCreatorAccess.gasStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.gasStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
     /**

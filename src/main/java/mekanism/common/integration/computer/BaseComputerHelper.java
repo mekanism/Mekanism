@@ -1,6 +1,5 @@
 package mekanism.common.integration.computer;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,8 +43,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -189,13 +186,8 @@ public abstract class BaseComputerHelper {
             int count = SpecialConverters.getIntFromRaw(map.get(SerializationConstants.COUNT));
             String components = (String) map.get(SerializationConstants.COMPONENTS);
             if (components != null) {
-                try {
-                    DataComponentPatch dataComponents = DataComponentPatch.CODEC.decode(NbtOps.INSTANCE, NbtUtils.snbtToStructure(components))
-                          .getOrThrow(ComputerException::new).getFirst();
-                    return new ItemStack(item.builtInRegistryHolder(), count, dataComponents);
-                } catch (CommandSyntaxException ex) {
-                    throw new ComputerException("Invalid SNBT: " + ex.getMessage());
-                }
+                DataComponentPatch dataComponents = SpecialConverters.unwrapComponents(components);;
+                return new ItemStack(item.builtInRegistryHolder(), count, dataComponents);
             }
             return new ItemStack(item, count);
         } catch (ClassCastException ex) {

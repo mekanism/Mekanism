@@ -127,7 +127,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(PigmentStackIngredient _this) {
-        return IngredientCreatorAccess.pigmentStack().codec().encodeStart(IDataOps.INSTANCE, _this).getOrThrow();
+        return IngredientCreatorAccess.pigmentStack().codec().encodeStart(IDataOps.INSTANCE.withRegistryAccess(), _this).getOrThrow();
     }
 
     /**
