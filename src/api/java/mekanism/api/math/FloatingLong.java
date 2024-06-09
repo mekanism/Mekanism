@@ -15,6 +15,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.VisibleForTesting;
 
 /**
  * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
@@ -53,7 +54,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * The maximum number of decimal digits we can represent
      */
-    private static final int DECIMAL_DIGITS = 4;
+    @VisibleForTesting
+    static final int DECIMAL_DIGITS = 4;
     /**
      * The maximum value we can represent as a decimal
      */
@@ -63,9 +65,13 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     private static final short SINGLE_UNIT = MAX_DECIMAL + 1;
     /**
+     * Used for calculating whether a multiplication will overflow
+     */
+    private static final long LONG_SHIFT = Long.divideUnsigned(-1, SINGLE_UNIT);
+    /**
      * The maximum value where the decimal can be eliminated without {@link #value} overflowing, want to be able to shift twice
      */
-    private static final long MAX_LONG_SHIFT = Long.divideUnsigned(Long.divideUnsigned(-1L, SINGLE_UNIT), SINGLE_UNIT);
+    private static final long MAX_LONG_SHIFT = Long.divideUnsigned(LONG_SHIFT, SINGLE_UNIT);
     /**
      * A constant holding the value {@code 0}
      */
@@ -82,6 +88,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * A constant holding the maximum value for a {@link FloatingLong} represented as a double
      */
     private static final double MAX_AS_DOUBLE = Double.parseDouble(MAX_VALUE.toString());
+    private static final int MAX_UNSIGNED_LENGTH = Long.toUnsignedString(-1).length();
+    private static final BigInteger MAX_UNSIGNED_LONG = new BigInteger(Long.toUnsignedString(-1));
 
     /**
      * Creates a mutable {@link FloatingLong} from a given primitive double.
@@ -294,6 +302,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     private FloatingLong plusEqual(long toAddValue, short toAddDecimal) {
         if (toAddDecimal == 0) {
             return plusEqual(toAddValue);
+        } else if (isZero()) {
+            return setAndClampValues(toAddValue, toAddDecimal);
         } else if ((value < 0 && toAddValue < 0) || ((value < 0 || toAddValue < 0) && (value + toAddValue >= 0))) {
             //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
             return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
@@ -327,6 +337,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong plusEqual(long toAdd) {
         if (toAdd == 0) {
             return this;
+        } else if (isZero()) {
+            return setAndClampValues(toAdd, decimal);
         } else if ((value < 0 && toAdd < 0) || ((value < 0 || toAdd < 0) && (value + toAdd >= 0))) {
             //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
             return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
@@ -487,8 +499,18 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return divideEquals(toDivide.value);
         }
         BigDecimal divide = new BigDecimal(toString()).divide(new BigDecimal(toDivide.toString()), DECIMAL_DIGITS, RoundingMode.HALF_UP);
-        long value = divide.longValue();
-        short decimal = parseDecimal(divide.toPlainString());
+        String plainString = divide.toPlainString();
+        int decimalIndex = plainString.indexOf('.');
+        int length = decimalIndex == -1 ? plainString.length() : decimalIndex;
+        long value;
+        //If we are less than max floating long, just grab the long value from the big decimal
+        if (length < MAX_UNSIGNED_LENGTH || length == MAX_UNSIGNED_LENGTH && divide.toBigInteger().compareTo(MAX_UNSIGNED_LONG) <= 0) {
+            value = divide.longValue();
+        } else {
+            //Otherwise clamp it to the max value
+            return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
+        }
+        short decimal = parseDecimal(plainString, decimalIndex);
         return setAndClampValues(value, decimal);
     }
 
@@ -510,6 +532,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             throw new ArithmeticException("Division by zero");
         } else if (isZero() || toDivide == 1) {
             return this;
+        } else if (decimal == 0 && this.value == toDivide) {
+            return isConstant ? ONE : setAndClampValues(1, (short) 0);
         }
         long val = Long.divideUnsigned(this.value, toDivide);
         long rem = Long.remainderUnsigned(this.value, toDivide);
@@ -522,19 +546,30 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             //if that'll overflow, then toDivide also has to be big. let's just lose some denominator precision and use that
             dec = Long.divideUnsigned(rem, Long.divideUnsigned(toDivide, SINGLE_UNIT * 10L)); //same as multiplying numerator
         } else {
-            dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
-            dec += Long.divideUnsigned(this.decimal * 10L, toDivide); //need to account for dividing decimal too in case toDivide < 10k
+            //need to account for dividing decimal too in case toDivide < 10k
+            if (this.decimal == 0 || Long.compareUnsigned(rem, MAX_LONG_SHIFT / 100) >= 0) {
+                dec = Long.divideUnsigned(rem * SINGLE_UNIT * 10L, toDivide); //trivial case
+                long additional = Long.divideUnsigned(this.decimal * 10L * SINGLE_UNIT, toDivide);
+                dec = dec + Long.divideUnsigned(additional + 5, 10) + 1;
+            } else if (Long.compareUnsigned(rem, MAX_LONG_SHIFT / 1_000) >= 0) {
+                dec = Long.divideUnsigned(rem * SINGLE_UNIT * 100, toDivide); //trivial case
+                long additional = Long.divideUnsigned(this.decimal * 10L * SINGLE_UNIT, toDivide);
+                dec = Long.divideUnsigned(dec + Long.divideUnsigned(additional + 5, 10) + 1, 10);
+            } else if (Long.compareUnsigned(rem, MAX_LONG_SHIFT / SINGLE_UNIT) >= 0) {
+                dec = Long.divideUnsigned(rem * SINGLE_UNIT * 1_000, toDivide); //trivial case
+                long additional = Long.divideUnsigned(this.decimal * 10L * SINGLE_UNIT, toDivide);
+                dec = Long.divideUnsigned(dec + Long.divideUnsigned(additional + 5, 10) + 1, 100);
+            } else {
+                dec = Long.divideUnsigned(rem * SINGLE_UNIT * SINGLE_UNIT, toDivide); //trivial case
+                long additional = Long.divideUnsigned(this.decimal * 10L * SINGLE_UNIT, toDivide);
+                dec = Long.divideUnsigned(dec + Long.divideUnsigned(additional + 5, 10) + 1, 1_000);
+            }
         }
 
         //usually will expect to round to nearest, so we have to do that here
-        if (Long.remainderUnsigned(dec, 10) >= 5) {
-            dec += 10;
-            if (dec >= SINGLE_UNIT * 10) { //round up + carry over to val
-                val++;
-                dec -= SINGLE_UNIT * 10;
-            }
-        }
-        dec /= 10;
+        dec = Long.divideUnsigned(dec + 5, 10);
+        val += Long.divideUnsigned(dec, SINGLE_UNIT);
+        dec = Long.remainderUnsigned(dec, SINGLE_UNIT);
         return setAndClampValues(val, (short) dec);
     }
 
@@ -553,15 +588,20 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         } else if (toDivide.equals(ONE)) {
             //Directly return our value if we are dividing by one
             return value;
-        } else if (smallerThan(toDivide)) {
+        }
+        int comparison = compareTo(toDivide);
+        if (comparison < 0) {
             // Return early if operation will return < 1
             return 0;
+        } else if (comparison == 0) {
+            //x / x is always equal to one
+            return 1;
         }
         if (toDivide.greaterThan(ONE)) {
             //If toDivide > 1, then we don't care about this.decimal, so can optimize out accounting for that
             if (Long.compareUnsigned(toDivide.value, MAX_LONG_SHIFT) <= 0) { //don't case if *this* is < or > than shift
                 long div = toDivide.value * SINGLE_UNIT + toDivide.decimal;
-                return (Long.divideUnsigned(this.value, div) * SINGLE_UNIT) + Long.divideUnsigned(Long.remainderUnsigned(this.value, div) * SINGLE_UNIT, div);
+                return (Long.divideUnsigned(this.value, div) * SINGLE_UNIT) + Long.divideUnsigned(this.decimal + Long.remainderUnsigned(this.value, div) * SINGLE_UNIT, div);
             }
             // we already know toDivide is > max_long_shift, and other case is impossible
             if (Long.compareUnsigned(toDivide.value, Long.divideUnsigned(-1L, 2) + 1L) >= 0) {
@@ -569,9 +609,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
                 return 1;
             }
             long q = Long.divideUnsigned(this.value, toDivide.value);
-            if (q != Long.divideUnsigned(this.value, toDivide.value + 1)) {
+            if (toDivide.decimal > 0 && q != Long.divideUnsigned(this.value, toDivide.value + 1)) {
                 // check if we need to account for toDivide.decimal in this case
-                if (toDivide.value * q + Long.divideUnsigned(toDivide.decimal * q, MAX_DECIMAL) > this.value) {
+                long decimalAdjustment = Long.divideUnsigned(toDivide.decimal * q, SINGLE_UNIT);
+                long decimalRemainder = Long.remainderUnsigned(toDivide.decimal * q, SINGLE_UNIT);
+                long val = toDivide.value * q + decimalAdjustment;
+                if (val > this.value || (val == this.value && decimalRemainder > 0 && this.decimal < 2 * toDivide.decimal  && (toDivide.decimal < 5_000 || this.decimal < 2 * (toDivide.decimal - 5_000)))) {
                     // if we do, reduce the result by one to account for it
                     return q - 1;
                 }
@@ -579,14 +622,39 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return q;
         }
         //In this case, we're really multiplying (definitely need to account for decimal as well)
-        if (Long.compareUnsigned(this.value, MAX_LONG_SHIFT) >= 0) {
-            return Long.divideUnsigned(this.value, toDivide.decimal) * MAX_DECIMAL //lose some precision here, have to add modulus
-                   + Long.divideUnsigned(Long.remainderUnsigned(this.value, toDivide.decimal) * MAX_DECIMAL, toDivide.decimal)
-                   + (long) this.decimal * MAX_DECIMAL / toDivide.decimal;
+        if (Long.compareUnsigned(this.value, LONG_SHIFT) > 0) {
+            long base = Long.divideUnsigned(this.value, toDivide.decimal);// * SINGLE_UNIT;
+
+            long remainder = Long.remainderUnsigned(this.value, toDivide.decimal);
+            boolean scaledRemainder = false;
+            long b2;
+            if (Long.compareUnsigned(remainder + (this.decimal > 0 ? 1 : 0), LONG_SHIFT) < 0) {
+                b2 = Long.divideUnsigned(this.decimal + remainder * SINGLE_UNIT, toDivide.decimal);
+                scaledRemainder = b2 != 0;
+            } else {
+                b2 = Long.divideUnsigned(this.decimal + remainder, toDivide.decimal);
+            }
+            long result = base + b2;
+            if (scaledRemainder) {
+                if (Long.compareUnsigned(base + 1, LONG_SHIFT) >= 0) {
+                    return -1;
+                }
+            } else if (Long.compareUnsigned(result, LONG_SHIFT) >= 0) {
+                return -1;
+            }
+            long adjustedResult = scaledRemainder ? base * SINGLE_UNIT + b2 : result * SINGLE_UNIT;
+            if (value < 0 && adjustedResult == 0) {
+                return -1;
+            }
+
+            long a2 = adjustedResult + (long) this.decimal * SINGLE_UNIT / toDivide.decimal;
+            if (adjustedResult < 0 && a2 >= 0) {
+                return -1;
+            }
+            return adjustedResult;
         }
-        long d = this.value * MAX_DECIMAL;
-        //Note: We don't care about modulus since we're returning integers
-        return Long.divideUnsigned(d, toDivide.decimal) + ((long) this.decimal * MAX_DECIMAL / toDivide.decimal);
+        long d = this.value * SINGLE_UNIT;
+        return Long.divideUnsigned(d, toDivide.decimal) + Long.divideUnsigned(this.decimal + Long.remainderUnsigned(d, toDivide.decimal), toDivide.decimal);
     }
 
     /**
@@ -1234,16 +1302,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Internal helper to multiply a long by a decimal.
      */
     private static FloatingLong multiplyLongAndDecimal(long value, short decimal) {
-        if (value == 0 || decimal == 0) {
-            //Short circuit and don't create any new objects
-            return FloatingLong.ZERO;
-        }
-        //This can't overflow!
-        if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
-            return create(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
-        }
-        //Instantiate directly to avoid having to clamp the decimal
-        return new FloatingLong(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT), false);
+        return addLongAndDecimalMultiplication(ZERO, value, decimal);
     }
 
     /**
@@ -1255,10 +1314,11 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return base;
         }
         //This can't overflow!
-        if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
-            return base.plusEqual(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, clampDecimal((short) (value % SINGLE_UNIT * decimal)));
+        if (Long.compareUnsigned(value, LONG_SHIFT) > 0) {
+            long newDecimal = Long.remainderUnsigned(value, SINGLE_UNIT) * decimal;
+            return base.plusEqual(Long.divideUnsigned(value, SINGLE_UNIT) * decimal + newDecimal / SINGLE_UNIT, (short) (newDecimal % SINGLE_UNIT));
         }
-        return base.plusEqual(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));
+        return base.plusEqual(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) Long.remainderUnsigned(value * decimal, SINGLE_UNIT));
     }
 
     /**

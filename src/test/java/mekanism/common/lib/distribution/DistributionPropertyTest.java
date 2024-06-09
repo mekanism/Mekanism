@@ -2,56 +2,38 @@ package mekanism.common.lib.distribution;
 
 import mekanism.common.lib.distribution.target.IntegerTarget;
 import mekanism.common.util.EmitUtils;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.quicktheories.QuickTheory;
-import org.quicktheories.WithQuickTheories;
-import org.quicktheories.core.Gen;
-import org.quicktheories.dsl.TheoryBuilder2;
-import org.quicktheories.impl.Constraint;
+import net.jqwik.api.ForAll;
+import net.jqwik.api.Label;
+import net.jqwik.api.Property;
+import net.jqwik.api.constraints.IntRange;
+import net.jqwik.api.constraints.Positive;
+import org.junit.jupiter.api.Assertions;
 
-@DisplayName("Property based testing of distribution via EmitUtils")
-class DistributionPropertyTest implements WithQuickTheories {
+@Label("Property based testing of distribution via EmitUtils")
+class DistributionPropertyTest {
 
-    private Gen<IntegerTarget> createTargets(int minInfinite, int maxInfinite, int minSome, int maxSome, int minNone, int maxNone) {
-        Constraint infiniteConstraint = Constraint.between(minInfinite, maxInfinite).withShrinkPoint(0);
-        Constraint someConstraint = Constraint.between(minSome, maxSome).withShrinkPoint(0);
-        Constraint noneConstraint = Constraint.between(minNone, maxNone).withShrinkPoint(0);
-        //Given random generator create integer target using the three constraints we defined above
-        return prng -> DistributionTest.getTargets((int) prng.next(infiniteConstraint), (int) prng.next(someConstraint), (int) prng.next(noneConstraint));
+    //Force our example count to be higher than the default by 100x
+    private static final int TRIES = 100_000;
+
+    @Property(tries = TRIES)
+    @Label("Test distribution")
+    void testDistribution(@ForAll @IntRange(max = 100) int infinite, @ForAll @IntRange(max = 100) int some, @ForAll @IntRange(max = 100) int none,
+          @ForAll @Positive int toSend) {
+        IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, some, none);
+        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend);
     }
 
-    private TheoryBuilder2<IntegerTarget, Integer> distributionTheory(int minInfinite, int maxInfinite, int minSome, int maxSome, int minNone, int maxNone) {
-        return qt().forAll(createTargets(minInfinite, maxInfinite, minSome, maxSome, minNone, maxNone), integers().allPositive());
+    @Property(tries = TRIES)
+    @Label("Test distribution no partial")
+    void testDistributionNoPartial(@ForAll @IntRange(max = 100) int infinite, @ForAll @IntRange(max = 100) int none, @ForAll @Positive int toSend) {
+        IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, 0, none);
+        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend);
     }
 
-    @Override
-    public QuickTheory qt() {
-        //Force our example count to be higher than the default by 100x
-        return WithQuickTheories.super.qt().withExamples(100_000);
-    }
-
-    @Test
-    @DisplayName("Test distribution")
-    void testDistribution() {
-        distributionTheory(0, 100, 0, 100, 0, 100).check((availableAcceptors, toSend) ->
-              EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend
-        );
-    }
-
-    @Test
-    @DisplayName("Test distribution no partial")
-    void testDistributionNoPartial() {
-        distributionTheory(0, 100, 0, 0, 0, 100).check((availableAcceptors, toSend) ->
-              EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend
-        );
-    }
-
-    @Test
-    @DisplayName("Test distribution no infinite")
-    void testDistributionNoInfinite() {
-        distributionTheory(0, 0, 0, 100, 0, 100).check((availableAcceptors, toSend) ->
-              EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend
-        );
+    @Property(tries = TRIES)
+    @Label("Test distribution no infinite")
+    void testDistributionNoInfinite(@ForAll @IntRange(max = 100) int some, @ForAll @IntRange(max = 100) int none, @ForAll @Positive int toSend) {
+        IntegerTarget availableAcceptors = DistributionTest.getTargets(0, some, none);
+        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend) <= toSend);
     }
 }
