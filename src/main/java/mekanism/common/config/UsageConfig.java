@@ -22,7 +22,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue electricPump;
     public final CachedFloatingLongValue chargePad;
     public final CachedFloatingLongValue rotaryCondensentrator;
-    public final CachedFloatingLongValue oxidationChamber;
+    public final CachedFloatingLongValue chemicalOxidizer;
     public final CachedFloatingLongValue chemicalInfuser;
     public final CachedFloatingLongValue chemicalInjectionChamber;
     public final CachedFloatingLongValue precisionSawmill;
@@ -71,7 +71,7 @@ public class UsageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(1_024_000));
         rotaryCondensentrator = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "rotaryCondensentrator",
               FloatingLong.createConst(50));
-        oxidationChamber = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "oxidationChamber",
+        chemicalOxidizer = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "chemicalOxidizer",
               FloatingLong.createConst(200));
         chemicalInfuser = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "chemicalInfuser",
               FloatingLong.createConst(200));

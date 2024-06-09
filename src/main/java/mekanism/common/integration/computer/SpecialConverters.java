@@ -1,6 +1,7 @@
 package mekanism.common.integration.computer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.DynamicOps;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,10 +27,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -229,8 +233,7 @@ public class SpecialConverters {
     }
 
     static String wrapComponents(@NotNull DataComponentPatch components) {
-        //TODO - 1.20.5: Make this and unwrapComponents take a HolderLookup.Provider
-        return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(NbtOps.INSTANCE, components).getOrThrow());
+        return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(getRegistryNbtOps(), components).getOrThrow());
     }
 
     static DataComponentPatch unwrapComponents(@NotNull String rawComponents) throws ComputerException {
@@ -240,6 +243,15 @@ public class SpecialConverters {
         } catch (CommandSyntaxException ex) {
             throw new ComputerException("Invalid SNBT: " + ex.getMessage());
         }
-        return DataComponentPatch.CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow(ComputerException::new).getFirst();
+        return DataComponentPatch.CODEC.decode(getRegistryNbtOps(), nbt).getOrThrow(ComputerException::new).getFirst();
+    }
+
+    private static DynamicOps<Tag> getRegistryNbtOps() {
+        //TODO: Can we pass the registry access in from the tiles rather than having to look it up from the current server?
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) {
+            return server.registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        }
+        return NbtOps.INSTANCE;
     }
 }

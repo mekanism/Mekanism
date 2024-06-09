@@ -289,7 +289,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.CHEMICAL_OXIDIZER, MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER)
           .withGui(() -> MekanismContainerTypes.CHEMICAL_OXIDIZER)
           .withSound(MekanismSounds.CHEMICAL_OXIDIZER)
-          .withEnergyConfig(MekanismConfig.usage.oxidationChamber, MekanismConfig.storage.oxidationChamber)
+          .withEnergyConfig(MekanismConfig.usage.chemicalOxidizer, MekanismConfig.storage.chemicalOxidizer)
           .withSideConfig(TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.CHEMICAL_OXIDIZER)
           .withComputerSupport("chemicalOxidizer")
