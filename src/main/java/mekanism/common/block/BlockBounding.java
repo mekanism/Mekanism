@@ -163,6 +163,24 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return super.onDestroyedByPlayer(state, world, pos, player, false, fluidState);
     }
 
+    @NotNull
+    @Override
+    public BlockState playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+        BlockPos mainPos = getMainBlockPos(level, pos);
+        if (mainPos != null) {
+            BlockState mainState = level.getBlockState(mainPos);
+            if (!mainState.isAir()) {
+                //Call player will destroy on the main block in case we have any other logic we want to run, but then return ourselves as the state
+                // similar to what calling super would do.
+                // Note: We don't call super as we don't want to spawn block break particles twice, and it only really makes sense to be firing the
+                // game event for the main block position
+                mainState.getBlock().playerWillDestroy(level, mainPos, mainState, player);
+                return state;
+            }
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override
     protected void onExplosionHit(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Explosion explosion,
           @NotNull BiConsumer<ItemStack, BlockPos> dropConsumer) {

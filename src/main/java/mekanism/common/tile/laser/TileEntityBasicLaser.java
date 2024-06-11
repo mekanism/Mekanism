@@ -331,7 +331,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 level.removeBlock(hitPos, false);
             } else {
                 //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
-                handleBreakBlock(hitState, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
+                handleBreakBlock(hitState, level, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
             }
         }
         dummy.cleanupFakePlayer(level);
@@ -395,12 +395,17 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return false;
     }
 
-    protected void handleBreakBlock(BlockState state, BlockPos hitPos, Player player, ItemStack tool) {
-        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, false);
-        breakBlock(state, hitPos);
+    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool) {
+        for (ItemEntity drop : WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, true)) {
+            if (!drop.getItem().isEmpty()) {
+                level.addFreshEntity(drop);
+            }
+        }
+        breakBlock(state, level, hitPos, tool);
     }
 
-    protected final void breakBlock(BlockState state, BlockPos hitPos) {
+    protected final void breakBlock(BlockState state, ServerLevel level, BlockPos hitPos,  ItemStack tool) {
+        state.spawnAfterBreak(level, hitPos, tool, false);
         level.removeBlock(hitPos, false);
         //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
         level.gameEvent(GameEvent.BLOCK_DESTROY, hitPos, GameEvent.Context.of(null, state));

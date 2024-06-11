@@ -20,7 +20,7 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('net.neoforged.gradle.userdev') version('7.0.138')//https://projects.neoforged.net/neoforged/neogradle
+    id('net.neoforged.gradle.userdev') version('7.0.142')//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -157,7 +157,7 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     extraSourceSet.compileClasspath += project.sourceSets.main.output
     if (baseSourceSet != project.sourceSets.main) {
         //If the base sourceSet is main it already is the extra source set and has a reference to the base one from before this if statement
-        extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).output
+        extraSourceSet.compileClasspath += getExtraSourceSet(project.sourceSets.main, extra).get().output
         extraSourceSet.compileClasspath += baseSourceSet.output
         extraSourceSet.runs.modIdentifier = name
     }
@@ -170,12 +170,12 @@ static void extendConfigurations(Configuration base, Configuration... configurat
     }
 }
 
-SourceSet getExtraSourceSet(String base, String name) {
-    return getExtraSourceSet(project.sourceSets.named(base).get(), name)
+Provider<SourceSet> getExtraSourceSet(String base, String name) {
+    return project.sourceSets.named(base).flatMap(sourceSet -> getExtraSourceSet(sourceSet, name))
 }
 
-SourceSet getExtraSourceSet(SourceSet base, String name) {
-    return project.sourceSets.named(base.getTaskName(name, null)).get()
+Provider<SourceSet> getExtraSourceSet(SourceSet base, String name) {
+    return project.sourceSets.named(base.getTaskName(name, null))
 }
 
 setupTasks(sourceSets.main)
@@ -205,7 +205,7 @@ def setupTasks(SourceSet sourceSet) {
     }
     tasks.named(sourceSet.compileJavaTaskName, JavaCompile).configure { setGroup('compile') }
     for (String extraType : extraTypes) {
-        def extraSourceSet = getExtraSourceSet(sourceSet, extraType)
+        def extraSourceSet = getExtraSourceSet(sourceSet, extraType).get()
         tasks.named(extraSourceSet.processResourcesTaskName, ProcessResources).configure {
             setGroup('process resources')
             dependsOn(compileTask)
@@ -267,22 +267,22 @@ static void setupClientAcc(Run run) {
 }
 
 runs {
-    configureEach { Run run ->
-        if (run.project.hasProperty('forge_force_ansi')) {
+    configureEach {
+        if (hasProperty('forge_force_ansi')) {
             //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
             // or eclipse's plugin that adds support for ansi escape in console
-            run.jvmArguments.add("-Dterminal.ansi=${run.project.property('forge_force_ansi')}")
+            jvmArguments.add("-Dterminal.ansi=${property('forge_force_ansi')}")
         }
 
-        run.modSources.addAll((SourceSet[]) [sourceSets.main, sourceSets.api])
+        modSources.add((SourceSet[]) [sourceSets.main, sourceSets.api])
 
         for (String name : secondaryModules) {
-            run.modSources.add((SourceSet) sourceSets.getByName(name))
+            modSources.add((SourceSet) sourceSets.named(name).get())
         }
 
         //if the selected toolchain is a JBR, enable DCEVM
-        if (run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
-            run.jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
+        if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse('').contains('JetBrains')) {
+            jvmArguments.add('-XX:+AllowEnhancedClassRedefinition')
         }
     }
     client { Run run -> setupClientAcc(run) }
@@ -314,13 +314,12 @@ runs {
         modSources.add((SourceSet) sourceSets.datagenMain)
 
         for (String name : secondaryModules) {
-            def modName = "mekanism${name}"
-            modSources.add(getExtraSourceSet(name, 'datagen'))
-            programArguments.addAll((String[]) ['--mod', modName, '--existing', file("src/${name}/resources/").absolutePath])
+            modSources.add(getExtraSourceSet(name, 'datagen').get())
+            programArguments.addAll((String[]) ['--mod', "mekanism${name}", '--existing', file("src/${name}/resources/").absolutePath])
         }
 
         dependencies {
-            runtime(project.configurations.datagenNonMod)
+            runtime(configurations.datagenNonMod)
         }
     }
 }
@@ -505,8 +504,8 @@ def mergeModuleResources = tasks.register('mergeModuleResources', MergeModuleRes
     annotationGenerated = sourceSets.main.output.classesDirs
     for (String name : secondaryModules) {
         SourceSet secondarySourceSet = sourceSets.named(name).get()
-        resources = resources + tasks.named(secondarySourceSet.processResourcesTaskName).get().outputs.files
-        annotationGenerated = annotationGenerated + secondarySourceSet.output.classesDirs
+        resources += tasks.named(secondarySourceSet.processResourcesTaskName).get().outputs.files
+        annotationGenerated += secondarySourceSet.output.classesDirs
     }
     //Only look at generated service files as a restriction for our input
     annotationGenerated = annotationGenerated.asFileTree.matching(serviceFilter)
@@ -521,7 +520,7 @@ def allJar = tasks.register('allJar', AllJar, {
     apiOutput = sourceSets.api.output
     mainOutput = sourceSets.main.output
     for (String name : secondaryModules) {
-        secondaryModuleOutputs = secondaryModuleOutputs + sourceSets.named(name).get().output
+        secondaryModuleOutputs += sourceSets.named(name).get().output
     }
 })
 
@@ -531,6 +530,7 @@ tasks.withType(JavaCompile).configureEach({
 })
 
 tasks.withType(Javadoc).configureEach({
+    options.encoding = 'UTF-8'
     options.tags = [
             'apiNote:a:<em>API Note:</em>',
             'implSpec:a:<em>Implementation Requirements:</em>',

@@ -26,7 +26,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Block;
@@ -131,9 +130,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     private boolean shearEntity(@Nullable IEnergyContainer energyContainer, LivingEntity entity, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
         IShearable target = (IShearable) entity;
-        if (target.isShearable(stack, world, pos)) {
+        if (target.isShearable(player, stack, world, pos)) {
             if (!world.isClientSide) {
-                for (ItemStack drop : target.onSheared(player, stack, world, pos, stack.getEnchantmentLevel(Enchantments.FORTUNE))) {
+                for (ItemStack drop : target.onSheared(player, stack, world, pos)) {
                     target.spawnShearedDrop(world, pos, drop);
                 }
                 entity.gameEvent(GameEvent.SHEAR, player);

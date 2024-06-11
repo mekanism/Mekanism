@@ -1,6 +1,5 @@
 package mekanism.common.tile.laser;
 
-import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -55,13 +54,13 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     }
 
     @Override
-    protected void handleBreakBlock(BlockState state, BlockPos hitPos, Player player, ItemStack tool) {
-        List<ItemStack> drops = new ArrayList<>(Block.getDrops(state, (ServerLevel) level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool));
+    protected void handleBreakBlock(BlockState state, ServerLevel level, BlockPos hitPos, Player player, ItemStack tool) {
+        List<ItemStack> drops = WorldUtils.getDrops(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool);
         //Collect any extra drops that might have happened due to say breaking the top part of a door or flower and try to add them
         //Note: Technically we should just always return true rather than relying on the return result of the add method,
         // but as array lists always will return true as they are modified we don't have to worry about that
         CommonWorldTickHandler.fallbackItemCollector = drops::add;
-        breakBlock(state, hitPos);
+        breakBlock(state, level, hitPos, tool);
         CommonWorldTickHandler.fallbackItemCollector = null;
         if (!drops.isEmpty()) {
             BlockPos dropPos = null;

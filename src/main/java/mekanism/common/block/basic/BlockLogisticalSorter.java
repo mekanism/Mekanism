@@ -82,7 +82,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                     //Note: This should always be false for the logistical sorter, but we keep it here for good measure
                     return ItemInteractionResult.FAIL;
                 }
-                WorldUtils.dismantleBlock(state, world, pos, player);
+                WorldUtils.dismantleBlock(state, world, pos, player, stack);
                 return ItemInteractionResult.SUCCESS;
             }
             Direction change = tile.getDirection().getClockWise();

@@ -51,8 +51,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -86,6 +86,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -744,6 +745,7 @@ public final class MekanismUtils {
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
         energyAvailable = energyAvailable.subtract(energyRequired);
+        Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (Object2IntMap.Entry<BlockPos> foundEntry : found.object2IntEntrySet()) {
             BlockPos foundPos = foundEntry.getKey();
             if (pos.equals(foundPos)) {
@@ -766,25 +768,25 @@ public final class MekanismUtils {
                 // block hardness values in a modded context
                 continue;
             }
-            int exp = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
-            if (exp == -1) {
+            BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
+            if (event.isCanceled()) {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;
             }
             //Otherwise, break the block
-            Block block = targetState.getBlock();
+            FluidState fluidState = targetState.getFluidState();
             //Get the tile now so that we have it for when we try to harvest the block
             BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
+            //Update what the state will be if the player is destroying it, so that things like angering piglins, and firing block destroy game events occur
+            // This also ensures that things like decorated pots are able to properly update to cracked and drop sherds rather than the pot block itself
+            targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
+            Block block = targetState.getBlock();
             //Remove the block
-            if (targetState.onDestroyedByPlayer(world, foundPos, player, true, targetState.getFluidState())) {
+            if (targetState.onDestroyedByPlayer(world, foundPos, player, true, fluidState)) {
                 block.destroy(world, foundPos, targetState);
                 //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
                 block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
-                player.awardStat(Stats.ITEM_USED.get(usedTool));
-                if (exp > 0) {
-                    //If we have xp drop it
-                    block.popExperience((ServerLevel) world, foundPos, exp);
-                }
+                player.awardStat(itemStat);
                 //Mark that we used that portion of the energy
                 energyUsed = energyUsed.plusEqual(destroyEnergy);
             }

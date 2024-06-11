@@ -1281,7 +1281,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         ServerLevel level = (ServerLevel) getWorldNN();
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-        List<ItemStack> drops = Block.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
+        List<ItemStack> drops = WorldUtils.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
         dummy.cleanupFakePlayer(level);
         return drops;
     }

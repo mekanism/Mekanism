@@ -588,7 +588,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                     //Don't allow dismantling radioactive blocks
                     return WrenchResult.RADIOACTIVE;
                 }
-                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player);
+                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this, player, stack);
                 return WrenchResult.DISMANTLED;
             }
             //Special ITileDirectional handling
