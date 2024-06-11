@@ -238,6 +238,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addTools() {
         addWrenches();
+        addToTag(ItemTags.BREAKS_DECORATED_POTS, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
         addToTag(Tags.Items.TOOLS_BOWS, MekanismItems.ELECTRIC_BOW);
         addToTag(ItemTags.BOW_ENCHANTABLE, MekanismItems.ELECTRIC_BOW);
         addToTag(ItemTags.DURABILITY_ENCHANTABLE, MekanismItems.HDPE_REINFORCED_ELYTRA);
