@@ -174,12 +174,11 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
 
     public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
         if (capability != null) {
-            //TODO - 1.20.5: Re-evaluate this
             event.registerItem((ItemCapability) capability.item(), getCapabilityProvider(exposeWhenStacked, requiredConfigs), item);
         }
     }
 
-    //TODO - 1.20.5: Do we want to have create in the name instead of get
+    //TODO - 1.21: Do we want to have create in the name instead of get
     public List<CONTAINER> getAttachmentContainersIfPresent(ItemStack stack) {
         HANDLER handler = createHandlerIfData(stack);
         return handler == null ? Collections.emptyList() : handler.getContainers();
@@ -191,20 +190,20 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
             Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> containerCreator = knownDefaultCreators.get(stack.getItem());
             return containerCreator == null ? 0 : containerCreator.get().totalContainers();
         }
-        //TODO - 1.20.5: Do we need to look it up in case the max size changed since we were last saved?
+        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
         return attached.size();
     }
 
-    @Nullable//TODO - 1.20.5: Re-evaluate
+    @Nullable//TODO - 1.21: Re-evaluate
     public HANDLER createHandlerIfData(ItemStack stack) {
         ATTACHED attached = getOrEmpty(stack);
-        //TODO - 1.20.5: Do we need to look it up in case the max size changed since we were last saved?
+        //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
         return attached.isEmpty() ? null : handlerConstructor.create(stack, attached.size());
     }
 
     @Nullable
     public HANDLER createHandler(ItemStack stack) {
-        //TODO - 1.20.5: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
+        //TODO - 1.21: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
         int count = getContainerCount(stack);
         if (count == 0) {
@@ -214,7 +213,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     public ATTACHED createNewAttachment(ItemStack stack) {
-        //TODO - 1.20.5: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
+        //TODO - 1.1: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
         Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(stack.getItem());
         if (lazy == null) {
@@ -232,6 +231,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return stack.getOrDefault(component, emptyAttachment);
     }
 
+    //TODO - 1.21: Re-evaluate usages and see if they should be going via capability instead?
     public CONTAINER createContainer(ItemStack attachedTo, int containerIndex) {
         Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> creator = knownDefaultCreators.get(attachedTo.getItem());
         if (creator != null) {
@@ -325,7 +325,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         HANDLER handler = createHandler(stack);
         if (handler != null) {
             read(provider, handler.getContainers(), save(provider, containers));
-            //TODO - 1.20.5: FIX the getattached here?
+            //TODO - 1.21: FIX the getattached here?
             stack.set(component, handler.getAttached());
             if (stack.getCount() > 1) {
                 Mekanism.logger.error("Copied {} to a stack ({}). This might lead to duplication of data.", getComponentName(), stack);

@@ -15,7 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-@NothingNullByDefault//TODO - 1.20.5: Figure out how to implement this properly??
+@NothingNullByDefault//TODO - 1.21: Figure out how to implement this properly??
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
 
     public static ComponentBackedResistiveEnergyContainer create(ContainerType<?, ?, ?> ignored, ItemStack attachedTo, int containerIndex) {

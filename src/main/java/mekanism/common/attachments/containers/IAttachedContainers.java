@@ -36,7 +36,9 @@ public interface IAttachedContainers<TYPE, ATTACHED extends IAttachedContainers<
 
     ATTACHED create(List<TYPE> containers);
 
-    //TODO - 1.20.5: add javadocs that specify it is assumed data will be copied BEFORE calling this
+    /**
+     * @apiNote It is assumed that data will be copied before calling this method.
+     */
     default ATTACHED with(int index, TYPE data) {
         List<TYPE> copy = new ArrayList<>(containers());
         copy.set(index, data);

@@ -80,8 +80,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
           (frequency, totalCount, totalCountCapacity, totalTypes, totalTypeCapacity, color) -> {
               frequency.totalCount = totalCount;
               frequency.totalCountCapacity = totalCountCapacity;
-              //TODO - 1.20.4: SP: This isn't set in single player so I think we need to fall back to querying against the itemDataMap
-              // though now that we force handle the serialization/deserialization maybe this isn't actually necessary to adjust
               frequency.clientTypes = totalTypes;
               frequency.totalTypeCapacity = totalTypeCapacity;
               frequency.color = color;

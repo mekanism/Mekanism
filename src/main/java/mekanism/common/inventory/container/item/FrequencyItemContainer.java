@@ -62,7 +62,6 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
                 //Start it out at what the value on the stack is
                 freq = frequencyAware.getFrequency(stack, frequencyComponent);
             }
-            //TODO - 1.20.5: Test this still works properly
             track(SyncableFrequency.create(frequencyType, this::getFrequency, f -> freq = f));
         }
         if (getLevel().isClientSide()) {

@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.4: Re-evaluate this class and the fact that the getNames don't bother handling that for defaulted registries the default key is returned
+//TODO - 1.21: Re-evaluate this class and the fact that the getNames don't bother handling that for defaulted registries the default key is returned
 public class RegistryUtils {
 
     private RegistryUtils() {

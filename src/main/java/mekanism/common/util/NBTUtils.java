@@ -271,7 +271,6 @@ public class NBTUtils {
         return null;
     }
 
-    //TODO - 1.20.4: Replace some usages of this with getEnum
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundTag nbt, String key, IntFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, Tag.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));

@@ -47,7 +47,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         boolean receivingPower = isGettingPowered();
         //Lazy init our wasGetting power. In theory that may mean we check when going to the same state for the first go around
         // but at least it will reduce the number of times we check
-        //TODO - 1.20: Evaluate storing it in nbt instead so it can persist and we can do it more accurately without worrying about
+        //TODO - 1.21: Evaluate storing it in nbt instead so it can persist and we can do it more accurately without worrying about
         // not properly invalidating pre-existing ones
         if (wasGettingPower == null || wasGettingPower != receivingPower) {
             wasGettingPower = receivingPower;

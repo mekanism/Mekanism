@@ -220,7 +220,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
               MekanismAliases.SLURRY_STORAGE
         );
 
-        //TODO - 1.20.5: Fix energy stuff not displaying properly when searching for "energy storage"? Probably has to do with components
+        //TODO - 1.21: Fix energy stuff not displaying properly when searching for "energy storage"? Probably has to do with components
         addAliases(List.of(
               EmiStack.of(MekanismBlocks.BASIC_ENERGY_CUBE),
               EmiStack.of(MekanismBlocks.ADVANCED_ENERGY_CUBE),
@@ -233,7 +233,7 @@ public class MekanismEmiAliasProvider extends BaseEmiAliasProvider {
         addAliases(MekanismItems.ENERGY_TABLET, MekanismAliases.ENERGY_STORAGE, MekanismAliases.ENERGY_STORAGE_BATTERY);
 
         addAliases(List.of(
-              //TODO - 1.20.5: Why does the creative bin not show up?
+              //TODO - 1.21: Why does the creative bin not show up?
               EmiStack.of(MekanismBlocks.CREATIVE_BIN),
               EmiStack.of(MekanismBlocks.CREATIVE_FLUID_TANK),
               EmiStack.of(MekanismBlocks.CREATIVE_CHEMICAL_TANK),

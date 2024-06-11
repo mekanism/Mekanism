@@ -40,7 +40,7 @@ public class MekanismArmorMaterials {
           MekanismConfig.gear.armoredJetpackKnockbackResistance.getOrDefault()
     ));
     // This is unused for the most part; toughness / damage reduction is handled manually, though it can fall back to netherite values
-    //TODO - 1.20.5: Figure out how to get the configs working again
+    //TODO - 1.21: Figure out how to get the configs working again
     public static final MekanismDeferredHolder<ArmorMaterial, ArmorMaterial> MEKASUIT = ARMOR_MATERIALS.register("mekasuit", () -> new ArmorMaterial(
           Map.of(
                 ArmorItem.Type.BOOTS, MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault(),

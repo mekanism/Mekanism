@@ -600,6 +600,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return WrenchResult.PASS;
     }
 
+    //TODO - 1.21: Figure out why it seems like other players can't open things even on public? At least on my test server in dev
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {

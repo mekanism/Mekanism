@@ -117,7 +117,7 @@ public abstract class BaseEmiAliasProvider implements DataProvider {
               .map(IHasTranslationKey::getTranslationKey)
               .sorted()
               .toList();
-        //TODO - 1.20.5: Is there some global sort, or stack based sort we can apply as well?
+        //TODO: Is there some global sort, or stack based sort we can apply as well?
         if (!data.add(new AliasInfo(stacks, sortedAliases))) {
             //TODO: Can we improve the validation we have relating to duplicate values/make things more compact?
             // This if statement exists mainly as a simple check against copy-paste errors

@@ -10,8 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Can we make this in of itself a non serializable non syncable component or something?
-// Unfortunately I don't think so because the attachedTo stack might change instances
 @NothingNullByDefault
 public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack, IInventorySlot, AttachedItems> implements IMekanismInventory {
 

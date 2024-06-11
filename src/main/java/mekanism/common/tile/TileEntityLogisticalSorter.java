@@ -134,7 +134,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
                     }
 
                     if (!sentItems && autoEject) {
-                        //TODO - 1.20.5: Evaluate if this (and SorterFilter#mapInventory) should use a stack's max stack size or the absolute stack size
+                        //TODO - 1.21: Evaluate if this (and SorterFilter#mapInventory) should use a stack's max stack size or the absolute stack size
                         TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, strictFinder);
                         TransitResponse response = emitItemToTransporter(frontCap, request, color, 0);
                         if (!response.isEmpty()) {

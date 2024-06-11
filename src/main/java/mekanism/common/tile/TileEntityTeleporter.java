@@ -643,7 +643,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     public AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
-        //TODO - 1.20.4: Test this
         return AABB.encapsulatingFullBlocks(worldPosition.relative(frameDirection), worldPosition.relative(frameDirection, 2));
     }
 

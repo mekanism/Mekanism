@@ -73,7 +73,6 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @Internal
     void registerCapabilities(RegisterCapabilitiesEvent event) {
         if (asItem() instanceof ICapabilityAware capabilityAware) {
-            //TODO - 1.20.5: Re-evaluate how we are handling item capabilities. Should we cache the capability wrapper somewhere somehow?
             capabilityAware.attachCapabilities(event);
         }
         if (containerCapabilities != null) {

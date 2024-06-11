@@ -13,7 +13,7 @@ public class AttributeCache extends ConfigBasedCachedSupplier<ItemAttributeModif
         super(() -> {
             List<ItemAttributeModifiers.Entry> builder = new ArrayList<>();
             attributeRefresher.addToBuilder(builder);
-            //TODO - 1.20.5: Do we want these to show in the tooltip?
+            //TODO - 1.21: Do we want these to show in the tooltip?
             return new ItemAttributeModifiers(Collections.unmodifiableList(builder), true);
         }, configValues);
     }

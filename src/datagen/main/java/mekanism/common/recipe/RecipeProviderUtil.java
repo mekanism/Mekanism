@@ -50,7 +50,7 @@ public class RecipeProviderUtil {
 
     public static void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath, Predicate<String> shouldHandle, @Nullable ICondition condition) {
         //Generate baseline recipes from Composter recipe set
-        //TODO - 1.20.4: Move these to being "generated" recipes at runtime (maybe behind a config option) that uses the compostable datamap?
+        //TODO - 1.21: Move these to being "generated" recipes at runtime (maybe behind a config option) that uses the compostable datamap?
         for (Object2FloatMap.Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
             Item input = chance.getKey().asItem();
             ResourceLocation name = RegistryUtils.getName(input);

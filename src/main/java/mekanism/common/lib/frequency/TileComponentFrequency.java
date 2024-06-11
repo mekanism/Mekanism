@@ -277,7 +277,7 @@ public class TileComponentFrequency implements ITileComponent {
         if (frequencyComponent != null) {
             FrequencyAware<?> frequencyAware = input.get(frequencyComponent);
             if (frequencyAware != null && frequencyAware.identity().isPresent()) {
-                //TODO - 1.20.5: Do we need to be using the player placing it instead of the existing owner?
+                //TODO - 1.21: Do we need to be using the player placing it instead of the existing owner?
                 // Maybe, or at least use the owner of the block?
                 setFrequencyFromData(type, frequencyAware.identity().get(), frequencyAware.getOwner());
             }
@@ -308,7 +308,6 @@ public class TileComponentFrequency implements ITileComponent {
                 builder.set(frequencyComponent, new FrequencyAware<>((FREQ) frequencyData.selectedFrequency));
                 //TODO: Do we want to support multiple frequency types each having a colored frequency?
                 if (frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
-                    //TODO - 1.20.5: Validate the item is IColoredItem???
                     builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
                 }
             }

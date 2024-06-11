@@ -218,7 +218,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     Module<MODULE> withReplacedInstallCount(HolderLookup.Provider provider, int installed) {
         RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-        //TODO - 1.20.5: Re-evaluate this
+        //TODO: See if we can come up with a cleaner way to do this
         CompoundTag tag = (CompoundTag) Module.CODEC.encodeStart(registryOps, this).getOrThrow();
         tag.putInt(SerializationConstants.AMOUNT, installed);
         return (Module<MODULE>) Module.CODEC.decode(registryOps, tag).getOrThrow().getFirst();

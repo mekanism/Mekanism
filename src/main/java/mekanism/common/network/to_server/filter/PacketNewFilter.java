@@ -13,8 +13,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-//TODO - 1.20.4: SP: Validate this doesn't have any issues in single player, I believe the filter is always new on the client and then the gui is closed
-// and the referenced removed, so we can use that implementation detail to not require any copying or stuff
 public record PacketNewFilter(BlockPos pos, IFilter<?> filter) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketNewFilter> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("new_filter"));

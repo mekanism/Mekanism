@@ -80,7 +80,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      * @apiNote The returned stack can be safely modified.
      */
     public ItemStack getBottomStack() {
-        //TODO - 1.20.5: ??
+        //TODO - 1.21: ??
         ItemStack current = getStack();
         if (current.isEmpty()) {
             return ItemStack.EMPTY;
@@ -95,7 +95,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      *
      * @return if the lock state was modified
      */
-    public boolean setLocked(boolean lock) {//TODO - 1.20.5: ??
+    public boolean setLocked(boolean lock) {//TODO - 1.21: ??
         // Don't lock if:
         // - We are a creative bin
         // - We already have the same state as the one we're supposed to switch to
@@ -117,7 +117,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     /**
      * For use by upgrade recipes, do not use this in place of {@link #setLocked(boolean)}
      */
-    public void setLockStack(@NotNull ItemStack stack) {//TODO - 1.20.5: ??
+    public void setLockStack(@NotNull ItemStack stack) {//TODO - 1.21: ??
         //Note: This doesn't support the case where one backing stack may have multiple bin slots. If we ever support that case
         // we will need to adjust how this works
         if (stack.isEmpty()) {
@@ -127,16 +127,16 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         }
     }
 
-    public boolean isLocked() {//TODO - 1.20.5: ??
+    public boolean isLocked() {//TODO - 1.21: ??
         return !getLockStack().isEmpty();
     }
 
-    public ItemStack getRenderStack() {//TODO - 1.20.5: ??
+    public ItemStack getRenderStack() {//TODO - 1.21: ??
         ItemStack lockStack = getLockStack();
         return lockStack.isEmpty() ? getStack() : lockStack;
     }
 
-    public ItemStack getLockStack() {//TODO - 1.20.5: ??
+    public ItemStack getLockStack() {//TODO - 1.21: ??
         LockData lockData = attachedTo.get(MekanismDataComponents.LOCK);
         return lockData == null ? ItemStack.EMPTY : lockData.lock();
     }

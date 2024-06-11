@@ -55,9 +55,15 @@ public abstract class ChemicalTankChemicalTank<CHEMICAL extends Chemical<CHEMICA
     }
 
     @Override
-    protected long getRate(@Nullable AutomationType automationType) {
+    protected long getInsertRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getInsertRate(automationType);
+    }
+
+    @Override
+    protected long getExtractRate(@Nullable AutomationType automationType) {
+        //Only limit the internal rate to change the speed at which this can be filled from an item
+        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getExtractRate(automationType);
     }
 
     @Override

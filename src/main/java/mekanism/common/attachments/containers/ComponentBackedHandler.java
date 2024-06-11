@@ -21,7 +21,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSeriali
     private List<CONTAINER> containers;
     private int numNotInitialized;
 
-    //TODO - 1.20.5: Do we want to validate slot indices are within range?
+    //TODO - 1.21: Do we want to validate slot indices are within range?
     protected ComponentBackedHandler(ItemStack attachedTo, int totalContainers) {
         this.attachedTo = attachedTo;
         this.totalContainers = totalContainers;

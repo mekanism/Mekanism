@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.5: Move this to a different package?
+//TODO - 1.21: Move this to a different package?
 public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
 
     private final QIOCraftingWindow[] craftingWindows;
@@ -41,7 +41,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
             slots.add(craftingWindow.getOutputSlot());
         }
         this.slots = List.copyOf(slots);
-        //TODO - 1.20.5: Is this still necessary given we are doing it from the constructor?
+        //TODO - 1.21: Is this still necessary given we are doing it from the constructor?
         //Force refresh the recipe
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
             craftingWindow.invalidateRecipe();

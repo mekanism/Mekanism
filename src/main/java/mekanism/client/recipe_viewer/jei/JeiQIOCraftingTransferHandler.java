@@ -60,7 +60,6 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Override
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
-        //TODO - 1.20.4: Test this still works
         return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
               Action.get(doTransfer));
     }

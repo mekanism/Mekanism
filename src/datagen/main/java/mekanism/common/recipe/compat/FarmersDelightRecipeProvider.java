@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import vectorwing.farmersdelight.common.registry.ModItems;
 
+//TODO - 1.21: Remove this if we want to release before Farmers delight so that our generated recipes go away as our syntax has changed
 @NothingNullByDefault
 public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
 

@@ -168,7 +168,7 @@ public class ItemSlotsBuilder {
     }
 
     public ItemSlotsBuilder addQIODashboardSlots() {
-        //TODO - 1.20.5: IMPLEMENT Figure out how to do this
+        //TODO - 1.21: IMPLEMENT Figure out how to do this
         //new PortableQIODashboardInventory(null, stack).getSlots()
         return this;
     }
@@ -232,7 +232,6 @@ public class ItemSlotsBuilder {
         return addSlots(count, BASIC_INPUT_SLOT_CREATOR);
     }
 
-    //TODO - 1.20.5: Docs that the predicate shouldn't access the attached stack? More likely we just want to not be passing it via the addAttachment stuff
     public ItemSlotsBuilder addInput(Predicate<@NotNull ItemStack> isItemValid) {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, BasicInventorySlot.notExternal, BasicInventorySlot.alwaysTrueBi, isItemValid));
     }
@@ -254,7 +253,6 @@ public class ItemSlotsBuilder {
         //Copy of FluidInventorySlot#getFillPredicate
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
-            //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
             IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
@@ -297,7 +295,6 @@ public class ItemSlotsBuilder {
             //Copy of FluidInventorySlot#getInputPredicate
             IFluidHandlerItem fluidHandlerItem = FluidInventorySlot.tryGetFluidHandlerUnstacked(stack);
             if (fluidHandlerItem != null) {
-                //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                 IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                 boolean hasEmpty = false;
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -339,7 +336,6 @@ public class ItemSlotsBuilder {
                     if (!fluidInTank.isEmpty()) {
                         if (fluidTank == null) {
                             //Lazily initialize the tank
-                            //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                             fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                         }
                         if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
@@ -363,7 +359,6 @@ public class ItemSlotsBuilder {
             if (fluidHandlerItem != null) {
                 int tanks = fluidHandlerItem.getTanks();
                 if (tanks > 0) {
-                    //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                     IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                     for (int tank = 0; tank < tanks; tank++) {
                         if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
@@ -416,7 +411,6 @@ public class ItemSlotsBuilder {
                 STACK storedChemical = handler.getChemicalInTank(tank);
                 if (!storedChemical.isEmpty()) {
                     if (chemicalTank == null) {
-                        //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                         chemicalTank = containerType.createContainer(attachedTo, tankIndex);
                     }
                     if (chemicalTank.isValid(storedChemical)) {
@@ -442,7 +436,6 @@ public class ItemSlotsBuilder {
                 STACK chemicalInTank = handler.getChemicalInTank(tank);
                 if (!chemicalInTank.isEmpty()) {
                     if (chemicalTank == null) {
-                        //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                         chemicalTank = containerType.createContainer(attachedTo, tankIndex);
                     }
                     if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
@@ -465,7 +458,6 @@ public class ItemSlotsBuilder {
         if (handler != null) {
             int tanks = handler.getTanks();
             if (tanks > 0) {
-                //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                 chemicalTank = containerType.createContainer(attachedTo, tankIndex);
                 for (int tank = 0; tank < tanks; tank++) {
                     if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
@@ -483,7 +475,6 @@ public class ItemSlotsBuilder {
             return true;
         } else if (chemicalTank == null) {
             //If we haven't resolved the tank yet, we need to do it now
-            //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
             chemicalTank = containerType.createContainer(attachedTo, tankIndex);
         }
         return !chemicalTank.isValid(conversion);
@@ -501,7 +492,6 @@ public class ItemSlotsBuilder {
                     STACK chemicalInTank = handler.getChemicalInTank(tank);
                     if (!chemicalInTank.isEmpty()) {
                         if (chemicalTank == null) {
-                            //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
                             chemicalTank = containerType.createContainer(attachedTo, tankIndex);
                         }
                         if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
@@ -519,7 +509,6 @@ public class ItemSlotsBuilder {
             return false;
         } else if (chemicalTank == null) {
             //If we haven't resolved the tank yet, we need to do it now
-            //TODO - 1.20.5: We cache the tank as a component backed one on the capability, can we access it via that instead??
             chemicalTank = containerType.createContainer(attachedTo, tankIndex);
         }
         if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount()) {
@@ -598,7 +587,7 @@ public class ItemSlotsBuilder {
               (stack, automationType) -> canChemicalDrainInsert(attachedTo, tankIndex, stack, ContainerType.SLURRY, Capabilities.SLURRY), BasicInventorySlot.alwaysTrue)));
     }
 
-    //TODO - 1.20.5: Test this
+    //TODO - 1.21: Test this
     public ItemSlotsBuilder addMergedChemicalFillSlot(int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (stack, automationType) -> {
             if (automationType == AutomationType.MANUAL) {
@@ -645,9 +634,8 @@ public class ItemSlotsBuilder {
     }
 
     private boolean canInsertMerged(ItemStack attachedTo, int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex, ItemStack stack) {
-        //TODO - 1.20.5: Figure out the merged tanks
         MergedChemicalTank chemicalTank = createMergedTank(attachedTo, gasIndex, infusionIndex, pigmentIndex, slurryIndex);
-        //TODO - 1.20.5: Improve this so we aren't looking up tanks multiple times?
+        //TODO - 1.21: Improve this so we aren't looking up tanks multiple times?
         Predicate<@NotNull ItemStack> gasInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getGasTank(), Capabilities.GAS);
         Predicate<@NotNull ItemStack> infusionInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getInfusionTank(), Capabilities.INFUSION);
         Predicate<@NotNull ItemStack> pigmentInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(chemicalTank.getPigmentTank(), Capabilities.PIGMENT);
@@ -663,7 +651,7 @@ public class ItemSlotsBuilder {
         };
     }
 
-    //TODO - 1.20.5: Test this
+    //TODO - 1.21: Test this
     public ItemSlotsBuilder addMergedChemicalDrainSlot(int gasIndex, int infusionIndex, int pigmentIndex, int slurryIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (stack, automationType) -> {
             if (automationType == AutomationType.MANUAL) {

@@ -201,7 +201,7 @@ public class GuiTextField extends GuiElement {
         return super.isValidClickButton(button) && super.mouseClicked(mouseX, mouseY, button);
     }
 
-    //TODO - 1.20.5: Figure out why Guis with text fields seem to still have issues with https://github.com/emilyploszaj/emi/issues/480 when other ones don't
+    //TODO - 1.21: Figure out why Guis with text fields seem to still have issues with https://github.com/emilyploszaj/emi/issues/480 when other ones don't
     // and it doesn't seem related to any of the code inside this draw background block
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {

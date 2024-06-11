@@ -13,8 +13,6 @@ import java.util.SequencedCollection;
 import java.util.stream.Stream;
 
 //Copy of vanilla's ListCodec but with the type bound changed to SequencedCollection
-//TODO - 1.20.5: Decide if we want to try doing something like just going to rawtypes and then to Codec<SequencedCollection> and see if we can actually use
-// the vanilla List codec instead of having a copy of it? Alternatively we could also just wrap the getter in creating a list
 public record SequencedCollectionCodec<E>(Codec<E> elementCodec, int minSize, int maxSize) implements Codec<SequencedCollection<E>> {
 
     public SequencedCollectionCodec(Codec<E> elementCodec) {

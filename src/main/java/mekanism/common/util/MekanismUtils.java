@@ -103,7 +103,7 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = 1 / Mth.SQRT_OF_TWO;
-    //TODO - 1.20.4: Re-evaluate uses of this and the shared constants constant as some potentially should be switched to use the level's tickrate
+    //TODO - 1.21: Re-evaluate uses of this and the shared constants constant as some potentially should be switched to use the level's tickrate
     // and in fact the first pass was spent just trying to convert use cases to referencing constants rather than also figuring out if they should
     // be transitioned over to the level's tickrate
     public static final int TICKS_PER_HALF_SECOND = SharedConstants.TICKS_PER_SECOND / 2;

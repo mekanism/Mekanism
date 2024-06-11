@@ -17,7 +17,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
-//TODO - 1.20.5: Update the wiki docs to fix the syntax
+//TODO - 1.21: Update the wiki docs to fix the syntax
 @NothingNullByDefault
 public class SerializerHelper {
 

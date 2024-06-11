@@ -56,7 +56,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             if (identity.isPresent() && EffectiveSide.get().isServer()) {
                 //Only try to look up the frequency on the server
                 //Note: This will almost always be false
-                //TODO - 1.20.5: Do we want to remove this branch and have the optional always be empty when transmitting via stream?
+                //TODO - 1.21: Do we want to remove this branch and have the optional always be empty when transmitting via stream?
                 frequency = frequencyType.getManager(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
             }
             return new FrequencyAware<>(identity, Optional.ofNullable(frequency));
@@ -87,7 +87,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
                 SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
-                    //TODO - 1.20.5: Re-evaluate this
+                    //TODO - 1.21: Re-evaluate this
                     stack.remove(type);
                     if (stack.getItem() instanceof IColoredItem) {
                         stack.remove(MekanismDataComponents.COLOR);

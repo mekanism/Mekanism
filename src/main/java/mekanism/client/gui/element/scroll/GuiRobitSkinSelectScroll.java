@@ -16,8 +16,6 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -39,6 +37,7 @@ import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
 public class GuiRobitSkinSelectScroll extends GuiElement {
 
@@ -88,7 +87,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             float oldRot = rotation;
             rotation = Mth.wrapDegrees(rotation - 0.5F);
             float rot = Mth.rotLerp(partialTicks, oldRot, rotation);
-            QuadTransformation rotation = QuadTransformation.rotateY(rot);
+            Quaternionf rotation = Axis.YP.rotationDegrees(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
             for (int i = 0; i < max; i++) {
                 int slotX = relativeX + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = relativeY + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
@@ -192,7 +191,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, QuadTransformation rotation, int index) {
+    private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
         List<ResourceLocation> textures = skinLookup.skin().textures();
         if (textures.isEmpty()) {
@@ -212,13 +211,10 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         pose.translate(x + SLOT_DIMENSIONS, y + (int) (0.8 * SLOT_DIMENSIONS), 0);
         pose.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
         pose.mulPose(Axis.ZP.rotationDegrees(180));
+        pose.rotateAround(rotation,  0.5F, 0.0F, 0.5F);
         PoseStack.Pose matrixEntry = pose.last();
         ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
-        List<BakedQuad> quads = model.getQuads(null, null, robit.level().random, modelData, null);
-        //TODO: Ideally at some point we will want to be able to have the rotations happen via the matrix stack
-        // so that we aren't having to transform the quads directly
-        quads = QuadUtils.transformBakedQuads(quads, rotation);
-        for (BakedQuad quad : quads) {
+        for (BakedQuad quad : model.getQuads(null, null, robit.level().random, modelData, null)) {
             builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);

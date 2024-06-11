@@ -32,9 +32,15 @@ public class FluidTankFluidTank extends BasicFluidTank {
     }
 
     @Override
-    protected int getRate(@Nullable AutomationType automationType) {
+    protected int getInsertRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertRate(automationType);
+    }
+
+    @Override
+    protected int getExtractRate(@Nullable AutomationType automationType) {
+        //Only limit the internal rate to change the speed at which this can be filled from an item
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractRate(automationType);
     }
 
     @Override

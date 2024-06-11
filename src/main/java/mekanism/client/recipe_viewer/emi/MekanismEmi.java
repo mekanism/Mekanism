@@ -111,20 +111,16 @@ public class MekanismEmi implements EmiPlugin {
     private static final EmiRegistryAdapter<Slurry> SLURRY_REGISTRY_ADAPTER = EmiRegistryAdapter.simple(Slurry.class, MekanismAPI.SLURRY_REGISTRY, SlurryEmiStack::new);
 
     private static final Comparison MEKANISM_COMPARISON = Comparison.compareData(emiStack -> {
-        //TODO - 1.20.5: Re-evaluate if we want the components check or if it should check it slightly differently?
-        if (!emiStack.getComponentChanges().isEmpty()) {
-            Set<Object> representation = new HashSet<>();
-            ItemStack stack = emiStack.getItemStack();
-            addChemicalComponent(representation, stack, ContainerType.GAS, Capabilities.GAS.item());
-            addChemicalComponent(representation, stack, ContainerType.INFUSION, Capabilities.INFUSION.item());
-            addChemicalComponent(representation, stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item());
-            addChemicalComponent(representation, stack, ContainerType.SLURRY, Capabilities.SLURRY.item());
-            addFluidComponent(representation, stack);
-            addEnergyComponent(representation, stack);
-            if (!representation.isEmpty()) {
-
-                return representation;
-            }
+        Set<Object> representation = new HashSet<>();
+        ItemStack stack = emiStack.getItemStack();
+        addChemicalComponent(representation, stack, ContainerType.GAS, Capabilities.GAS.item());
+        addChemicalComponent(representation, stack, ContainerType.INFUSION, Capabilities.INFUSION.item());
+        addChemicalComponent(representation, stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item());
+        addChemicalComponent(representation, stack, ContainerType.SLURRY, Capabilities.SLURRY.item());
+        addFluidComponent(representation, stack);
+        addEnergyComponent(representation, stack);
+        if (!representation.isEmpty()) {
+            return representation;
         }
         return null;
     });

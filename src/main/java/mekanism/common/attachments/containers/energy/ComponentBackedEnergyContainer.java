@@ -128,8 +128,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Flo
 
     @Override
     public CompoundTag serializeNBT(Provider provider) {
-        //TODO - 1.20.5: This is a copy of BasicEnergyContainer#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
         CompoundTag nbt = new CompoundTag();
         FloatingLong stored = getEnergy();
         if (!stored.isZero()) {

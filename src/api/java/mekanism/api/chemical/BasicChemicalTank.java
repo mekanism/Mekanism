@@ -53,7 +53,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     }
 
     /**
-     * Helper method to allow easily setting a rate at which this {@link BasicChemicalTank} can insert/extract chemicals.
+     * Helper method to allow easily setting a rate at which chemicals can be inserted into this {@link BasicChemicalTank}.
      *
      * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
      *
@@ -61,9 +61,26 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      *
      * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
+     *
+     * @since 10.6.0, previously was combined with {@link #getExtractRate(AutomationType)} as a method named getRate
      */
-    protected long getRate(@Nullable AutomationType automationType) {
-        //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
+    protected long getInsertRate(@Nullable AutomationType automationType) {
+        return Long.MAX_VALUE;
+    }
+
+    /**
+     * Helper method to allow easily setting a rate at which chemicals can be extracted from this {@link BasicChemicalTank}.
+     *
+     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
+     *
+     * @return The rate this tank can insert/extract at.
+     *
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
+     * stack/stack size
+     *
+     * @since 10.6.0, previously was combined with {@link #getInsertRate(AutomationType)} as a method named getRate
+     */
+    protected long getExtractRate(@Nullable AutomationType automationType) {
         return Long.MAX_VALUE;
     }
 
@@ -95,7 +112,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             //"Fail quick" if the given stack is empty, or we can never insert the chemical or currently are unable to insert it
             return stack;
         }
-        long needed = Math.min(getRate(automationType), getNeeded());
+        long needed = Math.min(getInsertRate(automationType), getNeeded());
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
@@ -130,7 +147,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        long size = Math.min(Math.min(getRate(automationType), getStored()), amount);
+        long size = Math.min(Math.min(getExtractRate(automationType), getStored()), amount);
         if (size == 0) {
             return getEmptyStack();
         }
@@ -190,9 +207,11 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk long overflow
-            amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
+            //If we are increasing the stack's size, use the insert rate
+            amount = Math.min(Math.min(amount, getNeeded()), getInsertRate(null));
         } else if (amount < 0) {
-            amount = Math.max(amount, -getRate(null));
+            //If we are decreasing the stack's size, use the extract rate
+            amount = Math.max(amount, -getExtractRate(null));
         }
         long newSize = setStackSize(current + amount, action);
         return newSize - current;

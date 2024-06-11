@@ -82,7 +82,6 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         if (!isFocusOverlay()) {
             addCloseButton();
             if (this.windowData.type.canPin()) {
-                //TODO - 1.20.4: Positioning?
                 addChild(new GuiPinButton(gui(), relativeX + 16, relativeY + 6, this));
             }
         }

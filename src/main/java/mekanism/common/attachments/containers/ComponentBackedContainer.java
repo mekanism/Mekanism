@@ -48,7 +48,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
 
     protected boolean shouldUpdate(ATTACHED attached, TYPE value) {
         //If both stacks are empty we don't do anything
-        //TODO - 1.20.5: Do we want to do a matches check instead of just seeing if both are empty
+        //TODO - 1.21: Do we want to do a matches check instead of just seeing if both are empty
         // Or maybe only do that in the non overloaded setStack so as a way to potentially avoid the extra lookup here when we know
         // we only call this method if something has changed
         return !isEmpty(value) || !isEmpty(getContents(attached));

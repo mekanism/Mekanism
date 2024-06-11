@@ -80,7 +80,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         tooltips.add(TextComponentUtil.build(chemical));
         if (stack.getChemical() == MekanismGases.ETHENE.get()) {
             //TODO - 1.22: Remove this
-            //TODO - 1.20.6: Test this when JEI updates
+            //TODO - 1.21: Test this when JEI updates
             tooltips.add(MekanismLang.ALSO_KNOWN_AS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismLang.ETHENE_ETHYLENE_ALIAS));
         }
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {

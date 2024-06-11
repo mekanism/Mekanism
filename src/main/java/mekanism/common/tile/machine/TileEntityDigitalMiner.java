@@ -1058,8 +1058,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
-        //TODO - 1.20.4: Can we deduplicate this code from the read sustained data?
-        // maybe by using the tile data to attachment remap and then pass in a method that gets the proper object?
         setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, radius), MekanismConfig.general.minerMaxRadius.get()));
         int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, minY);
         int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, minY);

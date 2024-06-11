@@ -14,7 +14,7 @@ public abstract class BaseContainerCreator<ATTACHED extends IAttachedContainers<
     private final List<IBasicContainerCreator<? extends CONTAINER>> creators;
 
     public BaseContainerCreator(List<IBasicContainerCreator<? extends CONTAINER>> creators) {
-        //TODO - 1.20.5: Is this copy necessary? We probably want it to be immutable so yes?
+        //TODO - 1.21: Is this copy necessary? We probably want it to be immutable so yes?
         this.creators = List.copyOf(creators);
     }
 
@@ -25,7 +25,7 @@ public abstract class BaseContainerCreator<ATTACHED extends IAttachedContainers<
 
     @Override
     public CONTAINER create(ContainerType<? super CONTAINER, ?, ?> containerType, ItemStack attachedTo, int containerIndex) {
-        //TODO - 1.20.5: Figure out how to handle this and if we want to validate the index
+        //TODO - 1.21: Figure out how to handle this and if we want to validate the index
         /*if (containerIndex < 0 || containerIndex >= creators.size()) {
             return null;
         }*/

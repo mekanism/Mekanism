@@ -65,8 +65,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     @Override
     public void setStack(FluidStack stack) {
-        //TODO - 1.20.5: I think just always setting it as unchecked is fine as we are doing that for items regardless
-        // but we may want to validate it?
         setStackUnchecked(stack);
     }
 
@@ -87,7 +85,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     @Override
     public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        //TODO - 1.20.5: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
+        //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
         // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
         if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
@@ -196,8 +194,6 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     @Override
     public CompoundTag serializeNBT(Provider provider) {
-        //TODO - 1.20.5: This is a copy of BasicFluidTank#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
         CompoundTag nbt = new CompoundTag();
         FluidStack stored = getFluid();
         if (!stored.isEmpty()) {

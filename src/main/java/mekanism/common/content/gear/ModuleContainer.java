@@ -194,13 +194,10 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                         //Update the other module
                         otherModule = otherModule.withReplacedConfig(disabledConfig);
                         copiedModules.put(otherType, otherModule);
-                        //Manually call state changed as we bypassed the check we injected into set if we are on the server
-                        // we use the implementation detail about whether there was a callback to determine if it was on the
-                        // server or not
-                        //TODO - 1.20.5: Update above comment
+                        //And adjust the current enchantments if necessary
                         adjustedEnchantments = updateEnchantment(otherModule, adjustedEnchantments);
                     }
-                    //TODO - 1.20.5: Figure out if we need to check against the original other module before it is disabled
+                    //TODO - 1.21: Figure out if we need to check against the original other module before it is disabled
                     // which is what previously happened or if checking it here is fine
                     // Given handlesModeChange takes the enabled state into account that means previously this would always be true
                     // if handlesModeChange && otherType.handlesModeChange
@@ -248,7 +245,7 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
             for (Module<?> otherModule : modules()) {
                 ModuleData<?> otherType = otherModule.getData();
                 //If it is a different module, and it handles mode change then we want to disable it handling mode changes
-                //TODO - 1.20.5: Validate this functionality compared to how 1.20.4 worked. Mainly what was the behavior when enabling a module
+                //TODO - 1.21: Validate this functionality compared to how 1.20.4 worked. Mainly what was the behavior when enabling a module
                 // that had its mode handling set to false because of this
                 if (otherType != type && otherModule.handlesModeChange()) {
                     ModuleConfig<Boolean> modeChangeConfig = otherModule.<Boolean>getConfigOrThrow(ModuleConfig.HANDLES_MODE_CHANGE_KEY).with(false);
@@ -293,14 +290,13 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
         //Add the module to the list of tracked and known modules if necessary or replace the existing value
         SequencedMap<ModuleData<?>, Module<?>> copiedModules = new LinkedHashMap<>(typedModules);
         copiedModules.put(type, module);
-        //Update what the enchantment level is at after the install
+        //Update what the enchantment level is at after the installation
         ItemEnchantments.Mutable adjustedEnchantments = updateEnchantment(module, null);
         //Disable any other modules that are exclusive in regard to the newly installed module
         adjustedEnchantments = disableOtherExclusives(type, module, copiedModules, adjustedEnchantments);
 
         ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
         //Call the added method on the new module instance with the new container
-        //TODO - 1.20.5: Update docs for onAdded to specify what instance it is called on? (May not be necessary, but check them)
         module.getCustomInstance().onAdded(module, replacedContainer, stack, wasFirst);
         return toInstall;
     }
@@ -335,8 +331,6 @@ public record ModuleContainer(SequencedMap<ModuleData<?>, Module<?>> typedModule
                 adjustedEnchantments = updateEnchantment(module, null);
             }
             ModuleContainer replacedContainer = updateContainer(stack, copiedModules, adjustedEnchantments);
-            //TODO - 1.20.5: Document the behavior that this is the new module instance, container, and amount unless wasLast is true,
-            // and then it is the old module instance and the new module container
             module.getCustomInstance().onRemoved(module, replacedContainer, stack, wasLast);
         }
     }

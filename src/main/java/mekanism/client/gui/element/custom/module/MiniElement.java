@@ -56,7 +56,7 @@ abstract class MiniElement<TYPE> {
     }
 
     protected void setData(TYPE value) {
-        //TODO - 1.20.5: Fix it so that after it syncs to the server we then actually update what our data value is
+        //TODO - 1.21: Fix it so that after it syncs to the server we then actually update what our data value is
         // We sort of do this now, but options that have side effects don't necessarily get properly updated
         this.data = data.with(value);
         parent.saveCallback.accept(data);

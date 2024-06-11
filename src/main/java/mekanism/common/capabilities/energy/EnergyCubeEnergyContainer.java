@@ -28,9 +28,15 @@ public class EnergyCubeEnergyContainer extends BasicEnergyContainer {
     }
 
     @Override
-    protected FloatingLong getRate(@Nullable AutomationType automationType) {
+    protected FloatingLong getInsertRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.get() : super.getRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.get() : super.getInsertRate(automationType);
+    }
+
+    @Override
+    protected FloatingLong getExtractRate(@Nullable AutomationType automationType) {
+        //Only limit the internal rate to change the speed at which this can be filled from an item
+        return automationType == AutomationType.INTERNAL ? rate.get() : super.getExtractRate(automationType);
     }
 
     @Override

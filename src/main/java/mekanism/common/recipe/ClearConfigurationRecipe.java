@@ -18,7 +18,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-//TODO - 1.20.4: Somehow represent this recipe in JEI??
+//TODO - 1.21: Somehow represent this recipe in JEI and EMI??
 @NothingNullByDefault
 public class ClearConfigurationRecipe extends CustomRecipe {
 

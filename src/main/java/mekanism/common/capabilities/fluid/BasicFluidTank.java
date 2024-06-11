@@ -140,7 +140,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * Helper method to allow easily setting a rate at which this {@link BasicFluidTank} can insert/extract fluids.
+     * Helper method to allow easily setting a rate at which fluids can be inserted into this {@link BasicFluidTank}.
      *
      * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
      *
@@ -149,10 +149,21 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
      */
-    protected int getRate(@Nullable AutomationType automationType) {
-        //TODO: As we don't actually use this anymore in subclasses decide if we want to remove this
-        // That or we might want to actually start making use of it
-        //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
+    protected int getInsertRate(@Nullable AutomationType automationType) {
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Helper method to allow easily setting a rate at which fluids can be extracted from this {@link BasicFluidTank}.
+     *
+     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
+     *
+     * @return The rate this tank can insert/extract at.
+     *
+     * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
+     * stack/stack size
+     */
+    protected int getExtractRate(@Nullable AutomationType automationType) {
         return Integer.MAX_VALUE;
     }
 
@@ -184,7 +195,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
-        int needed = Math.min(getRate(automationType), getNeeded());
+        int needed = Math.min(getInsertRate(automationType), getNeeded());
         if (needed <= 0) {
             //Fail if we are a full tank or our rate is zero
             return stack;
@@ -219,7 +230,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        int size = Math.min(Math.min(getRate(automationType), getFluidAmount()), amount);
+        int size = Math.min(Math.min(getExtractRate(automationType), getFluidAmount()), amount);
         FluidStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
@@ -276,9 +287,11 @@ public class BasicFluidTank implements IExtendedFluidTank {
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(Math.min(amount, getNeeded()), getRate(null));
+            //If we are increasing the stack's size, use the insert rate
+            amount = Math.min(Math.min(amount, getNeeded()), getInsertRate(null));
         } else if (amount < 0) {
-            amount = Math.max(amount, -getRate(null));
+            //If we are decreasing the stack's size, use the extract rate
+            amount = Math.max(amount, -getExtractRate(null));
         }
         int newSize = setStackSize(current + amount, action);
         return newSize - current;

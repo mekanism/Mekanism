@@ -17,8 +17,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20.4: SP: Validate this doesn't have any issues in single player, I believe the edited filter is always new on the client and then the gui is closed
-// and the referenced removed, so we can use that implementation detail to not require any copying or stuff, and the filter is only used for lookup
 public record PacketEditFilter<FILTER extends IFilter<FILTER>>(BlockPos pos, FILTER filter, @Nullable FILTER edited) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketEditFilter<?>> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("edit_filter"));

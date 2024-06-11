@@ -152,8 +152,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
-        //TODO - 1.20.5: Re-evaluate if we want the components check or if it should check it slightly differently?
-        if (context == UidContext.Ingredient && !stack.isComponentsPatchEmpty()) {
+        if (context == UidContext.Ingredient) {
             String representation = getChemicalComponent(stack, ContainerType.GAS, Capabilities.GAS.item());
             representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.INFUSION, Capabilities.INFUSION.item()));
             representation = addInterpretation(representation, getChemicalComponent(stack, ContainerType.PIGMENT, Capabilities.PIGMENT.item()));

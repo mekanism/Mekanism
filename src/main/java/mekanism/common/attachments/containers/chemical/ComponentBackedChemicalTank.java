@@ -66,8 +66,6 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
 
     @Override
     public void setStack(STACK stack) {
-        //TODO - 1.20.5: I think just always setting it as unchecked is fine as we are doing that for items regardless
-        // but we may want to validate it?
         setStackUnchecked(stack);
     }
 
@@ -98,7 +96,7 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
 
     @Override
     public STACK insert(STACK stack, Action action, AutomationType automationType) {
-        //TODO - 1.20.5: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
+        //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
         // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
         if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getChemical(), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
@@ -205,8 +203,6 @@ public abstract class ComponentBackedChemicalTank<CHEMICAL extends Chemical<CHEM
 
     @Override
     public CompoundTag serializeNBT(Provider provider) {
-        //TODO - 1.20.5: This is a copy of BasicChemicalTank#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
         CompoundTag nbt = new CompoundTag();
         STACK stored = getStack();
         if (!stored.isEmpty()) {

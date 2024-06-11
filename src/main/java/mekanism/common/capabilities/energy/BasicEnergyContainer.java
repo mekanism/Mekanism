@@ -89,7 +89,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     /**
-     * Helper method to allow easily setting a rate at which this {@link BasicEnergyContainer} can insert/extract energy.
+     * Helper method to allow easily setting a rate at which energy can be inserted into this {@link BasicEnergyContainer}.
      *
      * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
      *
@@ -98,8 +98,21 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote By default, this returns {@link FloatingLong#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
      * of the stack/stack size
      */
-    protected FloatingLong getRate(@Nullable AutomationType automationType) {
-        //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
+    protected FloatingLong getInsertRate(@Nullable AutomationType automationType) {
+        return FloatingLong.MAX_VALUE;
+    }
+
+    /**
+     * Helper method to allow easily setting a rate at which energy can be extracted from this {@link BasicEnergyContainer}.
+     *
+     * @param automationType The automation type to limit the rate by or null if we don't have access to an automation type.
+     *
+     * @return The rate this tank can insert/extract at.
+     *
+     * @implNote By default, this returns {@link FloatingLong#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * of the stack/stack size
+     */
+    protected FloatingLong getExtractRate(@Nullable AutomationType automationType) {
         return FloatingLong.MAX_VALUE;
     }
 
@@ -108,7 +121,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (amount.isZero() || !canInsert.test(automationType)) {
             return amount;
         }
-        FloatingLong needed = getRate(automationType).min(getNeeded());
+        FloatingLong needed = getInsertRate(automationType).min(getNeeded());
         if (needed.isZero()) {
             //Fail if we are a full container or our rate is zero
             return amount;
@@ -128,7 +141,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
         if (isEmpty() || amount.isZero() || !canExtract.test(automationType)) {
             return FloatingLong.ZERO;
         }
-        FloatingLong ret = getRate(automationType).min(getEnergy()).min(amount).copy();
+        FloatingLong ret = getExtractRate(automationType).min(getEnergy()).min(amount).copy();
         if (!ret.isZero() && action.execute()) {
             //Note: this also will mark that the contents changed
             stored = stored.minusEqual(ret);

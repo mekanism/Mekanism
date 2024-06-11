@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public record AttachedEjector(List<Optional<EnumColor>> inputColors, boolean strictInput, Optional<EnumColor> outputColor) {
 
-    //TODO - 1.20.5: Re-evaluate this, and maybe rework it so that we can actually just use Collections.emptyList
+    //TODO - 1.21: Re-evaluate this, and maybe rework it so that we can actually just use Collections.emptyList
     // without our constructor check failing, and without the codec running into issues because of the min size
     public static final AttachedEjector DEFAULT = new AttachedEjector(Arrays.stream(EnumUtils.SIDES).map(side -> Optional.<EnumColor>empty()).toList(), false, Optional.empty());
 

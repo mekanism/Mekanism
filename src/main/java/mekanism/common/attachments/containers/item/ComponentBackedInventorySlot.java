@@ -197,7 +197,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        //TODO - 1.20.5: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
+        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
         CompoundTag nbt = new CompoundTag();

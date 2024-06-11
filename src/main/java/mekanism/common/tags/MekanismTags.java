@@ -279,8 +279,8 @@ public class MekanismTags {
         }
     }
 
-    //TODO - 1.20.5: Do we want to do a hidden from recipe viewers tag instead of a method on the chemical to be in line
-    // with the common tags for blocks, items, and fluids? Probably
+    //TODO - 1.21: Do we want to do a hidden from recipe viewers tag instead of a method on the chemical to be in line
+    // with the common tags for blocks, items, and fluids? Probably, https://github.com/emilyploszaj/emi/issues/545
     public static class Gases {
 
         private Gases() {

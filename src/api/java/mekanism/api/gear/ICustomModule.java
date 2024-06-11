@@ -195,6 +195,14 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
      * Called when this module is added to an item.
+     * <p>
+     * Due to the way {@link net.minecraft.core.component.DataComponentType data components} work, the instance of the {@link ICustomModule} that this method gets called
+     * on is as follows:
+     * <ul>
+     *     <li>The passed in {@link IModuleContainer module container} instance is the new one that contains the added module in its known modules</li>
+     *     <li>The stack has been updated to know about the updated state (including any changes to enchantments if this module is also a {@link EnchantmentAwareModule})</li>
+     *     <li>The {@link ICustomModule} instance is one created after installing the modules</li>
+     * </ul>
      *
      * @param module          Module instance.
      * @param moduleContainer The container this module is part of.
@@ -209,6 +217,24 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
      * Called when this module is removed from an item.
+     * <p>
+     * Due to the way {@link net.minecraft.core.component.DataComponentType data components} work, the instance of the {@link ICustomModule} that this method gets called
+     * on is as follows:
+     *
+     * <ul>
+     *     <li>
+     *         The passed in {@link IModuleContainer module container} instance is the new one that contains the reduced number of modules (or none if last) in its known
+     *         modules
+     *     </li>
+     *     <li>The stack has been updated to know about the updated state (including any changes to enchantments if this module is also a {@link EnchantmentAwareModule})</li>
+     *     <li>
+     *         If this was not the {@code wasLast} module removed, this behaves similarly to {@link #onAdded(IModule, IModuleContainer, ItemStack, boolean)} in that the
+     *         {@link ICustomModule} instance is one created after uninstalling the the modules. <strong>However</strong>, if all the modules of this type have been
+     *         removed and {@code wasLast == true}, then this method is instead called on the previously installed {@link ICustomModule} instance, and it should be assumed
+     *         that the number of installed modules is zero, rather than querying it via {@link IModule#getInstalledCount()}. Do note, even in this case, the stack and
+     *         {@link IModuleContainer module container} still point to the updated state, as specified above.
+     *     </li>
+     * </ul>
      *
      * @param module          Module instance.
      * @param moduleContainer The container this module is part of.

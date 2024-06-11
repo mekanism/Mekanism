@@ -38,7 +38,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     protected boolean isEmpty(HeatCapacitorData value) {
-        //TODO - 1.20.5: Re-evaluate
         return value.equals(defaultData);
     }
 
@@ -97,10 +96,10 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
             HeatCapacitorData stored = getContents(attachedHeat);
             setContents(attachedHeat, new HeatCapacitorData(heat, stored.capacity()));
         }
-        //TODO - 1.20.5: Else initialize to whatever the default size is meant to be?
+        //TODO - 1.21: Else initialize to whatever the default size is meant to be?
     }
 
-    @Override//TODO - 1.20.5: Re-evaluate this override
+    @Override//TODO - 1.21: Re-evaluate this override
     protected boolean shouldUpdate(AttachedHeat attached, HeatCapacitorData value) {
         return !getContents(attached).equals(value);
     }
@@ -118,8 +117,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     public CompoundTag serializeNBT(Provider provider) {
-        //TODO - 1.20.5: This is a copy of BasicHeatCapacitor#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
         CompoundTag nbt = new CompoundTag();
         HeatCapacitorData data = getData();
         nbt.putDouble(SerializationConstants.STORED, data.heat());
